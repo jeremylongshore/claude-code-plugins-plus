@@ -1,0 +1,85 @@
+name: Plugin Submission
+description: Submit a new plugin to the marketplace
+title: "[Plugin Submission] "
+labels: ["plugin-submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for submitting a plugin! Please fill out the information below.
+
+  - type: input
+    id: plugin-name
+    attributes:
+      label: Plugin Name
+      description: Name of your plugin
+      placeholder: my-awesome-plugin
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Brief description of what your plugin does
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - productivity
+        - security
+        - testing
+        - deployment
+        - documentation
+        - analysis
+        - integration
+        - ai
+        - other
+    validations:
+      required: true
+
+  - type: input
+    id: repository
+    attributes:
+      label: Repository URL
+      description: Link to your plugin repository
+      placeholder: https://github.com/username/plugin
+    validations:
+      required: true
+
+  - type: textarea
+    id: keywords
+    attributes:
+      label: Keywords
+      description: Comma-separated keywords for discoverability
+      placeholder: formatting, automation, hooks
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: requirements
+    attributes:
+      label: Submission Requirements
+      options:
+        - label: Plugin has valid `.claude-plugin/plugin.json`
+          required: true
+        - label: Plugin includes comprehensive README.md
+          required: true
+        - label: Plugin includes LICENSE file
+          required: true
+        - label: All scripts are executable (chmod +x)
+          required: true
+        - label: Plugin has been tested locally
+          required: true
+        - label: No hardcoded secrets or credentials
+          required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Information
+      description: Any other details about your plugin

@@ -1,0 +1,43 @@
+{
+  "name": "claude-code-plugins",
+  "owner": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "metadata": {
+    "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
+    "version": "1.0.0",
+    "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "hello-world",
+      "source": "./plugins/examples/hello-world",
+      "description": "Simple example plugin demonstrating basic slash commands",
+      "version": "1.0.0",
+      "category": "example",
+      "keywords": ["example", "tutorial", "beginner"],
+      "author": {
+        "name": "Jeremy Longshore"
+      }
+    },
+    {
+      "name": "formatter",
+      "source": "./plugins/examples/formatter",
+      "description": "Code formatting plugin using hooks to auto-format on save",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": ["formatting", "hooks", "automation"]
+    },
+    {
+      "name": "security-agent",
+      "source": "./plugins/examples/security-agent",
+      "description": "Security review subagent for code analysis",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": ["security", "agent", "code-review"]
+    }
+  ]
+}

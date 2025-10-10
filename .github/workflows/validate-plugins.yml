@@ -1,0 +1,74 @@
+name: Validate Plugins
+
+on:
+  pull_request:
+    paths:
+      - 'plugins/**'
+      - '.claude-plugin/**'
+  push:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate JSON files
+        run: |
+          echo "Validating JSON files..."
+          find . -name "*.json" -type f -exec sh -c '
+            for file; do
+              echo "Checking $file"
+              if ! jq empty "$file" 2>/dev/null; then
+                echo "Invalid JSON: $file"
+                exit 1
+              fi
+            done
+          ' sh {} +
+
+      - name: Check plugin structure
+        run: |
+          echo "Checking plugin structure..."
+          for plugin in plugins/community/*/ plugins/examples/*/; do
+            if [ -d "$plugin" ]; then
+              echo "Validating $plugin"
+
+              # Check for required plugin.json
+              if [ ! -f "$plugin/.claude-plugin/plugin.json" ]; then
+                echo "Missing plugin.json in $plugin"
+                exit 1
+              fi
+
+              # Check for README
+              if [ ! -f "$plugin/README.md" ]; then
+                echo "Missing README.md in $plugin"
+                exit 1
+              fi
+
+              # Check scripts are executable
+              if [ -d "$plugin/scripts" ]; then
+                find "$plugin/scripts" -type f -name "*.sh" | while read script; do
+                  if [ ! -x "$script" ]; then
+                    echo "Script not executable: $script"
+                    exit 1
+                  fi
+                done
+              fi
+            fi
+          done
+
+      - name: Validate marketplace catalog
+        run: |
+          echo "Validating marketplace catalog..."
+          jq empty .claude-plugin/marketplace.json
+
+          # Check all plugin sources exist
+          jq -r '.plugins[].source' .claude-plugin/marketplace.json | while read source; do
+            if [[ "$source" == ./* ]]; then
+              if [ ! -d "$source" ]; then
+                echo "Plugin source not found: $source"
+                exit 1
+              fi
+            fi
+          done

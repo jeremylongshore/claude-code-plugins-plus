@@ -1,0 +1,12 @@
+{
+  "name": "my-command-plugin",
+  "version": "1.0.0",
+  "description": "Plugin with custom slash commands",
+  "author": {
+    "name": "Your Name",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/username/my-command-plugin",
+  "license": "MIT",
+  "keywords": ["commands"]
+}

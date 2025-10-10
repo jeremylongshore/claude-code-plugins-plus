@@ -1,0 +1,13 @@
+{
+  "name": "my-full-plugin",
+  "version": "1.0.0",
+  "description": "Full-featured plugin with commands, agents, and hooks",
+  "author": {
+    "name": "Your Name",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/username/my-full-plugin",
+  "license": "MIT",
+  "keywords": ["full-featured"],
+  "hooks": "./hooks/hooks.json"
+}

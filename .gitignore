@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# Testing
+test-marketplace/
+tmp/
+temp/
+*.tmp
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.egg-info/
+
+# Misc
+.cache/
+coverage/
+
+# Private documentation and business documents (NEVER commit)
+claudes-docs/
+website/
