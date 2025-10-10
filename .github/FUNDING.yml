@@ -1,0 +1,13 @@
+# GitHub Sponsors configuration
+# Users can support this project through GitHub Sponsors
+
+github: jeremylongshore
+
+# Optional: Add other funding platforms
+# ko_fi: jeremylongshore
+# buy_me_a_coffee: jeremylongshore
+# patreon: jeremylongshore
+
+# Custom links for consulting/enterprise support
+custom:
+  - "https://github.com/jeremylongshore/claude-code-plugins/discussions"

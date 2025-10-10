@@ -1,0 +1,189 @@
+name: Release Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: 'Version bump type'
+        required: true
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      skip_tests:
+        description: 'Skip validation tests'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: read
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: |
+          pip install pyyaml
+
+      - name: Run validation tests
+        if: ${{ !inputs.skip_tests }}
+        run: |
+          echo "Running plugin validation..."
+          chmod +x scripts/*.sh scripts/*.py
+          ./scripts/validate-all.sh plugins
+
+          echo "Testing git-commit-smart installation..."
+          ./scripts/test-installation.sh plugins/devops/git-commit-smart
+
+      - name: Get current version
+        id: current_version
+        run: |
+          VERSION=$(jq -r '.metadata.version' .claude-plugin/marketplace.json)
+          echo "current=$VERSION" >> $GITHUB_OUTPUT
+          echo "Current version: $VERSION"
+
+      - name: Calculate new version
+        id: new_version
+        run: |
+          CURRENT="${{ steps.current_version.outputs.current }}"
+          BUMP_TYPE="${{ inputs.bump_type }}"
+
+          IFS='.' read -ra PARTS <<< "$CURRENT"
+          MAJOR="${PARTS[0]}"
+          MINOR="${PARTS[1]}"
+          PATCH="${PARTS[2]}"
+
+          case "$BUMP_TYPE" in
+            major)
+              MAJOR=$((MAJOR + 1))
+              MINOR=0
+              PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1))
+              PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_VERSION="$MAJOR.$MINOR.$PATCH"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          echo "New version: $NEW_VERSION"
+
+      - name: Update version in marketplace.json
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          jq --arg version "$NEW_VERSION" '.metadata.version = $version' .claude-plugin/marketplace.json > tmp.json
+          mv tmp.json .claude-plugin/marketplace.json
+
+          echo "Updated marketplace.json to version $NEW_VERSION"
+          cat .claude-plugin/marketplace.json | jq '.metadata.version'
+
+      - name: Update version in README
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          sed -i "s/Version: [0-9.]\+/Version: $NEW_VERSION/" README.md
+          sed -i "s/Last Updated: [0-9-]\+/Last Updated: $(date +%Y-%m-%d)/" README.md
+          echo "Updated README.md version references"
+
+      - name: Commit version bump
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .claude-plugin/marketplace.json README.md
+          git commit -m "chore: bump version to v$NEW_VERSION"
+
+      - name: Create Git tag
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+
+          # Extract changelog section for this version
+          awk "/## \[$NEW_VERSION\]/,/## \[/ { print }" CHANGELOG.md > release-notes.txt || echo "Release v$NEW_VERSION" > release-notes.txt
+
+          git tag -a "v$NEW_VERSION" -F release-notes.txt
+          echo "Created tag v$NEW_VERSION"
+
+      - name: Push changes and tag
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          git push origin main
+          git push origin "v$NEW_VERSION"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+
+          # Extract changelog for release notes
+          awk "/## \[$NEW_VERSION\]/,/## \[/ { print }" CHANGELOG.md > release-notes.txt || true
+
+          if [ ! -s release-notes.txt ]; then
+            echo "# Release v$NEW_VERSION" > release-notes.txt
+            echo "" >> release-notes.txt
+            echo "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details." >> release-notes.txt
+          fi
+
+          gh release create "v$NEW_VERSION" \
+            --title "🚀 Release v$NEW_VERSION" \
+            --notes-file release-notes.txt \
+            --latest
+
+      - name: Create release announcement issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+
+          gh issue create \
+            --title "🎉 Release v$NEW_VERSION Available" \
+            --body "We're excited to announce v$NEW_VERSION!
+
+          ## 📦 What's New
+          See the [full changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md#${NEW_VERSION//.}-$(date +%Y-%m-%d)) for all details.
+
+          ## 🚀 Installation
+          \`\`\`bash
+          /plugin marketplace add jeremylongshore/claude-code-plugins
+          \`\`\`
+
+          ## 💬 Feedback
+          Share your thoughts in [discussions](https://github.com/${{ github.repository }}/discussions)!" \
+            --label "announcement,release"
+
+      - name: Summary
+        run: |
+          NEW_VERSION="${{ steps.new_version.outputs.version }}"
+          echo "## Release v$NEW_VERSION Complete! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Version bumped: ${{ steps.current_version.outputs.current }} → $NEW_VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Git tag created: v$NEW_VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ GitHub release published" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Announcement issue created" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "[View Release](https://github.com/${{ github.repository }}/releases/tag/v$NEW_VERSION)" >> $GITHUB_STEP_SUMMARY

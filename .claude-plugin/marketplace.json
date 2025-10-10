@@ -13,6 +13,19 @@
   },
   "plugins": [
     {
+      "name": "git-commit-smart",
+      "source": "./plugins/devops/git-commit-smart",
+      "description": "AI-powered conventional commit message generator with smart analysis",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["git", "commits", "conventional-commits", "automation", "devops", "productivity"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
       "name": "hello-world",
       "source": "./plugins/examples/hello-world",
       "description": "Simple example plugin demonstrating basic slash commands",

@@ -54,3 +54,6 @@ coverage/
 # Private documentation and business documents (NEVER commit)
 claudes-docs/
 website/
+
+# Temporary migration preservation (do not commit)
+_PRESERVE_MIGRATION/

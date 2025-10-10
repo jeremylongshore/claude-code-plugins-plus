@@ -44,18 +44,33 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 
 ## 📦 Featured Plugins
 
+### 🏆 Production Plugin
+
+| Plugin | Description | Category | Install |
+|--------|-------------|----------|---------|
+| **git-commit-smart** ⭐ | AI-powered conventional commit messages - production ready! | DevOps | `/plugin install git-commit-smart@claude-code-plugins` |
+
+**What makes git-commit-smart special?**
+- 🤖 **AI-Powered**: Analyzes your code changes and generates contextual commit messages
+- 📝 **Conventional Commits**: Follows the conventional commits standard automatically
+- ⚡ **Fast Workflow**: Generate professional commits in seconds with `/gc` shortcut
+- ✅ **Breaking Change Detection**: Identifies and documents breaking changes
+- 🎯 **Smart Categorization**: Auto-determines commit type (feat, fix, docs, etc.)
+
+### 📚 Example Plugins for Learning
+
 | Plugin | Description | Category | Install |
 |--------|-------------|----------|---------|
 | **hello-world** | Simple greeting command - perfect for learning! | Example | `/plugin install hello-world@claude-code-plugins` |
-| **auto-formatter** | Automatically formats code after edits using hooks | Productivity | `/plugin install auto-formatter@claude-code-plugins` |
-| **security-reviewer** | Expert security agent for vulnerability detection | Security | `/plugin install security-reviewer@claude-code-plugins` |
+| **formatter** | Automatically formats code after edits using hooks | Productivity | `/plugin install formatter@claude-code-plugins` |
+| **security-agent** | Expert security agent for vulnerability detection | Security | `/plugin install security-agent@claude-code-plugins` |
 
 ### 🎯 What Makes These Plugins Special?
 
-- **✨ Working Examples** - Not just demos, these are fully functional plugins you can use today
-- **📚 Educational** - Each plugin teaches different concepts (commands, hooks, agents)
+- **✨ Production Ready** - git-commit-smart is tested and ready for real-world use
+- **📚 Educational** - Example plugins teach different concepts (commands, hooks, agents)
 - **🔍 Well-Documented** - Comprehensive READMEs explaining how everything works
-- **🛠️ Production-Ready** - Use them as-is or as templates for your own plugins
+- **🛠️ Template-Ready** - Use examples as templates for your own plugins
 
 ---
 
@@ -64,11 +79,15 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ### For Developers
 
 ```bash
+# Never write commit messages again!
+/plugin install git-commit-smart@claude-code-plugins
+/gc  # Generate smart commit message instantly
+
 # Auto-format all your code
-/plugin install auto-formatter@claude-code-plugins
+/plugin install formatter@claude-code-plugins
 
 # Get security reviews on demand
-/plugin install security-reviewer@claude-code-plugins
+/plugin install security-agent@claude-code-plugins
 ```
 
 ### For Teams
@@ -204,7 +223,8 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 
 ## 📊 Statistics
 
-- **Example Plugins**: 3 (hello-world, auto-formatter, security-reviewer)
+- **Production Plugins**: 1 (git-commit-smart - fully tested and ready!)
+- **Example Plugins**: 3 (hello-world, formatter, security-agent)
 - **Templates**: 4 (minimal, command, agent, full)
 - **Documentation Pages**: 6
 - **Community Plugins**: Open for submissions!
@@ -266,4 +286,4 @@ Made with ❤️ by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 1.0.0 | **Last Updated**: October 2025
+**Status**: Public Beta | **Version**: 1.0.0 | **Last Updated**: October 10, 2025
