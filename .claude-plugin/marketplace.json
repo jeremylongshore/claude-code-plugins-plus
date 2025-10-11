@@ -18,7 +18,14 @@
       "description": "AI-powered conventional commit message generator with smart analysis",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["git", "commits", "conventional-commits", "automation", "devops", "productivity"],
+      "keywords": [
+        "git",
+        "commits",
+        "conventional-commits",
+        "automation",
+        "devops",
+        "productivity"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -31,7 +38,17 @@
       "description": "Complete DevOps automation suite with 25 plugins covering Git workflows, CI/CD pipelines, Docker optimization, Kubernetes management, Terraform IaC, and deployment strategies",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["devops", "ci-cd", "docker", "kubernetes", "terraform", "deployment", "infrastructure", "automation", "package"],
+      "keywords": [
+        "devops",
+        "ci-cd",
+        "docker",
+        "kubernetes",
+        "terraform",
+        "deployment",
+        "infrastructure",
+        "automation",
+        "package"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -44,7 +61,15 @@
       "description": "Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots",
       "version": "1.0.0",
       "category": "code-quality",
-      "keywords": ["mcp", "code-quality", "technical-debt", "complexity", "git-churn", "test-coverage", "analytics"],
+      "keywords": [
+        "mcp",
+        "code-quality",
+        "technical-debt",
+        "complexity",
+        "git-churn",
+        "test-coverage",
+        "analytics"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -58,7 +83,16 @@
       "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
       "version": "1.0.0",
       "category": "debugging",
-      "keywords": ["mcp", "api", "debugging", "openapi", "har", "rest", "curl", "http"],
+      "keywords": [
+        "mcp",
+        "api",
+        "debugging",
+        "openapi",
+        "har",
+        "rest",
+        "curl",
+        "http"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -72,7 +106,15 @@
       "description": "Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required",
       "version": "1.0.0",
       "category": "productivity",
-      "keywords": ["mcp", "knowledge-base", "semantic-search", "tfidf", "summarization", "rag", "documentation"],
+      "keywords": [
+        "mcp",
+        "knowledge-base",
+        "semantic-search",
+        "tfidf",
+        "summarization",
+        "rag",
+        "documentation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -86,7 +128,16 @@
       "description": "Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility",
       "version": "1.0.0",
       "category": "design",
-      "keywords": ["mcp", "design", "figma", "react", "svelte", "vue", "accessibility", "component-generation"],
+      "keywords": [
+        "mcp",
+        "design",
+        "figma",
+        "react",
+        "svelte",
+        "vue",
+        "accessibility",
+        "component-generation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -100,7 +151,15 @@
       "description": "DAG-based workflow automation with parallel task execution and dependency management",
       "version": "1.0.0",
       "category": "automation",
-      "keywords": ["mcp", "workflow", "dag", "automation", "orchestration", "cicd", "parallel-execution"],
+      "keywords": [
+        "mcp",
+        "workflow",
+        "dag",
+        "automation",
+        "orchestration",
+        "cicd",
+        "parallel-execution"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -114,7 +173,11 @@
       "description": "Simple example plugin demonstrating basic slash commands",
       "version": "1.0.0",
       "category": "example",
-      "keywords": ["example", "tutorial", "beginner"],
+      "keywords": [
+        "example",
+        "tutorial",
+        "beginner"
+      ],
       "author": {
         "name": "Jeremy Longshore"
       }
@@ -125,7 +188,11 @@
       "description": "Code formatting plugin using hooks to auto-format on save",
       "version": "1.0.0",
       "category": "productivity",
-      "keywords": ["formatting", "hooks", "automation"]
+      "keywords": [
+        "formatting",
+        "hooks",
+        "automation"
+      ]
     },
     {
       "name": "security-agent",
@@ -133,7 +200,11 @@
       "description": "Security review subagent for code analysis",
       "version": "1.0.0",
       "category": "security",
-      "keywords": ["security", "agent", "code-review"]
+      "keywords": [
+        "security",
+        "agent",
+        "code-review"
+      ]
     },
     {
       "name": "n8n-workflow-designer",
@@ -141,7 +212,14 @@
       "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["n8n", "workflow", "automation", "self-hosted", "open-source", "ai-agency"],
+      "keywords": [
+        "n8n",
+        "workflow",
+        "automation",
+        "self-hosted",
+        "open-source",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
@@ -154,7 +232,14 @@
       "description": "Create Make.com (Integromat) scenarios with AI assistance",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["make", "integromat", "automation", "scenarios", "workflow", "ai-agency"],
+      "keywords": [
+        "make",
+        "integromat",
+        "automation",
+        "scenarios",
+        "workflow",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -165,7 +250,14 @@
       "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["zapier", "zap", "automation", "integration", "workflow", "ai-agency"],
+      "keywords": [
+        "zapier",
+        "zap",
+        "automation",
+        "integration",
+        "workflow",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -176,7 +268,14 @@
       "description": "Generate custom discovery questionnaires for AI agency prospects",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["discovery", "questionnaire", "client", "sales", "agency", "ai-agency"],
+      "keywords": [
+        "discovery",
+        "questionnaire",
+        "client",
+        "sales",
+        "agency",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -187,7 +286,14 @@
       "description": "Generate professional Statements of Work for AI projects",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["sow", "statement of work", "contract", "proposal", "agency", "ai-agency"],
+      "keywords": [
+        "sow",
+        "statement of work",
+        "contract",
+        "proposal",
+        "agency",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -198,7 +304,14 @@
       "description": "Calculate and present ROI for AI automation projects",
       "version": "1.0.0",
       "category": "ai-agency",
-      "keywords": ["roi", "return on investment", "calculator", "sales", "value", "ai-agency"],
+      "keywords": [
+        "roi",
+        "return on investment",
+        "calculator",
+        "sales",
+        "value",
+        "ai-agency"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub"
       }
@@ -209,7 +322,17 @@
       "description": "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features",
       "version": "1.0.0",
       "category": "productivity",
-      "keywords": ["overnight", "autonomous", "tdd", "testing", "git-hooks", "automation", "continuous-integration", "test-driven-development", "productivity"],
+      "keywords": [
+        "overnight",
+        "autonomous",
+        "tdd",
+        "testing",
+        "git-hooks",
+        "automation",
+        "continuous-integration",
+        "test-driven-development",
+        "productivity"
+      ],
       "author": {
         "name": "Intent Solutions IO",
         "url": "https://intentsolutions.io",
@@ -223,7 +346,18 @@
       "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
       "version": "1.0.0",
       "category": "security",
-      "keywords": ["security", "vulnerability-scanning", "compliance", "HIPAA", "PCI-DSS", "GDPR", "SOC2", "cryptography", "devsecops", "package"],
+      "keywords": [
+        "security",
+        "vulnerability-scanning",
+        "compliance",
+        "HIPAA",
+        "PCI-DSS",
+        "GDPR",
+        "SOC2",
+        "cryptography",
+        "devsecops",
+        "package"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -237,7 +371,17 @@
       "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
       "version": "1.0.0",
       "category": "fullstack",
-      "keywords": ["fullstack", "react", "express", "fastapi", "postgresql", "prisma", "typescript", "mvp", "package"],
+      "keywords": [
+        "fullstack",
+        "react",
+        "express",
+        "fastapi",
+        "postgresql",
+        "prisma",
+        "typescript",
+        "mvp",
+        "package"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -251,7 +395,18 @@
       "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
       "version": "1.0.0",
       "category": "ai-ml",
-      "keywords": ["ai", "ml", "llm", "prompt-engineering", "rag", "vector-database", "ai-safety", "openai", "anthropic", "package"],
+      "keywords": [
+        "ai",
+        "ml",
+        "llm",
+        "prompt-engineering",
+        "rag",
+        "vector-database",
+        "ai-safety",
+        "openai",
+        "anthropic",
+        "package"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -265,7 +420,14 @@
       "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "snapshot", "jest", "vitest", "diff-analysis", "test-management"],
+      "keywords": [
+        "testing",
+        "snapshot",
+        "jest",
+        "vitest",
+        "diff-analysis",
+        "test-management"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -277,7 +439,15 @@
       "description": "API contract testing with Pact, OpenAPI validation, and consumer-driven contract verification",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "contract-testing", "pact", "openapi", "api", "microservices", "consumer-driven"],
+      "keywords": [
+        "testing",
+        "contract-testing",
+        "pact",
+        "openapi",
+        "api",
+        "microservices",
+        "consumer-driven"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -289,7 +459,15 @@
       "description": "A11y compliance testing with WCAG 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "accessibility", "a11y", "wcag", "aria", "screen-reader", "compliance"],
+      "keywords": [
+        "testing",
+        "accessibility",
+        "a11y",
+        "wcag",
+        "aria",
+        "screen-reader",
+        "compliance"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -301,7 +479,15 @@
       "description": "Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "visual-regression", "ui-testing", "percy", "chromatic", "backstop", "screenshot-testing"],
+      "keywords": [
+        "testing",
+        "visual-regression",
+        "ui-testing",
+        "percy",
+        "chromatic",
+        "backstop",
+        "screenshot-testing"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -313,7 +499,14 @@
       "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "chaos-engineering", "resilience", "failure-injection", "fault-tolerance", "reliability"],
+      "keywords": [
+        "testing",
+        "chaos-engineering",
+        "resilience",
+        "failure-injection",
+        "fault-tolerance",
+        "reliability"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -325,7 +518,16 @@
       "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "mocks", "stubs", "spies", "fakes", "test-doubles", "jest", "sinon"],
+      "keywords": [
+        "testing",
+        "mocks",
+        "stubs",
+        "spies",
+        "fakes",
+        "test-doubles",
+        "jest",
+        "sinon"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -337,7 +539,14 @@
       "description": "Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "cross-browser", "browserstack", "selenium", "playwright", "compatibility"],
+      "keywords": [
+        "testing",
+        "cross-browser",
+        "browserstack",
+        "selenium",
+        "playwright",
+        "compatibility"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -349,7 +558,16 @@
       "description": "Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "mobile", "appium", "detox", "xcuitest", "espresso", "ios", "android"],
+      "keywords": [
+        "testing",
+        "mobile",
+        "appium",
+        "detox",
+        "xcuitest",
+        "espresso",
+        "ios",
+        "android"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -361,7 +579,15 @@
       "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "database", "sql", "test-data", "fixtures", "migrations", "transactions"],
+      "keywords": [
+        "testing",
+        "database",
+        "sql",
+        "test-data",
+        "fixtures",
+        "migrations",
+        "transactions"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -373,7 +599,13 @@
       "description": "Quick smoke test suites to verify critical functionality after deployments",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "smoke-tests", "deployment", "sanity-check", "critical-path"],
+      "keywords": [
+        "testing",
+        "smoke-tests",
+        "deployment",
+        "sanity-check",
+        "critical-path"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -385,7 +617,13 @@
       "description": "Test load balancing strategies with traffic distribution validation and failover testing",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "load-balancer", "traffic-distribution", "failover", "high-availability"],
+      "keywords": [
+        "testing",
+        "load-balancer",
+        "traffic-distribution",
+        "failover",
+        "high-availability"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -397,7 +635,14 @@
       "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "fuzzing", "api", "security", "edge-cases", "input-validation"],
+      "keywords": [
+        "testing",
+        "fuzzing",
+        "api",
+        "security",
+        "edge-cases",
+        "input-validation"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -409,7 +654,14 @@
       "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "reporting", "coverage", "metrics", "dashboard", "ci-cd"],
+      "keywords": [
+        "testing",
+        "reporting",
+        "coverage",
+        "metrics",
+        "dashboard",
+        "ci-cd"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -421,7 +673,14 @@
       "description": "Manage test environments with Docker Compose, Testcontainers, and environment isolation",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "environment", "docker", "testcontainers", "isolation", "infrastructure"],
+      "keywords": [
+        "testing",
+        "environment",
+        "docker",
+        "testcontainers",
+        "isolation",
+        "infrastructure"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -433,7 +692,14 @@
       "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
       "version": "1.0.0",
       "category": "testing",
-      "keywords": ["testing", "orchestration", "workflow", "parallel", "test-selection", "ci-cd"],
+      "keywords": [
+        "testing",
+        "orchestration",
+        "workflow",
+        "parallel",
+        "test-selection",
+        "ci-cd"
+      ],
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
@@ -445,7 +711,14 @@
       "description": "Generate RESTful APIs from schemas with proper routing, validation, and documentation",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["api", "rest", "generator", "openapi", "swagger", "backend"],
+      "keywords": [
+        "api",
+        "rest",
+        "generator",
+        "openapi",
+        "swagger",
+        "backend"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -458,7 +731,14 @@
       "description": "Build GraphQL servers with schema-first design, resolvers, and subscriptions",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["graphql", "api", "server", "apollo", "schema", "resolvers"],
+      "keywords": [
+        "graphql",
+        "api",
+        "server",
+        "apollo",
+        "schema",
+        "resolvers"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -471,7 +751,13 @@
       "description": "Generate comprehensive API documentation from OpenAPI/Swagger specs",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["api", "documentation", "openapi", "swagger", "docs"],
+      "keywords": [
+        "api",
+        "documentation",
+        "openapi",
+        "swagger",
+        "docs"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -483,7 +769,12 @@
       "description": "Manage API versions with migration strategies and backward compatibility",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["api", "versioning", "migration", "backward-compatibility"],
+      "keywords": [
+        "api",
+        "versioning",
+        "migration",
+        "backward-compatibility"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -495,7 +786,12 @@
       "description": "Create secure webhook endpoints with signature verification and retry logic",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["webhook", "events", "signature", "security"],
+      "keywords": [
+        "webhook",
+        "events",
+        "signature",
+        "security"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -507,7 +803,12 @@
       "description": "Implement rate limiting with token bucket, sliding window, and Redis",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["rate-limiting", "throttling", "api", "redis"],
+      "keywords": [
+        "rate-limiting",
+        "throttling",
+        "api",
+        "redis"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -519,7 +820,12 @@
       "description": "Build API gateway with routing, authentication, and rate limiting",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["api-gateway", "routing", "proxy", "microservices"],
+      "keywords": [
+        "api-gateway",
+        "routing",
+        "proxy",
+        "microservices"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -531,7 +837,12 @@
       "description": "Generate gRPC services with Protocol Buffers and streaming support",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["grpc", "protobuf", "microservices", "streaming"],
+      "keywords": [
+        "grpc",
+        "protobuf",
+        "microservices",
+        "streaming"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -543,7 +854,12 @@
       "description": "Create mock API servers from OpenAPI specs for testing",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["mock", "testing", "openapi", "stub"],
+      "keywords": [
+        "mock",
+        "testing",
+        "openapi",
+        "stub"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -555,7 +871,12 @@
       "description": "Scan APIs for security vulnerabilities and OWASP API Top 10",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["security", "api", "owasp", "vulnerability"],
+      "keywords": [
+        "security",
+        "api",
+        "owasp",
+        "vulnerability"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -567,7 +888,12 @@
       "description": "Build WebSocket servers for real-time bidirectional communication",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["websocket", "real-time", "socket.io", "ws"],
+      "keywords": [
+        "websocket",
+        "real-time",
+        "socket.io",
+        "ws"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -579,7 +905,12 @@
       "description": "Validate API responses against schemas and contracts",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["validation", "schema", "testing", "api"],
+      "keywords": [
+        "validation",
+        "schema",
+        "testing",
+        "api"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -591,7 +922,12 @@
       "description": "Implement standardized error handling with proper HTTP status codes",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["error-handling", "api", "http-status", "exceptions"],
+      "keywords": [
+        "error-handling",
+        "api",
+        "http-status",
+        "exceptions"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -603,7 +939,12 @@
       "description": "Implement caching strategies with Redis, CDN, and HTTP headers",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["caching", "redis", "cdn", "performance"],
+      "keywords": [
+        "caching",
+        "redis",
+        "cdn",
+        "performance"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -615,7 +956,12 @@
       "description": "Migrate APIs between versions with backward compatibility",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["migration", "versioning", "api", "backward-compatibility"],
+      "keywords": [
+        "migration",
+        "versioning",
+        "api",
+        "backward-compatibility"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -627,7 +973,12 @@
       "description": "Generate API contracts for consumer-driven contract testing",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["contract", "pact", "testing", "microservices"],
+      "keywords": [
+        "contract",
+        "pact",
+        "testing",
+        "microservices"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -639,7 +990,12 @@
       "description": "Create monitoring dashboards for API health, metrics, and alerts",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["monitoring", "metrics", "observability", "dashboard"],
+      "keywords": [
+        "monitoring",
+        "metrics",
+        "observability",
+        "dashboard"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -651,7 +1007,12 @@
       "description": "Load test APIs with k6, Gatling, or Artillery",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["load-testing", "performance", "k6", "stress-testing"],
+      "keywords": [
+        "load-testing",
+        "performance",
+        "k6",
+        "stress-testing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -663,7 +1024,12 @@
       "description": "Build authentication systems with JWT, OAuth2, and API keys",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["authentication", "jwt", "oauth", "security"],
+      "keywords": [
+        "authentication",
+        "jwt",
+        "oauth",
+        "security"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -675,7 +1041,12 @@
       "description": "Log API requests with structured logging and correlation IDs",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["logging", "observability", "audit", "correlation"],
+      "keywords": [
+        "logging",
+        "observability",
+        "audit",
+        "correlation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -687,7 +1058,12 @@
       "description": "Manage API throttling with dynamic rate limits and quota management",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["throttling", "rate-limiting", "quota", "traffic-management"],
+      "keywords": [
+        "throttling",
+        "rate-limiting",
+        "quota",
+        "traffic-management"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -699,7 +1075,12 @@
       "description": "Generate client SDKs from OpenAPI specs for multiple languages",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["sdk", "client", "openapi", "codegen"],
+      "keywords": [
+        "sdk",
+        "client",
+        "openapi",
+        "codegen"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -711,7 +1092,13 @@
       "description": "Validate API schemas with JSON Schema, Joi, Yup, or Zod",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["schema", "validation", "json-schema", "joi", "zod"],
+      "keywords": [
+        "schema",
+        "validation",
+        "json-schema",
+        "joi",
+        "zod"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -723,7 +1110,13 @@
       "description": "Implement event-driven APIs with message queues and event streaming",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["events", "messaging", "kafka", "rabbitmq", "event-driven"],
+      "keywords": [
+        "events",
+        "messaging",
+        "kafka",
+        "rabbitmq",
+        "event-driven"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -735,7 +1128,12 @@
       "description": "Implement batch API operations with bulk processing and job queues",
       "version": "1.0.0",
       "category": "api-development",
-      "keywords": ["batch", "bulk", "queue", "job-processing"],
+      "keywords": [
+        "batch",
+        "bulk",
+        "queue",
+        "job-processing"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -747,7 +1145,13 @@
       "description": "Generate Docker Compose configurations for multi-container applications with best practices",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["docker", "docker-compose", "containers", "orchestration", "devops"],
+      "keywords": [
+        "docker",
+        "docker-compose",
+        "containers",
+        "orchestration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -760,7 +1164,13 @@
       "description": "Create Kubernetes deployments, services, and configurations with best practices",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["kubernetes", "k8s", "deployment", "orchestration", "containers"],
+      "keywords": [
+        "kubernetes",
+        "k8s",
+        "deployment",
+        "orchestration",
+        "containers"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -773,7 +1183,14 @@
       "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["ci-cd", "github-actions", "gitlab-ci", "jenkins", "devops", "automation"],
+      "keywords": [
+        "ci-cd",
+        "github-actions",
+        "gitlab-ci",
+        "jenkins",
+        "devops",
+        "automation"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -786,7 +1203,14 @@
       "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["iac", "terraform", "cloudformation", "pulumi", "infrastructure", "devops"],
+      "keywords": [
+        "iac",
+        "terraform",
+        "cloudformation",
+        "pulumi",
+        "infrastructure",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -799,7 +1223,14 @@
       "description": "Scan containers for vulnerabilities using Trivy, Snyk, and other security tools",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["security", "containers", "scanning", "vulnerabilities", "trivy", "devops"],
+      "keywords": [
+        "security",
+        "containers",
+        "scanning",
+        "vulnerabilities",
+        "trivy",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -811,7 +1242,13 @@
       "description": "Manage and execute deployment rollbacks with safety checks",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["rollback", "deployment", "kubernetes", "recovery", "devops"],
+      "keywords": [
+        "rollback",
+        "deployment",
+        "kubernetes",
+        "recovery",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -823,7 +1260,13 @@
       "description": "Configure service mesh (Istio, Linkerd) for microservices",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["service-mesh", "istio", "linkerd", "microservices", "devops"],
+      "keywords": [
+        "service-mesh",
+        "istio",
+        "linkerd",
+        "microservices",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -835,7 +1278,13 @@
       "description": "Manage environment configurations and secrets across deployments",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["config", "environment", "secrets", "configuration", "devops"],
+      "keywords": [
+        "config",
+        "environment",
+        "secrets",
+        "configuration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -847,7 +1296,14 @@
       "description": "Integrate with secrets managers (Vault, AWS Secrets Manager, etc)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["secrets", "vault", "aws", "security", "credentials", "devops"],
+      "keywords": [
+        "secrets",
+        "vault",
+        "aws",
+        "security",
+        "credentials",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -859,7 +1315,13 @@
       "description": "Configure auto-scaling policies for applications and infrastructure",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["autoscaling", "scaling", "hpa", "kubernetes", "devops"],
+      "keywords": [
+        "autoscaling",
+        "scaling",
+        "hpa",
+        "kubernetes",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -871,7 +1333,14 @@
       "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["load-balancer", "alb", "nginx", "haproxy", "networking", "devops"],
+      "keywords": [
+        "load-balancer",
+        "alb",
+        "nginx",
+        "haproxy",
+        "networking",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -883,7 +1352,13 @@
       "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["monitoring", "prometheus", "grafana", "observability", "devops"],
+      "keywords": [
+        "monitoring",
+        "prometheus",
+        "grafana",
+        "observability",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -895,7 +1370,14 @@
       "description": "Set up log aggregation (ELK, Loki, Splunk)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["logging", "elk", "loki", "splunk", "observability", "devops"],
+      "keywords": [
+        "logging",
+        "elk",
+        "loki",
+        "splunk",
+        "observability",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -907,7 +1389,12 @@
       "description": "Implement backup strategies for databases and applications",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["backup", "disaster-recovery", "restoration", "devops"],
+      "keywords": [
+        "backup",
+        "disaster-recovery",
+        "restoration",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -919,7 +1406,12 @@
       "description": "Plan and implement disaster recovery procedures",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["disaster-recovery", "dr", "business-continuity", "devops"],
+      "keywords": [
+        "disaster-recovery",
+        "dr",
+        "business-continuity",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -931,7 +1423,13 @@
       "description": "Manage Kubernetes network policies and firewall rules",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["network-policy", "security", "kubernetes", "firewall", "devops"],
+      "keywords": [
+        "network-policy",
+        "security",
+        "kubernetes",
+        "firewall",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -943,7 +1441,13 @@
       "description": "Generate Helm charts for Kubernetes applications",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["helm", "kubernetes", "packaging", "charts", "devops"],
+      "keywords": [
+        "helm",
+        "kubernetes",
+        "packaging",
+        "charts",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -955,7 +1459,13 @@
       "description": "Create Ansible playbooks for configuration management",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["ansible", "automation", "configuration", "playbooks", "devops"],
+      "keywords": [
+        "ansible",
+        "automation",
+        "configuration",
+        "playbooks",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -967,7 +1477,13 @@
       "description": "Build reusable Terraform modules",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["terraform", "iac", "modules", "infrastructure", "devops"],
+      "keywords": [
+        "terraform",
+        "iac",
+        "modules",
+        "infrastructure",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -979,7 +1495,14 @@
       "description": "Optimize cloud costs and generate cost reports",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["cost", "optimization", "finops", "cloud", "aws", "devops"],
+      "keywords": [
+        "cost",
+        "optimization",
+        "finops",
+        "cloud",
+        "aws",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -991,7 +1514,14 @@
       "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["compliance", "security", "audit", "soc2", "hipaa", "devops"],
+      "keywords": [
+        "compliance",
+        "security",
+        "audit",
+        "soc2",
+        "hipaa",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1003,7 +1533,14 @@
       "description": "Build GitOps workflows with ArgoCD and Flux",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["gitops", "argocd", "flux", "cd", "kubernetes", "devops"],
+      "keywords": [
+        "gitops",
+        "argocd",
+        "flux",
+        "cd",
+        "kubernetes",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1015,7 +1552,14 @@
       "description": "Manage container registries (ECR, GCR, Harbor)",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["registry", "containers", "docker", "ecr", "gcr", "devops"],
+      "keywords": [
+        "registry",
+        "containers",
+        "docker",
+        "ecr",
+        "gcr",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1027,7 +1571,13 @@
       "description": "Detect infrastructure drift from desired state",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["drift", "terraform", "infrastructure", "monitoring", "devops"],
+      "keywords": [
+        "drift",
+        "terraform",
+        "infrastructure",
+        "monitoring",
+        "devops"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
@@ -1039,7 +1589,463 @@
       "description": "Orchestrate complex multi-stage deployment pipelines",
       "version": "1.0.0",
       "category": "devops",
-      "keywords": ["pipeline", "orchestration", "deployment", "cicd", "devops"],
+      "keywords": [
+        "pipeline",
+        "orchestration",
+        "deployment",
+        "cicd",
+        "devops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "ml-model-trainer",
+      "source": "./plugins/ai-ml/ml-model-trainer",
+      "description": "Train and optimize machine learning models with automated workflows",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "ml",
+        "machine-learning",
+        "training",
+        "models",
+        "ai"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "data-preprocessing-pipeline",
+      "source": "./plugins/ai-ml/data-preprocessing-pipeline",
+      "description": "Automated data preprocessing and cleaning pipelines",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "preprocessing",
+        "cleaning",
+        "etl",
+        "pipeline",
+        "data"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "feature-engineering-toolkit",
+      "source": "./plugins/ai-ml/feature-engineering-toolkit",
+      "description": "Feature creation, selection, and transformation tools",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "features",
+        "engineering",
+        "selection",
+        "transformation",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "model-evaluation-suite",
+      "source": "./plugins/ai-ml/model-evaluation-suite",
+      "description": "Comprehensive model evaluation with multiple metrics",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "evaluation",
+        "metrics",
+        "testing",
+        "validation",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "hyperparameter-tuner",
+      "source": "./plugins/ai-ml/hyperparameter-tuner",
+      "description": "Optimize hyperparameters using grid/random/bayesian search",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "hyperparameters",
+        "optimization",
+        "tuning",
+        "search",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "neural-network-builder",
+      "source": "./plugins/ai-ml/neural-network-builder",
+      "description": "Build and configure neural network architectures",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "neural-networks",
+        "deep-learning",
+        "architecture",
+        "pytorch",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "nlp-text-analyzer",
+      "source": "./plugins/ai-ml/nlp-text-analyzer",
+      "description": "Natural language processing and text analysis",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "nlp",
+        "text",
+        "analysis",
+        "tokenization",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "computer-vision-processor",
+      "source": "./plugins/ai-ml/computer-vision-processor",
+      "description": "Computer vision image processing and analysis",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "cv",
+        "vision",
+        "images",
+        "detection",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "time-series-forecaster",
+      "source": "./plugins/ai-ml/time-series-forecaster",
+      "description": "Time series forecasting and analysis",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "time-series",
+        "forecasting",
+        "arima",
+        "prophet",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "anomaly-detection-system",
+      "source": "./plugins/ai-ml/anomaly-detection-system",
+      "description": "Detect anomalies and outliers in data",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "anomaly",
+        "outliers",
+        "detection",
+        "isolation",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "recommendation-engine",
+      "source": "./plugins/ai-ml/recommendation-engine",
+      "description": "Build recommendation systems and engines",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "recommendations",
+        "collaborative",
+        "content-based",
+        "ranking",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "sentiment-analysis-tool",
+      "source": "./plugins/ai-ml/sentiment-analysis-tool",
+      "description": "Sentiment analysis on text data",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "sentiment",
+        "opinion",
+        "emotion",
+        "polarity",
+        "nlp"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "clustering-algorithm-runner",
+      "source": "./plugins/ai-ml/clustering-algorithm-runner",
+      "description": "Run clustering algorithms on datasets",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "clustering",
+        "kmeans",
+        "dbscan",
+        "hierarchical",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "classification-model-builder",
+      "source": "./plugins/ai-ml/classification-model-builder",
+      "description": "Build classification models",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "classification",
+        "supervised",
+        "predictor",
+        "labels",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "regression-analysis-tool",
+      "source": "./plugins/ai-ml/regression-analysis-tool",
+      "description": "Regression analysis and modeling",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "regression",
+        "prediction",
+        "linear",
+        "polynomial",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "data-visualization-creator",
+      "source": "./plugins/ai-ml/data-visualization-creator",
+      "description": "Create data visualizations and plots",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "visualization",
+        "plots",
+        "charts",
+        "graphs",
+        "analytics"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "model-deployment-helper",
+      "source": "./plugins/ai-ml/model-deployment-helper",
+      "description": "Deploy ML models to production",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "deployment",
+        "serving",
+        "production",
+        "api",
+        "mlops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "dataset-splitter",
+      "source": "./plugins/ai-ml/dataset-splitter",
+      "description": "Split datasets for training, validation, and testing",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "split",
+        "train-test",
+        "validation",
+        "stratify",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "model-versioning-tracker",
+      "source": "./plugins/ai-ml/model-versioning-tracker",
+      "description": "Track and manage model versions",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "versioning",
+        "mlflow",
+        "tracking",
+        "registry",
+        "mlops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "experiment-tracking-setup",
+      "source": "./plugins/ai-ml/experiment-tracking-setup",
+      "description": "Set up ML experiment tracking",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "experiments",
+        "mlflow",
+        "wandb",
+        "tracking",
+        "mlops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "automl-pipeline-builder",
+      "source": "./plugins/ai-ml/automl-pipeline-builder",
+      "description": "Build AutoML pipelines",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "automl",
+        "automated",
+        "pipeline",
+        "h2o",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "deep-learning-optimizer",
+      "source": "./plugins/ai-ml/deep-learning-optimizer",
+      "description": "Deep learning optimization techniques",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "optimization",
+        "adam",
+        "sgd",
+        "learning-rate",
+        "deep-learning"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "transfer-learning-adapter",
+      "source": "./plugins/ai-ml/transfer-learning-adapter",
+      "description": "Transfer learning adaptation",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "transfer-learning",
+        "fine-tuning",
+        "pretrained",
+        "adapters",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "model-explainability-tool",
+      "source": "./plugins/ai-ml/model-explainability-tool",
+      "description": "Model interpretability and explainability",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "explainability",
+        "shap",
+        "lime",
+        "interpretability",
+        "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "ai-ethics-validator",
+      "source": "./plugins/ai-ml/ai-ethics-validator",
+      "description": "AI ethics and fairness validation",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "ethics",
+        "fairness",
+        "bias",
+        "responsible-ai",
+        "ml"
+      ],
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
