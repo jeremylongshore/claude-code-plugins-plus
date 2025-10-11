@@ -1,0 +1,392 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  version: string;
+  category: string;
+  keywords: string[];
+  author: {
+    name: string;
+    email?: string;
+  };
+  featured?: boolean;
+  installation: string;
+  repository?: string;
+}
+
+const { name, description, version, category, keywords, author, featured, installation, repository } = Astro.props;
+
+// Category icon mapping
+const categoryIcons: Record<string, string> = {
+  'automation': '⚙️',
+  'business-tools': '💼',
+  'devops': '🚀',
+  'code-analysis': '🔍',
+  'debugging': '🐛',
+  'ai-ml-assistance': '🤖',
+  'frontend-development': '🎨',
+  'security': '🔒',
+  'testing': '✅',
+  'documentation': '📚',
+  'performance': '⚡',
+  'database': '💾',
+  'cloud-infrastructure': '☁️',
+  'accessibility': '♿',
+  'mobile': '📱',
+  'other': '🔧'
+};
+
+// Category color mapping
+const categoryColors: Record<string, string> = {
+  'automation': 'category-purple',
+  'business-tools': 'category-blue',
+  'devops': 'category-green',
+  'code-analysis': 'category-cyan',
+  'debugging': 'category-red',
+  'ai-ml-assistance': 'category-pink',
+  'frontend-development': 'category-indigo',
+  'security': 'category-orange',
+  'testing': 'category-teal',
+  'documentation': 'category-gray',
+  'performance': 'category-yellow',
+  'database': 'category-violet',
+  'cloud-infrastructure': 'category-sky',
+  'accessibility': 'category-lime',
+  'mobile': 'category-fuchsia',
+  'other': 'category-neutral'
+};
+
+const icon = categoryIcons[category] || '🔧';
+const colorClass = categoryColors[category] || 'category-neutral';
+---
+
+<article
+  class="plugin-card"
+  data-name={name}
+  data-description={description}
+  data-keywords={keywords.join(' ')}
+  data-category={category}
+  data-featured={featured ? 'true' : 'false'}
+>
+  {featured && (
+    <div class="featured-ribbon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+      </svg>
+      Featured
+    </div>
+  )}
+
+  <div class="card-header">
+    <div class="plugin-icon">{icon}</div>
+    <div class="plugin-info">
+      <h3 class="plugin-name">{name}</h3>
+      <span class="plugin-version">v{version}</span>
+    </div>
+  </div>
+
+  <p class="plugin-description">{description}</p>
+
+  <div class="plugin-meta">
+    <span class={`category-badge ${colorClass}`}>
+      {category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+    </span>
+  </div>
+
+  <div class="plugin-keywords">
+    {keywords.slice(0, 4).map(keyword => (
+      <span class="keyword-tag">{keyword}</span>
+    ))}
+    {keywords.length > 4 && (
+      <span class="keyword-tag more">+{keywords.length - 4} more</span>
+    )}
+  </div>
+
+  <div class="plugin-footer">
+    <div class="author-info">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z" clip-rule="evenodd" />
+      </svg>
+      <span>{author.name}</span>
+    </div>
+
+    <div class="card-actions">
+      {repository && (
+        <a href={repository} class="action-btn" target="_blank" rel="noopener noreferrer" title="View Repository">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+        </a>
+      )}
+      <button
+        class="install-btn"
+        onclick={`navigator.clipboard.writeText('${installation}').then(() => { const btn = this; const orig = btn.innerHTML; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" /></svg> Copied!'; setTimeout(() => btn.innerHTML = orig, 2000); })`}
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />
+          <path d="M15 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0017.25 7.5h-1.875A.375.375 0 0115 7.125V5.25zM4.875 6H6v10.125A3.375 3.375 0 009.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V7.875C3 6.839 3.84 6 4.875 6z" />
+        </svg>
+        Copy Install
+      </button>
+    </div>
+  </div>
+</article>
+
+<style>
+  .plugin-card {
+    background: var(--slate-850);
+    border: 1px solid var(--slate-800);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all var(--transition-base);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .plugin-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--green-500), var(--blue-500));
+    opacity: 0;
+    transition: opacity var(--transition-base);
+  }
+
+  .plugin-card:hover {
+    border-color: var(--green-500);
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .plugin-card:hover::before {
+    opacity: 1;
+  }
+
+  .featured-ribbon {
+    position: absolute;
+    top: 1rem;
+    right: -2rem;
+    background: linear-gradient(135deg, var(--yellow-500), #f97316);
+    color: var(--slate-950);
+    padding: 0.25rem 2.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transform: rotate(45deg);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .featured-ribbon svg {
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .plugin-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .plugin-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .plugin-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    margin: 0 0 0.25rem 0;
+    font-family: var(--font-mono);
+    word-break: break-word;
+  }
+
+  .plugin-version {
+    display: inline-block;
+    padding: 0.125rem 0.5rem;
+    background: var(--slate-800);
+    color: var(--slate-400);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .plugin-description {
+    color: var(--slate-400);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+  }
+
+  .plugin-meta {
+    margin-bottom: 1rem;
+  }
+
+  .category-badge {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Category colors */
+  .category-green { background: rgba(16, 185, 129, 0.15); color: var(--green-400); border: 1px solid rgba(16, 185, 129, 0.3); }
+  .category-blue { background: rgba(59, 130, 246, 0.15); color: var(--blue-400); border: 1px solid rgba(59, 130, 246, 0.3); }
+  .category-purple { background: rgba(168, 85, 247, 0.15); color: #a855f7; border: 1px solid rgba(168, 85, 247, 0.3); }
+  .category-cyan { background: rgba(6, 182, 212, 0.15); color: #06b6d4; border: 1px solid rgba(6, 182, 212, 0.3); }
+  .category-red { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
+  .category-pink { background: rgba(236, 72, 153, 0.15); color: #ec4899; border: 1px solid rgba(236, 72, 153, 0.3); }
+  .category-indigo { background: rgba(99, 102, 241, 0.15); color: #6366f1; border: 1px solid rgba(99, 102, 241, 0.3); }
+  .category-orange { background: rgba(249, 115, 22, 0.15); color: #f97316; border: 1px solid rgba(249, 115, 22, 0.3); }
+  .category-teal { background: rgba(20, 184, 166, 0.15); color: #14b8a6; border: 1px solid rgba(20, 184, 166, 0.3); }
+  .category-yellow { background: rgba(234, 179, 8, 0.15); color: #eab308; border: 1px solid rgba(234, 179, 8, 0.3); }
+  .category-violet { background: rgba(139, 92, 246, 0.15); color: #8b5cf6; border: 1px solid rgba(139, 92, 246, 0.3); }
+  .category-sky { background: rgba(14, 165, 233, 0.15); color: #0ea5e9; border: 1px solid rgba(14, 165, 233, 0.3); }
+  .category-lime { background: rgba(132, 204, 22, 0.15); color: #84cc16; border: 1px solid rgba(132, 204, 22, 0.3); }
+  .category-fuchsia { background: rgba(217, 70, 239, 0.15); color: #d946ef; border: 1px solid rgba(217, 70, 239, 0.3); }
+  .category-gray { background: rgba(148, 163, 184, 0.15); color: var(--slate-400); border: 1px solid rgba(148, 163, 184, 0.3); }
+  .category-neutral { background: var(--slate-800); color: var(--slate-400); border: 1px solid var(--slate-700); }
+
+  .plugin-keywords {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .keyword-tag {
+    padding: 0.25rem 0.625rem;
+    background: var(--slate-800);
+    color: var(--slate-500);
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    border: 1px solid var(--slate-700);
+  }
+
+  .keyword-tag.more {
+    color: var(--slate-600);
+    font-style: italic;
+  }
+
+  .plugin-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1rem;
+    border-top: 1px solid var(--slate-800);
+    margin-top: auto;
+  }
+
+  .author-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--slate-500);
+    font-size: 0.75rem;
+  }
+
+  .author-info svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .card-actions {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .action-btn {
+    padding: 0.5rem;
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    color: var(--slate-400);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .action-btn:hover {
+    background: var(--slate-700);
+    border-color: var(--slate-600);
+    color: var(--slate-200);
+  }
+
+  .action-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .install-btn {
+    padding: 0.5rem 1rem;
+    background: var(--green-500);
+    border: none;
+    border-radius: 0.5rem;
+    color: var(--slate-950);
+    font-weight: 600;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+  }
+
+  .install-btn:hover {
+    background: var(--green-400);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+
+  .install-btn:active {
+    transform: translateY(0);
+  }
+
+  .install-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  @media (max-width: 640px) {
+    .plugin-footer {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: stretch;
+    }
+
+    .card-actions {
+      justify-content: stretch;
+    }
+
+    .install-btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

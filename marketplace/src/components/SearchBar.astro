@@ -1,0 +1,337 @@
+---
+const categories = [
+  'automation',
+  'business-tools',
+  'devops',
+  'code-analysis',
+  'debugging',
+  'ai-ml-assistance',
+  'frontend-development',
+  'security',
+  'testing',
+  'documentation',
+  'performance',
+  'database',
+  'cloud-infrastructure',
+  'accessibility',
+  'mobile',
+  'other'
+];
+---
+
+<div class="search-section">
+  <div class="container">
+    <div class="search-bar">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+        <input
+          type="text"
+          id="plugin-search"
+          placeholder="Search plugins by name, description, or keyword..."
+          class="search-input"
+        />
+        <button id="clear-search" class="clear-btn" style="display: none;">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="filters">
+        <select id="category-filter" class="filter-select">
+          <option value="">All Categories</option>
+          {categories.map(cat => (
+            <option value={cat}>
+              {cat.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+            </option>
+          ))}
+        </select>
+
+        <select id="sort-filter" class="filter-select">
+          <option value="name">Sort: A-Z</option>
+          <option value="name-desc">Sort: Z-A</option>
+          <option value="featured">Sort: Featured</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="search-results-info">
+      <span id="results-count" class="results-count"></span>
+      <button id="reset-filters" class="reset-btn" style="display: none;">
+        Reset Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  .search-section {
+    padding: 2rem 0;
+    background: var(--slate-900);
+    border-top: 1px solid var(--slate-800);
+    border-bottom: 1px solid var(--slate-800);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.95);
+  }
+
+  .search-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .search-input-wrapper {
+    position: relative;
+    flex: 1;
+  }
+
+  .search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.25rem;
+    height: 1.25rem;
+    color: var(--slate-500);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 0.875rem 3rem 0.875rem 3rem;
+    background: var(--slate-800);
+    border: 2px solid var(--slate-700);
+    border-radius: 0.75rem;
+    color: var(--slate-200);
+    font-size: 1rem;
+    font-family: var(--font-sans);
+    transition: all var(--transition-base);
+  }
+
+  .search-input:focus {
+    outline: none;
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  }
+
+  .search-input::placeholder {
+    color: var(--slate-500);
+  }
+
+  .clear-btn {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.5rem;
+    height: 1.5rem;
+    padding: 0;
+    background: var(--slate-700);
+    border: none;
+    border-radius: 50%;
+    color: var(--slate-400);
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .clear-btn:hover {
+    background: var(--slate-600);
+    color: var(--slate-200);
+  }
+
+  .clear-btn svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .filters {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 0.75rem 1rem;
+    background: var(--slate-800);
+    border: 2px solid var(--slate-700);
+    border-radius: 0.75rem;
+    color: var(--slate-200);
+    font-size: 0.875rem;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    transition: all var(--transition-base);
+  }
+
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--green-500);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  }
+
+  .filter-select:hover {
+    border-color: var(--slate-600);
+  }
+
+  .search-results-info {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .results-count {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    font-weight: 500;
+  }
+
+  .reset-btn {
+    padding: 0.5rem 1rem;
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    color: var(--slate-400);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    font-family: var(--font-sans);
+  }
+
+  .reset-btn:hover {
+    background: var(--slate-700);
+    border-color: var(--slate-600);
+    color: var(--slate-200);
+  }
+
+  @media (max-width: 768px) {
+    .search-section {
+      position: relative;
+    }
+
+    .filters {
+      flex-direction: column;
+    }
+
+    .filter-select {
+      min-width: 100%;
+    }
+
+    .search-results-info {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+</style>
+
+<script>
+  // Client-side search and filter logic
+  const searchInput = document.getElementById('plugin-search') as HTMLInputElement;
+  const clearBtn = document.getElementById('clear-search') as HTMLButtonElement;
+  const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
+  const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
+  const resultsCount = document.getElementById('results-count') as HTMLSpanElement;
+  const resetBtn = document.getElementById('reset-filters') as HTMLButtonElement;
+
+  function updatePluginDisplay() {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    const selectedCategory = categoryFilter.value;
+    const sortBy = sortFilter.value;
+
+    const pluginCards = Array.from(document.querySelectorAll('.plugin-card'));
+    let visibleCount = 0;
+
+    // Filter plugins
+    pluginCards.forEach((card) => {
+      const name = card.getAttribute('data-name')?.toLowerCase() || '';
+      const description = card.getAttribute('data-description')?.toLowerCase() || '';
+      const keywords = card.getAttribute('data-keywords')?.toLowerCase() || '';
+      const category = card.getAttribute('data-category') || '';
+
+      const matchesSearch = !searchTerm ||
+        name.includes(searchTerm) ||
+        description.includes(searchTerm) ||
+        keywords.includes(searchTerm);
+
+      const matchesCategory = !selectedCategory || category === selectedCategory;
+
+      if (matchesSearch && matchesCategory) {
+        (card as HTMLElement).style.display = '';
+        visibleCount++;
+      } else {
+        (card as HTMLElement).style.display = 'none';
+      }
+    });
+
+    // Sort visible plugins
+    const visibleCards = pluginCards.filter(card =>
+      (card as HTMLElement).style.display !== 'none'
+    );
+
+    visibleCards.sort((a, b) => {
+      const aName = a.getAttribute('data-name') || '';
+      const bName = b.getAttribute('data-name') || '';
+      const aFeatured = a.getAttribute('data-featured') === 'true';
+      const bFeatured = b.getAttribute('data-featured') === 'true';
+
+      if (sortBy === 'featured') {
+        if (aFeatured && !bFeatured) return -1;
+        if (!aFeatured && bFeatured) return 1;
+        return aName.localeCompare(bName);
+      } else if (sortBy === 'name-desc') {
+        return bName.localeCompare(aName);
+      } else {
+        return aName.localeCompare(bName);
+      }
+    });
+
+    // Reorder in DOM
+    const container = document.querySelector('.plugins-grid');
+    if (container) {
+      visibleCards.forEach(card => container.appendChild(card));
+    }
+
+    // Update results count
+    const total = pluginCards.length;
+    resultsCount.textContent = `Showing ${visibleCount} of ${total} plugins`;
+
+    // Show/hide clear button
+    clearBtn.style.display = searchTerm ? 'flex' : 'none';
+
+    // Show/hide reset button
+    const hasFilters = searchTerm || selectedCategory || sortBy !== 'name';
+    resetBtn.style.display = hasFilters ? 'block' : 'none';
+  }
+
+  // Event listeners
+  searchInput.addEventListener('input', updatePluginDisplay);
+  categoryFilter.addEventListener('change', updatePluginDisplay);
+  sortFilter.addEventListener('change', updatePluginDisplay);
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    updatePluginDisplay();
+  });
+
+  resetBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    categoryFilter.value = '';
+    sortFilter.value = 'name';
+    updatePluginDisplay();
+  });
+
+  // Initial display
+  updatePluginDisplay();
+</script>

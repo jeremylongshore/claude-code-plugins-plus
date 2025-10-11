@@ -6,93 +6,359 @@ interface Props {
   description?: string;
 }
 
-const { title, description = "A curated marketplace of high-quality Claude Code plugins" } = Astro.props;
+const { title, description = "The definitive marketplace for professional Claude Code plugins. Browse 220 production-ready tools across 14 categories." } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://jeremylongshore.github.io/claude-code-plugins/" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="https://jeremylongshore.github.io/claude-code-plugins/" />
     <meta property="twitter:title" content={title} />
     <meta property="twitter:description" content={description} />
-
   </head>
   <body>
-    <!-- Header Table - Monospace Web Style -->
-    <table class="header">
-      <tr>
-        <td colspan="2" rowspan="2" class="width-auto">
-          <h1 class="title">CLAUDE CODE PLUGINS</h1>
-          <span class="subtitle">Production-ready plugins for Claude Code CLI</span>
-        </td>
-        <th>Version</th>
-        <td class="width-min">v1.1.0</td>
-      </tr>
-      <tr>
-        <th>Updated</th>
-        <td class="width-min"><time>2025-10-11</time></td>
-      </tr>
-      <tr>
-        <th class="width-min">Author</th>
-        <td class="width-auto"><a href="https://github.com/jeremylongshore">Jeremy Longshore</a></td>
-        <th class="width-min">License</th>
-        <td>MIT</td>
-      </tr>
-    </table>
+    <!-- Modern Navigation Header -->
+    <header class="site-header">
+      <nav class="nav-container">
+        <div class="nav-brand">
+          <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
+          </svg>
+          <span class="brand-name">Claude Code Plugins</span>
+          <span class="brand-badge">v1.1.0</span>
+        </div>
 
-    <!-- Navigation -->
-    <nav>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="#plugins">Plugins</a></li>
-        <li><a href="#packs">Plugin Packs</a></li>
-        <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
-      </ul>
-    </nav>
+        <div class="nav-links">
+          <a href="#featured" class="nav-link">Featured</a>
+          <a href="#all-plugins" class="nav-link">All Plugins</a>
+          <a href="#categories" class="nav-link">Categories</a>
+          <a href="https://github.com/jeremylongshore/claude-code-plugins" class="nav-link github-link" target="_blank" rel="noopener noreferrer">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+        </div>
+      </nav>
+    </header>
 
     <!-- Main Content -->
     <main>
       <slot />
     </main>
 
-    <!-- Footer -->
-    <footer>
-      <p>Built by the Claude Code community</p>
-      <p>
-        <a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a> |
-        <a href="https://discord.com/invite/6PPFFzqPDZ">Discord</a> |
-        <a href="https://docs.claude.com/en/docs/claude-code">Docs</a>
-      </p>
-      <p>&copy; 2025 Claude Code Plugins. Open Source under MIT License.</p>
+    <!-- Modern Footer -->
+    <footer class="site-footer">
+      <div class="footer-container">
+        <div class="footer-section">
+          <h3 class="footer-title">Claude Code Plugins</h3>
+          <p class="footer-description">
+            The definitive marketplace for professional Claude Code plugins.
+            Open source, community-driven, and production-ready.
+          </p>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="footer-heading">Resources</h4>
+          <ul class="footer-links">
+            <li><a href="https://docs.claude.com/en/docs/claude-code">Documentation</a></li>
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
+            <li><a href="https://discord.com/invite/6PPFFzqPDZ">Discord</a></li>
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="footer-heading">Categories</h4>
+          <ul class="footer-links">
+            <li><a href="#devops">DevOps</a></li>
+            <li><a href="#security">Security</a></li>
+            <li><a href="#testing">Testing</a></li>
+            <li><a href="#ai-ml-assistance">AI/ML</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="footer-heading">Legal</h4>
+          <ul class="footer-links">
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/LICENSE">MIT License</a></li>
+            <li><a href="https://github.com/jeremylongshore">Jeremy Longshore</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <div class="footer-container">
+          <div class="footer-copyright">
+            <p>&copy; 2025 Claude Code Plugins. Open Source under MIT License.</p>
+            <p class="footer-built">Built with Astro and Tailwind CSS</p>
+          </div>
+          <div class="footer-social">
+            <a href="https://github.com/jeremylongshore/claude-code-plugins" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+              </svg>
+            </a>
+            <a href="https://discord.com/invite/6PPFFzqPDZ" class="social-link" target="_blank" rel="noopener noreferrer" aria-label="Discord">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
     </footer>
   </body>
 </html>
 
-<style is:global>
-  /* Ensure IBM Plex Mono is applied */
-  body {
-    font-family: 'IBM Plex Mono', monospace;
+<style>
+  /* Site Header */
+  .site-header {
+    background: var(--slate-900);
+    border-bottom: 1px solid var(--slate-800);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(15, 23, 42, 0.95);
   }
 
-  /* Table header styling from monospace-web */
-  .width-min {
-    width: 0%;
-    white-space: nowrap;
+  .nav-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
-  .width-auto {
-    width: 100%;
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand-icon {
+    width: 2rem;
+    height: 2rem;
+    color: var(--green-400);
+  }
+
+  .brand-name {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    font-family: var(--font-mono);
+  }
+
+  .brand-badge {
+    padding: 0.25rem 0.5rem;
+    background: var(--slate-800);
+    color: var(--slate-500);
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    color: var(--slate-400);
+    font-weight: 500;
+    font-size: 0.875rem;
+    transition: color var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-link:hover {
+    color: var(--green-400);
+  }
+
+  .github-link svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Site Footer */
+  .site-footer {
+    background: var(--slate-900);
+    border-top: 1px solid var(--slate-800);
+    margin-top: 6rem;
+  }
+
+  .footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    margin: 0;
+    background: linear-gradient(135deg, var(--green-400), var(--blue-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-description {
+    color: var(--slate-400);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .footer-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--slate-300);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0;
+  }
+
+  .footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .footer-links a {
+    color: var(--slate-500);
+    font-size: 0.875rem;
+    transition: color var(--transition-fast);
+  }
+
+  .footer-links a:hover {
+    color: var(--green-400);
+  }
+
+  .footer-bottom {
+    border-top: 1px solid var(--slate-800);
+    padding: 1.5rem 0;
+  }
+
+  .footer-bottom .footer-container {
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer-copyright {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .footer-copyright p {
+    color: var(--slate-500);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+
+  .footer-built {
+    color: var(--slate-600);
+    font-size: 0.75rem;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .social-link {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slate-400);
+    transition: all var(--transition-base);
+  }
+
+  .social-link:hover {
+    background: var(--slate-700);
+    border-color: var(--green-500);
+    color: var(--green-400);
+    transform: translateY(-2px);
+  }
+
+  .social-link svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .nav-brand {
+      justify-content: center;
+    }
+
+    .nav-links {
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .footer-container {
+      grid-template-columns: 1fr;
+    }
+
+    .footer-bottom .footer-container {
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .footer-copyright {
+      align-items: center;
+    }
   }
 </style>
