@@ -10,73 +10,52 @@ This is **the comprehensive marketplace and learning hub for Claude Code plugins
 - Marketplace catalog for discovering and installing Claude Code plugins
 - Educational hub with working examples and templates
 - Community contribution platform for plugin developers
+- Current Stats: 20 marketplace plugins, 62 total plugin components, 4 plugin packs
 
 ## Repository Structure
 
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json                # Main marketplace catalog
+│   └── marketplace.json                # Main marketplace catalog (20 plugins)
 ├── plugins/
 │   ├── examples/                       # 3 fully functional example plugins
 │   │   ├── hello-world/               # Basic slash command demo
 │   │   ├── formatter/                 # PostToolUse hooks demo
 │   │   └── security-agent/            # Subagent demo
+│   ├── packages/                      # 4 premium plugin packs
+│   │   ├── devops-automation-pack/    # 25 DevOps plugins
+│   │   ├── security-pro-pack/         # 10 security plugins
+│   │   ├── fullstack-starter-pack/    # 15 fullstack plugins
+│   │   └── ai-ml-engineering-pack/    # 12 AI/ML plugins
+│   ├── mcp/                           # 5 MCP server plugins (21 tools)
+│   ├── devops/                        # Production DevOps plugins
+│   ├── productivity/                  # Productivity plugins
+│   ├── ai-agency/                     # AI agency toolkit (6 plugins)
 │   └── community/                      # Community-contributed plugins
 ├── templates/                          # 4 plugin starter templates
 │   ├── minimal-plugin/                # Bare minimum structure
 │   ├── command-plugin/                # With slash commands
 │   ├── agent-plugin/                  # With AI subagent
-│   └── full-plugin/                   # All features (commands, agents, hooks)
+│   └── full-plugin/                   # All features
 ├── docs/                               # Documentation files
 ├── scripts/                            # Repository maintenance scripts
+│   ├── validate-all.sh                # Comprehensive validation
+│   ├── test-installation.sh           # Plugin installation testing
+│   └── check-frontmatter.py           # Markdown frontmatter validation
 └── .github/                            # GitHub workflows and templates
-```
-
-## Plugin Architecture
-
-Each Claude Code plugin can contain:
-- **Slash Commands** (`commands/*.md`) - Custom shortcuts triggered with `/command-name`
-- **Subagents** (`agents/*.md`) - Specialized AI agents for specific domains
-- **Hooks** (`hooks/hooks.json`) - Event-driven automation (PostToolUse, PreToolUse, etc.)
-- **MCP Servers** (`mcp/*.json`) - Connections to external tools/services
-- **Scripts** (`scripts/*.sh`) - Shell scripts called by hooks or commands
-
-### Plugin Structure Requirements
-
-Every plugin MUST have:
-```
-my-plugin/
-├── .claude-plugin/
-│   └── plugin.json                    # Plugin metadata (REQUIRED)
-├── README.md                          # Documentation (REQUIRED)
-├── LICENSE                            # License file (REQUIRED)
-└── [commands|agents|hooks|mcp|scripts]/ # At least one component
-```
-
-### plugin.json Format
-
-```json
-{
-  "name": "plugin-name",
-  "version": "1.0.0",
-  "description": "Clear description",
-  "author": {
-    "name": "Author Name",
-    "email": "[email protected]"
-  },
-  "repository": "https://github.com/username/repo",
-  "license": "MIT",
-  "keywords": ["keyword1", "keyword2"]
-}
+    └── workflows/
+        ├── validate-plugins.yml       # CI validation
+        ├── release.yml                # Release automation
+        └── deploy-marketplace.yml      # GitHub Pages deployment
 ```
 
 ## Common Development Tasks
 
-### Repository Setup
+### Repository Setup and Initialization
 
 ```bash
-# Make all scripts executable and initialize git
+# Initial setup (makes scripts executable, initializes git)
 ./setup.sh
 
 # Manual alternative:
@@ -84,6 +63,27 @@ find . -type f -name "*.sh" -exec chmod +x {} \;
 git init
 git add .
 git commit -m "Initial commit"
+```
+
+### Building and Testing
+
+```bash
+# Validate all plugins (runs before any deployment)
+./scripts/validate-all.sh
+
+# Validate specific directory
+./scripts/validate-all.sh plugins/mcp/
+
+# Test plugin installation locally
+./scripts/test-installation.sh
+
+# Check markdown frontmatter
+python3 scripts/check-frontmatter.py
+
+# For MCP plugins with Node.js (if applicable)
+pnpm install
+pnpm build
+pnpm test
 ```
 
 ### Testing Plugins Locally
@@ -110,256 +110,207 @@ EOF
 # Install your plugin
 /plugin install my-plugin@test
 
-# Test the plugin (commands, agents, hooks)
-/my-command
-```
-
-### Validating Plugin Structure
-
-```bash
-# Check JSON validity
-find . -name "*.json" -exec sh -c 'echo "Validating {}"; jq empty {}' \;
-
-# Verify script permissions
-find . -name "*.sh" -ls
-
-# Test marketplace.json structure
-jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.json
+# Test the plugin
+/my-command  # For slash commands
 ```
 
 ### Adding a New Plugin to Marketplace
 
-1. Add plugin directory to `plugins/community/your-plugin/`
-2. Update `.claude-plugin/marketplace.json`:
+1. **Create plugin directory**: `plugins/community/your-plugin/`
+2. **Ensure required files**:
+   - `.claude-plugin/plugin.json` (metadata)
+   - `README.md` (documentation)
+   - `LICENSE` (MIT or Apache-2.0)
+   - At least one component (commands/, agents/, hooks/, mcp/, or scripts/)
+
+3. **Update marketplace catalog** in `.claude-plugin/marketplace.json`:
 ```json
 {
   "name": "your-plugin",
   "source": "./plugins/community/your-plugin",
-  "description": "Clear description",
+  "description": "Clear one-line description",
   "version": "1.0.0",
   "category": "productivity",
   "keywords": ["keyword1", "keyword2"],
   "author": {
     "name": "Your Name",
-    "email": "[email protected]"
+    "email": "your.email@example.com"
   }
 }
 ```
-3. Test locally (see above)
-4. Submit PR using `.github/PULL_REQUEST_TEMPLATE.md`
 
-## Key Architecture Patterns
+4. **Validate and test**:
+```bash
+# Validate structure
+./scripts/validate-all.sh plugins/community/your-plugin/
 
-### Slash Commands Pattern
-
-Commands are markdown files with YAML frontmatter:
-```markdown
----
-description: Brief description of command
-shortcut: sc
----
-
-# Command Name
-
-Detailed instructions for Claude on what to do when this command is invoked.
-Include specific guidance on execution and expected output.
+# Test locally
+./scripts/test-installation.sh your-plugin
 ```
 
-### Subagent Pattern
+5. **Submit PR** using `.github/PULL_REQUEST_TEMPLATE.md`
 
-Agents are markdown files defining specialized behavior:
-```markdown
----
-description: Specialist in X domain
-capabilities: ["capability1", "capability2"]
----
+## Plugin Architecture
 
-# Agent Name
+### Plugin Components
 
-You are a specialized agent for X domain.
+Each plugin can contain:
+- **Slash Commands** (`commands/*.md`) - Custom shortcuts triggered with `/command-name`
+- **Subagents** (`agents/*.md`) - Specialized AI agents for specific domains
+- **Hooks** (`hooks/hooks.json`) - Event-driven automation (PostToolUse, PreToolUse, etc.)
+- **MCP Servers** (`mcp/*.json`) - Connections to external tools/services
+- **Scripts** (`scripts/*.sh`) - Shell scripts called by hooks or commands
 
-## Your Capabilities
-- List specific skills
-- Define expertise areas
+### Required Plugin Structure
 
-## When to Activate
-Describe triggering conditions
-
-## Approach
-Outline methodology and output format
+```
+my-plugin/
+├── .claude-plugin/
+│   └── plugin.json                    # Plugin metadata (REQUIRED)
+├── README.md                          # Documentation (REQUIRED)
+├── LICENSE                            # License file (REQUIRED)
+└── [commands|agents|hooks|mcp|scripts]/ # At least one component
 ```
 
-### Hooks Pattern
+### plugin.json Schema
 
-Hooks trigger scripts on events:
 ```json
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/process.sh"
-          }
-        ]
-      }
-    ]
-  }
+  "name": "plugin-name",
+  "version": "1.0.0",
+  "description": "Clear description",
+  "author": {
+    "name": "Author Name",
+    "email": "author@example.com"
+  },
+  "repository": "https://github.com/username/repo",
+  "license": "MIT",
+  "keywords": ["keyword1", "keyword2"]
 }
 ```
 
-**Important:** Use `${CLAUDE_PLUGIN_ROOT}` for portable paths in hooks.
+## MCP Server Plugins
 
-## Development Workflow
+The repository includes 5 MCP server plugins providing 21 tools total:
 
-### Creating a New Plugin
+1. **project-health-auditor** (4 tools) - Code complexity, git churn, test coverage analysis
+2. **conversational-api-debugger** (4 tools) - OpenAPI/HAR debugging with root cause analysis
+3. **domain-memory-agent** (6 tools) - TF-IDF semantic search knowledge base
+4. **design-to-code** (3 tools) - Figma/screenshot to React/Svelte/Vue conversion
+5. **workflow-orchestrator** (4 tools) - DAG-based workflow automation
 
+MCP plugins may require additional setup:
 ```bash
-# 1. Choose and copy template
-cp -r templates/command-plugin plugins/community/my-plugin
-cd plugins/community/my-plugin
-
-# 2. Edit plugin.json with your metadata
-
-# 3. Create your components
-# - Add commands to commands/
-# - Add agents to agents/
-# - Add hooks to hooks/hooks.json
-# - Add scripts to scripts/ (make executable!)
-
-# 4. Write comprehensive README.md
-
-# 5. Test locally (see Testing Plugins Locally above)
-
-# 6. Update marketplace catalog
-# Edit ../../.claude-plugin/marketplace.json
-
-# 7. Submit PR
-git checkout -b add-my-plugin
-git add plugins/community/my-plugin/
-git add .claude-plugin/marketplace.json
-git commit -m "Add my-plugin: Brief description"
-git push origin add-my-plugin
+# For Node.js based MCP servers
+cd plugins/mcp/[plugin-name]/
+npm install
+npm run build
 ```
 
-### Plugin Submission Checklist
+## Critical Conventions
 
-Before submitting a PR:
-- [ ] Valid `.claude-plugin/plugin.json` (test with `jq`)
-- [ ] Comprehensive README.md with examples
-- [ ] LICENSE file (MIT or Apache-2.0 recommended)
-- [ ] All scripts are executable (`chmod +x scripts/*.sh`)
-- [ ] No hardcoded secrets or credentials
-- [ ] Tested locally and working
-- [ ] Marketplace.json updated
-- [ ] PR uses template
-
-## Important Conventions
+### Path Variables
+Always use `${CLAUDE_PLUGIN_ROOT}` in hooks for portable paths:
+```json
+{
+  "command": "${CLAUDE_PLUGIN_ROOT}/scripts/process.sh"
+}
+```
 
 ### Script Permissions
 All shell scripts MUST be executable:
 ```bash
 chmod +x scripts/*.sh
-```
-
-### Path Variables
-Use `${CLAUDE_PLUGIN_ROOT}` in hooks for portable paths:
-```bash
-${CLAUDE_PLUGIN_ROOT}/scripts/format.sh
+find . -type f -name "*.sh" -exec chmod +x {} \;
 ```
 
 ### Versioning
 Follow semantic versioning (MAJOR.MINOR.PATCH):
-- **1.0.0** - Initial release
-- **1.1.0** - New feature, backward compatible
-- **1.1.1** - Bug fix, backward compatible
-- **2.0.0** - Breaking change
+- `1.0.0` - Initial release
+- `1.1.0` - New feature, backward compatible
+- `1.1.1` - Bug fix
+- `2.0.0` - Breaking change
 
 ### Plugin Categories
-- `productivity` - Workflow optimization, automation
-- `security` - Security analysis, vulnerability scanning
-- `testing` - Test automation, QA tools
-- `deployment` - CI/CD, infrastructure
-- `documentation` - Docs generation, API docs
-- `analysis` - Code analysis, metrics
-- `integration` - External service integrations
-- `ai` - AI/ML tooling
-- `example` - Educational/tutorial plugins
-- `other` - Doesn't fit above categories
+Valid categories: `productivity`, `security`, `testing`, `deployment`, `documentation`, `analysis`, `integration`, `ai`, `devops`, `debugging`, `code-quality`, `design`, `example`, `other`
 
-## Marketplace Installation
+## GitHub Workflows
 
-Users add this marketplace to Claude Code with:
-```bash
-/plugin marketplace add jeremylongshore/claude-code-plugins
-```
+### Automated Validation (CI)
+- **File**: `.github/workflows/validate-plugins.yml`
+- **Triggers**: Push to main, PRs
+- **Validates**: JSON syntax, required files, script permissions
 
-Then install plugins:
-```bash
-/plugin install hello-world@claude-code-plugins
-/plugin install formatter@claude-code-plugins
-/plugin install security-agent@claude-code-plugins
-```
+### Release Process
+- **File**: `.github/workflows/release.yml`
+- **Creates**: GitHub releases with changelog
+- **Tags**: Semantic versioning
 
-## Security Best Practices
+### Marketplace Deployment
+- **File**: `.github/workflows/deploy-marketplace.yml`
+- **Deploys**: GitHub Pages site (if configured)
+
+## Security Requirements
 
 1. **Never hardcode secrets** - Use environment variables
-2. **Validate inputs** - All script inputs should be validated
-3. **Use portable paths** - Always use `${CLAUDE_PLUGIN_ROOT}`
-4. **Minimal permissions** - Scripts should request minimum necessary access
-5. **No destructive operations** - Without explicit user confirmation
-6. **Executable scripts only** - All `.sh` files must have `chmod +x`
+2. **Validate all inputs** in scripts
+3. **Use `${CLAUDE_PLUGIN_ROOT}`** for portable paths
+4. **Request minimal permissions**
+5. **No destructive operations** without explicit user confirmation
+6. **All `.sh` files must be executable** (`chmod +x`)
 
-## Documentation Standards
+## Marketplace Usage
 
-### README.md Requirements
-Every plugin must include:
-1. **Installation** - How to install the plugin
-2. **Usage** - Clear examples with code blocks
-3. **Requirements** - Dependencies, tools needed
-4. **Files** - Explanation of plugin components
-5. **License** - License information
+Users install plugins from this marketplace with:
+```bash
+# Add marketplace
+/plugin marketplace add jeremylongshore/claude-code-plugins
 
-### Code Comments
-- Use clear variable names in scripts
-- Add comments explaining complex logic
-- Include error messages in scripts
-- Document hook matchers and triggers
+# Install plugins
+/plugin install devops-automation-pack@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins
+```
 
-## Testing Guidelines
+## Important Notes
 
-### Local Testing Workflow
-1. Create test marketplace pointing to local plugin directory
-2. Install plugin in Claude Code
-3. Test all commands, agents, and hooks
-4. Verify scripts execute correctly
-5. Check edge cases and error handling
-6. Test with different file types (if applicable)
+- **NOT GitHub Marketplace**: Claude Code plugins use their own ecosystem
+- **Free and open-source**: No built-in monetization
+- **Beta status**: Features may evolve (October 2025 public beta)
+- **Community-driven**: Accepting quality contributions via PR
+- **Educational focus**: Examples should teach concepts clearly
+
+## Troubleshooting
 
 ### Common Issues
-- **Commands not appearing** → Check plugin.json syntax, verify `commands/` directory
+- **Commands not appearing** → Validate `plugin.json` syntax, check `commands/` exists
 - **Scripts not executing** → Verify `chmod +x`, check shebang `#!/bin/bash`
-- **Hooks not firing** → Validate hooks.json, test matcher patterns
-- **Path errors** → Use `${CLAUDE_PLUGIN_ROOT}` instead of absolute paths
+- **Hooks not firing** → Validate `hooks.json`, test matcher patterns
+- **Path errors** → Use `${CLAUDE_PLUGIN_ROOT}` not absolute paths
+- **JSON validation fails** → Run `jq empty file.json` to check syntax
 
-## Project-Specific Notes
+### Validation Commands
+```bash
+# Check all JSON files
+find . -name "*.json" -exec sh -c 'echo "Checking {}"; jq empty {}' \;
 
-- This repository uses **GitHub** for hosting, NOT GitHub Marketplace
-- Plugins are **free and open-source** (no monetization built into system)
-- Beta status: Features may evolve, keep documentation updated
-- Community-driven: Accept quality contributions via PR
-- Educational focus: All examples should teach concepts clearly
+# Verify script permissions
+find . -name "*.sh" -ls | grep -v rwx
+
+# Test marketplace entry
+jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.json
+```
 
 ## Resources
 
-- **Official Docs:** https://docs.claude.com/en/docs/claude-code/plugins
-- **Plugin Reference:** https://docs.claude.com/en/docs/claude-code/plugins-reference
-- **Discord:** https://discord.com/invite/6PPFFzqPDZ (#claude-code channel)
-- **Contributing:** See CONTRIBUTING.md for detailed guidelines
+- **Official Docs**: https://docs.claude.com/en/docs/claude-code/plugins
+- **Plugin Reference**: https://docs.claude.com/en/docs/claude-code/plugins-reference
+- **Discord Community**: https://discord.com/invite/6PPFFzqPDZ (#claude-code channel)
+- **GitHub Issues**: https://github.com/jeremylongshore/claude-code-plugins/issues
+- **Contributing Guide**: See CONTRIBUTING.md
 
 ---
 
 **Last Updated:** October 2025
-**Repository Status:** Active, accepting community contributions
+**Repository Version:** 1.1.0
+**Status:** Active, accepting community contributions

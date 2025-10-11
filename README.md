@@ -7,6 +7,8 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
+> 💡 **Important**: This marketplace contains both AI instruction templates (that guide Claude's behavior) and executable MCP servers (that run as Node.js processes). See [Understanding Plugin Types](#-understanding-plugin-types) below for details.
+
 ## Browse the Marketplace
 
 **[https://jeremylongshore.github.io/claude-code-plugins/](https://jeremylongshore.github.io/claude-code-plugins/)**
@@ -23,14 +25,36 @@
 
 ---
 
-## Plugin Packs (62 Professional Plugins)
+## 🔍 Understanding Plugin Types
 
-| Pack | Plugins | Description | Category |
-|------|---------|-------------|----------|
-| **devops-automation-pack** | 25 | Complete DevOps suite: Git workflows, CI/CD pipelines, Docker, Kubernetes, Terraform | DevOps |
-| **security-pro-pack** | 10 | OWASP auditing, compliance (HIPAA, GDPR, SOC 2), cryptography, threat modeling | Security |
-| **fullstack-starter-pack** | 15 | React, Express/FastAPI, PostgreSQL, Prisma - perfect for bootcamp grads | Fullstack |
-| **ai-ml-engineering-pack** | 12 | Prompt engineering, LLM integration, RAG systems, AI safety guardrails | AI/ML |
+This marketplace contains **two types of plugins** that work differently:
+
+### 1. 🤖 AI Instruction Plugins (Plugin Packs & Templates)
+- **What they are**: Detailed markdown instructions that guide Claude's behavior
+- **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
+- **Examples**: DevOps pack, Security pack, AI Agency toolkit
+- **No external code execution** - work entirely through Claude's interpretation
+
+### 2. ⚙️ MCP Server Plugins (Executable Code)
+- **What they are**: Real TypeScript/JavaScript applications
+- **How they work**: Run as separate Node.js processes that Claude can communicate with
+- **Examples**: project-health-auditor, conversational-api-debugger
+- **Actual compiled code** - 13-26KB of executable JavaScript
+
+Both types are **fully functional** but operate through different mechanisms. Most plugins in this marketplace are AI instruction templates designed specifically for Claude Code.
+
+---
+
+## Plugin Packs (62 AI Instruction Templates)
+
+> **📝 Note**: These packs contain AI instruction templates, not traditional executable code. They enhance Claude's capabilities through detailed guidance and templates.
+
+| Pack | Templates | Description | Type |
+|------|-----------|-------------|------|
+| **devops-automation-pack** | 25 | Git workflows, CI/CD guidance, Docker best practices, Kubernetes patterns | AI Instructions |
+| **security-pro-pack** | 10 | OWASP auditing steps, compliance checklists, threat modeling guides | AI Instructions |
+| **fullstack-starter-pack** | 15 | React patterns, API scaffolding, database schema templates | AI Instructions |
+| **ai-ml-engineering-pack** | 12 | Prompt optimization, LLM integration patterns, RAG architectures | AI Instructions |
 
 ```bash
 # Install any pack
@@ -44,28 +68,32 @@
 
 ## All Plugins
 
-### MCP Server Plugins (5 plugins, 21 tools)
+### ⚙️ MCP Server Plugins (5 plugins with Executable Code)
 
-| Plugin | Description | Tools | Install |
-|--------|-------------|-------|---------|
-| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | `/plugin install project-health-auditor@claude-code-plugins` |
-| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | `/plugin install conversational-api-debugger@claude-code-plugins` |
-| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | `/plugin install domain-memory-agent@claude-code-plugins` |
-| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | `/plugin install design-to-code@claude-code-plugins` |
-| **workflow-orchestrator** | DAG-based workflow automation | 4 | `/plugin install workflow-orchestrator@claude-code-plugins` |
+> **✅ Real Code**: These plugins contain compiled TypeScript/JavaScript that runs as separate Node.js processes.
+
+| Plugin | Description | Tools | Code Size | Install |
+|--------|-------------|-------|-----------|---------|
+| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | 13KB TS | `/plugin install project-health-auditor@claude-code-plugins` |
+| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | 26KB JS | `/plugin install conversational-api-debugger@claude-code-plugins` |
+| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | Compiled | `/plugin install domain-memory-agent@claude-code-plugins` |
+| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | Compiled | `/plugin install design-to-code@claude-code-plugins` |
+| **workflow-orchestrator** | DAG-based workflow automation | 4 | Compiled | `/plugin install workflow-orchestrator@claude-code-plugins` |
 
 [View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)
 
-### AI Agency Toolkit (6 plugins)
+### 🤖 AI Agency Toolkit (6 Template Plugins)
 
-| Plugin | Description | Install |
-|--------|-------------|---------|
-| **n8n-workflow-designer** | Design complex n8n workflows with loops & branching | `/plugin install n8n-workflow-designer@claude-code-plugins` |
-| **make-scenario-builder** | Create Make.com scenarios visually | `/plugin install make-scenario-builder@claude-code-plugins` |
-| **zapier-zap-builder** | Build multi-step Zaps with filters | `/plugin install zapier-zap-builder@claude-code-plugins` |
-| **discovery-questionnaire** | Generate client discovery questions | `/plugin install discovery-questionnaire@claude-code-plugins` |
-| **sow-generator** | Professional Statements of Work | `/plugin install sow-generator@claude-code-plugins` |
-| **roi-calculator** | Calculate automation ROI | `/plugin install roi-calculator@claude-code-plugins` |
+> **📝 Templates**: These provide workflow templates and configuration patterns for Claude to interpret.
+
+| Plugin | Description | Type | Install |
+|--------|-------------|------|---------|
+| **n8n-workflow-designer** | n8n workflow JSON templates | Templates | `/plugin install n8n-workflow-designer@claude-code-plugins` |
+| **make-scenario-builder** | Make.com scenario configurations | Templates | `/plugin install make-scenario-builder@claude-code-plugins` |
+| **zapier-zap-builder** | Zapier automation templates | Templates | `/plugin install zapier-zap-builder@claude-code-plugins` |
+| **discovery-questionnaire** | Client discovery question sets | Templates | `/plugin install discovery-questionnaire@claude-code-plugins` |
+| **sow-generator** | Statement of Work templates | Templates | `/plugin install sow-generator@claude-code-plugins` |
+| **roi-calculator** | ROI calculation formulas | Templates | `/plugin install roi-calculator@claude-code-plugins` |
 
 ### Production Plugins (2 plugins)
 
@@ -86,12 +114,19 @@
 
 ## What Are Claude Code Plugins?
 
-Claude Code plugins are lightweight packages that extend Claude Code's capabilities:
+Claude Code plugins extend Claude's capabilities through two approaches:
 
-- **Slash Commands** - Custom shortcuts for frequent operations
-- **Subagents** - Specialized AI agents for specific domains
-- **Hooks** - Automation that triggers on events (file edits, tool usage)
-- **MCP Servers** - Connections to external tools and data sources
+### Plugin Components:
+- **Slash Commands** - Custom shortcuts that trigger Claude actions or templates
+- **Subagents** - Specialized AI instruction sets for specific domains
+- **Hooks** - Automation scripts that trigger on events (file edits, tool usage)
+- **MCP Servers** - External Node.js applications that provide tools to Claude
+
+### How They Work:
+- **AI Instruction Plugins**: Work by providing Claude with detailed guidance, templates, and patterns to follow (majority of plugins)
+- **MCP Server Plugins**: Run actual TypeScript/JavaScript code in separate processes that Claude can call (5 plugins)
+
+Both types are valid Claude Code plugins - they just operate through different mechanisms.
 
 **Released**: October 2025 (Public Beta)
 **Official Docs**: https://docs.claude.com/en/docs/claude-code/plugins
