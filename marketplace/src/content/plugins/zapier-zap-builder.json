@@ -1,0 +1,18 @@
+{
+  "name": "zapier-zap-builder",
+  "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
+  "version": "1.0.0",
+  "category": "automation",
+  "keywords": ["zapier", "zap", "automation", "integration", "workflow", "ai-agency"],
+  "author": {
+    "name": "Claude Code Plugin Hub"
+  },
+  "installation": "/plugin install zapier-zap-builder@claude-code-plugins",
+  "features": [
+    "Multi-step Zap configuration",
+    "Filter and path logic",
+    "Formatter configuration",
+    "Zapier expert agent"
+  ],
+  "requirements": ["Claude Code CLI", "Zapier account"]
+}

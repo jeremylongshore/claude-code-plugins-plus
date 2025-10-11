@@ -1,0 +1,26 @@
+{
+  "name": "workflow-orchestrator",
+  "description": "DAG-based workflow automation with parallel task execution and dependency management",
+  "version": "1.0.0",
+  "category": "automation",
+  "keywords": ["mcp", "workflow", "dag", "automation", "orchestration", "cicd", "parallel-execution"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://intentsolutions.io"
+  },
+  "featured": true,
+  "installation": "/plugin install workflow-orchestrator@claude-code-plugins",
+  "features": [
+    "Directed Acyclic Graph (DAG) workflow execution",
+    "Parallel task execution for independent steps",
+    "Task dependency management and validation",
+    "Workflow run history tracking",
+    "Real-time status monitoring",
+    "4 MCP tools: create_workflow, execute_workflow, get_workflow, list_workflows"
+  ],
+  "requirements": [
+    "Claude Code CLI",
+    "Node.js 20+"
+  ]
+}

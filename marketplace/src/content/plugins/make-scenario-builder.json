@@ -1,0 +1,19 @@
+{
+  "name": "make-scenario-builder",
+  "description": "Create Make.com (Integromat) scenarios with AI assistance",
+  "version": "1.0.0",
+  "category": "automation",
+  "keywords": ["make", "integromat", "automation", "scenarios", "workflow", "ai-agency"],
+  "author": {
+    "name": "Claude Code Plugin Hub"
+  },
+  "featured": false,
+  "installation": "/plugin install make-scenario-builder@claude-code-plugins",
+  "features": [
+    "Visual scenario design assistance",
+    "Router and filter configuration patterns",
+    "Error handling strategies",
+    "Make.com expert agent"
+  ],
+  "requirements": ["Claude Code CLI", "Make.com account"]
+}

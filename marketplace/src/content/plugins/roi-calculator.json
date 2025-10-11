@@ -1,0 +1,18 @@
+{
+  "name": "roi-calculator",
+  "description": "Calculate and present ROI for AI automation projects",
+  "version": "1.0.0",
+  "category": "business-tools",
+  "keywords": ["roi", "return-on-investment", "calculator", "sales", "value", "ai-agency"],
+  "author": {
+    "name": "Claude Code Plugin Hub"
+  },
+  "installation": "/plugin install roi-calculator@claude-code-plugins",
+  "features": [
+    "Data-driven ROI calculation",
+    "Visual presentation templates",
+    "Automation value analysis",
+    "Time savings estimation"
+  ],
+  "requirements": ["Claude Code CLI"]
+}

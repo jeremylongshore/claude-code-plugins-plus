@@ -1,0 +1,22 @@
+{
+  "name": "overnight-dev",
+  "description": "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features",
+  "version": "1.0.0",
+  "category": "devops",
+  "keywords": ["overnight", "autonomous", "tdd", "testing", "git-hooks", "automation", "ci-cd"],
+  "author": {
+    "name": "Intent Solutions IO",
+    "url": "https://intentsolutions.io",
+    "email": "[email protected]"
+  },
+  "featured": true,
+  "installation": "/plugin install overnight-dev@claude-code-plugins",
+  "features": [
+    "Autonomous overnight development",
+    "TDD enforcement via git hooks",
+    "Pre-commit testing and linting",
+    "Conventional commits enforcement",
+    "Iterative debugging until tests pass"
+  ],
+  "requirements": ["Claude Code CLI", "Git", "Testing framework (Jest, pytest, etc.)"]
+}

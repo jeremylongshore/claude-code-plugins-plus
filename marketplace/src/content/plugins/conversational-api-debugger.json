@@ -1,0 +1,28 @@
+{
+  "name": "conversational-api-debugger",
+  "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
+  "version": "1.0.0",
+  "category": "debugging",
+  "keywords": ["mcp", "api", "debugging", "openapi", "har", "rest", "curl", "http"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://intentsolutions.io"
+  },
+  "featured": true,
+  "installation": "/plugin install conversational-api-debugger@claude-code-plugins",
+  "features": [
+    "OpenAPI 3.x spec parsing and validation",
+    "HAR file ingestion from browser DevTools",
+    "Intelligent failure analysis with severity scoring",
+    "cURL/HTTPie/fetch reproduction command generation",
+    "Status code knowledge base (4xx, 5xx explanations)",
+    "4 MCP tools: load_openapi, ingest_logs, explain_failure, make_repro"
+  ],
+  "requirements": [
+    "Claude Code CLI",
+    "OpenAPI specification file (JSON/YAML)",
+    "HAR file from browser DevTools (optional)",
+    "Node.js 20+"
+  ]
+}
