@@ -30,68 +30,69 @@ const { title, description = "A curated marketplace of high-quality Claude Code 
     <meta property="twitter:description" content={description} />
 
   </head>
-  <body class="min-h-screen bg-black text-gray-100">
-    <!-- Navigation -->
-    <nav class="border-b border-gray-800 bg-black sticky top-0 z-50">
-      <div class="container mx-auto px-4 py-6">
-        <div class="flex items-center justify-between">
-          <a href="/" class="flex items-center gap-3 group">
-            <div class="w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">
-              CC
-            </div>
-            <div>
-              <h1 class="text-lg font-semibold text-white tracking-tight">CLAUDE CODE PLUGINS</h1>
-            </div>
-          </a>
+  <body>
+    <!-- Header Table - Monospace Web Style -->
+    <table class="header">
+      <tr>
+        <td colspan="2" rowspan="2" class="width-auto">
+          <h1 class="title">CLAUDE CODE PLUGINS</h1>
+          <span class="subtitle">Production-ready plugins for Claude Code CLI</span>
+        </td>
+        <th>Version</th>
+        <td class="width-min">v1.1.0</td>
+      </tr>
+      <tr>
+        <th>Updated</th>
+        <td class="width-min"><time>2025-10-11</time></td>
+      </tr>
+      <tr>
+        <th class="width-min">Author</th>
+        <td class="width-auto"><a href="https://github.com/jeremylongshore">Jeremy Longshore</a></td>
+        <th class="width-min">License</th>
+        <td>MIT</td>
+      </tr>
+    </table>
 
-          <div class="flex items-center gap-8 text-sm">
-            <a href="/#plugins" class="text-gray-400 hover:text-blue-500 transition-colors">PLUGINS</a>
-            <a href="/#categories" class="text-gray-400 hover:text-blue-500 transition-colors">CATEGORIES</a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="text-gray-400 hover:text-blue-500 transition-colors">
-              GITHUB
-            </a>
-          </div>
-        </div>
-      </div>
+    <!-- Navigation -->
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="#plugins">Plugins</a></li>
+        <li><a href="#packs">Plugin Packs</a></li>
+        <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
+      </ul>
     </nav>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 py-12">
+    <main>
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-800 bg-black mt-20">
-      <div class="container mx-auto px-4 py-12">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
-          <div>
-            <h3 class="text-white font-semibold mb-3 tracking-tight">CLAUDE CODE PLUGINS</h3>
-            <p class="text-gray-500">A curated marketplace of production-ready plugins for Claude Code.</p>
-          </div>
-          <div>
-            <h3 class="text-white font-semibold mb-3 tracking-tight">LINKS</h3>
-            <ul class="space-y-2">
-              <li><a href="https://docs.claude.com/en/docs/claude-code" class="text-gray-500 hover:text-blue-500 transition-colors">Documentation</a></li>
-              <li><a href="https://github.com/jeremylongshore/claude-code-plugins" class="text-gray-500 hover:text-blue-500 transition-colors">GitHub</a></li>
-              <li><a href="https://discord.com/invite/6PPFFzqPDZ" class="text-gray-500 hover:text-blue-500 transition-colors">Discord</a></li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="text-white font-semibold mb-3 tracking-tight">COMMUNITY</h3>
-            <p class="text-gray-500">Built by the Claude Code community.</p>
-            <p class="text-gray-500 mt-2">Contribute your plugins!</p>
-          </div>
-        </div>
-        <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-600 text-xs">
-          <p>&copy; 2025 CLAUDE CODE PLUGINS. OPEN SOURCE UNDER MIT LICENSE.</p>
-        </div>
-      </div>
+    <footer>
+      <p>Built by the Claude Code community</p>
+      <p>
+        <a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a> |
+        <a href="https://discord.com/invite/6PPFFzqPDZ">Discord</a> |
+        <a href="https://docs.claude.com/en/docs/claude-code">Docs</a>
+      </p>
+      <p>&copy; 2025 Claude Code Plugins. Open Source under MIT License.</p>
     </footer>
   </body>
 </html>
 
 <style is:global>
+  /* Ensure IBM Plex Mono is applied */
   body {
     font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* Table header styling from monospace-web */
+  .width-min {
+    width: 0%;
+    white-space: nowrap;
+  }
+  .width-auto {
+    width: 100%;
   }
 </style>

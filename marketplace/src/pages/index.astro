@@ -8,171 +8,224 @@ const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
 ---
 
 <Layout title="Claude Code Plugins - Supercharge Your Development">
-  <!-- Hero Section -->
-  <div class="text-center mb-20 max-w-4xl mx-auto">
-    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
-      CLAUDE CODE PLUGINS
-    </h1>
-    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
-      Production-ready plugins, MCP servers, and tools to enhance your development experience
-    </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm">
-      <a href="#plugins" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
-        BROWSE PLUGINS
-      </a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins" class="px-6 py-3 bg-transparent hover:bg-gray-900 text-gray-300 font-medium transition-colors border border-gray-700">
-        VIEW ON GITHUB
-      </a>
-    </div>
-  </div>
+  <!-- Hero Section with ASCII Art -->
+  <pre class="ascii">
+╔══════════════════════════════════════════════════════════════════╗
+║                                                                  ║
+║   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗             ║
+║  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝             ║
+║  ██║     ██║     ███████║██║   ██║██║  ██║█████╗               ║
+║  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝               ║
+║  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗             ║
+║   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝             ║
+║                                                                  ║
+║              PRODUCTION-READY PLUGINS FOR CLAUDE CODE           ║
+║                                                                  ║
+╚══════════════════════════════════════════════════════════════════╝
+  </pre>
 
-  <!-- Overnight Dev Spotlight -->
-  <div class="bg-blue-900/20 border-2 border-blue-600 p-8 mb-20 max-w-4xl mx-auto">
-    <div class="flex items-start gap-4 mb-4">
-      <div class="text-4xl">🌙</div>
-      <div class="flex-1">
-        <div class="flex items-center gap-3 mb-2">
-          <h2 class="text-2xl font-bold text-white tracking-tight">OVERNIGHT-DEV</h2>
-          <span class="px-2 py-1 bg-blue-600 text-white text-xs font-medium">NEW</span>
-        </div>
-        <p class="text-gray-300 mb-4 leading-relaxed">
-          Go to bed. Wake up to fully tested features. Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3 text-sm">
-          <code class="bg-black/50 px-4 py-2 text-blue-400 font-mono border border-gray-700">
-            /plugin install overnight-dev@claude-code-plugins
-          </code>
-          <a href="#overnight-dev" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors text-center">
-            LEARN MORE
-          </a>
-        </div>
-      </div>
+  <section>
+    <p class="text-center">
+      <strong>Production-ready plugins, MCP servers, and tools to enhance your development experience.</strong>
+    </p>
+
+    <div class="grid grid-1 mt-2 mb-2">
+      <a href="#plugins" class="btn btn-primary">Browse Plugins</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins" class="btn">View on GitHub</a>
     </div>
-  </div>
+  </section>
+
+  <hr>
 
   <!-- Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
-    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
-      <div class="text-5xl font-bold text-blue-500 mb-2">{allPlugins.length}</div>
-      <div class="text-gray-500 text-sm tracking-wide">AVAILABLE PLUGINS</div>
+  <section>
+    <h2>Marketplace Stats</h2>
+
+    <div class="grid grid-3">
+      <div class="stat">
+        <div class="stat-num">{allPlugins.length}</div>
+        <div class="stat-label">Available Plugins</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">{categories.length}</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Open Source</div>
+      </div>
     </div>
-    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
-      <div class="text-5xl font-bold text-blue-500 mb-2">{categories.length}</div>
-      <div class="text-gray-500 text-sm tracking-wide">CATEGORIES</div>
+  </section>
+
+  <hr>
+
+  <!-- Featured Plugin: Overnight Dev -->
+  <section id="overnight-dev">
+    <h2>Featured: Overnight-Dev 🌙</h2>
+
+    <div class="plugin-card">
+      <h3>overnight-dev</h3>
+      <p>
+        <strong>Go to bed. Wake up to fully tested features.</strong> Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD.
+      </p>
+      <pre><code>/plugin install overnight-dev@claude-code-plugins</code></pre>
+      <p>
+        <span class="tag tag-featured">NEW</span>
+        <span class="tag">Autonomous</span>
+        <span class="tag">TDD</span>
+        <span class="tag">Git Hooks</span>
+      </p>
     </div>
-    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
-      <div class="text-5xl font-bold text-blue-500 mb-2">100%</div>
-      <div class="text-gray-500 text-sm tracking-wide">OPEN SOURCE</div>
-    </div>
-  </div>
+  </section>
+
+  <hr>
 
   <!-- Featured Plugins -->
   {featuredPlugins.length > 0 && (
-    <section class="mb-20">
-      <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">FEATURED PLUGINS</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <section id="featured">
+      <h2>Featured Plugins</h2>
+
+      <div class="grid grid-3">
         {featuredPlugins.map(plugin => (
-          <div class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-6 transition-colors">
-            <div class="flex items-start justify-between mb-4">
-              <h3 class="text-lg font-semibold text-white">{plugin.data.name}</h3>
-              <span class="px-2 py-1 bg-blue-600 text-white text-xs font-medium">
-                FEATURED
-              </span>
-            </div>
-            <p class="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-2">{plugin.data.description}</p>
-            <div class="flex flex-wrap gap-2 mb-4">
-              {plugin.data.keywords.slice(0, 3).map(keyword => (
-                <span class="px-2 py-1 bg-gray-800 text-gray-400 text-xs border border-gray-700">
-                  {keyword}
-                </span>
+          <div class="plugin-card">
+            <h3>{plugin.data.name}</h3>
+            <p>{plugin.data.description}</p>
+            <p>
+              <span class="tag tag-featured">Featured</span>
+              {plugin.data.keywords.slice(0, 2).map(keyword => (
+                <span class="tag">{keyword}</span>
               ))}
-            </div>
-            <div class="text-xs text-blue-500 font-mono">{plugin.data.installation}</div>
+            </p>
+            <pre><code>{plugin.data.installation}</code></pre>
           </div>
         ))}
       </div>
     </section>
   )}
 
+  <hr>
+
   <!-- Categories -->
-  <section class="mb-20" id="categories">
-    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">BROWSE BY CATEGORY</h2>
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+  <section id="categories">
+    <h2>Browse by Category</h2>
+
+    <div class="grid grid-3">
       {categories.map(category => {
         const categoryPlugins = allPlugins.filter(p => p.data.category === category);
         return (
-          <a href={`#${category}`} class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-4 transition-colors block">
-            <div class="text-base font-semibold text-white uppercase tracking-tight">
-              {category.replace('-', ' ')}
-            </div>
-            <div class="text-xs text-gray-500 mt-1">{categoryPlugins.length} PLUGIN{categoryPlugins.length !== 1 ? 'S' : ''}</div>
+          <a href={`#${category}`} class="plugin-card">
+            <h3>{category.replace('-', ' ')}</h3>
+            <p>{categoryPlugins.length} plugin{categoryPlugins.length !== 1 ? 's' : ''}</p>
           </a>
         );
       })}
     </div>
   </section>
 
+  <hr>
+
   <!-- All Plugins -->
   <section id="plugins">
-    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">ALL PLUGINS</h2>
+    <h2>All Plugins</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div class="grid grid-3">
       {allPlugins.map(plugin => (
-        <div class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-6 transition-colors">
-          <div class="flex items-start justify-between mb-4">
-            <h3 class="text-lg font-semibold text-white">{plugin.data.name}</h3>
-            <span class="px-2 py-1 bg-gray-800 text-gray-400 text-xs font-medium border border-gray-700 uppercase">
-              {plugin.data.category.replace('-', ' ')}
-            </span>
-          </div>
-          <p class="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">{plugin.data.description}</p>
-          <div class="flex flex-wrap gap-2 mb-4">
-            {plugin.data.keywords.slice(0, 4).map(keyword => (
-              <span class="px-2 py-1 bg-gray-800 text-gray-500 text-xs border border-gray-700">
-                {keyword}
-              </span>
+        <div class="plugin-card">
+          <h3>{plugin.data.name}</h3>
+          <p>{plugin.data.description}</p>
+          <p>
+            <span class="tag">{plugin.data.category.replace('-', ' ')}</span>
+            {plugin.data.keywords.slice(0, 3).map(keyword => (
+              <span class="tag">{keyword}</span>
             ))}
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-xs text-gray-600 font-mono">v{plugin.data.version}</span>
-            <span class="text-blue-500 text-xs font-mono">
-              {plugin.data.installation}
-            </span>
-          </div>
+          </p>
+          <pre><code>{plugin.data.installation}</code></pre>
+          <p><em>Version {plugin.data.version}</em></p>
         </div>
       ))}
     </div>
   </section>
 
+  <hr>
+
   <!-- Installation Guide -->
-  <section class="mt-20 bg-gray-900 border border-gray-800 p-10">
-    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">QUICK START</h2>
-    <div class="space-y-6">
-      <div class="flex gap-6">
-        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">1</div>
-        <div class="flex-1">
-          <h3 class="text-white font-semibold mb-2 tracking-tight">ADD THE MARKETPLACE</h3>
-          <code class="text-sm bg-black px-4 py-3 text-blue-400 block font-mono border border-gray-800">
-            /plugin marketplace add jeremylongshore/claude-code-plugins
-          </code>
-        </div>
-      </div>
-      <div class="flex gap-6">
-        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">2</div>
-        <div class="flex-1">
-          <h3 class="text-white font-semibold mb-2 tracking-tight">INSTALL ANY PLUGIN</h3>
-          <code class="text-sm bg-black px-4 py-3 text-blue-400 block font-mono border border-gray-800">
-            /plugin install plugin-name@claude-code-plugins
-          </code>
-        </div>
-      </div>
-      <div class="flex gap-6">
-        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">3</div>
-        <div class="flex-1">
-          <h3 class="text-white font-semibold mb-2 tracking-tight">START USING IT</h3>
-          <p class="text-gray-400 text-sm">Use the plugin's commands and agents in your Claude Code workflow</p>
-        </div>
-      </div>
-    </div>
+  <section>
+    <h2>Quick Start</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Step</th>
+          <th>Command</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong></td>
+          <td><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></td>
+          <td>Add this marketplace</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td><code>/plugin install plugin-name@claude-code-plugins</code></td>
+          <td>Install any plugin</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td><em>Use commands and agents</em></td>
+          <td>Start using in Claude Code</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <hr>
+
+  <!-- Features Diagram -->
+  <section>
+    <h2>Plugin Categories</h2>
+
+    <pre class="diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                                                             │
+│  🔧 DevOps Automation    🔒 Security Tools                  │
+│  ├─ Git workflows        ├─ Secret scanning                │
+│  ├─ Docker helpers       ├─ Vulnerability checks           │
+│  └─ CI/CD integration    └─ Compliance automation          │
+│                                                             │
+│  🌐 Fullstack Dev        🤖 AI/ML Integration               │
+│  ├─ Frontend tools       ├─ Model deployment               │
+│  ├─ Backend helpers      ├─ Data pipelines                 │
+│  └─ Database utils       └─ Training workflows             │
+│                                                             │
+└─────────────────────────────────────────────────────────────┘
+    </pre>
+
+    <ul>
+      <li><strong>Open Source</strong> - All plugins are MIT licensed</li>
+      <li><strong>Community Driven</strong> - Submit your own plugins</li>
+      <li><strong>Production Ready</strong> - Tested and documented</li>
+      <li><strong>Free Forever</strong> - No paywalls, no subscriptions</li>
+    </ul>
   </section>
 </Layout>
+
+<style>
+  /* Diagram styling */
+  .diagram {
+    background: var(--ibm-blue-dark);
+    color: var(--ibm-blue-light);
+    border: var(--border-thickness) solid var(--ibm-blue);
+    padding: var(--line-height);
+    overflow-x: auto;
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+
+  @media screen and (max-width: 640px) {
+    .diagram {
+      font-size: 0.65rem;
+    }
+  }
+</style>
