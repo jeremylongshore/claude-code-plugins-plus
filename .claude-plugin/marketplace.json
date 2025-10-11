@@ -258,6 +258,186 @@
       },
       "featured": true,
       "pluginCount": 12
+    },
+    {
+      "name": "snapshot-test-manager",
+      "source": "./plugins/testing/snapshot-test-manager",
+      "description": "Manage and update snapshot tests with intelligent diff analysis and selective updates",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "snapshot", "jest", "vitest", "diff-analysis", "test-management"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "contract-test-validator",
+      "source": "./plugins/testing/contract-test-validator",
+      "description": "API contract testing with Pact, OpenAPI validation, and consumer-driven contract verification",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "contract-testing", "pact", "openapi", "api", "microservices", "consumer-driven"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "accessibility-test-scanner",
+      "source": "./plugins/testing/accessibility-test-scanner",
+      "description": "A11y compliance testing with WCAG 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "accessibility", "a11y", "wcag", "aria", "screen-reader", "compliance"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "visual-regression-tester",
+      "source": "./plugins/testing/visual-regression-tester",
+      "description": "Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI changes",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "visual-regression", "ui-testing", "percy", "chromatic", "backstop", "screenshot-testing"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "chaos-engineering-toolkit",
+      "source": "./plugins/testing/chaos-engineering-toolkit",
+      "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "chaos-engineering", "resilience", "failure-injection", "fault-tolerance", "reliability"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-doubles-generator",
+      "source": "./plugins/testing/test-doubles-generator",
+      "description": "Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and test frameworks",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "mocks", "stubs", "spies", "fakes", "test-doubles", "jest", "sinon"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "browser-compatibility-tester",
+      "source": "./plugins/testing/browser-compatibility-tester",
+      "description": "Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "cross-browser", "browserstack", "selenium", "playwright", "compatibility"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "mobile-app-tester",
+      "source": "./plugins/testing/mobile-app-tester",
+      "description": "Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "mobile", "appium", "detox", "xcuitest", "espresso", "ios", "android"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-test-manager",
+      "source": "./plugins/testing/database-test-manager",
+      "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "database", "sql", "test-data", "fixtures", "migrations", "transactions"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "smoke-test-runner",
+      "source": "./plugins/testing/smoke-test-runner",
+      "description": "Quick smoke test suites to verify critical functionality after deployments",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "smoke-tests", "deployment", "sanity-check", "critical-path"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "load-balancer-tester",
+      "source": "./plugins/testing/load-balancer-tester",
+      "description": "Test load balancing strategies with traffic distribution validation and failover testing",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "load-balancer", "traffic-distribution", "failover", "high-availability"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "api-fuzzer",
+      "source": "./plugins/testing/api-fuzzer",
+      "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "fuzzing", "api", "security", "edge-cases", "input-validation"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-report-generator",
+      "source": "./plugins/testing/test-report-generator",
+      "description": "Generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "reporting", "coverage", "metrics", "dashboard", "ci-cd"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-environment-manager",
+      "source": "./plugins/testing/test-environment-manager",
+      "description": "Manage test environments with Docker Compose, Testcontainers, and environment isolation",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "environment", "docker", "testcontainers", "isolation", "infrastructure"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-orchestrator",
+      "source": "./plugins/testing/test-orchestrator",
+      "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": ["testing", "orchestration", "workflow", "parallel", "test-selection", "ci-cd"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "email": "[email protected]"
+      }
     }
   ]
 }
