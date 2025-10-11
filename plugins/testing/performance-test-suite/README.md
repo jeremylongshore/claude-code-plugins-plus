@@ -198,42 +198,42 @@ Date: 2025-10-11 14:30:00
 Duration: 20 minutes
 Max Virtual Users: 300
 
-📊 Response Time Metrics
+ Response Time Metrics
   Average: 145ms
   Median (P50): 120ms
-  P95: 280ms ✅ (Target: <300ms)
-  P99: 450ms ✅ (Target: <500ms)
+  P95: 280ms  (Target: <300ms)
+  P99: 450ms  (Target: <500ms)
   Max: 1,230ms
 
-📈 Throughput
+ Throughput
   Total Requests: 90,000
   Requests/sec: 75
-  Success Rate: 99.4% ✅
+  Success Rate: 99.4% 
   Error Rate: 0.6%
 
-💻 Resource Utilization
+ Resource Utilization
   CPU: 68% avg, 87% peak
   Memory: 2.8 GB / 4 GB (70%)
   Network: 22 MB/s avg
 
-🔍 Bottlenecks Identified
+ Bottlenecks Identified
   1. GET /api/users - P95: 850ms (database index needed)
   2. Database connection pool at 95% usage
   3. Memory climbing 50MB/hour (potential leak)
 
-💡 Recommendations
+ Recommendations
   1. Add index on users.email column → -70% query time
   2. Increase connection pool: 20 → 50 connections
   3. Implement Redis caching for user list endpoint
   4. Investigate session manager memory leak
   5. Consider horizontal scaling at 350+ users
 
-✅ Pass Criteria Met: 4/5
-  ✅ P95 response time < 300ms
-  ✅ P99 response time < 500ms
-  ✅ Error rate < 1%
-  ✅ Success rate > 99%
-  ❌ No memory leaks detected
+ Pass Criteria Met: 4/5
+   P95 response time < 300ms
+   P99 response time < 500ms
+   Error rate < 1%
+   Success rate > 99%
+   No memory leaks detected
 ```
 
 ## Supported Tools

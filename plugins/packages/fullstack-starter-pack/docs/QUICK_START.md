@@ -207,4 +207,4 @@ Generated code is a starting point—modify to fit your needs.
 
 ---
 
-**Start building! You're ready to create production-grade fullstack applications.** 🚀
+**Start building! You're ready to create production-grade fullstack applications.** 

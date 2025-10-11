@@ -260,16 +260,16 @@ Overall Compliance: 75% (Partially Compliant)
 
 RESULTS
 -------
-✓ A01: Broken Access Control - PASS (95%)
-✗ A02: Cryptographic Failures - FAIL (40%)
-✓ A03: Injection - PASS (90%)
-✗ A04: Insecure Design - FAIL (60%)
-✗ A05: Security Misconfiguration - FAIL (55%)
-✓ A06: Vulnerable Components - PASS (85%)
-✗ A07: Authentication Failures - FAIL (70%)
-✓ A08: Data Integrity - PASS (80%)
-✗ A09: Logging Failures - FAIL (45%)
-✓ A10: SSRF - PASS (100%)
+ A01: Broken Access Control - PASS (95%)
+ A02: Cryptographic Failures - FAIL (40%)
+ A03: Injection - PASS (90%)
+ A04: Insecure Design - FAIL (60%)
+ A05: Security Misconfiguration - FAIL (55%)
+ A06: Vulnerable Components - PASS (85%)
+ A07: Authentication Failures - FAIL (70%)
+ A08: Data Integrity - PASS (80%)
+ A09: Logging Failures - FAIL (45%)
+ A10: SSRF - PASS (100%)
 
 CRITICAL GAPS
 -------------

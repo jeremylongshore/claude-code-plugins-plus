@@ -69,9 +69,9 @@ When invoked, you should:
 **Recommendation:** [Accept / Reject / Investigate]
 
 ### Summary
-✓ No changes: [N]
-⚠ Minor changes: [N]
-✗ Major changes: [N]
+ No changes: [N]
+ Minor changes: [N]
+ Major changes: [N]
 
 ### Next Steps
 - [ ] Review flagged changes

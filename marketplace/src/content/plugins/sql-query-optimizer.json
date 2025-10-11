@@ -1,0 +1,23 @@
+{
+  "name": "sql-query-optimizer",
+  "description": "Analyze and optimize SQL queries for better performance, suggesting indexes, query rewrites, and execution plan improvements",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "sql",
+    "optimization",
+    "performance",
+    "database",
+    "query"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/sql-query-optimizer",
+  "license": "MIT",
+  "installation": "/plugin install sql-query-optimizer@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

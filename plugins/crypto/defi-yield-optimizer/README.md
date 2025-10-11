@@ -4,14 +4,14 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 
 ## Features
 
-### 🎯 Multi-Protocol Support
+###  Multi-Protocol Support
 - **Lending**: Aave, Compound, Venus, Benqi
 - **DEXs**: Uniswap, Sushiswap, PancakeSwap, QuickSwap
 - **Stableswaps**: Curve, Ellipsis
 - **Yield Aggregators**: Yearn, Beefy, Harvest
 - **Leveraged Farming**: Alpaca, Tarot
 
-### 📊 Chain Coverage
+###  Chain Coverage
 - **Ethereum**: Main DeFi hub
 - **BSC**: High APY opportunities
 - **Polygon**: Low gas costs
@@ -19,14 +19,14 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 - **Avalanche**: Fast finality
 - **Fantom**: High yields
 
-### ⚡ Optimization Features
+###  Optimization Features
 - **Risk-Adjusted Returns**: Balance APY with risk
 - **Portfolio Allocation**: Optimal diversification
 - **Auto-Compound Analysis**: Frequency optimization
 - **Impermanent Loss Calculation**: LP risk assessment
 - **Gas Cost Optimization**: Net APY calculations
 
-### 🔔 Risk Assessment
+###  Risk Assessment
 - **Protocol Risk**: Age, audits, TVL analysis
 - **Smart Contract Risk**: Complexity scoring
 - **Liquidity Risk**: Exit strategy evaluation
@@ -383,4 +383,4 @@ MIT License - See LICENSE file
 
 ---
 
-*Built with ❤️ for DeFi farmers by Intent Solutions IO*
+*Built with ️ for DeFi farmers by Intent Solutions IO*

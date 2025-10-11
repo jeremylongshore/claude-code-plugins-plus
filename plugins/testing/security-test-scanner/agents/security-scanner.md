@@ -270,36 +270,36 @@ Tests Run: 87
 Vulnerabilities Found: 5
 
 CRITICAL (1):
-  ❌ SQL Injection in /api/users/search
+   SQL Injection in /api/users/search
      Impact: Database access, data exfiltration
      PoC: ?query=' OR '1'='1'--
      Fix: Use parameterized queries
 
 HIGH (2):
-  ⚠️ Missing authentication on /api/admin endpoints
+  ️ Missing authentication on /api/admin endpoints
      Impact: Unauthorized admin access
      Fix: Add authentication middleware
 
-  ⚠️ Weak password policy
+  ️ Weak password policy
      Impact: Account takeover via brute force
      Fix: Enforce 12+ char, complexity requirements
 
 MEDIUM (2):
-  ⚠️ Missing rate limiting on login endpoint
+  ️ Missing rate limiting on login endpoint
      Impact: Brute force attacks possible
      Fix: Implement rate limiting (5 attempts/minute)
 
-  ⚠️ Verbose error messages expose stack traces
+  ️ Verbose error messages expose stack traces
      Impact: Information disclosure
      Fix: Use generic error messages in production
 
 PASSED TESTS (82):
-  ✅ XSS prevention working correctly
-  ✅ CSRF protection enabled
-  ✅ Authorization checks enforced
-  ✅ Security headers present
-  ✅ Session timeout configured
-  ✅ HTTPS enforced
+   XSS prevention working correctly
+   CSRF protection enabled
+   Authorization checks enforced
+   Security headers present
+   Session timeout configured
+   HTTPS enforced
 
 Recommendations:
   1. Prioritize SQL injection fix immediately

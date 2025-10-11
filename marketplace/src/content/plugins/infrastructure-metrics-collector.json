@@ -1,0 +1,22 @@
+{
+  "name": "infrastructure-metrics-collector",
+  "description": "Collect comprehensive infrastructure performance metrics",
+  "version": "1.0.0",
+  "category": "performance",
+  "keywords": [
+    "infrastructure",
+    "metrics",
+    "monitoring",
+    "observability"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/infrastructure-metrics-collector",
+  "license": "MIT",
+  "installation": "/plugin install infrastructure-metrics-collector@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

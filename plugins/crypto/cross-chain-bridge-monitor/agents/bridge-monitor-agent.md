@@ -90,29 +90,29 @@ Activate this agent when users need to:
 ### Output Format
 Present findings in structured format:
 ```
-🌉 CROSS-CHAIN BRIDGE MONITOR
+ CROSS-CHAIN BRIDGE MONITOR
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 BRIDGE OVERVIEW: [Bridge Name]
+ BRIDGE OVERVIEW: [Bridge Name]
 
 Security Model: [Trusted / Optimistic / Light Client / Liquidity]
-Status: [Active ✅ / Paused ⚠️ / Compromised 🚨]
+Status: [Active  / Paused ️ / Compromised ]
 Total Value Locked: $[amount]
 24h Volume: $[amount]
 Chains Supported: [count] networks
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔐 SECURITY ANALYSIS
+ SECURITY ANALYSIS
 
 Trust Model: [Description]
 Validator Set: [count] validators ([centralized/decentralized])
 Smart Contract Audits:
-  ✅ [Auditor Name] - [Date] - [Critical/High/Medium/Low findings]
-  ✅ [Auditor Name] - [Date] - [Findings]
+   [Auditor Name] - [Date] - [Critical/High/Medium/Low findings]
+   [Auditor Name] - [Date] - [Findings]
 
 Emergency Controls:
-  - Pause Function: [Yes ✅ / No ❌]
+  - Pause Function: [Yes  / No ]
   - Admin Keys: [Multisig / Single Key / Decentralized]
   - Upgrade Mechanism: [Time-locked / Immediate / Immutable]
 
@@ -125,7 +125,7 @@ Risk Level: [Low / Medium / High / Critical]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💸 TRANSFER COST COMPARISON
+ TRANSFER COST COMPARISON
 
 Route: Ethereum → Arbitrum (1000 USDC)
 
@@ -141,21 +141,21 @@ Reason: [Best balance of speed, cost, and security]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📈 RECENT ACTIVITY (Last 24h)
+ RECENT ACTIVITY (Last 24h)
 
 Large Transfers:
 1. [amount] [token] from [chain] to [chain]
    Tx: [hash]
    Value: $[amount]
-   Status: [Completed ✅ / Pending ⏳ / Failed ❌]
+   Status: [Completed  / Pending ⏳ / Failed ]
 
 2. [amount] [token] from [chain] to [chain]
    Tx: [hash]
    Value: $[amount]
-   Status: [Completed ✅]
+   Status: [Completed ]
 
 Unusual Activity:
-⚠️ [Description of anomaly if detected]
+️ [Description of anomaly if detected]
 
 Volume by Chain:
 - Ethereum: $[amount] ([percentage]%)
@@ -164,10 +164,10 @@ Volume by Chain:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔍 TRANSFER STATUS LOOKUP
+ TRANSFER STATUS LOOKUP
 
 Transaction Hash: [0x...]
-Status: [Pending ⏳ / Completed ✅ / Failed ❌]
+Status: [Pending ⏳ / Completed  / Failed ]
 
 Source Chain: [Chain Name]
 Destination Chain: [Chain Name]
@@ -175,24 +175,24 @@ Amount: [amount] [token]
 Estimated Arrival: [time remaining]
 
 Progress:
-1. Source Transaction ✅ Confirmed ([confirmations] blocks)
+1. Source Transaction  Confirmed ([confirmations] blocks)
 2. Bridge Relay ⏳ Processing (validator [x]/[total])
 3. Destination Mint ⏳ Waiting
 
 Expected Time: ~[minutes] minutes
 Actual Time Elapsed: [minutes] minutes
 
-⚠️ Status: [On Track / Delayed / Requires Action]
+️ Status: [On Track / Delayed / Requires Action]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 RECOMMENDATIONS
+ RECOMMENDATIONS
 
 Best Bridge for Your Use Case:
 - [Recommendation 1]
 - [Recommendation 2]
 
-⚠️ Risk Warnings:
+️ Risk Warnings:
 - [Warning 1]
 - [Warning 2]
 ```

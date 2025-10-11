@@ -8,7 +8,7 @@ Master prompt engineering, LLM integration, RAG systems, and AI safety with 12 s
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Claude Code](https://img.shields.io/badge/Claude_Code-0.1.0+-purple.svg)](https://claude.ai/code)
 
-## 🎯 What's Included
+##  What's Included
 
 **12 specialized plugins across 4 AI/ML categories:**
 
@@ -32,7 +32,7 @@ Master prompt engineering, LLM integration, RAG systems, and AI safety with 12 s
 - **prompt-injection-defender** (agent) - Defend against prompt injection and jailbreak attacks
 - **ai-monitoring-setup** (command: `/ams`) - Set up LLM monitoring, cost tracking, and alerts
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Installation
 
@@ -77,7 +77,7 @@ claude
 
 **Complete tutorial:** [QUICK_START.md](./QUICK_START.md)
 
-## 💰 ROI & Value Proposition
+##  ROI & Value Proposition
 
 Real-world results from production deployments:
 
@@ -94,7 +94,7 @@ Real-world results from production deployments:
 
 **Detailed case studies:** [USE_CASES.md](./USE_CASES.md)
 
-## 📚 Plugin Reference
+##  Plugin Reference
 
 ### Prompt Engineering
 
@@ -275,13 +275,13 @@ llm-api/
 ```
 
 **Features included:**
-- ✅ Exponential backoff retry (3 attempts)
-- ✅ Rate limiting (token bucket algorithm)
-- ✅ Response caching (Redis, 5 min TTL)
-- ✅ Streaming support (SSE)
-- ✅ Cost tracking
-- ✅ Prometheus metrics
-- ✅ Docker deployment
+-  Exponential backoff retry (3 attempts)
+-  Rate limiting (token bucket algorithm)
+-  Response caching (Redis, 5 min TTL)
+-  Streaming support (SSE)
+-  Cost tracking
+-  Prometheus metrics
+-  Docker deployment
 
 ---
 
@@ -382,15 +382,15 @@ rag-system/
 ```
 
 **Features included:**
-- ✅ Multi-format document loading (PDF, DOCX, TXT, MD)
-- ✅ Recursive chunking (512 tokens, 50 overlap)
-- ✅ Vector similarity search
-- ✅ Cohere reranking (optional)
-- ✅ Source attribution with page numbers
-- ✅ Query expansion
-- ✅ Caching
-- ✅ FastAPI REST endpoints
-- ✅ Docker deployment
+-  Multi-format document loading (PDF, DOCX, TXT, MD)
+-  Recursive chunking (512 tokens, 50 overlap)
+-  Vector similarity search
+-  Cohere reranking (optional)
+-  Source attribution with page numbers
+-  Query expansion
+-  Caching
+-  FastAPI REST endpoints
+-  Docker deployment
 
 ---
 
@@ -529,14 +529,14 @@ monitoring/
 
 ---
 
-## 📖 Documentation
+##  Documentation
 
 - **[Installation Guide](./INSTALLATION.md)** - Prerequisites, setup, verification
 - **[Quick Start](./QUICK_START.md)** - 10-minute tutorial with examples
 - **[Use Cases](./USE_CASES.md)** - Real-world applications with ROI
 - **[Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
 
-## 💡 Example Workflows
+##  Example Workflows
 
 ### Build a Customer Support Bot (10 minutes)
 
@@ -608,7 +608,7 @@ Track: accuracy, retrieval time, cost per query
 
 **Result:** Legal document analysis system with 94% accuracy, 82ms latency, PII protection.
 
-## 🎓 Learning Resources
+##  Learning Resources
 
 ### Video Tutorials (Coming Soon)
 - Prompt Engineering Masterclass (30 min)
@@ -625,16 +625,16 @@ Track: accuracy, retrieval time, cost per query
 - [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 - [Stack Overflow](https://stackoverflow.com/questions/tagged/claude-code) - `claude-code` tag
 
-## 💎 Pricing
+##  Pricing
 
 **One-time purchase: $79**
 
 What's included:
-- ✅ All 12 plugins (lifetime access)
-- ✅ Free updates and new plugins
-- ✅ Email support
-- ✅ Community Discord access
-- ✅ Documentation and examples
+-  All 12 plugins (lifetime access)
+-  Free updates and new plugins
+-  Email support
+-  Community Discord access
+-  Documentation and examples
 
 **Compare to alternatives:**
 - Manual implementation: 40+ hours ($4,000 at $100/hour)
@@ -655,7 +655,7 @@ What's included:
 
 **Community:** Join Discord for community support
 
-## 🔄 Updates
+##  Updates
 
 **Current version:** 1.0.0
 
@@ -669,13 +669,13 @@ To update:
 claude plugin update ai-ml-engineering-pack
 ```
 
-## 📜 License
+##  License
 
 MIT License - See [LICENSE](./LICENSE) for details
 
 **Commercial use permitted** - Use in commercial projects, redistribute, modify
 
-## 🙏 Acknowledgments
+##  Acknowledgments
 
 Built with:
 - [Claude Code](https://claude.ai/code) - AI-powered development CLI
@@ -684,7 +684,7 @@ Built with:
 - [Qdrant](https://qdrant.tech) - Vector database
 - [FastAPI](https://fastapi.tiangolo.com) - Modern Python framework
 
-## 🚀 Ready to Get Started?
+##  Ready to Get Started?
 
 1. **[Install the pack](./INSTALLATION.md)** - 5-minute setup
 2. **[Complete Quick Start](./QUICK_START.md)** - Build your first AI feature in 10 minutes
@@ -695,4 +695,4 @@ Built with:
 
 **Questions?** Email [email protected] or open a [GitHub issue](https://github.com/jeremylongshore/claude-code-plugins/issues).
 
-**Built by AI engineers, for AI engineers.** 🤖
+**Built by AI engineers, for AI engineers.** 

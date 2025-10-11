@@ -206,6 +206,6 @@ Security Pro Pack is licensed for personal and commercial use. See LICENSE file 
 
 ---
 
-**Built with security in mind. Ship secure code with confidence.** 🔐
+**Built with security in mind. Ship secure code with confidence.** 
 
 **Security Pro Pack Team**

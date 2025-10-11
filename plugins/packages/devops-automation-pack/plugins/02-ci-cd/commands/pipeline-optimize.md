@@ -14,9 +14,9 @@ Analyzes CI/CD pipeline performance and suggests optimizations to reduce build t
 
 ## When to Use This
 
-- ✅ Pipeline takes >5 minutes
-- ✅ Want to speed up builds
-- ✅ High CI/CD costs
+-  Pipeline takes >5 minutes
+-  Want to speed up builds
+-  High CI/CD costs
 
 ## How It Works
 
@@ -68,6 +68,6 @@ Estimated new time: 4 min (67% faster)
 
 ## Pro Tips
 
-💡 Caching is the easiest win
-💡 Parallelize independent jobs
-💡 Use matrix for multi-version tests
+ Caching is the easiest win
+ Parallelize independent jobs
+ Use matrix for multi-version tests

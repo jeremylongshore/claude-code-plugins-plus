@@ -12,9 +12,9 @@ estimated_time: 3 minutes
      This command generates production-ready charts with parameterized templates. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Web application chart with configurable replicas -->
-<!-- ✅ Microservice chart with ingress toggle -->
-<!-- ✅ Database chart with persistence -->
+<!--  Web application chart with configurable replicas -->
+<!--  Microservice chart with ingress toggle -->
+<!--  Database chart with persistence -->
 
 # Helm Chart Generator
 
@@ -22,12 +22,12 @@ Creates production-ready Helm charts for Kubernetes applications with parameteri
 
 ## When to Use This
 
-- ✅ Package app for multiple environments (dev, staging, prod)
-- ✅ Need configurable deployments (replicas, resources, ingress)
-- ✅ Want version-controlled releases
-- ✅ Deploy to multiple clusters with different configs
-- ❌ Single environment deployment (use `/k8s-manifest-generate`)
-- ❌ Quick one-off deployment (use `kubectl run`)
+-  Package app for multiple environments (dev, staging, prod)
+-  Need configurable deployments (replicas, resources, ingress)
+-  Want version-controlled releases
+-  Deploy to multiple clusters with different configs
+-  Single environment deployment (use `/k8s-manifest-generate`)
+-  Quick one-off deployment (use `kubectl run`)
 
 ## How It Works
 
@@ -577,8 +577,8 @@ helm uninstall nodejs-api
 
 ## Pro Tips
 
-💡 **Use values files for environments (values-{env}.yaml)**
-💡 **Set secrets via --set (don't commit them)**
-💡 **Pin image tags in production (not 'latest')**
-💡 **Test with: helm template nodejs-api ./nodejs-api -f values-prod.yaml**
-💡 **Validate with: helm lint ./nodejs-api**
+ **Use values files for environments (values-{env}.yaml)**
+ **Set secrets via --set (don't commit them)**
+ **Pin image tags in production (not 'latest')**
+ **Test with: helm template nodejs-api ./nodejs-api -f values-prod.yaml**
+ **Validate with: helm lint ./nodejs-api**

@@ -92,47 +92,47 @@ COMPLIANCE DASHBOARD
 ====================
 
 OWASP Top 10 (2021): 70% Coverage
-✓ A01: Broken Access Control - Partial
-✗ A02: Cryptographic Failures - Non-Compliant
-✓ A03: Injection - Addressed
-✗ A04: Insecure Design - Issues Found
+ A01: Broken Access Control - Partial
+ A02: Cryptographic Failures - Non-Compliant
+ A03: Injection - Addressed
+ A04: Insecure Design - Issues Found
 ...
 
 GDPR Compliance: 85%
-✓ Data encryption at rest
-✓ Right to deletion implemented
-✗ Data processing agreements incomplete
-✓ Privacy policy published
+ Data encryption at rest
+ Right to deletion implemented
+ Data processing agreements incomplete
+ Privacy policy published
 
 PCI-DSS: 60% (Not Ready for Audit)
-✗ Requirement 2: Default passwords not changed
-✓ Requirement 3: Cardholder data encrypted
-✗ Requirement 6: Unpatched vulnerabilities exist
+ Requirement 2: Default passwords not changed
+ Requirement 3: Cardholder data encrypted
+ Requirement 6: Unpatched vulnerabilities exist
 ```
 
 ### 4. Security Controls Assessment
 ```
 AUTHENTICATION & AUTHORIZATION
 -------------------------------
-✓ Password hashing (bcrypt)
-✗ Multi-factor authentication (Not implemented)
-✓ Session management (Secure cookies)
-✗ Account lockout (Not configured)
-✓ Password policy (12+ chars, complexity)
+ Password hashing (bcrypt)
+ Multi-factor authentication (Not implemented)
+ Session management (Secure cookies)
+ Account lockout (Not configured)
+ Password policy (12+ chars, complexity)
 
 ENCRYPTION
 ----------
-✓ TLS 1.3 for data in transit
-✓ AES-256 for data at rest
-✗ Database encryption (Not enabled)
-✓ Secure key management
+ TLS 1.3 for data in transit
+ AES-256 for data at rest
+ Database encryption (Not enabled)
+ Secure key management
 
 LOGGING & MONITORING
 --------------------
-✗ Security event logging (Minimal)
-✗ Intrusion detection (Not deployed)
-✓ Error logging
-✗ Audit trail (Incomplete)
+ Security event logging (Minimal)
+ Intrusion detection (Not deployed)
+ Error logging
+ Audit trail (Incomplete)
 ```
 
 ### 5. Remediation Roadmap

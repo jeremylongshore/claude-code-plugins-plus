@@ -214,18 +214,18 @@ mcp/
 ## 8. Quick Lint
 
 ### JSON Syntax Check
-- ✅ marketplace.json: Valid
-- ✅ plugin.json files: Valid (sampled)
-- ✅ hooks.json files: Valid
-- ✅ .mcp.json files: Valid
+-  marketplace.json: Valid
+-  plugin.json files: Valid (sampled)
+-  hooks.json files: Valid
+-  .mcp.json files: Valid
 
 ### Command File Validation
-- ⚠️ Command files should have H1 matching slash command name
-- ✅ Commands reference existing MCP tools (where applicable)
+- ️ Command files should have H1 matching slash command name
+-  Commands reference existing MCP tools (where applicable)
 
 ### Script Permissions
-- ✅ Shell scripts in examples/formatter/scripts/ are present
-- ⚠️ Need to verify all .sh files have execute permissions
+-  Shell scripts in examples/formatter/scripts/ are present
+- ️ Need to verify all .sh files have execute permissions
 
 ---
 
@@ -339,7 +339,7 @@ EOF
 - Automated validation and release workflows
 - Active development with clear structure
 
-**Repository Health:** ✅ Well-organized, actively maintained, ready for community contributions
+**Repository Health:**  Well-organized, actively maintained, ready for community contributions
 
 ---
 

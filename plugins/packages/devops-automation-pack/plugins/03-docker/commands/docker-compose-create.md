@@ -12,9 +12,9 @@ estimated_time: 2 minutes
      volumes, and environment management. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Web app + PostgreSQL + Redis -->
-<!-- ✅ Microservices with shared network -->
-<!-- ✅ Full-stack app (frontend + backend + DB) -->
+<!--  Web app + PostgreSQL + Redis -->
+<!--  Microservices with shared network -->
+<!--  Full-stack app (frontend + backend + DB) -->
 
 # Docker Compose Generator
 
@@ -22,11 +22,11 @@ Creates production-ready docker-compose.yml files for multi-service applications
 
 ## When to Use This
 
-- ✅ Multi-service application (app + database + cache)
-- ✅ Microservices architecture
-- ✅ Local development environment setup
-- ✅ Full-stack applications (frontend + backend + DB)
-- ❌ Single container app (use `/dockerfile-generate` instead)
+-  Multi-service application (app + database + cache)
+-  Microservices architecture
+-  Local development environment setup
+-  Full-stack applications (frontend + backend + DB)
+-  Single container app (use `/dockerfile-generate` instead)
 
 ## How It Works
 
@@ -424,11 +424,11 @@ POSTGRES_PASSWORD=your_secure_password_here
 
 ## Pro Tips
 
-💡 **Use health checks to ensure services start in correct order**
-💡 **Named volumes persist data across container restarts**
-💡 **Custom networks isolate services from other containers**
-💡 **Always use .env files (never commit secrets)**
-💡 **Service names become DNS hostnames (e.g., db, redis)**
+ **Use health checks to ensure services start in correct order**
+ **Named volumes persist data across container restarts**
+ **Custom networks isolate services from other containers**
+ **Always use .env files (never commit secrets)**
+ **Service names become DNS hostnames (e.g., db, redis)**
 
 ## Common Service Configurations
 

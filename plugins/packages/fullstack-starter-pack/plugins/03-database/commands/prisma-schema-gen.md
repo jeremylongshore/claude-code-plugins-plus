@@ -13,12 +13,12 @@ Generates complete Prisma schema files from natural language descriptions, inclu
 ## What This Command Does
 
 **Generated Schema:**
-- ✅ Prisma models with fields
-- ✅ Relationships (one-to-one, one-to-many, many-to-many)
-- ✅ Indexes and unique constraints
-- ✅ Default values and validators
-- ✅ Database-specific configuration
-- ✅ Example queries
+-  Prisma models with fields
+-  Relationships (one-to-one, one-to-many, many-to-many)
+-  Indexes and unique constraints
+-  Default values and validators
+-  Database-specific configuration
+-  Example queries
 
 **Output:** Complete `schema.prisma` file ready for migration
 
@@ -579,4 +579,4 @@ const prisma = new PrismaClient()
 
 ---
 
-**Generate schemas fast. Migrate safely. Query confidently.** 🗄️
+**Generate schemas fast. Migrate safely. Query confidently.** ️

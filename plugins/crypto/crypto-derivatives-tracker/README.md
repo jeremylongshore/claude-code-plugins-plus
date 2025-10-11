@@ -131,7 +131,7 @@ Track smart money positioning via unusual options activity
 
 ## Risk Management
 
-⚠️ **Critical Considerations**:
+️ **Critical Considerations**:
 - Derivatives use leverage - high risk of liquidation
 - Funding costs accumulate in perpetuals
 - Options can expire worthless (theta decay)
@@ -147,7 +147,7 @@ Track smart money positioning via unusual options activity
 
 ## Risk Disclaimer
 
-⚠️ **Crypto derivatives are extremely risky instruments.**
+️ **Crypto derivatives are extremely risky instruments.**
 
 Users should:
 - Fully understand leverage and liquidation mechanics
@@ -170,4 +170,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for derivatives traders by Intent Solutions IO*
+*Built with ️ for derivatives traders by Intent Solutions IO*

@@ -295,7 +295,7 @@ Webhook → OpenAI Score → Router
 
 4A. **Slack: Send Message** (High route)
    - Channel: #sales-leads
-   - Message: "🔥 Hot lead: {{name}} - Score: {{score}}"
+   - Message: " Hot lead: {{name}} - Score: {{score}}"
 
 4B. **HubSpot: Create Deal** (High route)
    - Deal name: {{company}} - {{name}}

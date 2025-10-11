@@ -64,7 +64,7 @@ Present analysis in this structure:
 |--------|---------|---------|--------|------------|
 | Base Fee | [X] gwei | [Y] gwei | [Z] gwei | [P]th |
 
-📊 **Assessment**: [Well above/Above/Near/Below] average
+ **Assessment**: [Well above/Above/Near/Below] average
 
 ### Timing Recommendations
 
@@ -74,10 +74,10 @@ Present analysis in this structure:
 3. ⏰ [Time Range]: Typically [C]% lower ([D] gwei avg)
 
 **Current Recommendation:**
-- ⚡ **Urgent**: Pay ~[X] gwei now (~$[Y] for typical tx)
+-  **Urgent**: Pay ~[X] gwei now (~$[Y] for typical tx)
 - ⏳ **Can wait 1-2h**: Expected [A]% savings (~$[B])
-- 📅 **Can wait 6-12h**: Expected [C]% savings (~$[D])
-- 💤 **Not urgent**: Wait for next low period ([Day/Time])
+-  **Can wait 6-12h**: Expected [C]% savings (~$[D])
+-  **Not urgent**: Wait for next low period ([Day/Time])
 
 ### Alternative Routes
 

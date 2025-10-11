@@ -1,0 +1,21 @@
+{
+  "name": "database-cache-layer",
+  "description": "Database plugin for database-cache-layer",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "cache"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-cache-layer",
+  "license": "MIT",
+  "installation": "/plugin install database-cache-layer@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

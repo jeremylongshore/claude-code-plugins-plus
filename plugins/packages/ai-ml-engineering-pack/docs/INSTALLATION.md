@@ -73,18 +73,18 @@ claude plugin list
 
 You should see:
 ```
-✓ prompt-architect (agent)
-✓ prompt-optimizer (agent)
-✓ prompt-template-gen (command - /ptg)
-✓ llm-integration-expert (agent)
-✓ model-selector (agent)
-✓ llm-api-scaffold (command - /las)
-✓ rag-architect (agent)
-✓ vector-db-expert (agent)
-✓ rag-pipeline-gen (command - /rpg)
-✓ ai-safety-expert (agent)
-✓ prompt-injection-defender (agent)
-✓ ai-monitoring-setup (command - /ams)
+ prompt-architect (agent)
+ prompt-optimizer (agent)
+ prompt-template-gen (command - /ptg)
+ llm-integration-expert (agent)
+ model-selector (agent)
+ llm-api-scaffold (command - /las)
+ rag-architect (agent)
+ vector-db-expert (agent)
+ rag-pipeline-gen (command - /rpg)
+ ai-safety-expert (agent)
+ prompt-injection-defender (agent)
+ ai-monitoring-setup (command - /ams)
 ```
 
 ### 5. Test Installation

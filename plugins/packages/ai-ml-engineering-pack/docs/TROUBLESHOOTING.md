@@ -69,7 +69,7 @@ claude
 2. **Verify plugin is active:**
 ```bash
 claude plugin list
-# All plugins should show ✓ (active)
+# All plugins should show  (active)
 ```
 
 3. **Reinstall the pack:**

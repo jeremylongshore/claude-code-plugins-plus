@@ -69,7 +69,7 @@ You excel at:
 
 When analyzing API failures, always provide:
 
-### 🔍 Analysis
+###  Analysis
 
 ```
 Status Code: 400 Bad Request
@@ -77,7 +77,7 @@ Severity: HIGH
 Endpoint: POST /api/users
 ```
 
-### 💡 Root Cause
+###  Root Cause
 
 ```
 The request body is missing the required "email" field.
@@ -90,7 +90,7 @@ According to the OpenAPI spec, POST /api/users requires:
 Your request only included "name".
 ```
 
-### ✅ Suggested Fixes
+###  Suggested Fixes
 
 ```
 1. Add the "email" field to your request body:
@@ -104,7 +104,7 @@ Your request only included "name".
 3. Check API documentation for other required fields
 ```
 
-### 🧪 Test Command
+###  Test Command
 
 ```
 curl -X POST "https://api.example.com/users" \
@@ -115,7 +115,7 @@ curl -X POST "https://api.example.com/users" \
   }'
 ```
 
-### 📊 Expected Response
+###  Expected Response
 
 ```
 Status: 201 Created
@@ -229,13 +229,13 @@ Let's load your API logs and I'll identify the exact cause.
 [After loading logs and spec]
 
 ```
-🔍 ANALYSIS
+ ANALYSIS
 
 Status: 401 Unauthorized
 Endpoint: GET /api/protected-resource
 Severity: HIGH
 
-💡 ROOT CAUSE
+ ROOT CAUSE
 
 Your request is missing the Authorization header entirely.
 
@@ -245,18 +245,18 @@ security:
 
 This means you must include a Bearer token in the Authorization header.
 
-✅ SUGGESTED FIXES
+ SUGGESTED FIXES
 
 1. Obtain a valid access token (usually from POST /auth/login)
 2. Include it in the Authorization header:
    Authorization: Bearer YOUR_TOKEN_HERE
 
-🧪 TEST COMMAND
+ TEST COMMAND
 
 curl -X GET "https://api.example.com/protected-resource" \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 
-📊 EXPECTED RESPONSE
+ EXPECTED RESPONSE
 
 Status: 200 OK
 Body: { "data": [...] }
@@ -278,19 +278,19 @@ If you still get 401 after adding the token:
 ## Success Criteria
 
 Good debugging includes:
-- ✅ Clear severity assessment
-- ✅ Root cause identified
-- ✅ Specific, actionable fixes
-- ✅ Working test command provided
-- ✅ Comparison with OpenAPI spec (if available)
-- ✅ Expected vs actual behavior explained
+-  Clear severity assessment
+-  Root cause identified
+-  Specific, actionable fixes
+-  Working test command provided
+-  Comparison with OpenAPI spec (if available)
+-  Expected vs actual behavior explained
 
 Poor debugging is:
-- ❌ "Something is wrong"
-- ❌ Vague suggestions without examples
-- ❌ No severity indication
-- ❌ Missing test commands
-- ❌ Ignoring OpenAPI spec
+-  "Something is wrong"
+-  Vague suggestions without examples
+-  No severity indication
+-  Missing test commands
+-  Ignoring OpenAPI spec
 
 ## Remember
 

@@ -59,7 +59,7 @@ Structure your analysis as:
 
 ### Best Route Found
 
-🏆 **RECOMMENDED ROUTE**
+ **RECOMMENDED ROUTE**
 ```
 [Token A] → [Token B] → [Token C]
    DEX1      DEX2
@@ -107,8 +107,8 @@ Structure your analysis as:
 ### Size-Based Recommendations
 
 **For This Trade Size ([Amount]):**
-- ✅ Recommended: [Route #]
-- ⚠️  Avoid: [Route #] (reason: [price impact/gas cost])
+-  Recommended: [Route #]
+- ️  Avoid: [Route #] (reason: [price impact/gas cost])
 
 **If trade size changes:**
 - < $1,000: Use direct Uniswap V2 (lowest gas)
@@ -146,7 +146,7 @@ Expected gas: [Units] ([Cost] at [gwei])
 
 ### Risk Factors
 
-⚠️ **Important Considerations:**
+️ **Important Considerations:**
 - Price impact increases non-linearly with size
 - Gas costs provided are estimates
 - Mempool congestion may affect execution
@@ -156,18 +156,18 @@ Expected gas: [Units] ([Cost] at [gwei])
 ### Alternative Strategies
 
 **If poor pricing on DEX:**
-- 🏦 CEX Transfer: Send to Binance/Coinbase → Swap → Send back
-- 📈 Limit Order: Use CoW Swap or 1inch Limit Order
-- 🤝 OTC: Contact OTC desk for large trades (> $100k)
+-  CEX Transfer: Send to Binance/Coinbase → Swap → Send back
+-  Limit Order: Use CoW Swap or 1inch Limit Order
+-  OTC: Contact OTC desk for large trades (> $100k)
 - ⏰ TWAP: Break into smaller orders over time
 
 ### Next Steps
 
-1. ✅ Review recommended route and parameters
-2. ⚙️  Configure slippage in your wallet
-3. 🔍 Double-check token addresses (avoid scams)
+1.  Review recommended route and parameters
+2. ️  Configure slippage in your wallet
+3.  Double-check token addresses (avoid scams)
 4. ⏰ Monitor gas prices for optimal timing
-5. 🚀 Execute trade via [Recommended DEX/Aggregator]
+5.  Execute trade via [Recommended DEX/Aggregator]
 ```
 
 ## DEX Characteristics

@@ -130,28 +130,28 @@ Integration Test Runner
 =======================
 
 Setup Phase:
-✓ Database connection verified
-✓ Test database created and migrated
-✓ Test data seeded (50 users, 200 products)
-✓ Redis cache cleared
-✓ Services healthy: api, worker, notifications
+ Database connection verified
+ Test database created and migrated
+ Test data seeded (50 users, 200 products)
+ Redis cache cleared
+ Services healthy: api, worker, notifications
 
 Running Tests:
-✓ API Authentication Tests (5/5 passed) - 2.3s
-✓ User Management Tests (12/12 passed) - 5.1s
-✓ Order Processing Tests (8/8 passed) - 8.7s
-✗ Payment Integration Tests (3/4 passed) - 4.2s
+ API Authentication Tests (5/5 passed) - 2.3s
+ User Management Tests (12/12 passed) - 5.1s
+ Order Processing Tests (8/8 passed) - 8.7s
+ Payment Integration Tests (3/4 passed) - 4.2s
   └─ test_refund_webhook_handling FAILED
-✓ Notification Tests (6/6 passed) - 3.1s
+ Notification Tests (6/6 passed) - 3.1s
 
 Results: 34/35 tests passed (97.1%)
 Total time: 23.4s
 Coverage: 78.3%
 
 Teardown Phase:
-✓ Test database dropped
-✓ Services stopped
-✓ Temp files removed
+ Test database dropped
+ Services stopped
+ Temp files removed
 
 Report saved to: test-results/integration-2025-10-11-14-30.json
 ```

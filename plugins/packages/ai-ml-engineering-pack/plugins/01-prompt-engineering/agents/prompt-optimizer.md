@@ -59,10 +59,10 @@ Total: $7 (36% savings)
 
 **1. Remove Redundancy**
 ```
-❌ Before (52 tokens):
+ Before (52 tokens):
 "I would like you to please analyze the following text and provide a comprehensive summary of the main points and key takeaways that are present within the text."
 
-✅ After (15 tokens):
+ After (15 tokens):
 "Summarize the main points and key takeaways."
 
 Savings: 71% token reduction
@@ -70,10 +70,10 @@ Savings: 71% token reduction
 
 **2. Use Abbreviations and Symbols**
 ```
-❌ Before (35 tokens):
+ Before (35 tokens):
 "If the sentiment is positive then return 'positive', if the sentiment is negative return 'negative', otherwise return 'neutral'."
 
-✅ After (18 tokens):
+ After (18 tokens):
 "Classify sentiment: positive, negative, or neutral."
 
 Savings: 49% token reduction
@@ -81,12 +81,12 @@ Savings: 49% token reduction
 
 **3. Compress Examples**
 ```
-❌ Before (80 tokens):
+ Before (80 tokens):
 "Example 1: When the user asks 'What is the weather?', you should respond with 'I'll check the weather for you. Please provide your location.'
 
 Example 2: When the user asks 'Set a reminder', you should respond with 'I'll set a reminder. Please tell me what you'd like to be reminded about and when.'"
 
-✅ After (35 tokens):
+ After (35 tokens):
 "Examples:
 Q: Weather? A: Location needed
 Q: Set reminder? A: What and when?
@@ -98,9 +98,9 @@ Savings: 56% token reduction
 
 **4. Leverage System Prompts**
 ```
-❌ Repeating context in every user message (expensive)
+ Repeating context in every user message (expensive)
 
-✅ Put reusable context in system prompt (cached)
+ Put reusable context in system prompt (cached)
 
 System prompt (cached after first call):
 "You are a Python expert. Always use type hints, include docstrings, and follow PEP 8. Return code only, no explanations unless asked."
@@ -415,8 +415,8 @@ def assess_complexity(prompt):
 
 **1. Limit Output Length**
 ```
-❌ Open-ended: "Explain machine learning." → 500+ tokens (slow)
-✅ Constrained: "Explain ML in 50 words." → 50 tokens (fast)
+ Open-ended: "Explain machine learning." → 500+ tokens (slow)
+ Constrained: "Explain ML in 50 words." → 50 tokens (fast)
 
 Latency improvement: 3-4x faster
 ```
@@ -498,10 +498,10 @@ for question in common_questions:
 
 **JSON Schema Enforcement:**
 ```
-❌ Without schema (verbose output):
+ Without schema (verbose output):
 "The sentiment is positive and the key features mentioned include battery life, camera quality, and screen size."
 
-✅ With schema (compact output):
+ With schema (compact output):
 {"sentiment": "positive", "features": ["battery", "camera", "screen"]}
 
 Token savings: 60-70%
@@ -509,10 +509,10 @@ Token savings: 60-70%
 
 **Symbolic Encoding:**
 ```
-❌ Natural language categories:
+ Natural language categories:
 "high priority, urgent, requires immediate attention"
 
-✅ Symbolic codes:
+ Symbolic codes:
 "P1"  (predefined: P1=high, P2=medium, P3=low)
 
 Token savings: 80-90%

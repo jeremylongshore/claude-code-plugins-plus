@@ -65,17 +65,17 @@ Activate this agent when users need to:
 ### Output Format
 Present simulations in structured format:
 ```
-⚡ FLASH LOAN STRATEGY SIMULATION
+ FLASH LOAN STRATEGY SIMULATION
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📋 STRATEGY: [Strategy Name]
+ STRATEGY: [Strategy Name]
 Protocol: [Aave V3 / dYdX / Balancer]
 Loan Amount: [amount] [asset]
 Flash Loan Fee: $[amount] ([percentage]%)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔄 TRANSACTION STEPS:
+ TRANSACTION STEPS:
 
 Step 1: Borrow Flash Loan
   - Protocol: [Aave V3]
@@ -102,7 +102,7 @@ Step 4: Repay Flash Loan
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💰 PROFITABILITY ANALYSIS
+ PROFITABILITY ANALYSIS
 
 Gross Profit: $[amount]
 - Flash Loan Fee: -$[amount]
@@ -117,7 +117,7 @@ Minimum Profitable Spread: [percentage]%
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-⚠️ RISK FACTORS
+️ RISK FACTORS
 
 1. [Risk]: [Description]
    Mitigation: [Strategy]
@@ -130,13 +130,13 @@ Execution Window: [seconds]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 OPTIMIZATION RECOMMENDATIONS
+ OPTIMIZATION RECOMMENDATIONS
 
 1. [Recommendation]
 2. [Recommendation]
 3. [Recommendation]
 
-⚡ SAMPLE SMART CONTRACT CODE
+ SAMPLE SMART CONTRACT CODE
 
 ```solidity
 // Pseudocode for this strategy

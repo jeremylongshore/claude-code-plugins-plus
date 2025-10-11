@@ -1,19 +1,21 @@
 {
   "name": "security-agent",
-  "description": "Security review subagent for code analysis - demonstrates specialized AI agent patterns for vulnerability detection",
+  "description": "Security review subagent for code analysis",
   "version": "1.0.0",
   "category": "security",
-  "keywords": ["security", "agent", "code-review", "vulnerability"],
+  "keywords": [
+    "security",
+    "agent",
+    "code-review"
+  ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Claude Code Plugin Hub"
   },
   "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/examples/security-agent",
+  "license": "MIT",
   "installation": "/plugin install security-agent@claude-code-plugins",
-  "features": [
-    "Specialized security agent",
-    "Code vulnerability analysis",
-    "Security best practices review",
-    "Educational subagent example"
-  ],
-  "requirements": ["Claude Code CLI"]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

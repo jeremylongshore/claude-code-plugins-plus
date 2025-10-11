@@ -1,0 +1,22 @@
+{
+  "name": "load-test-runner",
+  "description": "Create and execute load tests for performance validation",
+  "version": "1.0.0",
+  "category": "performance",
+  "keywords": [
+    "load-testing",
+    "performance",
+    "stress-test",
+    "k6"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/load-test-runner",
+  "license": "MIT",
+  "installation": "/plugin install load-test-runner@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -1,17 +1,17 @@
 # Setup Instructions for Claude Code Plugins Repository
 
-## ✅ Current Status
+##  Current Status
 
 Your repository structure has been created successfully with:
 
-- ✅ Main marketplace catalog (`.claude-plugin/marketplace.json`)
-- ✅ 3 Complete example plugins (hello-world, auto-formatter, security-reviewer)
-- ✅ 4 Plugin templates (minimal, command, agent, full)
-- ✅ 6 Documentation files
-- ✅ GitHub workflows and issue templates
-- ✅ README.md, CONTRIBUTING.md, LICENSE
+-  Main marketplace catalog (`.claude-plugin/marketplace.json`)
+-  3 Complete example plugins (hello-world, auto-formatter, security-reviewer)
+-  4 Plugin templates (minimal, command, agent, full)
+-  6 Documentation files
+-  GitHub workflows and issue templates
+-  README.md, CONTRIBUTING.md, LICENSE
 
-## 🚀 Final Setup Steps
+##  Final Setup Steps
 
 ### Step 1: Make Scripts Executable
 
@@ -49,7 +49,7 @@ git commit -m "Initial commit: Claude Code Plugin Marketplace
 - CONTRIBUTING.md with submission guidelines
 - Professional README with badges and clear structure
 
-🚀 Generated with Claude Code"
+ Generated with Claude Code"
 ```
 
 ### Step 3: Create GitHub Repository
@@ -109,27 +109,27 @@ After pushing, configure your repository on GitHub:
 /hello
 ```
 
-## 📁 What Was Created
+##  What Was Created
 
 ### Directory Structure
 
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json                    ✅ Main catalog
+│   └── marketplace.json                     Main catalog
 ├── plugins/
 │   ├── examples/
-│   │   ├── hello-world/                    ✅ Command example
-│   │   ├── auto-formatter/                 ✅ Hook example
-│   │   └── security-reviewer/              ✅ Agent example
-│   └── community/                          ✅ Ready for submissions
-├── templates/                              ✅ 4 templates
-├── docs/                                   ✅ 6 documentation files
-├── .github/                                ✅ Workflows & templates
-├── README.md                               ✅ Professional homepage
-├── CONTRIBUTING.md                         ✅ Contribution guide
-├── LICENSE                                 ✅ MIT License
-└── .gitignore                              ✅ Git ignore rules
+│   │   ├── hello-world/                     Command example
+│   │   ├── auto-formatter/                  Hook example
+│   │   └── security-reviewer/               Agent example
+│   └── community/                           Ready for submissions
+├── templates/                               4 templates
+├── docs/                                    6 documentation files
+├── .github/                                 Workflows & templates
+├── README.md                                Professional homepage
+├── CONTRIBUTING.md                          Contribution guide
+├── LICENSE                                  MIT License
+└── .gitignore                               Git ignore rules
 ```
 
 ### Example Plugins
@@ -154,7 +154,7 @@ claude-code-plugins/
 - `agent-plugin/` - With AI agent
 - `full-plugin/` - All features (commands, agents, hooks)
 
-## 🎯 Next Steps
+##  Next Steps
 
 After setup is complete:
 
@@ -177,7 +177,7 @@ After setup is complete:
    - Update docs as Claude Code evolves
    - Add more example plugins over time
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 **Scripts not executable:**
 ```bash
@@ -198,7 +198,7 @@ git commit -m "Add hidden .claude-plugin directories"
 find . -name "*.json" -exec sh -c 'echo "Checking {}"; jq empty {}' \;
 ```
 
-## 📞 Support
+##  Support
 
 If you encounter issues:
 - Check the troubleshooting section above
@@ -208,6 +208,6 @@ If you encounter issues:
 
 ---
 
-**You're all set!** 🎉
+**You're all set!** 
 
 Your Claude Code Plugin Marketplace is ready to launch. Execute the steps above and you'll have a production-ready plugin hub on GitHub!

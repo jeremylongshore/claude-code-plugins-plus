@@ -128,10 +128,10 @@ Create a `.bridge-monitor-config.json` file:
 - > $1B: Critical infrastructure
 
 ### Validator Risk
-- Single operator: Critical risk ❌
-- < 5 validators: High centralization ⚠️
+- Single operator: Critical risk 
+- < 5 validators: High centralization ️
 - 5-15 validators: Moderate decentralization
-- \> 15 validators: Good decentralization ✅
+- \> 15 validators: Good decentralization 
 
 ## Historical Bridge Exploits
 
@@ -170,7 +170,7 @@ Major incidents to learn from:
 
 ## Risk Disclaimer
 
-⚠️ **Cross-chain bridges are high-risk infrastructure** with a history of major exploits.
+️ **Cross-chain bridges are high-risk infrastructure** with a history of major exploits.
 
 Users should:
 - Only bridge amounts they can afford to lose
@@ -192,4 +192,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for cross-chain security by Intent Solutions IO*
+*Built with ️ for cross-chain security by Intent Solutions IO*

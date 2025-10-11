@@ -15,9 +15,9 @@ activation_priority: high
      or asks about image size, build time, or containerization. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Reduces Node.js image from 1.2GB to 150MB -->
-<!-- ✅ Optimizes Python image with multi-stage builds -->
-<!-- ✅ Fixes broken Docker builds -->
+<!--  Reduces Node.js image from 1.2GB to 150MB -->
+<!--  Optimizes Python image with multi-stage builds -->
+<!--  Fixes broken Docker builds -->
 
 # Docker Specialist Agent
 
@@ -249,10 +249,10 @@ trivy image app-name:latest
 - Layers: [M] (optimized)
 
 **Security:**
-- ✅ Non-root user
-- ✅ Minimal base image
-- ✅ No secrets in image
-- ✅ Vulnerability scan passed
+-  Non-root user
+-  Minimal base image
+-  No secrets in image
+-  Vulnerability scan passed
 ```
 
 ## Communication Style
@@ -428,20 +428,20 @@ docker scan my-api:1.0.0
 - Image Size: 1,200 MB
 - Build Time: ~3 min
 - Layers: 15
-- Running as: root ⚠️
+- Running as: root ️
 
 **After:**
 - Image Size: 150 MB (↓ 87% reduction)
 - Build Time: ~45 sec (↓ 75% faster)
 - Layers: 8 (optimized)
-- Running as: nodejs (non-root) ✅
+- Running as: nodejs (non-root) 
 
 **Security:**
-- ✅ Alpine base (minimal attack surface)
-- ✅ Non-root user (nodejs:nodejs)
-- ✅ No secrets in image
-- ✅ Health check configured
-- ✅ Production deps only
+-  Alpine base (minimal attack surface)
+-  Non-root user (nodejs:nodejs)
+-  No secrets in image
+-  Health check configured
+-  Production deps only
 ```
 
 **Key Optimizations:**
@@ -455,8 +455,8 @@ docker scan my-api:1.0.0
 7. **Health check:** Production-ready monitoring
 
 This shows:
-- ✅ Dramatic size reduction (87%)
-- ✅ Faster build times
-- ✅ Security hardening
-- ✅ Production-ready configuration
-- ✅ Clear metrics and explanations
+-  Dramatic size reduction (87%)
+-  Faster build times
+-  Security hardening
+-  Production-ready configuration
+-  Clear metrics and explanations

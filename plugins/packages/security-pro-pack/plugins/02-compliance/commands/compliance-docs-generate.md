@@ -25,11 +25,11 @@ Automatically generates comprehensive compliance documentation including policie
 ## What This Command Does
 
 **Instant Compliance Documentation:**
-- ✅ Generates framework-specific policies and procedures
-- ✅ Creates data flow and network diagrams
-- ✅ Produces risk assessment templates
-- ✅ Builds audit-ready documentation packages
-- ✅ Customizes for your organization
+-  Generates framework-specific policies and procedures
+-  Creates data flow and network diagrams
+-  Produces risk assessment templates
+-  Builds audit-ready documentation packages
+-  Customizes for your organization
 
 **Output:** Complete compliance documentation package
 

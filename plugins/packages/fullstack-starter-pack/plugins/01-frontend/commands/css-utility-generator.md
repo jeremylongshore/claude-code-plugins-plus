@@ -13,12 +13,12 @@ Generates utility CSS classes similar to Tailwind CSS for common styling needs, 
 ## What This Command Does
 
 **Utility Class Generation:**
-- ✅ Spacing utilities (margin, padding)
-- ✅ Color utilities (background, text, border)
-- ✅ Typography utilities (font size, weight, line height)
-- ✅ Layout utilities (flexbox, grid, display)
-- ✅ Responsive breakpoints
-- ✅ Custom design tokens
+-  Spacing utilities (margin, padding)
+-  Color utilities (background, text, border)
+-  Typography utilities (font size, weight, line height)
+-  Layout utilities (flexbox, grid, display)
+-  Responsive breakpoints
+-  Custom design tokens
 
 **Output:** Complete utility CSS file with organized sections
 
@@ -617,4 +617,4 @@ import './utilities.css'
 
 ---
 
-**Build your design system. Style faster. Ship consistent UIs.** 🎨
+**Build your design system. Style faster. Ship consistent UIs.** 

@@ -14,9 +14,9 @@ Creates optimized .circleci/config.yml with orbs, workflows, and caching.
 
 ## When to Use This
 
-- ✅ Setting up CircleCI for project
-- ✅ Want platform-agnostic CI/CD
-- ❌ Using GitHub Actions or GitLab CI
+-  Setting up CircleCI for project
+-  Want platform-agnostic CI/CD
+-  Using GitHub Actions or GitLab CI
 
 ## How It Works
 
@@ -64,6 +64,6 @@ workflows:
 
 ## Pro Tips
 
-💡 Use orbs to simplify config
-💡 Enable parallelism for tests
-💡 Cache dependencies aggressively
+ Use orbs to simplify config
+ Enable parallelism for tests
+ Cache dependencies aggressively

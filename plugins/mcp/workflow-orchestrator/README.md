@@ -4,7 +4,7 @@
 
 Automate complex multi-step workflows with dependency management, parallel execution, and comprehensive run tracking.
 
-## 🎯 Features
+##  Features
 
 - **DAG Execution** - Directed Acyclic Graph task dependencies
 - **Parallel Tasks** - Execute independent tasks concurrently
@@ -12,13 +12,13 @@ Automate complex multi-step workflows with dependency management, parallel execu
 - **Status Monitoring** - Real-time workflow progress
 - **Error Handling** - Graceful failure management
 
-## 🚀 Installation
+##  Installation
 
 ```bash
 /plugin install workflow-orchestrator@claude-code-plugins
 ```
 
-## 📋 4 MCP Tools
+##  4 MCP Tools
 
 ### 1. `create_workflow`
 Define workflow with tasks and dependencies.
@@ -63,7 +63,7 @@ List all workflows with optional filtering.
 }
 ```
 
-## 🎬 Quick Start
+##  Quick Start
 
 ```javascript
 // 1. Create workflow
@@ -88,7 +88,7 @@ const status = await get_workflow({
 });
 ```
 
-## 🔄 DAG Execution
+##  DAG Execution
 
 Tasks execute based on dependency graph:
 
@@ -104,7 +104,7 @@ Tasks execute based on dependency graph:
 
 Independent tasks (test + test:integration) run in parallel.
 
-## 📊 Use Cases
+##  Use Cases
 
 1. **CI/CD Pipelines** - Automated build, test, deploy
 2. **Data Pipelines** - ETL workflows with dependencies
@@ -112,10 +112,10 @@ Independent tasks (test + test:integration) run in parallel.
 4. **Testing Workflows** - Parallel test execution
 5. **Batch Processing** - Complex job orchestration
 
-## 📄 License
+##  License
 
 MIT License
 
 ---
 
-**Made with ❤️ by [Intent Solutions](https://intentsolutions.io)**
+**Made with ️ by [Intent Solutions](https://intentsolutions.io)**

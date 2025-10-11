@@ -25,13 +25,13 @@ Performs comprehensive security audit of REST and GraphQL APIs, checking for OWA
 ## What This Command Does
 
 **Complete API Security Assessment:**
-- ✅ Tests for OWASP API Security Top 10 vulnerabilities
-- ✅ Validates authentication and authorization mechanisms
-- ✅ Checks for injection vulnerabilities (SQL, NoSQL, command)
-- ✅ Identifies excessive data exposure and mass assignment
-- ✅ Tests rate limiting and resource consumption controls
-- ✅ Analyzes GraphQL-specific security issues (deep queries, introspection)
-- ✅ Reviews API documentation for security misconfigurations
+-  Tests for OWASP API Security Top 10 vulnerabilities
+-  Validates authentication and authorization mechanisms
+-  Checks for injection vulnerabilities (SQL, NoSQL, command)
+-  Identifies excessive data exposure and mass assignment
+-  Tests rate limiting and resource consumption controls
+-  Analyzes GraphQL-specific security issues (deep queries, introspection)
+-  Reviews API documentation for security misconfigurations
 
 **Output:** Detailed security audit report with exploitability ratings and remediation guidance
 
@@ -113,13 +113,13 @@ Authorization: Bearer USER_123_TOKEN
 
 **Remediation:**
 ```javascript
-// ❌ VULNERABLE: No authorization check
+//  VULNERABLE: No authorization check
 app.get('/api/orders/:id', authenticate, async (req, res) => {
   const order = await Order.findById(req.params.id)
   res.json(order)  // Returns ANY order if it exists!
 })
 
-// ✅ SECURE: Verify ownership
+//  SECURE: Verify ownership
 app.get('/api/orders/:id', authenticate, async (req, res) => {
   const order = await Order.findById(req.params.id)
 
@@ -160,7 +160,7 @@ done
 
 **Remediation:**
 ```javascript
-// ✅ SECURE: Rate limiting on login
+//  SECURE: Rate limiting on login
 const rateLimit = require('express-rate-limit')
 
 const loginLimiter = rateLimit({
@@ -203,12 +203,12 @@ PATCH /api/users/123
 
 **Remediation:**
 ```javascript
-// ❌ VULNERABLE: Mass assignment
+//  VULNERABLE: Mass assignment
 app.patch('/api/users/:id', async (req, res) => {
   await User.update(req.params.id, req.body)  // Updates ALL fields!
 })
 
-// ✅ SECURE: Allowlist specific fields
+//  SECURE: Allowlist specific fields
 app.patch('/api/users/:id', async (req, res) => {
   const allowedFields = ['name', 'email', 'phone']
   const updates = {}
@@ -240,7 +240,7 @@ done
 
 **Remediation:**
 ```javascript
-// ✅ SECURE: Rate limiting + pagination + timeouts
+//  SECURE: Rate limiting + pagination + timeouts
 const rateLimit = require('express-rate-limit')
 
 // Global rate limit
@@ -282,13 +282,13 @@ curl -H "Authorization: Bearer USER_TOKEN" \
 
 **Remediation:**
 ```javascript
-// ❌ VULNERABLE: No role check
+//  VULNERABLE: No role check
 app.delete('/admin/delete-user/:id', authenticate, async (req, res) => {
   await User.delete(req.params.id)
   // Any authenticated user can delete users!
 })
 
-// ✅ SECURE: Role-based access control
+//  SECURE: Role-based access control
 function requireAdmin(req, res, next) {
   if (!req.user.isAdmin) {
     return res.status(403).json({ error: 'Admin access required' })
@@ -319,7 +319,7 @@ done
 
 **Remediation:**
 ```javascript
-// ✅ SECURE: Business logic rate limiting
+//  SECURE: Business logic rate limiting
 const Redis = require('ioredis')
 const redis = new Redis()
 
@@ -369,7 +369,7 @@ POST /api/upload-from-url
 
 **Remediation:**
 ```javascript
-// ✅ SECURE: URL validation and allowlist
+//  SECURE: URL validation and allowlist
 const validator = require('validator')
 
 app.post('/api/upload-from-url', async (req, res) => {
@@ -419,7 +419,7 @@ app.post('/api/upload-from-url', async (req, res) => {
 
 **Remediation:**
 ```javascript
-// ✅ SECURE: Security headers and configuration
+//  SECURE: Security headers and configuration
 const helmet = require('helmet')
 const cors = require('cors')
 
@@ -468,7 +468,7 @@ app.use((err, req, res, next) => {
 
 **Example Attack:**
 ```javascript
-// ❌ VULNERABLE: Trust external API response
+//  VULNERABLE: Trust external API response
 app.get('/user-profile', async (req, res) => {
   const externalData = await fetch('https://third-party.com/api/user')
   const userData = await externalData.json()
@@ -477,7 +477,7 @@ app.get('/user-profile', async (req, res) => {
   await db.users.insert(userData)  // SQL injection possible!
 })
 
-// ✅ SECURE: Validate external API responses
+//  SECURE: Validate external API responses
 app.get('/user-profile', async (req, res) => {
   const externalData = await fetch('https://third-party.com/api/user')
   const userData = await externalData.json()
@@ -569,40 +569,40 @@ const server = new ApolloServer({
 ```bash
 $ /api-security-audit https://api.example.com
 
-🔍 API Security Audit
+ API Security Audit
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🌐 API: https://api.example.com
-📋 Type: REST API
-📅 Audit Date: 2025-10-10
+ API: https://api.example.com
+ Type: REST API
+ Audit Date: 2025-10-10
 ⏱️  Duration: 18 minutes
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 CRITICAL VULNERABILITIES
+ CRITICAL VULNERABILITIES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Broken Object Level Authorization (BOLA)
-   🔴 Severity: Critical
-   📍 Endpoint: GET /api/orders/:id
+    Severity: Critical
+    Endpoint: GET /api/orders/:id
 
-   ⚠️  Issue: Users can access other users' orders by changing ID
+   ️  Issue: Users can access other users' orders by changing ID
 
    Test:
    - User A ID: 123, Created order ID: 456
    - User B ID: 789, Accessed order ID: 456 successfully!
 
-   ✅ Fix:
+    Fix:
    if (order.userId !== req.user.id && !req.user.isAdmin) {
      return res.status(403).json({ error: 'Forbidden' })
    }
 
 2. No Rate Limiting on Login
-   🔴 Severity: Critical
-   📍 Endpoint: POST /api/login
+    Severity: Critical
+    Endpoint: POST /api/login
 
-   ⚠️  Issue: Brute force attacks possible (tested 10,000 requests/min)
+   ️  Issue: Brute force attacks possible (tested 10,000 requests/min)
 
-   ✅ Fix:
+    Fix:
    const loginLimiter = rateLimit({
      windowMs: 15 * 60 * 1000,
      max: 5
@@ -610,14 +610,14 @@ $ /api-security-audit https://api.example.com
    app.post('/login', loginLimiter, loginHandler)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  HIGH SEVERITY VULNERABILITIES
+️  HIGH SEVERITY VULNERABILITIES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 3. Mass Assignment Vulnerability
-   🟠 Severity: High
-   📍 Endpoint: PATCH /api/users/:id
+    Severity: High
+    Endpoint: PATCH /api/users/:id
 
-   ⚠️  Issue: Can modify isAdmin field
+   ️  Issue: Can modify isAdmin field
 
    Test Payload:
    PATCH /api/users/123
@@ -625,86 +625,86 @@ $ /api-security-audit https://api.example.com
 
    Result: Regular user elevated to admin!
 
-   ✅ Fix: Implement field allowlist
+    Fix: Implement field allowlist
 
 4. SQL Injection
-   🟠 Severity: High
-   📍 Endpoint: GET /api/search?q=
+    Severity: High
+    Endpoint: GET /api/search?q=
 
-   ⚠️  Issue: Unsanitized search parameter
+   ️  Issue: Unsanitized search parameter
 
    Test Payload:
    GET /api/search?q=' OR '1'='1
 
    Result: Returns all records!
 
-   ✅ Fix: Use parameterized queries
+    Fix: Use parameterized queries
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 MEDIUM SEVERITY ISSUES
+ MEDIUM SEVERITY ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 5. Verbose Error Messages
-   🟡 Severity: Medium
+    Severity: Medium
 
    Error Response:
    {
      "error": "Error: Connection refused at Database.connect (db.js:45)"
    }
 
-   ⚠️  Exposes: Internal paths, technology stack
+   ️  Exposes: Internal paths, technology stack
 
-   ✅ Fix: Return generic error messages
+    Fix: Return generic error messages
 
 6. No Pagination Limits
-   🟡 Severity: Medium
-   📍 Endpoint: GET /api/users
+    Severity: Medium
+    Endpoint: GET /api/users
 
-   ⚠️  Issue: Can request unlimited records
+   ️  Issue: Can request unlimited records
 
-   ✅ Fix: Enforce max limit (100 records)
+    Fix: Enforce max limit (100 records)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 AUDIT SUMMARY
+ AUDIT SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 OWASP API Security Top 10 Coverage:
-✅ API1: Broken Object Level Authorization - VULNERABLE
-✅ API2: Broken Authentication - VULNERABLE
-✅ API3: Broken Object Property Level Authorization - VULNERABLE
-✅ API4: Unrestricted Resource Consumption - PARTIAL
-✅ API5: Broken Function Level Authorization - SECURE
-✅ API6: Unrestricted Access to Sensitive Business Flows - NOT TESTED
-✅ API7: Server Side Request Forgery - NOT APPLICABLE
-✅ API8: Security Misconfiguration - VULNERABLE
-✅ API9: Improper Inventory Management - PARTIAL
-✅ API10: Unsafe Consumption of APIs - NOT TESTED
+ API1: Broken Object Level Authorization - VULNERABLE
+ API2: Broken Authentication - VULNERABLE
+ API3: Broken Object Property Level Authorization - VULNERABLE
+ API4: Unrestricted Resource Consumption - PARTIAL
+ API5: Broken Function Level Authorization - SECURE
+ API6: Unrestricted Access to Sensitive Business Flows - NOT TESTED
+ API7: Server Side Request Forgery - NOT APPLICABLE
+ API8: Security Misconfiguration - VULNERABLE
+ API9: Improper Inventory Management - PARTIAL
+ API10: Unsafe Consumption of APIs - NOT TESTED
 
 Total Findings: 15
- 🔴 Critical: 2
- 🟠 High: 4
- 🟡 Medium: 6
- 🔵 Low: 3
+  Critical: 2
+  High: 4
+  Medium: 6
+  Low: 3
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 REMEDIATION ROADMAP
+ REMEDIATION ROADMAP
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Week 1 (Critical):
-✓ Fix BOLA vulnerability (4 hours)
-✓ Add login rate limiting (2 hours)
+ Fix BOLA vulnerability (4 hours)
+ Add login rate limiting (2 hours)
 
 Week 2 (High):
-✓ Fix mass assignment (3 hours)
-✓ Fix SQL injection (4 hours)
+ Fix mass assignment (3 hours)
+ Fix SQL injection (4 hours)
 
 Week 3 (Medium):
-✓ Generic error messages (2 hours)
-✓ Add pagination limits (2 hours)
+ Generic error messages (2 hours)
+ Add pagination limits (2 hours)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Audit completed! ✅
+Audit completed! 
 Report saved to: api-security-audit-2025-10-10.md
 ```
 
@@ -731,4 +731,4 @@ Report saved to: api-security-audit-2025-10-10.md
 **Time Investment:** 15-30 minutes per audit
 **Value:** Prevent data breaches, unauthorized access, and API abuse
 
-**Audit APIs thoroughly. Fix vulnerabilities early. Deploy securely.** 🔐
+**Audit APIs thoroughly. Fix vulnerabilities early. Deploy securely.** 

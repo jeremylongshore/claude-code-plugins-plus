@@ -1,0 +1,21 @@
+{
+  "name": "database-documentation-gen",
+  "description": "Database plugin for database-documentation-gen",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "documentation"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-documentation-gen",
+  "license": "MIT",
+  "installation": "/plugin install database-documentation-gen@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

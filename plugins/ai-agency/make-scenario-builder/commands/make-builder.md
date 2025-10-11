@@ -79,7 +79,7 @@ Webhook: Custom webhook
 
 4A. **Slack: Create a message** (High route)
    - Channel: #sales-leads
-   - Text: `🔥 Hot lead: {{1.name}} from {{1.company}} - Score: {{3.score}}`
+   - Text: ` Hot lead: {{1.name}} from {{1.company}} - Score: {{3.score}}`
 
 4B. **HubSpot: Create a deal** (High route)
    - Deal name: `{{1.company}} - {{1.name}}`
@@ -220,7 +220,7 @@ Zendesk: Watch tickets
 
 4B. **Slack: Create message** (Urgent)
    - Channel: #support-urgent
-   - Text: `🚨 Urgent ticket: {{1.subject}} - {{1.ticket_id}}`
+   - Text: ` Urgent ticket: {{1.subject}} - {{1.ticket_id}}`
 
 5. **Zendesk: Update ticket** (Normal)
    - Priority: normal

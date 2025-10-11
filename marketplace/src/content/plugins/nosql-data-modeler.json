@@ -1,0 +1,21 @@
+{
+  "name": "nosql-data-modeler",
+  "description": "Database plugin for nosql-data-modeler",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "data"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/nosql-data-modeler",
+  "license": "MIT",
+  "installation": "/plugin install nosql-data-modeler@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

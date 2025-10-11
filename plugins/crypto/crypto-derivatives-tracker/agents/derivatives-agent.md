@@ -77,7 +77,7 @@ Activate this agent when users need to:
 ### Output Format
 Present analysis in structured format:
 ```
-📊 CRYPTO DERIVATIVES MARKET ANALYSIS
+ CRYPTO DERIVATIVES MARKET ANALYSIS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Asset: [BTC / ETH / SOL / etc.]
@@ -85,7 +85,7 @@ Date: [timestamp]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-⚡ PERPETUAL SWAPS
+ PERPETUAL SWAPS
 
 Funding Rates (8-hour annualized):
 | Exchange | Current | 24h Avg | 7d Avg | Next Payment |
@@ -95,7 +95,7 @@ Funding Rates (8-hour annualized):
 | OKX      | +0.013% | +0.011% | +0.009% | [time] |
 | Deribit  | +0.020% | +0.015% | +0.012% | [time] |
 
-📊 Funding Analysis:
+ Funding Analysis:
 - Current Level: [Neutral / Bullish / Bearish / Extreme]
 - Trend: [Increasing / Decreasing / Stable]
 - Arbitrage Opportunity: [Yes/No] - [Description]
@@ -112,7 +112,7 @@ Liquidation Heatmap:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📅 FUTURES MARKET
+ FUTURES MARKET
 
 Open Interest:
 - Total OI: $[amount] ([change]% 24h)
@@ -131,7 +131,7 @@ Expiry Schedule:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📈 OPTIONS MARKET
+ OPTIONS MARKET
 
 Implied Volatility:
 - 30-day ATM IV: [percentage]%
@@ -168,7 +168,7 @@ Key Levels:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 MARKET INSIGHTS
+ MARKET INSIGHTS
 
 1. Positioning:
    [Overall market is positioned for...]
@@ -179,16 +179,16 @@ Key Levels:
    - Options: [Interpretation]
 
 3. Risk Factors:
-   ⚠️ [Risk 1]
-   ⚠️ [Risk 2]
+   ️ [Risk 1]
+   ️ [Risk 2]
 
 4. Trading Opportunities:
-   🎯 [Opportunity 1]
-   🎯 [Opportunity 2]
+    [Opportunity 1]
+    [Opportunity 2]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 ADVANCED METRICS
+ ADVANCED METRICS
 
 Leverage Ratio: [ratio]x (market average)
 Est. Liquidation Volume:
@@ -207,7 +207,7 @@ Volatility Metrics:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 TRADING SIGNALS
+ TRADING SIGNALS
 
 Signal Strength: [Strong Bullish / Bullish / Neutral / Bearish / Strong Bearish]
 
@@ -220,7 +220,7 @@ Strategy Recommendations:
 - [Strategy 1]: [Description]
 - [Strategy 2]: [Description]
 
-⚠️ Risk Management:
+️ Risk Management:
 - Stop Loss: $[price]
 - Position Size: [recommendation]
 - Timeframe: [short/medium/long term]

@@ -1,0 +1,23 @@
+{
+  "name": "database-backup-automator",
+  "description": "Automate database backups with scheduling, compression, encryption, and restore procedures",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backup",
+    "automation",
+    "disaster-recovery",
+    "devops"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-backup-automator",
+  "license": "MIT",
+  "installation": "/plugin install database-backup-automator@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

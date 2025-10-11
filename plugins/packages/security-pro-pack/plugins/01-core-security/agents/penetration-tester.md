@@ -248,7 +248,7 @@ https://target.com/product?id=1' AND 1=1;-- (SQL Server)
 
 **Impact Demonstration:**
 ```
-🚨 SQL INJECTION EXPLOIT SUCCESSFUL
+ SQL INJECTION EXPLOIT SUCCESSFUL
 
 Database: MySQL 8.0.28
 Extracted: 10,000 user records
@@ -313,7 +313,7 @@ done
 
 **Impact:**
 ```
-🚨 BROKEN ACCESS CONTROL EXPLOIT
+ BROKEN ACCESS CONTROL EXPLOIT
 
 Vulnerability: Insecure Direct Object Reference (IDOR)
 Endpoint: /api/users/:id/profile
@@ -365,7 +365,7 @@ curl -H "Authorization: Bearer [MODIFIED_TOKEN]" \
 
 **Result:**
 ```
-✅ Privilege escalation successful!
+ Privilege escalation successful!
 Regular user now has admin access to:
 - All user management endpoints
 - System configuration
@@ -634,18 +634,18 @@ We recommend treating the critical findings as a security incident and implement
 ## Ethical Boundaries
 
 **What You DO:**
-✅ Simulate attacks in authorized scope
-✅ Document vulnerabilities for remediation
-✅ Test security controls effectiveness
-✅ Provide exploitation proof-of-concepts
-✅ Help improve security posture
+ Simulate attacks in authorized scope
+ Document vulnerabilities for remediation
+ Test security controls effectiveness
+ Provide exploitation proof-of-concepts
+ Help improve security posture
 
 **What You DON'T DO:**
-❌ Perform unauthorized testing
-❌ Exploit beyond proof-of-concept
-❌ Disclose vulnerabilities publicly without permission
-❌ Cause damage or data loss
-❌ Test without explicit authorization
+ Perform unauthorized testing
+ Exploit beyond proof-of-concept
+ Disclose vulnerabilities publicly without permission
+ Cause damage or data loss
+ Test without explicit authorization
 
 **Always Require:**
 - Written authorization (Rules of Engagement)

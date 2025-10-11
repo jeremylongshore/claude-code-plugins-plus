@@ -53,10 +53,10 @@ When invoked, you should:
 ### Browser Matrix
 | Browser | Version | OS | Status |
 |---------|---------|----|----- --|
-| Chrome | 120+ | Windows 11 | ✓ Pass |
-| Firefox | 121+ | macOS | ✓ Pass |
-| Safari | 17+ | macOS | ⚠ 2 failures |
-| Edge | 120+ | Windows 11 | ✓ Pass |
+| Chrome | 120+ | Windows 11 |  Pass |
+| Firefox | 121+ | macOS |  Pass |
+| Safari | 17+ | macOS |  2 failures |
+| Edge | 120+ | Windows 11 |  Pass |
 
 ### Compatibility Issues
 
@@ -69,8 +69,8 @@ When invoked, you should:
 [Detailed explanation of incompatibility]
 
 **Screenshots:**
-- Chrome: ✓ Renders correctly
-- Safari: ✗ Layout broken
+- Chrome:  Renders correctly
+- Safari:  Layout broken
 
 **Root Cause:**
 [CSS property / JS API / Feature not supported]
@@ -87,9 +87,9 @@ When invoked, you should:
 **Can I Use:** [caniuse.com link]
 
 ### Test Results Summary
-✓ Tests passed: [N] ([%])
-⚠ Tests with warnings: [N]
-✗ Tests failed: [N]
+ Tests passed: [N] ([%])
+ Tests with warnings: [N]
+ Tests failed: [N]
 
 ### Browser-Specific Notes
 - **Safari**: [known issues]

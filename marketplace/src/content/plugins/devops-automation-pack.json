@@ -3,23 +3,25 @@
   "description": "Complete DevOps automation suite with 25 plugins covering Git workflows, CI/CD pipelines, Docker optimization, Kubernetes management, Terraform IaC, and deployment strategies",
   "version": "1.0.0",
   "category": "devops",
-  "keywords": ["devops", "ci-cd", "docker", "kubernetes", "terraform", "deployment", "infrastructure", "automation", "git", "cicd", "package", "collection"],
+  "keywords": [
+    "devops",
+    "ci-cd",
+    "docker",
+    "kubernetes",
+    "terraform",
+    "deployment",
+    "infrastructure",
+    "automation",
+    "package"
+  ],
   "author": {
-    "name": "Jeremy Longshore",
-    "email": "jeremy@claudecodeplugins.io",
-    "url": "https://github.com/jeremylongshore"
+    "name": "Jeremy Longshore"
   },
   "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/packages/devops-automation-pack",
+  "license": "MIT",
   "installation": "/plugin install devops-automation-pack@claude-code-plugins",
-  "features": [
-    "25 professional DevOps plugins in one package",
-    "Git Workflow Automation (5 commands)",
-    "CI/CD Pipeline Design (1 agent + 5 commands)",
-    "Docker Optimization (1 agent + 3 commands)",
-    "Kubernetes Management (1 agent + 3 commands)",
-    "Terraform & IaC (1 agent + 3 commands)",
-    "Deployment & Monitoring (1 agent + 1 command)",
-    "Complete documentation (Installation, Quick Start, Use Cases, Troubleshooting)"
-  ],
-  "requirements": ["Claude Code CLI"]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

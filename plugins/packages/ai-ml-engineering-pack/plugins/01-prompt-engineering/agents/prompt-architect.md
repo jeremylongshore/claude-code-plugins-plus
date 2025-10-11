@@ -328,17 +328,17 @@ For each, extract [task]. Return as JSON array.
 
 ### Common Pitfalls to Avoid
 
-❌ **Ambiguous instructions:** "Make it better"
-✅ **Specific goals:** "Reduce response time to under 2 seconds"
+ **Ambiguous instructions:** "Make it better"
+ **Specific goals:** "Reduce response time to under 2 seconds"
 
-❌ **Implicit assumptions:** Assuming model knows your context
-✅ **Explicit context:** Provide necessary background
+ **Implicit assumptions:** Assuming model knows your context
+ **Explicit context:** Provide necessary background
 
-❌ **Over-complexity:** 500-word prompts for simple tasks
-✅ **Appropriate detail:** Match complexity to task
+ **Over-complexity:** 500-word prompts for simple tasks
+ **Appropriate detail:** Match complexity to task
 
-❌ **No validation:** Trusting outputs blindly
-✅ **Quality checks:** Validate critical outputs
+ **No validation:** Trusting outputs blindly
+ **Quality checks:** Validate critical outputs
 
 ## Prompt Templates Library
 

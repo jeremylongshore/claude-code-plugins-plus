@@ -387,12 +387,12 @@ yamllint .github/workflows/ci.yml
 **Common YAML mistakes:**
 
 ```yaml
-# ❌ WRONG: Mixed tabs and spaces
+#  WRONG: Mixed tabs and spaces
 jobs:
 	build:
     runs-on: ubuntu-latest
 
-# ✅ CORRECT: Use spaces only
+#  CORRECT: Use spaces only
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -468,10 +468,10 @@ docker build --no-cache -t test . 2>&1 | grep "COPY"
 **Common mistakes:**
 
 ```dockerfile
-# ❌ WRONG: File outside context
+#  WRONG: File outside context
 COPY ../config.json /app/
 
-# ✅ CORRECT: File in context
+#  CORRECT: File in context
 COPY config.json /app/
 ```
 
@@ -741,11 +741,11 @@ claude config set timeout 120
 
 **Be more specific in questions:**
 
-❌ "How do I make my code better?"
-✅ "How do I optimize my GitHub Actions pipeline?"
+ "How do I make my code better?"
+ "How do I optimize my GitHub Actions pipeline?"
 
-❌ "I have Docker issues"
-✅ "My Docker image is 2GB, how do I reduce it?"
+ "I have Docker issues"
+ "My Docker image is 2GB, how do I reduce it?"
 
 **Explicitly invoke agent (if available):**
 ```bash

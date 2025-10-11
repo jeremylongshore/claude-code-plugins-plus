@@ -347,7 +347,7 @@ Error: SSL certificate verification failed
 # For development/staging with self-signed certs
 /asa https://staging-api.example.com --insecure
 
-# ⚠️ WARNING: Never use --insecure for production audits!
+# ️ WARNING: Never use --insecure for production audits!
 
 # Better solution: Add certificate to system trust store
 # macOS:
@@ -413,7 +413,7 @@ git commit -m "Add customized HIPAA documentation"
 
 **Symptoms:**
 ```
-🔴 CRITICAL: MD5 hashing detected
+ CRITICAL: MD5 hashing detected
 File: tests/fixtures/test-data.js:12
 ```
 

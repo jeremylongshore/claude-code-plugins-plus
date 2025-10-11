@@ -576,10 +576,10 @@ ${this.formatRisks(result.risks)}
     }
 
     getRiskEmoji(score) {
-        if (score <= 2) return '🟢';
-        if (score <= 5) return '🟡';
-        if (score <= 7) return '🟠';
-        return '🔴';
+        if (score <= 2) return '';
+        if (score <= 5) return '';
+        if (score <= 7) return '';
+        return '';
     }
 
     getDiversificationLabel(score) {
@@ -591,13 +591,13 @@ ${this.formatRisks(result.risks)}
 
     getRiskLevelEmoji(level) {
         const emojis = {
-            LOW: '✅',
-            MODERATE: '⚠️',
-            MEDIUM: '⚠️',
-            HIGH: '🔴',
-            PRESENT: '⚠️'
+            LOW: '',
+            MODERATE: '️',
+            MEDIUM: '️',
+            HIGH: '',
+            PRESENT: '️'
         };
-        return emojis[level] || '❓';
+        return emojis[level] || '';
     }
 }
 ```

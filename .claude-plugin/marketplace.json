@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.1.0",
+    "version": "3.0.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -2045,6 +2045,1930 @@
         "bias",
         "responsible-ai",
         "ml"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "arbitrage-opportunity-finder",
+      "source": "./plugins/crypto/arbitrage-opportunity-finder",
+      "description": "Find and analyze arbitrage opportunities across exchanges and DeFi protocols",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "arbitrage",
+        "trading",
+        "defi",
+        "mev",
+        "profit"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "blockchain-explorer-cli",
+      "source": "./plugins/crypto/blockchain-explorer-cli",
+      "description": "Command-line blockchain explorer for transactions, addresses, and contracts",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "blockchain",
+        "explorer",
+        "etherscan",
+        "transactions",
+        "addresses",
+        "contracts"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "cross-chain-bridge-monitor",
+      "source": "./plugins/crypto/cross-chain-bridge-monitor",
+      "description": "Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "cross-chain",
+        "bridge",
+        "security",
+        "monitoring",
+        "layer2",
+        "multichain",
+        "defi"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "crypto-derivatives-tracker",
+      "source": "./plugins/crypto/crypto-derivatives-tracker",
+      "description": "Track crypto futures, options, perpetual swaps with funding rates, open interest, and derivatives market analysis",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "derivatives",
+        "futures",
+        "options",
+        "perpetuals",
+        "funding-rate",
+        "open-interest",
+        "trading"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "crypto-news-aggregator",
+      "source": "./plugins/crypto/crypto-news-aggregator",
+      "description": "Aggregate and analyze crypto news from multiple sources with sentiment analysis",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "news",
+        "aggregator",
+        "sentiment",
+        "crypto",
+        "media"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "crypto-portfolio-tracker",
+      "source": "./plugins/crypto/crypto-portfolio-tracker",
+      "description": "Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "portfolio",
+        "trading",
+        "investment",
+        "bitcoin",
+        "ethereum",
+        "defi"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "crypto-signal-generator",
+      "source": "./plugins/crypto/crypto-signal-generator",
+      "description": "Generate trading signals from technical indicators and market analysis",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "trading",
+        "signals",
+        "technical-analysis",
+        "indicators",
+        "crypto"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "crypto-tax-calculator",
+      "source": "./plugins/crypto/crypto-tax-calculator",
+      "description": "Calculate crypto taxes with FIFO/LIFO methods and generate tax reports",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "tax",
+        "calculator",
+        "fifo",
+        "lifo",
+        "capital gains"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "defi-yield-optimizer",
+      "source": "./plugins/crypto/defi-yield-optimizer",
+      "description": "Optimize DeFi yield farming strategies across protocols with APY tracking and risk assessment",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "defi",
+        "yield",
+        "farming",
+        "liquidity",
+        "apy",
+        "optimization",
+        "crypto"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "dex-aggregator-router",
+      "source": "./plugins/crypto/dex-aggregator-router",
+      "description": "Find optimal DEX routes for token swaps across multiple exchanges",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "dex",
+        "swap",
+        "trading",
+        "defi",
+        "aggregator",
+        "routing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "flash-loan-simulator",
+      "source": "./plugins/crypto/flash-loan-simulator",
+      "description": "Simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "flash-loans",
+        "defi",
+        "aave",
+        "arbitrage",
+        "liquidation",
+        "ethereum",
+        "simulation"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "gas-fee-optimizer",
+      "source": "./plugins/crypto/gas-fee-optimizer",
+      "description": "Optimize transaction gas fees with timing and routing recommendations",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "gas",
+        "fees",
+        "ethereum",
+        "optimization",
+        "transaction",
+        "l2"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "liquidity-pool-analyzer",
+      "source": "./plugins/crypto/liquidity-pool-analyzer",
+      "description": "Analyze DeFi liquidity pools for impermanent loss, APY, and optimization opportunities",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "liquidity",
+        "pool",
+        "defi",
+        "impermanent",
+        "loss",
+        "apy"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "market-movers-scanner",
+      "source": "./plugins/crypto/market-movers-scanner",
+      "description": "Scan for top market movers - gainers, losers, volume spikes, and unusual activity",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "market",
+        "scanner",
+        "movers",
+        "gainers",
+        "losers",
+        "volume",
+        "trading"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "market-price-tracker",
+      "source": "./plugins/crypto/market-price-tracker",
+      "description": "Real-time market price tracking with multi-exchange feeds and advanced alerts",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "market",
+        "price",
+        "tracking",
+        "trading",
+        "crypto",
+        "stocks",
+        "forex"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "market-sentiment-analyzer",
+      "source": "./plugins/crypto/market-sentiment-analyzer",
+      "description": "Analyze market sentiment from social media, news, and on-chain data",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "sentiment",
+        "analysis",
+        "social",
+        "news",
+        "market",
+        "crypto"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "mempool-analyzer",
+      "source": "./plugins/crypto/mempool-analyzer",
+      "description": "Advanced mempool analysis for MEV opportunities, pending transaction monitoring, and gas price optimization",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "mempool",
+        "mev",
+        "ethereum",
+        "blockchain",
+        "gas",
+        "pending-transactions",
+        "arbitrage"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "nft-rarity-analyzer",
+      "source": "./plugins/crypto/nft-rarity-analyzer",
+      "description": "Analyze NFT rarity scores and valuations across collections",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "nft",
+        "rarity",
+        "valuation",
+        "traits",
+        "opensea",
+        "crypto"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "on-chain-analytics",
+      "source": "./plugins/crypto/on-chain-analytics",
+      "description": "Analyze on-chain metrics including whale movements, network activity, and holder distribution",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "on-chain",
+        "analytics",
+        "whale",
+        "metrics",
+        "blockchain"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "options-flow-analyzer",
+      "source": "./plugins/crypto/options-flow-analyzer",
+      "description": "Track institutional options flow, unusual activity, and smart money movements",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "options",
+        "flow",
+        "institutional",
+        "trading",
+        "derivatives",
+        "smart money"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "staking-rewards-optimizer",
+      "source": "./plugins/crypto/staking-rewards-optimizer",
+      "description": "Optimize staking rewards across multiple protocols and chains",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "staking",
+        "defi",
+        "yield",
+        "optimization",
+        "rewards"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "token-launch-tracker",
+      "source": "./plugins/crypto/token-launch-tracker",
+      "description": "Track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "token-launch",
+        "rugpull",
+        "security",
+        "scam-detection",
+        "contract-analysis",
+        "defi",
+        "new-tokens"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "trading-strategy-backtester",
+      "source": "./plugins/crypto/trading-strategy-backtester",
+      "description": "Backtest trading strategies with historical data, performance metrics, and risk analysis",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "trading",
+        "backtesting",
+        "strategy",
+        "historical",
+        "performance",
+        "risk"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "wallet-portfolio-tracker",
+      "source": "./plugins/crypto/wallet-portfolio-tracker",
+      "description": "Track crypto wallets across multiple chains with portfolio analytics and transaction history",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "wallet",
+        "portfolio",
+        "tracking",
+        "blockchain",
+        "defi",
+        "crypto"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "whale-alert-monitor",
+      "source": "./plugins/crypto/whale-alert-monitor",
+      "description": "Monitor large crypto transactions and whale wallet movements in real-time",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "whale",
+        "alert",
+        "monitor",
+        "large",
+        "transactions"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "data-seeder-generator",
+      "source": "./plugins/database/data-seeder-generator",
+      "description": "Generate realistic test data and database seed scripts for development and testing environments",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "seeding",
+        "test-data",
+        "fixtures",
+        "database",
+        "testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "data-validation-engine",
+      "source": "./plugins/database/data-validation-engine",
+      "description": "Database plugin for data-validation-engine",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "validation"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-archival-system",
+      "source": "./plugins/database/database-archival-system",
+      "description": "Database plugin for database-archival-system",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "archival"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-audit-logger",
+      "source": "./plugins/database/database-audit-logger",
+      "description": "Database plugin for database-audit-logger",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "audit"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-backup-automator",
+      "source": "./plugins/database/database-backup-automator",
+      "description": "Automate database backups with scheduling, compression, encryption, and restore procedures",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backup",
+        "automation",
+        "disaster-recovery",
+        "devops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-cache-layer",
+      "source": "./plugins/database/database-cache-layer",
+      "description": "Database plugin for database-cache-layer",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "cache"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-connection-pooler",
+      "source": "./plugins/database/database-connection-pooler",
+      "description": "Implement and optimize database connection pooling for improved performance and resource management",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "connection-pool",
+        "database",
+        "performance",
+        "backend",
+        "optimization"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-deadlock-detector",
+      "source": "./plugins/database/database-deadlock-detector",
+      "description": "Database plugin for database-deadlock-detector",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "deadlock"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-diff-tool",
+      "source": "./plugins/database/database-diff-tool",
+      "description": "Database plugin for database-diff-tool",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "diff"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-documentation-gen",
+      "source": "./plugins/database/database-documentation-gen",
+      "description": "Database plugin for database-documentation-gen",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "documentation"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-health-monitor",
+      "source": "./plugins/database/database-health-monitor",
+      "description": "Database plugin for database-health-monitor",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "health"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-index-advisor",
+      "source": "./plugins/database/database-index-advisor",
+      "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "indexes",
+        "optimization",
+        "performance"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-migration-manager",
+      "source": "./plugins/database/database-migration-manager",
+      "description": "Manage database migrations with version control, rollback capabilities, and automated schema evolution tracking",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "migration",
+        "schema",
+        "version-control",
+        "backend"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-partition-manager",
+      "source": "./plugins/database/database-partition-manager",
+      "description": "Database plugin for database-partition-manager",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "partition"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-recovery-manager",
+      "source": "./plugins/database/database-recovery-manager",
+      "description": "Database plugin for database-recovery-manager",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "recovery"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-replication-manager",
+      "source": "./plugins/database/database-replication-manager",
+      "description": "Manage database replication, failover, and high availability configurations",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "replication",
+        "high-availability",
+        "failover",
+        "database",
+        "devops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-schema-designer",
+      "source": "./plugins/database/database-schema-designer",
+      "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "schema",
+        "design",
+        "erd",
+        "normalization"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-security-scanner",
+      "source": "./plugins/database/database-security-scanner",
+      "description": "Database plugin for database-security-scanner",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "security"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-sharding-manager",
+      "source": "./plugins/database/database-sharding-manager",
+      "description": "Database plugin for database-sharding-manager",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "sharding"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-transaction-monitor",
+      "source": "./plugins/database/database-transaction-monitor",
+      "description": "Database plugin for database-transaction-monitor",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "transaction"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "nosql-data-modeler",
+      "source": "./plugins/database/nosql-data-modeler",
+      "description": "Database plugin for nosql-data-modeler",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "data"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "orm-code-generator",
+      "source": "./plugins/database/orm-code-generator",
+      "description": "Generate ORM models from database schemas or create database schemas from models for TypeORM, Prisma, Sequelize, SQLAlchemy, and more",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "orm",
+        "models",
+        "code-generation",
+        "database",
+        "backend"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "query-performance-analyzer",
+      "source": "./plugins/database/query-performance-analyzer",
+      "description": "Analyze query performance with EXPLAIN plan interpretation, bottleneck identification, and optimization recommendations",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "performance",
+        "query",
+        "optimization",
+        "explain",
+        "database"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "sql-query-optimizer",
+      "source": "./plugins/database/sql-query-optimizer",
+      "description": "Analyze and optimize SQL queries for better performance, suggesting indexes, query rewrites, and execution plan improvements",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "sql",
+        "optimization",
+        "performance",
+        "database",
+        "query"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "stored-procedure-generator",
+      "source": "./plugins/database/stored-procedure-generator",
+      "description": "Database plugin for stored-procedure-generator",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "database",
+        "backend",
+        "procedure"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "alerting-rule-creator",
+      "source": "./plugins/performance/alerting-rule-creator",
+      "description": "Create intelligent alerting rules for performance monitoring",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "alerting",
+        "monitoring",
+        "sre",
+        "observability"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "apm-dashboard-creator",
+      "source": "./plugins/performance/apm-dashboard-creator",
+      "description": "Create Application Performance Monitoring dashboards",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "apm",
+        "monitoring",
+        "dashboard",
+        "grafana",
+        "datadog"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "application-profiler",
+      "source": "./plugins/performance/application-profiler",
+      "description": "Profile application performance with CPU, memory, and execution time analysis",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "performance",
+        "profiling",
+        "monitoring",
+        "optimization"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "bottleneck-detector",
+      "source": "./plugins/performance/bottleneck-detector",
+      "description": "Detect and resolve performance bottlenecks",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "bottleneck",
+        "performance",
+        "optimization",
+        "profiling"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "cache-performance-optimizer",
+      "source": "./plugins/performance/cache-performance-optimizer",
+      "description": "Optimize caching strategies for improved performance",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "cache",
+        "performance",
+        "optimization",
+        "redis"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "capacity-planning-analyzer",
+      "source": "./plugins/performance/capacity-planning-analyzer",
+      "description": "Analyze and plan for capacity requirements",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "capacity-planning",
+        "scaling",
+        "forecasting",
+        "infrastructure"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "cpu-usage-monitor",
+      "source": "./plugins/performance/cpu-usage-monitor",
+      "description": "Monitor and analyze CPU usage patterns in applications",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "cpu",
+        "monitoring",
+        "performance",
+        "optimization"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "database-query-profiler",
+      "source": "./plugins/performance/database-query-profiler",
+      "description": "Profile and optimize database queries for performance",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "database",
+        "query",
+        "profiling",
+        "optimization",
+        "sql"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "distributed-tracing-setup",
+      "source": "./plugins/performance/distributed-tracing-setup",
+      "description": "Set up distributed tracing for microservices",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "tracing",
+        "observability",
+        "microservices",
+        "opentelemetry"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "error-rate-monitor",
+      "source": "./plugins/performance/error-rate-monitor",
+      "description": "Monitor and analyze application error rates",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "errors",
+        "monitoring",
+        "reliability",
+        "sre"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "infrastructure-metrics-collector",
+      "source": "./plugins/performance/infrastructure-metrics-collector",
+      "description": "Collect comprehensive infrastructure performance metrics",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "infrastructure",
+        "metrics",
+        "monitoring",
+        "observability"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "load-test-runner",
+      "source": "./plugins/performance/load-test-runner",
+      "description": "Create and execute load tests for performance validation",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "load-testing",
+        "performance",
+        "stress-test",
+        "k6"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "log-analysis-tool",
+      "source": "./plugins/performance/log-analysis-tool",
+      "description": "Analyze logs for performance insights and issues",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "logs",
+        "analysis",
+        "performance",
+        "debugging"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "memory-leak-detector",
+      "source": "./plugins/performance/memory-leak-detector",
+      "description": "Detect memory leaks and analyze memory usage patterns",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "memory",
+        "leak",
+        "detection",
+        "performance"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "metrics-aggregator",
+      "source": "./plugins/performance/metrics-aggregator",
+      "description": "Aggregate and centralize performance metrics",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "metrics",
+        "aggregation",
+        "prometheus",
+        "monitoring"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "network-latency-analyzer",
+      "source": "./plugins/performance/network-latency-analyzer",
+      "description": "Analyze network latency and optimize request patterns",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "network",
+        "latency",
+        "performance",
+        "api"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "performance-budget-validator",
+      "source": "./plugins/performance/performance-budget-validator",
+      "description": "Validate application against performance budgets",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "performance-budget",
+        "validation",
+        "ci-cd",
+        "testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "performance-optimization-advisor",
+      "source": "./plugins/performance/performance-optimization-advisor",
+      "description": "Get comprehensive performance optimization recommendations",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "optimization",
+        "performance",
+        "best-practices",
+        "advisor"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "performance-regression-detector",
+      "source": "./plugins/performance/performance-regression-detector",
+      "description": "Detect performance regressions in CI/CD pipeline",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "regression",
+        "performance",
+        "ci-cd",
+        "testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "real-user-monitoring",
+      "source": "./plugins/performance/real-user-monitoring",
+      "description": "Implement Real User Monitoring for actual performance data",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "rum",
+        "monitoring",
+        "performance",
+        "user-experience"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "resource-usage-tracker",
+      "source": "./plugins/performance/resource-usage-tracker",
+      "description": "Track and optimize resource usage across the stack",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "resources",
+        "monitoring",
+        "optimization",
+        "metrics"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "response-time-tracker",
+      "source": "./plugins/performance/response-time-tracker",
+      "description": "Track and optimize application response times",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "response-time",
+        "latency",
+        "performance",
+        "monitoring"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "sla-sli-tracker",
+      "source": "./plugins/performance/sla-sli-tracker",
+      "description": "Track SLAs, SLIs, and SLOs for service reliability",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "sla",
+        "sli",
+        "slo",
+        "sre",
+        "reliability"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "synthetic-monitoring-setup",
+      "source": "./plugins/performance/synthetic-monitoring-setup",
+      "description": "Set up synthetic monitoring for proactive performance tracking",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "synthetic-monitoring",
+        "uptime",
+        "performance",
+        "testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "throughput-analyzer",
+      "source": "./plugins/performance/throughput-analyzer",
+      "description": "Analyze and optimize system throughput",
+      "version": "1.0.0",
+      "category": "performance",
+      "keywords": [
+        "throughput",
+        "performance",
+        "capacity",
+        "optimization"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "access-control-auditor",
+      "source": "./plugins/security/access-control-auditor",
+      "description": "Audit access control implementations",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "authentication-validator",
+      "source": "./plugins/security/authentication-validator",
+      "description": "Validate authentication implementations",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "compliance-report-generator",
+      "source": "./plugins/security/compliance-report-generator",
+      "description": "Generate compliance reports",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "cors-policy-validator",
+      "source": "./plugins/security/cors-policy-validator",
+      "description": "Validate CORS policies",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "csrf-protection-validator",
+      "source": "./plugins/security/csrf-protection-validator",
+      "description": "Validate CSRF protection",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "data-privacy-scanner",
+      "source": "./plugins/security/data-privacy-scanner",
+      "description": "Scan for data privacy issues",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "dependency-checker",
+      "source": "./plugins/security/dependency-checker",
+      "description": "Check dependencies for known vulnerabilities, outdated packages, and license compliance",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "dependencies",
+        "npm",
+        "pip",
+        "composer",
+        "vulnerabilities"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "encryption-tool",
+      "source": "./plugins/security/encryption-tool",
+      "description": "Encrypt and decrypt data with various algorithms",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "gdpr-compliance-scanner",
+      "source": "./plugins/security/gdpr-compliance-scanner",
+      "description": "Scan for GDPR compliance issues",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "hipaa-compliance-checker",
+      "source": "./plugins/security/hipaa-compliance-checker",
+      "description": "Check HIPAA compliance",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "input-validation-scanner",
+      "source": "./plugins/security/input-validation-scanner",
+      "description": "Scan input validation practices",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "owasp-compliance-checker",
+      "source": "./plugins/security/owasp-compliance-checker",
+      "description": "Check OWASP Top 10 compliance",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "pci-dss-validator",
+      "source": "./plugins/security/pci-dss-validator",
+      "description": "Validate PCI DSS compliance",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "penetration-tester",
+      "source": "./plugins/security/penetration-tester",
+      "description": "Automated penetration testing for web applications with OWASP Top 10 coverage",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "penetration-testing",
+        "pentesting",
+        "owasp",
+        "exploitation"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "secret-scanner",
+      "source": "./plugins/security/secret-scanner",
+      "description": "Scan codebase for exposed secrets, API keys, passwords, and sensitive credentials",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "secrets",
+        "api-keys",
+        "credentials",
+        "passwords"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "security-audit-reporter",
+      "source": "./plugins/security/security-audit-reporter",
+      "description": "Generate comprehensive security audit reports",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "security-headers-analyzer",
+      "source": "./plugins/security/security-headers-analyzer",
+      "description": "Analyze HTTP security headers",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "security-incident-responder",
+      "source": "./plugins/security/security-incident-responder",
+      "description": "Assist with security incident response",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "security-misconfiguration-finder",
+      "source": "./plugins/security/security-misconfiguration-finder",
+      "description": "Find security misconfigurations",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "session-security-checker",
+      "source": "./plugins/security/session-security-checker",
+      "description": "Check session security implementation",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "soc2-audit-helper",
+      "source": "./plugins/security/soc2-audit-helper",
+      "description": "Assist with SOC2 audit preparation",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "sql-injection-detector",
+      "source": "./plugins/security/sql-injection-detector",
+      "description": "Detect SQL injection vulnerabilities",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "ssl-certificate-manager",
+      "source": "./plugins/security/ssl-certificate-manager",
+      "description": "Manage and monitor SSL/TLS certificates",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "vulnerability-scanner",
+      "source": "./plugins/security/vulnerability-scanner",
+      "description": "Comprehensive vulnerability scanning for code, dependencies, and configurations with CVE detection",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "vulnerability",
+        "scanning",
+        "cve",
+        "sast"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "xss-vulnerability-scanner",
+      "source": "./plugins/security/xss-vulnerability-scanner",
+      "description": "Scan for XSS vulnerabilities",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": [
+        "security",
+        "compliance",
+        "auditing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "api-test-automation",
+      "source": "./plugins/testing/api-test-automation",
+      "description": "Automated API endpoint testing with request generation, validation, and comprehensive test coverage",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "api",
+        "rest",
+        "graphql",
+        "automation",
+        "endpoints"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "e2e-test-framework",
+      "source": "./plugins/testing/e2e-test-framework",
+      "description": "End-to-end test automation with Playwright, Cypress, and Selenium for browser-based testing",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "e2e",
+        "playwright",
+        "cypress",
+        "selenium",
+        "browser-testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "integration-test-runner",
+      "source": "./plugins/testing/integration-test-runner",
+      "description": "Run and manage integration test suites with environment setup, database seeding, and cleanup",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "integration-tests",
+        "test-runner",
+        "e2e",
+        "api-testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "mutation-test-runner",
+      "source": "./plugins/testing/mutation-test-runner",
+      "description": "Mutation testing to validate test quality by introducing code changes and verifying tests catch them",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "mutation-testing",
+        "test-quality",
+        "stryker",
+        "pitest"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "performance-test-suite",
+      "source": "./plugins/testing/performance-test-suite",
+      "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "performance",
+        "load-testing",
+        "benchmarking",
+        "stress-testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "regression-test-tracker",
+      "source": "./plugins/testing/regression-test-tracker",
+      "description": "Track and run regression tests to ensure new changes don't break existing functionality",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "regression-testing",
+        "test-tracking",
+        "ci-cd",
+        "quality-assurance"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "security-test-scanner",
+      "source": "./plugins/testing/security-test-scanner",
+      "description": "Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "security",
+        "vulnerabilities",
+        "owasp",
+        "penetration-testing"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-coverage-analyzer",
+      "source": "./plugins/testing/test-coverage-analyzer",
+      "description": "Analyze code coverage metrics, identify untested code, and generate comprehensive coverage reports",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "coverage",
+        "code-coverage",
+        "metrics",
+        "analysis"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "test-data-generator",
+      "source": "./plugins/testing/test-data-generator",
+      "description": "Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "test-data",
+        "fake-data",
+        "fixtures",
+        "factory"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "unit-test-generator",
+      "source": "./plugins/testing/unit-test-generator",
+      "description": "Automatically generate comprehensive unit tests from source code with multiple testing framework support",
+      "version": "1.0.0",
+      "category": "testing",
+      "keywords": [
+        "testing",
+        "unit-tests",
+        "test-generation",
+        "jest",
+        "pytest",
+        "mocha",
+        "junit"
       ],
       "author": {
         "name": "Jeremy Longshore",

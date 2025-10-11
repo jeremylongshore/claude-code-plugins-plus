@@ -16,9 +16,9 @@ estimated_time: 20 seconds
      This is proactive (prevents mistake) and user-friendly (suggests correct format). -->
 
 <!-- VALIDATION: Tested with scenarios -->
-<!-- ✅ Feature branch creation -->
-<!-- ✅ Fix branch creation -->
-<!-- ✅ Hotfix branch creation -->
+<!--  Feature branch creation -->
+<!--  Fix branch creation -->
+<!--  Hotfix branch creation -->
 
 # Branch Creator
 
@@ -26,10 +26,10 @@ Creates a new Git branch following your team's naming convention (feature/*, fix
 
 ## When to Use This
 
-- ✅ Starting new feature or bugfix work
-- ✅ Want consistent branch naming across team
-- ✅ Need to reference issue/ticket number in branch
-- ❌ DON'T use for one-off experiments (use regular git checkout)
+-  Starting new feature or bugfix work
+-  Want consistent branch naming across team
+-  Need to reference issue/ticket number in branch
+-  DON'T use for one-off experiments (use regular git checkout)
 
 ## How It Works
 
@@ -72,7 +72,7 @@ You are a Git branch naming expert who enforces team conventions. When user runs
 
 7. **Confirm creation:**
    ```
-   ✅ Created and switched to branch: [branch-name]
+    Created and switched to branch: [branch-name]
 
    Next steps:
    - Make your changes
@@ -105,7 +105,7 @@ Brief description (2-4 words):
 Issue number (optional):
 > 123
 
-✅ Created and switched to branch: feature/123-add-oauth
+ Created and switched to branch: feature/123-add-oauth
 
 Next steps:
 - Make your changes
@@ -139,7 +139,7 @@ User: `45`
 
 You:
 ```
-✅ Created and switched to branch: feature/45-add-user-dashboard
+ Created and switched to branch: feature/45-add-user-dashboard
 
 Next steps:
 - Make your changes
@@ -167,7 +167,7 @@ User: [presses Enter]
 
 You:
 ```
-✅ Created and switched to branch: fix/memory-leak
+ Created and switched to branch: fix/memory-leak
 
 Next steps:
 - Make your changes
@@ -195,9 +195,9 @@ User: `999`
 
 You:
 ```
-✅ Created and switched to branch: hotfix/999-payment-gateway-timeout
+ Created and switched to branch: hotfix/999-payment-gateway-timeout
 
-⚠️  Hotfix detected - Remember to:
+️  Hotfix detected - Remember to:
 1. Fix the issue
 2. Test thoroughly
 3. Create PR to main AND develop branches
@@ -208,7 +208,7 @@ You:
 
 **If branch already exists:**
 ```
-❌ Branch already exists: feature/45-add-dashboard
+ Branch already exists: feature/45-add-dashboard
 
 Options:
 1. Switch to existing branch: git checkout feature/45-add-dashboard
@@ -218,19 +218,19 @@ Options:
 
 **If uncommitted changes exist:**
 ```
-⚠️ You have uncommitted changes
+️ You have uncommitted changes
 
 Options:
 1. Commit them first: /commit-smart
 2. Stash them: git stash
-3. Discard them: git reset --hard (⚠️ destructive!)
+3. Discard them: git reset --hard (️ destructive!)
 
 Then run /branch-create again
 ```
 
 **If not in git repository:**
 ```
-❌ Not in a git repository
+ Not in a git repository
 
 Initialize git first:
   git init
@@ -242,11 +242,11 @@ Then: /branch-create
 
 **If description too long:**
 ```
-⚠️ Description too long: "add-complete-user-authentication-system"
+️ Description too long: "add-complete-user-authentication-system"
 
 Keep it concise (2-4 words):
-✅ "add-user-auth"
-✅ "user-authentication"
+ "add-user-auth"
+ "user-authentication"
 
 Try again: /branch-create
 ```
@@ -258,8 +258,8 @@ Try again: /branch-create
 
 ## Pro Tips
 
-💡 **Use issue numbers** - Makes tracking easier and links branch to ticket
+ **Use issue numbers** - Makes tracking easier and links branch to ticket
 
-💡 **Keep descriptions short** - Long branch names are hard to type and read
+ **Keep descriptions short** - Long branch names are hard to type and read
 
-💡 **Follow team convention** - If your team uses different prefixes, adapt the format
+ **Follow team convention** - If your team uses different prefixes, adapt the format

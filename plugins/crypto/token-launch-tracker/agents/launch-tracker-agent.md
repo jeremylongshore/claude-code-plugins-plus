@@ -75,10 +75,10 @@ Activate this agent when users need to:
 ### Output Format
 Present analysis in structured format:
 ```
-🚀 NEW TOKEN LAUNCH DETECTED
+ NEW TOKEN LAUNCH DETECTED
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📋 TOKEN INFORMATION
+ TOKEN INFORMATION
 Name: [Token Name]
 Symbol: [SYMBOL]
 Contract: [0x...]
@@ -88,28 +88,28 @@ Launch Type: [Fair Launch / Presale / Stealth]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔍 SECURITY ANALYSIS
+ SECURITY ANALYSIS
 
 Risk Score: [0-100] ([Low/Medium/High/Critical])
 
-✅ Positive Indicators:
+ Positive Indicators:
 - Contract verified on block explorer
 - Liquidity locked for [duration]
 - Ownership renounced
 - No hidden mint functions
 - Standard tax rates (Buy: [%], Sell: [%])
 
-⚠️ Warning Signs:
+️ Warning Signs:
 - [Warning 1]
 - [Warning 2]
 
-🚨 Critical Issues:
+ Critical Issues:
 - [Issue 1]
 - [Issue 2]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💧 LIQUIDITY ANALYSIS
+ LIQUIDITY ANALYSIS
 
 Initial Liquidity: $[amount]
 DEX: [Uniswap V2 / PancakeSwap]
@@ -128,16 +128,16 @@ Top LP Holders:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🔐 CONTRACT SECURITY
+ CONTRACT SECURITY
 
-Source Code: [Verified ✅ / Unverified ❌]
+Source Code: [Verified  / Unverified ]
 Compiler Version: [0.8.x]
 Optimization: [Enabled/Disabled]
 
 Ownership:
-- Owner Address: [0x... / Renounced ✅]
-- Can Change Ownership: [Yes ⚠️ / No ✅]
-- Multisig: [Yes ✅ / No / N/A]
+- Owner Address: [0x... / Renounced ]
+- Can Change Ownership: [Yes ️ / No ]
+- Multisig: [Yes  / No / N/A]
 
 Dangerous Functions Detected:
 - [ ] Unlimited Minting
@@ -152,11 +152,11 @@ External Calls:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-👥 TEAM & COMMUNITY
+ TEAM & COMMUNITY
 
 Team Status: [Anonymous / Partially Doxxed / Fully Doxxed]
-KYC: [Yes ✅ / No ❌ / Unknown]
-Audit: [Yes ✅ (Auditor name) / No ❌]
+KYC: [Yes  / No  / Unknown]
+Audit: [Yes  (Auditor name) / No ]
 
 Social Presence:
 - Website: [URL / None]
@@ -172,7 +172,7 @@ Red Flags:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📊 TRADING METRICS
+ TRADING METRICS
 
 Current Price: $[price]
 Market Cap: $[mcap]
@@ -190,7 +190,7 @@ Price Change:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 RECOMMENDATION
+ RECOMMENDATION
 
 [SAFE TO INVEST / EXERCISE CAUTION / HIGH RISK / DO NOT INVEST]
 
@@ -204,7 +204,7 @@ If investing:
 2. [Recommendation]
 3. [Recommendation]
 
-⚠️ Remember: This is not financial advice. Always DYOR.
+️ Remember: This is not financial advice. Always DYOR.
 ```
 
 ## Rugpull Red Flags
@@ -289,10 +289,10 @@ Calculate composite risk score (0-100):
 - Normal trading volume: +5
 
 **Risk Levels:**
-- 80-100: Low Risk ✅
-- 60-79: Medium Risk ⚠️
-- 40-59: High Risk 🚨
-- 0-39: Critical Risk ❌
+- 80-100: Low Risk 
+- 60-79: Medium Risk ️
+- 40-59: High Risk 
+- 0-39: Critical Risk 
 
 ## Example Queries
 

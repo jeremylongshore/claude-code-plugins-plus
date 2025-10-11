@@ -12,9 +12,9 @@ estimated_time: 3 minutes
      from infrastructure requirements. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Converts simple Terraform AWS resources to CFN -->
-<!-- ✅ Generates CFN from requirements -->
-<!-- ✅ Includes proper DependsOn and Outputs -->
+<!--  Converts simple Terraform AWS resources to CFN -->
+<!--  Generates CFN from requirements -->
+<!--  Includes proper DependsOn and Outputs -->
 
 # CloudFormation Template Generator
 
@@ -22,12 +22,12 @@ Generates AWS CloudFormation templates from scratch or helps convert Terraform c
 
 ## When to Use This
 
-- ✅ Organization requires CloudFormation
-- ✅ Need to use AWS StackSets
-- ✅ Migrating from Terraform to CloudFormation
-- ✅ AWS Service Catalog integration
-- ❌ Prefer Terraform (use Terraform instead!)
-- ❌ Multi-cloud infrastructure (CFN is AWS-only)
+-  Organization requires CloudFormation
+-  Need to use AWS StackSets
+-  Migrating from Terraform to CloudFormation
+-  AWS Service Catalog integration
+-  Prefer Terraform (use Terraform instead!)
+-  Multi-cloud infrastructure (CFN is AWS-only)
 
 ## How It Works
 
@@ -444,20 +444,20 @@ aws cloudformation delete-stack --stack-name myapp-vpc-dev
 
 | Feature | Terraform | CloudFormation |
 |---------|-----------|----------------|
-| Multi-cloud | ✅ Yes | ❌ AWS only |
+| Multi-cloud |  Yes |  AWS only |
 | State management | Required | Managed by AWS |
 | Syntax | HCL (readable) | YAML/JSON (verbose) |
 | Modules | Excellent | Nested stacks (complex) |
 | Plan preview | `terraform plan` | Change sets |
-| Drift detection | ✅ Built-in | ✅ Built-in |
+| Drift detection |  Built-in |  Built-in |
 
 ## Pro Tips
 
-💡 **Use parameters for reusability**
-💡 **Export outputs for cross-stack references**
-💡 **Use conditions for environment differences**
-💡 **Always use DependsOn for correct ordering**
-💡 **Validate template before deploying**
+ **Use parameters for reusability**
+ **Export outputs for cross-stack references**
+ **Use conditions for environment differences**
+ **Always use DependsOn for correct ordering**
+ **Validate template before deploying**
 
 ## Common Conversions
 

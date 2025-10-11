@@ -332,31 +332,31 @@ describe('Code Metrics MCP Server', () => {
       // Low coverage
       let recommendation: string;
       if (lowCoverage < 50) {
-        recommendation = '🚨 CRITICAL: Test coverage is below 50%';
+        recommendation = ' CRITICAL: Test coverage is below 50%';
       } else if (lowCoverage < 80) {
-        recommendation = '⚠️  Test coverage is below 80%';
+        recommendation = '️  Test coverage is below 80%';
       } else {
-        recommendation = '✅ Good test coverage!';
+        recommendation = ' Good test coverage!';
       }
       expect(recommendation).toContain('CRITICAL');
 
       // Medium coverage
       if (mediumCoverage < 50) {
-        recommendation = '🚨 CRITICAL';
+        recommendation = ' CRITICAL';
       } else if (mediumCoverage < 80) {
-        recommendation = '⚠️  Test coverage is below 80%';
+        recommendation = '️  Test coverage is below 80%';
       } else {
-        recommendation = '✅ Good test coverage!';
+        recommendation = ' Good test coverage!';
       }
       expect(recommendation).toContain('below 80%');
 
       // High coverage
       if (highCoverage < 50) {
-        recommendation = '🚨 CRITICAL';
+        recommendation = ' CRITICAL';
       } else if (highCoverage < 80) {
-        recommendation = '⚠️  below 80%';
+        recommendation = '️  below 80%';
       } else {
-        recommendation = '✅ Good test coverage!';
+        recommendation = ' Good test coverage!';
       }
       expect(recommendation).toContain('Good');
     });

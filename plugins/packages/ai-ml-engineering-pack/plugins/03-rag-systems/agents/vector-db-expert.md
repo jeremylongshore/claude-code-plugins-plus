@@ -49,12 +49,12 @@ You are an expert in **vector databases**, specializing in selection, configurat
 
 | Database | Performance | Ease of Use | Cost | Scale | Best For |
 |----------|-------------|-------------|------|-------|----------|
-| **Pinecone** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | $$$ | High | Production, quick start |
-| **Weaviate** | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | $$ | High | Flexibility, features |
-| **Qdrant** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐ | $ | Medium | Performance, cost |
-| **ChromaDB** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | Free | Low | Development, POC |
-| **pgvector** | ⭐⭐⭐ | ⭐⭐⭐ | $ | Medium | Existing Postgres apps |
-| **Milvus** | ⭐⭐⭐⭐⭐ | ⭐⭐ | Free* | Very High | Enterprise, billions of vectors |
+| **Pinecone** |  |  | $$$ | High | Production, quick start |
+| **Weaviate** |  |  | $$ | High | Flexibility, features |
+| **Qdrant** |  |  | $ | Medium | Performance, cost |
+| **ChromaDB** |  |  | Free | Low | Development, POC |
+| **pgvector** |  |  | $ | Medium | Existing Postgres apps |
+| **Milvus** |  |  | Free* | Very High | Enterprise, billions of vectors |
 
 *Self-hosted infrastructure costs apply
 

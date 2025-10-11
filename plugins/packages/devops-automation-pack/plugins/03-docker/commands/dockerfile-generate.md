@@ -12,9 +12,9 @@ estimated_time: 1 minute
      with multi-stage builds, security hardening, and size optimization. -->
 
 <!-- VALIDATION: Tested with Node.js, Python, Go projects -->
-<!-- ✅ Node.js: 1.2GB → 150MB (87% reduction) -->
-<!-- ✅ Python: 900MB → 120MB (86% reduction) -->
-<!-- ✅ Go: Compiles to 10MB static binary -->
+<!--  Node.js: 1.2GB → 150MB (87% reduction) -->
+<!--  Python: 900MB → 120MB (86% reduction) -->
+<!--  Go: Compiles to 10MB static binary -->
 
 # Dockerfile Generator
 
@@ -22,11 +22,11 @@ Automatically generates production-ready Dockerfiles with multi-stage builds, se
 
 ## When to Use This
 
-- ✅ Starting new project containerization
-- ✅ Existing image is bloated (>500MB for simple app)
-- ✅ Want production-ready Docker setup
-- ✅ Need security best practices (non-root user)
-- ❌ Complex multi-service setup (use `/docker-compose-create` instead)
+-  Starting new project containerization
+-  Existing image is bloated (>500MB for simple app)
+-  Want production-ready Docker setup
+-  Need security best practices (non-root user)
+-  Complex multi-service setup (use `/docker-compose-create` instead)
 
 ## How It Works
 
@@ -345,11 +345,11 @@ vendor
 
 ## Pro Tips
 
-💡 **Multi-stage builds reduce size by 80-90%**
-💡 **Always use .dockerignore (faster builds)**
-💡 **Non-root user is critical for security**
-💡 **Health checks enable container orchestration**
-💡 **Use specific version tags (not :latest)**
+ **Multi-stage builds reduce size by 80-90%**
+ **Always use .dockerignore (faster builds)**
+ **Non-root user is critical for security**
+ **Health checks enable container orchestration**
+ **Use specific version tags (not :latest)**
 
 ## Troubleshooting
 

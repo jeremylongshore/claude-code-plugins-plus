@@ -16,10 +16,10 @@ estimated_time: 1 minute
      whereas manual CLI still requires writing description. -->
 
 <!-- VALIDATION: Tested with scenarios -->
-<!-- ✅ Single commit PR (simple description) -->
-<!-- ✅ Multiple commits PR (summarized description) -->
-<!-- ✅ Feature branch with related commits -->
-<!-- ❌ Known limitation: Requires gh CLI installed -->
+<!--  Single commit PR (simple description) -->
+<!--  Multiple commits PR (summarized description) -->
+<!--  Feature branch with related commits -->
+<!--  Known limitation: Requires gh CLI installed -->
 
 # Pull Request Creator
 
@@ -27,11 +27,11 @@ Automatically creates a GitHub pull request with AI-generated title and descript
 
 ## When to Use This
 
-- ✅ Ready to create PR for your feature branch
-- ✅ Want professional PR description without manual writing
-- ✅ Need to include commit history in PR description
-- ✅ Following team's PR template
-- ❌ DON'T use if gh CLI not installed
+-  Ready to create PR for your feature branch
+-  Want professional PR description without manual writing
+-  Need to include commit history in PR description
+-  Following team's PR template
+-  DON'T use if gh CLI not installed
 
 ## How It Works
 
@@ -110,7 +110,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
 
 9. **Display PR URL:**
    ```
-   ✅ Pull request created: https://github.com/owner/repo/pull/123
+    Pull request created: https://github.com/owner/repo/pull/123
    ```
 
 ## Required Information
@@ -121,7 +121,7 @@ You are a GitHub pull request expert who creates professional, informative PR de
 
 If prerequisites not met:
 ```
-❌ Cannot create PR
+ Cannot create PR
 
 Reason: [specific issue]
 Solution: [how to fix]
@@ -249,7 +249,7 @@ Updated description:
 
 ## Changes
 [same as before]
-- ⚠️ **Requires database migration**: Run `npm run migrate` after deploying
+- ️ **Requires database migration**: Run `npm run migrate` after deploying
 
 ## Testing
 [same as before]
@@ -261,7 +261,7 @@ Updated description:
 
 **If not on feature branch:**
 ```
-❌ Cannot create PR from main/master branch
+ Cannot create PR from main/master branch
 
 You're currently on: main
 
@@ -273,7 +273,7 @@ Create a feature branch first:
 
 **If no commits ahead:**
 ```
-❌ No commits to create PR from
+ No commits to create PR from
 
 Your branch is up to date with origin/main.
 
@@ -286,7 +286,7 @@ Make some commits first:
 
 **If gh CLI not installed:**
 ```
-❌ GitHub CLI (gh) is not installed
+ GitHub CLI (gh) is not installed
 
 Install gh CLI:
   macOS: brew install gh
@@ -301,7 +301,7 @@ Then try again: /pr-create
 
 **If not authenticated:**
 ```
-❌ Not authenticated with GitHub
+ Not authenticated with GitHub
 
 Run: gh auth login
 Follow the prompts to authenticate
@@ -311,7 +311,7 @@ Then try again: /pr-create
 
 **If remote branch doesn't exist:**
 ```
-⚠️ Remote branch doesn't exist yet
+️ Remote branch doesn't exist yet
 
 Pushing branch to origin first...
   git push -u origin [branch-name]
@@ -326,12 +326,12 @@ Then creating PR...
 
 ## Pro Tips
 
-💡 **Push commits before creating PR** - Ensures PR shows all your work
+ **Push commits before creating PR** - Ensures PR shows all your work
 
-💡 **Review the generated description** - AI is good but you know context best
+ **Review the generated description** - AI is good but you know context best
 
-💡 **Link related issues** - Use "Closes #123" to auto-close issues when PR merges
+ **Link related issues** - Use "Closes #123" to auto-close issues when PR merges
 
-💡 **Add screenshots for UI changes** - Edit description to include images
+ **Add screenshots for UI changes** - Edit description to include images
 
-💡 **Keep PRs focused** - One feature/fix per PR = easier review
+ **Keep PRs focused** - One feature/fix per PR = easier review

@@ -84,14 +84,14 @@ When invoked, you should:
 - Incorrect relationships: [N]
 
 ### Keyboard Navigation
-✓ Tab order: Logical
-⚠ Focus indicators: Missing on [N] elements
-✗ Keyboard traps: Found [N]
+ Tab order: Logical
+ Focus indicators: Missing on [N] elements
+ Keyboard traps: Found [N]
 
 ### Color Contrast
-✓ Normal text: Pass
-⚠ Small text: [N] failures
-✗ UI components: [N] failures
+ Normal text: Pass
+ Small text: [N] failures
+ UI components: [N] failures
 
 ### Recommendations
 1. [Priority fix]

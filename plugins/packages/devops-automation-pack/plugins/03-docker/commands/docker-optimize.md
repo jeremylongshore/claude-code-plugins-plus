@@ -12,9 +12,9 @@ estimated_time: 3 minutes
      and provides specific optimization recommendations with metrics. -->
 
 <!-- VALIDATION: Real-world results -->
-<!-- ✅ Node.js app: 1.2GB → 150MB (87% reduction) -->
-<!-- ✅ Python app: 900MB → 120MB (86% reduction) -->
-<!-- ✅ Go app: 800MB → 12MB (98% reduction) -->
+<!--  Node.js app: 1.2GB → 150MB (87% reduction) -->
+<!--  Python app: 900MB → 120MB (86% reduction) -->
+<!--  Go app: 800MB → 12MB (98% reduction) -->
 
 # Docker Image Optimizer
 
@@ -22,11 +22,11 @@ Analyzes existing Docker images and Dockerfiles, identifying size/speed bottlene
 
 ## When to Use This
 
-- ✅ Image is larger than expected (>500MB for simple app)
-- ✅ Build times are slow (>5 minutes)
-- ✅ Want to reduce infrastructure costs
-- ✅ Deploying to bandwidth-limited environments
-- ❌ Image already optimized (<200MB, multi-stage build)
+-  Image is larger than expected (>500MB for simple app)
+-  Build times are slow (>5 minutes)
+-  Want to reduce infrastructure costs
+-  Deploying to bandwidth-limited environments
+-  Image already optimized (<200MB, multi-stage build)
 
 ## How It Works
 
@@ -116,7 +116,7 @@ You are a Docker optimization expert. When user runs `/docker-optimize` or `/do`
 | Build Time   | [X min]   | [Y min]   | ↓ [Z]%      |
 | Layers       | [N]       | [M]       | Optimized   |
 | Base Image   | [old]     | [new]     | Smaller     |
-| Security     | root ⚠️   | non-root ✅| Hardened   |
+| Security     | root ️   | non-root | Hardened   |
 
 ## Key Optimizations
 
@@ -271,8 +271,8 @@ coverage
 | Build Time   | 3 min          | 45 sec         | ↓ 75% (-2m 15s)   |
 | Layers       | 6              | 8              | Optimized caching  |
 | Base Image   | node:20 (900MB)| node:20-alpine (40MB)| -860 MB    |
-| Security     | root ⚠️        | nodejs user ✅ | Hardened          |
-| Health Check | None ⚠️        | Configured ✅  | Production-ready   |
+| Security     | root ️        | nodejs user  | Hardened          |
+| Health Check | None ️        | Configured   | Production-ready   |
 
 **Key Optimizations:**
 
@@ -390,11 +390,11 @@ CMD ["python", "app.py"]
 
 ## Pro Tips
 
-💡 **Multi-stage builds typically save 80-90% size**
-💡 **Alpine/slim base images reduce size dramatically**
-💡 **Proper layer ordering speeds up rebuilds 5-10x**
-💡 **Always use .dockerignore (excludes unnecessary files)**
-💡 **Use `--no-cache-dir` with pip/npm to reduce size**
+ **Multi-stage builds typically save 80-90% size**
+ **Alpine/slim base images reduce size dramatically**
+ **Proper layer ordering speeds up rebuilds 5-10x**
+ **Always use .dockerignore (excludes unnecessary files)**
+ **Use `--no-cache-dir` with pip/npm to reduce size**
 
 ## Validation Commands
 

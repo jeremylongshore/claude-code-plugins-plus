@@ -4,7 +4,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 
 ## Features
 
-### 🎯 Position Tracking
+###  Position Tracking
 - **Real-time price updates** from multiple exchanges (CoinGecko, Binance, Coinbase)
 - **Comprehensive PnL calculations** with entry/exit tracking
 - **Multi-exchange support** for accurate pricing
@@ -12,7 +12,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 - **Position history** with complete audit trail
 - **Alert system** for significant price movements
 
-### 📊 Portfolio Analysis
+###  Portfolio Analysis
 - **Risk metrics**: Sharpe ratio, Sortino ratio, maximum drawdown
 - **Volatility analysis**: Daily, weekly, monthly, and annual
 - **Correlation matrix**: Identify over-concentrated positions
@@ -20,14 +20,14 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 - **Herfindahl Index**: Measure portfolio concentration
 - **Performance attribution**: Understand what's driving returns
 
-### 🔄 Rebalancing Engine
+###  Rebalancing Engine
 - **Optimal allocation** calculations using Modern Portfolio Theory
 - **Automated rebalancing** recommendations
 - **Tax-aware** trading suggestions
 - **Cost estimation** for rebalancing actions
 - **Threshold-based** or time-based rebalancing
 
-### 📈 Advanced Analytics
+###  Advanced Analytics
 - **Risk-adjusted returns** optimization
 - **Diversification scoring**
 - **Market regime detection**
@@ -336,4 +336,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for crypto investors by Intent Solutions IO*
+*Built with ️ for crypto investors by Intent Solutions IO*

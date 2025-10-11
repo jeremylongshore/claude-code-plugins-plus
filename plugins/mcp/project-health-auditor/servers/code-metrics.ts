@@ -263,11 +263,11 @@ function generateTestRecommendations(missingTests: string[], coverageRatio: numb
   const recommendations: string[] = [];
 
   if (coverageRatio < 50) {
-    recommendations.push('🚨 CRITICAL: Test coverage is below 50%. Prioritize adding tests for core functionality.');
+    recommendations.push(' CRITICAL: Test coverage is below 50%. Prioritize adding tests for core functionality.');
   } else if (coverageRatio < 80) {
-    recommendations.push('⚠️  Test coverage is below 80%. Consider adding tests for remaining files.');
+    recommendations.push('️  Test coverage is below 80%. Consider adding tests for remaining files.');
   } else {
-    recommendations.push('✅ Good test coverage! Maintain this level.');
+    recommendations.push(' Good test coverage! Maintain this level.');
   }
 
   if (missingTests.length > 0) {
@@ -276,7 +276,7 @@ function generateTestRecommendations(missingTests: string[], coverageRatio: numb
     );
 
     if (highPriorityFiles.length > 0) {
-      recommendations.push(`📝 High priority: Add tests for ${highPriorityFiles.length} files in critical directories (services, api, utils)`);
+      recommendations.push(` High priority: Add tests for ${highPriorityFiles.length} files in critical directories (services, api, utils)`);
     }
   }
 

@@ -110,7 +110,7 @@ Use this checklist for all future releases of the Claude Code Plugins Marketplac
 - [ ] **Create GitHub release**
   ```bash
   gh release create vX.Y.Z \
-    --title "🚀 Release vX.Y.Z" \
+    --title " Release vX.Y.Z" \
     --notes-file CHANGELOG.md \
     --latest
   ```
@@ -162,31 +162,31 @@ Use this checklist for all future releases of the Claude Code Plugins Marketplac
 - [ ] **Create release announcement issue**
   ```bash
   gh issue create \
-    --title "🎉 Release vX.Y.Z Available" \
+    --title " Release vX.Y.Z Available" \
     --body "We're excited to announce vX.Y.Z!
 
-  ## 🌟 Highlights
+  ##  Highlights
   - [Key feature 1]
   - [Key feature 2]
   - [Key improvement 3]
 
-  ## 📦 New Plugins
+  ##  New Plugins
   - **plugin-name**: [Description]
 
-  ## 🔧 Improvements
+  ##  Improvements
   - [Improvement 1]
   - [Improvement 2]
 
-  ## 📖 Full Changelog
+  ##  Full Changelog
   See the [complete changelog](https://github.com/jeremylongshore/claude-code-plugins/blob/main/CHANGELOG.md#xyz---yyyy-mm-dd) for all details.
 
-  ## 🚀 Upgrade
+  ##  Upgrade
   \`\`\`bash
   /plugin marketplace add jeremylongshore/claude-code-plugins
   /plugin install plugin-name@claude-code-plugins
   \`\`\`
 
-  ## 💬 Feedback
+  ##  Feedback
   Let us know what you think in the [discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)!" \
     --label "announcement,release"
   ```
@@ -304,7 +304,7 @@ gh release create vX.Y.Z --title "Release vX.Y.Z" --notes-file CHANGELOG.md --la
 
 ### Announce
 ```bash
-gh issue create --title "🎉 Release vX.Y.Z" --body "..." --label "announcement,release"
+gh issue create --title " Release vX.Y.Z" --body "..." --label "announcement,release"
 ```
 
 ---

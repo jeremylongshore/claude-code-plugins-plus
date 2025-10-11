@@ -1,0 +1,21 @@
+{
+  "name": "database-security-scanner",
+  "description": "Database plugin for database-security-scanner",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "security"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-security-scanner",
+  "license": "MIT",
+  "installation": "/plugin install database-security-scanner@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

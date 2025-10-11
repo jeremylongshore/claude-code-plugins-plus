@@ -93,10 +93,10 @@ Attack Vector: SQL injection in login endpoint
 
 IMMEDIATE ACTIONS (0-1 hour)
 -----------------------------
-✓ 1. Isolate affected system [14:35 UTC]
-✓ 2. Block attacker IP addresses [14:40 UTC]
-✓ 3. Preserve logs and evidence [14:45 UTC]
-✓ 4. Notify security team [14:50 UTC]
+ 1. Isolate affected system [14:35 UTC]
+ 2. Block attacker IP addresses [14:40 UTC]
+ 3. Preserve logs and evidence [14:45 UTC]
+ 4. Notify security team [14:50 UTC]
 □ 5. Deploy WAF rules [In Progress]
 
 CONTAINMENT (1-4 hours)

@@ -2,26 +2,25 @@
   "name": "design-to-code",
   "description": "Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility",
   "version": "1.0.0",
-  "category": "frontend-development",
-  "keywords": ["mcp", "design", "figma", "react", "svelte", "vue", "accessibility", "component-generation"],
+  "category": "other",
+  "keywords": [
+    "mcp",
+    "design",
+    "figma",
+    "react",
+    "svelte",
+    "vue",
+    "accessibility",
+    "component-generation"
+  ],
   "author": {
-    "name": "Jeremy Longshore",
-    "email": "jeremy@claudecodeplugins.io",
-    "url": "https://intentsolutions.io"
+    "name": "Jeremy Longshore"
   },
   "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/design-to-code",
+  "license": "MIT",
   "installation": "/plugin install design-to-code@claude-code-plugins",
-  "features": [
-    "Parse Figma JSON exports into structured layouts",
-    "Screenshot analysis for UI component identification",
-    "Multi-framework support: React, Svelte, Vue",
-    "Built-in accessibility: ARIA labels, semantic HTML, keyboard navigation",
-    "Component code generation with TypeScript support",
-    "3 MCP tools: parse_figma, analyze_screenshot, generate_component"
-  ],
-  "requirements": [
-    "Claude Code CLI",
-    "Figma JSON export or screenshot file",
-    "Node.js 20+"
-  ]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

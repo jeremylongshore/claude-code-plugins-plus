@@ -56,9 +56,9 @@ When invoked, you should:
 - [Consumer 2]: [status]
 
 **Contract Status:**
-✓ Valid contracts: [N]
-⚠ Warnings: [N]
-✗ Breaking changes: [N]
+ Valid contracts: [N]
+ Warnings: [N]
+ Breaking changes: [N]
 
 ### Breaking Changes Detected
 

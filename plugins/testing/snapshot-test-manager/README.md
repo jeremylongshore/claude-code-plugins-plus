@@ -31,9 +31,9 @@ Manage and update snapshot tests with intelligent diff analysis and selective up
 /snapshot-manager
 
 # Claude analyzes diffs and recommends:
-# ✓ Update snapshots for intentional UI changes
-# ⚠ Review snapshots with unexpected changes
-# ✗ Preserve snapshots that caught regressions
+#  Update snapshots for intentional UI changes
+#  Review snapshots with unexpected changes
+#  Preserve snapshots that caught regressions
 ```
 
 ## Supported Frameworks

@@ -2,25 +2,24 @@
   "name": "domain-memory-agent",
   "description": "Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required",
   "version": "1.0.0",
-  "category": "documentation",
-  "keywords": ["mcp", "knowledge-base", "semantic-search", "tfidf", "summarization", "rag", "documentation"],
+  "category": "other",
+  "keywords": [
+    "mcp",
+    "knowledge-base",
+    "semantic-search",
+    "tfidf",
+    "summarization",
+    "rag",
+    "documentation"
+  ],
   "author": {
-    "name": "Jeremy Longshore",
-    "email": "jeremy@claudecodeplugins.io",
-    "url": "https://intentsolutions.io"
+    "name": "Jeremy Longshore"
   },
   "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/domain-memory-agent",
+  "license": "MIT",
   "installation": "/plugin install domain-memory-agent@claude-code-plugins",
-  "features": [
-    "Document storage with tags and metadata",
-    "TF-IDF semantic search - no external ML dependencies",
-    "Extractive summarization with caching",
-    "Tag-based filtering and organization",
-    "Full CRUD operations on knowledge base",
-    "6 MCP tools: store_document, semantic_search, summarize, list_documents, get_document, delete_document"
-  ],
-  "requirements": [
-    "Claude Code CLI",
-    "Node.js 20+"
-  ]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

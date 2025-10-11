@@ -3,16 +3,22 @@
   "description": "Generate custom discovery questionnaires for AI agency prospects",
   "version": "1.0.0",
   "category": "business-tools",
-  "keywords": ["discovery", "questionnaire", "client", "sales", "agency", "ai-agency"],
+  "keywords": [
+    "discovery",
+    "questionnaire",
+    "client",
+    "sales",
+    "agency",
+    "ai-agency"
+  ],
   "author": {
     "name": "Claude Code Plugin Hub"
   },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-agency/discovery-questionnaire",
+  "license": "MIT",
   "installation": "/plugin install discovery-questionnaire@claude-code-plugins",
-  "features": [
-    "Custom questionnaires by project type",
-    "Discovery templates for agencies",
-    "Client need identification",
-    "Professional formatting"
-  ],
-  "requirements": ["Claude Code CLI"]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

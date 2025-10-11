@@ -4,13 +4,13 @@ Analyze market sentiment from social media, news, and on-chain data to gauge mar
 
 ## Features
 
-### 🎯 Multi-Source Analysis
+###  Multi-Source Analysis
 - **Social Media**: Twitter, Reddit, Telegram sentiment
 - **News**: Headlines, article sentiment, media coverage
 - **On-Chain**: Whale movements, exchange flows, network activity
 - **Technical**: Fear & Greed Index, momentum indicators
 
-### 📊 Sentiment Metrics
+###  Sentiment Metrics
 - Overall sentiment score (0-100)
 - Fear & Greed Index calculation
 - Trend detection and momentum

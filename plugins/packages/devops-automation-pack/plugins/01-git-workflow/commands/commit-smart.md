@@ -16,11 +16,11 @@ estimated_time: 30 seconds
      whereas templates are generic and require manual editing anyway. -->
 
 <!-- VALIDATION: Tested with following scenarios -->
-<!-- ✅ Small feature addition (2-3 files changed) -->
-<!-- ✅ Bug fix (single file) -->
-<!-- ✅ Large refactor (10+ files) -->
-<!-- ✅ Breaking changes (generates BREAKING CHANGE footer) -->
-<!-- ❌ Known limitation: Doesn't handle merge commits well (displays warning) -->
+<!--  Small feature addition (2-3 files changed) -->
+<!--  Bug fix (single file) -->
+<!--  Large refactor (10+ files) -->
+<!--  Breaking changes (generates BREAKING CHANGE footer) -->
+<!--  Known limitation: Doesn't handle merge commits well (displays warning) -->
 
 # Smart Commit Generator
 
@@ -28,11 +28,11 @@ Automatically generates a professional conventional commit message by analyzing 
 
 ## When to Use This
 
-- ✅ You've staged changes but don't want to write commit message
-- ✅ Want to maintain conventional commit standards
-- ✅ Need to ensure commits are clear for team
-- ✅ Generating changelog from commits
-- ❌ DON'T use for merge commits (use git's default message)
+-  You've staged changes but don't want to write commit message
+-  Want to maintain conventional commit standards
+-  Need to ensure commits are clear for team
+-  Generating changelog from commits
+-  DON'T use for merge commits (use git's default message)
 
 ## How It Works
 
@@ -99,7 +99,7 @@ You are a Git commit message expert who follows conventional commit standards. W
 
 If no changes are staged:
 ```
-⚠️ No changes staged for commit.
+️ No changes staged for commit.
 Run `git add <files>` first, then try again.
 ```
 
@@ -220,7 +220,7 @@ Updated API.md with new authentication endpoints.
 
 **If no staged changes:**
 ```
-❌ No changes staged for commit.
+ No changes staged for commit.
 
 Run these commands first:
   git add <file>        # Stage specific file
@@ -232,7 +232,7 @@ Then run /commit-smart again.
 
 **If merge in progress:**
 ```
-⚠️ Merge in progress detected.
+️ Merge in progress detected.
 
 For merge commits, use Git's default message:
   git commit --no-edit
@@ -263,16 +263,16 @@ You: "How would you like me to adjust the message? You can:
 
 ## Pro Tips
 
-💡 **Stage related changes together** - Commit logical units, not random file collections
+ **Stage related changes together** - Commit logical units, not random file collections
 
-💡 **Use conventional types consistently** - Team can generate changelogs automatically
+ **Use conventional types consistently** - Team can generate changelogs automatically
 
-💡 **Keep first line under 72 chars** - Ensures readability in Git logs
+ **Keep first line under 72 chars** - Ensures readability in Git logs
 
-💡 **Reference issue numbers** - Add "Closes #123" to auto-close issues
+ **Reference issue numbers** - Add "Closes #123" to auto-close issues
 
-💡 **Use imperativeThe mood** - "add feature" not "added feature" or "adds feature"
+ **Use imperativeThe mood** - "add feature" not "added feature" or "adds feature"
 
-💡 **Explain WHY, not WHAT** - Code shows what changed, commit explains why
+ **Explain WHY, not WHAT** - Code shows what changed, commit explains why
 
-💡 **Break up large changes** - Multiple focused commits > one massive commit
+ **Break up large changes** - Multiple focused commits > one massive commit

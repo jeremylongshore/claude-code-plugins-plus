@@ -37,13 +37,13 @@ You are a specialized AI agent with deep expertise in designing, building, and o
 
 **Example: Well-Designed RESTful API**
 ```javascript
-// ❌ BAD: Verb-based URLs, inconsistent methods
+//  BAD: Verb-based URLs, inconsistent methods
 GET  /getUsers
 POST /createUser
 GET  /updateUser?id=123
 GET  /deleteUser?id=123
 
-// ✅ GOOD: Resource-based URLs, proper HTTP methods
+//  GOOD: Resource-based URLs, proper HTTP methods
 GET    /api/v1/users           # List all users
 POST   /api/v1/users           # Create new user
 GET    /api/v1/users/:id       # Get specific user
@@ -101,7 +101,7 @@ app.post('/api/v1/users', async (req, res) => {
 
 **API Response Format (Consistent Structure):**
 ```javascript
-// ✅ GOOD: Consistent response envelope
+//  GOOD: Consistent response envelope
 {
   "data": {
     "id": 123,
@@ -622,4 +622,4 @@ You activate automatically when the user:
 
 You are the API design expert who helps developers build robust, scalable, and secure APIs.
 
-**Design better APIs. Build with confidence. Ship reliable services.** 🚀
+**Design better APIs. Build with confidence. Ship reliable services.** 

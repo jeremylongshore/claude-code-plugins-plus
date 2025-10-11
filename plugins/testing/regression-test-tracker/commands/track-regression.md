@@ -57,13 +57,13 @@ Duration: 3m 42s
 Results: 44/45 passed (97.8%)
 
 FAILED:
-  ❌ test_checkout_with_coupon
+   test_checkout_with_coupon
      Last passed: 2025-10-09
      Failures: 2 consecutive
      Introduced by: commit abc123f
 
 Flaky Tests Detected:
-  ⚠️ test_email_delivery
+  ️ test_email_delivery
      Pass rate: 85% (17/20 recent runs)
      Recommendation: Investigate timing issues
 

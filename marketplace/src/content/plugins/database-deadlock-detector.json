@@ -1,0 +1,21 @@
+{
+  "name": "database-deadlock-detector",
+  "description": "Database plugin for database-deadlock-detector",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "deadlock"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-deadlock-detector",
+  "license": "MIT",
+  "installation": "/plugin install database-deadlock-detector@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

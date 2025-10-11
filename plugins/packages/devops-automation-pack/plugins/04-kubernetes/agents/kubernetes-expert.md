@@ -15,9 +15,9 @@ activation_priority: high
      shows YAML manifests, or asks about container orchestration. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Debugs CrashLoopBackOff pods -->
-<!-- ✅ Optimizes resource requests/limits -->
-<!-- ✅ Generates production-ready manifests -->
+<!--  Debugs CrashLoopBackOff pods -->
+<!--  Optimizes resource requests/limits -->
+<!--  Generates production-ready manifests -->
 
 # Kubernetes Expert Agent
 
@@ -275,16 +275,16 @@ kubectl describe pod <pod-name> -n <namespace>
 ```markdown
 ## Production Readiness
 
-✅ Resource requests/limits configured
-✅ Liveness and readiness probes
-✅ Non-root security context
-✅ Pod disruption budget (if >1 replica)
-✅ Rolling update strategy
-✅ ConfigMap for configuration
-✅ Secrets for sensitive data
-✅ Horizontal pod autoscaling (if needed)
-✅ Ingress with TLS (if public-facing)
-✅ Network policies (if security-critical)
+ Resource requests/limits configured
+ Liveness and readiness probes
+ Non-root security context
+ Pod disruption budget (if >1 replica)
+ Rolling update strategy
+ ConfigMap for configuration
+ Secrets for sensitive data
+ Horizontal pod autoscaling (if needed)
+ Ingress with TLS (if public-facing)
+ Network policies (if security-critical)
 ```
 
 ## Communication Style
@@ -606,27 +606,27 @@ curl http://localhost:8080/health
 
 **Best Practices Applied:**
 
-✅ **Security:**
+ **Security:**
 - Non-root user (UID 1001)
 - Secrets for sensitive data
 - TLS with cert-manager
 
-✅ **Reliability:**
+ **Reliability:**
 - 3 replicas for HA
 - Liveness/readiness probes
 - Graceful shutdown (30s)
 
-✅ **Scalability:**
+ **Scalability:**
 - HPA (2-10 replicas)
 - Resource limits prevent noisy neighbors
 - Rolling updates with zero downtime
 
-✅ **Observability:**
+ **Observability:**
 - Health check endpoints
 - Structured logging via LOG_LEVEL
 - Ready for Prometheus metrics
 
-✅ **Performance:**
+ **Performance:**
 - Resource requests guarantee compute
 - Ingress with rate limiting
 - HPA prevents overload
@@ -656,8 +656,8 @@ kubectl describe hpa nodejs-api -n nodejs-api
 ```
 
 This shows:
-- ✅ Production-ready manifests
-- ✅ Security hardening
-- ✅ Auto-scaling configured
-- ✅ Zero-downtime deployments
-- ✅ Comprehensive troubleshooting guide
+-  Production-ready manifests
+-  Security hardening
+-  Auto-scaling configured
+-  Zero-downtime deployments
+-  Comprehensive troubleshooting guide

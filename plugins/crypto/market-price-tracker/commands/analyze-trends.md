@@ -586,11 +586,11 @@ ${this.formatRecommendations(analysis.recommendations)}
 
     formatTrend(trend) {
         const icons = {
-            STRONG_BULLISH: '🚀 Strong Bullish',
-            BULLISH: '📈 Bullish',
-            NEUTRAL: '➖ Neutral',
-            BEARISH: '📉 Bearish',
-            STRONG_BEARISH: '💥 Strong Bearish'
+            STRONG_BULLISH: ' Strong Bullish',
+            BULLISH: ' Bullish',
+            NEUTRAL: ' Neutral',
+            BEARISH: ' Bearish',
+            STRONG_BEARISH: ' Strong Bearish'
         };
         return icons[trend] || trend;
     }

@@ -637,7 +637,7 @@ ${this.formatAlerts(results.alerts)}
                 ? `+${mover.change.toFixed(2)}%`
                 : `${mover.change.toFixed(2)}%`;
 
-            const emoji = type === 'gain' ? '📈' : '📉';
+            const emoji = type === 'gain' ? '' : '';
 
             lines.push(
                 `║ ${emoji} ${mover.symbol.padEnd(8)} ${changeStr.padEnd(10)} ` +
@@ -656,7 +656,7 @@ ${this.formatAlerts(results.alerts)}
         const lines = [];
         for (const leader of leaders.slice(0, 5)) {
             lines.push(
-                `║ 📊 ${leader.symbol.padEnd(8)} ${leader.volumeMultiple.padEnd(6)} ` +
+                `║  ${leader.symbol.padEnd(8)} ${leader.volumeMultiple.padEnd(6)} ` +
                 `${this.formatChange(leader.change).padEnd(10)} Signal: ${leader.signal.action.padEnd(15)} ║`
             );
         }
@@ -673,7 +673,7 @@ ${this.formatAlerts(results.alerts)}
         for (const item of unusual.slice(0, 3)) {
             const signals = item.signals.join(', ');
             lines.push(
-                `║ ⚠️ ${item.symbol.padEnd(8)} ${signals.padEnd(45)} ║`
+                `║ ️ ${item.symbol.padEnd(8)} ${signals.padEnd(45)} ║`
             );
         }
 
@@ -688,9 +688,9 @@ ${this.formatAlerts(results.alerts)}
         const lines = [];
         const severityEmoji = {
             'INFO': 'ℹ️',
-            'WARNING': '⚠️',
-            'HIGH': '🔴',
-            'CRITICAL': '🚨'
+            'WARNING': '️',
+            'HIGH': '',
+            'CRITICAL': ''
         };
 
         for (const alert of alerts.slice(0, 3)) {
@@ -766,7 +766,7 @@ class RealTimeScanner {
         const critical = alerts.filter(a => a.severity === 'CRITICAL' || a.severity === 'HIGH');
 
         if (critical.length > 0) {
-            console.log('\n🚨 CRITICAL ALERTS:');
+            console.log('\n CRITICAL ALERTS:');
             for (const alert of critical) {
                 console.log(`- ${alert.message}`);
             }

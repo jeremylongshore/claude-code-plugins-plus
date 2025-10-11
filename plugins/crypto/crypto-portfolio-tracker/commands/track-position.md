@@ -299,27 +299,27 @@ function displayPosition(position, metrics) {
 function formatPnL(value) {
     const formatted = `$${Math.abs(value).toFixed(2)}`;
     if (value >= 0) {
-        return `+${formatted} ✅`;
+        return `+${formatted} `;
     } else {
-        return `-${formatted} ❌`;
+        return `-${formatted} `;
     }
 }
 
 function formatPnLPercentage(percentage) {
     const formatted = `${Math.abs(percentage).toFixed(2)}%`;
     if (percentage >= 0) {
-        return `+${formatted} 📈`;
+        return `+${formatted} `;
     } else {
-        return `-${formatted} 📉`;
+        return `-${formatted} `;
     }
 }
 
 function determineStatusEmoji(percentage) {
-    if (percentage > 20) return '🚀';
-    if (percentage > 5) return '✅';
-    if (percentage > -5) return '➖';
-    if (percentage > -20) return '⚠️';
-    return '🔴';
+    if (percentage > 20) return '';
+    if (percentage > 5) return '';
+    if (percentage > -5) return '';
+    if (percentage > -20) return '️';
+    return '';
 }
 ```
 
@@ -346,7 +346,7 @@ class PositionAlertSystem {
         if (metrics.pnlPercentage >= this.alertThresholds.profitTarget * 100) {
             alerts.push({
                 type: 'PROFIT_TARGET',
-                message: `🎯 ${position.symbol} hit profit target: +${metrics.pnlPercentage.toFixed(2)}%`,
+                message: ` ${position.symbol} hit profit target: +${metrics.pnlPercentage.toFixed(2)}%`,
                 severity: 'INFO',
                 action: 'Consider taking profits'
             });
@@ -357,7 +357,7 @@ class PositionAlertSystem {
             metrics.pnlPercentage > this.alertThresholds.criticalLoss * 100) {
             alerts.push({
                 type: 'LOSS_WARNING',
-                message: `⚠️ ${position.symbol} loss warning: ${metrics.pnlPercentage.toFixed(2)}%`,
+                message: `️ ${position.symbol} loss warning: ${metrics.pnlPercentage.toFixed(2)}%`,
                 severity: 'WARNING',
                 action: 'Review position and consider stop loss'
             });
@@ -367,7 +367,7 @@ class PositionAlertSystem {
         if (metrics.pnlPercentage <= this.alertThresholds.criticalLoss * 100) {
             alerts.push({
                 type: 'CRITICAL_LOSS',
-                message: `🔴 ${position.symbol} critical loss: ${metrics.pnlPercentage.toFixed(2)}%`,
+                message: ` ${position.symbol} critical loss: ${metrics.pnlPercentage.toFixed(2)}%`,
                 severity: 'CRITICAL',
                 action: 'Immediate review required'
             });
@@ -377,7 +377,7 @@ class PositionAlertSystem {
         if (Math.abs(priceChange) >= this.alertThresholds.volatilitySpike * 100) {
             alerts.push({
                 type: 'VOLATILITY_SPIKE',
-                message: `📊 ${position.symbol} volatility spike: ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}% in 24h`,
+                message: ` ${position.symbol} volatility spike: ${priceChange > 0 ? '+' : ''}${priceChange.toFixed(2)}% in 24h`,
                 severity: 'INFO',
                 action: 'Monitor closely for opportunities or risks'
             });

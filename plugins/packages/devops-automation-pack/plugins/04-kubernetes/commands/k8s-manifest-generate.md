@@ -12,9 +12,9 @@ estimated_time: 2 minutes
      best practices built in (health checks, resource limits, security contexts). -->
 
 <!-- VALIDATION: Tested with -->
-<!-- ✅ Stateless web apps (Deployment + Service + Ingress) -->
-<!-- ✅ Stateful databases (StatefulSet + PVC) -->
-<!-- ✅ Batch jobs (Job, CronJob) -->
+<!--  Stateless web apps (Deployment + Service + Ingress) -->
+<!--  Stateful databases (StatefulSet + PVC) -->
+<!--  Batch jobs (Job, CronJob) -->
 
 # Kubernetes Manifest Generator
 
@@ -22,12 +22,12 @@ Generates complete, production-ready Kubernetes manifests with best practices (h
 
 ## When to Use This
 
-- ✅ Deploying application to Kubernetes
-- ✅ Need complete manifest set (Deployment, Service, Ingress, etc.)
-- ✅ Want production-ready configuration
-- ✅ Need auto-scaling setup
-- ❌ Using Helm (use `/k8s-helm-chart` instead)
-- ❌ Simple one-off task (use `kubectl run`)
+-  Deploying application to Kubernetes
+-  Need complete manifest set (Deployment, Service, Ingress, etc.)
+-  Want production-ready configuration
+-  Need auto-scaling setup
+-  Using Helm (use `/k8s-helm-chart` instead)
+-  Simple one-off task (use `kubectl run`)
 
 ## How It Works
 
@@ -482,11 +482,11 @@ spec:
 
 ## Pro Tips
 
-💡 **Always set resource limits (prevents cluster instability)**
-💡 **Use readiness probes (prevents routing to unhealthy pods)**
-💡 **Non-root user is critical for security**
-💡 **StatefulSets for databases, Deployments for apps**
-💡 **Use namespaces to isolate applications**
+ **Always set resource limits (prevents cluster instability)**
+ **Use readiness probes (prevents routing to unhealthy pods)**
+ **Non-root user is critical for security**
+ **StatefulSets for databases, Deployments for apps**
+ **Use namespaces to isolate applications**
 
 ## Troubleshooting
 

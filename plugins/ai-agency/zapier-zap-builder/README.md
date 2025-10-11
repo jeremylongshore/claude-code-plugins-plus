@@ -6,12 +6,12 @@ Build multi-step Zapier automations with AI assistance - the easiest way to conn
 
 Zapier is the most popular automation platform:
 
-- 🎯 **Easiest to Use** - No-code, visual interface
-- 🔌 **5000+ Apps** - Largest integration ecosystem
-- ⚡ **Quick Setup** - Get automations running in minutes
-- 🛡️ **Reliable** - Enterprise-grade uptime
-- 📱 **Mobile App** - Manage Zaps on the go
-- 🤝 **Great Support** - Extensive docs and community
+-  **Easiest to Use** - No-code, visual interface
+-  **5000+ Apps** - Largest integration ecosystem
+-  **Quick Setup** - Get automations running in minutes
+- ️ **Reliable** - Enterprise-grade uptime
+-  **Mobile App** - Manage Zaps on the go
+-  **Great Support** - Extensive docs and community
 
 ## Installation
 

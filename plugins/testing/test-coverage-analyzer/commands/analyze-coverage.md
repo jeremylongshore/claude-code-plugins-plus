@@ -34,10 +34,10 @@ Code Coverage Report
 Overall Coverage: 78.5%
 
 By File:
-  src/utils/validator.js     95.2%  ✅
-  src/api/users.js           82.1%  ✅
-  src/api/products.js        68.4%  ⚠️
-  src/services/payment.js    45.7%  ❌
+  src/utils/validator.js     95.2%  
+  src/api/users.js           82.1%  
+  src/api/products.js        68.4%  ️
+  src/services/payment.js    45.7%  
 
 By Type:
   Lines:      78.5% (1,571 / 2,000)

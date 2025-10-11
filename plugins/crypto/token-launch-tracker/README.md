@@ -60,11 +60,11 @@ What are the safest new token launches today?
 - Paid promotion only
 
 ### Safety Indicators
-- Contract verified ✅
-- Liquidity locked > 1 year ✅
-- Ownership renounced ✅
-- Audit completed ✅
-- Active community ✅
+- Contract verified 
+- Liquidity locked > 1 year 
+- Ownership renounced 
+- Audit completed 
+- Active community 
 
 ## Configuration
 
@@ -114,10 +114,10 @@ Create a `.token-launch-config.json` file:
 - Normal volume
 
 **Risk Levels:**
-- 80-100: Low Risk ✅
-- 60-79: Medium Risk ⚠️
-- 40-59: High Risk 🚨
-- 0-39: Critical Risk ❌
+- 80-100: Low Risk 
+- 60-79: Medium Risk ️
+- 40-59: High Risk 
+- 0-39: Critical Risk 
 
 ## Data Sources
 
@@ -137,7 +137,7 @@ Create a `.token-launch-config.json` file:
 
 ## Legal Disclaimer
 
-⚠️ **This plugin provides informational analysis only** and is NOT financial advice.
+️ **This plugin provides informational analysis only** and is NOT financial advice.
 
 Users must:
 - Conduct their own research (DYOR)
@@ -159,4 +159,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for crypto safety by Intent Solutions IO*
+*Built with ️ for crypto safety by Intent Solutions IO*

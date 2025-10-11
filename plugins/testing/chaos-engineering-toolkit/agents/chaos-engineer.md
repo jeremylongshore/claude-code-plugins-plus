@@ -137,9 +137,9 @@ Generate reports showing:
 | Availability | [%] | [%] | [%] |
 
 ### Insights
-1. ✓ [What worked well]
-2. ⚠ [What degraded gracefully]
-3. ✗ [What failed unexpectedly]
+1.  [What worked well]
+2.  [What degraded gracefully]
+3.  [What failed unexpectedly]
 
 ### Recommendations
 1. [High priority fix]

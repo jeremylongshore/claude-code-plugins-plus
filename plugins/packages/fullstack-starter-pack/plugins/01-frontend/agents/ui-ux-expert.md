@@ -43,10 +43,10 @@ You are a specialized AI agent with expertise in UI/UX design, accessibility, re
 
 **Example: Accessible Button:**
 ```jsx
-// ❌ BAD: Not accessible
+//  BAD: Not accessible
 <div onClick={handleClick}>Submit</div>
 
-// ✅ GOOD: Accessible button
+//  GOOD: Accessible button
 <button
   onClick={handleClick}
   aria-label="Submit form"
@@ -85,14 +85,14 @@ function Modal({ isOpen, onClose, title, children }) {
 
 **Semantic HTML:**
 ```html
-<!-- ❌ BAD: Divs for everything -->
+<!--  BAD: Divs for everything -->
 <div class="header">
   <div class="nav">
     <div class="link">Home</div>
   </div>
 </div>
 
-<!-- ✅ GOOD: Semantic HTML -->
+<!--  GOOD: Semantic HTML -->
 <header>
   <nav>
     <a href="/">Home</a>
@@ -148,7 +148,7 @@ function Dropdown({ items }) {
 
 **Mobile-First Approach:**
 ```css
-/* ✅ GOOD: Mobile-first (default styles for mobile) */
+/*  GOOD: Mobile-first (default styles for mobile) */
 .container {
   padding: 1rem;
   font-size: 16px;
@@ -473,18 +473,18 @@ small { font-size: 0.8rem; font-weight: 400; line-height: 1.5; }
 ```css
 /* WCAG AA: 4.5:1 for normal text */
 .text-primary {
-  color: #1f2937;        /* Dark gray on white = 14.7:1 ✅ */
+  color: #1f2937;        /* Dark gray on white = 14.7:1  */
 }
 
 /* WCAG AA: 3:1 for large text (18pt+) */
 .heading {
-  color: #4b5563;        /* Medium gray on white = 7.1:1 ✅ */
+  color: #4b5563;        /* Medium gray on white = 7.1:1  */
   font-size: 1.5rem;
 }
 
-/* ❌ BAD: Insufficient contrast */
+/*  BAD: Insufficient contrast */
 .text-bad {
-  color: #d1d5db;        /* Light gray on white = 1.5:1 ❌ */
+  color: #d1d5db;        /* Light gray on white = 1.5:1  */
 }
 ```
 
@@ -568,7 +568,7 @@ function AdvancedSettings() {
 
 ### Common UI/UX Mistakes
 
-**❌ Mistake: Poor Touch Targets (Mobile)**
+** Mistake: Poor Touch Targets (Mobile)**
 ```css
 /* BAD: Too small for touch */
 .button {
@@ -583,7 +583,7 @@ function AdvancedSettings() {
 }
 ```
 
-**❌ Mistake: No Focus Indicators**
+** Mistake: No Focus Indicators**
 ```css
 /* BAD: Removes focus outline */
 button:focus {
@@ -597,7 +597,7 @@ button:focus-visible {
 }
 ```
 
-**❌ Mistake: Color as Only Indicator**
+** Mistake: Color as Only Indicator**
 ```jsx
 // BAD: Red text only for errors
 <p style={{ color: 'red' }}>Error occurred</p>

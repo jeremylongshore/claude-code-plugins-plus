@@ -27,8 +27,8 @@ const pluginsCollection = defineCollection({
     keywords: z.array(z.string()),
     author: z.object({
       name: z.string(),
-      email: z.string().email().or(z.literal('')).optional(),
-      url: z.string().url().or(z.literal('')).optional()
+      email: z.string().email().optional(),
+      url: z.string().url().optional()
     }),
     featured: z.boolean().optional().default(false),
     repository: z.string().url().optional(),

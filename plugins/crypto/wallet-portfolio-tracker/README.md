@@ -4,21 +4,21 @@ Track crypto wallets across multiple blockchains with comprehensive portfolio an
 
 ## Features
 
-### 🎯 Multi-Chain Support
+###  Multi-Chain Support
 - Ethereum, BSC, Polygon, Arbitrum, Avalanche
 - Automatic chain detection
 - Cross-chain portfolio aggregation
 - Native & token balances
 - NFT collection tracking
 
-### 📊 DeFi Integration
+###  DeFi Integration
 - Lending protocol positions
 - Liquidity pool holdings
 - Yield farming rewards
 - Staking positions
 - Protocol interactions
 
-### ⚡ Real-Time Monitoring
+###  Real-Time Monitoring
 - Live balance updates
 - Transaction notifications
 - Gas usage tracking

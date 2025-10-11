@@ -140,40 +140,40 @@ Tests Run: 87
 Vulnerabilities: 5
 
 CRITICAL (1)
-  ❌ SQL Injection in /api/users/search
+   SQL Injection in /api/users/search
      CVSS: 9.8
      Impact: Database access, data exfiltration
      PoC: GET /api/users/search?query=' OR '1'='1'--
      Fix: Use parameterized queries or ORM
 
 HIGH (2)
-  ⚠️ Missing authentication on /api/admin/*
+  ️ Missing authentication on /api/admin/*
      CVSS: 8.5
      Impact: Unauthorized admin access
      Fix: Add authentication middleware
 
-  ⚠️ Weak password policy
+  ️ Weak password policy
      CVSS: 7.5
      Impact: Account takeover via brute force
      Fix: Enforce 12+ chars, complexity
 
 MEDIUM (2)
-  ⚠️ Missing rate limiting on login
+  ️ Missing rate limiting on login
      CVSS: 5.5
      Impact: Brute force attacks
      Fix: Implement rate limiting
 
-  ⚠️ Verbose error messages
+  ️ Verbose error messages
      CVSS: 4.5
      Impact: Information disclosure
      Fix: Generic errors in production
 
 PASSED (82)
-  ✅ XSS prevention
-  ✅ CSRF protection
-  ✅ Security headers
-  ✅ HTTPS enforced
-  ✅ Session timeout
+   XSS prevention
+   CSRF protection
+   Security headers
+   HTTPS enforced
+   Session timeout
 ```
 
 ## Severity Ratings

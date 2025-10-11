@@ -4,7 +4,7 @@ Real-time scanner for top market movers - gainers, losers, volume spikes, and un
 
 ## Features
 
-### 🎯 Comprehensive Scanning
+###  Comprehensive Scanning
 - **Top Gainers**: Identify strongest performers
 - **Top Losers**: Find oversold opportunities
 - **Volume Leaders**: Detect unusual trading activity
@@ -12,20 +12,20 @@ Real-time scanner for top market movers - gainers, losers, volume spikes, and un
 - **Breakout Detection**: Price and volume breakouts
 - **Unusual Activity**: Anomaly detection
 
-### 📊 Multi-Market Coverage
+###  Multi-Market Coverage
 - **Crypto**: 10,000+ cryptocurrencies from multiple exchanges
 - **Stocks**: US equities, major indices components
 - **Forex**: Major and exotic currency pairs
 - **ETFs**: Sector and index ETFs
 - **Commodities**: Gold, silver, oil futures
 
-### ⚡ Real-Time Updates
+###  Real-Time Updates
 - **30-second refresh**: Continuous market monitoring
 - **WebSocket feeds**: Instant price updates
 - **Cache optimization**: Efficient data management
 - **Multi-source aggregation**: Reliable data
 
-### 🔔 Alert System
+###  Alert System
 - **Market-wide alerts**: Rally/selloff detection
 - **Individual alerts**: Extreme movements
 - **Volume alerts**: Unusual activity warnings
@@ -393,4 +393,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for active traders by Intent Solutions IO*
+*Built with ️ for active traders by Intent Solutions IO*

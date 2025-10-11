@@ -32,10 +32,10 @@ Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI chan
 /visual-test
 
 # Claude performs:
-# ✓ Screenshot capture
-# ✓ Baseline comparison
-# ⚠ Visual diff analysis
-# 📊 Change classification
+#  Screenshot capture
+#  Baseline comparison
+#  Visual diff analysis
+#  Change classification
 ```
 
 ## Supported Tools

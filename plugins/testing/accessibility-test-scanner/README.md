@@ -32,10 +32,10 @@ A11y compliance testing with WCAG 2.1/2.2 validation, screen reader compatibilit
 /a11y-scan
 
 # Claude performs comprehensive audit:
-# ✓ WCAG compliance check
-# ⚠ ARIA validation
-# ✗ Critical issues with fix recommendations
-# 📋 Automated test generation
+#  WCAG compliance check
+#  ARIA validation
+#  Critical issues with fix recommendations
+#  Automated test generation
 ```
 
 ## Supported Standards

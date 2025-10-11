@@ -36,13 +36,13 @@ overnight-dev init
 # Overnight Development Hook
 # Runs linting and testing before every commit
 
-echo "🔍 Running linting..."
+echo " Running linting..."
 npm run lint || exit 1
 
-echo "🧪 Running tests..."
+echo " Running tests..."
 npm test || exit 1
 
-echo "✅ All checks passed! Committing..."
+echo " All checks passed! Committing..."
 ```
 
 ### `.git/hooks/commit-msg`
@@ -56,7 +56,7 @@ COMMIT_MSG=$(cat "$COMMIT_MSG_FILE")
 
 # Check if commit message meets standards
 if ! echo "$COMMIT_MSG" | grep -qE "^(feat|fix|test|refactor|docs|style|chore):"; then
-    echo "❌ Commit message must start with: feat|fix|test|refactor|docs|style|chore"
+    echo " Commit message must start with: feat|fix|test|refactor|docs|style|chore"
     exit 1
 fi
 ```
@@ -172,12 +172,12 @@ cat .overnight-dev-log.txt
 
 # Example output:
 # [2025-10-10 22:15] Session started: Implement auth system
-# [2025-10-10 22:20] ✅ Tests pass (12/12)
-# [2025-10-10 22:45] ❌ Tests fail (11/13) - fixing...
-# [2025-10-10 23:10] ✅ Tests pass (13/13) - auth routes complete
-# [2025-10-11 00:30] ✅ Tests pass (18/18) - middleware added
-# [2025-10-11 02:15] ✅ Tests pass (25/25) - integration tests done
-# [2025-10-11 06:45] 🎉 Session complete! 100% coverage achieved
+# [2025-10-10 22:20]  Tests pass (12/12)
+# [2025-10-10 22:45]  Tests fail (11/13) - fixing...
+# [2025-10-10 23:10]  Tests pass (13/13) - auth routes complete
+# [2025-10-11 00:30]  Tests pass (18/18) - middleware added
+# [2025-10-11 02:15]  Tests pass (25/25) - integration tests done
+# [2025-10-11 06:45]  Session complete! 100% coverage achieved
 ```
 
 ## Why This Works
@@ -275,10 +275,10 @@ jobs:
 ### 1. Start with Clear Goals
 
 ```bash
-# ❌ Too vague
+#  Too vague
 claude-code --mode overnight-dev "make the app better"
 
-# ✅ Specific and testable
+#  Specific and testable
 claude-code --mode overnight-dev "Add user authentication with 90% test coverage"
 ```
 
@@ -341,4 +341,4 @@ Strategy developed and refined by Intent Solutions IO team through extensive tes
 
 **Powered by Intent Solutions IO**
 
-**Start your first overnight development session tonight!** 🌙✨
+**Start your first overnight development session tonight!** 

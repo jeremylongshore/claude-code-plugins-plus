@@ -99,15 +99,15 @@ Run and manage integration test suites with automatic environment setup, databas
 
 ```bash
 # 1. Plugin runs pre-flight checks
-Checking environment... ✓
-Database available... ✓
-Required services... ✓
+Checking environment... 
+Database available... 
+Required services... 
 
 # 2. Sets up test environment
-Creating test database... ✓
-Running migrations... ✓
-Seeding test data... ✓
-Starting Redis... ✓
+Creating test database... 
+Running migrations... 
+Seeding test data... 
+Starting Redis... 
 
 # 3. Executes test suites
 Running API tests... 12/12 passed
@@ -120,9 +120,9 @@ Coverage: 81.5%
 Time: 42.3s
 
 # 5. Cleans up
-Dropping test database... ✓
-Stopping services... ✓
-Cleanup complete... ✓
+Dropping test database... 
+Stopping services... 
+Cleanup complete... 
 ```
 
 ## Configuration

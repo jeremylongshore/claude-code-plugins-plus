@@ -20,11 +20,11 @@ When analyzed with the MCP server:
 If you commit changes to `auth.ts` multiple times, it will show high churn.
 
 ### Test Coverage
-- `utils.ts`: ✅ Has test file
-- `auth.ts`: ❌ Missing test file
+- `utils.ts`:  Has test file
+- `auth.ts`:  Missing test file
 
 ### Recommendations
 The analyzer should recommend:
-1. 🚨 **URGENT**: Add tests for `auth.ts` (high complexity + no tests)
-2. ⚠️ **Refactor**: Break down `validateToken()` and `login()` methods in `auth.ts`
-3. ✅ **Good**: Keep `utils.ts` as reference for well-structured code
+1.  **URGENT**: Add tests for `auth.ts` (high complexity + no tests)
+2. ️ **Refactor**: Break down `validateToken()` and `login()` methods in `auth.ts`
+3.  **Good**: Keep `utils.ts` as reference for well-structured code

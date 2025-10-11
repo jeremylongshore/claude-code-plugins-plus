@@ -12,10 +12,10 @@ estimated_time: 2 minutes
      This command provides systematic debugging workflow with specific fix recommendations. -->
 
 <!-- VALIDATION: Handles common failures -->
-<!-- ✅ CrashLoopBackOff (app crashes) -->
-<!-- ✅ ImagePullBackOff (registry issues) -->
-<!-- ✅ Pending (resource constraints) -->
-<!-- ✅ OOMKilled (memory limits) -->
+<!--  CrashLoopBackOff (app crashes) -->
+<!--  ImagePullBackOff (registry issues) -->
+<!--  Pending (resource constraints) -->
+<!--  OOMKilled (memory limits) -->
 
 # Kubernetes Troubleshooter
 
@@ -23,13 +23,13 @@ Systematically debugs Kubernetes pod failures (CrashLoopBackOff, ImagePullBackOf
 
 ## When to Use This
 
-- ✅ Pod stuck in CrashLoopBackOff
-- ✅ Pod stuck in ImagePullBackOff
-- ✅ Pod stuck in Pending
-- ✅ Pod terminated with OOMKilled
-- ✅ Service not accessible
-- ✅ Ingress not routing traffic
-- ❌ Cluster-level issues (use cluster admin tools)
+-  Pod stuck in CrashLoopBackOff
+-  Pod stuck in ImagePullBackOff
+-  Pod stuck in Pending
+-  Pod terminated with OOMKilled
+-  Service not accessible
+-  Ingress not routing traffic
+-  Cluster-level issues (use cluster admin tools)
 
 ## How It Works
 
@@ -492,11 +492,11 @@ watch kubectl top pod -n jobs
 
 ## Pro Tips
 
-💡 **Use kubectl describe pod first (shows events)**
-💡 **Check --previous logs for crash analysis**
-💡 **Look at Events sorted by time: --sort-by=.metadata.creationTimestamp**
-💡 **CrashLoopBackOff = app issue, ImagePullBackOff = registry issue, Pending = resources**
-💡 **Exit Code 137 = OOMKilled, Exit Code 1 = app error**
+ **Use kubectl describe pod first (shows events)**
+ **Check --previous logs for crash analysis**
+ **Look at Events sorted by time: --sort-by=.metadata.creationTimestamp**
+ **CrashLoopBackOff = app issue, ImagePullBackOff = registry issue, Pending = resources**
+ **Exit Code 137 = OOMKilled, Exit Code 1 = app error**
 
 ## Common Exit Codes
 

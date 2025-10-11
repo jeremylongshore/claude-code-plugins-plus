@@ -79,13 +79,13 @@ Volume > 1M requests/month?
 
 | Model | Context | Speed | Cost | Reasoning | Coding | Writing | Multimodal |
 |-------|---------|-------|------|-----------|--------|---------|------------|
-| **GPT-4 Turbo** | 128K | Medium | $$$$ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Vision |
-| **GPT-3.5 Turbo** | 16K | Fast | $ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ | ❌ |
-| **Claude Opus** | 200K | Medium | $$$$ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ✅ Vision |
-| **Claude Sonnet** | 200K | Fast | $$ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ Vision |
-| **Claude Haiku** | 200K | Very Fast | $ | ⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐ | ✅ Vision |
-| **Gemini Pro** | 32K | Fast | $$ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ✅ Vision |
-| **Llama 3 70B** | 8K | Fast | Free* | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ❌ |
+| **GPT-4 Turbo** | 128K | Medium | $$$$ |  |  |  |  Vision |
+| **GPT-3.5 Turbo** | 16K | Fast | $ |  |  |  |  |
+| **Claude Opus** | 200K | Medium | $$$$ |  |  |  |  Vision |
+| **Claude Sonnet** | 200K | Fast | $$ |  |  |  |  Vision |
+| **Claude Haiku** | 200K | Very Fast | $ |  |  |  |  Vision |
+| **Gemini Pro** | 32K | Fast | $$ |  |  |  |  Vision |
+| **Llama 3 70B** | 8K | Fast | Free* |  |  |  |  |
 
 *Self-hosted infrastructure costs apply
 
@@ -122,7 +122,7 @@ Model: Claude Haiku
 Cost: $0.0001 per request
 Accuracy: 93%
 Latency: 0.5s
-✅ Good choice
+ Good choice
 ```
 
 ### Data Extraction
@@ -142,7 +142,7 @@ Model: Claude Sonnet
 Cost: $0.0009 per request
 Accuracy: 94%
 Latency: 1.2s
-✅ Good choice (Haiku might miss edge cases)
+ Good choice (Haiku might miss edge cases)
 ```
 
 ### Code Generation
@@ -162,7 +162,7 @@ Model: GPT-4 Turbo
 Cost: $0.02 per request
 Quality: 93% (works with minor tweaks)
 Latency: 4s
-✅ Good choice (investment pays off in time saved)
+ Good choice (investment pays off in time saved)
 ```
 
 ### Summarization
@@ -182,7 +182,7 @@ Model: Claude Sonnet (200K context)
 Cost: $0.015 per document
 Quality: 91% (misses <5% of key points)
 Latency: 3s
-✅ Good choice (Opus overkill, Haiku too simple)
+ Good choice (Opus overkill, Haiku too simple)
 ```
 
 ### Creative Writing
@@ -221,7 +221,7 @@ Model: GPT-4 Turbo
 Cost: $0.04 per analysis
 Quality: 96% useful insights
 Value: $1,000+ per analysis
-✅ Excellent ROI (0.004% cost of value)
+ Excellent ROI (0.004% cost of value)
 ```
 
 ### Conversational AI
@@ -241,7 +241,7 @@ Model: Claude Haiku (90% of queries) + Sonnet (10% complex)
 Blended cost: $0.0011 per conversation
 Satisfaction: 88%
 Latency: 0.8s average
-✅ Good choice (fast + cheap, escalation for quality)
+ Good choice (fast + cheap, escalation for quality)
 ```
 
 ## Context Window Considerations
@@ -273,10 +273,10 @@ Tokens: ~65,000 tokens
 Required context: 70K+ (document + prompt)
 
 Viable models:
-✅ GPT-4 Turbo (128K)
-✅ Claude Opus/Sonnet/Haiku (200K)
-❌ GPT-3.5 (16K) - too small
-❌ Llama 3 (8K) - too small
+ GPT-4 Turbo (128K)
+ Claude Opus/Sonnet/Haiku (200K)
+ GPT-3.5 (16K) - too small
+ Llama 3 (8K) - too small
 
 Strategy: Use Claude Haiku for cost-effective long document analysis
 ```
@@ -370,11 +370,11 @@ def cached_complete(prompt_hash: str):
 ### Strategy 3: Prompt Optimization
 
 ```
-❌ Before (expensive):
+ Before (expensive):
 "Please analyze this customer review and tell me if the sentiment is positive, negative, or neutral. Also extract the main topics discussed and any specific product features mentioned."
 Tokens: 35
 
-✅ After (cheap):
+ After (cheap):
 "Review analysis:
 1. Sentiment: positive/negative/neutral
 2. Topics: [list]

@@ -1,0 +1,23 @@
+{
+  "name": "database-connection-pooler",
+  "description": "Implement and optimize database connection pooling for improved performance and resource management",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "connection-pool",
+    "database",
+    "performance",
+    "backend",
+    "optimization"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-connection-pooler",
+  "license": "MIT",
+  "installation": "/plugin install database-connection-pooler@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

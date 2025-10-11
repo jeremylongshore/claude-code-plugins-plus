@@ -4,12 +4,12 @@
 
 ## Features
 
-- 🤖 **AI-Powered Analysis**: Understands your code changes and generates contextual messages
-- 📝 **Conventional Commits**: Follows the conventional commits standard automatically
-- ⚡ **Fast Workflow**: Generate commits in seconds with `/gc` shortcut
-- 🎯 **Smart Categorization**: Automatically determines commit type (feat, fix, docs, etc.)
-- ✅ **Breaking Change Detection**: Identifies and documents breaking changes
-- 🔍 **Interactive Confirmation**: Review and edit before committing
+-  **AI-Powered Analysis**: Understands your code changes and generates contextual messages
+-  **Conventional Commits**: Follows the conventional commits standard automatically
+-  **Fast Workflow**: Generate commits in seconds with `/gc` shortcut
+-  **Smart Categorization**: Automatically determines commit type (feat, fix, docs, etc.)
+-  **Breaking Change Detection**: Identifies and documents breaking changes
+-  **Interactive Confirmation**: Review and edit before committing
 
 ## Installation
 
@@ -60,7 +60,7 @@ Closes #123
 # Commit with this message? (yes/no/edit)
 yes
 
-# Committed! ✅
+# Committed! 
 ```
 
 ## Commit Types
@@ -94,21 +94,21 @@ You can provide additional context:
 
 ## Pro Tips
 
-💡 **Stage related changes together** - Commit logical units, not random files
+ **Stage related changes together** - Commit logical units, not random files
 
-💡 **Use the /gc shortcut** - Saves typing and speeds up workflow
+ **Use the /gc shortcut** - Saves typing and speeds up workflow
 
-💡 **Review before committing** - Always check the generated message makes sense
+ **Review before committing** - Always check the generated message makes sense
 
-💡 **Add issue references** - Plugin will detect and include "Closes #123" when appropriate
+ **Add issue references** - Plugin will detect and include "Closes #123" when appropriate
 
-💡 **Break up large changes** - Multiple focused commits are better than one massive commit
+ **Break up large changes** - Multiple focused commits are better than one massive commit
 
 ## When NOT to Use
 
-❌ **Merge commits** - Use git's default merge message instead
-❌ **No staged changes** - Stage changes first with `git add`
-❌ **Emergency hotfixes** - When you need to commit immediately without review
+ **Merge commits** - Use git's default merge message instead
+ **No staged changes** - Stage changes first with `git add`
+ **Emergency hotfixes** - When you need to commit immediately without review
 
 ## Troubleshooting
 
@@ -166,4 +166,4 @@ Contributions welcome! See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for guide
 
 ---
 
-**Made with ❤️ for developers who want better commit messages without the hassle**
+**Made with ️ for developers who want better commit messages without the hassle**

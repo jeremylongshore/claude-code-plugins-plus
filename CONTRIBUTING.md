@@ -2,7 +2,7 @@
 
 Thank you for your interest in contributing! This marketplace thrives on community contributions. Whether you're submitting a plugin, improving documentation, or reporting bugs, your help makes this resource better for everyone.
 
-## 🌟 Ways to Contribute
+##  Ways to Contribute
 
 - **Submit new plugins** - Share your creations with the community
 - **Improve existing plugins** - Bug fixes, enhancements, documentation
@@ -11,7 +11,7 @@ Thank you for your interest in contributing! This marketplace thrives on communi
 - **Suggest features** - Ideas for improving the marketplace
 - **Review pull requests** - Help maintain quality standards
 
-## 📦 Submitting a Plugin
+##  Submitting a Plugin
 
 ### Before You Start
 
@@ -192,7 +192,7 @@ Use [Semantic Versioning](https://semver.org/):
 
 Start at `1.0.0` for initial release.
 
-## 🐛 Reporting Bugs
+##  Reporting Bugs
 
 Found a bug? Please report it!
 
@@ -205,7 +205,7 @@ Found a bug? Please report it!
    - Expected vs actual behavior
    - Error messages or logs
 
-## 📝 Improving Documentation
+##  Improving Documentation
 
 Documentation improvements are always welcome:
 
@@ -216,7 +216,7 @@ Documentation improvements are always welcome:
 
 Submit changes via pull request.
 
-## 🔍 Code Review Process
+##  Code Review Process
 
 All submissions go through review:
 
@@ -241,7 +241,7 @@ All submissions go through review:
 - Push updates to your branch
 - Request re-review when ready
 
-## ✅ Quality Standards
+##  Quality Standards
 
 ### Code Quality
 
@@ -264,7 +264,7 @@ All submissions go through review:
 - **Principle of least privilege** - Request minimal permissions
 - **Dependencies** - Keep dependencies minimal and updated
 
-## 🎨 Style Guidelines
+##  Style Guidelines
 
 ### Markdown Style
 
@@ -315,7 +315,7 @@ function process_file() {
 }
 ```
 
-## 🤝 Community Guidelines
+##  Community Guidelines
 
 ### Be Respectful
 
@@ -338,15 +338,15 @@ function process_file() {
 - Respect differing opinions
 - Follow the code of conduct
 
-## 📧 Getting Help
+##  Getting Help
 
 Need help contributing?
 
-- **💬 Discord**: [Claude Developers](https://discord.com/invite/6PPFFzqPDZ)
-- **💡 Discussions**: [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
-- **📧 Email**: [email protected]
+- ** Discord**: [Claude Developers](https://discord.com/invite/6PPFFzqPDZ)
+- ** Discussions**: [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
+- ** Email**: [email protected]
 
-## 🏆 Recognition
+##  Recognition
 
 Contributors are recognized in several ways:
 
@@ -355,7 +355,7 @@ Contributors are recognized in several ways:
 - **Community highlights** - Outstanding contributions featured
 - **Maintainer status** - Active contributors may become maintainers
 
-## 📜 License
+##  License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
 
@@ -378,7 +378,7 @@ Before submitting, verify:
 
 ---
 
-**Thank you for contributing to Claude Code Plugins!** 🙏
+**Thank you for contributing to Claude Code Plugins!** 
 
 Your contributions help build a vibrant ecosystem that benefits the entire community.
 

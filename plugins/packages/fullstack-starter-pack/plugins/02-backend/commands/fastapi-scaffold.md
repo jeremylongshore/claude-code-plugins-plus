@@ -13,15 +13,15 @@ Generates a complete FastAPI REST API boilerplate with async support, authentica
 ## What This Command Does
 
 **Generated Project:**
-- ✅ FastAPI with Python 3.10+
-- ✅ Async/await throughout
-- ✅ JWT authentication
-- ✅ Database integration (SQLAlchemy async)
-- ✅ Pydantic models & validation
-- ✅ Automatic OpenAPI docs
-- ✅ Testing setup (Pytest + httpx)
-- ✅ Docker configuration
-- ✅ Example CRUD endpoints
+-  FastAPI with Python 3.10+
+-  Async/await throughout
+-  JWT authentication
+-  Database integration (SQLAlchemy async)
+-  Pydantic models & validation
+-  Automatic OpenAPI docs
+-  Testing setup (Pytest + httpx)
+-  Docker configuration
+-  Example CRUD endpoints
 
 **Output:** Complete API project ready for development
 
@@ -670,4 +670,4 @@ pytest
 
 ---
 
-**Build high-performance APIs. Scale effortlessly. Deploy confidently.** ⚡
+**Build high-performance APIs. Scale effortlessly. Deploy confidently.** 

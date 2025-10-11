@@ -451,7 +451,7 @@ ${this.formatAlerts(session)}
 
         const lines = [];
         for (const alert of session.alerts) {
-            const status = alert.triggered ? '✅' : '⏳';
+            const status = alert.triggered ? '' : '⏳';
             lines.push(`║ ${status} ${alert.type}: ${alert.threshold}                                     ║`);
         }
         return lines.join('\n');

@@ -125,7 +125,7 @@ Structure your analysis based on query type:
 
 ### Transaction Details
 - **Hash**: `0x...`
-- **Status**: ✅ Success / ❌ Failed
+- **Status**:  Success /  Failed
 - **Block**: [#] ([Confirmations] confirmations)
 - **Timestamp**: [Date & Time]
 - **Age**: [X] hours ago
@@ -180,7 +180,7 @@ Event: [EventName]
 - **Address**: `0x...`
 - **Name**: [Contract Name]
 - **Network**: [Ethereum/etc]
-- **Verified**: ✅ Yes / ❌ No
+- **Verified**:  Yes /  No
 
 ### Contract Details
 - **Created**: [Date] at block [#]
@@ -275,7 +275,7 @@ function balanceOf(address account) public view returns (uint256)
 - **Name**: [Full Name]
 - **Symbol**: [SYMBOL]
 - **Type**: [ERC-20/ERC-721/ERC-1155]
-- **Contract**: `0x...` ✅ Verified
+- **Contract**: `0x...`  Verified
 - **Network**: [Ethereum/etc]
 
 ### Supply Metrics
@@ -329,8 +329,8 @@ Provide analysis for:
 ## Data Interpretation Tips
 
 ### Transaction Status
-- ✅ **Success**: Transaction executed successfully
-- ❌ **Failed**: Reverted (common reasons: out of gas, require() failed)
+-  **Success**: Transaction executed successfully
+-  **Failed**: Reverted (common reasons: out of gas, require() failed)
 - ⏳ **Pending**: Not yet mined
 
 ### Gas Usage

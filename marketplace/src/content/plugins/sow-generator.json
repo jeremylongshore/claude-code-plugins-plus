@@ -3,16 +3,22 @@
   "description": "Generate professional Statements of Work for AI projects",
   "version": "1.0.0",
   "category": "business-tools",
-  "keywords": ["sow", "statement-of-work", "contract", "proposal", "agency", "ai-agency"],
+  "keywords": [
+    "sow",
+    "statement of work",
+    "contract",
+    "proposal",
+    "agency",
+    "ai-agency"
+  ],
   "author": {
     "name": "Claude Code Plugin Hub"
   },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-agency/sow-generator",
+  "license": "MIT",
   "installation": "/plugin install sow-generator@claude-code-plugins",
-  "features": [
-    "Professional SOW templates",
-    "Legal section guidance",
-    "Scope definition assistance",
-    "Timeline and deliverables"
-  ],
-  "requirements": ["Claude Code CLI"]
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

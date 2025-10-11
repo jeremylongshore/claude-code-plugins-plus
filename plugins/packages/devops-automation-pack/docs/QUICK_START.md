@@ -61,7 +61,7 @@ The command will ask you:
 ? Select branch type: feature
 ? Brief description: add user authentication
 
-✅ Created and switched to: feature/add-user-authentication
+ Created and switched to: feature/add-user-authentication
 ```
 
 **Expected result:**
@@ -105,9 +105,9 @@ The command will:
 
 **Example output:**
 ```
-📊 Analyzing changes...
-✅ Found 1 modified file: README.md
-✅ Reviewed commit history for style
+ Analyzing changes...
+ Found 1 modified file: README.md
+ Reviewed commit history for style
 
 Suggested commit message:
 ─────────────────────────────────────
@@ -127,9 +127,9 @@ Type `y` and press Enter.
 
 **Expected result:**
 ```
-✅ Commit created: a3f8d92
-✅ Message follows conventional commits standard
-✅ Ready to push
+ Commit created: a3f8d92
+ Message follows conventional commits standard
+ Ready to push
 
 Next step: Create a pull request with /pr-create
 ```
@@ -141,7 +141,7 @@ git log -1
 
 You'll see your beautifully formatted conventional commit!
 
-> 💡 **Tip:** The shortcut `/gc` does the same thing (gc = Git Commit)
+>  **Tip:** The shortcut `/gc` does the same thing (gc = Git Commit)
 
 ---
 
@@ -175,9 +175,9 @@ The command will:
 
 **Example output:**
 ```
-📊 Analyzing branch: feature/add-user-authentication
-✅ Found 1 commit
-✅ Detected base branch: main
+ Analyzing branch: feature/add-user-authentication
+ Found 1 commit
+ Detected base branch: main
 
 Generated Pull Request:
 ─────────────────────────────────────
@@ -210,8 +210,8 @@ Type `y` to create the pull request.
 
 **Expected result:**
 ```
-✅ Pull request created!
-✅ URL: https://github.com/yourname/repo/pull/42
+ Pull request created!
+ URL: https://github.com/yourname/repo/pull/42
 
 Next steps:
 - Request reviewers
@@ -223,13 +223,13 @@ Next steps:
 
 The command will show you the PR template and instructions:
 ```
-📋 Pull request template generated
-✅ Save this to use when creating PR manually
+ Pull request template generated
+ Save this to use when creating PR manually
 
 Copy the template above and paste it when creating your PR on GitHub/GitLab.
 ```
 
-> 💡 **Tip:** The shortcut `/gpr` does the same thing (gpr = Git Pull Request)
+>  **Tip:** The shortcut `/gpr` does the same thing (gpr = Git Pull Request)
 
 ---
 
@@ -248,9 +248,9 @@ git log --oneline --graph --all
 ```
 
 A clean, professional commit history with:
-- ✅ Properly named feature branch
-- ✅ Conventional commit message
-- ✅ Professional pull request description
+-  Properly named feature branch
+-  Conventional commit message
+-  Professional pull request description
 
 **All created in under 5 minutes!**
 
@@ -400,10 +400,10 @@ Either:
 You've completed your first workflow with the DevOps Automation Pack.
 
 **What you've achieved:**
-- ✅ Created a properly named feature branch
-- ✅ Made a conventional commit with AI assistance
-- ✅ Generated a professional pull request
-- ✅ Saved 10+ minutes of manual work
+-  Created a properly named feature branch
+-  Made a conventional commit with AI assistance
+-  Generated a professional pull request
+-  Saved 10+ minutes of manual work
 
 **Keep going!** Every command saves you time and enforces best practices.
 

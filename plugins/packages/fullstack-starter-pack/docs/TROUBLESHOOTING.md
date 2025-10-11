@@ -95,8 +95,8 @@ claude --version
 
 ```bash
 # 1. Be explicit with keywords
-# ❌ BAD: "Help me with my app"
-# ✅ GOOD: "Help me optimize React component performance"
+#  BAD: "Help me with my app"
+#  GOOD: "Help me optimize React component performance"
 
 # 2. Use activation keywords
 # Keywords: react, hooks, component, state management, performance
@@ -112,11 +112,11 @@ claude --version
 **Solution:**
 ```bash
 # Be specific about what you want
-# ❌ BAD: "Help with database"
-# ✅ GOOD: "Design a PostgreSQL schema for a blog with users, posts, and comments"
+#  BAD: "Help with database"
+#  GOOD: "Design a PostgreSQL schema for a blog with users, posts, and comments"
 
-# ❌ BAD: "Make my API faster"
-# ✅ GOOD: "Review this Express API endpoint for N+1 query problems and suggest optimizations"
+#  BAD: "Make my API faster"
+#  GOOD: "Review this Express API endpoint for N+1 query problems and suggest optimizations"
 ```
 
 ---
@@ -329,4 +329,4 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ---
 
-**Most issues are resolved with reinstallation or correct environment setup.** 🔧
+**Most issues are resolved with reinstallation or correct environment setup.** 

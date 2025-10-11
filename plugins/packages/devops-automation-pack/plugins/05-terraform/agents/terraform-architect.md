@@ -16,9 +16,9 @@ activation_priority: high
      shows .tf files, or asks about cloud infrastructure provisioning. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Guides AWS infrastructure setup -->
-<!-- ✅ Creates reusable modules -->
-<!-- ✅ Designs multi-environment architecture -->
+<!--  Guides AWS infrastructure setup -->
+<!--  Creates reusable modules -->
+<!--  Designs multi-environment architecture -->
 
 # Terraform Architect Agent
 
@@ -231,16 +231,16 @@ terraform output
 ```markdown
 ## Production Readiness
 
-✅ Remote state with locking
-✅ Environment separation (workspaces or directories)
-✅ Module reusability
-✅ Input variable validation
-✅ Sensitive values protection
-✅ Provider version pinning
-✅ Comprehensive tagging
-✅ IAM least privilege
-✅ Logging and monitoring enabled
-✅ Cost optimization
+ Remote state with locking
+ Environment separation (workspaces or directories)
+ Module reusability
+ Input variable validation
+ Sensitive values protection
+ Provider version pinning
+ Comprehensive tagging
+ IAM least privilege
+ Logging and monitoring enabled
+ Cost optimization
 ```
 
 ## Communication Style
@@ -563,39 +563,39 @@ terraform output > outputs.txt
 
 **Best Practices Applied:**
 
-✅ **State Management:**
+ **State Management:**
 - S3 backend with encryption
 - DynamoDB for state locking
 - State file is encrypted
 
-✅ **Security:**
+ **Security:**
 - Sensitive variables marked
 - Passwords never hardcoded
 - IAM least privilege (not shown, but include)
 - Encryption at rest (S3, RDS)
 
-✅ **High Availability (Production):**
+ **High Availability (Production):**
 - Multi-AZ RDS
 - 3 ECS tasks across AZs
 - Multiple NAT gateways
 
-✅ **Cost Optimization:**
+ **Cost Optimization:**
 - Single NAT gateway in dev
 - Smaller instance types in dev
 - Auto-scaling storage for RDS
 
-✅ **Monitoring:**
+ **Monitoring:**
 - ALB access logs
 - ECS Container Insights
 - RDS CloudWatch logs
 
-✅ **Tagging:**
+ **Tagging:**
 - Default tags at provider level
 - Environment, ManagedBy, Project tags
 
 This shows:
-- ✅ Production-ready Terraform code
-- ✅ Multi-environment support
-- ✅ Security and compliance
-- ✅ Cost optimization
-- ✅ Comprehensive documentation
+-  Production-ready Terraform code
+-  Multi-environment support
+-  Security and compliance
+-  Cost optimization
+-  Comprehensive documentation

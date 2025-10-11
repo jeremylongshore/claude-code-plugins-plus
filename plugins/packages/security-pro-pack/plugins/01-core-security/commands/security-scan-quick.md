@@ -25,11 +25,11 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 ## What This Command Does
 
 **Quick Security Analysis** in under 5 minutes:
-- ✅ Scans for hardcoded secrets and credentials
-- ✅ Checks dependencies for known CVEs
-- ✅ Identifies insecure configurations
-- ✅ Detects common vulnerability patterns
-- ✅ Provides severity-rated findings with fixes
+-  Scans for hardcoded secrets and credentials
+-  Checks dependencies for known CVEs
+-  Identifies insecure configurations
+-  Detects common vulnerability patterns
+-  Provides severity-rated findings with fixes
 
 **Output:** Security scan report with actionable remediation steps
 
@@ -93,7 +93,7 @@ Run a fast automated security scan of your codebase to identify common vulnerabi
 
 **Example Findings:**
 ```javascript
-// ❌ CRITICAL: Hardcoded AWS credentials
+//  CRITICAL: Hardcoded AWS credentials
 const AWS_ACCESS_KEY = "AKIAIOSFODNN7EXAMPLE"
 const AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
@@ -113,7 +113,7 @@ const AWS_SECRET_KEY = "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 
 **Example Findings:**
 ```
-🚨 Critical Vulnerability in lodash@4.17.15
+ Critical Vulnerability in lodash@4.17.15
 
 CVE: CVE-2020-8203
 Severity: High (CVSS 7.4)
@@ -139,13 +139,13 @@ Fix: npm install lodash@^4.17.19
 
 **Example Findings:**
 ```javascript
-// ⚠️  HIGH: Debug mode enabled
+// ️  HIGH: Debug mode enabled
 app.set('debug', true)  // Should be false in production
 
-// ⚠️  HIGH: Permissive CORS
+// ️  HIGH: Permissive CORS
 app.use(cors({ origin: '*' }))  // Allows all origins
 
-// 💡 MEDIUM: Missing security headers
+//  MEDIUM: Missing security headers
 // Recommendation: Add helmet.js middleware
 ```
 
@@ -161,7 +161,7 @@ app.use(cors({ origin: '*' }))  // Allows all origins
 
 **Example Findings:**
 ```python
-# ⚠️  HIGH: SQL Injection risk
+# ️  HIGH: SQL Injection risk
 query = f"SELECT * FROM users WHERE id = {user_id}"  # String interpolation
 cursor.execute(query)
 
@@ -178,82 +178,82 @@ cursor.execute(query)
 ```bash
 $ /security-scan-quick
 
-🔍 Running Quick Security Scan...
+ Running Quick Security Scan...
 
-📁 Project: my-express-api
-📊 Files scanned: 247
+ Project: my-express-api
+ Files scanned: 247
 ⏱️  Scan duration: 3.2 seconds
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 CRITICAL ISSUES (Fix Immediately)
+ CRITICAL ISSUES (Fix Immediately)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Hardcoded Database Password
-   📄 File: config/database.js:8
-   🔴 Severity: Critical
+    File: config/database.js:8
+    Severity: Critical
 
    const DB_PASSWORD = "MySecretPassword123!"
 
-   ⚠️  Impact: Database compromise if code repository is exposed
+   ️  Impact: Database compromise if code repository is exposed
 
-   ✅ Fix:
+    Fix:
    - Move to .env file
    - Add .env to .gitignore
    - Use environment variables:
      const DB_PASSWORD = process.env.DB_PASSWORD
 
 2. AWS Access Key Exposed
-   📄 File: services/s3-upload.js:15
-   🔴 Severity: Critical
+    File: services/s3-upload.js:15
+    Severity: Critical
 
    AWS_ACCESS_KEY_ID: "AKIAIOSFODNN7EXAMPLE"
 
-   ⚠️  Impact: Unauthorized access to AWS account, potential $$$$ charges
+   ️  Impact: Unauthorized access to AWS account, potential $$$$ charges
 
-   ✅ Fix:
+    Fix:
    - Rotate AWS credentials immediately
    - Use AWS IAM roles instead
    - Never commit credentials to git
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  HIGH SEVERITY ISSUES
+️  HIGH SEVERITY ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 3. Vulnerable Dependency: express@4.16.0
-   📦 Package: express
-   🟠 Severity: High (CVSS 7.5)
+    Package: express
+    Severity: High (CVSS 7.5)
 
    CVE: CVE-2022-24999
    Current: 4.16.0
    Fixed in: 4.17.3
 
-   ⚠️  Vulnerability: Denial of Service via qs parameter parsing
+   ️  Vulnerability: Denial of Service via qs parameter parsing
 
-   ✅ Fix:
+    Fix:
    npm install express@^4.17.3
 
 4. SQL Injection Vulnerability
-   📄 File: routes/users.js:34
-   🟠 Severity: High
+    File: routes/users.js:34
+    Severity: High
 
    const query = `SELECT * FROM users WHERE id = ${req.params.id}`
    db.query(query)
 
-   ⚠️  Impact: Database compromise, data theft, data modification
+   ️  Impact: Database compromise, data theft, data modification
 
-   ✅ Fix:
+    Fix:
    const query = 'SELECT * FROM users WHERE id = ?'
    db.query(query, [req.params.id])
 
 5. Missing Rate Limiting
-   📄 File: routes/auth.js
-   🟠 Severity: High
+    File: routes/auth.js
+    Severity: High
 
    Login endpoint has no rate limiting
 
-   ⚠️  Impact: Brute force attacks possible
+   ️  Impact: Brute force attacks possible
 
-   ✅ Fix:
+    Fix:
    npm install express-rate-limit
    const rateLimit = require('express-rate-limit')
 
@@ -265,54 +265,54 @@ $ /security-scan-quick
    app.post('/login', loginLimiter, loginHandler)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 MEDIUM SEVERITY ISSUES
+ MEDIUM SEVERITY ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 6. Debug Mode Enabled
-   📄 File: app.js:10
-   🟡 Severity: Medium
+    File: app.js:10
+    Severity: Medium
 
    app.set('debug', true)
 
-   ⚠️  Impact: Verbose error messages may leak sensitive information
+   ️  Impact: Verbose error messages may leak sensitive information
 
-   ✅ Fix:
+    Fix:
    app.set('debug', process.env.NODE_ENV !== 'production')
 
 7. Permissive CORS Configuration
-   📄 File: app.js:25
-   🟡 Severity: Medium
+    File: app.js:25
+    Severity: Medium
 
    app.use(cors({ origin: '*' }))
 
-   ⚠️  Impact: Any website can make requests to your API
+   ️  Impact: Any website can make requests to your API
 
-   ✅ Fix:
+    Fix:
    app.use(cors({
      origin: process.env.ALLOWED_ORIGINS.split(',')
    }))
 
 8. Missing Security Headers
-   📄 File: app.js
-   🟡 Severity: Medium
+    File: app.js
+    Severity: Medium
 
    No helmet.js middleware detected
 
-   ⚠️  Impact: Missing protection against common web vulnerabilities
+   ️  Impact: Missing protection against common web vulnerabilities
 
-   ✅ Fix:
+    Fix:
    npm install helmet
    const helmet = require('helmet')
    app.use(helmet())
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 SCAN SUMMARY
+ SCAN SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Total Issues: 8
- 🔴 Critical: 2 (Fix immediately)
- 🟠 High: 3 (Fix before production)
- 🟡 Medium: 3 (Improve security posture)
+  Critical: 2 (Fix immediately)
+  High: 3 (Fix before production)
+  Medium: 3 (Improve security posture)
 
 Estimated Fix Time: 2-3 hours
 
@@ -323,7 +323,7 @@ Priority Actions:
 4. Add rate limiting (30 min)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 NEXT STEPS
+ NEXT STEPS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Fix critical issues immediately
@@ -331,13 +331,13 @@ Priority Actions:
 3. For comprehensive audit, use: /security-audit
 4. Set up automated scanning in CI/CD
 
-💬 Need help fixing these issues?
+ Need help fixing these issues?
    - Use Security Auditor Expert for detailed remediation
    - Ask: "How do I fix SQL injection in Node.js?"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Scan completed successfully! ✅
+Scan completed successfully! 
 Report saved to: security-scan-report-2025-10-10.md
 ```
 
@@ -347,7 +347,7 @@ Report saved to: security-scan-report-2025-10-10.md
 
 ### Severity Levels
 
-**🔴 Critical (Fix Immediately - Within 24 Hours)**
+** Critical (Fix Immediately - Within 24 Hours)**
 - Hardcoded secrets/credentials
 - Known critical CVEs (CVSS 9.0+)
 - Authentication bypasses
@@ -355,7 +355,7 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Active exploitation possible, immediate data breach
 
-**🟠 High (Fix Before Production - Within 1 Week)**
+** High (Fix Before Production - Within 1 Week)**
 - High-severity CVEs (CVSS 7.0-8.9)
 - Authorization flaws
 - Missing security controls
@@ -363,7 +363,7 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Significant security impact, exploitation likely
 
-**🟡 Medium (Improve Security Posture - Within 1 Month)**
+** Medium (Improve Security Posture - Within 1 Month)**
 - Security misconfigurations
 - Missing security headers
 - Outdated dependencies (no known exploits)
@@ -371,7 +371,7 @@ Report saved to: security-scan-report-2025-10-10.md
 
 **Risk:** Increases attack surface, defense in depth
 
-**🔵 Low (Best Practices - Backlog)**
+** Low (Best Practices - Backlog)**
 - Code quality improvements
 - Documentation gaps
 - Non-security technical debt
@@ -432,7 +432,7 @@ jobs:
 
       - name: Fail on Critical Issues
         run: |
-          if grep -q "🔴 Critical" security-report.md; then
+          if grep -q " Critical" security-report.md; then
             echo "Critical security issues found!"
             exit 1
           fi
@@ -612,4 +612,4 @@ const TEST_KEY = "test_123"
 **Time Investment:** 2-5 minutes per scan
 **Value:** Early detection prevents hours of post-breach incident response
 
-**Run quick scans often. Fix issues early. Ship secure code.** 🛡️
+**Run quick scans often. Fix issues early. Ship secure code.** ️

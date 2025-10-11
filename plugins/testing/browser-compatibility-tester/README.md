@@ -32,10 +32,10 @@ Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test ac
 /browser-test
 
 # Claude performs:
-# ✓ Configure browser matrix
-# ✓ Generate cross-browser tests
-# ✓ Execute tests in parallel
-# 📊 Compatibility report with screenshots
+#  Configure browser matrix
+#  Generate cross-browser tests
+#  Execute tests in parallel
+#  Compatibility report with screenshots
 ```
 
 ## Supported Browsers

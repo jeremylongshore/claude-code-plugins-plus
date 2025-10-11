@@ -144,14 +144,14 @@ Plugins reference data from:
 ## Important Disclaimers
 
 All plugins provide:
-- ✅ Educational analysis and information
-- ✅ Data-driven recommendations
-- ✅ Technical guidance
+-  Educational analysis and information
+-  Data-driven recommendations
+-  Technical guidance
 
 All plugins do NOT provide:
-- ❌ Financial advice
-- ❌ Investment recommendations
-- ❌ Guaranteed outcomes
+-  Financial advice
+-  Investment recommendations
+-  Guaranteed outcomes
 
 Users should:
 - Always do their own research (DYOR)

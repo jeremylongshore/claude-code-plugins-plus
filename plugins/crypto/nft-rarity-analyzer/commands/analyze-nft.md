@@ -61,9 +61,9 @@ Structure your analysis as:
 | ...        | ...   | ...    | ...            | ...   |
 
 **Key Traits:**
-- 🔥 [Trait]: Ultra Rare (0.5% of collection)
-- ⭐ [Trait]: Rare (3.2% of collection)
-- ✓ [Trait]: Common (45% of collection)
+-  [Trait]: Ultra Rare (0.5% of collection)
+-  [Trait]: Rare (3.2% of collection)
+-  [Trait]: Common (45% of collection)
 
 ### Rarity Scores Comparison
 - **Statistical Rarity**: [Score] (Rank: [#])

@@ -75,7 +75,7 @@ Grade: B (Good, needs improvement)
 FINDINGS
 --------
 
-✗ CRITICAL: Weak Password Hashing
+ CRITICAL: Weak Password Hashing
   Current: MD5
   Risk: Passwords easily crackable
   Fix: Use bcrypt with cost factor 10+
@@ -83,11 +83,11 @@ FINDINGS
   const bcrypt = require('bcrypt');
   const hash = await bcrypt.hash(password, 10);
 
-✗ HIGH: Missing MFA
+ HIGH: Missing MFA
   Risk: Single factor authentication only
   Recommendation: Implement TOTP-based MFA
 
-✗ MEDIUM: Short JWT Expiration
+ MEDIUM: Short JWT Expiration
   Current: exp not set
   Risk: Tokens never expire
   Fix: Set reasonable expiration
@@ -96,11 +96,11 @@ FINDINGS
       expiresIn: '15m'
   });
 
-✓ Password Policy: GOOD
+ Password Policy: GOOD
   - Minimum 12 characters
   - Requires uppercase, lowercase, number, symbol
 
-✓ Session Cookies: GOOD
+ Session Cookies: GOOD
   - HttpOnly: true
   - Secure: true
   - SameSite: strict

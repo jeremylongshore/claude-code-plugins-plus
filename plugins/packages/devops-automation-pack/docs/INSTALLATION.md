@@ -10,10 +10,10 @@
 
 Before you start, make sure you have:
 
-- ✅ Claude Code version 1.5 or higher installed
-- ✅ Command line access (Terminal on Mac/Linux, PowerShell on Windows)
-- ✅ 10 MB free disk space
-- ✅ Internet connection for download
+-  Claude Code version 1.5 or higher installed
+-  Command line access (Terminal on Mac/Linux, PowerShell on Windows)
+-  10 MB free disk space
+-  Internet connection for download
 
 **Check your Claude Code version:**
 ```bash
@@ -62,15 +62,15 @@ claude plugin install .
 
 Expected output:
 ```
-📦 Installing devops-automation-pack...
-✅ Loaded 25 commands
-✅ Loaded 6 agents
-✅ Installation complete!
+ Installing devops-automation-pack...
+ Loaded 25 commands
+ Loaded 6 agents
+ Installation complete!
 
 Try: /commit-smart to get started
 ```
 
-**Installation complete!** 🎉
+**Installation complete!** 
 
 ---
 
@@ -172,9 +172,9 @@ The command will:
 
 **Example output:**
 ```
-📊 Analyzing changes...
-✅ Found 3 modified files
-✅ Reviewed commit history
+ Analyzing changes...
+ Found 3 modified files
+ Reviewed commit history
 
 Suggested commit:
 feat(auth): add password reset functionality
@@ -188,7 +188,7 @@ Create this commit? (y/n):
 
 Type `y` and press Enter. Your commit is created!
 
-> 💡 **Tip:** You can use the shortcut `/gc` instead of typing the full command name.
+>  **Tip:** You can use the shortcut `/gc` instead of typing the full command name.
 
 ---
 

@@ -26,15 +26,15 @@ cd /path/to/your/project
 
 **Expected output:**
 ```
-🔍 Running Quick Security Scan...
-📁 Project: my-app
-📊 Files scanned: 127
+ Running Quick Security Scan...
+ Project: my-app
+ Files scanned: 127
 ⏱️  Scan duration: 4.2 seconds
 
 Total Issues: 8
- 🔴 Critical: 2 (Fix immediately)
- 🟠 High: 3 (Fix before production)
- 🟡 Medium: 3 (Improve security posture)
+  Critical: 2 (Fix immediately)
+  High: 3 (Fix before production)
+  Medium: 3 (Improve security posture)
 ```
 
 **Next steps:** Fix critical issues first, then re-run `/ss` to verify.
@@ -261,4 +261,4 @@ Now that you're familiar with basic usage:
 
 ---
 
-**You're all set!** Start securing your code with the Security Pro Pack. 🔐
+**You're all set!** Start securing your code with the Security Pro Pack. 

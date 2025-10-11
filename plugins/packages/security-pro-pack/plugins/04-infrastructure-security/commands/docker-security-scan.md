@@ -25,12 +25,12 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 ## What This Command Does
 
 **Complete Container Security Analysis:**
-- ✅ Scans images for known CVEs (vulnerabilities in OS packages and dependencies)
-- ✅ Detects insecure Dockerfile configurations
-- ✅ Identifies exposed secrets (API keys, passwords, tokens)
-- ✅ Checks for privileged containers and excessive permissions
-- ✅ Validates security best practices (non-root user, minimal base image)
-- ✅ Analyzes running containers for runtime security issues
+-  Scans images for known CVEs (vulnerabilities in OS packages and dependencies)
+-  Detects insecure Dockerfile configurations
+-  Identifies exposed secrets (API keys, passwords, tokens)
+-  Checks for privileged containers and excessive permissions
+-  Validates security best practices (non-root user, minimal base image)
+-  Analyzes running containers for runtime security issues
 
 **Output:** Detailed security report with severity-rated findings and remediation steps
 
@@ -94,7 +94,7 @@ Comprehensively scans Docker containers and images for vulnerabilities, misconfi
 
 **Example Findings:**
 ```
-🚨 CRITICAL: CVE-2024-12345 in openssl
+ CRITICAL: CVE-2024-12345 in openssl
 Package: openssl 1.1.1k
 Severity: Critical (CVSS 9.8)
 Impact: Remote code execution via crafted TLS handshake
@@ -111,10 +111,10 @@ Image: myapp:latest
 Base: node:16 (debian:bullseye)
 
 Vulnerabilities Found: 47
-  🔴 Critical: 3
-  🟠 High: 12
-  🟡 Medium: 18
-  🔵 Low: 14
+   Critical: 3
+   High: 12
+   Medium: 18
+   Low: 14
 
 Top Critical CVEs:
 1. CVE-2024-12345 (openssl) - RCE via TLS
@@ -134,14 +134,14 @@ Top Critical CVEs:
 
 **Example Findings:**
 ```dockerfile
-# ❌ BAD: Running as root
+#  BAD: Running as root
 FROM node:16
 WORKDIR /app
 COPY . .
 RUN npm install
 CMD ["node", "server.js"]  # Runs as root!
 
-# ✅ GOOD: Non-root user
+#  GOOD: Non-root user
 FROM node:16
 WORKDIR /app
 COPY package*.json ./
@@ -152,18 +152,18 @@ CMD ["node", "server.js"]
 ```
 
 ```dockerfile
-# ❌ BAD: Hardcoded secrets
+#  BAD: Hardcoded secrets
 FROM node:16
 ENV DATABASE_PASSWORD="MySecretPassword123"  # Exposed in image layers!
 
-# ✅ GOOD: Runtime secrets
+#  GOOD: Runtime secrets
 FROM node:16
 # Pass secrets at runtime via environment variables or secrets management
 CMD ["node", "server.js"]
 ```
 
 ```dockerfile
-# ❌ BAD: Unnecessary packages
+#  BAD: Unnecessary packages
 FROM ubuntu:latest
 RUN apt-get update && apt-get install -y \
     build-essential \
@@ -175,7 +175,7 @@ RUN apt-get update && apt-get install -y \
     git \
     # Unnecessary packages increase attack surface!
 
-# ✅ GOOD: Minimal image
+#  GOOD: Minimal image
 FROM node:16-alpine  # Minimal base image
 RUN apk add --no-cache curl  # Only necessary packages
 ```
@@ -191,29 +191,29 @@ RUN apk add --no-cache curl  # Only necessary packages
 
 **Example Findings:**
 ```bash
-# ❌ CRITICAL: Privileged container
+#  CRITICAL: Privileged container
 docker run --privileged myapp:latest
 # Allows container to access all host devices, escape container!
 
-# ✅ SAFE: Non-privileged with minimal capabilities
+#  SAFE: Non-privileged with minimal capabilities
 docker run --cap-drop=ALL --cap-add=NET_BIND_SERVICE myapp:latest
 ```
 
 ```bash
-# ⚠️ HIGH: Host network mode
+# ️ HIGH: Host network mode
 docker run --network=host myapp:latest
 # Container can access all host network interfaces
 
-# ✅ SAFE: Bridge network
+#  SAFE: Bridge network
 docker run --network=bridge myapp:latest
 ```
 
 ```bash
-# 🚨 CRITICAL: Mounting sensitive host paths
+#  CRITICAL: Mounting sensitive host paths
 docker run -v /etc:/host-etc myapp:latest
 # Container can modify host /etc files!
 
-# ✅ SAFE: Specific, read-only mounts
+#  SAFE: Specific, read-only mounts
 docker run -v /app/data:/data:ro myapp:latest
 ```
 
@@ -228,10 +228,10 @@ docker run -v /app/data:/data:ro myapp:latest
 
 **Example Findings:**
 ```bash
-# ❌ CRITICAL: Secrets in environment variables (visible in docker inspect)
+#  CRITICAL: Secrets in environment variables (visible in docker inspect)
 docker run -e AWS_SECRET_KEY="wJalrXUtnFEMI/K7MDENG/..." myapp:latest
 
-# ✅ SAFE: Use secrets management
+#  SAFE: Use secrets management
 docker run --env-file /secure/secrets.env myapp:latest
 # Or use Docker secrets (Swarm) or Kubernetes secrets
 ```
@@ -245,14 +245,14 @@ docker run --env-file /secure/secrets.env myapp:latest
 
 **Example Findings:**
 ```bash
-# ⚠️ HIGH: Database exposed to internet
+# ️ HIGH: Database exposed to internet
 docker run -p 0.0.0.0:5432:5432 postgres:latest
 # PostgreSQL accessible from anywhere!
 
-# ✅ SAFE: Bind to localhost only
+#  SAFE: Bind to localhost only
 docker run -p 127.0.0.1:5432:5432 postgres:latest
 
-# ✅ BETTER: Use Docker network (no external exposure)
+#  BETTER: Use Docker network (no external exposure)
 docker network create app-network
 docker run --network=app-network postgres:latest
 ```
@@ -266,11 +266,11 @@ docker run --network=app-network postgres:latest
 
 **Example Findings:**
 ```bash
-# ⚠️ MEDIUM: No resource limits
+# ️ MEDIUM: No resource limits
 docker run myapp:latest
 # Can consume all host memory/CPU!
 
-# ✅ SAFE: Resource limits set
+#  SAFE: Resource limits set
 docker run \
   --memory=512m \
   --cpus=1.0 \
@@ -285,134 +285,134 @@ docker run \
 ```bash
 $ /docker-security-scan myapp:latest
 
-🔍 Docker Security Scan
+ Docker Security Scan
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📦 Image: myapp:latest
-📁 Size: 1.2 GB
-🏗️  Base: node:16 (debian:bullseye)
-📅 Created: 2025-10-05
+ Image: myapp:latest
+ Size: 1.2 GB
+️  Base: node:16 (debian:bullseye)
+ Created: 2025-10-05
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 CRITICAL ISSUES (Fix Immediately)
+ CRITICAL ISSUES (Fix Immediately)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Running as Root User
-   📄 Dockerfile:15
-   🔴 Severity: Critical
+    Dockerfile:15
+    Severity: Critical
 
    USER root  # Container runs as root!
 
-   ⚠️  Impact: If container is compromised, attacker has root access
+   ️  Impact: If container is compromised, attacker has root access
 
-   ✅ Fix:
+    Fix:
    RUN addgroup -S appgroup && adduser -S appuser -G appgroup
    USER appuser
 
 2. Hardcoded Database Password
-   📄 Dockerfile:8
-   🔴 Severity: Critical
+    Dockerfile:8
+    Severity: Critical
 
    ENV DB_PASSWORD="MySecretPassword123"
 
-   ⚠️  Impact: Password visible in image layers, docker inspect
+   ️  Impact: Password visible in image layers, docker inspect
 
-   ✅ Fix:
+    Fix:
    - Remove from Dockerfile
    - Pass at runtime: docker run -e DB_PASSWORD="$SECRET" myapp:latest
    - Use Docker secrets or Kubernetes secrets
 
 3. CVE-2024-12345 in openssl
-   📦 Package: openssl 1.1.1k
-   🔴 Severity: Critical (CVSS 9.8)
+    Package: openssl 1.1.1k
+    Severity: Critical (CVSS 9.8)
 
    Vulnerability: Remote code execution via TLS handshake
 
-   ✅ Fix:
+    Fix:
    FROM node:16-bullseye  # Use latest base image
    RUN apt-get update && apt-get upgrade -y openssl
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  HIGH SEVERITY ISSUES
+️  HIGH SEVERITY ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 4. Privileged Container Mode
-   🟠 Severity: High
+    Severity: High
 
    docker run --privileged myapp:latest
 
-   ⚠️  Impact: Container can access all host devices, escape container
+   ️  Impact: Container can access all host devices, escape container
 
-   ✅ Fix:
+    Fix:
    - Remove --privileged flag
    - Use specific capabilities: --cap-add=NET_BIND_SERVICE
 
 5. Host Network Mode
-   🟠 Severity: High
+    Severity: High
 
    docker run --network=host myapp:latest
 
-   ⚠️  Impact: Container can access all host network interfaces
+   ️  Impact: Container can access all host network interfaces
 
-   ✅ Fix:
+    Fix:
    docker run --network=bridge myapp:latest
 
 6. Mounted Sensitive Host Path
-   🟠 Severity: High
+    Severity: High
 
    -v /etc:/host-etc
 
-   ⚠️  Impact: Container can read/modify host /etc files
+   ️  Impact: Container can read/modify host /etc files
 
-   ✅ Fix:
+    Fix:
    - Remove mount if not needed
    - Use specific paths: -v /app/config:/config:ro
    - Mount read-only: :ro
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 MEDIUM SEVERITY ISSUES
+ MEDIUM SEVERITY ISSUES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 7. No Health Check Defined
-   🟡 Severity: Medium
+    Severity: Medium
 
    HEALTHCHECK instruction missing
 
-   ⚠️  Impact: Container may be running but unhealthy
+   ️  Impact: Container may be running but unhealthy
 
-   ✅ Fix:
+    Fix:
    HEALTHCHECK --interval=30s --timeout=3s \
      CMD curl -f http://localhost:3000/health || exit 1
 
 8. Outdated Base Image
-   🟡 Severity: Medium
+    Severity: Medium
 
    FROM node:16 (2022-04-20)
 
-   ⚠️  Impact: Missing 18 months of security patches
+   ️  Impact: Missing 18 months of security patches
 
-   ✅ Fix:
+    Fix:
    FROM node:20-alpine  # Latest LTS, minimal
 
 9. No Resource Limits
-   🟡 Severity: Medium
+    Severity: Medium
 
    No --memory or --cpus limits
 
-   ⚠️  Impact: Container can consume all host resources
+   ️  Impact: Container can consume all host resources
 
-   ✅ Fix:
+    Fix:
    docker run --memory=512m --cpus=1.0 myapp:latest
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 VULNERABILITY SUMMARY
+ VULNERABILITY SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Total Issues: 47
- 🔴 Critical: 3 (Fix immediately)
- 🟠 High: 12 (Fix within 1 week)
- 🟡 Medium: 18 (Fix within 1 month)
- 🔵 Low: 14 (Best practices)
+  Critical: 3 (Fix immediately)
+  High: 12 (Fix within 1 week)
+  Medium: 18 (Fix within 1 month)
+  Low: 14 (Best practices)
 
 CVE Summary:
   Critical: 3 CVEs
@@ -421,42 +421,42 @@ CVE Summary:
   Low: 14 CVEs
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 RECOMMENDED ACTIONS
+ RECOMMENDED ACTIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Priority 1 (Immediate):
-✓ Add non-root user (2 hours)
-✓ Remove hardcoded secrets (1 hour)
-✓ Update base image (30 min)
+ Add non-root user (2 hours)
+ Remove hardcoded secrets (1 hour)
+ Update base image (30 min)
 
 Priority 2 (This Week):
-✓ Remove privileged mode (1 hour)
-✓ Fix host network usage (2 hours)
-✓ Review volume mounts (2 hours)
+ Remove privileged mode (1 hour)
+ Fix host network usage (2 hours)
+ Review volume mounts (2 hours)
 
 Priority 3 (This Month):
-✓ Add health checks (1 hour)
-✓ Set resource limits (30 min)
-✓ Update all dependencies (3 hours)
+ Add health checks (1 hour)
+ Set resource limits (30 min)
+ Update all dependencies (3 hours)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🔐 SECURITY BEST PRACTICES
+ SECURITY BEST PRACTICES
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Use minimal base images (alpine, distroless)
-✅ Run as non-root user
-✅ Don't embed secrets in images
-✅ Scan images regularly (weekly)
-✅ Update base images monthly
-✅ Use multi-stage builds (smaller, more secure)
-✅ Set resource limits
-✅ Add health checks
-✅ Use specific image tags (not :latest)
-✅ Sign and verify images
+ Use minimal base images (alpine, distroless)
+ Run as non-root user
+ Don't embed secrets in images
+ Scan images regularly (weekly)
+ Update base images monthly
+ Use multi-stage builds (smaller, more secure)
+ Set resource limits
+ Add health checks
+ Use specific image tags (not :latest)
+ Sign and verify images
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Scan completed! ✅
+Scan completed! 
 Report saved to: docker-security-scan-2025-10-10.md
 ```
 
@@ -465,7 +465,7 @@ Report saved to: docker-security-scan-2025-10-10.md
 ## Secure Dockerfile Template
 
 ```dockerfile
-# ✅ SECURE DOCKERFILE TEMPLATE
+#  SECURE DOCKERFILE TEMPLATE
 
 # Use minimal, specific base image (not :latest)
 FROM node:20-alpine AS build
@@ -574,7 +574,7 @@ jobs:
 
       - name: Fail on Critical Issues
         run: |
-          if grep -q "🔴 Critical" report.md; then
+          if grep -q " Critical" report.md; then
             echo "Critical vulnerabilities found!"
             exit 1
           fi
@@ -603,4 +603,4 @@ jobs:
 **Time Investment:** 5-10 minutes per scan
 **Value:** Prevent container escape, data breaches, and production compromises
 
-**Scan containers early. Fix vulnerabilities fast. Deploy securely.** 🐳🔐
+**Scan containers early. Fix vulnerabilities fast. Deploy securely.** 

@@ -65,7 +65,7 @@ Files requiring immediate attention have ALL of:
 
 Always structure recommendations as:
 
-### 🚨 URGENT (Do This Week)
+###  URGENT (Do This Week)
 Files that are:
 - Critical to business (auth, payments, core features)
 - High risk (complexity + churn + no tests)
@@ -73,10 +73,10 @@ Files that are:
 
 Example:
 ```
-🚨 src/services/auth.ts
+ src/services/auth.ts
 - Complexity: 45 (Target: <10)
 - Churn: 18 commits (4 authors)
-- Tests: None ❌
+- Tests: None 
 - Health: 25 (Critical)
 
 Actions:
@@ -90,19 +90,19 @@ Business impact: High (security-critical)
 Risk if ignored: Authentication bugs, security vulnerabilities
 ```
 
-### ⚠️  HIGH PRIORITY (Do This Sprint)
+### ️  HIGH PRIORITY (Do This Sprint)
 Files that:
 - Have medium risk (2 of 3 factors)
 - Support critical features
 - Are growing in complexity
 
-### 📝 MEDIUM PRIORITY (Plan for Next Sprint)
+###  MEDIUM PRIORITY (Plan for Next Sprint)
 Files that:
 - Have potential issues (1 of 3 factors)
 - Could be improved
 - Are not critical path
 
-### ✅ MONITORING (Keep an Eye On)
+###  MONITORING (Keep an Eye On)
 Files that:
 - Are currently healthy
 - But show warning signs (increasing churn)
@@ -157,14 +157,14 @@ I'll analyze your codebase to identify high-impact refactoring opportunities...
 
 [After analysis using MCP tools]
 
-📊 Analysis Complete
+ Analysis Complete
 
 Found 156 source files with average health score of 68.
 
-🚨 URGENT - Technical Debt Hot Spots (3 files)
+ URGENT - Technical Debt Hot Spots (3 files)
 
 1. src/services/payment-processor.ts
-   - Complexity: 38 (Severe) 🚨
+   - Complexity: 38 (Severe) 
    - Churn: 24 commits by 3 authors
    - Tests: None
    - Health Score: 18 (Critical)
@@ -197,19 +197,19 @@ Would you like me to create a detailed refactoring plan for any of these files?
 ## Success Criteria
 
 Good recommendations include:
-- ✅ Specific files to change
-- ✅ Concrete actions (not vague "improve code")
-- ✅ Estimated effort in days
-- ✅ Business justification
-- ✅ Risk assessment
-- ✅ Success metrics
+-  Specific files to change
+-  Concrete actions (not vague "improve code")
+-  Estimated effort in days
+-  Business justification
+-  Risk assessment
+-  Success metrics
 
 Poor recommendations are:
-- ❌ "Code needs improvement"
-- ❌ "Refactor everything"
-- ❌ No prioritization
-- ❌ No effort estimates
-- ❌ Ignoring business context
+-  "Code needs improvement"
+-  "Refactor everything"
+-  No prioritization
+-  No effort estimates
+-  Ignoring business context
 
 ## Remember
 

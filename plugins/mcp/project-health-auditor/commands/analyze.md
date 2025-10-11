@@ -63,24 +63,24 @@ Combine metrics to find:
 
 Present findings in this structure:
 
-### 📊 Repository Overview
+###  Repository Overview
 - Total files: X
 - Average health score: Y
 - Test coverage: Z%
 
-### 🚨 Critical Issues
+###  Critical Issues
 1. High complexity + High churn + No tests
 2. Health score <30 (critical)
 
-### ⚠️  Warnings
+### ️  Warnings
 1. Health score 30-70 (needs attention)
 2. Test coverage <60%
 
-### ✅ Good Practices
+###  Good Practices
 1. Well-tested files (high complexity + has tests)
 2. Stable code (low churn + good health)
 
-### 📝 Recommendations
+###  Recommendations
 Prioritized list of actions:
 1. Add tests for critical files
 2. Refactor high-complexity hot spots
@@ -99,8 +99,8 @@ Found 245 source files (TypeScript/JavaScript)
 
 [Use file_metrics on top files]
 Critical complexity issues:
-- src/services/auth.ts: Complexity 45, Health 30 🚨
-- src/api/handler.ts: Complexity 28, Health 65 ⚠️
+- src/services/auth.ts: Complexity 45, Health 30 
+- src/api/handler.ts: Complexity 28, Health 65 ️
 
 [Use git_churn on /home/user/my-project since "6 months ago"]
 High churn files:
@@ -112,13 +112,13 @@ Test coverage: 62% (97 of 156 files tested)
 Missing tests: 59 files
 
 Critical files without tests:
-- src/services/auth.ts (high complexity + high churn) 🚨
+- src/services/auth.ts (high complexity + high churn) 
 - src/api/legacy.ts (high complexity)
 
 ## Recommendations:
-1. 🚨 URGENT: Add tests for src/services/auth.ts (high complexity, high churn, no tests)
-2. ⚠️  Refactor src/api/handler.ts (complexity 28, reduce to <10)
-3. 📝 Improve test coverage to 80%+ (currently 62%)
+1.  URGENT: Add tests for src/services/auth.ts (high complexity, high churn, no tests)
+2. ️  Refactor src/api/handler.ts (complexity 28, reduce to <10)
+3.  Improve test coverage to 80%+ (currently 62%)
 ```
 
 ## Notes

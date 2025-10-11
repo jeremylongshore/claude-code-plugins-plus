@@ -15,10 +15,10 @@ Creates optimized GitHub Actions workflow files with caching, parallel jobs, and
 
 ## When to Use This
 
-- ✅ Setting up CI/CD for GitHub repository
-- ✅ Want automated testing on push/PR
-- ✅ Need deployment automation
-- ❌ Using GitLab or other platforms
+-  Setting up CI/CD for GitHub repository
+-  Want automated testing on push/PR
+-  Need deployment automation
+-  Using GitLab or other platforms
 
 ## How It Works
 
@@ -91,6 +91,6 @@ jobs:
 
 ## Pro Tips
 
-💡 Use caching to speed up builds
-💡 Run tests in parallel with matrix
-💡 Deploy only on main branch
+ Use caching to speed up builds
+ Run tests in parallel with matrix
+ Deploy only on main branch

@@ -1,4 +1,4 @@
-# 🌙 Overnight Development Plugin
+#  Overnight Development Plugin
 
 **Go to bed. Wake up to fully tested features.**
 
@@ -16,10 +16,10 @@ What if Claude could keep working while you sleep?
 
 **Overnight Development** turns Claude into an autonomous developer using Git hooks that enforce TDD:
 
-- 🔐 **Git hooks block commits** until all tests pass
-- 🤖 **Claude can't commit broken code** - hooks enforce quality
-- 🔄 **Automatic iteration** - debug, fix, retry until green
-- ☕ **You wake up** to fully tested, production-ready features
+-  **Git hooks block commits** until all tests pass
+-  **Claude can't commit broken code** - hooks enforce quality
+-  **Automatic iteration** - debug, fix, retry until green
+-  **You wake up** to fully tested, production-ready features
 
 ---
 
@@ -45,13 +45,13 @@ That's it. Hooks are installed. Quality is enforced. Let Claude work overnight.
 ### Traditional Development
 ```
 Write code → Hope it works → Find bugs later → Repeat
-❌ Slow, error-prone, stressful
+ Slow, error-prone, stressful
 ```
 
 ### Overnight Development
 ```
 Write test → Write code → Hooks enforce tests → Commit only when green
-✅ Fast, reliable, autonomous
+ Fast, reliable, autonomous
 ```
 
 ### The Magic: Git Hooks
@@ -76,7 +76,7 @@ Write test → Write code → Hooks enforce tests → Commit only when green
 
 ### The Result
 
-Claude **can't commit** until all tests pass. So it keeps working until they do. Overnight. While you sleep. 🌙
+Claude **can't commit** until all tests pass. So it keeps working until they do. Overnight. While you sleep. 
 
 ---
 
@@ -92,19 +92,19 @@ Claude **can't commit** until all tests pass. So it keeps working until they do.
 1. 10:15 PM - Write failing auth tests (TDD)
 2. 10:45 PM - Implement JWT signin (tests still failing)
 3. 11:30 PM - Debug token generation (commit blocked, keeps trying)
-4. 12:15 AM - Tests passing! Commit succeeds ✅
+4. 12:15 AM - Tests passing! Commit succeeds 
 5. 1:00 AM - Add middleware (write tests first)
 6. 2:30 AM - Integration tests (debugging edge cases)
-7. 4:00 AM - All tests green ✅ (Coverage: 94%)
-8. 5:30 AM - Add docs, refactor, still green ✅
-9. 7:00 AM - Session complete 🎉
+7. 4:00 AM - All tests green  (Coverage: 94%)
+8. 5:30 AM - Add docs, refactor, still green 
+9. 7:00 AM - Session complete 
 
 **7 AM:** You wake up to:
-- ✅ 47 passing tests (0 failing)
-- ✅ 94% test coverage
-- ✅ Clean conventional commit history
-- ✅ Fully documented JWT authentication
-- ✅ Production-ready code
+-  47 passing tests (0 failing)
+-  94% test coverage
+-  Clean conventional commit history
+-  Fully documented JWT authentication
+-  Production-ready code
 
 **Time saved:** 6-8 hours of your life
 
@@ -112,7 +112,7 @@ Claude **can't commit** until all tests pass. So it keeps working until they do.
 
 ## Features
 
-### 🎯 Test-Driven Development Enforcement
+###  Test-Driven Development Enforcement
 
 Git hooks **force** TDD:
 - Write tests first
@@ -120,7 +120,7 @@ Git hooks **force** TDD:
 - Commit only when green
 - No shortcuts, no broken code
 
-### 🔄 Autonomous Debugging
+###  Autonomous Debugging
 
 When tests fail:
 1. Claude reads the error
@@ -132,7 +132,7 @@ When tests fail:
 
 **You never have to intervene.** Just check progress in the morning.
 
-### 📊 Progress Tracking
+###  Progress Tracking
 
 Watch overnight sessions in real-time:
 
@@ -142,16 +142,16 @@ cat .overnight-dev-log.txt
 ```
 
 ```
-[22:15] 🌙 Session started: JWT Authentication
-[22:20] ✅ Tests: 12/12 passing
-[23:10] ✅ Tests: 18/18 passing - Auth routes done
-[00:30] ✅ Tests: 24/24 passing - Middleware complete
-[02:15] ✅ Tests: 35/35 passing - Integration tests done
-[04:00] ✅ Tests: 47/47 passing - Coverage 94%
-[06:45] 🎉 SESSION COMPLETE
+[22:15]  Session started: JWT Authentication
+[22:20]  Tests: 12/12 passing
+[23:10]  Tests: 18/18 passing - Auth routes done
+[00:30]  Tests: 24/24 passing - Middleware complete
+[02:15]  Tests: 35/35 passing - Integration tests done
+[04:00]  Tests: 47/47 passing - Coverage 94%
+[06:45]  SESSION COMPLETE
 ```
 
-### ⚙️ Flexible Configuration
+### ️ Flexible Configuration
 
 Works with any test framework:
 
@@ -173,7 +173,7 @@ Works with any test framework:
 
 **Rust, Go, PHP, Ruby** - All supported!
 
-### 🎨 Smart Agent Guidance
+###  Smart Agent Guidance
 
 Includes `overnight-dev-coach` agent:
 - Guides you through setup
@@ -192,10 +192,10 @@ Activate by mentioning "overnight development" or asking about autonomous coding
 
 Before installing, you need:
 
-✅ **Git repository** - `git init` in your project
-✅ **Test framework** - Jest, pytest, cargo test, etc.
-✅ **At least 1 passing test** - Hooks need something to run
-✅ **Linter configured** - ESLint, flake8, clippy, etc.
+ **Git repository** - `git init` in your project
+ **Test framework** - Jest, pytest, cargo test, etc.
+ **At least 1 passing test** - Hooks need something to run
+ **Linter configured** - ESLint, flake8, clippy, etc.
 
 ### Install the Plugin
 
@@ -228,12 +228,12 @@ git commit --allow-empty -m "test: verify hooks"
 
 You should see:
 ```
-🌙 Overnight Dev: Running pre-commit checks...
-🔍 Running linting...
-✅ Linting passed
-🧪 Running tests...
-✅ All tests passed
-🎉 All checks passed!
+ Overnight Dev: Running pre-commit checks...
+ Running linting...
+ Linting passed
+ Running tests...
+ All tests passed
+ All checks passed!
 ```
 
 ### Configure for Your Stack
@@ -278,39 +278,39 @@ Edit `.overnight-dev.json`:
    - No broken code gets committed
 
 5. **Wake up to success:**
-   - All tests passing ✅
-   - Features complete ✅
-   - Clean git history ✅
+   - All tests passing 
+   - Features complete 
+   - Clean git history 
 
 ### Good Overnight Tasks
 
-✅ **"Build user authentication with JWT (90% coverage)"**
+ **"Build user authentication with JWT (90% coverage)"**
 - Clear goal
 - Testable
 - Well-defined scope
 
-✅ **"Add payment processing with Stripe integration"**
+ **"Add payment processing with Stripe integration"**
 - Specific feature
 - Integration tests possible
 - Success criteria clear
 
-✅ **"Refactor database layer to use repository pattern"**
+ **"Refactor database layer to use repository pattern"**
 - Existing tests ensure no regression
 - Clear before/after state
 
 ### Bad Overnight Tasks
 
-❌ **"Make the app better"**
+ **"Make the app better"**
 - Too vague
 - No clear success criteria
 - Can't be tested
 
-❌ **"Design the perfect UI"**
+ **"Design the perfect UI"**
 - Subjective
 - Hard to test
 - Requires human judgment
 
-❌ **"Research best practices"**
+ **"Research best practices"**
 - No code output
 - No tests to enforce
 - Not autonomous-friendly
@@ -387,7 +387,7 @@ Edit `.overnight-dev.json`:
 
 ## Agent
 
-**overnight-dev-coach** 🤖
+**overnight-dev-coach** 
 
 Expert coach for autonomous overnight development sessions.
 
@@ -450,11 +450,11 @@ Your test suite might be slow. Optimize:
 **From Intent Solutions IO's experience:**
 
 - ⏱️ **Average session:** 6-8 hours of autonomous work
-- 📝 **Output:** 500-1500 lines of fully tested code per night
-- ✅ **Success rate:** 85% of overnight tasks completed
-- 📊 **Coverage:** Consistently >90%
-- 🐛 **Bug rate:** 60% lower than manual development
-- ☕ **Coffee saved:** Uncountable
+-  **Output:** 500-1500 lines of fully tested code per night
+-  **Success rate:** 85% of overnight tasks completed
+-  **Coverage:** Consistently >90%
+-  **Bug rate:** 60% lower than manual development
+-  **Coffee saved:** Uncountable
 
 **What developers say:**
 
@@ -483,16 +483,16 @@ Your test suite might be slow. Optimize:
 ### Business Impact
 
 **For you:**
-- ✅ Work less (Claude works overnight)
-- ✅ Ship faster (3x productivity)
-- ✅ Higher quality (forced TDD)
-- ✅ Less stress (tests catch bugs)
+-  Work less (Claude works overnight)
+-  Ship faster (3x productivity)
+-  Higher quality (forced TDD)
+-  Less stress (tests catch bugs)
 
 **For your team:**
-- ✅ Consistent code quality
-- ✅ Better test coverage
-- ✅ Readable git history
-- ✅ Faster feature delivery
+-  Consistent code quality
+-  Better test coverage
+-  Readable git history
+-  Faster feature delivery
 
 ---
 
@@ -618,7 +618,7 @@ Strategy developed and refined through hundreds of autonomous overnight developm
 /overnight-setup
 ```
 
-**Go to bed. Wake up to fully tested features. 🌙✨**
+**Go to bed. Wake up to fully tested features. **
 
 ---
 

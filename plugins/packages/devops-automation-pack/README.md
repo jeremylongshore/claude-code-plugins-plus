@@ -102,11 +102,11 @@ See [`docs/QUICK_START.md`](docs/QUICK_START.md) for detailed walkthrough.
 ## Who Is This For?
 
 ### Perfect For:
-- ✅ **Junior developers** learning DevOps practices
-- ✅ **Senior engineers** who want to move faster
-- ✅ **DevOps teams** standardizing workflows
-- ✅ **Startups** adopting cloud infrastructure
-- ✅ **Enterprises** enforcing best practices
+-  **Junior developers** learning DevOps practices
+-  **Senior engineers** who want to move faster
+-  **DevOps teams** standardizing workflows
+-  **Startups** adopting cloud infrastructure
+-  **Enterprises** enforcing best practices
 
 ### You'll Benefit If You:
 - Write Git commits, PRs, or create branches
@@ -297,11 +297,11 @@ Check [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) or email support.
 This plugin pack is licensed for individual use. See LICENSE file for details.
 
 **Key Points:**
-- ✅ Use on unlimited personal projects
-- ✅ Use on unlimited commercial projects
-- ✅ One license per developer
-- ❌ No redistribution
-- ❌ No reselling
+-  Use on unlimited personal projects
+-  Use on unlimited commercial projects
+-  One license per developer
+-  No redistribution
+-  No reselling
 
 ---
 

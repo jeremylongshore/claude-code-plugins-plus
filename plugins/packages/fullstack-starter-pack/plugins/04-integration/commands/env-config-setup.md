@@ -13,12 +13,12 @@ Generates environment configuration files (.env templates, validation schemas, a
 ## What This Command Does
 
 **Generated Configuration:**
-- ✅ .env.example (committed template)
-- ✅ .env.development, .env.production
-- ✅ Config validation schema (Zod)
-- ✅ Type-safe config loader
-- ✅ Secret management guidance
-- ✅ Docker environment setup
+-  .env.example (committed template)
+-  .env.development, .env.production
+-  Config validation schema (Zod)
+-  Type-safe config loader
+-  Secret management guidance
+-  Docker environment setup
 
 **Output:** Complete environment configuration system
 
@@ -173,7 +173,7 @@ const envSchema = z.object({
 const parsedEnv = envSchema.safeParse(process.env)
 
 if (!parsedEnv.success) {
-  console.error('❌ Invalid environment variables:')
+  console.error(' Invalid environment variables:')
   console.error(parsedEnv.error.flatten().fieldErrors)
   process.exit(1)
 }
@@ -334,4 +334,4 @@ vercel env add JWT_SECRET production
 
 ---
 
-**Manage secrets safely. Configure environments easily. Deploy confidently.** ⚙️
+**Manage secrets safely. Configure environments easily. Deploy confidently.** ️

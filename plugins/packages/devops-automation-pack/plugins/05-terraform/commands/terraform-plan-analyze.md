@@ -12,9 +12,9 @@ estimated_time: 1 minute
      and provides approval recommendations. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Detects resource recreation risks -->
-<!-- ✅ Identifies data loss scenarios (RDS deletion) -->
-<!-- ✅ Estimates cost changes -->
+<!--  Detects resource recreation risks -->
+<!--  Identifies data loss scenarios (RDS deletion) -->
+<!--  Estimates cost changes -->
 
 # Terraform Plan Analyzer
 
@@ -22,12 +22,12 @@ Analyzes `terraform plan` output to identify risks (resource recreation, data lo
 
 ## When to Use This
 
-- ✅ Before applying Terraform changes
-- ✅ Reviewing large plan outputs
-- ✅ Need cost impact analysis
-- ✅ Want to catch risky changes (deletions, recreations)
-- ✅ CI/CD pipeline plan review
-- ❌ Plan is empty (no changes)
+-  Before applying Terraform changes
+-  Reviewing large plan outputs
+-  Need cost impact analysis
+-  Want to catch risky changes (deletions, recreations)
+-  CI/CD pipeline plan review
+-  Plan is empty (no changes)
 
 ## How It Works
 
@@ -47,10 +47,10 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
    - **Delete** (-): Resource removal
 
 3. **Identify risks:**
-   - **🔴 Critical**: Data loss (RDS deletion, S3 bucket)
-   - **🟠 High**: Downtime (recreation of production resources)
-   - **🟡 Medium**: Configuration changes requiring attention
-   - **🟢 Low**: Safe additions or updates
+   - ** Critical**: Data loss (RDS deletion, S3 bucket)
+   - ** High**: Downtime (recreation of production resources)
+   - ** Medium**: Configuration changes requiring attention
+   - ** Low**: Safe additions or updates
 
 4. **Estimate cost impact:**
    - New resources cost (based on resource type/size)
@@ -58,10 +58,10 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
    - Net change estimate
 
 5. **Provide recommendation:**
-   - ✅ APPROVE: Low risk, proceed with apply
-   - ⚠️ REVIEW: Medium risk, review changes carefully
-   - 🛑 BLOCK: High risk, requires manual approval
-   - 🔴 DANGER: Critical risk, do not apply without backup
+   -  APPROVE: Low risk, proceed with apply
+   - ️ REVIEW: Medium risk, review changes carefully
+   -  BLOCK: High risk, requires manual approval
+   -  DANGER: Critical risk, do not apply without backup
 
 ## Output Format
 
@@ -76,16 +76,16 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
 
 ## Risk Assessment
 
-### 🔴 Critical Risks ([N])
+###  Critical Risks ([N])
 [List of dangerous changes]
 
-### 🟠 High Risks ([N])
+###  High Risks ([N])
 [List of high-risk changes]
 
-### 🟡 Medium Risks ([N])
+###  Medium Risks ([N])
 [List of medium-risk changes]
 
-### 🟢 Safe Changes ([N])
+###  Safe Changes ([N])
 [List of safe changes]
 
 ## Cost Impact
@@ -94,7 +94,7 @@ You are a Terraform plan analysis expert. When user runs `/terraform-plan-analyz
 
 ## Recommendation
 
-[✅ APPROVE | ⚠️ REVIEW | 🛑 BLOCK | 🔴 DANGER]
+[ APPROVE | ️ REVIEW |  BLOCK |  DANGER]
 
 [Specific advice]
 ```
@@ -140,15 +140,15 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 
 ## Risk Assessment
 
-### 🔴 CRITICAL RISKS (1)
+###  CRITICAL RISKS (1)
 
 **aws_db_instance.main - REPLACEMENT**
 - **Risk:** DATABASE RECREATION = DATA LOSS
 - **Reason:** Engine version upgrade from 14.7 → 15.4 forces replacement
 - **Impact:**
-  - 🔴 All database data will be lost (unless restored from snapshot)
-  - 🔴 Downtime during recreation (~10-15 minutes)
-  - 🔴 Connection string changes
+  -  All database data will be lost (unless restored from snapshot)
+  -  Downtime during recreation (~10-15 minutes)
+  -  Connection string changes
 
 **Mitigation:**
 1. **TAKE SNAPSHOT FIRST:**
@@ -168,7 +168,7 @@ Plan: 1 to add, 1 to change, 1 to destroy.
    - Check if 14.7 → 15.4 supports in-place upgrade
    - Use AWS Console or CLI for safer upgrade path
 
-### 🟢 SAFE CHANGES (1)
+###  SAFE CHANGES (1)
 
 **aws_ecs_service.app - UPDATE**
 - **Change:** Scaling from 3 → 5 tasks
@@ -184,14 +184,14 @@ Plan: 1 to add, 1 to change, 1 to destroy.
 
 ## Recommendation
 
-🔴 **DANGER - DO NOT APPLY WITHOUT BACKUP**
+ **DANGER - DO NOT APPLY WITHOUT BACKUP**
 
 **Required Actions Before Apply:**
-1. ✅ Take RDS snapshot (backup)
-2. ✅ Verify snapshot completed successfully
-3. ✅ Test snapshot restore process
-4. ✅ Notify team of planned downtime window
-5. ✅ Have rollback plan ready
+1.  Take RDS snapshot (backup)
+2.  Verify snapshot completed successfully
+3.  Test snapshot restore process
+4.  Notify team of planned downtime window
+5.  Have rollback plan ready
 
 **Alternative:** Consider blue/green deployment to avoid data loss risk.
 
@@ -234,7 +234,7 @@ Plan: 2 to add, 0 to change, 0 to destroy.
 
 ## Risk Assessment
 
-### 🟢 SAFE CHANGES (2)
+###  SAFE CHANGES (2)
 
 **aws_s3_bucket.assets - CREATE**
 - **Risk:** None (new resource)
@@ -255,7 +255,7 @@ Plan: 2 to add, 0 to change, 0 to destroy.
 
 ## Recommendation
 
-✅ **APPROVE - SAFE TO APPLY**
+ **APPROVE - SAFE TO APPLY**
 
 **Summary:**
 - Only creating new resources (no modifications/deletions)
@@ -315,15 +315,15 @@ Plan: 0 to add, 2 to change, 0 to destroy.
 
 ## Risk Assessment
 
-### 🟡 MEDIUM RISKS (2)
+###  MEDIUM RISKS (2)
 
 **aws_security_group.app - UPDATE**
 - **Change:** Restricting SSH access (0.0.0.0/0 → 10.0.0.0/8)
 - **Risk:** May lock out existing SSH connections
 - **Impact:**
-  - ✅ Security improvement (good!)
-  - ⚠️ Ensure your IP is within 10.0.0.0/8 before applying
-  - ⚠️ Verify VPN or bastion access works
+  -  Security improvement (good!)
+  - ️ Ensure your IP is within 10.0.0.0/8 before applying
+  - ️ Verify VPN or bastion access works
 
 **Verification:**
 ```bash
@@ -337,8 +337,8 @@ curl ifconfig.me
 - **Change:** Instance resize (t3.medium → t3.large)
 - **Risk:** Requires instance stop/start
 - **Impact:**
-  - 🟠 ~2-3 minutes downtime during resize
-  - 💰 Cost increase: ~$30/month (from $31 to $61)
+  -  ~2-3 minutes downtime during resize
+  -  Cost increase: ~$30/month (from $31 to $61)
   - ℹ️ Elastic IP/private IP retained
 
 ## Cost Impact
@@ -350,13 +350,13 @@ curl ifconfig.me
 
 ## Recommendation
 
-⚠️ **REVIEW - REQUIRES ATTENTION**
+️ **REVIEW - REQUIRES ATTENTION**
 
 **Before Applying:**
-1. ✅ Verify you can still SSH after security group change
-2. ✅ Schedule maintenance window for instance resize (3 min downtime)
-3. ✅ Notify users of brief downtime
-4. ✅ Confirm cost increase is approved
+1.  Verify you can still SSH after security group change
+2.  Schedule maintenance window for instance resize (3 min downtime)
+3.  Notify users of brief downtime
+4.  Confirm cost increase is approved
 
 **Proceed with:**
 ```bash
@@ -367,25 +367,25 @@ terraform apply tfplan
 
 ## Pro Tips
 
-💡 **Always run plan before apply**
-💡 **Look for -/+ (replacements) - high risk**
-💡 **Check if resources are stateful (RDS, S3, EBS)**
-💡 **Estimate costs before applying large changes**
-💡 **Use terraform show -json for detailed analysis**
+ **Always run plan before apply**
+ **Look for -/+ (replacements) - high risk**
+ **Check if resources are stateful (RDS, S3, EBS)**
+ **Estimate costs before applying large changes**
+ **Use terraform show -json for detailed analysis**
 
 ## Common Risky Patterns
 
-🔴 **Forced Replacements:**
+ **Forced Replacements:**
 - RDS/Database instances (data loss!)
 - S3 buckets (data loss!)
 - EBS volumes (data loss!)
 
-🟠 **Downtime Causing:**
+ **Downtime Causing:**
 - EC2 instance replacements
 - ECS service recreations
 - Load balancer changes
 
-🟡 **Review Required:**
+ **Review Required:**
 - Security group rule changes
 - IAM policy modifications
 - Network configuration updates

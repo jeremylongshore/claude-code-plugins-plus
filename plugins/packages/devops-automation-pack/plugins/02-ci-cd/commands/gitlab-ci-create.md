@@ -14,9 +14,9 @@ Creates optimized .gitlab-ci.yml with stages, caching, and deployment automation
 
 ## When to Use This
 
-- ✅ Setting up CI/CD for GitLab repository
-- ✅ Need multi-stage pipeline
-- ❌ Using GitHub or other platforms
+-  Setting up CI/CD for GitLab repository
+-  Need multi-stage pipeline
+-  Using GitHub or other platforms
 
 ## How It Works
 
@@ -79,6 +79,6 @@ deploy:
 
 ## Pro Tips
 
-💡 Use stages for clear pipeline flow
-💡 Cache dependencies
-💡 Use only: to control when jobs run
+ Use stages for clear pipeline flow
+ Cache dependencies
+ Use only: to control when jobs run

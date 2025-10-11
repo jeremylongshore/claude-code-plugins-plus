@@ -31,11 +31,11 @@ Quick smoke test suites to verify critical functionality after deployments.
 /smoke-test
 
 # Claude creates:
-# ✓ Health checks
-# ✓ Authentication tests
-# ✓ Core feature validation
-# ✓ Integration checks
-# 🚀 Post-deployment script
+#  Health checks
+#  Authentication tests
+#  Core feature validation
+#  Integration checks
+#  Post-deployment script
 ```
 
 ## Test Categories

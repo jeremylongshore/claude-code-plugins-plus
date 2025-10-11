@@ -32,11 +32,11 @@ Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android a
 /mobile-test
 
 # Claude creates:
-# ✓ E2E test suite
-# ✓ Page object models
-# ✓ Gesture handling
-# ✓ Permission management
-# 📱 Platform-specific tests
+#  E2E test suite
+#  Page object models
+#  Gesture handling
+#  Permission management
+#  Platform-specific tests
 ```
 
 ## Supported Platforms

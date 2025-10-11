@@ -130,10 +130,10 @@ OpenAI - Send Prompt
 
 | Plan | Price | Tasks | Multi-Step | Premium Apps |
 |------|-------|-------|------------|--------------|
-| Free | $0 | 100/mo | ❌ | ❌ |
-| Starter | $20/mo | 750/mo | ✅ | ❌ |
-| Professional | $49/mo | 2,000/mo | ✅ | ✅ |
-| Team | $69/mo | 2,000/mo | ✅ | ✅ |
+| Free | $0 | 100/mo |  |  |
+| Starter | $20/mo | 750/mo |  |  |
+| Professional | $49/mo | 2,000/mo |  |  |
+| Team | $69/mo | 2,000/mo |  |  |
 
 **Tasks:** Each action step counts as 1 task
 
@@ -235,7 +235,7 @@ Path A: Urgent
 - Filter: {{openai.choices[0].message.content}} contains "urgent"
 - Action: Slack - Send Channel Message
   - Channel: #support-urgent
-  - Message: "🚨 Urgent support email from {{trigger.From}}"
+  - Message: " Urgent support email from {{trigger.From}}"
 
 Path B: Normal/Low
 - Action: Gmail - Create Draft

@@ -2,7 +2,7 @@
 
 ## Important Context
 
-⚠️ **Claude Code plugins have NO built-in monetization mechanism.** There is no payment processing, licensing enforcement, or revenue sharing in the official plugin system. All plugins in the Claude Code ecosystem are currently free and open-source.
+️ **Claude Code plugins have NO built-in monetization mechanism.** There is no payment processing, licensing enforcement, or revenue sharing in the official plugin system. All plugins in the Claude Code ecosystem are currently free and open-source.
 
 This guide covers **external monetization strategies** that work outside the plugin system.
 

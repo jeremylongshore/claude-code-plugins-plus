@@ -30,10 +30,10 @@ cd ~/my-project
 
 **What happens:**
 ```
-📊 Analyzing project structure...
-✅ Detected: Node.js project with package.json
-✅ Found: Jest tests in /tests directory
-✅ Detected: Vercel deployment config
+ Analyzing project structure...
+ Detected: Node.js project with package.json
+ Found: Jest tests in /tests directory
+ Detected: Vercel deployment config
 
 Recommended pipeline:
 ─────────────────────────────────
@@ -51,17 +51,17 @@ Alex types `y` and gets a complete, working pipeline in 2 minutes.
 ### The Result
 
 **Before:**
-- ❌ No automated testing
-- ❌ Manual deployments (error-prone)
-- ❌ No code quality checks
+-  No automated testing
+-  Manual deployments (error-prone)
+-  No code quality checks
 - ⏱️ 2-3 days to set up
 
 **After:**
-- ✅ Automated tests on every commit
-- ✅ One-click deployments
-- ✅ Linting enforced automatically
+-  Automated tests on every commit
+-  One-click deployments
+-  Linting enforced automatically
 - ⏱️ 2 minutes to set up
-- 💰 **Time saved: 2.5 days (20 hours)**
+-  **Time saved: 2.5 days (20 hours)**
 
 **Alex's feedback:** *"I went from terrified to confident in 10 minutes. The pipeline just works."*
 
@@ -91,10 +91,10 @@ cd ~/medtech-app
 
 **What happens:**
 ```
-📊 Analyzing application...
-✅ Detected: Python 3.8 app with requirements.txt
-✅ Found: PostgreSQL + Redis dependencies
-✅ Detected: 847MB of dependencies
+ Analyzing application...
+ Detected: Python 3.8 app with requirements.txt
+ Found: PostgreSQL + Redis dependencies
+ Detected: 847MB of dependencies
 
 Recommended Dockerfile:
 ─────────────────────────────────
@@ -115,7 +115,7 @@ After generating, they optimize:
 
 **Optimization results:**
 ```
-📊 Analyzing Dockerfile...
+ Analyzing Dockerfile...
 
 Found 4 optimization opportunities:
 1. Use alpine base → Save 600MB
@@ -129,18 +129,18 @@ Apply all optimizations? (y/n):
 ### The Result
 
 **Before:**
-- ❌ No containerization
-- ❌ "Works on my machine" problems
-- ❌ Manual server setup (2 hours per deploy)
+-  No containerization
+-  "Works on my machine" problems
+-  Manual server setup (2 hours per deploy)
 - ⏱️ 1 week to create Dockerfile
 
 **After:**
-- ✅ Complete Docker setup in 15 minutes
-- ✅ Image size: 310MB (from 2.1GB = 85% reduction)
-- ✅ Consistent environments (dev, staging, prod)
+-  Complete Docker setup in 15 minutes
+-  Image size: 310MB (from 2.1GB = 85% reduction)
+-  Consistent environments (dev, staging, prod)
 - ⏱️ 15 minutes to set up
-- 💰 **Time saved: 39 hours**
-- 🚀 **Deployment speed: 2 hours → 5 minutes**
+-  **Time saved: 39 hours**
+-  **Deployment speed: 2 hours → 5 minutes**
 
 **Team lead's feedback:** *"We were Docker beginners on Monday. By Tuesday, we had production-ready containers."*
 
@@ -170,10 +170,10 @@ cd ~/cloudsync-api
 
 **What happens:**
 ```
-📊 Analyzing application...
-✅ Detected: Node.js API on port 3000
-✅ Found: Docker image in deployment config
-✅ Detected: 2GB memory requirement
+ Analyzing application...
+ Detected: Node.js API on port 3000
+ Found: Docker image in deployment config
+ Detected: 2GB memory requirement
 
 Recommended Kubernetes resources:
 ─────────────────────────────────
@@ -204,11 +204,11 @@ When they encounter a pod crash, they use `/k8s-troubleshoot`:
 
 **Diagnostic output:**
 ```
-🔍 Diagnosing pod: cloudsync-api-7f9d6c-xk2m9
+ Diagnosing pod: cloudsync-api-7f9d6c-xk2m9
 
 Found 2 issues:
-❌ OOMKilled - Pod exceeded memory limit
-❌ Liveness probe failing after 30s
+ OOMKilled - Pod exceeded memory limit
+ Liveness probe failing after 30s
 
 Recommended fixes:
 1. Increase memory limit to 3Gi
@@ -220,19 +220,19 @@ Apply fixes? (y/n):
 ### The Result
 
 **Before:**
-- 💰 Heroku cost: $2,800/month
-- ❌ Limited scaling options
-- ❌ No containerization
+-  Heroku cost: $2,800/month
+-  Limited scaling options
+-  No containerization
 - ⏱️ 2-3 weeks to learn K8s
 
 **After:**
-- ✅ All 5 services running on Kubernetes in 3 days
-- ✅ Auto-scaling configured
-- ✅ Zero-downtime deployments
-- 💰 GKE cost: $850/month (70% savings)
+-  All 5 services running on Kubernetes in 3 days
+-  Auto-scaling configured
+-  Zero-downtime deployments
+-  GKE cost: $850/month (70% savings)
 - ⏱️ 3 days to production
-- 💰 **Time saved: 2+ weeks**
-- 💸 **Monthly savings: $1,950**
+-  **Time saved: 2+ weeks**
+-  **Monthly savings: $1,950**
 
 **CTO's feedback:** *"We expected a month-long migration. We were live in a week. The troubleshooting commands saved us countless hours."*
 
@@ -261,7 +261,7 @@ cd ~/ecommerce-app
 
 **Analysis output:**
 ```
-📊 Analyzing pipeline performance...
+ Analyzing pipeline performance...
 
 Current metrics:
 - Total duration: 47 minutes
@@ -309,16 +309,16 @@ Jordan types `y` and the pipeline config is automatically updated.
 
 **Before:**
 - ⏱️ Pipeline duration: 47 minutes
-- 😤 Developer frustration: High (long feedback loops)
-- 💰 CI/CD costs: $890/month (GitHub Actions minutes)
-- 📉 Deployment frequency: 2-3 per day (too slow)
+-  Developer frustration: High (long feedback loops)
+-  CI/CD costs: $890/month (GitHub Actions minutes)
+-  Deployment frequency: 2-3 per day (too slow)
 
 **After:**
 - ⏱️ Pipeline duration: 11 minutes (76% faster)
-- 😊 Developer satisfaction: Improved dramatically
-- 💰 CI/CD costs: $340/month (62% reduction)
-- 📈 Deployment frequency: 8-12 per day
-- 💰 **Monthly savings: $550**
+-  Developer satisfaction: Improved dramatically
+-  CI/CD costs: $340/month (62% reduction)
+-  Deployment frequency: 8-12 per day
+-  **Monthly savings: $550**
 - ⏰ **Developer time saved: 432 minutes/day (7.2 hours)**
 
 **Jordan's feedback:** *"The analysis was spot-on. We implemented all suggestions in 2 hours and saw immediate results."*
@@ -358,7 +358,7 @@ What infrastructure do you need?
 
 Selection: 1
 
-📊 Generating VPC module...
+ Generating VPC module...
 
 Module structure:
 ─────────────────────────────────
@@ -390,14 +390,14 @@ terraform show -json plan.out > plan.json
 
 **Risk analysis:**
 ```
-🔍 Analyzing Terraform plan...
+ Analyzing Terraform plan...
 
-📊 Summary:
+ Summary:
 - Resources to add: 24
 - Resources to change: 0
 - Resources to destroy: 0
 
-⚠️ Found 2 risks:
+️ Found 2 risks:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 1. HIGH RISK: S3 bucket will be publicly accessible
    - Resource: aws_s3_bucket.data
@@ -414,20 +414,20 @@ Review risks before applying.
 ### The Result
 
 **Before:**
-- ❌ Manual infrastructure changes
-- ❌ No audit trail
-- ❌ Environment drift issues
+-  Manual infrastructure changes
+-  No audit trail
+-  Environment drift issues
 - ⏱️ 3 weeks to write Terraform
-- 🚨 Disaster recovery: 12+ hours
+-  Disaster recovery: 12+ hours
 
 **After:**
-- ✅ Infrastructure as Code for all resources
-- ✅ Git history of all changes
-- ✅ Consistent environments
+-  Infrastructure as Code for all resources
+-  Git history of all changes
+-  Consistent environments
 - ⏱️ 2 days to adopt Terraform
-- 🚨 Disaster recovery: 15 minutes (terraform apply)
-- 💰 **Time saved: 2.5 weeks**
-- 🔒 **Security improved:** Caught 2 critical issues before production
+-  Disaster recovery: 15 minutes (terraform apply)
+-  **Time saved: 2.5 weeks**
+-  **Security improved:** Caught 2 critical issues before production
 
 **Infrastructure lead's feedback:** *"The risk analysis alone paid for the pack. We nearly deployed a public S3 bucket to production."*
 
@@ -456,7 +456,7 @@ The team uses `/monitoring-setup`:
 
 **What happens:**
 ```
-📊 Setting up monitoring stack...
+ Setting up monitoring stack...
 
 What do you want to monitor?
 1. Kubernetes cluster
@@ -502,18 +502,18 @@ They type `y` and get:
 ### The Result
 
 **Before:**
-- ❌ No centralized monitoring
-- ❌ Incidents discovered by customers
-- ❌ No visibility into system health
+-  No centralized monitoring
+-  Incidents discovered by customers
+-  No visibility into system health
 - ⏱️ 1-2 weeks to set up monitoring
 
 **After:**
-- ✅ Complete monitoring in 3 hours
-- ✅ Proactive alerts (catch issues before users)
-- ✅ 8 dashboards showing system health
-- 📊 Mean time to detection: 45 min → 3 min (93% faster)
+-  Complete monitoring in 3 hours
+-  Proactive alerts (catch issues before users)
+-  8 dashboards showing system health
+-  Mean time to detection: 45 min → 3 min (93% faster)
 - ⏱️ 3 hours to full monitoring
-- 💰 **Time saved: 1.5 weeks**
+-  **Time saved: 1.5 weeks**
 
 **Security engineer's feedback:** *"We caught a memory leak in staging before it hit production. The dashboards are exactly what we needed."*
 
@@ -558,7 +558,7 @@ TechCorp standardizes on the DevOps Pack's Git commands:
 #!/bin/bash
 # Verify commit follows conventional commits
 if ! grep -qE "^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+" "$1"; then
-  echo "❌ Commit message must follow conventional commits format"
+  echo " Commit message must follow conventional commits format"
   echo "Example: feat(auth): add password reset"
   exit 1
 fi
@@ -567,18 +567,18 @@ fi
 ### The Result
 
 **Before:**
-- 😤 20+ different commit message styles
-- ❓ PRs missing context (reviewers ask questions)
+-  20+ different commit message styles
+-  PRs missing context (reviewers ask questions)
 - ⏱️ Code review time: 2.3 days average
-- 📚 Onboarding: 2 weeks (learn team-specific practices)
+-  Onboarding: 2 weeks (learn team-specific practices)
 
 **After:**
-- ✅ Consistent commit messages across all teams
-- ✅ PRs always have complete context
+-  Consistent commit messages across all teams
+-  PRs always have complete context
 - ⏱️ Code review time: 1.1 days (52% faster)
-- 📚 Onboarding: 3 days (universal workflow)
-- 💰 **Developer time saved: 240 hours/week** (200 devs × 1.2 hr/week)
-- 🔍 **Commit history searchable:** "Show all feat(auth) commits"
+-  Onboarding: 3 days (universal workflow)
+-  **Developer time saved: 240 hours/week** (200 devs × 1.2 hr/week)
+-  **Commit history searchable:** "Show all feat(auth) commits"
 
 **VP Engineering's feedback:** *"Standardization was painful before. Now everyone uses the same commands and we have a uniform commit history. Game changer."*
 

@@ -76,7 +76,7 @@ Create a `.mempool-config.json` file:
 
 ## Risk Warnings
 
-⚠️ **Important Considerations**:
+️ **Important Considerations**:
 - MEV extraction is highly competitive with sophisticated bots
 - Gas wars can eliminate profits quickly
 - Smart contract interactions carry inherent risks
@@ -94,4 +94,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for blockchain researchers by Intent Solutions IO*
+*Built with ️ for blockchain researchers by Intent Solutions IO*

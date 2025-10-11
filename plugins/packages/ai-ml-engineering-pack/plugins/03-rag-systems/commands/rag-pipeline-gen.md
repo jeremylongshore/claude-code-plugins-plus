@@ -697,24 +697,24 @@ print(f"Tokens: {result['usage']}")
 ## Features Included
 
 **Production-Ready:**
-- ✅ Document ingestion (PDF, text, web)
-- ✅ Intelligent chunking strategies
-- ✅ Batch embedding generation
-- ✅ Vector database integration
-- ✅ Retrieval with reranking
-- ✅ LLM answer generation
-- ✅ FastAPI REST API
-- ✅ Docker deployment
-- ✅ Error handling and retries
-- ✅ Source citation
+-  Document ingestion (PDF, text, web)
+-  Intelligent chunking strategies
+-  Batch embedding generation
+-  Vector database integration
+-  Retrieval with reranking
+-  LLM answer generation
+-  FastAPI REST API
+-  Docker deployment
+-  Error handling and retries
+-  Source citation
 
 **Advanced Features:**
-- ✅ Hybrid search (multiple strategies)
-- ✅ Metadata filtering
-- ✅ Namespace support (multi-tenancy)
-- ✅ Reranking for better relevance
-- ✅ Token usage tracking
-- ✅ Health check endpoints
+-  Hybrid search (multiple strategies)
+-  Metadata filtering
+-  Namespace support (multi-tenancy)
+-  Reranking for better relevance
+-  Token usage tracking
+-  Health check endpoints
 
 ## Time Savings
 

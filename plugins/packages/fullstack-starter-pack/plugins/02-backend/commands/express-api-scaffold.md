@@ -13,15 +13,15 @@ Generates a complete Express.js REST API boilerplate with TypeScript, authentica
 ## What This Command Does
 
 **Generated Project:**
-- ✅ Express.js with TypeScript
-- ✅ JWT authentication
-- ✅ Database integration (Prisma or TypeORM)
-- ✅ Input validation (Zod)
-- ✅ Error handling middleware
-- ✅ Rate limiting & security (Helmet, CORS)
-- ✅ Testing setup (Jest + Supertest)
-- ✅ Docker configuration
-- ✅ Example CRUD endpoints
+-  Express.js with TypeScript
+-  JWT authentication
+-  Database integration (Prisma or TypeORM)
+-  Input validation (Zod)
+-  Error handling middleware
+-  Rate limiting & security (Helmet, CORS)
+-  Testing setup (Jest + Supertest)
+-  Docker configuration
+-  Example CRUD endpoints
 
 **Output:** Complete API project ready for development
 
@@ -655,4 +655,4 @@ npm test
 
 ---
 
-**Build production-ready APIs. Ship faster. Scale confidently.** 🚀
+**Build production-ready APIs. Ship faster. Scale confidently.** 

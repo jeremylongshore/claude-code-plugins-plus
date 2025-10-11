@@ -1,0 +1,23 @@
+{
+  "name": "database-migration-manager",
+  "description": "Manage database migrations with version control, rollback capabilities, and automated schema evolution tracking",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "migration",
+    "schema",
+    "version-control",
+    "backend"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-migration-manager",
+  "license": "MIT",
+  "installation": "/plugin install database-migration-manager@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

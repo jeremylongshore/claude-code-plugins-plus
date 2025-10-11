@@ -20,12 +20,12 @@ Automatically reviews cryptographic implementations in your codebase to identify
 ## What This Command Does
 
 **Automated Crypto Code Review:**
-- ✅ Detects weak or broken algorithms (MD5, SHA-1, DES, RC4)
-- ✅ Identifies insufficient key sizes (RSA <2048-bit, AES <128-bit)
-- ✅ Finds hardcoded keys and secrets
-- ✅ Checks for proper IV generation and usage
-- ✅ Verifies authenticated encryption usage
-- ✅ Validates TLS/SSL configurations
+-  Detects weak or broken algorithms (MD5, SHA-1, DES, RC4)
+-  Identifies insufficient key sizes (RSA <2048-bit, AES <128-bit)
+-  Finds hardcoded keys and secrets
+-  Checks for proper IV generation and usage
+-  Verifies authenticated encryption usage
+-  Validates TLS/SSL configurations
 
 **Output:** Crypto audit report with severity-rated findings and remediation steps
 
@@ -87,7 +87,7 @@ Automatically reviews cryptographic implementations in your codebase to identify
 
 **Example Finding:**
 ```python
-# ❌ CRITICAL: MD5 password hashing detected
+#  CRITICAL: MD5 password hashing detected
 import hashlib
 password_hash = hashlib.md5(password.encode()).hexdigest()
 
@@ -112,7 +112,7 @@ password_hash = argon2.hash(password)
 
 **Example Finding:**
 ```javascript
-// ⚠️ HIGH: RSA key size insufficient
+// ️ HIGH: RSA key size insufficient
 const key = crypto.generateKeyPairSync('rsa', {
   modulusLength: 1024  // TOO SMALL! Easily factored
 })
@@ -137,7 +137,7 @@ const key = crypto.generateKeyPairSync('rsa', {
 
 **Example Finding:**
 ```javascript
-// 🚨 CRITICAL: Hardcoded encryption key
+//  CRITICAL: Hardcoded encryption key
 const ENCRYPTION_KEY = "MySecretKey123456789012345678901"
 
 // Location: config/crypto.js:12
@@ -161,7 +161,7 @@ if (!ENCRYPTION_KEY) throw new Error('Missing ENCRYPTION_KEY')
 
 **Example Finding:**
 ```python
-# ⚠️ HIGH: Fixed IV reuse
+# ️ HIGH: Fixed IV reuse
 IV = b'1234567890123456'  # Same IV every time!
 
 # Location: crypto/aes.py:34
@@ -184,7 +184,7 @@ IV = os.urandom(16)
 
 **Example Finding:**
 ```javascript
-// ⚠️ HIGH: Encryption without authentication
+// ️ HIGH: Encryption without authentication
 const cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
 
 // Location: api/encrypt.js:56
@@ -207,7 +207,7 @@ const cipher = crypto.createCipheriv('aes-256-gcm', key, iv)
 
 **Example Finding:**
 ```python
-# 🚨 CRITICAL: Insecure random for crypto
+#  CRITICAL: Insecure random for crypto
 import random
 token = ''.join([random.choice(string.ascii_letters) for _ in range(32)])
 
@@ -232,7 +232,7 @@ token = secrets.token_urlsafe(32)
 
 **Example Finding:**
 ```javascript
-// 💡 MEDIUM: Certificate validation disabled
+//  MEDIUM: Certificate validation disabled
 const https = require('https')
 
 https.get('https://api.example.com', {
@@ -258,109 +258,109 @@ https.get('https://api.example.com', {
 ```bash
 $ /crypto-audit
 
-🔍 Running Cryptography Audit...
+ Running Cryptography Audit...
 
-📁 Project: payment-processor
-📊 Files scanned: 89
+ Project: payment-processor
+ Files scanned: 89
 ⏱️  Scan duration: 12.3 seconds
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-🚨 CRITICAL FINDINGS (Fix Immediately)
+ CRITICAL FINDINGS (Fix Immediately)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1. Hardcoded Encryption Key
-   📄 File: config/encryption.js:15
-   🔴 Severity: Critical
+    File: config/encryption.js:15
+    Severity: Critical
    CWE: CWE-798
 
    const AES_KEY = "hardcoded_key_32_chars_long!"
 
-   ⚠️  Impact: All encrypted data compromised if source code leaks
+   ️  Impact: All encrypted data compromised if source code leaks
 
-   ✅ Fix:
+    Fix:
    - Move to environment variable: process.env.AES_KEY
    - Rotate encryption key immediately
    - Re-encrypt existing data with new key
 
 2. MD5 Password Hashing
-   📄 File: auth/password.py:45
-   🔴 Severity: Critical
+    File: auth/password.py:45
+    Severity: Critical
    CWE: CWE-327
 
    password_hash = hashlib.md5(password.encode()).hexdigest()
 
-   ⚠️  Impact: Passwords easily cracked via rainbow tables
+   ️  Impact: Passwords easily cracked via rainbow tables
 
-   ✅ Fix:
+    Fix:
    import argon2
    password_hash = argon2.hash(password)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-⚠️  HIGH SEVERITY FINDINGS
+️  HIGH SEVERITY FINDINGS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 3. RSA Key Too Small (1024-bit)
-   📄 File: crypto/keys.js:23
-   🟠 Severity: High
+    File: crypto/keys.js:23
+    Severity: High
 
    modulusLength: 1024
 
-   ⚠️  Impact: Can be factored with current computing power
+   ️  Impact: Can be factored with current computing power
 
-   ✅ Fix: Increase to 3072-bit minimum
+    Fix: Increase to 3072-bit minimum
 
 4. AES-CBC Without Authentication
-   📄 File: services/encrypt.js:67
-   🟠 Severity: High
+    File: services/encrypt.js:67
+    Severity: High
 
    cipher = crypto.createCipheriv('aes-256-cbc', key, iv)
 
-   ⚠️  Impact: Padding oracle attacks, ciphertext tampering
+   ️  Impact: Padding oracle attacks, ciphertext tampering
 
-   ✅ Fix: Use AES-256-GCM (authenticated encryption)
+    Fix: Use AES-256-GCM (authenticated encryption)
 
 5. Fixed IV Reuse
-   📄 File: utils/crypto.py:34
-   🟠 Severity: High
+    File: utils/crypto.py:34
+    Severity: High
 
    IV = b'1234567890123456'
 
-   ⚠️  Impact: Reveals patterns in encrypted data
+   ️  Impact: Reveals patterns in encrypted data
 
-   ✅ Fix: Generate random IV: os.urandom(16)
+    Fix: Generate random IV: os.urandom(16)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-💡 MEDIUM SEVERITY FINDINGS
+ MEDIUM SEVERITY FINDINGS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 6. TLS 1.0 Enabled
-   📄 File: nginx.conf:45
-   🟡 Severity: Medium
+    File: nginx.conf:45
+    Severity: Medium
 
    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 
-   ⚠️  Impact: Vulnerable to POODLE, BEAST attacks
+   ️  Impact: Vulnerable to POODLE, BEAST attacks
 
-   ✅ Fix: Disable TLS 1.0/1.1, enable only 1.2+
+    Fix: Disable TLS 1.0/1.1, enable only 1.2+
 
 7. SHA-1 for Digital Signatures
-   📄 File: crypto/sign.js:89
-   🟡 Severity: Medium
+    File: crypto/sign.js:89
+    Severity: Medium
 
    .sign('sha1')
 
-   ⚠️  Impact: SHA-1 collisions possible (SHAttered attack)
+   ️  Impact: SHA-1 collisions possible (SHAttered attack)
 
-   ✅ Fix: Use SHA-256 or SHA-512
+    Fix: Use SHA-256 or SHA-512
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📊 AUDIT SUMMARY
+ AUDIT SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Total Findings: 7
- 🔴 Critical: 2 (Fix immediately)
- 🟠 High: 3 (Fix within 1 week)
- 🟡 Medium: 2 (Fix within 1 month)
+  Critical: 2 (Fix immediately)
+  High: 3 (Fix within 1 week)
+  Medium: 2 (Fix within 1 month)
 
 Estimated Fix Time: 6-8 hours
 
@@ -371,30 +371,30 @@ Priority Actions:
 4. Switch to GCM mode (2 hours)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📋 RECOMMENDATIONS
+ RECOMMENDATIONS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Immediate Actions:
-✓ Fix 2 critical issues within 24 hours
-✓ Rotate compromised encryption keys
-✓ Audit production data for exposure
+ Fix 2 critical issues within 24 hours
+ Rotate compromised encryption keys
+ Audit production data for exposure
 
 Short-term:
-✓ Address high-severity findings
-✓ Update crypto libraries to latest versions
-✓ Implement key management system (AWS KMS, Vault)
+ Address high-severity findings
+ Update crypto libraries to latest versions
+ Implement key management system (AWS KMS, Vault)
 
 Long-term:
-✓ Automated crypto auditing in CI/CD
-✓ Regular crypto library updates
-✓ Team cryptography training
+ Automated crypto auditing in CI/CD
+ Regular crypto library updates
+ Team cryptography training
 
-💬 For detailed remediation help, ask Crypto Expert:
+ For detailed remediation help, ask Crypto Expert:
    "How do I migrate from MD5 to Argon2 for existing users?"
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-Audit completed successfully! ✅
+Audit completed successfully! 
 Report saved to: crypto-audit-2025-10-10.md
 ```
 
@@ -402,25 +402,25 @@ Report saved to: crypto-audit-2025-10-10.md
 
 ## Severity Levels
 
-**🔴 Critical (Fix Within 24 Hours)**
+** Critical (Fix Within 24 Hours)**
 - Hardcoded keys/secrets
 - Completely broken algorithms (MD5, DES, RC4)
 - No encryption where required (plaintext PHI, PCI)
 - Insecure random for crypto
 
-**🟠 High (Fix Within 1 Week)**
+** High (Fix Within 1 Week)**
 - Weak key sizes (RSA <2048, AES <128)
 - Unauthenticated encryption
 - IV reuse or predictable IVs
 - SHA-1 in security-critical contexts
 
-**🟡 Medium (Fix Within 1 Month)**
+** Medium (Fix Within 1 Month)**
 - Deprecated algorithms (TLS 1.0/1.1)
 - Missing certificate validation
 - SHA-1 in non-critical contexts
 - Weak cipher suites
 
-**🔵 Low (Improvement)**
+** Low (Improvement)**
 - AES-128 (upgrade to AES-256)
 - bcrypt cost factor <12
 - Missing crypto documentation
@@ -446,7 +446,7 @@ jobs:
 
       - name: Fail on Critical Issues
         run: |
-          if grep -q "🔴 Critical" crypto-report.md; then
+          if grep -q " Critical" crypto-report.md; then
             echo "Critical crypto issues found!"
             exit 1
           fi
@@ -499,4 +499,4 @@ const checksum = crypto.createHash('md5').update(data).digest('hex')
 **Time Investment:** 10-20 minutes per scan
 **Value:** Prevent crypto vulnerabilities that lead to data breaches
 
-**Audit crypto early. Fix vulnerabilities fast. Protect data properly.** 🔐
+**Audit crypto early. Fix vulnerabilities fast. Protect data properly.** 

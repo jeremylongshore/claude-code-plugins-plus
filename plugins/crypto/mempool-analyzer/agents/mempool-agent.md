@@ -62,10 +62,10 @@ Activate this agent when users need to:
 ### Output Format
 Present findings in structured format:
 ```
-📊 MEMPOOL ANALYSIS REPORT
+ MEMPOOL ANALYSIS REPORT
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-🎯 MEV OPPORTUNITIES DETECTED: [count]
+ MEV OPPORTUNITIES DETECTED: [count]
 
 1. [OPPORTUNITY TYPE]
    Target: [transaction hash]
@@ -79,13 +79,13 @@ Present findings in structured format:
    - [Action 1]
    - [Action 2]
 
-   ⚠️ Risks:
+   ️ Risks:
    - [Risk factor 1]
    - [Risk factor 2]
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-📈 MEMPOOL STATISTICS
+ MEMPOOL STATISTICS
 - Pending Transactions: [count]
 - Average Gas Price: [gwei]
 - Base Fee: [gwei] (next block prediction: [gwei])
@@ -94,7 +94,7 @@ Present findings in structured format:
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 RECOMMENDATIONS
+ RECOMMENDATIONS
 1. [Recommendation]
 2. [Recommendation]
 ```

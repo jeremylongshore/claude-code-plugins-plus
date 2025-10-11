@@ -20,10 +20,10 @@ This command sets up your repository for overnight autonomous development sessio
 ### 1. Check Prerequisites
 
 First, verify you have:
-- ✅ Git repository initialized (`git status` works)
-- ✅ Test framework configured (Jest, pytest, etc.)
-- ✅ At least 1 passing test
-- ✅ Linter set up (ESLint, flake8, etc.)
+-  Git repository initialized (`git status` works)
+-  Test framework configured (Jest, pytest, etc.)
+-  At least 1 passing test
+-  Linter set up (ESLint, flake8, etc.)
 
 ### 2. Install the Hooks
 
@@ -70,12 +70,12 @@ git commit --allow-empty -m "test: verify overnight dev hooks"
 
 If hooks work correctly, you'll see:
 ```
-🌙 Overnight Dev: Running pre-commit checks...
-🔍 Running linting...
-✅ Linting passed
-🧪 Running tests...
-✅ All tests passed
-🎉 All checks passed! Proceeding with commit...
+ Overnight Dev: Running pre-commit checks...
+ Running linting...
+ Linting passed
+ Running tests...
+ All tests passed
+ All checks passed! Proceeding with commit...
 ```
 
 ## Project-Specific Examples
@@ -184,11 +184,11 @@ npm run lint -- --fix
 ## Success Metrics
 
 Track your overnight session:
-- ✅ All commits have passing tests
-- ✅ Coverage maintained or improved
-- ✅ No linting errors
-- ✅ Clean conventional commit messages
-- ✅ Features fully implemented and documented
+-  All commits have passing tests
+-  Coverage maintained or improved
+-  No linting errors
+-  Clean conventional commit messages
+-  Features fully implemented and documented
 
 ## Pro Tips
 
@@ -198,4 +198,4 @@ Track your overnight session:
 4. **Commit frequently** - Small, passing commits
 5. **Trust the process** - Hooks enforce quality automatically
 
-Ready to start? Just begin coding and let the hooks guide you to fully tested features! 🌙✨
+Ready to start? Just begin coding and let the hooks guide you to fully tested features! 

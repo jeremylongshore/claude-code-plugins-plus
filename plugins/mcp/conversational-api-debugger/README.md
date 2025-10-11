@@ -4,7 +4,7 @@
 
 An MCP server that helps developers quickly identify and fix API issues by analyzing OpenAPI specifications, ingesting HTTP logs, explaining failures, and generating reproducible test commands.
 
-## 🎯 What It Does
+##  What It Does
 
 This plugin transforms API debugging from guesswork into systematic analysis:
 
@@ -13,13 +13,13 @@ This plugin transforms API debugging from guesswork into systematic analysis:
 3. **Explain Failures** - Analyze why API calls failed with root cause analysis
 4. **Generate Repros** - Create cURL/HTTPie/fetch commands to reproduce issues
 
-## 🚀 Installation
+##  Installation
 
 ```bash
 /plugin install conversational-api-debugger@claude-code-plugins
 ```
 
-## 📋 Features
+##  Features
 
 ### 4 Powerful MCP Tools
 
@@ -107,7 +107,7 @@ Generate cURL command to reproduce API call.
 - **JavaScript fetch**: For automated tests
 - **Metadata**: Method, URL, headers count
 
-## 🎬 Quick Start
+##  Quick Start
 
 ### Scenario 1: Debugging a 400 Bad Request
 
@@ -131,11 +131,11 @@ Use make_repro to generate test command
 **Example Output:**
 
 ```
-🔍 ANALYSIS
+ ANALYSIS
 Status: 400 Bad Request
 Severity: HIGH
 
-💡 ROOT CAUSE
+ ROOT CAUSE
 Missing required field: "email"
 
 OpenAPI spec requires:
@@ -144,11 +144,11 @@ OpenAPI spec requires:
 
 Your request only included "name".
 
-✅ SUGGESTED FIXES
+ SUGGESTED FIXES
 1. Add "email" field to request body
 2. Ensure email format is valid ([email protected])
 
-🧪 TEST COMMAND
+ TEST COMMAND
 curl -X POST "https://api.example.com/users" \
   -H "Content-Type: application/json" \
   -d '{
@@ -173,7 +173,7 @@ Use explain_failure
 # - Missing scopes/permissions
 ```
 
-## 🔧 Slash Command
+##  Slash Command
 
 Use the `/debug-api` command for a guided debugging workflow:
 
@@ -187,7 +187,7 @@ This activates a systematic 4-step process:
 3. Analyze failures (explain errors)
 4. Generate test commands (cURL repros)
 
-## 🤖 AI Agent
+##  AI Agent
 
 The `api-expert` agent specializes in API debugging:
 
@@ -202,21 +202,21 @@ Activate by asking questions like:
 - "Help me debug this authentication error"
 - "Analyze these API logs"
 
-## 📚 Supported Formats
+##  Supported Formats
 
 ### OpenAPI Specs
-- ✅ OpenAPI 3.0.x
-- ✅ OpenAPI 3.1.x
-- ✅ JSON format
-- ✅ YAML format
-- ⚠️ Swagger 2.0 (limited support)
+-  OpenAPI 3.0.x
+-  OpenAPI 3.1.x
+-  JSON format
+-  YAML format
+- ️ Swagger 2.0 (limited support)
 
 ### HTTP Logs
-- ✅ HAR (HTTP Archive) - browser DevTools export
-- ✅ JSON array of request/response objects
-- ✅ Direct log objects (manual entry)
+-  HAR (HTTP Archive) - browser DevTools export
+-  JSON array of request/response objects
+-  Direct log objects (manual entry)
 
-## 🎓 Status Code Knowledge Base
+##  Status Code Knowledge Base
 
 The plugin has built-in expertise for all common HTTP status codes:
 
@@ -237,7 +237,7 @@ The plugin has built-in expertise for all common HTTP status codes:
 - **503** Service Unavailable → Temporary issue (HIGH)
 - **504** Gateway Timeout → Upstream timeout (HIGH)
 
-## 🔍 How It Works
+##  How It Works
 
 ### Under the Hood
 
@@ -256,7 +256,7 @@ The plugin maintains:
 
 Data persists during the session but clears on restart (no disk storage).
 
-## 📖 Examples
+##  Examples
 
 ### Export HAR from Browser
 
@@ -298,7 +298,7 @@ const logs = [
 // Then use ingest_logs with logs array directly
 ```
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ```
 conversational-api-debugger/
@@ -314,7 +314,7 @@ conversational-api-debugger/
     └── plugin.json            # Plugin metadata
 ```
 
-## 🧪 Testing
+##  Testing
 
 ```bash
 # Run test suite
@@ -337,22 +337,22 @@ pnpm build
 - Input validation (Zod schemas)
 - Error handling
 
-## 🤝 Contributing
+##  Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
 
-## 📄 License
+##  License
 
 MIT License - see [LICENSE](../../../LICENSE)
 
-## 🔗 Related Tools
+##  Related Tools
 
 - **project-health-auditor** - Code quality and technical debt analysis
 - **domain-memory-agent** - Knowledge base with semantic search
 - **design-to-code** - Figma/screenshot to component generation
 - **workflow-orchestrator** - DAG-based task automation
 
-## 💡 Use Cases
+##  Use Cases
 
 1. **Debugging Production Issues** - Analyze production API failures quickly
 2. **API Integration** - Understand third-party API errors
@@ -361,7 +361,7 @@ MIT License - see [LICENSE](../../../LICENSE)
 5. **Bug Reports** - Include working repro commands
 6. **Onboarding** - Help new developers understand APIs
 
-## 🎯 Best Practices
+##  Best Practices
 
 1. **Always load OpenAPI spec first** - Provides context for analysis
 2. **Use HAR files when possible** - Most complete log format
@@ -370,14 +370,14 @@ MIT License - see [LICENSE](../../../LICENSE)
 5. **Test fixes immediately** - Use generated cURL to verify
 6. **Keep specs up-to-date** - Ensure accurate comparisons
 
-## 📊 Performance
+##  Performance
 
 - **OpenAPI Loading**: < 100ms for typical specs
 - **HAR Parsing**: < 500ms for 100 requests
 - **Failure Analysis**: < 50ms per request
 - **cURL Generation**: < 10ms per command
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 **Q: OpenAPI spec fails to load**
 A: Ensure it's valid OpenAPI 3.x (check `openapi: "3.0.0"` field)
@@ -391,7 +391,7 @@ A: Check URL path matches OpenAPI spec (including base path)
 **Q: Generated cURL doesn't work**
 A: Verify all required headers are in original request
 
-## 🌟 Features Coming Soon
+##  Features Coming Soon
 
 - [ ] Support for GraphQL APIs
 - [ ] Batch failure analysis
@@ -402,6 +402,6 @@ A: Verify all required headers are in original request
 
 ---
 
-**Made with ❤️ by [Intent Solutions](https://intentsolutions.io)**
+**Made with ️ by [Intent Solutions](https://intentsolutions.io)**
 
 Part of the Claude Code Plugin Marketplace

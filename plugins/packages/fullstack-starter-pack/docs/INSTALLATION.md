@@ -276,4 +276,4 @@ npm install -g dotenv-cli  # Environment variable management
 
 ---
 
-**Installation complete! Start building fullstack applications faster.** 🚀
+**Installation complete! Start building fullstack applications faster.** 

@@ -32,10 +32,10 @@ API contract testing with Pact, OpenAPI validation, and consumer-driven contract
 /contract-test
 
 # Claude analyzes your API and generates:
-# ✓ Pact consumer contracts
-# ✓ Provider verification tests
-# ✓ OpenAPI validation
-# ⚠ Breaking change detection
+#  Pact consumer contracts
+#  Provider verification tests
+#  OpenAPI validation
+#  Breaking change detection
 ```
 
 ## Supported Technologies

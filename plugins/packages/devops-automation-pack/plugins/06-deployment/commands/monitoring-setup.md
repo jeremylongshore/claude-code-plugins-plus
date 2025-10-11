@@ -12,9 +12,9 @@ estimated_time: 3 minutes
      monitoring stack with pre-configured dashboards and alerts. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Kubernetes monitoring with Prometheus + Grafana -->
-<!-- ✅ Application metrics with custom dashboards -->
-<!-- ✅ Alert rules for common failure scenarios -->
+<!--  Kubernetes monitoring with Prometheus + Grafana -->
+<!--  Application metrics with custom dashboards -->
+<!--  Alert rules for common failure scenarios -->
 
 # Monitoring Stack Setup
 
@@ -22,12 +22,12 @@ Generates production-ready monitoring infrastructure with Prometheus, Grafana, a
 
 ## When to Use This
 
-- ✅ Setting up monitoring for new application
-- ✅ Need observability for Kubernetes cluster
-- ✅ Want pre-configured dashboards and alerts
-- ✅ Production deployment requires monitoring
-- ❌ Using managed monitoring (CloudWatch, Datadog, etc.)
-- ❌ Simple application (overkill for toy projects)
+-  Setting up monitoring for new application
+-  Need observability for Kubernetes cluster
+-  Want pre-configured dashboards and alerts
+-  Production deployment requires monitoring
+-  Using managed monitoring (CloudWatch, Datadog, etc.)
+-  Simple application (overkill for toy projects)
 
 ## How It Works
 
@@ -599,11 +599,11 @@ spec:
 
 ## Pro Tips
 
-💡 **Use Helm chart for easier deployment: helm install prometheus prometheus-community/kube-prometheus-stack**
-💡 **Set up persistent volumes for Prometheus and Grafana (don't lose metrics!)**
-💡 **Configure retention period based on storage (default: 15 days)**
-💡 **Use Alertmanager routes for critical vs warning alerts**
-💡 **Import community dashboards from https://grafana.com/dashboards**
+ **Use Helm chart for easier deployment: helm install prometheus prometheus-community/kube-prometheus-stack**
+ **Set up persistent volumes for Prometheus and Grafana (don't lose metrics!)**
+ **Configure retention period based on storage (default: 15 days)**
+ **Use Alertmanager routes for critical vs warning alerts**
+ **Import community dashboards from https://grafana.com/dashboards**
 
 ## Alert Configuration Best Practices
 

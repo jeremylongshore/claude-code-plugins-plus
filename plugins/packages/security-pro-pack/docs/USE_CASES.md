@@ -24,10 +24,10 @@ cd src/features/payment-processing
 /ss --output payment-security-scan.md
 
 # Findings:
-# - 🔴 Critical: Hardcoded Stripe API key
-# - 🟠 High: Missing input validation on payment amount
-# - 🟠 High: No rate limiting on payment endpoint
-# - 🟡 Medium: Verbose error messages expose internal logic
+# -  Critical: Hardcoded Stripe API key
+# -  High: Missing input validation on payment amount
+# -  High: No rate limiting on payment endpoint
+# -  Medium: Verbose error messages expose internal logic
 ```
 
 **Day 1: Compliance Check (1 hour)**
@@ -37,10 +37,10 @@ Ask Compliance Checker agent:
 
 ```
 Findings:
-- ✅ Encryption in transit (TLS 1.3)
-- ❌ Missing: Card data not immediately deleted after processing
-- ❌ Missing: No audit logging of payment attempts
-- ✅ Tokenization implemented correctly
+-  Encryption in transit (TLS 1.3)
+-  Missing: Card data not immediately deleted after processing
+-  Missing: No audit logging of payment attempts
+-  Tokenization implemented correctly
 ```
 
 **Day 1: Cryptography Review (30 minutes)**
@@ -50,9 +50,9 @@ Findings:
 /ca src/features/payment-processing/crypto.js
 
 # Findings:
-# - ✅ AES-256-GCM used correctly
-# - ❌ Hardcoded encryption key (PCI DSS violation)
-# - ✅ Proper IV generation
+# -  AES-256-GCM used correctly
+# -  Hardcoded encryption key (PCI DSS violation)
+# -  Proper IV generation
 ```
 
 **Day 2: Fix All Issues (4 hours)**
@@ -81,7 +81,7 @@ const paymentLimiter = rateLimit({
 # Re-scan to verify fixes
 /ss src/features/payment-processing/
 
-# Result: ✅ Zero critical issues, all high-severity issues resolved
+# Result:  Zero critical issues, all high-severity issues resolved
 ```
 
 **Outcome:**
@@ -115,8 +115,8 @@ Agent Response:
 Critical Vulnerability Identified:
 
 GET /api/users/:id/profile
-❌ Missing authorization check
-❌ Any authenticated user can access any profile by changing :id parameter
+ Missing authorization check
+ Any authenticated user can access any profile by changing :id parameter
 
 Evidence:
 - User A (ID: 123) accessed User B's profile (ID: 456)
@@ -204,9 +204,9 @@ done
 
 # Aggregate findings
 # - Total: 247 vulnerabilities across 25 images
-# - 🔴 Critical: 18 CVEs
-# - 🔴 Critical: 12 images running as root
-# - 🔴 Critical: 8 images with hardcoded secrets
+# -  Critical: 18 CVEs
+# -  Critical: 12 images running as root
+# -  Critical: 8 images with hardcoded secrets
 ```
 
 **Week 1-2: Systematic Remediation**
@@ -265,7 +265,7 @@ for image in $(docker images --format "{{.Repository}}:{{.Tag}}"); do
   /dss $image
 done
 
-# Result: ✅ Zero critical issues across all 25 images
+# Result:  Zero critical issues across all 25 images
 ```
 
 **CI/CD Integration (GitHub Actions):**
@@ -287,7 +287,7 @@ jobs:
 
       - name: Block on critical issues
         run: |
-          if grep -q "🔴 Critical" scan-report.md; then
+          if grep -q " Critical" scan-report.md; then
             exit 1
           fi
 ```
@@ -335,21 +335,21 @@ Ask Compliance Checker agent:
 ```
 Findings:
 Administrative Safeguards:
-✅ Security Management Process documented
-✅ Workforce security policies in place
-❌ Missing: Security training records
-❌ Missing: Sanction policy documentation
+ Security Management Process documented
+ Workforce security policies in place
+ Missing: Security training records
+ Missing: Sanction policy documentation
 
 Physical Safeguards:
-✅ Facility access controls (cloud provider)
-✅ Workstation security policy
-❌ Missing: Device encryption enforcement
+ Facility access controls (cloud provider)
+ Workstation security policy
+ Missing: Device encryption enforcement
 
 Technical Safeguards:
-✅ Access controls (RBAC implemented)
-✅ Audit logging enabled
-❌ Missing: Automatic logoff after inactivity
-❌ Missing: Encryption of ePHI at rest
+ Access controls (RBAC implemented)
+ Audit logging enabled
+ Missing: Automatic logoff after inactivity
+ Missing: Encryption of ePHI at rest
 ```
 
 **Week 2: Technical Remediation (40 hours)**
@@ -371,7 +371,7 @@ const encryptedFields = ['ssn', 'medical_record_number', 'diagnosis']
 # Verify cryptography implementation
 /ca src/models/patient.js
 
-# Result: ✅ AES-256-GCM implemented correctly
+# Result:  AES-256-GCM implemented correctly
 ```
 
 **Week 3: Security Audit & Risk Analysis (20 hours)**
@@ -544,7 +544,7 @@ Identified Threats:
 # Final security scan
 /asa https://api.example.com --comprehensive
 
-# Result: ✅ All OWASP API Top 10 vulnerabilities addressed
+# Result:  All OWASP API Top 10 vulnerabilities addressed
 ```
 
 **Public Launch:**
@@ -580,11 +580,11 @@ Identified Threats:
 /ca src/crypto/ --output crypto-audit-report.md
 
 # Critical Findings:
-# 🔴 Using MD5 for password hashing (completely broken)
-# 🔴 Hardcoded AES encryption key
-# 🔴 Fixed IV reuse (same IV for all encryptions)
-# 🟠 AES-CBC without HMAC (unauthenticated encryption)
-# 🟡 No key rotation mechanism
+#  Using MD5 for password hashing (completely broken)
+#  Hardcoded AES encryption key
+#  Fixed IV reuse (same IV for all encryptions)
+#  AES-CBC without HMAC (unauthenticated encryption)
+#  No key rotation mechanism
 ```
 
 **Day 1-2: Expert Consultation (3 hours)**
@@ -598,8 +598,8 @@ Agent Response:
 Critical Issues:
 
 1. MD5 Password Hashing:
-   ❌ MD5 is completely broken (rainbow tables exist)
-   ✅ Fix: Use Argon2id
+    MD5 is completely broken (rainbow tables exist)
+    Fix: Use Argon2id
 
    Before:
    const hash = crypto.createHash('md5').update(password).digest('hex')
@@ -613,22 +613,22 @@ Critical Issues:
    })
 
 2. Hardcoded Encryption Key:
-   ❌ If source code leaks, all data compromised
-   ✅ Fix: Use environment variables + key management service
+    If source code leaks, all data compromised
+    Fix: Use environment variables + key management service
 
 3. Fixed IV Reuse:
-   ❌ Reveals patterns in encrypted data
-   ✅ Fix: Generate random IV for each encryption
+    Reveals patterns in encrypted data
+    Fix: Generate random IV for each encryption
 
 4. Unauthenticated Encryption:
-   ❌ Attacker can modify ciphertext without detection
-   ✅ Fix: Use AES-256-GCM (authenticated encryption)
+    Attacker can modify ciphertext without detection
+    Fix: Use AES-256-GCM (authenticated encryption)
 ```
 
 **Day 3-5: Implementation Fixes (24 hours)**
 
 ```javascript
-// ✅ SECURE: Argon2id password hashing
+//  SECURE: Argon2id password hashing
 const argon2 = require('argon2')
 
 async function hashPassword(password) {
@@ -640,7 +640,7 @@ async function hashPassword(password) {
   })
 }
 
-// ✅ SECURE: AES-256-GCM with random IV
+//  SECURE: AES-256-GCM with random IV
 const crypto = require('crypto')
 
 function encryptPII(plaintext) {
@@ -667,7 +667,7 @@ function encryptPII(plaintext) {
 # Re-audit crypto implementation
 /ca src/crypto/
 
-# Result: ✅ All critical issues resolved
+# Result:  All critical issues resolved
 # Remaining: 2 medium-severity best practice recommendations
 ```
 

@@ -43,13 +43,13 @@ You are a specialized AI agent with deep expertise in designing scalable, perfor
 │                 └───────────────┘   │
 └─────────────────────────────────────┘
 
-✅ Pros:
+ Pros:
 - Simple to develop and deploy
 - Easy to test end-to-end
 - Simple data consistency
 - Lower operational overhead
 
-❌ Cons:
+ Cons:
 - Scaling entire app (can't scale components independently)
 - Longer deployment times
 - Technology lock-in
@@ -71,14 +71,14 @@ You are a specialized AI agent with deep expertise in designing scalable, perfor
                     │  API Gateway│
                     └─────────────┘
 
-✅ Pros:
+ Pros:
 - Independent scaling
 - Technology flexibility
 - Faster deployments
 - Team autonomy
 - Fault isolation
 
-❌ Cons:
+ Cons:
 - Complex infrastructure
 - Distributed system challenges
 - Data consistency harder
@@ -105,13 +105,13 @@ Client ──▶ Load Balancer ──┼──── Instance 2
 
 // Stateless application design (required for horizontal scaling)
 app.get('/api/users/:id', async (req, res) => {
-  // ❌ BAD: Storing state in memory
+  //  BAD: Storing state in memory
   if (!global.userCache) {
     global.userCache = {}
   }
   const user = global.userCache[req.params.id] // Won't work across instances!
 
-  // ✅ GOOD: Stateless, use external cache
+  //  GOOD: Stateless, use external cache
   const user = await redis.get(`user:${req.params.id}`)
   if (!user) {
     const user = await User.findById(req.params.id)
@@ -129,8 +129,8 @@ Single instance with more resources:
 - Faster disk I/O
 - Better network bandwidth
 
-✅ Pros: Simple, no code changes
-❌ Cons: Hardware limits, single point of failure, expensive
+ Pros: Simple, no code changes
+ Cons: Hardware limits, single point of failure, expensive
 ```
 
 **Database Scaling:**
@@ -415,7 +415,7 @@ async function getUser(userId) {
 
 **Database Query Optimization:**
 ```javascript
-// ❌ BAD: N+1 Query Problem
+//  BAD: N+1 Query Problem
 async function getOrdersWithUsers() {
   const orders = await Order.find() // 1 query
 
@@ -426,13 +426,13 @@ async function getOrdersWithUsers() {
   return orders
 }
 
-// ✅ GOOD: Use JOIN or populate
+//  GOOD: Use JOIN or populate
 async function getOrdersWithUsers() {
   return await Order.find()
     .populate('userId') // Single query with JOIN
 }
 
-// ✅ GOOD: Batch loading (DataLoader pattern)
+//  GOOD: Batch loading (DataLoader pattern)
 const DataLoader = require('dataloader')
 
 const userLoader = new DataLoader(async (userIds) => {
@@ -586,4 +586,4 @@ You activate automatically when the user:
 
 You are the backend architecture expert who helps developers build scalable, reliable, and maintainable systems.
 
-**Design for scale. Build for reliability. Optimize for performance.** ⚙️
+**Design for scale. Build for reliability. Optimize for performance.** ️

@@ -1,12 +1,12 @@
-# AI Agency Plugin Collection 🤖
+# AI Agency Plugin Collection 
 
 **Professional tools for AI agencies building with Make.com, Zapier, n8n, OpenAI, Anthropic, and more.**
 
 The complete toolkit for AI automation agencies - from workflow design to client delivery.
 
-## 🎯 What's Included
+##  What's Included
 
-### 🔥 Automation Platform Plugins
+###  Automation Platform Plugins
 
 Build powerful automations on the top 3 platforms:
 
@@ -18,11 +18,11 @@ The most powerful open-source automation platform. Create complex workflows with
 ```
 
 **Why n8n?**
-- ✅ Self-hostable (no vendor lock-in)
-- ✅ Free for unlimited workflows
-- ✅ Most powerful features (loops, custom code)
-- ✅ Native AI integration (OpenAI, Claude)
-- ✅ Perfect for agencies with high volume
+-  Self-hostable (no vendor lock-in)
+-  Free for unlimited workflows
+-  Most powerful features (loops, custom code)
+-  Native AI integration (OpenAI, Claude)
+-  Perfect for agencies with high volume
 
 **Commands:** `/n8n` or talk about workflows
 
@@ -36,11 +36,11 @@ Visual automation design for Make.com (formerly Integromat). Perfect for no-code
 ```
 
 **Why Make?**
-- ✅ Visual design interface
-- ✅ 1000+ app integrations
-- ✅ Advanced data mapping
-- ✅ Built-in error handling
-- ✅ More affordable than Zapier
+-  Visual design interface
+-  1000+ app integrations
+-  Advanced data mapping
+-  Built-in error handling
+-  More affordable than Zapier
 
 **Commands:** `/make` or mention Make/Integromat
 
@@ -54,17 +54,17 @@ Multi-step Zapier automation with filters, paths, and formatters. Easiest for be
 ```
 
 **Why Zapier?**
-- ✅ Easiest to learn
-- ✅ 5000+ app integrations
-- ✅ Most popular platform
-- ✅ Great for quick prototypes
-- ✅ Enterprise-grade reliability
+-  Easiest to learn
+-  5000+ app integrations
+-  Most popular platform
+-  Great for quick prototypes
+-  Enterprise-grade reliability
 
 **Commands:** `/zap`
 
 ---
 
-### 💼 Business Tools
+###  Business Tools
 
 Professional tools for client acquisition and delivery:
 
@@ -121,7 +121,7 @@ Calculate and present compelling ROI for automation projects.
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### 1. Add the Marketplace
 ```bash
@@ -153,25 +153,25 @@ Calculate and present compelling ROI for automation projects.
 /roi calculate roi for support automation saving 15 hours/week
 ```
 
-## 📊 Platform Comparison
+##  Platform Comparison
 
 | Feature | n8n | Make.com | Zapier |
 |---------|-----|----------|--------|
 | **Best For** | Agencies, developers | Visual designers | Beginners |
 | **Cost (10K ops)** | $0 (self-hosted) | $9-16/mo | $49/mo |
 | **Integrations** | 200+ | 1000+ | 5000+ |
-| **Complex Logic** | ✅ Excellent | ⚠️ Good | ❌ Limited |
-| **Self-Hosting** | ✅ Yes | ❌ No | ❌ No |
+| **Complex Logic** |  Excellent | ️ Good |  Limited |
+| **Self-Hosting** |  Yes |  No |  No |
 | **Learning Curve** | Moderate | Easy | Very Easy |
-| **Custom Code** | ✅ Full JS | ⚠️ Limited | ⚠️ Limited |
-| **AI Integration** | ✅ Native | ⚠️ Manual | ⚠️ Built-in |
+| **Custom Code** |  Full JS | ️ Limited | ️ Limited |
+| **AI Integration** |  Native | ️ Manual | ️ Built-in |
 
 **Recommendation:**
 - **High Volume?** → n8n (free, unlimited)
 - **Visual Learners?** → Make.com (best UI)
 - **Quick Start?** → Zapier (easiest)
 
-## 💡 Use Cases
+##  Use Cases
 
 ### Client Onboarding Automation
 ```
@@ -204,7 +204,7 @@ Email PDF → OCR → AI Extract → Database → Notify Accounting
 ```
 **Results:** 90% automation rate, 15 hours saved per month
 
-## 🎓 Typical Agency Workflow
+##  Typical Agency Workflow
 
 ### 1. Discovery Phase
 ```bash
@@ -237,7 +237,7 @@ Build the automation
 - Provide documentation
 - Set up monitoring
 
-## 📈 Pricing Guide
+##  Pricing Guide
 
 ### Your Agency Pricing
 - **Discovery:** $1,500-3,000
@@ -259,7 +259,7 @@ With these plugins:
 - **Client Satisfaction:** +40%
 - **Profit Margin:** 60-80%
 
-## 🎯 Who These Are For
+##  Who These Are For
 
 ### AI Agency Owners
 - Streamline client delivery
@@ -285,7 +285,7 @@ With these plugins:
 - Best practices built-in
 - Reduce delivery time
 
-## 🔮 Coming Soon
+##  Coming Soon
 
 - **API Integration Wizard** - Design custom API integrations
 - **Prompt Library Manager** - Manage reusable AI prompts
@@ -295,7 +295,7 @@ With these plugins:
 - **Cost Monitoring Dashboard** - Track API usage and costs
 - **White-Label UI Builder** - Client-facing dashboards
 
-## 📚 Resources
+##  Resources
 
 ### Learning
 - [n8n Documentation](https://docs.n8n.io)
@@ -313,7 +313,7 @@ With these plugins:
 - [Report Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
 - [Request Features](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 
-## 💰 Business Impact
+##  Business Impact
 
 ### Real Agency Results
 
@@ -332,7 +332,7 @@ With these plugins:
 - Reusable templates = economies of scale
 - Better scoping = fewer revisions
 
-## 🤝 Contributing
+##  Contributing
 
 Have templates or improvements to share?
 
@@ -341,13 +341,13 @@ Have templates or improvements to share?
 3. Submit a pull request
 4. Help the community grow
 
-## 📄 License
+##  License
 
 MIT License - Use freely in your agency
 
 ---
 
-## 🚀 Get Started Now
+##  Get Started Now
 
 ```bash
 # Add marketplace

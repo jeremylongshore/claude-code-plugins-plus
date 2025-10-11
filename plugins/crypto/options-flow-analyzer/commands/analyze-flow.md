@@ -510,7 +510,7 @@ class FlowMonitor {
         this.alerts.push(alert);
 
         // Console notification
-        console.log(`\n🚨 FLOW ALERT: ${alert.symbol} ${alert.strike}${alert.type[0]} ` +
+        console.log(`\n FLOW ALERT: ${alert.symbol} ${alert.strike}${alert.type[0]} ` +
                    `$${this.formatMoney(alert.premium)} - ${alert.signals.join(', ')}`);
 
         // Could send to webhook/email here

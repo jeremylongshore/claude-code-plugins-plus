@@ -71,7 +71,7 @@ react: 17.0.2 → 18.2.0 (major, breaking changes)
 ```
 LICENSE COMPLIANCE
 ==================
-⚠ GPL-3.0 dependencies found (3 packages)
+ GPL-3.0 dependencies found (3 packages)
   - my-gpl-package@1.0.0 (GPL-3.0)
   May conflict with MIT license
 ```

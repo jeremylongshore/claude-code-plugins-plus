@@ -89,7 +89,7 @@ Create a `.flashloan-config.json` file:
 
 ## Risk Warnings
 
-⚠️ **Critical Considerations**:
+️ **Critical Considerations**:
 - Smart contract code must be thoroughly audited
 - Gas costs can eliminate profitability
 - Front-running by MEV bots is common
@@ -116,4 +116,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for DeFi developers by Intent Solutions IO*
+*Built with ️ for DeFi developers by Intent Solutions IO*

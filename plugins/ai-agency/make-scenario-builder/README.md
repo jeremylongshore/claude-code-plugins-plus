@@ -6,13 +6,13 @@ Create visual Make.com automation scenarios with AI assistance - perfect for no-
 
 Make.com (formerly Integromat) is a powerful visual automation platform:
 
-- 🎨 **Visual Design** - See your entire workflow at a glance
-- 🔌 **1000+ Integrations** - Connect virtually any app
-- 🎯 **No-Code** - Build complex automations without coding
-- 💪 **Powerful Features** - Routers, filters, error handlers
-- 💰 **Affordable** - More cost-effective than Zapier
-- 🚀 **Scalable** - Handle complex multi-step workflows
-- 🛡️ **Built-in Error Handling** - Visual error routes
+-  **Visual Design** - See your entire workflow at a glance
+-  **1000+ Integrations** - Connect virtually any app
+-  **No-Code** - Build complex automations without coding
+-  **Powerful Features** - Routers, filters, error handlers
+-  **Affordable** - More cost-effective than Zapier
+-  **Scalable** - Handle complex multi-step workflows
+- ️ **Built-in Error Handling** - Visual error routes
 
 ## Installation
 
@@ -168,13 +168,13 @@ The plugin provides:
 
 | Feature | Make.com | Zapier | n8n |
 |---------|----------|--------|-----|
-| **Visual Design** | ✅ Excellent | ⚠️ Basic | ⚠️ Good |
+| **Visual Design** |  Excellent | ️ Basic | ️ Good |
 | **Integrations** | 1000+ | 5000+ | 200+ |
-| **Ease of Use** | ✅ Excellent | ✅ Easy | ⚠️ Moderate |
+| **Ease of Use** |  Excellent |  Easy | ️ Moderate |
 | **Cost (10K ops)** | $9-16 | $49 | $0 |
-| **Error Handling** | ✅ Visual | ⚠️ Limited | ✅ Advanced |
-| **Complex Logic** | ✅ Good | ❌ Limited | ✅ Excellent |
-| **Self-Hosting** | ❌ No | ❌ No | ✅ Yes |
+| **Error Handling** |  Visual | ️ Limited |  Advanced |
+| **Complex Logic** |  Good |  Limited |  Excellent |
+| **Self-Hosting** |  No |  No |  Yes |
 
 **Best For:** Visual learners, agencies, businesses wanting managed hosting
 

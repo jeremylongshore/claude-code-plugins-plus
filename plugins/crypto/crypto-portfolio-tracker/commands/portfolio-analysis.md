@@ -452,12 +452,12 @@ ${this.formatRiskFactors(analysis.riskAssessment.factors)}
 
     formatPnL(value) {
         const formatted = `$${Math.abs(value).toFixed(2)}`;
-        return value >= 0 ? `+${formatted} ✅` : `-${formatted} ❌`;
+        return value >= 0 ? `+${formatted} ` : `-${formatted} `;
     }
 
     formatPercentage(value) {
         const formatted = `${Math.abs(value).toFixed(2)}%`;
-        return value >= 0 ? `+${formatted} 📈` : `-${formatted} 📉`;
+        return value >= 0 ? `+${formatted} ` : `-${formatted} `;
     }
 }
 ```

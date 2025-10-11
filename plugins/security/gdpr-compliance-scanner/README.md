@@ -83,11 +83,11 @@ Compliance Score: 78% (Needs Improvement)
 
 COMPLIANCE SUMMARY
 ------------------
-✓ Data Protection Principles - 85%
-✗ Data Subject Rights - 70%
-✓ Security Measures - 90%
-✗ Documentation - 65%
-✓ Breach Procedures - 80%
+ Data Protection Principles - 85%
+ Data Subject Rights - 70%
+ Security Measures - 90%
+ Documentation - 65%
+ Breach Procedures - 80%
 
 CRITICAL GAPS
 -------------

@@ -564,7 +564,7 @@ test('User interactions with userEvent', async () => {
 
 ### Common Pitfalls & Solutions
 
-**❌ Problem: Infinite useEffect Loop**
+** Problem: Infinite useEffect Loop**
 ```jsx
 // BAD: Missing dependency
 useEffect(() => {
@@ -572,7 +572,7 @@ useEffect(() => {
 }, []) // Stale closure
 ```
 
-**✅ Solution:**
+** Solution:**
 ```jsx
 // GOOD: Include all dependencies
 useEffect(() => {
@@ -585,7 +585,7 @@ useEffect(() => {
 }, []) // Now safe with empty deps
 ```
 
-**❌ Problem: Unnecessary Re-renders**
+** Problem: Unnecessary Re-renders**
 ```jsx
 // BAD: New object/array on every render
 function Parent() {
@@ -594,7 +594,7 @@ function Parent() {
 }
 ```
 
-**✅ Solution:**
+** Solution:**
 ```jsx
 // GOOD: useMemo for stable reference
 function Parent() {
@@ -603,7 +603,7 @@ function Parent() {
 }
 ```
 
-**❌ Problem: Not Cleaning Up Effects**
+** Problem: Not Cleaning Up Effects**
 ```jsx
 // BAD: Memory leak if component unmounts
 useEffect(() => {
@@ -613,7 +613,7 @@ useEffect(() => {
 }, [])
 ```
 
-**✅ Solution:**
+** Solution:**
 ```jsx
 // GOOD: Cleanup function
 useEffect(() => {

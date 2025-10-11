@@ -234,16 +234,16 @@ claude plugin list | grep -E "(security-auditor|penetration-tester|security-scan
 
 Expected output:
 ```
-✅ security-auditor-expert (agent)
-✅ penetration-tester (agent)
-✅ security-scan-quick (command, shortcut: ss)
-✅ compliance-checker (agent)
-✅ compliance-docs-generate (command, shortcut: cdg)
-✅ crypto-expert (agent)
-✅ crypto-audit (command, shortcut: ca)
-✅ threat-modeler (agent)
-✅ docker-security-scan (command, shortcut: dss)
-✅ api-security-audit (command, shortcut: asa)
+ security-auditor-expert (agent)
+ penetration-tester (agent)
+ security-scan-quick (command, shortcut: ss)
+ compliance-checker (agent)
+ compliance-docs-generate (command, shortcut: cdg)
+ crypto-expert (agent)
+ crypto-audit (command, shortcut: ca)
+ threat-modeler (agent)
+ docker-security-scan (command, shortcut: dss)
+ api-security-audit (command, shortcut: asa)
 ```
 
 ---
@@ -396,7 +396,7 @@ After successful installation:
 
 ---
 
-**Installation Complete!** 🎉
+**Installation Complete!** 
 
 You now have access to 10 powerful security plugins. Proceed to `QUICK_START.md` to begin using the Security Pro Pack.
 

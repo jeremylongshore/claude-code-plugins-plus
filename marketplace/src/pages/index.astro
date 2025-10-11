@@ -5,227 +5,487 @@ import { getCollection } from 'astro:content';
 const allPlugins = await getCollection('plugins');
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
 const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
+
+// Stats
+const totalPlugins = allPlugins.length;
+const totalCategories = categories.length;
+const mcpPlugins = allPlugins.filter(p => p.data.keywords?.includes('mcp')).length;
+const packPlugins = allPlugins.filter(p => p.data.keywords?.includes('package')).length;
 ---
 
-<Layout title="Claude Code Plugins - Supercharge Your Development">
-  <!-- Hero Section with ASCII Art -->
-  <pre class="ascii">
-╔══════════════════════════════════════════════════════════════════╗
-║                                                                  ║
-║   ██████╗██╗      █████╗ ██╗   ██╗██████╗ ███████╗             ║
-║  ██╔════╝██║     ██╔══██╗██║   ██║██╔══██╗██╔════╝             ║
-║  ██║     ██║     ███████║██║   ██║██║  ██║█████╗               ║
-║  ██║     ██║     ██╔══██║██║   ██║██║  ██║██╔══╝               ║
-║  ╚██████╗███████╗██║  ██║╚██████╔╝██████╔╝███████╗             ║
-║   ╚═════╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚═════╝ ╚══════╝             ║
-║                                                                  ║
-║              PRODUCTION-READY PLUGINS FOR CLAUDE CODE           ║
-║                                                                  ║
-╚══════════════════════════════════════════════════════════════════╝
-  </pre>
+<Layout title="Claude Code Plugins Marketplace - Professional Plugin Hub">
+  <main>
+    <!-- Professional Header -->
+    <header class="header-section">
+      <h1 class="main-title">CLAUDE CODE PLUGINS</h1>
+      <p class="subtitle">Professional Plugin Marketplace for Claude Code</p>
+      <div class="version-badge">v1.1.0 | {totalPlugins} Plugins Available</div>
+    </header>
 
-  <section>
-    <p class="text-center">
-      <strong>Production-ready plugins, MCP servers, and tools to enhance your development experience.</strong>
-    </p>
+    <!-- Quick Install -->
+    <section class="install-section">
+      <h2>Quick Installation</h2>
+      <pre class="code-block"><code>
+# Add marketplace
+/plugin marketplace add jeremylongshore/claude-code-plugins
 
-    <div class="grid grid-1 mt-2 mb-2">
-      <a href="#plugins" class="btn btn-primary">Browse Plugins</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins" class="btn">View on GitHub</a>
-    </div>
-  </section>
+# Install a plugin
+/plugin install &lt;plugin-name&gt;@claude-code-plugins
+      </code></pre>
+    </section>
 
-  <hr>
-
-  <!-- Stats -->
-  <section>
-    <h2>Marketplace Stats</h2>
-
-    <div class="grid grid-3">
-      <div class="stat">
-        <div class="stat-num">{allPlugins.length}</div>
-        <div class="stat-label">Available Plugins</div>
+    <!-- Statistics Grid -->
+    <section class="stats-section">
+      <h2>Marketplace Statistics</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number">{totalPlugins}</div>
+          <div class="stat-label">Total Plugins</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{totalCategories}</div>
+          <div class="stat-label">Categories</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{mcpPlugins}</div>
+          <div class="stat-label">MCP Servers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">{packPlugins}</div>
+          <div class="stat-label">Plugin Packs</div>
+        </div>
       </div>
-      <div class="stat">
-        <div class="stat-num">{categories.length}</div>
-        <div class="stat-label">Categories</div>
+    </section>
+
+    <!-- Featured Plugins -->
+    {featuredPlugins.length > 0 && (
+      <section class="featured-section">
+        <h2>Featured Plugins</h2>
+        <div class="plugin-grid">
+          {featuredPlugins.slice(0, 6).map(plugin => (
+            <article class="plugin-card featured">
+              <h3>{plugin.data.name}</h3>
+              <p class="description">{plugin.data.description}</p>
+              <div class="tags">
+                <span class="tag featured-tag">FEATURED</span>
+                {plugin.data.keywords.slice(0, 2).map(keyword => (
+                  <span class="tag">{keyword}</span>
+                ))}
+              </div>
+              <pre class="install-cmd"><code>/plugin install {plugin.data.name}@claude-code-plugins</code></pre>
+              <footer>
+                <span class="version">v{plugin.data.version}</span>
+                <span class="author">{plugin.data.author.name}</span>
+              </footer>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <!-- Categories -->
+    <section class="categories-section">
+      <h2>Browse by Category</h2>
+      <div class="category-grid">
+        {categories.map(category => {
+          const categoryPlugins = allPlugins.filter(p => p.data.category === category);
+          const displayName = category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+          return (
+            <div class="category-card">
+              <h3>{displayName}</h3>
+              <div class="category-count">{categoryPlugins.length} plugins</div>
+              <div class="category-plugins">
+                {categoryPlugins.slice(0, 3).map(p => (
+                  <div class="mini-plugin">{p.data.name}</div>
+                ))}
+                {categoryPlugins.length > 3 && (
+                  <div class="more-plugins">+{categoryPlugins.length - 3} more</div>
+                )}
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <div class="stat">
-        <div class="stat-num">100%</div>
-        <div class="stat-label">Open Source</div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <hr>
-
-  <!-- Featured Plugin: Overnight Dev -->
-  <section id="overnight-dev">
-    <h2>Featured: Overnight-Dev 🌙</h2>
-
-    <div class="plugin-card">
-      <h3>overnight-dev</h3>
-      <p>
-        <strong>Go to bed. Wake up to fully tested features.</strong> Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD.
-      </p>
-      <pre><code>/plugin install overnight-dev@claude-code-plugins</code></pre>
-      <p>
-        <span class="tag tag-featured">NEW</span>
-        <span class="tag">Autonomous</span>
-        <span class="tag">TDD</span>
-        <span class="tag">Git Hooks</span>
-      </p>
-    </div>
-  </section>
-
-  <hr>
-
-  <!-- Featured Plugins -->
-  {featuredPlugins.length > 0 && (
-    <section id="featured">
-      <h2>Featured Plugins</h2>
-
-      <div class="grid grid-3">
-        {featuredPlugins.map(plugin => (
-          <div class="plugin-card">
-            <h3>{plugin.data.name}</h3>
-            <p>{plugin.data.description}</p>
-            <p>
-              <span class="tag tag-featured">Featured</span>
-              {plugin.data.keywords.slice(0, 2).map(keyword => (
-                <span class="tag">{keyword}</span>
-              ))}
-            </p>
-            <pre><code>{plugin.data.installation}</code></pre>
-          </div>
+    <!-- All Plugins -->
+    <section class="all-plugins-section">
+      <h2>All Plugins ({totalPlugins})</h2>
+      <div class="plugin-list">
+        {allPlugins.map(plugin => (
+          <article class="plugin-item">
+            <header>
+              <h3>{plugin.data.name}</h3>
+              <span class="version">v{plugin.data.version}</span>
+            </header>
+            <p class="description">{plugin.data.description}</p>
+            <div class="meta">
+              <span class="category">{plugin.data.category}</span>
+              <span class="author">by {plugin.data.author.name}</span>
+            </div>
+            <pre class="install"><code>/plugin install {plugin.data.name}@claude-code-plugins</code></pre>
+          </article>
         ))}
       </div>
     </section>
-  )}
 
-  <hr>
+    <!-- Documentation -->
+    <section class="docs-section">
+      <h2>Documentation</h2>
+      <nav class="docs-nav">
+        <a href="https://github.com/jeremylongshore/claude-code-plugins#readme">Getting Started</a>
+        <a href="https://docs.claude.com/en/docs/claude-code/plugins">Official Plugin Guide</a>
+        <a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/CONTRIBUTING.md">Contributing</a>
+        <a href="https://discord.com/invite/6PPFFzqPDZ">Discord Community</a>
+      </nav>
+    </section>
 
-  <!-- Categories -->
-  <section id="categories">
-    <h2>Browse by Category</h2>
-
-    <div class="grid grid-3">
-      {categories.map(category => {
-        const categoryPlugins = allPlugins.filter(p => p.data.category === category);
-        return (
-          <a href={`#${category}`} class="plugin-card">
-            <h3>{category.replace('-', ' ')}</h3>
-            <p>{categoryPlugins.length} plugin{categoryPlugins.length !== 1 ? 's' : ''}</p>
-          </a>
-        );
-      })}
-    </div>
-  </section>
-
-  <hr>
-
-  <!-- All Plugins -->
-  <section id="plugins">
-    <h2>All Plugins</h2>
-
-    <div class="grid grid-3">
-      {allPlugins.map(plugin => (
-        <div class="plugin-card">
-          <h3>{plugin.data.name}</h3>
-          <p>{plugin.data.description}</p>
-          <p>
-            <span class="tag">{plugin.data.category.replace('-', ' ')}</span>
-            {plugin.data.keywords.slice(0, 3).map(keyword => (
-              <span class="tag">{keyword}</span>
-            ))}
-          </p>
-          <pre><code>{plugin.data.installation}</code></pre>
-          <p><em>Version {plugin.data.version}</em></p>
-        </div>
-      ))}
-    </div>
-  </section>
-
-  <hr>
-
-  <!-- Installation Guide -->
-  <section>
-    <h2>Quick Start</h2>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Step</th>
-          <th>Command</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>1</strong></td>
-          <td><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></td>
-          <td>Add this marketplace</td>
-        </tr>
-        <tr>
-          <td><strong>2</strong></td>
-          <td><code>/plugin install plugin-name@claude-code-plugins</code></td>
-          <td>Install any plugin</td>
-        </tr>
-        <tr>
-          <td><strong>3</strong></td>
-          <td><em>Use commands and agents</em></td>
-          <td>Start using in Claude Code</td>
-        </tr>
-      </tbody>
-    </table>
-  </section>
-
-  <hr>
-
-  <!-- Features Diagram -->
-  <section>
-    <h2>Plugin Categories</h2>
-
-    <pre class="diagram">
-┌─────────────────────────────────────────────────────────────┐
-│                                                             │
-│  🔧 DevOps Automation    🔒 Security Tools                  │
-│  ├─ Git workflows        ├─ Secret scanning                │
-│  ├─ Docker helpers       ├─ Vulnerability checks           │
-│  └─ CI/CD integration    └─ Compliance automation          │
-│                                                             │
-│  🌐 Fullstack Dev        🤖 AI/ML Integration               │
-│  ├─ Frontend tools       ├─ Model deployment               │
-│  ├─ Backend helpers      ├─ Data pipelines                 │
-│  └─ Database utils       └─ Training workflows             │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-    </pre>
-
-    <ul>
-      <li><strong>Open Source</strong> - All plugins are MIT licensed</li>
-      <li><strong>Community Driven</strong> - Submit your own plugins</li>
-      <li><strong>Production Ready</strong> - Tested and documented</li>
-      <li><strong>Free Forever</strong> - No paywalls, no subscriptions</li>
-    </ul>
-  </section>
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="footer-content">
+        <div>Claude Code Plugins Marketplace v1.1.0</div>
+        <div>MIT Licensed | Open Source</div>
+        <div><a href="https://github.com/jeremylongshore/claude-code-plugins">View on GitHub</a></div>
+      </div>
+    </footer>
+  </main>
 </Layout>
 
 <style>
-  /* Diagram styling */
-  .diagram {
-    background: var(--ibm-blue-dark);
-    color: var(--ibm-blue-light);
-    border: var(--border-thickness) solid var(--ibm-blue);
-    padding: var(--line-height);
-    overflow-x: auto;
-    font-size: 0.85rem;
-    line-height: 1.3;
+  /* Professional, clean styling */
+  main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
   }
 
-  @media screen and (max-width: 640px) {
-    .diagram {
-      font-size: 0.65rem;
+  .header-section {
+    text-align: center;
+    padding: 3rem 0;
+    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 3rem;
+  }
+
+  .main-title {
+    font-size: 3rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin: 0;
+    color: #111827;
+  }
+
+  .subtitle {
+    font-size: 1.25rem;
+    color: #6b7280;
+    margin: 0.5rem 0;
+  }
+
+  .version-badge {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: #f3f4f6;
+    border-radius: 0.375rem;
+    margin-top: 1rem;
+    font-family: monospace;
+    font-size: 0.875rem;
+    color: #4b5563;
+  }
+
+  .install-section {
+    margin-bottom: 3rem;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #111827;
+  }
+
+  .code-block {
+    background: #1f2937;
+    color: #f3f4f6;
+    padding: 1rem;
+    border-radius: 0.375rem;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 0.875rem;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .stat-card {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    border: 1px solid #e5e7eb;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #111827;
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    margin-top: 0.5rem;
+  }
+
+  .plugin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .plugin-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: box-shadow 0.2s;
+  }
+
+  .plugin-card:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .plugin-card.featured {
+    border-color: #3b82f6;
+  }
+
+  .plugin-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: #111827;
+  }
+
+  .plugin-card .description {
+    color: #4b5563;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: #f3f4f6;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    color: #4b5563;
+  }
+
+  .tag.featured-tag {
+    background: #3b82f6;
+    color: white;
+  }
+
+  .install-cmd {
+    background: #1f2937;
+    color: #f3f4f6;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    margin: 0 0 1rem 0;
+    overflow-x: auto;
+  }
+
+  .plugin-card footer {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+  }
+
+  .category-card {
+    background: #f9fafb;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+  }
+
+  .category-card h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: #111827;
+  }
+
+  .category-count {
+    font-size: 0.875rem;
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+
+  .mini-plugin {
+    font-size: 0.75rem;
+    color: #4b5563;
+    padding: 0.125rem 0;
+    font-family: monospace;
+  }
+
+  .more-plugins {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-style: italic;
+    padding: 0.125rem 0;
+  }
+
+  .plugin-list {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .plugin-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .plugin-item header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .plugin-item h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+  }
+
+  .plugin-item .version {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-family: monospace;
+  }
+
+  .plugin-item .description {
+    color: #4b5563;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+  }
+
+  .plugin-item .meta {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+
+  .plugin-item .install {
+    background: #f3f4f6;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.75rem;
+    margin: 0;
+    overflow-x: auto;
+  }
+
+  .docs-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .docs-nav a {
+    padding: 0.75rem 1.5rem;
+    background: #3b82f6;
+    color: white;
+    text-decoration: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .docs-nav a:hover {
+    background: #2563eb;
+  }
+
+  .site-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .footer-content {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+
+  .footer-content a {
+    color: #3b82f6;
+    text-decoration: none;
+  }
+
+  .footer-content a:hover {
+    text-decoration: underline;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    main {
+      padding: 1rem;
+    }
+
+    .main-title {
+      font-size: 2rem;
+    }
+
+    .plugin-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .docs-nav {
+      flex-direction: column;
+    }
+
+    .footer-content {
+      flex-direction: column;
+      text-align: center;
     }
   }
 </style>

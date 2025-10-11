@@ -114,9 +114,9 @@ Or use the shortcut:
 - Input data
 
 ### Visual Indicators
-- ✅ Success / ❌ Failed
-- 🔒 Verified / ⚠️ Unverified
-- 📊 Charts and percentages
+-  Success /  Failed
+-  Verified / ️ Unverified
+-  Charts and percentages
 
 ### Security Warnings
 - Unverified contracts

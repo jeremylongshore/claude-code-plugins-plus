@@ -163,27 +163,27 @@ npm run test:smoke
 \`\`\`
 Smoke Tests - Critical Path
   System Health
-    ✓ API is responding (245ms)
-    ✓ Database is accessible (189ms)
-    ✓ Cache is working (56ms)
+     API is responding (245ms)
+     Database is accessible (189ms)
+     Cache is working (56ms)
 
   Authentication
-    ✓ User can login (432ms)
-    ✓ Protected routes require authentication (123ms)
+     User can login (432ms)
+     Protected routes require authentication (123ms)
 
   Core Features
-    ✓ Homepage loads (567ms)
-    ✓ Search returns results (289ms)
-    ✓ Create operation works (345ms)
+     Homepage loads (567ms)
+     Search returns results (289ms)
+     Create operation works (345ms)
 
   External Integrations
-    ✓ Payment gateway is reachable (678ms)
-    ✓ Email service is configured (12ms)
-    ✓ Storage is accessible (234ms)
+     Payment gateway is reachable (678ms)
+     Email service is configured (12ms)
+     Storage is accessible (234ms)
 
   Configuration
-    ✓ Environment variables are set (8ms)
-    ✓ Feature flags are loaded (91ms)
+     Environment variables are set (8ms)
+     Feature flags are loaded (91ms)
 
 Total: 13 tests passing in 3.27s
 \`\`\`
@@ -192,16 +192,16 @@ Total: 13 tests passing in 3.27s
 
 | Category | Tests | Status | Duration |
 |----------|-------|--------|----------|
-| System Health | 3 | ✓ Pass | 0.49s |
-| Authentication | 2 | ✓ Pass | 0.56s |
-| Core Features | 3 | ✓ Pass | 1.20s |
-| Integrations | 3 | ✓ Pass | 0.92s |
-| Configuration | 2 | ✓ Pass | 0.10s |
+| System Health | 3 |  Pass | 0.49s |
+| Authentication | 2 |  Pass | 0.56s |
+| Core Features | 3 |  Pass | 1.20s |
+| Integrations | 3 |  Pass | 0.92s |
+| Configuration | 2 |  Pass | 0.10s |
 
-**Total:** 3.27s ✓ All critical paths operational
+**Total:** 3.27s  All critical paths operational
 
 ### Recommendations
-✓ Deployment successful - all critical paths working
+ Deployment successful - all critical paths working
 - Monitor error rates for next 30 minutes
 - Watch for performance degradation
 ```

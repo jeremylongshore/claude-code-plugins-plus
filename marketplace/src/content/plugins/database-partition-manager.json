@@ -1,0 +1,21 @@
+{
+  "name": "database-partition-manager",
+  "description": "Database plugin for database-partition-manager",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "backend",
+    "partition"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-partition-manager",
+  "license": "MIT",
+  "installation": "/plugin install database-partition-manager@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

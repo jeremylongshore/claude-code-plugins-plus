@@ -4,7 +4,7 @@
 
 A lightweight MCP server for domain-specific knowledge management using TF-IDF semantic search (no external ML dependencies). Perfect for building AI memory systems and RAG applications.
 
-## 🎯 Features
+##  Features
 
 - **Document Storage** - Store documents with tags and metadata
 - **Semantic Search** - TF-IDF based search (no external dependencies)
@@ -13,13 +13,13 @@ A lightweight MCP server for domain-specific knowledge management using TF-IDF s
 - **Tagging System** - Organize knowledge by tags
 - **Pagination** - Efficient browsing of large knowledge bases
 
-## 🚀 Installation
+##  Installation
 
 ```bash
 /plugin install domain-memory-agent@claude-code-plugins
 ```
 
-## 📋 6 MCP Tools
+##  6 MCP Tools
 
 ### 1. `store_document`
 Store documents in knowledge base with automatic indexing.
@@ -91,7 +91,7 @@ Remove document and unindex.
 }
 ```
 
-## 🎬 Quick Start
+##  Quick Start
 
 ```javascript
 // 1. Store knowledge
@@ -114,7 +114,7 @@ summarize({
 })
 ```
 
-## 🔍 How Semantic Search Works
+##  How Semantic Search Works
 
 Uses **TF-IDF** (Term Frequency-Inverse Document Frequency):
 
@@ -125,12 +125,12 @@ Uses **TF-IDF** (Term Frequency-Inverse Document Frequency):
 5. **TF-IDF Score**: Rank documents by relevance
 
 **Advantages**:
-- ✅ No external ML dependencies
-- ✅ Fast and lightweight
-- ✅ Explainable results
-- ✅ Works offline
+-  No external ML dependencies
+-  Fast and lightweight
+-  Explainable results
+-  Works offline
 
-## 📊 Architecture
+##  Architecture
 
 ```
 In-Memory Storage:
@@ -143,7 +143,7 @@ In-Memory Storage:
 
 **Note**: Data persists during session but clears on restart. Future versions will add persistence.
 
-## 🎓 Use Cases
+##  Use Cases
 
 1. **RAG Systems** - Store domain knowledge for AI retrieval
 2. **Documentation Search** - Index and search project docs
@@ -151,14 +151,14 @@ In-Memory Storage:
 4. **Customer Support** - Build knowledge bases for support agents
 5. **Personal Knowledge** - Second brain / Zettelkasten system
 
-## 📈 Performance
+##  Performance
 
 - **Document Storage**: < 10ms per document
 - **Search**: < 50ms for 1000 documents
 - **Summarization**: < 100ms per document
 - **Indexing**: Real-time (synchronous)
 
-## 💡 Best Practices
+##  Best Practices
 
 1. **Use descriptive titles** - Improves search relevance
 2. **Tag consistently** - Makes filtering effective
@@ -166,7 +166,7 @@ In-Memory Storage:
 4. **Cache summaries** - Regenerate only when needed
 5. **Regular cleanup** - Delete outdated documents
 
-## 🔧 Example Workflows
+##  Example Workflows
 
 ### Building a Technical Knowledge Base
 
@@ -194,11 +194,11 @@ semantic_search(query: "attention mechanisms", tags: ["ml"])
 summarize(documentId: "paper123", maxSentences: 5)
 ```
 
-## 📄 License
+##  License
 
 MIT License - see [LICENSE](../../../LICENSE)
 
-## 🔗 Related Tools
+##  Related Tools
 
 - **project-health-auditor** - Code quality analysis
 - **conversational-api-debugger** - API failure debugging
@@ -207,4 +207,4 @@ MIT License - see [LICENSE](../../../LICENSE)
 
 ---
 
-**Made with ❤️ by [Intent Solutions](https://intentsolutions.io)**
+**Made with ️ by [Intent Solutions](https://intentsolutions.io)**

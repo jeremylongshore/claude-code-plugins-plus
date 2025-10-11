@@ -1,0 +1,22 @@
+{
+  "name": "database-index-advisor",
+  "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
+  "version": "1.0.0",
+  "category": "database",
+  "keywords": [
+    "database",
+    "indexes",
+    "optimization",
+    "performance"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-index-advisor",
+  "license": "MIT",
+  "installation": "/plugin install database-index-advisor@claude-code-plugins",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

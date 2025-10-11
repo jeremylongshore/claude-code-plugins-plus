@@ -13,12 +13,12 @@ Generates optimized SQL queries from natural language descriptions, supporting S
 ## What This Command Does
 
 **Generated Queries:**
-- ✅ SELECT queries with JOINs
-- ✅ INSERT, UPDATE, DELETE operations
-- ✅ Aggregations and GROUP BY
-- ✅ Subqueries and CTEs
-- ✅ Indexes and optimization tips
-- ✅ PostgreSQL, MySQL, SQLite syntax
+-  SELECT queries with JOINs
+-  INSERT, UPDATE, DELETE operations
+-  Aggregations and GROUP BY
+-  Subqueries and CTEs
+-  Indexes and optimization tips
+-  PostgreSQL, MySQL, SQLite syntax
 
 **Output:** Production-ready SQL queries
 
@@ -386,31 +386,31 @@ LIMIT 20;
 
 **1. Use Indexes Wisely:**
 ```sql
--- ✅ GOOD: Index foreign keys
+--  GOOD: Index foreign keys
 CREATE INDEX idx_posts_author_id ON posts(author_id);
 
--- ✅ GOOD: Index columns in WHERE clauses
+--  GOOD: Index columns in WHERE clauses
 CREATE INDEX idx_posts_published ON posts(published, created_at DESC);
 
--- ✅ GOOD: Partial index for specific queries
+--  GOOD: Partial index for specific queries
 CREATE INDEX idx_active_users ON users(email) WHERE active = true;
 ```
 
 **2. Avoid SELECT *:**
 ```sql
--- ❌ BAD
+--  BAD
 SELECT * FROM users;
 
--- ✅ GOOD
+--  GOOD
 SELECT id, email, name FROM users;
 ```
 
 **3. Use LIMIT:**
 ```sql
--- ❌ BAD (fetches all rows)
+--  BAD (fetches all rows)
 SELECT * FROM posts ORDER BY created_at DESC;
 
--- ✅ GOOD (pagination)
+--  GOOD (pagination)
 SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 0;
 ```
 
@@ -419,10 +419,10 @@ SELECT * FROM posts ORDER BY created_at DESC LIMIT 20 OFFSET 0;
 -- Use INNER JOIN when possible (faster than LEFT JOIN)
 -- Use EXISTS instead of IN for large datasets
 
--- ❌ BAD
+--  BAD
 SELECT * FROM users WHERE id IN (SELECT user_id FROM orders);
 
--- ✅ GOOD
+--  GOOD
 SELECT u.* FROM users u WHERE EXISTS (
   SELECT 1 FROM orders o WHERE o.user_id = u.id
 );
@@ -457,4 +457,4 @@ SELECT u.* FROM users u WHERE EXISTS (
 
 ---
 
-**Query smarter. Optimize faster. Scale confidently.** 🔍
+**Query smarter. Optimize faster. Scale confidently.** 

@@ -1,5 +1,7 @@
 # Claude Code Plugins
 
+[![Version](https://img.shields.io/badge/version-3.0.0-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-220-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Discord](https://img.shields.io/badge/Discord-Claude%20Developers-5865F2)](https://discord.com/invite/6PPFFzqPDZ)
@@ -7,7 +9,7 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-> 💡 **Important**: This marketplace contains both AI instruction templates (that guide Claude's behavior) and executable MCP servers (that run as Node.js processes). See [Understanding Plugin Types](#-understanding-plugin-types) below for details.
+> **Important**: This marketplace contains both AI instruction templates (that guide Claude's behavior) and executable MCP servers (that run as Node.js processes). See [Understanding Plugin Types](#understanding-plugin-types) below for details.
 
 ## Browse the Marketplace
 
@@ -25,17 +27,17 @@
 
 ---
 
-## 🔍 Understanding Plugin Types
+## Understanding Plugin Types
 
 This marketplace contains **two types of plugins** that work differently:
 
-### 1. 🤖 AI Instruction Plugins (Plugin Packs & Templates)
+### 1. AI Instruction Plugins (Plugin Packs & Templates)
 - **What they are**: Detailed markdown instructions that guide Claude's behavior
 - **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
 - **Examples**: DevOps pack, Security pack, AI Agency toolkit
 - **No external code execution** - work entirely through Claude's interpretation
 
-### 2. ⚙️ MCP Server Plugins (Executable Code)
+### 2. MCP Server Plugins (Executable Code)
 - **What they are**: Real TypeScript/JavaScript applications
 - **How they work**: Run as separate Node.js processes that Claude can communicate with
 - **Examples**: project-health-auditor, conversational-api-debugger
@@ -45,9 +47,13 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 ---
 
-## Plugin Packs (62 AI Instruction Templates)
+## 🎉 v3.0.0 - 220 PLUGINS AVAILABLE!
 
-> **📝 Note**: These packs contain AI instruction templates, not traditional executable code. They enhance Claude's capabilities through detailed guidance and templates.
+**The Claude Code Plugin Hub just doubled!** From 110 to **220 production-ready plugins** across 14 categories.
+
+### Plugin Packs (62 AI Instruction Templates)
+
+> **Note**: These packs contain AI instruction templates, not traditional executable code. They enhance Claude's capabilities through detailed guidance and templates.
 
 | Pack | Templates | Description | Type |
 |------|-----------|-------------|------|
@@ -68,9 +74,9 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 ## All Plugins
 
-### ⚙️ MCP Server Plugins (5 plugins with Executable Code)
+### MCP Server Plugins (5 plugins with Executable Code)
 
-> **✅ Real Code**: These plugins contain compiled TypeScript/JavaScript that runs as separate Node.js processes.
+> **Real Code**: These plugins contain compiled TypeScript/JavaScript that runs as separate Node.js processes.
 
 | Plugin | Description | Tools | Code Size | Install |
 |--------|-------------|-------|-----------|---------|
@@ -82,9 +88,9 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 [View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)
 
-### 🤖 AI Agency Toolkit (6 Template Plugins)
+### AI Agency Toolkit (6 Template Plugins)
 
-> **📝 Templates**: These provide workflow templates and configuration patterns for Claude to interpret.
+> **Templates**: These provide workflow templates and configuration patterns for Claude to interpret.
 
 | Plugin | Description | Type | Install |
 |--------|-------------|------|---------|

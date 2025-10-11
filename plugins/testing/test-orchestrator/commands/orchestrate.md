@@ -65,11 +65,11 @@ Analyzing changes...
 
 Executing test plan:
   Stage 1: Unit Tests (32 tests, parallel)
-    ✓ Completed in 12s
+     Completed in 12s
   Stage 2: Integration Tests (12 tests, parallel)
-    ✓ Completed in 28s
+     Completed in 28s
   Stage 3: E2E Tests (3 tests, sequential)
-    ✓ Completed in 45s
+     Completed in 45s
 
 Total: 47 tests in 85s (instead of 18m for full suite)
 ```

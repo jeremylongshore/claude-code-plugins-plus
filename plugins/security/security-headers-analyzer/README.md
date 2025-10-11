@@ -70,12 +70,12 @@ Score: 65/100
 
 HEADER STATUS
 -------------
-✓ Content-Security-Policy: PRESENT (Good)
-✗ Strict-Transport-Security: MISSING (Critical)
-✓ X-Frame-Options: PRESENT (Weak)
-✓ X-Content-Type-Options: PRESENT (Good)
-✗ Referrer-Policy: MISSING (Medium)
-✗ Permissions-Policy: MISSING (Medium)
+ Content-Security-Policy: PRESENT (Good)
+ Strict-Transport-Security: MISSING (Critical)
+ X-Frame-Options: PRESENT (Weak)
+ X-Content-Type-Options: PRESENT (Good)
+ Referrer-Policy: MISSING (Medium)
+ Permissions-Policy: MISSING (Medium)
 
 CRITICAL ISSUES
 ---------------

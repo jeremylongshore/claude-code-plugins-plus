@@ -12,9 +12,9 @@ estimated_time: 3 minutes
      accessible to intermediate developers. Promotes clean commit history culture. -->
 
 <!-- VALIDATION: Tested with scenarios -->
-<!-- ✅ Squash multiple commits -->
-<!-- ✅ Reword commit messages -->
-<!-- ✅ Reorder commits -->
+<!--  Squash multiple commits -->
+<!--  Reword commit messages -->
+<!--  Reorder commits -->
 
 # Interactive Rebase Guide
 
@@ -22,11 +22,11 @@ Safely clean up your commit history by squashing, reordering, or rewording commi
 
 ## When to Use This
 
-- ✅ Before creating PR (clean up messy commits)
-- ✅ Want to squash "WIP" or "fix typo" commits
-- ✅ Need to reword commit messages for clarity
-- ❌ DON'T use on commits already pushed to shared branches
-- ❌ DON'T use if unfamiliar with Git history (ask for help first)
+-  Before creating PR (clean up messy commits)
+-  Want to squash "WIP" or "fix typo" commits
+-  Need to reword commit messages for clarity
+-  DON'T use on commits already pushed to shared branches
+-  DON'T use if unfamiliar with Git history (ask for help first)
 
 ## How It Works
 
@@ -175,7 +175,7 @@ git commit -m "feat(auth): add OAuth login support"
 
 Result:
 ```
-✅ Rebased successfully!
+ Rebased successfully!
 
 Before:
 - fix typo in login
@@ -215,14 +215,14 @@ You:
 ```
 Rewriting commit messages...
 
-✅ Done! Your commits now have clear, conventional messages.
+ Done! Your commits now have clear, conventional messages.
 ```
 
 ## Error Handling
 
 **If trying to rebase pushed commits:**
 ```
-⚠️  WARNING: These commits are already pushed!
+️  WARNING: These commits are already pushed!
 
 Rebasing pushed commits will:
 - Rewrite history
@@ -239,7 +239,7 @@ Still proceed? (yes/no)
 
 **If no commits to rebase:**
 ```
-✅ Your history is already clean!
+ Your history is already clean!
 
 Only 1 commit since last push.
 No rebase needed.
@@ -247,7 +247,7 @@ No rebase needed.
 
 **If rebase conflicts:**
 ```
-❌ Rebase conflict detected
+ Rebase conflict detected
 
 File: src/api/users.js
 
@@ -267,7 +267,7 @@ Undoing rebase...
 
 Restoring to: abc123 [original commit]
 
-✅ Reverted to state before rebase
+ Reverted to state before rebase
 
 Your commits are back to how they were.
 ```
@@ -279,10 +279,10 @@ Your commits are back to how they were.
 
 ## Pro Tips
 
-💡 **Rebase before creating PR** - Clean history makes review easier
+ **Rebase before creating PR** - Clean history makes review easier
 
-💡 **Never rebase public commits** - Only rebase commits you haven't pushed
+ **Never rebase public commits** - Only rebase commits you haven't pushed
 
-💡 **Squash "WIP" commits** - Keep history readable
+ **Squash "WIP" commits** - Keep history readable
 
-💡 **Save original with tag** - `git tag before-rebase` for safety
+ **Save original with tag** - `git tag before-rebase` for safety

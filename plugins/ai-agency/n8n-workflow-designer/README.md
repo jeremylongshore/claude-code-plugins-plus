@@ -6,13 +6,13 @@ Design complex n8n workflows with AI assistance - the most powerful open-source 
 
 n8n is the most powerful open-source automation platform available:
 
-- 🔓 **Open Source** - Self-host for complete control, no vendor lock-in
-- 💰 **Cost Effective** - No per-execution fees, process millions for free
-- 🔄 **Advanced Logic** - Loops, branching, custom JavaScript code
-- 🚀 **More Powerful** - More capable than Zapier or Make.com
-- 🔧 **Extensible** - Create custom nodes, integrate anything
-- 🤖 **AI-Ready** - Native OpenAI, Anthropic, and LangChain integration
-- 📊 **Data Control** - Keep sensitive data on your infrastructure
+-  **Open Source** - Self-host for complete control, no vendor lock-in
+-  **Cost Effective** - No per-execution fees, process millions for free
+-  **Advanced Logic** - Loops, branching, custom JavaScript code
+-  **More Powerful** - More capable than Zapier or Make.com
+-  **Extensible** - Create custom nodes, integrate anything
+-  **AI-Ready** - Native OpenAI, Anthropic, and LangChain integration
+-  **Data Control** - Keep sensitive data on your infrastructure
 
 ## Installation
 
@@ -197,13 +197,13 @@ Order Received → Inventory Check → Payment → Fulfillment → Tracking → 
 
 | Feature | n8n | Make.com | Zapier |
 |---------|-----|----------|--------|
-| **Self-Hosting** | ✅ Free | ❌ Cloud only | ❌ Cloud only |
-| **Loops** | ✅ Native | ⚠️ Limited | ❌ No |
-| **Custom Code** | ✅ JavaScript | ⚠️ Limited | ⚠️ Limited |
+| **Self-Hosting** |  Free |  Cloud only |  Cloud only |
+| **Loops** |  Native | ️ Limited |  No |
+| **Custom Code** |  JavaScript | ️ Limited | ️ Limited |
 | **Cost (1M ops)** | $0 | $299/mo | $1,899/mo |
-| **Open Source** | ✅ Yes | ❌ No | ❌ No |
-| **Complex Logic** | ✅ Advanced | ⚠️ Good | ⚠️ Basic |
-| **AI Integration** | ✅ Native | ⚠️ Manual | ⚠️ Manual |
+| **Open Source** |  Yes |  No |  No |
+| **Complex Logic** |  Advanced | ️ Good | ️ Basic |
+| **AI Integration** |  Native | ️ Manual | ️ Manual |
 
 **Winner for Agencies:** n8n (cost, flexibility, power)
 

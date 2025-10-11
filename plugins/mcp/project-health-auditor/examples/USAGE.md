@@ -113,7 +113,7 @@ map_tests({
     "src/legacy.ts"
   ],
   recommendations: [
-    "🚨 CRITICAL: Test coverage is below 80% (currently 62.18%)",
+    " CRITICAL: Test coverage is below 80% (currently 62.18%)",
     "Add tests for 59 untested files",
     "Prioritize testing high-complexity files: src/auth.ts"
   ]
@@ -191,17 +191,17 @@ Use reviewer agent to break down refactoring into tasks
 Running `/analyze examples/sample-repo/`:
 
 ```
-📊 Repository Overview
+ Repository Overview
 - Total files: 3
 - Average health score: 65
 - Test coverage: 33%
 
-🚨 URGENT - Technical Debt Hot Spots
+ URGENT - Technical Debt Hot Spots
 
 1. src/auth.ts
-   - Complexity: 25 (Severe) 🚨
+   - Complexity: 25 (Severe) 
    - Health Score: 45 (Poor)
-   - Tests: None ❌
+   - Tests: None 
 
    Actions:
    1. Add authentication flow tests TODAY
@@ -212,20 +212,20 @@ Running `/analyze examples/sample-repo/`:
    Effort: 2-3 days
    Impact: High (auth is security-critical)
 
-✅ GOOD PRACTICES
+ GOOD PRACTICES
 
 1. src/utils.ts
    - Complexity: 5 (Good)
    - Health Score: 95 (Excellent)
-   - Tests: ✅ Full coverage
+   - Tests:  Full coverage
 
    Use as reference for well-structured code!
 
-📝 RECOMMENDATIONS
+ RECOMMENDATIONS
 
-1. 🚨 Add tests for src/auth.ts (URGENT)
-2. ⚠️ Improve test coverage to 80%+ (currently 33%)
-3. 📖 Document complex authentication logic
+1.  Add tests for src/auth.ts (URGENT)
+2. ️ Improve test coverage to 80%+ (currently 33%)
+3.  Document complex authentication logic
 ```
 
 ## Tips

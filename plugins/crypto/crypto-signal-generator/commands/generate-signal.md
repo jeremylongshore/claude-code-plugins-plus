@@ -57,10 +57,10 @@ Structure signals in this format:
 - **24h Change**: [+/-Y]%
 - **24h Volume**: $[Z]M
 
-### 🎯 SIGNAL SUMMARY
+###  SIGNAL SUMMARY
 
-**Direction**: [🟢 LONG / 🔴 SHORT / ⚪ NEUTRAL]
-**Strength**: [🔥 Strong / ⚡ Medium / ⚠️  Weak]
+**Direction**: [ LONG /  SHORT /  NEUTRAL]
+**Strength**: [ Strong /  Medium / ️  Weak]
 **Timeframe**: [Scalp/Day/Swing/Position]
 **Confidence**: [High/Medium/Low] ([X]%)
 
@@ -71,11 +71,11 @@ Structure signals in this format:
 #### Trend Analysis
 | Indicator | Period | Value | Signal | Weight |
 |-----------|--------|-------|--------|--------|
-| SMA 50 | Daily | $[X] | 🟢 Bullish | 3/5 |
-| SMA 200 | Daily | $[Y] | 🟢 Bullish | 5/5 |
-| EMA 20 | 4H | $[Z] | 🔴 Bearish | 2/5 |
-| MACD | Daily | +[A] | 🟢 Bullish | 4/5 |
-| ADX | Daily | [B] | 💪 Strong Trend | 3/5 |
+| SMA 50 | Daily | $[X] |  Bullish | 3/5 |
+| SMA 200 | Daily | $[Y] |  Bullish | 5/5 |
+| EMA 20 | 4H | $[Z] |  Bearish | 2/5 |
+| MACD | Daily | +[A] |  Bullish | 4/5 |
+| ADX | Daily | [B] |  Strong Trend | 3/5 |
 
 **Trend Assessment**: [Strong Uptrend/Downtrend/Sideways]
 Price is [above/below] key moving averages, indicating [bull/bear] market structure.
@@ -98,12 +98,12 @@ Price is [above/below] key moving averages, indicating [bull/bear] market struct
 ### Chart Pattern Analysis
 
 **Identified Patterns:**
-1. 🎯 **[Pattern Name]** (Daily chart)
+1.  **[Pattern Name]** (Daily chart)
    - Formation: [Description]
    - Target: $[X] ([Y]% move)
    - Breakout confirmation: [Condition]
 
-2. 📊 **[Pattern Name]** (4H chart)
+2.  **[Pattern Name]** (4H chart)
    - Status: [Forming/Confirmed]
    - Implication: [Bullish/Bearish]
 
@@ -126,10 +126,10 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 - 0.236: $[X]
 - 0.382: $[Y]
 - 0.5:   $[Z]
-- 0.618: $[A] ⭐ Golden Ratio
+- 0.618: $[A]  Golden Ratio
 - 0.786: $[B]
 
-### 🎯 TRADING RECOMMENDATION
+###  TRADING RECOMMENDATION
 
 **Signal Type**: [Long/Short]
 **Setup**: [Breakout/Reversal/Trend Following/Mean Reversion]
@@ -140,10 +140,10 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 - **Confirmation**: [Condition that must occur]
 
 **Exit Strategy:**
-- 🎯 **Take Profit 1**: $[A] ([R]% gain) - Take [X]% position off
-- 🎯 **Take Profit 2**: $[B] ([S]% gain) - Take [Y]% position off
-- 🎯 **Take Profit 3**: $[C] ([T]% gain) - Close remaining position
-- 🛑 **Stop Loss**: $[D] ([L]% risk) - Hard stop below support
+-  **Take Profit 1**: $[A] ([R]% gain) - Take [X]% position off
+-  **Take Profit 2**: $[B] ([S]% gain) - Take [Y]% position off
+-  **Take Profit 3**: $[C] ([T]% gain) - Close remaining position
+-  **Stop Loss**: $[D] ([L]% risk) - Hard stop below support
 
 **Risk/Reward Ratio**: [1:2] (risking [X]% to gain [Y]%)
 
@@ -166,12 +166,12 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 
 ### Risk Factors & Considerations
 
-⚠️ **Potential Risks:**
+️ **Potential Risks:**
 - [Risk factor 1]
 - [Risk factor 2]
 - [Risk factor 3]
 
-✅ **Signal Confirmation Checklist:**
+ **Signal Confirmation Checklist:**
 - [ ] Volume confirms price action
 - [ ] Multiple indicators align
 - [ ] Support/resistance levels respected
@@ -201,7 +201,7 @@ Support 3:    $[C] (Major)  ████░░░░░░░░
 
 ---
 
-## ⚠️ DISCLAIMER
+## ️ DISCLAIMER
 
 This is technical analysis for educational purposes only, NOT financial advice.
 

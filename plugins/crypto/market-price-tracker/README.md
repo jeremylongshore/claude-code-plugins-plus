@@ -4,34 +4,34 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 
 ## Features
 
-### 🎯 Multi-Asset Support
+###  Multi-Asset Support
 - **Cryptocurrencies**: BTC, ETH, and 10,000+ altcoins
 - **Stocks**: US equities, international markets
 - **Forex**: Major and exotic currency pairs
 - **Commodities**: Gold, silver, oil, agricultural products
 - **Indices**: S&P 500, NASDAQ, international indices
 
-### 📊 Data Sources
+###  Data Sources
 - **Crypto Exchanges**: Binance, Coinbase, Kraken, FTX, Bitfinex
 - **Stock Data**: Alpha Vantage, IEX Cloud, Polygon.io, Yahoo Finance
 - **Forex Feeds**: OANDA, Forex Connect, Currency Layer
 - **Alternative Data**: Messari, CoinGecko, Quandl
 
-### ⚡ Real-Time Capabilities
+###  Real-Time Capabilities
 - **WebSocket Streaming**: Sub-second price updates
 - **Multi-Exchange Aggregation**: VWAP and median pricing
 - **Latency Monitoring**: Track feed performance
 - **Automatic Failover**: Redundant data sources
 - **Smart Reconnection**: Exponential backoff strategies
 
-### 📈 Technical Analysis
+###  Technical Analysis
 - **Indicators**: RSI, MACD, Bollinger Bands, ATR, OBV
 - **Moving Averages**: SMA, EMA, WMA, VWAP
 - **Pattern Recognition**: Head & Shoulders, Triangles, Flags
 - **Candlestick Patterns**: Doji, Hammer, Engulfing, Morning Star
 - **Market Structure**: Support/Resistance, Liquidity Zones
 
-### 🔔 Alert System
+###  Alert System
 - **Price Alerts**: Above/below thresholds
 - **Percentage Changes**: Volatility spikes
 - **Volume Alerts**: Unusual activity detection
@@ -391,4 +391,4 @@ MIT License - See LICENSE file for details
 
 ---
 
-*Built with ❤️ for traders by Intent Solutions IO*
+*Built with ️ for traders by Intent Solutions IO*

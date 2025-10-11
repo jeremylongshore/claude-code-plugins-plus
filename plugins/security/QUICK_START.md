@@ -185,7 +185,7 @@ Command: /authcheck
 # .git/hooks/pre-commit
 #!/bin/bash
 /plugin secret-scanner || exit 1
-echo "✓ Security check passed"
+echo " Security check passed"
 ```
 
 ### CI/CD Pipeline
@@ -201,22 +201,22 @@ echo "✓ Security check passed"
 ## Best Practices
 
 ### Daily
-- ✓ Run `/secrets` before committing
-- ✓ Review security logs
+-  Run `/secrets` before committing
+-  Review security logs
 
 ### Weekly
-- ✓ Run `/depcheck` for dependency updates
-- ✓ Review vulnerability backlog
+-  Run `/depcheck` for dependency updates
+-  Review vulnerability backlog
 
 ### Before Deployment
-- ✓ Run `/vuln` for full scan
-- ✓ Run `/owasp` for compliance
-- ✓ Verify all CRITICAL and HIGH issues fixed
+-  Run `/vuln` for full scan
+-  Run `/owasp` for compliance
+-  Verify all CRITICAL and HIGH issues fixed
 
 ### Quarterly
-- ✓ Run `/auditreport` for comprehensive audit
-- ✓ Run `/pentest` for penetration testing
-- ✓ Review compliance (`/gdpr`, `/pci`, `/soc2`)
+-  Run `/auditreport` for comprehensive audit
+-  Run `/pentest` for penetration testing
+-  Review compliance (`/gdpr`, `/pci`, `/soc2`)
 
 ## Get Help
 
@@ -229,13 +229,13 @@ cat README.md
 
 ## Next Steps
 
-1. ✅ Install your first 3 plugins (secrets, vuln, depcheck)
-2. ✅ Run your first security scan
-3. ✅ Fix CRITICAL issues
-4. ✅ Set up pre-commit hook
-5. ✅ Add to CI/CD pipeline
-6. ✅ Schedule weekly dependency checks
-7. ✅ Plan quarterly security audits
+1.  Install your first 3 plugins (secrets, vuln, depcheck)
+2.  Run your first security scan
+3.  Fix CRITICAL issues
+4.  Set up pre-commit hook
+5.  Add to CI/CD pipeline
+6.  Schedule weekly dependency checks
+7.  Plan quarterly security audits
 
 ## Troubleshooting
 
@@ -275,4 +275,4 @@ cat README.md
 
 Start with: `/secrets` → `/depcheck` → `/vuln`
 
-Happy securing! 🔒
+Happy securing! 

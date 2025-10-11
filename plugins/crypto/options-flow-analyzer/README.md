@@ -4,28 +4,28 @@ Track institutional options flow, unusual options activity, and smart money move
 
 ## Features
 
-### 🎯 Institutional Flow Tracking
+###  Institutional Flow Tracking
 - **Large Premium Trades**: Track trades >$100K, $500K, $1M+
 - **Sweep Orders**: Multi-exchange sweep detection
 - **Block Trades**: Identify institutional block trades
 - **Dark Pool Activity**: Hidden liquidity detection
 - **Smart Money Identification**: Institutional vs retail flow
 
-### 📊 Unusual Activity Detection
+###  Unusual Activity Detection
 - **Volume Spikes**: 5x, 10x average volume alerts
 - **Premium Anomalies**: Unusually large premium trades
 - **Opening Positions**: New position detection
 - **Closing Activity**: Position unwinding signals
 - **Complex Spreads**: Multi-leg strategy detection
 
-### ⚡ Gamma Analysis
+###  Gamma Analysis
 - **Net Gamma Exposure**: Dealer positioning metrics
 - **Gamma Flip Points**: Key hedging levels
 - **Max Pain Calculation**: Options pinning targets
 - **Vanna Flows**: Volatility-driven positioning
 - **Charm Decay**: Time decay hedging flows
 
-### 🔔 Real-Time Alerts
+###  Real-Time Alerts
 - **Institutional Size Alerts**: >$1M premium trades
 - **Sweep Alerts**: Multi-exchange sweeps
 - **Unusual Volume**: Extreme volume detection
@@ -372,4 +372,4 @@ MIT License - See LICENSE file
 
 ---
 
-*Built with ❤️ for options traders by Intent Solutions IO*
+*Built with ️ for options traders by Intent Solutions IO*

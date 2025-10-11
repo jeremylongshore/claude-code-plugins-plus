@@ -32,11 +32,11 @@ Database testing utilities with test data setup, transaction rollback, and schem
 /db-test
 
 # Claude creates:
-# ✓ Test data factories
-# ✓ Transaction wrappers
-# ✓ Database assertions
-# ✓ Migration tests
-# ✓ Cleanup strategies
+#  Test data factories
+#  Transaction wrappers
+#  Database assertions
+#  Migration tests
+#  Cleanup strategies
 ```
 
 ## Supported Technologies

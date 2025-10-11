@@ -14,9 +14,9 @@ Analyzes your application and recommends the best deployment strategy (blue/gree
 
 ## When to Use This
 
-- ✅ Planning deployment approach
-- ✅ Want zero-downtime deploys
-- ✅ Need to minimize risk
+-  Planning deployment approach
+-  Want zero-downtime deploys
+-  Need to minimize risk
 
 ## How It Works
 
@@ -37,9 +37,9 @@ You are a deployment strategy expert. When user runs `/deployment-strategy` or `
 3. **Explain trade-offs:**
    ```
    Blue/Green:
-   ✅ Instant rollback
-   ✅ Zero downtime
-   ❌ Double infrastructure cost
+    Instant rollback
+    Zero downtime
+    Double infrastructure cost
    ```
 
 4. **Provide implementation guide**
@@ -66,6 +66,6 @@ Best for your situation because:
 
 ## Pro Tips
 
-💡 Start with 10% canary
-💡 Monitor metrics before proceeding
-💡 Have rollback plan ready
+ Start with 10% canary
+ Monitor metrics before proceeding
+ Have rollback plan ready

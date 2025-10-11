@@ -1,4 +1,4 @@
-# 🏥 Project Health Auditor
+#  Project Health Auditor
 
 **MCP Server Plugin for Claude Code**
 
@@ -6,7 +6,7 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-## 🎯 Features
+##  Features
 
 ### 4 Powerful MCP Tools
 
@@ -36,7 +36,7 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-## 📦 Installation
+##  Installation
 
 ```bash
 # Install the plugin
@@ -47,7 +47,7 @@ Analyze local repositories for code health, complexity, test coverage gaps, and 
 
 ---
 
-## 🚀 Usage
+##  Usage
 
 ### Quick Analysis
 
@@ -85,7 +85,7 @@ Which files are missing tests in this project?
 
 ---
 
-## 🛠️ MCP Tools Reference
+## ️ MCP Tools Reference
 
 ### list_repo_files
 
@@ -223,15 +223,15 @@ Which files are missing tests in this project?
     "src/utils/old-helper.ts"
   ],
   "recommendations": [
-    "⚠️  Test coverage is below 80%. Consider adding tests for remaining files.",
-    "📝 High priority: Add tests for 23 files in critical directories"
+    "️  Test coverage is below 80%. Consider adding tests for remaining files.",
+    " High priority: Add tests for 23 files in critical directories"
   ]
 }
 ```
 
 ---
 
-## 📊 Use Cases
+##  Use Cases
 
 ### 1. Pre-Refactoring Analysis
 
@@ -270,7 +270,7 @@ Show new team members:
 
 ---
 
-## 🎯 Health Score Interpretation
+##  Health Score Interpretation
 
 | Score | Health | Action |
 |-------|--------|--------|
@@ -282,7 +282,7 @@ Show new team members:
 
 ---
 
-## 🏗️ Architecture
+## ️ Architecture
 
 ### Technology Stack
 
@@ -310,7 +310,7 @@ project-health-auditor/
 
 ---
 
-## 🧪 Development
+##  Development
 
 ### Build
 
@@ -339,7 +339,7 @@ npm run dev
 
 ---
 
-## 📈 Metrics Explained
+##  Metrics Explained
 
 ### Cyclomatic Complexity
 
@@ -370,7 +370,7 @@ Percentage of source files with corresponding tests:
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 This plugin is part of the Claude Code Plugins marketplace.
 
@@ -384,13 +384,13 @@ Open an issue with the `enhancement` label.
 
 ---
 
-## 📄 License
+##  License
 
 MIT License - see LICENSE file
 
 ---
 
-## 🙏 Credits
+##  Credits
 
 **Built by:** Intent Solutions IO
 **Website:** https://intentsolutions.io
@@ -400,7 +400,7 @@ MIT License - see LICENSE file
 
 ---
 
-## 🔗 Related Plugins
+##  Related Plugins
 
 - **conversational-api-debugger** - API debugging with OpenAPI specs
 - **test-coverage-booster** - AI-powered test generation
@@ -408,5 +408,5 @@ MIT License - see LICENSE file
 
 ---
 
-**🚀 Generated with Claude Code**
+** Generated with Claude Code**
 **Co-Authored-By:** Claude <noreply@anthropic.com>

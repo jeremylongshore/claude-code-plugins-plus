@@ -12,9 +12,9 @@ estimated_time: 1 minute
      BEFORE starting merge, allowing planned resolution. Reduces merge anxiety. -->
 
 <!-- VALIDATION: Tested with scenarios -->
-<!-- ✅ Clean merge (no conflicts) -->
-<!-- ✅ Conflicting changes detected -->
-<!-- ✅ Multiple conflict files identified -->
+<!--  Clean merge (no conflicts) -->
+<!--  Conflicting changes detected -->
+<!--  Multiple conflict files identified -->
 
 # Safe Merge Checker
 
@@ -22,10 +22,10 @@ Analyzes potential merge conflicts before actually merging, showing you exactly 
 
 ## When to Use This
 
-- ✅ Before merging feature branch into main
-- ✅ Want to preview conflicts before committing to merge
-- ✅ Need to plan conflict resolution strategy
-- ❌ DON'T use if you're confident merge will be clean
+-  Before merging feature branch into main
+-  Want to preview conflicts before committing to merge
+-  Need to plan conflict resolution strategy
+-  DON'T use if you're confident merge will be clean
 
 ## How It Works
 
@@ -52,14 +52,14 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
 
    **If NO conflicts:**
    ```
-   ✅ Merge will be clean!
+    Merge will be clean!
 
    Merging [target] into [current] will succeed without conflicts.
    ```
 
    **If conflicts exist:**
    ```
-   ⚠️  Conflicts detected in [N] files:
+   ️  Conflicts detected in [N] files:
 
    1. src/api/users.js (12 conflicts)
    2. src/components/Header.jsx (3 conflicts)
@@ -95,7 +95,7 @@ You are a Git merge expert who helps avoid merge disasters. When user runs `/mer
 ```
 Checking merge safety: feature/add-login → main
 
-✅ SAFE TO MERGE
+ SAFE TO MERGE
 
 Analysis:
 - 15 files will be changed
@@ -109,7 +109,7 @@ Proceed with merge? (yes/no)
 ```
 Checking merge safety: feature/redesign → main
 
-⚠️  CONFLICTS DETECTED
+️  CONFLICTS DETECTED
 
 Files with conflicts:
 1. src/styles/main.css
@@ -147,7 +147,7 @@ You:
 ```
 Checking merge safety: main → feature/dashboard
 
-✅ SAFE TO MERGE
+ SAFE TO MERGE
 
 Changes:
 - 8 files changed
@@ -172,7 +172,7 @@ git merge main
 
 Result:
 ```
-✅ Merged successfully!
+ Merged successfully!
 
 Updated feature/dashboard with latest from main.
 ```
@@ -191,7 +191,7 @@ You:
 ```
 Checking merge safety: develop → feature/api-redesign
 
-⚠️  3 CONFLICTS DETECTED
+️  3 CONFLICTS DETECTED
 
 Conflict #1: src/api/users.js
 ├─ Your changes (lines 45-60): New validation logic
@@ -225,7 +225,7 @@ Your choice?
 
 **If on main/master branch:**
 ```
-⚠️  You're on main branch
+️  You're on main branch
 
 Merging INTO main is usually done via pull requests, not direct merge.
 
@@ -252,7 +252,7 @@ Enter branch name:
 
 **If target branch doesn't exist:**
 ```
-❌ Branch "feature/nonexistent" not found
+ Branch "feature/nonexistent" not found
 
 Available branches:
 - main
@@ -270,8 +270,8 @@ Try again: /merge-safe
 
 ## Pro Tips
 
-💡 **Always check before merging** - Prevents surprise conflicts
+ **Always check before merging** - Prevents surprise conflicts
 
-💡 **Merge main into your branch regularly** - Reduces conflicts when creating PR
+ **Merge main into your branch regularly** - Reduces conflicts when creating PR
 
-💡 **Resolve conflicts incrementally** - Don't let branches diverge too far
+ **Resolve conflicts incrementally** - Don't let branches diverge too far

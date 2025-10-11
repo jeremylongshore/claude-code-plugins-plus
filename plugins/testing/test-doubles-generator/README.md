@@ -31,10 +31,10 @@ Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and t
 /gen-doubles
 
 # Claude analyzes dependencies and generates:
-# ✓ Mock implementations for APIs
-# ✓ Stub implementations for services
-# ✓ Spy wrappers for real objects
-# ✓ Test fixtures and example tests
+#  Mock implementations for APIs
+#  Stub implementations for services
+#  Spy wrappers for real objects
+#  Test fixtures and example tests
 ```
 
 ## Test Double Types

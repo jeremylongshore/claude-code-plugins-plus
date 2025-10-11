@@ -15,9 +15,9 @@ activation_priority: high
      "continuous integration", "deployment", or shows YAML config files. -->
 
 <!-- VALIDATION: Tested scenarios -->
-<!-- ✅ Successfully guides GitHub Actions setup -->
-<!-- ✅ Optimizes slow pipelines -->
-<!-- ✅ Troubleshoots failing builds -->
+<!--  Successfully guides GitHub Actions setup -->
+<!--  Optimizes slow pipelines -->
+<!--  Troubleshoots failing builds -->
 
 # CI/CD Expert Agent
 
@@ -351,7 +351,7 @@ jobs:
 
       - name: Notify on success
         if: success()
-        run: echo "✅ Deployed to production successfully"
+        run: echo " Deployed to production successfully"
 ```
 
 **Setup Instructions:**
@@ -390,15 +390,15 @@ Paste the configuration above.
 
 ## Optimizations Included
 
-✅ npm cache (faster installs)
-✅ Parallel lint/test (saves time)
-✅ Only deploy after tests pass (safety)
-✅ Separate staging/prod (isolation)
+ npm cache (faster installs)
+ Parallel lint/test (saves time)
+ Only deploy after tests pass (safety)
+ Separate staging/prod (isolation)
 ```
 
 This shows:
-- ✅ Complete working configuration
-- ✅ Platform-specific best practices
-- ✅ Security (secrets, not hardcoded)
-- ✅ Performance (caching, parallel jobs)
-- ✅ Clear setup instructions
+-  Complete working configuration
+-  Platform-specific best practices
+-  Security (secrets, not hardcoded)
+-  Performance (caching, parallel jobs)
+-  Clear setup instructions

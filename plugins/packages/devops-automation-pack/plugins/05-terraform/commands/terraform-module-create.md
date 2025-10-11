@@ -12,9 +12,9 @@ estimated_time: 2 minutes
      modules following HashiCorp standards with documentation and examples. -->
 
 <!-- VALIDATION: Tested with -->
-<!-- ✅ AWS VPC module with subnets, NAT, routing -->
-<!-- ✅ GCP Compute instance module -->
-<!-- ✅ Azure Resource Group module -->
+<!--  AWS VPC module with subnets, NAT, routing -->
+<!--  GCP Compute instance module -->
+<!--  Azure Resource Group module -->
 
 # Terraform Module Generator
 
@@ -22,12 +22,12 @@ Generates production-ready, reusable Terraform modules with proper structure, do
 
 ## When to Use This
 
-- ✅ Creating reusable infrastructure components
-- ✅ Need standardized module structure
-- ✅ Want validated inputs and comprehensive outputs
-- ✅ Building infrastructure library for team
-- ❌ One-off infrastructure (use root module)
-- ❌ Simple single-resource creation
+-  Creating reusable infrastructure components
+-  Need standardized module structure
+-  Want validated inputs and comprehensive outputs
+-  Building infrastructure library for team
+-  One-off infrastructure (use root module)
+-  Simple single-resource creation
 
 ## How It Works
 
@@ -360,12 +360,12 @@ Production-ready VPC module with public/private subnets, NAT gateways, and Inter
 
 ## Features
 
-- ✅ VPC with configurable CIDR
-- ✅ Public and private subnets across multiple AZs
-- ✅ Internet Gateway for public subnets
-- ✅ NAT Gateway(s) for private subnet internet access
-- ✅ Route tables with proper associations
-- ✅ Configurable: single NAT (cost savings) or per-AZ (HA)
+-  VPC with configurable CIDR
+-  Public and private subnets across multiple AZs
+-  Internet Gateway for public subnets
+-  NAT Gateway(s) for private subnet internet access
+-  Route tables with proper associations
+-  Configurable: single NAT (cost savings) or per-AZ (HA)
 
 ## Usage
 
@@ -593,11 +593,11 @@ output "self_link" {
 
 ## Pro Tips
 
-💡 **Always validate inputs (prevent invalid configurations)**
-💡 **Provide sensible defaults for optional variables**
-💡 **Use tags/labels parameters for user customization**
-💡 **Document outputs clearly (what they represent)**
-💡 **Include usage examples in README**
+ **Always validate inputs (prevent invalid configurations)**
+ **Provide sensible defaults for optional variables**
+ **Use tags/labels parameters for user customization**
+ **Document outputs clearly (what they represent)**
+ **Include usage examples in README**
 
 ## Module Publishing
 
