@@ -1,0 +1,19 @@
+{
+  "name": "formatter",
+  "description": "Code formatting plugin using hooks to auto-format on save - demonstrates PostToolUse hook patterns",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": ["formatting", "hooks", "automation", "code-quality"],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "installation": "/plugin install formatter@claude-code-plugins",
+  "features": [
+    "Automatic code formatting on save",
+    "PostToolUse hook demonstration",
+    "Configurable formatters",
+    "Educational example"
+  ],
+  "requirements": ["Claude Code CLI", "Code formatter (prettier, black, etc.)"]
+}

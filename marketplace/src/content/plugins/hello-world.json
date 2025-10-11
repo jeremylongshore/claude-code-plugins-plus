@@ -1,0 +1,20 @@
+{
+  "name": "hello-world",
+  "description": "Simple example plugin demonstrating basic slash commands - perfect for learning how Claude Code plugins work",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": ["example", "tutorial", "beginner", "learning"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "featured": false,
+  "installation": "/plugin install hello-world@claude-code-plugins",
+  "features": [
+    "Basic slash command example",
+    "Simple greeting functionality",
+    "Perfect for learning plugin structure",
+    "Well-documented code"
+  ],
+  "requirements": ["Claude Code CLI"]
+}

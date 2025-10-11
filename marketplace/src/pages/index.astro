@@ -9,79 +9,79 @@ const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
 
 <Layout title="Claude Code Plugins - Supercharge Your Development">
   <!-- Hero Section -->
-  <div class="text-center mb-16">
-    <h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent mb-6">
-      Supercharge Your<br />Claude Code Workflow
+  <div class="text-center mb-20 max-w-4xl mx-auto">
+    <h1 class="text-4xl md:text-6xl font-bold text-white mb-6 tracking-tight">
+      CLAUDE CODE PLUGINS
     </h1>
-    <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+    <p class="text-lg text-gray-400 mb-8 leading-relaxed">
       Production-ready plugins, MCP servers, and tools to enhance your development experience
     </p>
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-      <a href="#plugins" class="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold rounded-lg transition-all transform hover:scale-105 shadow-lg">
-        Browse Plugins
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center text-sm">
+      <a href="#plugins" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors">
+        BROWSE PLUGINS
       </a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins" class="px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-lg transition-all border border-white/20">
-        View on GitHub
+      <a href="https://github.com/jeremylongshore/claude-code-plugins" class="px-6 py-3 bg-transparent hover:bg-gray-900 text-gray-300 font-medium transition-colors border border-gray-700">
+        VIEW ON GITHUB
       </a>
     </div>
   </div>
 
   <!-- Stats -->
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-    <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center">
-      <div class="text-4xl font-bold text-purple-400 mb-2">{allPlugins.length}</div>
-      <div class="text-gray-400">Available Plugins</div>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
+    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
+      <div class="text-5xl font-bold text-blue-500 mb-2">{allPlugins.length}</div>
+      <div class="text-gray-500 text-sm tracking-wide">AVAILABLE PLUGINS</div>
     </div>
-    <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center">
-      <div class="text-4xl font-bold text-pink-400 mb-2">{categories.length}</div>
-      <div class="text-gray-400">Categories</div>
+    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
+      <div class="text-5xl font-bold text-blue-500 mb-2">{categories.length}</div>
+      <div class="text-gray-500 text-sm tracking-wide">CATEGORIES</div>
     </div>
-    <div class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 text-center">
-      <div class="text-4xl font-bold text-purple-400 mb-2">100%</div>
-      <div class="text-gray-400">Open Source</div>
+    <div class="bg-gray-900 border border-gray-800 p-8 text-center">
+      <div class="text-5xl font-bold text-blue-500 mb-2">100%</div>
+      <div class="text-gray-500 text-sm tracking-wide">OPEN SOURCE</div>
     </div>
   </div>
 
   <!-- Featured Plugins -->
   {featuredPlugins.length > 0 && (
-    <section class="mb-16">
-      <h2 class="text-3xl font-bold text-white mb-8">⭐ Featured Plugins</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <section class="mb-20">
+      <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">FEATURED PLUGINS</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {featuredPlugins.map(plugin => (
-          <a href={`/plugins/${plugin.id}`} class="group bg-gradient-to-br from-purple-500/10 to-pink-500/10 backdrop-blur-xl border border-purple-500/20 rounded-2xl p-6 hover:border-purple-500/40 transition-all transform hover:scale-105">
+          <div class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-6 transition-colors">
             <div class="flex items-start justify-between mb-4">
-              <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">{plugin.data.name}</h3>
-              <span class="px-3 py-1 bg-purple-500/20 text-purple-300 text-xs font-semibold rounded-full border border-purple-500/30">
-                ⭐ Featured
+              <h3 class="text-lg font-semibold text-white">{plugin.data.name}</h3>
+              <span class="px-2 py-1 bg-blue-600 text-white text-xs font-medium">
+                FEATURED
               </span>
             </div>
-            <p class="text-gray-300 mb-4 text-sm line-clamp-2">{plugin.data.description}</p>
+            <p class="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-2">{plugin.data.description}</p>
             <div class="flex flex-wrap gap-2 mb-4">
               {plugin.data.keywords.slice(0, 3).map(keyword => (
-                <span class="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded-md border border-white/10">
+                <span class="px-2 py-1 bg-gray-800 text-gray-400 text-xs border border-gray-700">
                   {keyword}
                 </span>
               ))}
             </div>
-            <div class="text-sm text-purple-400 font-mono">{plugin.data.installation}</div>
-          </a>
+            <div class="text-xs text-blue-500 font-mono">{plugin.data.installation}</div>
+          </div>
         ))}
       </div>
     </section>
   )}
 
   <!-- Categories -->
-  <section class="mb-16" id="categories">
-    <h2 class="text-3xl font-bold text-white mb-8">Browse by Category</h2>
+  <section class="mb-20" id="categories">
+    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">BROWSE BY CATEGORY</h2>
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {categories.map(category => {
         const categoryPlugins = allPlugins.filter(p => p.data.category === category);
         return (
-          <a href={`#${category}`} class="bg-white/5 backdrop-blur-xl border border-white/10 rounded-xl p-4 hover:bg-white/10 hover:border-white/20 transition-all group">
-            <div class="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors capitalize">
+          <a href={`#${category}`} class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-4 transition-colors block">
+            <div class="text-base font-semibold text-white uppercase tracking-tight">
               {category.replace('-', ' ')}
             </div>
-            <div class="text-sm text-gray-400">{categoryPlugins.length} plugin{categoryPlugins.length !== 1 ? 's' : ''}</div>
+            <div class="text-xs text-gray-500 mt-1">{categoryPlugins.length} PLUGIN{categoryPlugins.length !== 1 ? 'S' : ''}</div>
           </a>
         );
       })}
@@ -90,62 +90,62 @@ const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
 
   <!-- All Plugins -->
   <section id="plugins">
-    <h2 class="text-3xl font-bold text-white mb-8">All Plugins</h2>
+    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">ALL PLUGINS</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {allPlugins.map(plugin => (
-        <a href={`/plugins/${plugin.id}`} class="group bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-6 hover:bg-white/10 hover:border-white/20 transition-all">
+        <div class="bg-gray-900 border border-gray-800 hover:border-blue-600 p-6 transition-colors">
           <div class="flex items-start justify-between mb-4">
-            <h3 class="text-xl font-bold text-white group-hover:text-purple-300 transition-colors">{plugin.data.name}</h3>
-            <span class="px-3 py-1 bg-white/5 text-gray-400 text-xs font-semibold rounded-full border border-white/10 capitalize">
+            <h3 class="text-lg font-semibold text-white">{plugin.data.name}</h3>
+            <span class="px-2 py-1 bg-gray-800 text-gray-400 text-xs font-medium border border-gray-700 uppercase">
               {plugin.data.category.replace('-', ' ')}
             </span>
           </div>
-          <p class="text-gray-300 mb-4 text-sm line-clamp-3">{plugin.data.description}</p>
+          <p class="text-gray-400 mb-4 text-sm leading-relaxed line-clamp-3">{plugin.data.description}</p>
           <div class="flex flex-wrap gap-2 mb-4">
             {plugin.data.keywords.slice(0, 4).map(keyword => (
-              <span class="px-2 py-1 bg-white/5 text-gray-400 text-xs rounded-md border border-white/10">
+              <span class="px-2 py-1 bg-gray-800 text-gray-500 text-xs border border-gray-700">
                 {keyword}
               </span>
             ))}
           </div>
           <div class="flex items-center justify-between">
-            <span class="text-xs text-gray-500">v{plugin.data.version}</span>
-            <span class="text-purple-400 group-hover:text-purple-300 transition-colors text-sm">
-              Learn more →
+            <span class="text-xs text-gray-600 font-mono">v{plugin.data.version}</span>
+            <span class="text-blue-500 text-xs font-mono">
+              {plugin.data.installation}
             </span>
           </div>
-        </a>
+        </div>
       ))}
     </div>
   </section>
 
   <!-- Installation Guide -->
-  <section class="mt-20 bg-gradient-to-r from-purple-900/20 to-pink-900/20 backdrop-blur-xl border border-white/10 rounded-2xl p-8">
-    <h2 class="text-3xl font-bold text-white mb-6">Quick Start</h2>
-    <div class="space-y-4">
-      <div class="flex gap-4">
-        <div class="flex-shrink-0 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-300 font-bold border border-purple-500/30">1</div>
-        <div>
-          <h3 class="text-white font-semibold mb-1">Add the marketplace</h3>
-          <code class="text-sm bg-black/30 px-4 py-2 rounded-lg text-purple-300 block font-mono">
+  <section class="mt-20 bg-gray-900 border border-gray-800 p-10">
+    <h2 class="text-2xl font-bold text-white mb-8 tracking-tight">QUICK START</h2>
+    <div class="space-y-6">
+      <div class="flex gap-6">
+        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">1</div>
+        <div class="flex-1">
+          <h3 class="text-white font-semibold mb-2 tracking-tight">ADD THE MARKETPLACE</h3>
+          <code class="text-sm bg-black px-4 py-3 text-blue-400 block font-mono border border-gray-800">
             /plugin marketplace add jeremylongshore/claude-code-plugins
           </code>
         </div>
       </div>
-      <div class="flex gap-4">
-        <div class="flex-shrink-0 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-300 font-bold border border-purple-500/30">2</div>
-        <div>
-          <h3 class="text-white font-semibold mb-1">Install any plugin</h3>
-          <code class="text-sm bg-black/30 px-4 py-2 rounded-lg text-purple-300 block font-mono">
+      <div class="flex gap-6">
+        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">2</div>
+        <div class="flex-1">
+          <h3 class="text-white font-semibold mb-2 tracking-tight">INSTALL ANY PLUGIN</h3>
+          <code class="text-sm bg-black px-4 py-3 text-blue-400 block font-mono border border-gray-800">
             /plugin install plugin-name@claude-code-plugins
           </code>
         </div>
       </div>
-      <div class="flex gap-4">
-        <div class="flex-shrink-0 w-8 h-8 bg-purple-500/20 rounded-full flex items-center justify-center text-purple-300 font-bold border border-purple-500/30">3</div>
-        <div>
-          <h3 class="text-white font-semibold mb-1">Start using it!</h3>
+      <div class="flex gap-6">
+        <div class="flex-shrink-0 w-8 h-8 bg-blue-600 flex items-center justify-center text-white font-bold text-sm">3</div>
+        <div class="flex-1">
+          <h3 class="text-white font-semibold mb-2 tracking-tight">START USING IT</h3>
           <p class="text-gray-400 text-sm">Use the plugin's commands and agents in your Claude Code workflow</p>
         </div>
       </div>

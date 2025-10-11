@@ -1,1 +1,99 @@
+/* IBM Plex Mono Font */
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
 @import "tailwindcss";
+
+/* IBM Blue Color Scheme */
+:root {
+  --ibm-blue: #0f62fe;
+  --ibm-blue-dark: #0043ce;
+  --ibm-blue-light: #4589ff;
+  --bg-primary: #000000;
+  --bg-secondary: #161616;
+  --text-primary: #f4f4f4;
+  --text-secondary: #c6c6c6;
+  --border: #393939;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Brutalist/Minimalist Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--ibm-blue);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--ibm-blue-light);
+}
+
+code, pre {
+  font-family: 'IBM Plex Mono', monospace;
+  background: var(--bg-secondary);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+/* Clean borders and spacing */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Remove gradients and blur effects - keep it clean */
+.card {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.card:hover {
+  border-color: var(--ibm-blue);
+}
+
+/* Simple button style */
+.btn {
+  background: var(--ibm-blue);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  cursor: pointer;
+  font-family: 'IBM Plex Mono', monospace;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: var(--ibm-blue-dark);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--ibm-blue);
+  color: var(--ibm-blue);
+}
+
+.btn-outline:hover {
+  background: var(--ibm-blue);
+  color: white;
+}
