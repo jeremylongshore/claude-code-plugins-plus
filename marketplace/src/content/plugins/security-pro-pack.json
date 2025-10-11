@@ -6,7 +6,7 @@
   "keywords": ["security", "vulnerability-scanning", "compliance", "HIPAA", "PCI-DSS", "GDPR", "SOC2", "cryptography", "devsecops", "package"],
   "author": {
     "name": "Jeremy Longshore",
-    "email": "[email protected]"
+    "email": "jeremy@claudecodeplugins.io"
   },
   "featured": true,
   "installation": "/plugin install security-pro-pack@claude-code-plugins",

@@ -6,7 +6,7 @@
   "keywords": ["example", "tutorial", "beginner", "learning"],
   "author": {
     "name": "Jeremy Longshore",
-    "email": "[email protected]"
+    "email": "jeremy@claudecodeplugins.io"
   },
   "featured": false,
   "installation": "/plugin install hello-world@claude-code-plugins",

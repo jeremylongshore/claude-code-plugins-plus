@@ -6,7 +6,7 @@
   "keywords": ["ai", "ml", "llm", "prompt-engineering", "rag", "vector-database", "ai-safety", "openai", "anthropic", "package"],
   "author": {
     "name": "Jeremy Longshore",
-    "email": "[email protected]"
+    "email": "jeremy@claudecodeplugins.io"
   },
   "featured": true,
   "installation": "/plugin install ai-ml-engineering-pack@claude-code-plugins",

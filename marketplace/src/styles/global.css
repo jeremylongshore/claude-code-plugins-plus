@@ -1,18 +1,56 @@
-/* IBM Plex Mono Font */
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+/* IBM Plex Mono Font - Self-hosted from official IBM release */
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'IBM Plex Mono';
+  src: url('/fonts/IBMPlexMono-Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
 
 @import "tailwindcss";
 
-/* IBM Blue Color Scheme */
+/* OLD-SCHOOL IBM MAINFRAME TERMINAL - MOBILE FIRST */
+
 :root {
+  /* IBM Blue Color Scheme */
   --ibm-blue: #0f62fe;
-  --ibm-blue-dark: #0043ce;
-  --ibm-blue-light: #4589ff;
-  --bg-primary: #000000;
-  --bg-secondary: #161616;
-  --text-primary: #f4f4f4;
-  --text-secondary: #c6c6c6;
-  --border: #393939;
+  --ibm-blue-dark: #001141;
+  --ibm-blue-light: #78a9ff;
+  --ibm-green: #24a148;
+
+  /* Terminal colors */
+  --term-bg: #000000;
+  --term-fg: #00ff00;
+  --term-prompt: #0f62fe;
+  --term-border: #393939;
+
+  /* Monospace grid */
+  --base-unit: 1ch;
+  --line-height: 1.4;
 }
 
 * {
@@ -21,79 +59,306 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  font-family: 'IBM Plex Mono', monospace;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  line-height: 1.6;
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: var(--line-height);
+  background: var(--term-bg);
+  color: var(--ibm-blue-light);
   -webkit-font-smoothing: antialiased;
+
+  /* Mobile first - comfortable padding */
+  padding: 0.5rem;
 }
 
-/* Brutalist/Minimalist Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
+/* Typography - Mobile optimized */
+h1 {
+  font-size: 1.25rem;
   line-height: 1.2;
+  font-weight: 700;
+  color: var(--ibm-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 1rem 0 0.5rem;
 }
 
+h2 {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  font-weight: 600;
+  color: var(--ibm-blue-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 1rem 0 0.5rem;
+  border-bottom: 1px solid var(--term-border);
+  padding-bottom: 0.25rem;
+}
+
+h3 {
+  font-size: 1rem;
+  line-height: 1.4;
+  font-weight: 600;
+  color: var(--ibm-blue-light);
+  margin: 0.75rem 0 0.25rem;
+}
+
+p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
+  color: #c6c6c6;
+}
+
+/* Links - Terminal style */
 a {
   color: var(--ibm-blue);
   text-decoration: none;
-  transition: color 0.2s;
+  border-bottom: 1px dotted var(--ibm-blue);
+  transition: all 0.2s;
 }
 
 a:hover {
   color: var(--ibm-blue-light);
+  border-bottom-style: solid;
+  background: var(--ibm-blue-dark);
 }
 
-code, pre {
+/* Code blocks - Terminal style */
+code {
   font-family: 'IBM Plex Mono', monospace;
-  background: var(--bg-secondary);
-  padding: 0.2em 0.4em;
-  border-radius: 3px;
+  font-size: 0.85em;
+  background: var(--ibm-blue-dark);
+  color: var(--ibm-blue-light);
+  padding: 0.1em 0.3em;
+  border: 1px solid var(--term-border);
 }
 
-/* Clean borders and spacing */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
+pre {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  background: var(--ibm-blue-dark);
+  color: var(--ibm-blue-light);
+  padding: 0.75rem;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+  border: 2px solid var(--ibm-blue);
+
+  /* Mobile: smooth scrolling */
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Remove gradients and blur effects - keep it clean */
+pre code {
+  background: transparent;
+  padding: 0;
+  border: none;
+}
+
+/* ASCII Art - Mobile optimized */
+.ascii {
+  font-size: 0.5rem;
+  line-height: 1;
+  color: var(--ibm-blue);
+  text-align: center;
+  white-space: pre;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5rem 0;
+}
+
+/* Buttons - Touch-friendly */
+.btn {
+  display: inline-block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0.65rem 1.25rem;
+  border: 2px solid var(--ibm-blue);
+  background: var(--term-bg);
+  color: var(--ibm-blue);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+
+  /* Mobile: full width, touch-friendly */
+  width: 100%;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.btn:hover {
+  background: var(--ibm-blue);
+  color: var(--term-bg);
+  box-shadow: 0 0 10px var(--ibm-blue);
+}
+
+.btn-primary {
+  background: var(--ibm-blue);
+  color: var(--term-bg);
+}
+
+.btn-primary:hover {
+  background: var(--ibm-blue-light);
+  box-shadow: 0 0 15px var(--ibm-blue-light);
+}
+
+/* Terminal box */
+.terminal {
+  background: var(--ibm-blue-dark);
+  border: 2px solid var(--ibm-blue);
+  padding: 0.75rem;
+  margin: 0.75rem 0;
+  position: relative;
+  font-size: 0.85rem;
+}
+
+.terminal::before {
+  content: '>';
+  position: absolute;
+  left: 0.5rem;
+  top: 0.5rem;
+  color: var(--ibm-blue);
+  font-weight: 700;
+}
+
+.terminal-content {
+  padding-left: 1.5rem;
+  color: var(--ibm-blue-light);
+}
+
+/* Cards - Terminal style */
 .card {
-  background: var(--bg-secondary);
-  border: 1px solid var(--border);
-  padding: 1.5rem;
-  margin-bottom: 1rem;
+  background: var(--term-bg);
+  border: 2px solid var(--term-border);
+  padding: 1rem;
+  margin: 0.75rem 0;
+  transition: border-color 0.2s;
 }
 
 .card:hover {
   border-color: var(--ibm-blue);
+  box-shadow: 0 0 5px var(--ibm-blue);
 }
 
-/* Simple button style */
-.btn {
-  background: var(--ibm-blue);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  cursor: pointer;
-  font-family: 'IBM Plex Mono', monospace;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.btn:hover {
-  background: var(--ibm-blue-dark);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid var(--ibm-blue);
+.card-title {
+  font-size: 1rem;
+  font-weight: 600;
   color: var(--ibm-blue);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
 }
 
-.btn-outline:hover {
+.card-desc {
+  font-size: 0.85rem;
+  color: #c6c6c6;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+/* Tags */
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  padding: 0.2rem 0.5rem;
+  background: var(--term-bg);
+  color: var(--ibm-blue-light);
+  border: 1px solid var(--term-border);
+  margin-right: 0.25rem;
+  margin-bottom: 0.25rem;
+}
+
+.tag-featured {
   background: var(--ibm-blue);
-  color: white;
+  color: var(--term-bg);
+  border-color: var(--ibm-blue);
+}
+
+/* Stats */
+.stat {
+  text-align: center;
+  padding: 1rem;
+  background: var(--ibm-blue-dark);
+  border: 2px solid var(--ibm-blue);
+  margin-bottom: 0.75rem;
+}
+
+.stat-num {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--ibm-blue);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  color: var(--ibm-blue-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 0.25rem;
+}
+
+/* Grid - Mobile first */
+.grid {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.grid-1 {
+  grid-template-columns: 1fr;
+}
+
+/* Responsive breakpoints */
+@media (min-width: 640px) {
+  body {
+    font-size: 15px;
+    padding: 1rem;
+  }
+
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.25rem; }
+
+  .ascii { font-size: 0.65rem; }
+
+  .btn {
+    width: auto;
+    min-width: 140px;
+  }
+
+  .grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  body {
+    font-size: 16px;
+    max-width: 90ch;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  h1 { font-size: 2.25rem; }
+  h2 { font-size: 1.5rem; }
+
+  .ascii { font-size: 0.75rem; }
+
+  .grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    max-width: 100ch;
+  }
+
+  .ascii { font-size: 0.85rem; }
 }

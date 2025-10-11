@@ -1,4 +1,4 @@
-# Claude Code Plugins 🚀
+# Claude Code Plugins
 
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -7,79 +7,100 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-Discover, learn, and share plugins that supercharge your Claude Code experience. From slash commands to specialized AI agents to production-ready MCP servers, this is THE place to explore what's possible with Claude Code's plugin ecosystem.
+## Browse the Marketplace
 
-**🌐 [Browse the Marketplace →](https://jeremylongshore.github.io/claude-code-plugins/)**
+**[https://jeremylongshore.github.io/claude-code-plugins/](https://jeremylongshore.github.io/claude-code-plugins/)**
 
----
-
-## 🚀 Quick Start
-
-Get started in 3 commands:
+## Quick Start
 
 ```bash
-# 1. Add this marketplace
+# Add this marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
-# 2. Install your first plugin
-/plugin install project-health-auditor@claude-code-plugins
-
-# 3. Try it out!
-/analyze /path/to/your/repo
+# Install a plugin pack
+/plugin install devops-automation-pack@claude-code-plugins
 ```
 
 ---
 
-## 💡 What Are Claude Code Plugins?
+## Plugin Packs (62 Professional Plugins)
 
-Claude Code plugins are **lightweight packages** that extend Claude Code's capabilities. Each plugin can contain:
+| Pack | Plugins | Description | Category |
+|------|---------|-------------|----------|
+| **devops-automation-pack** | 25 | Complete DevOps suite: Git workflows, CI/CD pipelines, Docker, Kubernetes, Terraform | DevOps |
+| **security-pro-pack** | 10 | OWASP auditing, compliance (HIPAA, GDPR, SOC 2), cryptography, threat modeling | Security |
+| **fullstack-starter-pack** | 15 | React, Express/FastAPI, PostgreSQL, Prisma - perfect for bootcamp grads | Fullstack |
+| **ai-ml-engineering-pack** | 12 | Prompt engineering, LLM integration, RAG systems, AI safety guardrails | AI/ML |
 
-- **🎯 Slash Commands** - Custom shortcuts for frequent operations
-- **🤖 Subagents** - Specialized AI agents for specific domains
-- **🔌 Hooks** - Automation that triggers on events (file edits, tool usage, etc.)
-- **🌐 MCP Servers** - Connections to external tools and data sources (NEW!)
+```bash
+# Install any pack
+/plugin install devops-automation-pack@claude-code-plugins
+/plugin install security-pro-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install ai-ml-engineering-pack@claude-code-plugins
+```
+
+---
+
+## All Plugins
+
+### MCP Server Plugins (5 plugins, 21 tools)
+
+| Plugin | Description | Tools | Install |
+|--------|-------------|-------|---------|
+| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | `/plugin install project-health-auditor@claude-code-plugins` |
+| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | `/plugin install conversational-api-debugger@claude-code-plugins` |
+| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | `/plugin install domain-memory-agent@claude-code-plugins` |
+| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | `/plugin install design-to-code@claude-code-plugins` |
+| **workflow-orchestrator** | DAG-based workflow automation | 4 | `/plugin install workflow-orchestrator@claude-code-plugins` |
+
+[View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)
+
+### AI Agency Toolkit (6 plugins)
+
+| Plugin | Description | Install |
+|--------|-------------|---------|
+| **n8n-workflow-designer** | Design complex n8n workflows with loops & branching | `/plugin install n8n-workflow-designer@claude-code-plugins` |
+| **make-scenario-builder** | Create Make.com scenarios visually | `/plugin install make-scenario-builder@claude-code-plugins` |
+| **zapier-zap-builder** | Build multi-step Zaps with filters | `/plugin install zapier-zap-builder@claude-code-plugins` |
+| **discovery-questionnaire** | Generate client discovery questions | `/plugin install discovery-questionnaire@claude-code-plugins` |
+| **sow-generator** | Professional Statements of Work | `/plugin install sow-generator@claude-code-plugins` |
+| **roi-calculator** | Calculate automation ROI | `/plugin install roi-calculator@claude-code-plugins` |
+
+### Production Plugins (2 plugins)
+
+| Plugin | Description | Install |
+|--------|-------------|---------|
+| **git-commit-smart** | AI-powered conventional commit messages | `/plugin install git-commit-smart@claude-code-plugins` |
+| **overnight-dev** | Autonomous overnight development with TDD enforcement | `/plugin install overnight-dev@claude-code-plugins` |
+
+### Example Plugins (3 plugins)
+
+| Plugin | Description | Install |
+|--------|-------------|---------|
+| **hello-world** | Simple greeting command - perfect for learning | `/plugin install hello-world@claude-code-plugins` |
+| **formatter** | Auto-formats code after edits using hooks | `/plugin install formatter@claude-code-plugins` |
+| **security-agent** | Expert security agent for vulnerability detection | `/plugin install security-agent@claude-code-plugins` |
+
+---
+
+## What Are Claude Code Plugins?
+
+Claude Code plugins are lightweight packages that extend Claude Code's capabilities:
+
+- **Slash Commands** - Custom shortcuts for frequent operations
+- **Subagents** - Specialized AI agents for specific domains
+- **Hooks** - Automation that triggers on events (file edits, tool usage)
+- **MCP Servers** - Connections to external tools and data sources
 
 **Released**: October 2025 (Public Beta)
 **Official Docs**: https://docs.claude.com/en/docs/claude-code/plugins
 
 ---
 
-## 🔥 NEW: MCP Server Plugins
+## MCP Plugin Details
 
-**Production-ready MCP servers with advanced functionality**
-
-### 🏆 Featured MCP Plugins
-
-| Plugin | Description | MCP Tools | Category |
-|--------|-------------|-----------|----------|
-| **project-health-auditor** ⭐ | Multi-dimensional code health analysis (complexity + churn + tests) | 4 tools | Code Quality |
-| **conversational-api-debugger** ⭐ | Debug REST API failures with OpenAPI specs and HTTP logs | 4 tools | Debugging |
-| **domain-memory-agent** ⭐ | Knowledge base with TF-IDF semantic search | 6 tools | Productivity |
-| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue components | 3 tools | Design |
-| **workflow-orchestrator** | DAG-based workflow automation with parallel execution | 4 tools | Automation |
-
-```bash
-# Install MCP plugins
-/plugin install project-health-auditor@claude-code-plugins
-/plugin install conversational-api-debugger@claude-code-plugins
-/plugin install domain-memory-agent@claude-code-plugins
-/plugin install design-to-code@claude-code-plugins
-/plugin install workflow-orchestrator@claude-code-plugins
-```
-
-#### 🎯 What Makes MCP Plugins Special?
-
-- **🔧 21 Total Tools** - Across all 5 MCP servers
-- **✅ Production Ready** - Comprehensive testing (95+ tests)
-- **📊 Advanced Features** - Semantic search, API debugging, workflow automation
-- **🎓 Well Documented** - Complete READMEs with examples
-- **🏗️ TypeScript** - Strict mode, full type safety
-
-**[📖 View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)**
-
----
-
-### 🧠 project-health-auditor
+### project-health-auditor
 
 **Identify technical debt hot spots with multi-dimensional analysis**
 
@@ -89,16 +110,16 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ```
 
 **What it does**:
-- 🔍 **Code Complexity**: Cyclomatic complexity analysis with health scores
-- 📊 **Git Churn**: Identifies frequently changing files (hot spots)
-- ✅ **Test Coverage**: Maps source files to tests, finds gaps
-- 🎯 **Hot Spots**: Finds files with high complexity + high churn + no tests
+- Code Complexity: Cyclomatic complexity analysis with health scores
+- Git Churn: Identifies frequently changing files (hot spots)
+- Test Coverage: Maps source files to tests, finds gaps
+- Hot Spots: Finds files with high complexity + high churn + no tests
 
 **MCP Tools**: `list_repo_files`, `file_metrics`, `git_churn`, `map_tests`
 
 ---
 
-### 🐛 conversational-api-debugger
+### conversational-api-debugger
 
 **Debug REST API failures using OpenAPI specs and HTTP logs**
 
@@ -108,16 +129,16 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ```
 
 **What it does**:
-- 📄 **OpenAPI Parser**: Load and analyze API specs (JSON/YAML)
-- 📝 **HAR Support**: Import browser DevTools HTTP logs
-- 💡 **Failure Analysis**: Root cause identification with severity
-- 🔧 **cURL Generation**: Create reproducible test commands
+- OpenAPI Parser: Load and analyze API specs (JSON/YAML)
+- HAR Support: Import browser DevTools HTTP logs
+- Failure Analysis: Root cause identification with severity
+- cURL Generation: Create reproducible test commands
 
 **MCP Tools**: `load_openapi`, `ingest_logs`, `explain_failure`, `make_repro`
 
 ---
 
-### 🧠 domain-memory-agent
+### domain-memory-agent
 
 **Knowledge base with TF-IDF semantic search (no ML dependencies)**
 
@@ -126,10 +147,10 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ```
 
 **What it does**:
-- 📚 **Document Storage**: Store documents with tags and metadata
-- 🔍 **Semantic Search**: TF-IDF based relevance ranking
-- 📝 **Summarization**: Extractive summaries with caching
-- 🏷️ **Organization**: Tag-based filtering and categorization
+- Document Storage: Store documents with tags and metadata
+- Semantic Search: TF-IDF based relevance ranking
+- Summarization: Extractive summaries with caching
+- Organization: Tag-based filtering and categorization
 
 **MCP Tools**: `store_document`, `semantic_search`, `summarize`, `list_documents`, `get_document`, `delete_document`
 
@@ -137,7 +158,7 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 
 ---
 
-### 🎨 design-to-code
+### design-to-code
 
 **Convert Figma designs and screenshots into production-ready code**
 
@@ -146,16 +167,16 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ```
 
 **What it does**:
-- 🎯 **Figma Parsing**: Extract components from Figma JSON exports
-- 📸 **Screenshot Analysis**: Analyze UI layouts from images
-- ⚛️ **Multi-Framework**: Generate React, Svelte, or Vue components
-- ♿ **A11y Built-in**: ARIA labels, semantic HTML, keyboard navigation
+- Figma Parsing: Extract components from Figma JSON exports
+- Screenshot Analysis: Analyze UI layouts from images
+- Multi-Framework: Generate React, Svelte, or Vue components
+- A11y Built-in: ARIA labels, semantic HTML, keyboard navigation
 
 **MCP Tools**: `parse_figma`, `analyze_screenshot`, `generate_component`
 
 ---
 
-### 🔄 workflow-orchestrator
+### workflow-orchestrator
 
 **DAG-based workflow automation with parallel execution**
 
@@ -164,10 +185,10 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 ```
 
 **What it does**:
-- 📊 **DAG Execution**: Directed Acyclic Graph task dependencies
-- ⚡ **Parallel Tasks**: Execute independent tasks concurrently
-- 📈 **Run History**: Track all workflow executions
-- ✅ **Status Monitoring**: Real-time progress tracking
+- DAG Execution: Directed Acyclic Graph task dependencies
+- Parallel Tasks: Execute independent tasks concurrently
+- Run History: Track all workflow executions
+- Status Monitoring: Real-time progress tracking
 
 **MCP Tools**: `create_workflow`, `execute_workflow`, `get_workflow`, `list_workflows`
 
@@ -175,62 +196,116 @@ Claude Code plugins are **lightweight packages** that extend Claude Code's capab
 
 ---
 
-## 📦 AI Agency Collection
+## Plugin Pack Details
 
-**Professional tools for AI automation agencies**
+### DevOps Automation Pack (25 plugins)
 
-Build faster, win more clients, and deliver better projects with our complete AI Agency toolkit:
+**Complete DevOps automation suite**
 
-### Automation Platforms
+**Component Breakdown**:
+- 01-git-workflow: 5 commands
+- 02-ci-cd: 5 commands, 1 agent
+- 03-docker: 3 commands, 1 agent
+- 04-kubernetes: 3 commands, 1 agent
+- 05-terraform: 3 commands, 1 agent
+- 06-deployment: 1 command, 1 agent
 
-| Plugin | Description | Why Use It |
-|--------|-------------|------------|
-| **n8n-workflow-designer** ⭐ | Design complex workflows with loops & branching | Free, powerful, self-hostable |
-| **make-scenario-builder** | Create Make.com scenarios visually | 1000+ integrations, great UI |
-| **zapier-zap-builder** | Build multi-step Zaps with filters | Easiest platform, 5000+ apps |
+**Total**: 20 commands, 5 agents
 
-### Business Tools
-
-| Plugin | Description | Impact |
-|--------|-------------|--------|
-| **discovery-questionnaire** | Generate client discovery questions | Better scoping, fewer surprises |
-| **sow-generator** | Professional Statements of Work | Win more deals, clear contracts |
-| **roi-calculator** | Calculate automation ROI | Compelling proposals, justified pricing |
+**Features**:
+- Git workflow automation and branching strategies
+- CI/CD pipeline design and optimization
+- Docker containerization and optimization
+- Kubernetes cluster management and deployment
+- Terraform infrastructure as code
+- Deployment automation and monitoring
 
 ```bash
-# Get the complete AI Agency toolkit
-/plugin install n8n-workflow-designer@claude-code-plugins
-/plugin install make-scenario-builder@claude-code-plugins
-/plugin install zapier-zap-builder@claude-code-plugins
-/plugin install discovery-questionnaire@claude-code-plugins
-/plugin install sow-generator@claude-code-plugins
-/plugin install roi-calculator@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins
 ```
 
-**[📖 Complete AI Agency Guide →](./plugins/ai-agency)**
+---
+
+### Security Pro Pack (10 plugins)
+
+**Professional security toolkit**
+
+**Component Breakdown**:
+- 01-core-security: 1 command, 2 agents
+- 02-compliance: 1 command, 1 agent
+- 03-cryptography: 1 command, 1 agent
+- 04-infrastructure-security: 2 commands, 1 agent
+
+**Total**: 5 commands, 5 agents
+
+**Features**:
+- OWASP auditing and penetration testing
+- HIPAA, PCI DSS, GDPR, SOC 2 compliance checking
+- Cryptography audit and key management review
+- Threat modeling and container scanning
+- API security and infrastructure hardening
+
+```bash
+/plugin install security-pro-pack@claude-code-plugins
+```
 
 ---
 
-## 🏆 Production Plugins
+### Fullstack Starter Pack (15 plugins)
 
-| Plugin | Description | Category | Install |
-|--------|-------------|----------|---------|
-| **git-commit-smart** ⭐ | AI-powered conventional commit messages - production ready! | DevOps | `/plugin install git-commit-smart@claude-code-plugins` |
-| **overnight-dev** | Autonomous overnight development with Git hooks enforcing TDD | Productivity | `/plugin install overnight-dev@claude-code-plugins` |
+**Complete fullstack development toolkit**
+
+**Component Breakdown**:
+- 01-frontend: 2 commands, 2 agents
+- 02-backend: 2 commands, 2 agents
+- 03-database: 2 commands, 1 agent
+- 04-integration: 3 commands, 1 agent
+
+**Total**: 9 commands, 6 agents
+
+**Features**:
+- React components and UI/UX design
+- Express/FastAPI scaffolding and API patterns
+- PostgreSQL schemas and Prisma ORM
+- Authentication setup and environment config
+- Full project scaffolding and deployment
+
+**Perfect for**: Bootcamp grads, junior developers, rapid prototyping
+
+```bash
+/plugin install fullstack-starter-pack@claude-code-plugins
+```
 
 ---
 
-## 📚 Example Plugins for Learning
+### AI/ML Engineering Pack (12 plugins)
 
-| Plugin | Description | Category | Install |
-|--------|-------------|----------|---------|
-| **hello-world** | Simple greeting command - perfect for learning! | Example | `/plugin install hello-world@claude-code-plugins` |
-| **formatter** | Automatically formats code after edits using hooks | Productivity | `/plugin install formatter@claude-code-plugins` |
-| **security-agent** | Expert security agent for vulnerability detection | Security | `/plugin install security-agent@claude-code-plugins` |
+**Professional AI/ML engineering toolkit**
+
+**Component Breakdown**:
+- 01-prompt-engineering: 1 command, 2 agents
+- 02-llm-integration: 1 command, 2 agents
+- 03-rag-systems: 1 command, 2 agents
+- 04-ai-safety: 1 command, 2 agents
+
+**Total**: 4 commands, 8 agents
+
+**Features**:
+- Prompt optimization and A/B testing (30-50% cost reduction)
+- Multi-provider LLM integration and model evaluation
+- RAG system design and vector database setup (Pinecone, Weaviate)
+- AI safety guardrails and fine-tuning preparation
+- Production-ready patterns for AI products
+
+**Requirements**: Claude Code CLI, Anthropic or OpenAI API key
+
+```bash
+/plugin install ai-ml-engineering-pack@claude-code-plugins
+```
 
 ---
 
-## 🎓 Example Use Cases
+## Example Use Cases
 
 ### For Developers
 
@@ -288,21 +363,21 @@ cp -r templates/command-plugin my-awesome-plugin
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 ### Getting Started
-- [📖 Installation & Usage](docs/getting-started.md) - Install and use plugins
-- [🎨 Creating Your First Plugin](docs/creating-plugins.md) - Step-by-step tutorial
-- [📋 Plugin Reference](docs/plugin-structure.md) - Technical specifications
+- [Installation & Usage](docs/getting-started.md) - Install and use plugins
+- [Creating Your First Plugin](docs/creating-plugins.md) - Step-by-step tutorial
+- [Plugin Reference](docs/plugin-structure.md) - Technical specifications
 
 ### Advanced Topics
-- [🏪 Marketplace Guide](docs/marketplace-guide.md) - Distribute your plugins
-- [🔒 Security Best Practices](docs/security-best-practices.md) - Secure plugin development
-- [🌐 MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
+- [Marketplace Guide](docs/marketplace-guide.md) - Distribute your plugins
+- [Security Best Practices](docs/security-best-practices.md) - Secure plugin development
+- [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 We welcome community plugin submissions! This ecosystem thrives on shared knowledge and collaboration.
 
@@ -317,16 +392,16 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
 ### Plugin Requirements
 
-- ✅ Valid `.claude-plugin/plugin.json`
-- ✅ Comprehensive README.md with examples
-- ✅ LICENSE file (MIT or Apache-2.0 recommended)
-- ✅ Tested locally and working
-- ✅ No hardcoded secrets or credentials
-- ✅ All scripts executable (`chmod +x`)
+- Valid `.claude-plugin/plugin.json`
+- Comprehensive README.md with examples
+- LICENSE file (MIT or Apache-2.0 recommended)
+- Tested locally and working
+- No hardcoded secrets or credentials
+- All scripts executable (`chmod +x`)
 
 ---
 
-## ⚠️ Important Notes
+## Important Notes
 
 ### Not on GitHub Marketplace
 
@@ -342,7 +417,7 @@ Claude Code plugins are in **public beta** (October 2025). Features and best pra
 
 ---
 
-## 🌟 Plugin Templates
+## Plugin Templates
 
 Start building your own plugin today:
 
@@ -357,7 +432,7 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 
 ---
 
-## 🔗 Resources
+## Resources
 
 ### Official
 
@@ -369,10 +444,10 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 
 ### Community
 
-- [💬 Claude Developers Discord](https://discord.com/invite/6PPFFzqPDZ) - 40,000+ members
-- [🐛 Report Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- [💡 Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
-- [⭐ Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) - Curated resources
+- [Claude Developers Discord](https://discord.com/invite/6PPFFzqPDZ) - 40,000+ members
+- [Report Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
+- [Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
+- [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) - Curated resources
 
 ### Other Marketplaces
 
@@ -382,45 +457,46 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 
 ---
 
-## 📊 Statistics
+## Statistics
 
+- **Plugin Packs**: 4 (62 total plugin components)
 - **MCP Plugins**: 5 (21 total MCP tools)
 - **Production Plugins**: 2 (git-commit-smart, overnight-dev)
 - **AI Agency Plugins**: 6 (complete business toolkit)
 - **Example Plugins**: 3 (hello-world, formatter, security-agent)
 - **Templates**: 4 (minimal, command, agent, full)
-- **Total Plugins**: 16 production-ready plugins
+- **Total Marketplace Plugins**: 20
 
 ---
 
-## 🎯 Our Mission
+## Our Mission
 
 To be **THE definitive resource** for Claude Code plugins by:
 
-1. **📚 Educating** - Clear examples showing how plugins work
-2. **🏪 Curating** - High-quality plugins you can trust
-3. **🤝 Connecting** - Building a vibrant community of creators
-4. **📈 Growing** - Setting standards as the ecosystem evolves
+1. **Educating** - Clear examples showing how plugins work
+2. **Curating** - High-quality plugins you can trust
+3. **Connecting** - Building a vibrant community of creators
+4. **Growing** - Setting standards as the ecosystem evolves
 
 ---
 
-## 💪 Why This Marketplace?
+## Why This Marketplace?
 
-- **✨ Quality over Quantity** - Every plugin is reviewed and tested
-- **📖 Learning-Focused** - Understand how plugins work, don't just use them
-- **🚀 First-Mover** - Establishing best practices for the ecosystem
-- **🌍 Community-Driven** - Built by developers, for developers
-- **🔄 Actively Maintained** - Updated with latest Claude Code features
+- **Quality over Quantity** - Every plugin is reviewed and tested
+- **Learning-Focused** - Understand how plugins work, don't just use them
+- **First-Mover** - Establishing best practices for the ecosystem
+- **Community-Driven** - Built by developers, for developers
+- **Actively Maintained** - Updated with latest Claude Code features
 
 ---
 
-## 📜 License
+## License
 
 MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Anthropic** - For creating Claude Code and the plugin system
 - **Community Contributors** - Everyone who submits plugins and improvements
@@ -428,24 +504,24 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Get Help
+## Get Help
 
-- **💬 Questions?** - [Open a discussion](https://github.com/jeremylongshore/claude-code-plugins/discussions)
-- **🐛 Found a bug?** - [Report an issue](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- **💡 Have an idea?** - [Join our Discord](https://discord.com/invite/6PPFFzqPDZ)
+- **Questions?** - [Open a discussion](https://github.com/jeremylongshore/claude-code-plugins/discussions)
+- **Found a bug?** - [Report an issue](https://github.com/jeremylongshore/claude-code-plugins/issues)
+- **Have an idea?** - [Join our Discord](https://discord.com/invite/6PPFFzqPDZ)
 
 ---
 
 <div align="center">
 
-**[⭐ Star this repo](https://github.com/jeremylongshore/claude-code-plugins)** if you find it useful!
+**[Star this repo](https://github.com/jeremylongshore/claude-code-plugins)** if you find it useful!
 
-Made with ❤️ by the Claude Code community
+Made with dedication by the Claude Code community
 
-**[Get Started Now](#-quick-start)** | **[Browse MCP Plugins](#-new-mcp-server-plugins)** | **[Contribute](#-contributing)**
+**[Get Started Now](#quick-start)** | **[Browse Plugins](#all-plugins)** | **[Contribute](#contributing)**
 
 </div>
 
 ---
 
-**Status**: Public Beta | **Version**: 1.1.0 | **Last Updated**: October 10, 2025
+**Status**: Public Beta | **Version**: 1.1.0 | **Last Updated**: October 11, 2025

@@ -6,7 +6,7 @@
   "keywords": ["devops", "ci-cd", "docker", "kubernetes", "terraform", "deployment", "infrastructure", "automation", "git", "cicd", "package", "collection"],
   "author": {
     "name": "Jeremy Longshore",
-    "email": "[email protected]",
+    "email": "jeremy@claudecodeplugins.io",
     "url": "https://github.com/jeremylongshore"
   },
   "featured": true,
