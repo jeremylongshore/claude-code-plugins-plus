@@ -1,0 +1,22 @@
+{
+  "name": "security-pro-pack",
+  "description": "Professional security toolkit with 10 plugins: OWASP auditing, compliance checking (HIPAA, GDPR, SOC 2), cryptography review, threat modeling, and API security",
+  "version": "1.0.0",
+  "category": "security",
+  "keywords": ["security", "vulnerability-scanning", "compliance", "HIPAA", "PCI-DSS", "GDPR", "SOC2", "cryptography", "devsecops", "package"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "featured": true,
+  "installation": "/plugin install security-pro-pack@claude-code-plugins",
+  "features": [
+    "10 professional security plugins in one package",
+    "Core Security: OWASP auditing, penetration testing, automated scanning",
+    "Compliance: HIPAA, PCI DSS, GDPR, SOC 2 checking",
+    "Cryptography: Encryption audit, key management review",
+    "Infrastructure Security: Threat modeling, container scanning, API security",
+    "Complete documentation with real-world security scenarios"
+  ],
+  "requirements": ["Claude Code CLI"]
+}

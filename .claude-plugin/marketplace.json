@@ -216,6 +216,48 @@
         "email": "[email protected]"
       },
       "featured": true
+    },
+    {
+      "name": "security-pro-pack",
+      "source": "./plugins/packages/security-pro-pack",
+      "description": "Professional security tools for Claude Code: vulnerability scanning, compliance, cryptography audit, container & API security",
+      "version": "1.0.0",
+      "category": "security",
+      "keywords": ["security", "vulnerability-scanning", "compliance", "HIPAA", "PCI-DSS", "GDPR", "SOC2", "cryptography", "devsecops", "package"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "pluginCount": 10
+    },
+    {
+      "name": "fullstack-starter-pack",
+      "source": "./plugins/packages/fullstack-starter-pack",
+      "description": "Complete fullstack development toolkit: React, Express/FastAPI, PostgreSQL scaffolding with AI agents",
+      "version": "1.0.0",
+      "category": "fullstack",
+      "keywords": ["fullstack", "react", "express", "fastapi", "postgresql", "prisma", "typescript", "mvp", "package"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "pluginCount": 15
+    },
+    {
+      "name": "ai-ml-engineering-pack",
+      "source": "./plugins/packages/ai-ml-engineering-pack",
+      "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": ["ai", "ml", "llm", "prompt-engineering", "rag", "vector-database", "ai-safety", "openai", "anthropic", "package"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "pluginCount": 12
     }
   ]
 }

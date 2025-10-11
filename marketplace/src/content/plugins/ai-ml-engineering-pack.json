@@ -1,0 +1,22 @@
+{
+  "name": "ai-ml-engineering-pack",
+  "description": "Professional AI/ML engineering toolkit with 12 plugins: Prompt optimization, LLM integration, RAG systems, vector databases, AI safety guardrails",
+  "version": "1.0.0",
+  "category": "ai-ml-assistance",
+  "keywords": ["ai", "ml", "llm", "prompt-engineering", "rag", "vector-database", "ai-safety", "openai", "anthropic", "package"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "featured": true,
+  "installation": "/plugin install ai-ml-engineering-pack@claude-code-plugins",
+  "features": [
+    "12 professional AI/ML engineering plugins",
+    "Prompt Engineering: Optimization, A/B testing, cost reduction (30-50%)",
+    "LLM Integration: Multi-provider setup, model evaluation, monitoring",
+    "RAG Systems: Design, vector DB setup (Pinecone, Weaviate), embeddings",
+    "AI Safety: Guardrails, fine-tuning prep, documentation generation",
+    "Production-ready patterns for building AI products"
+  ],
+  "requirements": ["Claude Code CLI", "Anthropic or OpenAI API key"]
+}

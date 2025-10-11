@@ -1,0 +1,22 @@
+{
+  "name": "fullstack-starter-pack",
+  "description": "Complete fullstack development toolkit with 15 plugins: React components, Express/FastAPI APIs, PostgreSQL schemas, Prisma ORM, deployment automation",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": ["fullstack", "react", "express", "fastapi", "postgresql", "prisma", "typescript", "mvp", "package"],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "featured": true,
+  "installation": "/plugin install fullstack-starter-pack@claude-code-plugins",
+  "features": [
+    "15 beginner-friendly fullstack plugins",
+    "Frontend: React components, UI/UX design, Tailwind utilities",
+    "Backend: Express/FastAPI scaffolding, API design patterns",
+    "Database: Prisma schema generation, SQL query building, migrations",
+    "Integration: Authentication setup, environment config, full project scaffolding",
+    "Perfect for bootcamp grads and junior developers"
+  ],
+  "requirements": ["Claude Code CLI"]
+}
