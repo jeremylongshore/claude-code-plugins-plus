@@ -26,6 +26,19 @@
       "featured": true
     },
     {
+      "name": "devops-automation-pack",
+      "source": "./plugins/packages/devops-automation-pack",
+      "description": "Complete DevOps automation suite with 25 plugins covering Git workflows, CI/CD pipelines, Docker optimization, Kubernetes management, Terraform IaC, and deployment strategies",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["devops", "ci-cd", "docker", "kubernetes", "terraform", "deployment", "infrastructure", "automation", "package"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
       "name": "project-health-auditor",
       "source": "./plugins/mcp/project-health-auditor",
       "description": "Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots",
