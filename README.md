@@ -214,13 +214,7 @@ Build faster, win more clients, and deliver better projects with our complete AI
 | Plugin | Description | Category | Install |
 |--------|-------------|----------|---------|
 | **git-commit-smart** ⭐ | AI-powered conventional commit messages - production ready! | DevOps | `/plugin install git-commit-smart@claude-code-plugins` |
-
-**What makes git-commit-smart special?**
-- 🤖 **AI-Powered**: Analyzes your code changes and generates contextual commit messages
-- 📝 **Conventional Commits**: Follows the conventional commits standard automatically
-- ⚡ **Fast Workflow**: Generate professional commits in seconds with `/gc` shortcut
-- ✅ **Breaking Change Detection**: Identifies and documents breaking changes
-- 🎯 **Smart Categorization**: Auto-determines commit type (feat, fix, docs, etc.)
+| **overnight-dev** | Autonomous overnight development with Git hooks enforcing TDD | Productivity | `/plugin install overnight-dev@claude-code-plugins` |
 
 ---
 
