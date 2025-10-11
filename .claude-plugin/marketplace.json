@@ -740,6 +740,310 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       }
+    },
+    {
+      "name": "docker-compose-generator",
+      "source": "./plugins/devops/docker-compose-generator",
+      "description": "Generate Docker Compose configurations for multi-container applications with best practices",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["docker", "docker-compose", "containers", "orchestration", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
+      "name": "kubernetes-deployment-creator",
+      "source": "./plugins/devops/kubernetes-deployment-creator",
+      "description": "Create Kubernetes deployments, services, and configurations with best practices",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["kubernetes", "k8s", "deployment", "orchestration", "containers"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
+      "name": "ci-cd-pipeline-builder",
+      "source": "./plugins/devops/ci-cd-pipeline-builder",
+      "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["ci-cd", "github-actions", "gitlab-ci", "jenkins", "devops", "automation"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
+      "name": "infrastructure-as-code-generator",
+      "source": "./plugins/devops/infrastructure-as-code-generator",
+      "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["iac", "terraform", "cloudformation", "pulumi", "infrastructure", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true
+    },
+    {
+      "name": "container-security-scanner",
+      "source": "./plugins/devops/container-security-scanner",
+      "description": "Scan containers for vulnerabilities using Trivy, Snyk, and other security tools",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["security", "containers", "scanning", "vulnerabilities", "trivy", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "deployment-rollback-manager",
+      "source": "./plugins/devops/deployment-rollback-manager",
+      "description": "Manage and execute deployment rollbacks with safety checks",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["rollback", "deployment", "kubernetes", "recovery", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "service-mesh-configurator",
+      "source": "./plugins/devops/service-mesh-configurator",
+      "description": "Configure service mesh (Istio, Linkerd) for microservices",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["service-mesh", "istio", "linkerd", "microservices", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "environment-config-manager",
+      "source": "./plugins/devops/environment-config-manager",
+      "description": "Manage environment configurations and secrets across deployments",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["config", "environment", "secrets", "configuration", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "secrets-manager-integrator",
+      "source": "./plugins/devops/secrets-manager-integrator",
+      "description": "Integrate with secrets managers (Vault, AWS Secrets Manager, etc)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["secrets", "vault", "aws", "security", "credentials", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "auto-scaling-configurator",
+      "source": "./plugins/devops/auto-scaling-configurator",
+      "description": "Configure auto-scaling policies for applications and infrastructure",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["autoscaling", "scaling", "hpa", "kubernetes", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "load-balancer-configurator",
+      "source": "./plugins/devops/load-balancer-configurator",
+      "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["load-balancer", "alb", "nginx", "haproxy", "networking", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "monitoring-stack-deployer",
+      "source": "./plugins/devops/monitoring-stack-deployer",
+      "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["monitoring", "prometheus", "grafana", "observability", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "log-aggregation-setup",
+      "source": "./plugins/devops/log-aggregation-setup",
+      "description": "Set up log aggregation (ELK, Loki, Splunk)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["logging", "elk", "loki", "splunk", "observability", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "backup-strategy-implementor",
+      "source": "./plugins/devops/backup-strategy-implementor",
+      "description": "Implement backup strategies for databases and applications",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["backup", "disaster-recovery", "restoration", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "disaster-recovery-planner",
+      "source": "./plugins/devops/disaster-recovery-planner",
+      "description": "Plan and implement disaster recovery procedures",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["disaster-recovery", "dr", "business-continuity", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "network-policy-manager",
+      "source": "./plugins/devops/network-policy-manager",
+      "description": "Manage Kubernetes network policies and firewall rules",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["network-policy", "security", "kubernetes", "firewall", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "helm-chart-generator",
+      "source": "./plugins/devops/helm-chart-generator",
+      "description": "Generate Helm charts for Kubernetes applications",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["helm", "kubernetes", "packaging", "charts", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "ansible-playbook-creator",
+      "source": "./plugins/devops/ansible-playbook-creator",
+      "description": "Create Ansible playbooks for configuration management",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["ansible", "automation", "configuration", "playbooks", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "terraform-module-builder",
+      "source": "./plugins/devops/terraform-module-builder",
+      "description": "Build reusable Terraform modules",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["terraform", "iac", "modules", "infrastructure", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "cloud-cost-optimizer",
+      "source": "./plugins/devops/cloud-cost-optimizer",
+      "description": "Optimize cloud costs and generate cost reports",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["cost", "optimization", "finops", "cloud", "aws", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "compliance-checker",
+      "source": "./plugins/devops/compliance-checker",
+      "description": "Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["compliance", "security", "audit", "soc2", "hipaa", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "gitops-workflow-builder",
+      "source": "./plugins/devops/gitops-workflow-builder",
+      "description": "Build GitOps workflows with ArgoCD and Flux",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["gitops", "argocd", "flux", "cd", "kubernetes", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "container-registry-manager",
+      "source": "./plugins/devops/container-registry-manager",
+      "description": "Manage container registries (ECR, GCR, Harbor)",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["registry", "containers", "docker", "ecr", "gcr", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "infrastructure-drift-detector",
+      "source": "./plugins/devops/infrastructure-drift-detector",
+      "description": "Detect infrastructure drift from desired state",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["drift", "terraform", "infrastructure", "monitoring", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
+    },
+    {
+      "name": "deployment-pipeline-orchestrator",
+      "source": "./plugins/devops/deployment-pipeline-orchestrator",
+      "description": "Orchestrate complex multi-stage deployment pipelines",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": ["pipeline", "orchestration", "deployment", "cicd", "devops"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      }
     }
   ]
 }
