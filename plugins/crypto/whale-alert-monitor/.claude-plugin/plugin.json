@@ -1,0 +1,13 @@
+{
+  "name": "whale-alert-monitor",
+  "version": "1.0.0",
+  "description": "Monitor large crypto transactions and whale wallet movements in real-time",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["whale", "alert", "monitor", "large", "transactions"]
+}
