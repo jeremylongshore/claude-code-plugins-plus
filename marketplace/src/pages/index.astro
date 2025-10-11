@@ -26,6 +26,30 @@ const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
     </div>
   </div>
 
+  <!-- Overnight Dev Spotlight -->
+  <div class="bg-blue-900/20 border-2 border-blue-600 p-8 mb-20 max-w-4xl mx-auto">
+    <div class="flex items-start gap-4 mb-4">
+      <div class="text-4xl">🌙</div>
+      <div class="flex-1">
+        <div class="flex items-center gap-3 mb-2">
+          <h2 class="text-2xl font-bold text-white tracking-tight">OVERNIGHT-DEV</h2>
+          <span class="px-2 py-1 bg-blue-600 text-white text-xs font-medium">NEW</span>
+        </div>
+        <p class="text-gray-300 mb-4 leading-relaxed">
+          Go to bed. Wake up to fully tested features. Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 text-sm">
+          <code class="bg-black/50 px-4 py-2 text-blue-400 font-mono border border-gray-700">
+            /plugin install overnight-dev@claude-code-plugins
+          </code>
+          <a href="#overnight-dev" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium transition-colors text-center">
+            LEARN MORE
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Stats -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-20">
     <div class="bg-gray-900 border border-gray-800 p-8 text-center">
