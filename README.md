@@ -9,6 +9,8 @@
 
 Discover, learn, and share plugins that supercharge your Claude Code experience. From slash commands to specialized AI agents to production-ready MCP servers, this is THE place to explore what's possible with Claude Code's plugin ecosystem.
 
+**🌐 [Browse the Marketplace →](https://jeremylongshore.github.io/claude-code-plugins/)**
+
 ---
 
 ## 🚀 Quick Start
