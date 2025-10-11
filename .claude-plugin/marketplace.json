@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -24,6 +24,76 @@
         "email": "[email protected]"
       },
       "featured": true
+    },
+    {
+      "name": "project-health-auditor",
+      "source": "./plugins/mcp/project-health-auditor",
+      "description": "Multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots",
+      "version": "1.0.0",
+      "category": "code-quality",
+      "keywords": ["mcp", "code-quality", "technical-debt", "complexity", "git-churn", "test-coverage", "analytics"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "mcpTools": 4
+    },
+    {
+      "name": "conversational-api-debugger",
+      "source": "./plugins/mcp/conversational-api-debugger",
+      "description": "Debug REST API failures using OpenAPI specs and HTTP logs (HAR) - root cause analysis with cURL generation",
+      "version": "1.0.0",
+      "category": "debugging",
+      "keywords": ["mcp", "api", "debugging", "openapi", "har", "rest", "curl", "http"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "mcpTools": 4
+    },
+    {
+      "name": "domain-memory-agent",
+      "source": "./plugins/mcp/domain-memory-agent",
+      "description": "Knowledge base with TF-IDF semantic search and extractive summarization - no ML dependencies required",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": ["mcp", "knowledge-base", "semantic-search", "tfidf", "summarization", "rag", "documentation"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "mcpTools": 6
+    },
+    {
+      "name": "design-to-code",
+      "source": "./plugins/mcp/design-to-code",
+      "description": "Convert Figma designs and screenshots to React/Svelte/Vue components with built-in accessibility",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": ["mcp", "design", "figma", "react", "svelte", "vue", "accessibility", "component-generation"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "mcpTools": 3
+    },
+    {
+      "name": "workflow-orchestrator",
+      "source": "./plugins/mcp/workflow-orchestrator",
+      "description": "DAG-based workflow automation with parallel task execution and dependency management",
+      "version": "1.0.0",
+      "category": "automation",
+      "keywords": ["mcp", "workflow", "dag", "automation", "orchestration", "cicd", "parallel-execution"],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "hello-world",
@@ -51,6 +121,88 @@
       "version": "1.0.0",
       "category": "security",
       "keywords": ["security", "agent", "code-review"]
+    },
+    {
+      "name": "n8n-workflow-designer",
+      "source": "./plugins/ai-agency/n8n-workflow-designer",
+      "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["n8n", "workflow", "automation", "self-hosted", "open-source", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub",
+        "url": "https://github.com/jeremylongshore/claude-code-plugins"
+      },
+      "featured": true
+    },
+    {
+      "name": "make-scenario-builder",
+      "source": "./plugins/ai-agency/make-scenario-builder",
+      "description": "Create Make.com (Integromat) scenarios with AI assistance",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["make", "integromat", "automation", "scenarios", "workflow", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "zapier-zap-builder",
+      "source": "./plugins/ai-agency/zapier-zap-builder",
+      "description": "Create multi-step Zapier Zaps with filters, paths, and formatters",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["zapier", "zap", "automation", "integration", "workflow", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "discovery-questionnaire",
+      "source": "./plugins/ai-agency/discovery-questionnaire",
+      "description": "Generate custom discovery questionnaires for AI agency prospects",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["discovery", "questionnaire", "client", "sales", "agency", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "sow-generator",
+      "source": "./plugins/ai-agency/sow-generator",
+      "description": "Generate professional Statements of Work for AI projects",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["sow", "statement of work", "contract", "proposal", "agency", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "roi-calculator",
+      "source": "./plugins/ai-agency/roi-calculator",
+      "description": "Calculate and present ROI for AI automation projects",
+      "version": "1.0.0",
+      "category": "ai-agency",
+      "keywords": ["roi", "return on investment", "calculator", "sales", "value", "ai-agency"],
+      "author": {
+        "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "overnight-dev",
+      "source": "./plugins/productivity/overnight-dev",
+      "description": "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": ["overnight", "autonomous", "tdd", "testing", "git-hooks", "automation", "continuous-integration", "test-driven-development", "productivity"],
+      "author": {
+        "name": "Intent Solutions IO",
+        "url": "https://intentsolutions.io",
+        "email": "[email protected]"
+      },
+      "featured": true
     }
   ]
 }

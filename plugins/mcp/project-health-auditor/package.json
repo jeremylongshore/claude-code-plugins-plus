@@ -1,0 +1,38 @@
+{
+  "name": "@claude-code-plugins/project-health-auditor",
+  "version": "1.0.0",
+  "description": "Analyze local repos for code health, complexity, test coverage gaps",
+  "type": "module",
+  "main": "dist/servers/code-metrics.js",
+  "scripts": {
+    "dev": "tsx watch servers/code-metrics.ts",
+    "build": "tsc",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "claude-code",
+    "mcp",
+    "code-health",
+    "metrics",
+    "complexity",
+    "coverage"
+  ],
+  "author": "Intent Solutions IO",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "glob": "^11.0.0",
+    "simple-git": "^3.25.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "tsx": "^4.16.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "eslint": "^9.0.0"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@claude-code-plugins/conversational-api-debugger",
+  "version": "1.0.0",
+  "description": "MCP server for debugging REST API failures using OpenAPI specs and HTTP logs",
+  "type": "module",
+  "main": "./dist/servers/api-debugger.js",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage"
+  },
+  "keywords": [
+    "mcp",
+    "api",
+    "debugging",
+    "openapi",
+    "http",
+    "rest",
+    "troubleshooting"
+  ],
+  "author": {
+    "name": "Intent Solutions",
+    "url": "https://intentsolutions.io"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.5.0",
+    "zod": "^3.23.0",
+    "zod-to-json-schema": "^3.23.0",
+    "openapi-types": "^12.1.3",
+    "yaml": "^2.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "@vitest/coverage-v8": "^2.1.0"
+  }
+}

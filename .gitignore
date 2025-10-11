@@ -55,5 +55,16 @@ coverage/
 claudes-docs/
 website/
 
+# Internal planning and research documents (do not commit to public repo)
+RESEARCH-FINDINGS.md
+PLUGIN-CATEGORIZATION-MATRIX.md
+PHASED-DEVELOPMENT-PLAN.md
+TOP-TIER-PLUGIN-IDEAS.md
+EXECUTIVE-SUMMARY.md
+PHASE-1-STATUS.md
+MARKETPLACE-READY.md
+/tmp/*.md
+/tmp/*.sh
+
 # Temporary migration preservation (do not commit)
 _PRESERVE_MIGRATION/

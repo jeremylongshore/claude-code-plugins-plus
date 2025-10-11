@@ -1,0 +1,21 @@
+{
+  "name": "project-health-auditor",
+  "version": "1.0.0",
+  "description": "Analyze local repos for code health, complexity, test coverage gaps - multi-dimensional health analysis combining complexity + churn + coverage",
+  "author": {
+    "name": "Intent Solutions IO",
+    "url": "https://intentsolutions.io",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "code-analysis",
+    "health-metrics",
+    "complexity",
+    "git-churn",
+    "test-coverage",
+    "mcp",
+    "code-quality"
+  ]
+}

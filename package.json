@@ -1,0 +1,28 @@
+{
+  "name": "claude-code-plugins-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Claude Code plugins workspace - simple plugins + MCP servers",
+  "scripts": {
+    "dev": "pnpm --filter '*' dev --parallel",
+    "build": "pnpm --filter '*' build",
+    "test": "pnpm --filter '*' test",
+    "lint": "pnpm --filter '*' lint",
+    "typecheck": "pnpm --filter '*' typecheck"
+  },
+  "keywords": [
+    "claude-code",
+    "plugins",
+    "mcp",
+    "monorepo"
+  ],
+  "author": "Intent Solutions IO",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.3.0"
+  }
+}
