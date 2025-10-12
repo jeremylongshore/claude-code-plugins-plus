@@ -1,3 +1,192 @@
+## [3.1.0] - 2025-10-12
+
+### 🎯 Release Highlights
+
+This release brings **advanced AI-powered plugins** to the marketplace, focusing on multi-agent orchestration, automated workflows, and intelligent travel planning. The hub now offers **224 total plugins**, with significant additions in productivity automation and AI/ML capabilities.
+
+---
+
+### 🔌 Plugin Ecosystem
+
+**Total Plugins: 224** (was 221)
+
+#### New Plugins (3)
+
+1. **ai-sdk-agents** (AI/ML) - Multi-agent orchestration with AI SDK v5
+   - Handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)
+   - 3 commands + 1 orchestrator agent
+   - Build sophisticated multi-agent systems with automatic handoffs and intelligent routing
+
+2. **ai-commit-gen** (Productivity) - AI-powered commit message generator
+   - Analyzes git diff and creates conventional commit messages instantly
+   - Follows best practices (imperative mood, 50-char subject, proper types)
+   - Saves 6+ minutes per commit
+
+3. **travel-assistant** (Productivity) - Intelligent travel companion
+   - 6 commands: /travel, /weather, /currency, /timezone, /itinerary, /pack
+   - 4 AI agents: travel-planner, weather-analyst, local-expert, budget-calculator
+   - Real-time APIs: OpenWeatherMap, ExchangeRate-API, WorldTimeAPI
+   - Complete travel planning in minutes (saves 5+ hours per trip)
+
+#### Featured Plugins
+- **ai-sdk-agents**: Advanced multi-agent orchestration
+- **travel-assistant**: Most comprehensive travel plugin (15 components)
+- **ai-commit-gen**: Single-component productivity booster
+
+---
+
+### ✨ Hub Features
+
+#### Repository Structure Cleanup
+- Moved 14 development documents to `archive/development-docs/`
+- Moved 4 plugin pack releases to `archive/releases/`
+- Moved 3 utility scripts to `scripts/utilities/`
+- Cleaner root directory with only essential files
+
+#### Plugin Categories
+- **AI/ML**: 26 plugins (was 25)
+- **Productivity**: Updated with advanced automation tools
+- **Packages**: 5 comprehensive plugin packs
+
+---
+
+### 📚 Documentation
+
+#### New Plugin Documentation
+- **ai-sdk-agents**: Comprehensive multi-agent system guide
+  - Agent handoffs explained
+  - Routing strategies
+  - Coordination patterns
+  - 5 use cases with examples
+
+- **travel-assistant**: Complete travel planning guide
+  - Real-time API integration
+  - 6 command reference
+  - 4 AI agent descriptions
+  - Multi-city trip planning
+
+- **ai-commit-gen**: Quick start guide
+  - Conventional commits explained
+  - 3 generated options
+  - Integration with git workflow
+
+#### Repository Documentation
+- Cleaned up root directory structure
+- Improved file organization
+- Better archive system
+
+---
+
+### 🔒 Security
+
+- All new plugins follow security best practices
+- API integrations use environment variables (no hardcoded keys)
+- Scripts properly permissioned (chmod +x)
+- Input validation in all commands
+
+---
+
+### 🏗️ Infrastructure
+
+#### Build System
+- Marketplace website integration for all 3 new plugins
+- JSON schema validation for plugin metadata
+- Automated catalog generation
+
+#### Git Workflow
+- Proper commit message formatting
+- Co-authoring with Claude Code
+- Clean git history
+
+---
+
+### 📊 Release Metrics
+
+- **Issues Closed**: Repository cleanup completed
+- **PRs Merged**: 3 major plugin additions
+- **New Plugins**: 3 (ai-sdk-agents, ai-commit-gen, travel-assistant)
+- **Total Plugins**: 224
+- **Featured Plugins**: 3 new additions
+- **Components Added**:
+  - Commands: 10 (3 + 1 + 6)
+  - Agents: 5 (1 + 0 + 4)
+  - Scripts: 3 (travel-assistant API integrations)
+  - Hooks: 2 (travel-assistant auto-triggers)
+
+---
+
+### 🤝 Community & Contributors
+
+#### Plugin Highlights
+
+**Most Advanced**: `travel-assistant`
+- 15 total components (6 commands, 4 agents, 3 scripts, 2 hooks)
+- Real-time API integrations
+- Multi-city trip planning
+- Budget optimization
+
+**Most Innovative**: `ai-sdk-agents`
+- Multi-agent orchestration
+- Cross-provider support (OpenAI, Anthropic, Google)
+- Agent handoffs and routing
+
+**Most Practical**: `ai-commit-gen`
+- Single-command productivity
+- Instant conventional commits
+- Zero configuration
+
+---
+
+### 🔗 Integration Examples
+
+#### Workflow Combinations
+
+**AI Development Workflow**:
+```bash
+/ai-agents-setup          # Setup multi-agent system
+/ai-agent-create tester   # Create testing agent
+/ai-agents-test "task"    # Test coordination
+/commit                   # Auto-generate commit message
+```
+
+**Travel Planning Workflow**:
+```bash
+/travel "Tokyo" --days 7 --budget 3000   # Complete plan
+/weather Tokyo --days 14                  # Extended forecast
+/currency 3000 USD JPY                    # Budget conversion
+/pack Tokyo --days 7                      # Smart packing list
+```
+
+---
+
+### 📦 Installation
+
+```bash
+# New plugins
+/plugin install ai-sdk-agents@claude-code-plugins
+/plugin install ai-commit-gen@claude-code-plugins
+/plugin install travel-assistant@claude-code-plugins
+
+# Update existing installations
+/plugin update --all
+```
+
+---
+
+### 🌟 What's Next (v3.2.0 Planning)
+
+- More MCP server plugins
+- Enhanced multi-agent coordination
+- Additional real-time API integrations
+- Community plugin submissions
+- Performance optimizations
+
+---
+
+**Full Changelog**: [v3.0.0...v3.1.0](https://github.com/jeremylongshore/claude-code-plugins/compare/v3.0.0...v3.1.0)
+
+---
+
 ## [3.0.0] - 2025-10-11
 
 ### 🚀 THE MEGA RELEASE: 220 Total Plugins - 100% Growth!
