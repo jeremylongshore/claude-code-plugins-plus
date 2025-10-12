@@ -1,10 +1,11 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-3.0.0-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-220-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Plugins](https://img.shields.io/badge/plugins-221-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Discord](https://img.shields.io/badge/Discord-Claude%20Developers-5865F2)](https://discord.com/invite/6PPFFzqPDZ)
+[![Discussions](https://img.shields.io/github/discussions/jeremylongshore/claude-code-plugins?label=discussions)](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
@@ -545,11 +546,30 @@ MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
+## 💬 Community
+
+Join the conversation and connect with other plugin developers and users!
+
+### Discussions
+- **[General Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)** - Community hub for all things plugins
+- **[Announcements](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/announcements)** - Stay updated with the latest releases
+- **[Ideas](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/ideas)** - Suggest new plugins or features
+- **[Q&A](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/q-a)** - Get help from the community
+- **[Show and Tell](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/show-and-tell)** - Share what you've built!
+
+### Other Channels
+- **[Discord](https://discord.com/invite/6PPFFzqPDZ)** - Claude Code Community (#claude-code channel)
+- **[Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)** - Report bugs or request features
+- **[Pull Requests](https://github.com/jeremylongshore/claude-code-plugins/pulls)** - Contribute your own plugins
+
+---
+
 ## Get Help
 
-- **Questions?** - [Open a discussion](https://github.com/jeremylongshore/claude-code-plugins/discussions)
+- **Questions?** - [Open a discussion](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/q-a)
 - **Found a bug?** - [Report an issue](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- **Have an idea?** - [Join our Discord](https://discord.com/invite/6PPFFzqPDZ)
+- **Have an idea?** - [Share in Ideas](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/ideas)
+- **Want to chat?** - [Join our Discord](https://discord.com/invite/6PPFFzqPDZ)
 
 ---
 
