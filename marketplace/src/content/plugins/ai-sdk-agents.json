@@ -1,0 +1,62 @@
+{
+  "name": "ai-sdk-agents",
+  "description": "Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google). Build sophisticated multi-agent systems with automatic handoffs, intelligent routing, and seamless coordination.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Longshore",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "category": "ai-ml",
+  "keywords": [
+    "ai-sdk",
+    "agents",
+    "multi-agent",
+    "orchestration",
+    "handoff",
+    "routing",
+    "llm",
+    "openai",
+    "anthropic",
+    "google",
+    "claude",
+    "ai",
+    "coordination",
+    "ai-sdk-v5",
+    "vercel-ai",
+    "agent-systems"
+  ],
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "installation": "/plugin install ai-sdk-agents@claude-code-plugins",
+  "features": [
+    "Initialize multi-agent projects with /ai-agents-setup",
+    "Create specialized agents with /ai-agent-create",
+    "Test agent systems with /ai-agents-test",
+    "Automatic agent handoffs between specialists",
+    "Intelligent routing by coordinator agent",
+    "Seamless coordination across multiple LLMs",
+    "Support for OpenAI, Anthropic, and Google AI",
+    "Built on AI SDK v5 (@ai-sdk-tools/agents)",
+    "Real-time handoff tracking and metrics",
+    "Code generation pipeline (architect → coder → tester → reviewer)",
+    "Research pipeline (searcher → analyzer → synthesizer → reporter)",
+    "Content creation pipeline (researcher → writer → editor → publisher)",
+    "Customer support routing (triager → specialists)",
+    "DevOps automation (monitor → diagnoser → fixer)",
+    "TypeScript type safety with Zod schemas",
+    "Performance benchmarking and optimization",
+    "Quality assessment scoring",
+    "Custom agent creation with tools and handoff rules",
+    "Multi-provider support in same system",
+    "Production-ready agent orchestration"
+  ],
+  "requirements": [
+    "Claude Code 1.0.0 or higher",
+    "Node.js 18+ for running multi-agent projects",
+    "npm or pnpm for package management",
+    "At least one AI provider API key (Anthropic/OpenAI/Google)",
+    "TypeScript 5.0+ for type safety",
+    "Zod for schema validation"
+  ]
+}

@@ -4016,6 +4016,38 @@
         "commands": 10,
         "total": 20
       }
+    },
+    {
+      "name": "ai-sdk-agents",
+      "source": "./plugins/ai-ml/ai-sdk-agents",
+      "description": "Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "ai-sdk",
+        "agents",
+        "multi-agent",
+        "orchestration",
+        "handoff",
+        "routing",
+        "llm",
+        "openai",
+        "anthropic",
+        "google",
+        "claude",
+        "ai",
+        "coordination"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "agents": 1,
+        "commands": 3,
+        "total": 4
+      }
     }
   ]
 }
