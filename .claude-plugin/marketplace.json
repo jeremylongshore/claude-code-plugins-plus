@@ -4073,6 +4073,39 @@
         "commands": 1,
         "total": 1
       }
+    },
+    {
+      "name": "travel-assistant",
+      "source": "./plugins/productivity/travel-assistant",
+      "description": "Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete travel companion.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "travel",
+        "weather",
+        "currency",
+        "timezone",
+        "itinerary",
+        "vacation",
+        "trip-planning",
+        "ai-travel",
+        "real-time",
+        "api-integration",
+        "budget",
+        "packing-list"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "hooks": 2,
+        "scripts": 3,
+        "total": 15
+      }
     }
   ]
 }
