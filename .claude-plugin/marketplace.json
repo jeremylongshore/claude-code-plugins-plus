@@ -4048,6 +4048,31 @@
         "commands": 3,
         "total": 4
       }
+    },
+    {
+      "name": "ai-commit-gen",
+      "source": "./plugins/productivity/ai-commit-gen",
+      "description": "AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "git",
+        "commit",
+        "conventional-commits",
+        "ai",
+        "automation",
+        "productivity",
+        "devops"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 1,
+        "total": 1
+      }
     }
   ]
 }

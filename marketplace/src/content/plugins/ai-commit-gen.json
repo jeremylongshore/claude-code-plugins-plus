@@ -1,0 +1,53 @@
+{
+  "name": "ai-commit-gen",
+  "description": "AI-powered commit message generator that analyzes your git diff and creates perfect conventional commit messages instantly. Never write commit messages manually again - get 3 AI-generated options in seconds.",
+  "version": "1.0.0",
+  "author": {
+    "name": "Jeremy Longshore",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "category": "productivity",
+  "keywords": [
+    "git",
+    "commit",
+    "conventional-commits",
+    "ai",
+    "automation",
+    "productivity",
+    "devops",
+    "commit-message",
+    "git-workflow",
+    "conventional"
+  ],
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "installation": "/plugin install ai-commit-gen@claude-code-plugins",
+  "features": [
+    "Instant commit message generation with /commit",
+    "Analyzes git diff automatically",
+    "3 generated options: concise, detailed, comprehensive",
+    "Follows conventional commits standard",
+    "Supports all commit types (feat, fix, docs, etc.)",
+    "Automatic scope detection",
+    "Breaking change warnings",
+    "Issue reference inclusion",
+    "Quick mode with custom messages",
+    "Amend last commit support",
+    "Imperative mood enforcement",
+    "50-character subject limit",
+    "72-character body wrapping",
+    "Explains what and why changes were made",
+    "Suggests commit splitting for multi-area changes",
+    "Zero configuration required",
+    "Works with any git repository",
+    "Saves 6+ minutes per commit",
+    "Professional commit history instantly",
+    "Single-command workflow"
+  ],
+  "requirements": [
+    "Claude Code 1.0.0 or higher",
+    "Git repository initialized",
+    "Changes staged or unstaged for commit"
+  ]
+}
