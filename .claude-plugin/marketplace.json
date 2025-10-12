@@ -4106,6 +4106,40 @@
         "scripts": 3,
         "total": 15
       }
+    },
+    {
+      "name": "openbb-terminal",
+      "source": "./plugins/finance/openbb-terminal",
+      "description": "Open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio optimization, and AI-powered financial insights using OpenBB Platform",
+      "version": "1.0.0",
+      "category": "finance",
+      "keywords": [
+        "finance",
+        "investment",
+        "openbb",
+        "stocks",
+        "crypto",
+        "portfolio",
+        "trading",
+        "financial-analysis",
+        "market-data",
+        "equity-research",
+        "options",
+        "forex",
+        "macroeconomics",
+        "quant",
+        "ai-finance"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "total": 10
+      }
     }
   ]
 }
