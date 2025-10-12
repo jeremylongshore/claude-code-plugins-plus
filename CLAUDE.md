@@ -10,15 +10,15 @@ This is **the comprehensive marketplace and learning hub for Claude Code plugins
 - Marketplace catalog for discovering and installing Claude Code plugins
 - Educational hub with working examples and templates
 - Community contribution platform for plugin developers
-- Current Stats: 20 marketplace plugins, 62 total plugin components, 4 plugin packs
+- **Current Stats: 220 marketplace plugins across 14 categories** (API development, AI/ML, security, DevOps, crypto, database, testing, performance, and more)
 
 ## Repository Structure
 
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json                # Main marketplace catalog (20 plugins)
-├── plugins/
+│   └── marketplace.json                # Main marketplace catalog (220 plugins)
+├── plugins/                            # 14 plugin categories
 │   ├── examples/                       # 3 fully functional example plugins
 │   │   ├── hello-world/               # Basic slash command demo
 │   │   ├── formatter/                 # PostToolUse hooks demo
@@ -29,10 +29,22 @@ claude-code-plugins/
 │   │   ├── fullstack-starter-pack/    # 15 fullstack plugins
 │   │   └── ai-ml-engineering-pack/    # 12 AI/ML plugins
 │   ├── mcp/                           # 5 MCP server plugins (21 tools)
-│   ├── devops/                        # Production DevOps plugins
+│   ├── api-development/               # 25 API development plugins
+│   ├── ai-ml/                         # 25 AI/ML plugins
+│   ├── security/                      # 25 security plugins
+│   ├── devops/                        # 25 DevOps plugins
+│   ├── crypto/                        # 25 cryptocurrency/blockchain plugins
+│   ├── database/                      # 25 database plugins
+│   ├── testing/                       # 25 testing plugins
+│   ├── performance/                   # 25 performance plugins
 │   ├── productivity/                  # Productivity plugins
-│   ├── ai-agency/                     # AI agency toolkit (6 plugins)
+│   ├── ai-agency/                     # 6 AI agency toolkit plugins
 │   └── community/                      # Community-contributed plugins
+├── marketplace/                        # Astro-based marketplace website
+│   ├── src/                           # Website source code
+│   ├── public/                        # Static assets
+│   ├── dist/                          # Built site (deployed to GitHub Pages)
+│   └── package.json                   # Astro dependencies
 ├── templates/                          # 4 plugin starter templates
 │   ├── minimal-plugin/                # Bare minimum structure
 │   ├── command-plugin/                # With slash commands
@@ -43,6 +55,8 @@ claude-code-plugins/
 │   ├── validate-all.sh                # Comprehensive validation
 │   ├── test-installation.sh           # Plugin installation testing
 │   └── check-frontmatter.py           # Markdown frontmatter validation
+├── pnpm-workspace.yaml                 # PNPM workspace config for MCP plugins
+├── package.json                        # Root package.json for monorepo
 └── .github/                            # GitHub workflows and templates
     └── workflows/
         ├── validate-plugins.yml       # CI validation
@@ -84,6 +98,13 @@ python3 scripts/check-frontmatter.py
 pnpm install
 pnpm build
 pnpm test
+
+# Marketplace website development
+cd marketplace/
+npm install
+npm run dev        # Start dev server at localhost:4321
+npm run build      # Build for production
+npm run preview    # Preview production build
 ```
 
 ### Testing Plugins Locally
@@ -152,13 +173,26 @@ EOF
 
 ## Plugin Architecture
 
+### Two Types of Plugins
+
+**1. AI Instruction Plugins** (majority of plugins - 215+)
+- Detailed markdown instructions that guide Claude's behavior
+- Work entirely through Claude's interpretation
+- No external code execution required
+- Examples: DevOps pack, security pack, all category plugins
+
+**2. MCP Server Plugins** (5 plugins)
+- Real TypeScript/JavaScript applications that run as separate Node.js processes
+- Actual compiled code (13-26KB executables)
+- Examples: project-health-auditor, conversational-api-debugger
+
 ### Plugin Components
 
 Each plugin can contain:
 - **Slash Commands** (`commands/*.md`) - Custom shortcuts triggered with `/command-name`
 - **Subagents** (`agents/*.md`) - Specialized AI agents for specific domains
 - **Hooks** (`hooks/hooks.json`) - Event-driven automation (PostToolUse, PreToolUse, etc.)
-- **MCP Servers** (`mcp/*.json`) - Connections to external tools/services
+- **MCP Servers** (`mcp/*.json`) - Connections to external tools/services (MCP plugins only)
 - **Scripts** (`scripts/*.sh`) - Shell scripts called by hooks or commands
 
 ### Required Plugin Structure
@@ -199,13 +233,30 @@ The repository includes 5 MCP server plugins providing 21 tools total:
 4. **design-to-code** (3 tools) - Figma/screenshot to React/Svelte/Vue conversion
 5. **workflow-orchestrator** (4 tools) - DAG-based workflow automation
 
-MCP plugins may require additional setup:
+### MCP Plugin Development
+
+MCP plugins are TypeScript/Node.js applications built with the `@modelcontextprotocol/sdk`:
+
 ```bash
-# For Node.js based MCP servers
+# Initial setup for MCP plugin development
+pnpm install  # Install all MCP plugin dependencies (uses pnpm workspace)
+
+# Build specific MCP plugin
 cd plugins/mcp/[plugin-name]/
-npm install
-npm run build
+pnpm build
+
+# Test specific MCP plugin
+pnpm test
+
+# Build all MCP plugins at once
+pnpm build  # From repository root
 ```
+
+Each MCP plugin has:
+- `package.json` - Node.js dependencies (@modelcontextprotocol/sdk, zod, etc.)
+- `src/` - TypeScript source code
+- `dist/` - Compiled JavaScript (generated by `pnpm build`)
+- `tsconfig.json` - TypeScript configuration
 
 ## Critical Conventions
 
@@ -232,7 +283,26 @@ Follow semantic versioning (MAJOR.MINOR.PATCH):
 - `2.0.0` - Breaking change
 
 ### Plugin Categories
-Valid categories: `productivity`, `security`, `testing`, `deployment`, `documentation`, `analysis`, `integration`, `ai`, `devops`, `debugging`, `code-quality`, `design`, `example`, `other`
+Valid categories: `productivity`, `security`, `testing`, `deployment`, `documentation`, `analysis`, `integration`, `ai`, `devops`, `debugging`, `code-quality`, `design`, `example`, `api-development`, `database`, `crypto`, `performance`, `ai-ml`, `other`
+
+### Marketplace Website
+
+The marketplace website is built with **Astro 5** and **Tailwind CSS v4**:
+
+```bash
+cd marketplace/
+
+# Development
+npm run dev        # Starts dev server at localhost:4321
+
+# Production
+npm run build      # Builds static site to dist/
+npm run preview    # Preview production build locally
+```
+
+**Deployment**: Automatically deployed to GitHub Pages via `.github/workflows/deploy-marketplace.yml` on pushes to main branch.
+
+**Live Site**: https://jeremylongshore.github.io/claude-code-plugins/
 
 ## GitHub Workflows
 
@@ -312,5 +382,20 @@ jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.json
 ---
 
 **Last Updated:** October 2025
-**Repository Version:** 1.1.0
+**Repository Version:** 3.0.0 (220 plugins!)
 **Status:** Active, accepting community contributions
+
+---
+
+## Key Development Principles
+
+When working in this repository:
+
+1. **Validate Before Committing**: Always run `./scripts/validate-all.sh` before committing
+2. **Test Locally First**: Use the test marketplace pattern to verify plugins work
+3. **Executable Scripts**: All `.sh` files must have execute permissions (`chmod +x`)
+4. **JSON Validation**: Use `jq` to validate all JSON files
+5. **Frontmatter Required**: All command and agent markdown files need YAML frontmatter
+6. **Portable Paths**: Always use `${CLAUDE_PLUGIN_ROOT}` in hooks, never absolute paths
+7. **Documentation First**: Every plugin needs comprehensive README.md
+8. **Security Conscious**: No hardcoded secrets, validate inputs, minimal permissions

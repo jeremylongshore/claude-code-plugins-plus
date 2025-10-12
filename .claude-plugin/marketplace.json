@@ -3974,6 +3974,48 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       }
+    },
+    {
+      "name": "creator-studio-pack",
+      "source": "./plugins/packages/creator-studio-pack",
+      "description": "Complete plugin suite for builder-filmmakers: Build products AND create viral videos. 20 plugins covering documentation, video production, content strategy, and workflow optimization. Transform from code to published video in 30 minutes.",
+      "version": "1.0.0",
+      "category": "packages",
+      "keywords": [
+        "video",
+        "content-creation",
+        "youtube",
+        "filmmaking",
+        "creator",
+        "documentation",
+        "screencast",
+        "tutorial",
+        "video-editing",
+        "content-strategy",
+        "distribution",
+        "thumbnails",
+        "subtitles",
+        "repurposing",
+        "batch-recording",
+        "analytics",
+        "package",
+        "premium"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "pricing": {
+        "model": "one-time",
+        "price": 149,
+        "currency": "USD"
+      },
+      "components": {
+        "agents": 10,
+        "commands": 10,
+        "total": 20
+      }
     }
   ]
 }
