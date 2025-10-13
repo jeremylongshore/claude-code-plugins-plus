@@ -84,9 +84,10 @@ jobs:
           # - Example/test values
           # - Dynamic generation (random.choice, secrets.choice, etc.)
           MATCHES=$(grep -r -E "(password|secret|api_key|token)(\s*)=(\s*)['\"]" plugins/ 2>/dev/null | \
-            grep -v '\*\*\*' | \
-            grep -v 'xxx' | \
-            grep -v 'XXX' | \
+            grep -v '= "\*\*\*"' | \
+            grep -v "= '\*\*\*'" | \
+            grep -v '= "xxx"' | \
+            grep -v '= "XXX"' | \
             grep -v 'placeholder' | \
             grep -v 'PLACEHOLDER' | \
             grep -v 'example' | \
@@ -118,8 +119,11 @@ jobs:
           fi
 
           # Check for private keys (critical - always fail)
-          if grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null; then
+          # Exclude README files (documentation of patterns to look for)
+          PRIVATE_KEYS=$(grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "Pattern:" || true)
+          if [ -n "$PRIVATE_KEYS" ]; then
             echo "❌ ERROR: Private key detected!"
+            echo "$PRIVATE_KEYS"
             exit 1
           fi
 
