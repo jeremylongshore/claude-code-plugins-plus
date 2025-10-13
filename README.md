@@ -29,6 +29,8 @@
 /plugin install devops-automation-pack@claude-code-plugins
 ```
 
+> **🛡️ New User?** Read our [User Security Guide](./docs/USER_SECURITY_GUIDE.md) to learn how to safely evaluate and install plugins.
+
 ---
 
 ## 🎓 Learning Paths
