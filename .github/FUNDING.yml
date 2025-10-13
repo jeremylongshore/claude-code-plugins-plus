@@ -1,15 +1,8 @@
-# GitHub Sponsors configuration
-# Note: GitHub Sponsors enrollment required to enable sponsorship
-# To enable: Apply at https://github.com/sponsors
+# Support this project
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 
-# github: jeremylongshore  # Uncomment after GitHub Sponsors enrollment
-
-# Active funding platforms
+# Buy Me a Coffee
 buy_me_a_coffee: jeremylongshore
-
-# Optional: Add other funding platforms when available
-# ko_fi: jeremylongshore
-# patreon: jeremylongshore
 
 # Community support and discussions
 custom:
