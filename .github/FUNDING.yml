@@ -1,13 +1,14 @@
 # GitHub Sponsors configuration
-# Users can support this project through GitHub Sponsors
+# Note: GitHub Sponsors enrollment required to enable sponsorship
+# To enable: Apply at https://github.com/sponsors
 
-github: jeremylongshore
+# github: jeremylongshore  # Uncomment after GitHub Sponsors enrollment
 
-# Optional: Add other funding platforms
+# Optional: Add other funding platforms when available
 # ko_fi: jeremylongshore
 # buy_me_a_coffee: jeremylongshore
 # patreon: jeremylongshore
 
-# Custom links for consulting/enterprise support
+# Community support and discussions
 custom:
   - "https://github.com/jeremylongshore/claude-code-plugins/discussions"
