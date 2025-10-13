@@ -1,0 +1,75 @@
+name: Question / Help
+description: Ask a question or get help using plugins
+title: "[Question] "
+labels: ["question", "help-wanted"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Need help? Ask your question below!
+
+        💡 **Tip**: For general discussions, consider using [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions) instead.
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: Question Type
+      options:
+        - Plugin installation help
+        - Plugin usage question
+        - Marketplace setup
+        - Creating my own plugin
+        - Compatibility issue
+        - Best practices
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: plugin
+    attributes:
+      label: Related Plugin (if applicable)
+      description: Which plugin is your question about?
+      placeholder: openbb-terminal
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What have you tried so far?
+      placeholder: |
+        I tried running:
+        ```bash
+        /plugin install openbb-terminal@claude-code-plugins
+        ```
+
+        But I got this error...
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Your setup details
+      placeholder: |
+        - OS: macOS 14.0
+        - Claude Code Version: 1.0.0
+        - Python Version: 3.11.5
+      render: markdown
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Before Asking
+      options:
+        - label: I've checked the plugin's README
+        - label: I've searched existing issues
+        - label: I've looked at the documentation
+        - label: I've tried the example commands

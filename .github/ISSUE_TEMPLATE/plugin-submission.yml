@@ -38,6 +38,16 @@ body:
         - analysis
         - integration
         - ai
+        - devops
+        - finance
+        - crypto
+        - database
+        - api-development
+        - performance
+        - debugging
+        - code-quality
+        - design
+        - ai-ml
         - other
     validations:
       required: true
