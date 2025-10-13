@@ -82,6 +82,7 @@ jobs:
           # - Placeholders (***", "xxx", "placeholder", etc.)
           # - Password generation commands (openssl rand, pwgen, etc.)
           # - Example/test values
+          # - Dynamic generation (random.choice, secrets.choice, etc.)
           MATCHES=$(grep -r -E "(password|secret|api_key|token)(\s*)=(\s*)['\"]" plugins/ 2>/dev/null | \
             grep -v '\*\*\*' | \
             grep -v 'xxx' | \
@@ -92,8 +93,11 @@ jobs:
             grep -v 'EXAMPLE' | \
             grep -v 'your-' | \
             grep -v 'YOUR_' | \
+            grep -v 'test-' | \
             grep -v 'openssl rand' | \
             grep -v 'pwgen' | \
+            grep -v 'random.choice' | \
+            grep -v 'secrets.choice' | \
             grep -v '\$(' | \
             grep -E "['\"][^'\"]{20,}" || true)
 
@@ -105,8 +109,11 @@ jobs:
           fi
 
           # Check for AWS keys (critical - always fail)
-          if grep -r -E "AKIA[0-9A-Z]{16}" plugins/ 2>/dev/null; then
+          # Exclude official AWS example key: AKIAIOSFODNN7EXAMPLE
+          AWS_KEYS=$(grep -r -E "AKIA[0-9A-Z]{16}" plugins/ 2>/dev/null | grep -v "AKIAIOSFODNN7EXAMPLE" || true)
+          if [ -n "$AWS_KEYS" ]; then
             echo "❌ ERROR: AWS Access Key detected!"
+            echo "$AWS_KEYS"
             exit 1
           fi
 
