@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.35-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.36-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-225-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -48,7 +48,7 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 ---
 
-## 🎉 v1.0.35 - 225 PLUGINS AVAILABLE!
+## 🎉 v1.0.36 - 225 PLUGINS AVAILABLE!
 
 **The Claude Code Plugin Hub continues to grow!** Now with **225 production-ready plugins** across 15 categories, including advanced AI-powered automation and professional finance tools.
 

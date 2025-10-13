@@ -1,3 +1,239 @@
+## [1.0.36] - 2025-10-12
+
+### 🎯 Release Highlights
+
+**🎓 Learning Paths Infrastructure Release**
+
+This release introduces a **comprehensive learning path system** - the most significant documentation update to the marketplace. Users now have **7 structured guides** (9,347 words) providing clear, progressive paths from beginner to expert, addressing the critical gap of 225 plugins with no onboarding structure.
+
+**What's New:**
+- **3 Main Learning Paths**: Quick Start (15min), Plugin Creator (3hrs), Advanced Developer (1day)
+- **4 Use Case Paths**: DevOps, Security, AI/ML, Crypto - domain-specific journeys
+- **50+ Official Docs Links**: Integrated throughout all guides
+- **100+ Code Examples**: Real-world implementations
+- **Zero Broken Links**: All navigation verified and functional
+
+---
+
+### 📚 Learning Paths System
+
+#### Main Learning Paths (3 guides)
+
+1. **[Quick Start](./docs/learning-paths/01-quick-start/)** (15 minutes)
+   - Install marketplace and first plugin
+   - Run slash commands
+   - Understand plugin types
+   - Try practical plugins (git-commit-smart)
+   - 6,200 bytes of beginner-friendly content
+
+2. **[Plugin Creator](./docs/learning-paths/02-plugin-creator/)** (3 hours)
+   - Complete plugin anatomy explanation
+   - Build from templates
+   - Create slash commands with YAML frontmatter
+   - Add hooks for automation
+   - Create AI agents
+   - Test and publish workflow
+   - 13,000 bytes of comprehensive guidance
+
+3. **[Advanced Developer](./docs/learning-paths/03-advanced-developer/)** (1 day)
+   - Build production MCP servers with TypeScript
+   - Understand MCP vs AI Instructions
+   - Implement tools, resources, and prompts
+   - Advanced features (error handling, logging, caching)
+   - Testing and debugging strategies
+   - Package and deploy to npm
+   - 17,000 bytes of production-ready content
+
+#### Use Case Paths (4 domain guides)
+
+1. **[DevOps Engineer](./docs/learning-paths/use-cases/devops-engineer.md)** (4-6 hours)
+   - Journey: Git → CI/CD → Docker → Kubernetes → Infrastructure
+   - 25 plugins from DevOps Automation Pack
+   - Real-world deployment scenarios
+   - Complete DevOps workflow example
+   - 7,700 bytes
+
+2. **[Security Specialist](./docs/learning-paths/use-cases/security-specialist.md)** (3-5 hours)
+   - Journey: Code Scanning → OWASP → Compliance → Pentesting → Threat Modeling
+   - 10 plugins from Security Pro Pack
+   - Complete security audit workflow
+   - GDPR/PCI compliance guides
+   - 11,000 bytes
+
+3. **[AI/ML Developer](./docs/learning-paths/use-cases/ai-ml-developer.md)** (4-6 hours)
+   - Journey: Prompts → LLM APIs → RAG Systems → Model Deploy → Production
+   - 12 plugins from AI/ML Engineering Pack
+   - Production AI system implementation
+   - Real code for RAG pipelines, model training
+   - 12,000 bytes
+
+4. **[Crypto Trader](./docs/learning-paths/use-cases/crypto-trader.md)** (3-4 hours)
+   - Journey: Portfolio → Analytics → Whale Tracking → Arbitrage → Sentiment
+   - 7 featured crypto plugins
+   - Automated trading system setup
+   - Complete DeFi workflow
+   - 13,000 bytes
+
+---
+
+### ✨ Documentation Improvements
+
+#### README Reorganization
+- **Above-the-fold optimization**: Removed learning paths from line 31
+- **Focused user experience**: Plugin listings now immediately visible
+- **Compact learning paths section**: Moved to line 408 with concise table format
+- **48 lines removed** from above the fold for better UX
+
+#### Official Documentation Integration
+- **50+ links** to Claude Code official docs throughout all guides
+- Links to: Installation, Plugin Reference, CLI Commands, MCP Spec, Use Cases
+- Every guide connects to authoritative sources
+- Progressive depth: basic links in Quick Start, technical links in Advanced
+
+#### Navigation & Links
+- **All internal links validated**: 100% working cross-references
+- **GitHub-optimized paths**: Relative links work perfectly on repo
+- **Mermaid diagrams** removed from README (kept in guides)
+- **Full navigation tree** functional across 7 guides
+
+---
+
+### 🔌 Plugin Ecosystem
+
+**Total Plugins: 225** (unchanged)
+
+#### Featured Crypto Plugins (5 added to featured list)
+- **whale-alert-monitor** - Production whale tracking (1,148 lines)
+- **on-chain-analytics** - Enterprise blockchain analytics (15+ chains)
+- **crypto-portfolio-tracker** - Professional portfolio tracking (50+ exchanges)
+- **arbitrage-opportunity-finder** - Advanced arbitrage scanner (100+ exchanges)
+- **market-sentiment-analyzer** - AI sentiment analysis (15+ platforms)
+
+**Total Featured Plugins: 28** (was 23)
+
+---
+
+### 🏗️ Infrastructure
+
+#### Git & GitHub
+- **FUNDING.yml updates**: Added Buy Me a Coffee sponsorship
+- **Removed GitHub Sponsors** until enrollment complete
+- **Clean funding config**: Only active platforms displayed
+
+#### File Organization
+- Learning paths in `docs/learning-paths/`
+- Main paths: `01-quick-start/`, `02-plugin-creator/`, `03-advanced-developer/`
+- Use cases: `use-cases/devops-engineer.md`, etc.
+
+---
+
+### 📊 Release Metrics
+
+#### Documentation Stats
+- **Total Guides**: 7 comprehensive documents
+- **Word Count**: 9,347 words
+- **File Size**: ~80KB of educational content
+- **Code Examples**: 100+ snippets
+- **Official Links**: 50+ references
+- **Time Investment**: 15min to 1 day (progressive)
+
+#### Quality Metrics
+- **Link Validation**: 100% (zero broken links)
+- **Navigation**: Full cross-reference tree
+- **Accessibility**: GitHub-optimized markdown
+- **Syntax Highlighting**: All code blocks formatted
+- **Mermaid Support**: Diagrams render on GitHub
+
+#### Impact Metrics
+- **User Onboarding**: Clear entry points for all skill levels
+- **Contribution Clarity**: Step-by-step plugin creation
+- **Domain Expertise**: Use-case specific journeys
+- **Community Growth**: Professional documentation hub
+
+---
+
+### 🤝 Community & Contributors
+
+#### New Capabilities Enabled
+- **First-time users**: Can install and use plugins in 15 minutes
+- **Plugin creators**: Can build and publish plugins in 3 hours
+- **Advanced developers**: Can create MCP servers in 1 day
+- **Domain specialists**: Can find relevant plugins instantly
+
+#### Contributor Experience
+- Clear progression paths for learning
+- Comprehensive examples and templates
+- Official documentation integration
+- Professional-grade guides
+
+---
+
+### 🔗 Migration Guide
+
+**For Repository Visitors:**
+- **Old**: Learning paths immediately visible at line 31
+- **New**: Learning paths at line 408 (compact table format)
+- **Action**: Click learning path links in README or navigate directly
+
+**For Plugin Users:**
+- **No changes required** - all existing plugins work
+- **New feature**: Access structured learning paths
+- **Benefit**: Progressive skill development
+
+**For Plugin Creators:**
+- **New resource**: Comprehensive plugin creator guide
+- **Templates**: Clear examples for all component types
+- **Publishing**: Step-by-step marketplace submission
+
+---
+
+### 🎯 What's Next
+
+#### Planned Improvements
+- Add video walkthroughs for each learning path
+- Create interactive playground for testing plugins
+- Add plugin difficulty badges to marketplace
+- Expand use case paths (Frontend, Mobile, Data Science)
+
+#### Future Learning Content
+- Advanced MCP server patterns
+- Multi-agent system architectures
+- Plugin performance optimization
+- Security best practices deep-dive
+
+---
+
+### 📝 Commits in This Release
+
+- `3832d3e` - feat: feature top 5 crypto plugins
+- `b85f044` - fix: comment out GitHub Sponsors
+- `d3d6e5c` - feat: add Buy Me a Coffee sponsorship
+- `65e3ac6` - chore: clean up FUNDING.yml
+- `9094412` - feat: add comprehensive learning paths
+- `4b47a03` - refactor: move learning paths below plugin listings
+
+---
+
+### 🙏 Acknowledgments
+
+**Learning Path Contributors:**
+- All plugin maintainers whose work is featured in guides
+- Official Claude Code documentation team
+- Community members providing feedback
+
+**Featured Plugin Authors:**
+- Crypto plugin ecosystem contributors
+- MCP server plugin developers
+- Plugin pack maintainers
+
+---
+
+**Full Changelog**: [v1.0.35...v1.0.36](https://github.com/jeremylongshore/claude-code-plugins/compare/v1.0.35...v1.0.36)
+
+**Download Plugin Catalog**: [plugins.json](https://github.com/jeremylongshore/claude-code-plugins/releases/download/v1.0.36/plugins.json)
+
+---
+
 ## [3.1.0] - 2025-10-12
 
 ### 🎯 Release Highlights
