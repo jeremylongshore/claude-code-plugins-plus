@@ -28,6 +28,20 @@
 
 ---
 
+## 🎓 Learning Paths
+
+**New to Claude Code plugins?** Follow our structured learning paths to get started:
+
+| Path | Duration | Best For |
+|------|----------|----------|
+| 🚀 [Quick Start](./docs/learning-paths/01-quick-start/) | 15 min | Install and use your first plugin |
+| 🛠️ [Plugin Creator](./docs/learning-paths/02-plugin-creator/) | 3 hours | Build your first plugin from scratch |
+| ⚡ [Advanced Developer](./docs/learning-paths/03-advanced-developer/) | 1 day | Create production MCP servers |
+
+**By Use Case**: [DevOps](./docs/learning-paths/use-cases/devops-engineer.md) • [Security](./docs/learning-paths/use-cases/security-specialist.md) • [AI/ML](./docs/learning-paths/use-cases/ai-ml-developer.md) • [Crypto](./docs/learning-paths/use-cases/crypto-trader.md)
+
+---
+
 ## Understanding Plugin Types
 
 This marketplace contains **two types of plugins** that work differently:
@@ -402,22 +416,6 @@ cp -r templates/command-plugin my-awesome-plugin
 /plugin marketplace add ./my-test-marketplace
 /plugin install my-awesome-plugin@test
 ```
-
----
-
-## 🎓 Learning Paths
-
-**New to plugins?** Follow structured guides to master plugin usage and creation:
-
-| Path | Duration | Best For |
-|------|----------|----------|
-| 🚀 [Quick Start](./docs/learning-paths/01-quick-start/) | 15 min | Install and use your first plugin |
-| 🛠️ [Plugin Creator](./docs/learning-paths/02-plugin-creator/) | 3 hours | Build your first plugin from scratch |
-| ⚡ [Advanced Developer](./docs/learning-paths/03-advanced-developer/) | 1 day | Create production MCP servers |
-
-**By Use Case**: [DevOps](./docs/learning-paths/use-cases/devops-engineer.md) • [Security](./docs/learning-paths/use-cases/security-specialist.md) • [AI/ML](./docs/learning-paths/use-cases/ai-ml-developer.md) • [Crypto](./docs/learning-paths/use-cases/crypto-trader.md)
-
----
 
 ## Documentation
 
