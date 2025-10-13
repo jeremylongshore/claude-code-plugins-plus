@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.36-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.37-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-225-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)

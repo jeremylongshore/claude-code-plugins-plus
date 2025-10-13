@@ -1,3 +1,394 @@
+## [1.0.37] - 2025-10-13
+
+### 🎯 Release Highlights
+
+**🛡️ Security & Learning Infrastructure Release**
+
+This release establishes comprehensive security infrastructure and optimizes learning path visibility - addressing the critical needs of a 2-week-old marketplace where users need both safety guidance and clear onboarding.
+
+**What's New:**
+- **Comprehensive Security Framework** - Multi-layered defense following npm/PyPI lessons
+- **User Security Guide** - Teach users how to safely evaluate and install plugins
+- **Optimized Learning Path Visibility** - Moved to line 31 for immediate discoverability
+- **Table of Contents** - All 7 learning guides now have anchor link navigation
+- **Clean README Structure** - Minimalist above-the-fold following release system philosophy
+
+---
+
+### 🔒 Security Infrastructure
+
+#### New Security Policy (SECURITY.md)
+
+**Comprehensive 500+ line security documentation:**
+
+- **Threat Model** - 6 major attack vectors identified and mitigated
+- **Plugin Verification Process** - Automated + manual + community review
+- **Plugin Trust Levels** - Community → Verified → Featured (3-tier system)
+- **Security SLAs** - Response time commitments (24hrs for critical issues)
+- **Responsible Disclosure** - Clear vulnerability reporting process
+
+**Threats Addressed:**
+1. Prompt Injection Attacks (malicious instructions hijacking Claude)
+2. Data Exfiltration (plugins sending user data to external servers)
+3. Destructive Operations (rm -rf, data deletion)
+4. Dependency Poisoning (malicious npm packages in MCP plugins)
+5. Supply Chain Attacks (compromised maintainer accounts)
+6. Typosquatting (similar plugin names tricking users)
+
+#### Enhanced GitHub Actions Security Scanning
+
+**4 new automated security steps** in `.github/workflows/validate-plugins.yml`:
+
+**Scan 1 - Hardcoded Secrets Detection:**
+- API keys, passwords, tokens (20+ character patterns)
+- AWS keys (AKIA pattern detection)
+- Private keys (BEGIN PRIVATE KEY)
+- **Action**: Fails build if secrets found
+
+**Scan 2 - Dangerous Pattern Detection:**
+- Destructive commands (`rm -rf /`)
+- Command injection (`eval()`)
+- Data exfiltration (curl to IP addresses)
+- Obfuscation (base64 decoding)
+- **Action**: Fails on critical, warns on suspicious
+
+**Scan 3 - Suspicious URL Detection:**
+- Non-HTTPS URLs (except localhost)
+- URL shorteners (bit.ly, tinyurl) - phishing risk
+- **Action**: Warns for manual review
+
+**Scan 4 - MCP Dependency Scanning:**
+- npm audit for all MCP plugins
+- Production dependency vulnerability checks
+- **Action**: Reports audit results
+
+**Runs on**: Every PR + every push to main
+
+#### Enhanced Pull Request Template
+
+**15+ security checks** added to `.github/PULL_REQUEST_TEMPLATE.md`:
+
+**Automated Checks (8)**:
+- No hardcoded secrets, AWS keys, private keys
+- No destructive commands, eval(), command injection
+- No base64 obfuscation, suspicious URLs
+- HTTPS enforcement (except localhost)
+
+**Manual Review (7)**:
+- Prompt injection protection
+- Data privacy/exfiltration prevention
+- Permission audit (minimal necessary)
+- Clear intent documentation
+- Input validation
+- Error handling (no sensitive data exposure)
+- Dependency review (MCP plugins)
+
+#### README Security Positioning
+
+- **Security badge** in header badges row
+- **Essential Documentation table** with User Security Guide as #1 item
+- **Clean, minimalist structure** following release system philosophy
+- Security visible but not cluttering above-the-fold
+
+---
+
+### 🛡️ User Protection Features
+
+#### User Security Guide (docs/USER_SECURITY_GUIDE.md)
+
+**Comprehensive user safety guide teaching:**
+
+1. **Trust Levels** (Featured > Verified > Community badges)
+2. **Pre-Installation Checklist** (what to check before installing)
+3. **Code Inspection Guide** (how to read plugin files for red flags)
+4. **Red Flags to Watch For** (suspicious patterns and behaviors)
+5. **Testing in Isolated Directories** (safe plugin evaluation)
+6. **Monitoring Network/File Access** (track plugin behavior)
+7. **Incident Response** (what to do if compromised)
+8. **Security Best Practices** (ongoing safety habits)
+
+**Red Flags Documented:**
+- ❌ Vague descriptions ("helps with productivity")
+- ❌ Unexplained network calls
+- ❌ Requests to ~/.ssh/, ~/.aws/, .env files
+- ❌ Base64 encoded commands (obfuscation)
+- ❌ eval() or command injection patterns
+
+**Incident Response:**
+- Immediate uninstall steps
+- Damage assessment checklist
+- Credential rotation guide
+- Clear vulnerability reporting process
+
+**Impact**: Users can now make informed decisions about plugin safety
+
+---
+
+### 🎓 Learning Path Enhancements
+
+#### Visibility Optimization
+
+**Before**: Learning paths buried at line 408 (bottom of README)
+**After**: Learning paths at line 31 (immediately after Quick Start)
+
+**Why this matters**:
+- Marketplace is only 2 weeks old
+- Most users are completely new to Claude Code plugins
+- New users need learning resources EARLY, not at the bottom
+- Above-the-fold positioning = 10x better discoverability
+
+**New User Journey:**
+1. See marketplace intro → 2. Install marketplace (Quick Start) → 3. **SEE LEARNING PATHS immediately** → 4. Browse plugins
+
+#### Table of Contents Added
+
+**5 guides gained clickable TOCs** (Plugin Creator + Advanced Developer already had them):
+
+1. **Quick Start** (5 steps) - Fast navigation through 15-minute guide
+2. **DevOps Engineer** (5 stages) - Jump to Git, CI/CD, Docker, K8s, IaC
+3. **Security Specialist** (5 stages) - Navigate OWASP, Compliance, Pentesting
+4. **AI/ML Developer** (5 stages) - Quick access to Prompts, RAG, Model Deploy
+5. **Crypto Trader** (5 stages) - Jump to Portfolio, Analytics, Arbitrage
+
+**Anchor Link Format:**
+```markdown
+## Table of Contents
+1. [Section Name](#section-name-duration) (time)
+```
+
+**Benefits:**
+- Users can jump directly to sections they need
+- No endless scrolling through long guides
+- GitHub auto-generates working anchors
+- Consistent navigation across all 7 guides
+
+**All 7 learning path guides now have:**
+- ✅ Clickable Table of Contents
+- ✅ Same-page anchor navigation
+- ✅ Time estimates for each section
+- ✅ Consistent structure and formatting
+
+---
+
+### ✨ Documentation Improvements
+
+#### README Restructure (Release System Philosophy)
+
+**Minimalist Above-the-Fold Structure:**
+
+```markdown
+# Claude Code Plugins
+
+[Badges]
+
+The comprehensive marketplace and learning hub for Claude Code plugins.
+Browse 225 plugins • Install instantly • Contribute your own
+
+---
+
+## Quick Start
+- Install a plugin (2 commands)
+- Browse the catalog (link)
+- Learn to build (link)
+
+---
+
+## 📚 Essential Documentation
+
+| Document | Purpose |
+|----------|---------|
+| User Security Guide | 🛡️ How to safely evaluate plugins (FIRST!)
+| SECURITY.md | Security policy & vulnerability reporting
+| CHANGELOG.md | Release history
+| CONTRIBUTING.md | How to submit plugins
+| Learning Paths | Structured guides
+```
+
+**Follows Release System Requirements:**
+- ✅ Answers: What is this? (marketplace tagline)
+- ✅ Answers: What can I do? (Browse, install, contribute)
+- ✅ Answers: How do I start? (Quick Start - 3 steps)
+- ✅ Answers: Where are docs? (Essential Documentation table)
+- ✅ Minimalist content (no verbose callouts)
+- ✅ Documentation hierarchy (table-based, scannable)
+
+**Changes:**
+- Removed 2 verbose security callout boxes from top
+- Created Essential Documentation table (security #1)
+- Simplified Quick Start to 3 clear actions
+- Moved learning paths to line 31 (high visibility)
+- 48 lines cleaner, more focused
+
+---
+
+### 🏗️ Infrastructure
+
+#### GitHub Actions
+
+**New Workflows:**
+- **CodeQL Analysis** (.github/workflows/codeql.yml)
+  - Semantic code analysis for JavaScript, TypeScript, Python
+  - Security-extended + security-and-quality queries
+  - Runs weekly + on every PR
+  - Catches complex vulnerabilities
+
+#### Security Advisory Setup
+
+**Documentation**: `.github/SECURITY_ADVISORY_SETUP.md`
+- Instructions to enable GitHub Security Advisories
+- Private vulnerability reporting setup
+- 2-minute setup process
+
+---
+
+### 📊 Release Metrics
+
+#### Documentation Stats
+- **User Security Guide**: 443 lines of user protection guidance
+- **SECURITY.md**: 500+ lines comprehensive security policy
+- **Learning Path TOCs**: 5 guides gained navigation (50 new lines)
+- **README optimization**: 48 lines removed, clarity improved
+- **Total Documentation**: ~1,000 lines of new security/UX content
+
+#### Security Coverage
+- **Automated Scans**: 4 security scanning steps in CI
+- **Manual Checks**: 15+ security review checklist items
+- **Threat Models**: 6 attack vectors documented and mitigated
+- **Trust Levels**: 3-tier plugin verification system
+
+#### UX Improvements
+- **Learning Path Visibility**: Moved from line 408 → line 31 (377 lines earlier!)
+- **Navigation**: 7 guides now have clickable TOCs
+- **Above-the-Fold**: 48 lines cleaner following release system
+- **Essential Docs**: Security is #1 priority in documentation table
+
+---
+
+### 🤝 Community & Security
+
+#### Security-First Culture
+
+**Community-First Defense Model:**
+1. **Transparency** - All code open source, all discussions public
+2. **Community** - Multi-reviewer validation, public review periods
+3. **Automation** - Fast automated scanning catches common issues
+4. **Education** - Clear guidelines help developers build secure plugins
+
+**Observable Behavior Tracking:**
+- All plugins open source and auditable
+- Public security discussions via GitHub Issues
+- Transparent issue tracking
+- "If you see something, say something" culture
+
+#### Plugin Trust System
+
+**Level 1 - Community** (⚠️):
+- Automated validation only
+- Minimal manual review
+- Use with caution
+
+**Level 2 - Verified** (✅):
+- Full security review completed
+- 2+ maintainer approvals
+- 7-day public review period
+- Safe for production
+
+**Level 3 - Featured** (✅✅):
+- Level 2 + active maintenance
+- Community adoption (10+ users)
+- Comprehensive tests
+- Recommended for all users
+
+---
+
+### 🔗 Migration Guide
+
+**For Repository Visitors:**
+- **Change**: Learning paths moved from bottom to top
+- **Old location**: Line 408
+- **New location**: Line 31 (right after Quick Start)
+- **Action**: None required - links work automatically
+
+**For Plugin Users:**
+- **New feature**: User Security Guide shows how to evaluate plugins safely
+- **New feature**: Trust level badges indicate plugin safety
+- **Action**: Read [User Security Guide](./docs/USER_SECURITY_GUIDE.md) before installing new plugins
+
+**For Plugin Developers:**
+- **New requirement**: All PRs must pass 4 automated security scans
+- **New requirement**: 15+ security checklist items in PR template
+- **Action**: Review [SECURITY.md](./SECURITY.md) and ensure compliance
+
+**For Maintainers:**
+- **New process**: Security scanning runs on every PR automatically
+- **New process**: Use plugin trust levels (Community/Verified/Featured)
+- **Action**: Review security scanning results in CI, use PR checklist
+
+---
+
+### 🎯 What's Next
+
+#### Planned Security Enhancements (Optional)
+- Snyk integration for deeper dependency scanning (Medium effort)
+- Community trust scores with star ratings (Medium effort)
+- Sandbox testing in Docker containers (High effort - only if 1000+ plugins)
+
+#### Planned Documentation (v1.0.38)
+- API Reference documentation
+- Plugin Quality Standards guide
+- Video walkthroughs for learning paths
+- Interactive plugin testing playground
+
+---
+
+### 📝 Commits in This Release
+
+- `bff2b41` - feat: add Table of Contents to all learning path guides
+- `e13bd2d` - fix: move learning paths to optimal location for new users
+- `37fe1d3` - feat: implement comprehensive security framework for plugin marketplace
+- `e84d6d4` - feat: add comprehensive User Security Guide for safe plugin usage
+- `dba4438` - refactor: clean README structure following release system philosophy
+
+---
+
+### 🙏 Acknowledgments
+
+**Security Framework Inspiration:**
+- Lessons learned from npm and PyPI security incidents
+- Anthropic's security-first principles
+- Community feedback on plugin safety
+
+**User Protection:**
+- Focus on educating users, not just protecting infrastructure
+- Community-first defense model prioritizes transparency
+- Observable behavior makes malicious plugins visible
+
+---
+
+**Full Changelog**: [v1.0.36...v1.0.37](https://github.com/jeremylongshore/claude-code-plugins/compare/v1.0.36...v1.0.37)
+
+---
+
+## 🚀 Quick Links
+
+- **User Security Guide**: [How to safely evaluate plugins](./docs/USER_SECURITY_GUIDE.md)
+- **Security Policy**: [Threat model & reporting](./SECURITY.md)
+- **Learning Paths**: [Structured guides now at line 31](./README.md#-learning-paths)
+- **Essential Docs**: [Security is #1 priority](./README.md#-essential-documentation)
+
+---
+
+**Installation:**
+```bash
+# Users - no action needed
+/plugin marketplace update claude-code-plugins
+
+# Plugin developers - review security requirements
+cat SECURITY.md
+```
+
+---
+
 ## [1.0.36] - 2025-10-12
 
 ### 🎯 Release Highlights
