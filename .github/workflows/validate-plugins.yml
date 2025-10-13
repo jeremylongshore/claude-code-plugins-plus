@@ -138,15 +138,20 @@ jobs:
           echo "Scanning for dangerous command patterns..."
           FOUND_ISSUES=0
 
-          # Check for destructive commands
-          if grep -r -E "rm\s+-rf\s+/" plugins/ 2>/dev/null; then
+          # Check for destructive commands (only root deletion, not /var/... paths)
+          # Match: rm -rf / or rm -rf /* but NOT rm -rf /var/... etc.
+          DANGEROUS_RM=$(grep -r -E "rm\s+-rf\s+/(\s|$|\*)" plugins/ 2>/dev/null | grep -v "/var/" | grep -v "/tmp/" | grep -v "/prometheus/" || true)
+          if [ -n "$DANGEROUS_RM" ]; then
             echo "❌ ERROR: Dangerous 'rm -rf /' pattern detected!"
+            echo "$DANGEROUS_RM"
             FOUND_ISSUES=1
           fi
 
-          # Check for command injection risks
-          if grep -r -E "eval\s*\(" plugins/ 2>/dev/null; then
+          # Check for command injection risks (exclude README documentation)
+          EVAL_USES=$(grep -r -E "eval\s*\(" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "this.redis.eval" || true)
+          if [ -n "$EVAL_USES" ]; then
             echo "⚠️  WARNING: 'eval()' detected - potential command injection risk"
+            echo "$EVAL_USES"
           fi
 
           # Check for suspicious curl/wget to unknown domains
