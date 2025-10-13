@@ -28,6 +28,68 @@
 
 ---
 
+## 🎓 Learning Paths
+
+New to Claude Code plugins? Follow these structured paths to master plugin usage and creation:
+
+```mermaid
+graph TD
+    Start[🎯 Choose Your Path] --> Choice{What's Your Goal?}
+
+    Choice -->|Use Plugins Now| Quick[🚀 Quick Start<br/>15 minutes]
+    Choice -->|Build Plugins| Creator[🛠️ Plugin Creator<br/>3 hours]
+    Choice -->|Production Apps| Advanced[⚡ Advanced Developer<br/>1 day]
+    Choice -->|Specific Domain| UseCase[💼 By Use Case]
+
+    Quick --> Q1[Install marketplace]
+    Q1 --> Q2[Try hello-world]
+    Q2 --> Q3[Use formatter]
+    Q3 --> Q4[Install a pack]
+
+    Creator --> C1[Understand structure]
+    C1 --> C2[Use template]
+    C2 --> C3[Create slash command]
+    C3 --> C4[Add hooks & agents]
+    C4 --> C5[Publish to marketplace]
+
+    Advanced --> A1[Build MCP server]
+    A1 --> A2[Multi-agent systems]
+    A2 --> A3[Package distribution]
+
+    UseCase --> U1[DevOps Path]
+    UseCase --> U2[Security Path]
+    UseCase --> U3[AI/ML Path]
+    UseCase --> U4[Crypto Path]
+
+    style Quick fill:#90EE90
+    style Creator fill:#87CEEB
+    style Advanced fill:#FFB6C1
+    style UseCase fill:#DDA0DD
+```
+
+### 📚 Detailed Guides
+
+Choose your learning path based on your experience and goals:
+
+| Path | Duration | Best For | Start Here |
+|------|----------|----------|------------|
+| 🚀 **[Quick Start](./docs/learning-paths/01-quick-start/)** | 15 min | First-time users wanting to install and use plugins | [Step 1 →](./docs/learning-paths/01-quick-start/README.md) |
+| 🛠️ **[Plugin Creator](./docs/learning-paths/02-plugin-creator/)** | 3 hours | Developers building their first plugin | [Step 1 →](./docs/learning-paths/02-plugin-creator/README.md) |
+| ⚡ **[Advanced Developer](./docs/learning-paths/03-advanced-developer/)** | 1 day | Building production MCP servers and agent systems | [Step 1 →](./docs/learning-paths/03-advanced-developer/README.md) |
+
+### 💼 By Use Case
+
+Jump directly to a curated learning path for your domain:
+
+- **[DevOps Engineer](./docs/learning-paths/use-cases/devops-engineer.md)**: Git → CI/CD → Docker → Kubernetes → Infrastructure
+- **[Security Specialist](./docs/learning-paths/use-cases/security-specialist.md)**: OWASP → Compliance → Threat Modeling → Pentesting
+- **[AI/ML Developer](./docs/learning-paths/use-cases/ai-ml-developer.md)**: Prompts → LLM Integration → RAG Systems → Production
+- **[Crypto Trader](./docs/learning-paths/use-cases/crypto-trader.md)**: Portfolio → Whale Tracking → Arbitrage → Sentiment Analysis
+
+> **New to plugins?** Start with [Quick Start](./docs/learning-paths/01-quick-start/) to install your first plugin in under 15 minutes!
+
+---
+
 ## Understanding Plugin Types
 
 This marketplace contains **two types of plugins** that work differently:
