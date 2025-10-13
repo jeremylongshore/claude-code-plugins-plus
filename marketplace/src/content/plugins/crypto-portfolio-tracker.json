@@ -1,8 +1,8 @@
 {
   "name": "crypto-portfolio-tracker",
-  "description": "Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics",
+  "description": "Professional-grade crypto portfolio tracker with real-time price feeds, comprehensive PnL analysis, risk metrics, tax reporting, and multi-wallet aggregation across 50+ exchanges and DeFi protocols",
   "version": "1.0.0",
-  "category": "other",
+  "category": "crypto",
   "keywords": [
     "crypto",
     "portfolio",
@@ -10,16 +10,46 @@
     "investment",
     "bitcoin",
     "ethereum",
-    "defi"
+    "defi",
+    "pnl",
+    "tax-reporting",
+    "risk-metrics"
   ],
   "author": {
     "name": "Jeremy Longshore"
   },
-  "featured": false,
+  "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/crypto-portfolio-tracker",
   "license": "MIT",
   "installation": "/plugin install crypto-portfolio-tracker@claude-code-plugins",
-  "features": [],
-  "requirements": [],
+  "features": [
+    "Multi-wallet aggregation (50+ exchanges, DeFi protocols)",
+    "Real-time portfolio valuation and PnL tracking",
+    "Automatic cost basis calculation (FIFO, LIFO, HIFO)",
+    "Tax reporting with IRS Form 8949 generation",
+    "Risk metrics (Sharpe ratio, max drawdown, VaR)",
+    "Asset allocation visualization and rebalancing alerts",
+    "Historical performance analysis (1min - 5yr)",
+    "Profit/loss breakdown by asset and time period",
+    "Dividend and staking reward tracking",
+    "Cross-chain position aggregation",
+    "DeFi yield farming position tracking",
+    "NFT portfolio valuation (floor price tracking)",
+    "Multi-currency support (150+ fiat currencies)",
+    "CSV/Excel export for accounting",
+    "Privacy-first design (local database storage)",
+    "Customizable dashboard with 20+ widgets",
+    "Price alert system (SMS, email, push)",
+    "API integrations (CoinGecko, CoinMarketCap, Messari)",
+    "Automatic transaction import from exchanges",
+    "Portfolio comparison and benchmarking"
+  ],
+  "requirements": [
+    "Python 3.9+ or Node.js 18+",
+    "SQLite or PostgreSQL for transaction storage",
+    "Exchange API keys (read-only permissions)",
+    "Blockchain wallet addresses (view-only)",
+    "CoinGecko API key (free tier sufficient)"
+  ],
   "screenshots": []
 }

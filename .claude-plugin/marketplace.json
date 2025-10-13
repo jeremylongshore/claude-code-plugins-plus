@@ -2067,7 +2067,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "blockchain-explorer-cli",
@@ -2166,7 +2167,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "crypto-signal-generator",
@@ -2360,7 +2362,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "mempool-analyzer",
@@ -2418,7 +2421,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "options-flow-analyzer",
@@ -2533,7 +2537,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "data-seeder-generator",
