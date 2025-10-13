@@ -11,31 +11,41 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-> **🔒 Security First**: All plugins undergo automated security scanning and community review. See our [Security Policy](SECURITY.md) for details on plugin verification, threat mitigation, and responsible disclosure.
+Browse **225 plugins** • Install instantly • Contribute your own
 
-> **Important**: This marketplace contains both AI instruction templates (that guide Claude's behavior) and executable MCP servers (that run as Node.js processes). See [Understanding Plugin Types](#understanding-plugin-types) below for details.
-
-## Browse the Marketplace
-
-**[https://jeremylongshore.github.io/claude-code-plugins/](https://jeremylongshore.github.io/claude-code-plugins/)**
+---
 
 ## Quick Start
 
+**Install a plugin:**
 ```bash
-# Add this marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
-
-# Install a plugin pack
 /plugin install devops-automation-pack@claude-code-plugins
 ```
 
-> **🛡️ New User?** Read our [User Security Guide](./docs/USER_SECURITY_GUIDE.md) to learn how to safely evaluate and install plugins.
+**Browse the catalog:**
+Visit **[claude-code-plugins marketplace](https://jeremylongshore.github.io/claude-code-plugins/)** or explore [`plugins/`](./plugins/)
+
+**Learn to build:**
+See [Learning Paths](#-learning-paths) for step-by-step guides
+
+---
+
+## 📚 Essential Documentation
+
+| Document | Purpose |
+|----------|---------|
+| **[User Security Guide](./docs/USER_SECURITY_GUIDE.md)** | 🛡️ How to safely evaluate and install plugins |
+| **[SECURITY.md](./SECURITY.md)** | Security policy, threat model, vulnerability reporting |
+| **[CHANGELOG.md](./CHANGELOG.md)** | Release history & version updates |
+| **[CONTRIBUTING.md](./CONTRIBUTING.md)** | How to submit plugins |
+| **[Learning Paths](#-learning-paths)** | Structured guides from beginner to expert |
 
 ---
 
 ## 🎓 Learning Paths
 
-**New to Claude Code plugins?** Follow our structured learning paths to get started:
+**New to Claude Code plugins?** Follow structured paths:
 
 | Path | Duration | Best For |
 |------|----------|----------|
