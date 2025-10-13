@@ -137,13 +137,32 @@
 
 ## Security Considerations
 
-<!-- Any security implications? -->
+<!-- REQUIRED for all plugin submissions - see SECURITY.md -->
 
-- [ ] No security impact
-- [ ] Reviewed for common vulnerabilities (XSS, injection, etc.)
-- [ ] No sensitive data exposure
-- [ ] Secrets management properly handled
-- [ ] Input validation implemented
+### Automated Security Scans
+- [ ] No hardcoded secrets (API keys, passwords, tokens)
+- [ ] No AWS keys, private keys, or credentials detected
+- [ ] No destructive commands (`rm -rf /`, data deletion)
+- [ ] No `eval()` or command injection risks
+- [ ] No suspicious curl/wget to IP addresses
+- [ ] No base64 obfuscation detected
+- [ ] All URLs use HTTPS (except localhost)
+- [ ] No URL shorteners (potential phishing)
+
+### Manual Security Review
+- [ ] **Prompt Injection Protection**: No hidden instructions that hijack Claude's behavior
+- [ ] **Data Privacy**: No data exfiltration to external servers (all network calls documented in README)
+- [ ] **Permission Audit**: Plugin requests minimal necessary permissions only
+- [ ] **Clear Intent**: README clearly explains what the plugin does
+- [ ] **Input Validation**: All user inputs validated before processing
+- [ ] **Error Handling**: No sensitive data in error messages
+- [ ] **Dependencies**: All npm dependencies reviewed (for MCP plugins)
+
+### Testing
+- [ ] Tested in isolated environment before submission
+- [ ] No unexpected side effects observed
+- [ ] Graceful error handling for edge cases
+- [ ] Works as documented in README
 
 ## Rollback Plan
 

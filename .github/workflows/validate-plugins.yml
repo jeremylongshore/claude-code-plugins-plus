@@ -72,3 +72,94 @@ jobs:
               fi
             fi
           done
+
+      - name: Security scan - Detect hardcoded secrets
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          # Check for common secret patterns
+          if grep -r -E "(password|secret|api_key|token)(\s*)=(\s*)['\"][^'\"]{20,}" plugins/ 2>/dev/null; then
+            echo "⚠️  WARNING: Potential hardcoded secrets detected!"
+            echo "Please review the above matches and use environment variables instead."
+            exit 1
+          fi
+
+          # Check for AWS keys
+          if grep -r -E "AKIA[0-9A-Z]{16}" plugins/ 2>/dev/null; then
+            echo "❌ ERROR: AWS Access Key detected!"
+            exit 1
+          fi
+
+          # Check for private keys
+          if grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null; then
+            echo "❌ ERROR: Private key detected!"
+            exit 1
+          fi
+
+          echo "✅ No hardcoded secrets detected"
+
+      - name: Security scan - Dangerous patterns
+        run: |
+          echo "Scanning for dangerous command patterns..."
+          FOUND_ISSUES=0
+
+          # Check for destructive commands
+          if grep -r -E "rm\s+-rf\s+/" plugins/ 2>/dev/null; then
+            echo "❌ ERROR: Dangerous 'rm -rf /' pattern detected!"
+            FOUND_ISSUES=1
+          fi
+
+          # Check for command injection risks
+          if grep -r -E "eval\s*\(" plugins/ 2>/dev/null; then
+            echo "⚠️  WARNING: 'eval()' detected - potential command injection risk"
+          fi
+
+          # Check for suspicious curl/wget to unknown domains
+          if grep -r -E "curl.*http://[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+" plugins/ 2>/dev/null; then
+            echo "⚠️  WARNING: curl to IP address detected - potential data exfiltration"
+          fi
+
+          # Check for base64 encoded content (potential obfuscation)
+          if grep -r -E "base64\s+-d" plugins/ 2>/dev/null; then
+            echo "⚠️  WARNING: base64 decoding detected - potential obfuscation"
+          fi
+
+          if [ $FOUND_ISSUES -eq 0 ]; then
+            echo "✅ No dangerous patterns detected"
+          else
+            exit 1
+          fi
+
+      - name: Security scan - Suspicious URLs
+        run: |
+          echo "Scanning for suspicious URLs..."
+          # Check for non-HTTPS URLs (except localhost)
+          if grep -r -E "http://[^l]" plugins/ | grep -v "localhost" | grep -v "127.0.0.1" 2>/dev/null; then
+            echo "⚠️  WARNING: Non-HTTPS URLs detected (security risk)"
+          fi
+
+          # Check for URL shorteners (potential phishing)
+          if grep -r -E "(bit\.ly|tinyurl\.com|goo\.gl)" plugins/ 2>/dev/null; then
+            echo "⚠️  WARNING: URL shorteners detected (potential phishing)"
+          fi
+
+          echo "✅ URL scan complete"
+
+      - name: Security scan - MCP plugin dependencies
+        if: hashFiles('plugins/mcp/*/package.json') != ''
+        run: |
+          echo "Scanning MCP plugin dependencies..."
+          for package in plugins/mcp/*/package.json; do
+            if [ -f "$package" ]; then
+              echo "Checking $package"
+              dir=$(dirname "$package")
+              cd "$dir"
+
+              # Check for npm audit
+              if command -v npm &> /dev/null; then
+                npm audit --production || true
+              fi
+
+              cd -
+            fi
+          done
+          echo "✅ Dependency scan complete"

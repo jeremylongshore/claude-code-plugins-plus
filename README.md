@@ -4,11 +4,14 @@
 [![Plugins](https://img.shields.io/badge/plugins-225-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Security](https://img.shields.io/badge/security-audited-success)](SECURITY.md)
 [![Discord](https://img.shields.io/badge/Discord-Claude%20Developers-5865F2)](https://discord.com/invite/6PPFFzqPDZ)
 [![Discussions](https://img.shields.io/github/discussions/jeremylongshore/claude-code-plugins?label=discussions)](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
+
+> **🔒 Security First**: All plugins undergo automated security scanning and community review. See our [Security Policy](SECURITY.md) for details on plugin verification, threat mitigation, and responsible disclosure.
 
 > **Important**: This marketplace contains both AI instruction templates (that guide Claude's behavior) and executable MCP servers (that run as Node.js processes). See [Understanding Plugin Types](#understanding-plugin-types) below for details.
 
