@@ -25,6 +25,16 @@ graph LR
 
 ---
 
+## Table of Contents
+
+1. [Git Workflow Mastery](#stage-1-git-workflow-mastery-1-hour) (1 hour)
+2. [CI/CD Pipeline Automation](#stage-2-cicd-pipeline-automation-15-hours) (1.5 hours)
+3. [Container Orchestration](#stage-3-container-orchestration-15-hours) (1.5 hours)
+4. [Kubernetes Deployment](#stage-4-kubernetes-deployment-15-hours) (1.5 hours)
+5. [Infrastructure as Code](#stage-5-infrastructure-as-code-1-hour) (1 hour)
+
+---
+
 ## Stage 1: Git Workflow Mastery (1 hour)
 
 ### Install Plugins

@@ -25,6 +25,16 @@ graph LR
 
 ---
 
+## Table of Contents
+
+1. [Security Basics](#stage-1-security-basics-45-min) (45 min)
+2. [OWASP Top 10 Compliance](#stage-2-owasp-top-10-compliance-1-hour) (1 hour)
+3. [Compliance & Standards](#stage-3-compliance--standards-1-hour) (1 hour)
+4. [Advanced Security](#stage-4-advanced-security-15-hours) (1.5 hours)
+5. [Threat Modeling & Incident Response](#stage-5-threat-modeling--incident-response-1-hour) (1 hour)
+
+---
+
 ## Stage 1: Security Basics (45 min)
 
 ### Install Security Tools

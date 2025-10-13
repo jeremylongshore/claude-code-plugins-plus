@@ -25,6 +25,16 @@ graph LR
 
 ---
 
+## Table of Contents
+
+1. [Portfolio Management](#stage-1-portfolio-management-45-min) (45 min)
+2. [On-Chain Analytics](#stage-2-on-chain-analytics-1-hour) (1 hour)
+3. [Whale Alert Monitoring](#stage-3-whale-alert-monitoring-1-hour) (1 hour)
+4. [Arbitrage Trading](#stage-4-arbitrage-trading-1-hour) (1 hour)
+5. [Market Sentiment & Automation](#stage-5-market-sentiment--automation-1-hour) (1 hour)
+
+---
+
 ## Stage 1: Portfolio Management (45 min)
 
 ### Install Crypto Tools

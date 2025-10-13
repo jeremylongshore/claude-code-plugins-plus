@@ -10,6 +10,16 @@
 
 ---
 
+## Table of Contents
+
+1. [Add the Marketplace](#step-1-add-the-marketplace-2-minutes) (2 min)
+2. [Install Your First Plugin](#step-2-install-your-first-plugin-3-minutes) (3 min)
+3. [Use Your First Command](#step-3-use-your-first-command-2-minutes) (2 min)
+4. [Try a Practical Plugin](#step-4-try-a-practical-plugin-5-minutes) (5 min)
+5. [Explore Plugin Packs](#step-5-explore-plugin-packs-3-minutes) (3 min)
+
+---
+
 ## Step 1: Add the Marketplace (2 minutes)
 
 First, add this plugin marketplace to Claude Code:

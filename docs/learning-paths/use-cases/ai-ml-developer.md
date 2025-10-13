@@ -25,6 +25,16 @@ graph LR
 
 ---
 
+## Table of Contents
+
+1. [Prompt Engineering](#stage-1-prompt-engineering-1-hour) (1 hour)
+2. [LLM API Integration](#stage-2-llm-api-integration-15-hours) (1.5 hours)
+3. [RAG System Development](#stage-3-rag-system-development-2-hours) (2 hours)
+4. [Model Training & Fine-tuning](#stage-4-model-training--fine-tuning-15-hours) (1.5 hours)
+5. [Production Deployment](#stage-5-production-deployment-15-hours) (1.5 hours)
+
+---
+
 ## Stage 1: Prompt Engineering (1 hour)
 
 ### Install AI/ML Pack
