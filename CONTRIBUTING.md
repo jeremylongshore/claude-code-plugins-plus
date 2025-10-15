@@ -360,6 +360,12 @@ Contributors are recognized in several ways:
 - **Community highlights** - Outstanding contributions featured
 - **Maintainer status** - Active contributors may become maintainers
 
+### Contributor Spotlight
+
+- @cdnsteve — Added the featured Sugar plugin (autonomous AI development)
+  - PR: https://github.com/jeremylongshore/claude-code-plugins/pull/8
+  - Repo: https://github.com/cdnsteve/sugar
+
 ##  License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
