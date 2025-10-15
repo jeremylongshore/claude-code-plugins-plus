@@ -14,7 +14,7 @@ Track cryptocurrency futures, options, and perpetual swaps with funding rates, o
 ## Installation
 
 ```bash
-/plugin install crypto-derivatives-tracker@claude-code-plugins
+/plugin install crypto-derivatives-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

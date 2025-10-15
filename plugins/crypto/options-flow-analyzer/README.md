@@ -35,7 +35,7 @@ Track institutional options flow, unusual options activity, and smart money move
 ## Installation
 
 ```bash
-/plugin install options-flow-analyzer@claude-code-plugins
+/plugin install options-flow-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

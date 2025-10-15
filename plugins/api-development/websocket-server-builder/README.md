@@ -5,7 +5,7 @@ Build WebSocket servers for real-time bidirectional communication with Socket.io
 ## Installation
 
 ```bash
-/plugin install websocket-server-builder@claude-code-plugins
+/plugin install websocket-server-builder@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Database plugin for nosql-data-modeler
 ## Installation
 
 ```bash
-/plugin install nosql-data-modeler@claude-code-plugins
+/plugin install nosql-data-modeler@claude-code-plugins-plus
 ```
 
 ## Usage

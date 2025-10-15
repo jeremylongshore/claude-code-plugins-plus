@@ -5,7 +5,7 @@ Optimize cloud costs and generate cost reports
 ## Installation
 
 ```bash
-/plugin install cloud-cost-optimizer@claude-code-plugins
+/plugin install cloud-cost-optimizer@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Build GitOps workflows with ArgoCD and Flux
 ## Installation
 
 ```bash
-/plugin install gitops-workflow-builder@claude-code-plugins
+/plugin install gitops-workflow-builder@claude-code-plugins-plus
 ```
 
 ## Usage

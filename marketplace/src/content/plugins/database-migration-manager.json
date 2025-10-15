@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-migration-manager",
   "license": "MIT",
-  "installation": "/plugin install database-migration-manager@claude-code-plugins",
+  "installation": "/plugin install database-migration-manager@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

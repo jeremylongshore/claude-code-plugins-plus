@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/test-coverage-analyzer",
   "license": "MIT",
-  "installation": "/plugin install test-coverage-analyzer@claude-code-plugins",
+  "installation": "/plugin install test-coverage-analyzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

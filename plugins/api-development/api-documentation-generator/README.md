@@ -5,7 +5,7 @@ Generate comprehensive OpenAPI/Swagger documentation with interactive UIs and ex
 ## Installation
 
 ```bash
-/plugin install api-documentation-generator@claude-code-plugins
+/plugin install api-documentation-generator@claude-code-plugins-plus
 ```
 
 ## Usage

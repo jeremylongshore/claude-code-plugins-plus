@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/service-mesh-configurator",
   "license": "MIT",
-  "installation": "/plugin install service-mesh-configurator@claude-code-plugins",
+  "installation": "/plugin install service-mesh-configurator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

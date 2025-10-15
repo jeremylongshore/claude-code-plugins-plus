@@ -5,7 +5,7 @@ Configure auto-scaling policies for applications and infrastructure
 ## Installation
 
 ```bash
-/plugin install auto-scaling-configurator@claude-code-plugins
+/plugin install auto-scaling-configurator@claude-code-plugins-plus
 ```
 
 ## Usage

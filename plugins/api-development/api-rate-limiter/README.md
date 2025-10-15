@@ -5,7 +5,7 @@ Implement rate limiting with token bucket, sliding window algorithms, and Redis 
 ## Installation
 
 ```bash
-/plugin install api-rate-limiter@claude-code-plugins
+/plugin install api-rate-limiter@claude-code-plugins-plus
 ```
 
 ## Usage

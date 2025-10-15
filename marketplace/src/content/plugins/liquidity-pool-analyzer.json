@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/liquidity-pool-analyzer",
   "license": "MIT",
-  "installation": "/plugin install liquidity-pool-analyzer@claude-code-plugins",
+  "installation": "/plugin install liquidity-pool-analyzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

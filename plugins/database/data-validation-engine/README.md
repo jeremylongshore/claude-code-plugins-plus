@@ -5,7 +5,7 @@ Database plugin for data-validation-engine
 ## Installation
 
 ```bash
-/plugin install data-validation-engine@claude-code-plugins
+/plugin install data-validation-engine@claude-code-plugins-plus
 ```
 
 ## Usage

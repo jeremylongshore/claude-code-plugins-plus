@@ -39,8 +39,8 @@ graph LR
 
 ### Install Plugins
 ```bash
-/plugin install git-commit-smart@claude-code-plugins
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 ### Learn: Smart Commits
@@ -340,7 +340,7 @@ terraform apply
 ### Multi-Cloud Deployment
 ```bash
 # Install cloud plugins
-/plugin install cloud-architect@claude-code-plugins
+/plugin install cloud-architect@claude-code-plugins-plus
 
 # Generate multi-cloud configs
 /multi-cloud-deploy

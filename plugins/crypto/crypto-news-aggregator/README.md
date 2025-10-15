@@ -11,7 +11,7 @@ Aggregate and analyze cryptocurrency news from multiple sources with sentiment a
 
 ## Installation
 ```bash
-/plugin install crypto-news-aggregator@claude-code-plugins
+/plugin install crypto-news-aggregator@claude-code-plugins-plus
 ```
 
 ## Commands

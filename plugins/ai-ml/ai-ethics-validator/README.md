@@ -5,7 +5,7 @@ AI ethics and fairness validation
 ## Installation
 
 ```bash
-/plugin install ai-ethics-validator@claude-code-plugins
+/plugin install ai-ethics-validator@claude-code-plugins-plus
 ```
 
 ## Usage

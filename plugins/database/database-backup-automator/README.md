@@ -5,7 +5,7 @@ Automate database backups with scheduling, compression, encryption, and restore 
 ## Installation
 
 ```bash
-/plugin install database-backup-automator@claude-code-plugins
+/plugin install database-backup-automator@claude-code-plugins-plus
 ```
 
 ## Usage

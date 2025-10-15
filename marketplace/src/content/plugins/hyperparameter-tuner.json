@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/hyperparameter-tuner",
   "license": "MIT",
-  "installation": "/plugin install hyperparameter-tuner@claude-code-plugins",
+  "installation": "/plugin install hyperparameter-tuner@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

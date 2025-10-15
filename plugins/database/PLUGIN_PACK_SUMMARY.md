@@ -296,9 +296,9 @@ Users can install the entire pack or individual plugins:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install individual plugins
-/plugin install database-migration-manager@claude-code-plugins
-/plugin install sql-query-optimizer@claude-code-plugins
-/plugin install orm-code-generator@claude-code-plugins
+/plugin install database-migration-manager@claude-code-plugins-plus
+/plugin install sql-query-optimizer@claude-code-plugins-plus
+/plugin install orm-code-generator@claude-code-plugins-plus
 
 # Or install by category as needed
 ```

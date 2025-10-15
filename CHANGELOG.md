@@ -416,7 +416,7 @@ Browse 225 plugins • Install instantly • Contribute your own
 **Installation:**
 ```bash
 # Users - no action needed
-/plugin marketplace update claude-code-plugins
+/plugin marketplace update claude-code-plugins-plus
 
 # Plugin developers - review security requirements
 cat SECURITY.md
@@ -825,9 +825,9 @@ This release brings **advanced AI-powered plugins** to the marketplace, focusing
 
 ```bash
 # New plugins
-/plugin install ai-sdk-agents@claude-code-plugins
-/plugin install ai-commit-gen@claude-code-plugins
-/plugin install travel-assistant@claude-code-plugins
+/plugin install ai-sdk-agents@claude-code-plugins-plus
+/plugin install ai-commit-gen@claude-code-plugins-plus
+/plugin install travel-assistant@claude-code-plugins-plus
 
 # Update existing installations
 /plugin update --all
@@ -1087,13 +1087,13 @@ TOTAL:        220 plugins
 **Marketplace Updates:**
 ```bash
 # Update your local marketplace reference
-/plugin marketplace update claude-code-plugins
+/plugin marketplace update claude-code-plugins-plus
 
 # Browse new plugins
-/plugin list --marketplace claude-code-plugins
+/plugin list --marketplace claude-code-plugins-plus
 
 # Install new plugins
-/plugin install <plugin-name>@claude-code-plugins
+/plugin install <plugin-name>@claude-code-plugins-plus
 ```
 
 ---
@@ -1393,7 +1393,7 @@ All quality work (validation systems, templates, production plugin) was preserve
 
 **Repository**: https://github.com/jeremylongshore/claude-code-plugins
 **Installation**: `/plugin marketplace add jeremylongshore/claude-code-plugins`
-**Flagship Plugin**: `/plugin install git-commit-smart@claude-code-plugins`
+**Flagship Plugin**: `/plugin install git-commit-smart@claude-code-plugins-plus`
 ## [1.0.38] - 2025-10-15
 
 ### 🎯 Release Highlights

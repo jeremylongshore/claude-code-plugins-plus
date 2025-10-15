@@ -255,11 +255,11 @@ https://github.com/jeremylongshore/claude-code-plugins
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install individual plugins
-/plugin install vulnerability-scanner@claude-code-plugins
-/plugin install secret-scanner@claude-code-plugins
+/plugin install vulnerability-scanner@claude-code-plugins-plus
+/plugin install secret-scanner@claude-code-plugins-plus
 
 # Or install entire security pack (coming soon)
-/plugin install security-pack@claude-code-plugins
+/plugin install security-pack@claude-code-plugins-plus
 ```
 
 ## Version

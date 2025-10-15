@@ -346,9 +346,9 @@ Users install plugins from this marketplace with:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install plugins
-/plugin install devops-automation-pack@claude-code-plugins
-/plugin install project-health-auditor@claude-code-plugins
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
+/plugin install project-health-auditor@claude-code-plugins-plus
+/plugin install git-commit-smart@claude-code-plugins-plus
 ```
 
 ## Important Notes

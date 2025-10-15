@@ -147,7 +147,7 @@ Fully branded for your business:
 
 ```bash
 # 1. Install plugin
-/plugin install overnight-dev@claude-code-plugins
+/plugin install overnight-dev@claude-code-plugins-plus
 
 # 2. Setup in project
 /overnight-setup
@@ -376,7 +376,7 @@ If they have a submission form:
 2. Description: "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features"
 3. Category: **Productivity**
 4. Repository: github.com/jeremylongshore/claude-code-plugins
-5. Installation: `/plugin install overnight-dev@claude-code-plugins`
+5. Installation: `/plugin install overnight-dev@claude-code-plugins-plus`
 
 ### Method 2: Pull Request
 

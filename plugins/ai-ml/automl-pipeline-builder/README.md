@@ -5,7 +5,7 @@ Build AutoML pipelines
 ## Installation
 
 ```bash
-/plugin install automl-pipeline-builder@claude-code-plugins
+/plugin install automl-pipeline-builder@claude-code-plugins-plus
 ```
 
 ## Usage

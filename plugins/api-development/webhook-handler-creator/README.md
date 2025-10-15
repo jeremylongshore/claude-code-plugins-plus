@@ -5,7 +5,7 @@ Create secure webhook endpoints with signature verification, idempotency, and re
 ## Installation
 
 ```bash
-/plugin install webhook-handler-creator@claude-code-plugins
+/plugin install webhook-handler-creator@claude-code-plugins-plus
 ```
 
 ## Usage

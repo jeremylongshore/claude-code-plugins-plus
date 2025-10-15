@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/examples/hello-world",
   "license": "MIT",
-  "installation": "/plugin install hello-world@claude-code-plugins",
+  "installation": "/plugin install hello-world@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

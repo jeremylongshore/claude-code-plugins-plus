@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/security-misconfiguration-finder",
   "license": "MIT",
-  "installation": "/plugin install security-misconfiguration-finder@claude-code-plugins",
+  "installation": "/plugin install security-misconfiguration-finder@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

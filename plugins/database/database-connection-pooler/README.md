@@ -5,7 +5,7 @@ Implement and optimize database connection pooling for improved performance.
 ## Installation
 
 ```bash
-/plugin install database-connection-pooler@claude-code-plugins
+/plugin install database-connection-pooler@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/dependency-checker",
   "license": "MIT",
-  "installation": "/plugin install dependency-checker@claude-code-plugins",
+  "installation": "/plugin install dependency-checker@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

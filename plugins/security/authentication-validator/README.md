@@ -13,7 +13,7 @@ Validate authentication implementation against security best practices and indus
 ## Installation
 
 ```bash
-/plugin install authentication-validator@claude-code-plugins
+/plugin install authentication-validator@claude-code-plugins-plus
 ```
 
 ## Usage

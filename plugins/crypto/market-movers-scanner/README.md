@@ -34,7 +34,7 @@ Real-time scanner for top market movers - gainers, losers, volume spikes, and un
 ## Installation
 
 ```bash
-/plugin install market-movers-scanner@claude-code-plugins
+/plugin install market-movers-scanner@claude-code-plugins-plus
 ```
 
 ## Usage

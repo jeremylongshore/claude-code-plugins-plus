@@ -5,7 +5,7 @@ Create monitoring dashboards for API health, metrics, and alerts.
 ## Installation
 
 ```bash
-/plugin install api-monitoring-dashboard@claude-code-plugins
+/plugin install api-monitoring-dashboard@claude-code-plugins-plus
 ```
 
 ## Usage

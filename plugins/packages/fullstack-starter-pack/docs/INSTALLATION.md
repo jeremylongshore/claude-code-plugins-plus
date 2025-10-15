@@ -31,7 +31,7 @@ Complete installation instructions for the Fullstack Starter Pack Claude Code pl
 
 ```bash
 # Install Fullstack Starter Pack
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ### Step 3: Verify Installation
@@ -195,7 +195,7 @@ Ask Claude:
 
 # Or reinstall
 /plugin uninstall fullstack-starter-pack
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ### Issue: Commands not working
@@ -251,7 +251,7 @@ npm install -g dotenv-cli  # Environment variable management
 
 # Or reinstall
 /plugin uninstall fullstack-starter-pack
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -263,7 +263,7 @@ npm install -g dotenv-cli  # Environment variable management
 /plugin uninstall fullstack-starter-pack
 
 # Remove marketplace (optional)
-/plugin marketplace remove claude-code-plugins
+/plugin marketplace remove claude-code-plugins-plus
 ```
 
 ---

@@ -5,7 +5,7 @@ Transfer learning adaptation
 ## Installation
 
 ```bash
-/plugin install transfer-learning-adapter@claude-code-plugins
+/plugin install transfer-learning-adapter@claude-code-plugins-plus
 ```
 
 ## Usage

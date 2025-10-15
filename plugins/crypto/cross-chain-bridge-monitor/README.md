@@ -14,7 +14,7 @@ Monitor cross-chain bridge activity, track transfers, analyze security, and dete
 ## Installation
 
 ```bash
-/plugin install cross-chain-bridge-monitor@claude-code-plugins
+/plugin install cross-chain-bridge-monitor@claude-code-plugins-plus
 ```
 
 ## Usage

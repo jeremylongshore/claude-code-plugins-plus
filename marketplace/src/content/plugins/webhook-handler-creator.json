@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/webhook-handler-creator",
   "license": "MIT",
-  "installation": "/plugin install webhook-handler-creator@claude-code-plugins",
+  "installation": "/plugin install webhook-handler-creator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

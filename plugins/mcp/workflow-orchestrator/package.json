@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/workflow-orchestrator",
+  "name": "@claude-code-plugins-plus/workflow-orchestrator",
   "version": "1.0.0",
   "description": "DAG-based workflow orchestration with parallel execution and run history",
   "type": "module",

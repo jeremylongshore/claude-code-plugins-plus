@@ -5,7 +5,7 @@ Detect anomalies and outliers in data
 ## Installation
 
 ```bash
-/plugin install anomaly-detection-system@claude-code-plugins
+/plugin install anomaly-detection-system@claude-code-plugins-plus
 ```
 
 ## Usage

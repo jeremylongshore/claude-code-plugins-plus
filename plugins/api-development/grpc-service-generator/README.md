@@ -5,7 +5,7 @@ Generate gRPC services with Protocol Buffers, streaming, and production-ready pa
 ## Installation
 
 ```bash
-/plugin install grpc-service-generator@claude-code-plugins
+/plugin install grpc-service-generator@claude-code-plugins-plus
 ```
 
 ## Usage

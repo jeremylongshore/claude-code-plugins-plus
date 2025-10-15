@@ -4,7 +4,7 @@ Test load balancing strategies with traffic distribution validation and failover
 
 ## Installation
 ```bash
-/plugin install load-balancer-tester@claude-code-plugins
+/plugin install load-balancer-tester@claude-code-plugins-plus
 ```
 
 ## Usage

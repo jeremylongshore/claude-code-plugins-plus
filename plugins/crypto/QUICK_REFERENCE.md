@@ -101,12 +101,12 @@
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install all
-/plugin install staking-rewards-optimizer@claude-code-plugins
-/plugin install nft-rarity-analyzer@claude-code-plugins
-/plugin install gas-fee-optimizer@claude-code-plugins
-/plugin install dex-aggregator-router@claude-code-plugins
-/plugin install crypto-signal-generator@claude-code-plugins
-/plugin install blockchain-explorer-cli@claude-code-plugins
+/plugin install staking-rewards-optimizer@claude-code-plugins-plus
+/plugin install nft-rarity-analyzer@claude-code-plugins-plus
+/plugin install gas-fee-optimizer@claude-code-plugins-plus
+/plugin install dex-aggregator-router@claude-code-plugins-plus
+/plugin install crypto-signal-generator@claude-code-plugins-plus
+/plugin install blockchain-explorer-cli@claude-code-plugins-plus
 
 # Or install individually as needed
 ```

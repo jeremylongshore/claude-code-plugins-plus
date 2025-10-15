@@ -26,7 +26,7 @@ Browse **226 plugins** • Install instantly • Contribute your own
 
 Install Sugar:
 ```bash
-/plugin install sugar@claude-code-plugins
+/plugin install sugar@claude-code-plugins-plus
 ```
 
 ---
@@ -36,11 +36,11 @@ Install Sugar:
 **Install a plugin:**
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 **Browse the catalog:**
-Visit **[claude-code-plugins marketplace](https://jeremylongshore.github.io/claude-code-plugins/)** or explore [`plugins/`](./plugins/)
+Visit **[Claude Code Plugins Marketplace](https://jeremylongshore.github.io/claude-code-plugins/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
 
 **Learn to build:**
 See [Learning Paths](#-learning-paths) for step-by-step guides
@@ -119,10 +119,10 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 ```bash
 # Install any pack
-/plugin install devops-automation-pack@claude-code-plugins
-/plugin install security-pro-pack@claude-code-plugins
-/plugin install fullstack-starter-pack@claude-code-plugins
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
+/plugin install security-pro-pack@claude-code-plugins-plus
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -135,11 +135,11 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 | Plugin | Description | Tools | Code Size | Install |
 |--------|-------------|-------|-----------|---------|
-| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | 13KB TS | `/plugin install project-health-auditor@claude-code-plugins` |
-| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | 26KB JS | `/plugin install conversational-api-debugger@claude-code-plugins` |
-| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | Compiled | `/plugin install domain-memory-agent@claude-code-plugins` |
-| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | Compiled | `/plugin install design-to-code@claude-code-plugins` |
-| **workflow-orchestrator** | DAG-based workflow automation | 4 | Compiled | `/plugin install workflow-orchestrator@claude-code-plugins` |
+| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | 13KB TS | `/plugin install project-health-auditor@claude-code-plugins-plus` |
+| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | 26KB JS | `/plugin install conversational-api-debugger@claude-code-plugins-plus` |
+| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | Compiled | `/plugin install domain-memory-agent@claude-code-plugins-plus` |
+| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | Compiled | `/plugin install design-to-code@claude-code-plugins-plus` |
+| **workflow-orchestrator** | DAG-based workflow automation | 4 | Compiled | `/plugin install workflow-orchestrator@claude-code-plugins-plus` |
 
 [View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)
 
@@ -149,27 +149,27 @@ Both types are **fully functional** but operate through different mechanisms. Mo
 
 | Plugin | Description | Type | Install |
 |--------|-------------|------|---------|
-| **n8n-workflow-designer** | n8n workflow JSON templates | Templates | `/plugin install n8n-workflow-designer@claude-code-plugins` |
-| **make-scenario-builder** | Make.com scenario configurations | Templates | `/plugin install make-scenario-builder@claude-code-plugins` |
-| **zapier-zap-builder** | Zapier automation templates | Templates | `/plugin install zapier-zap-builder@claude-code-plugins` |
-| **discovery-questionnaire** | Client discovery question sets | Templates | `/plugin install discovery-questionnaire@claude-code-plugins` |
-| **sow-generator** | Statement of Work templates | Templates | `/plugin install sow-generator@claude-code-plugins` |
-| **roi-calculator** | ROI calculation formulas | Templates | `/plugin install roi-calculator@claude-code-plugins` |
+| **n8n-workflow-designer** | n8n workflow JSON templates | Templates | `/plugin install n8n-workflow-designer@claude-code-plugins-plus` |
+| **make-scenario-builder** | Make.com scenario configurations | Templates | `/plugin install make-scenario-builder@claude-code-plugins-plus` |
+| **zapier-zap-builder** | Zapier automation templates | Templates | `/plugin install zapier-zap-builder@claude-code-plugins-plus` |
+| **discovery-questionnaire** | Client discovery question sets | Templates | `/plugin install discovery-questionnaire@claude-code-plugins-plus` |
+| **sow-generator** | Statement of Work templates | Templates | `/plugin install sow-generator@claude-code-plugins-plus` |
+| **roi-calculator** | ROI calculation formulas | Templates | `/plugin install roi-calculator@claude-code-plugins-plus` |
 
 ### Production Plugins (2 plugins)
 
 | Plugin | Description | Install |
 |--------|-------------|---------|
-| **git-commit-smart** | AI-powered conventional commit messages | `/plugin install git-commit-smart@claude-code-plugins` |
-| **overnight-dev** | Autonomous overnight development with TDD enforcement | `/plugin install overnight-dev@claude-code-plugins` |
+| **git-commit-smart** | AI-powered conventional commit messages | `/plugin install git-commit-smart@claude-code-plugins-plus` |
+| **overnight-dev** | Autonomous overnight development with TDD enforcement | `/plugin install overnight-dev@claude-code-plugins-plus` |
 
 ### Example Plugins (3 plugins)
 
 | Plugin | Description | Install |
 |--------|-------------|---------|
-| **hello-world** | Simple greeting command - perfect for learning | `/plugin install hello-world@claude-code-plugins` |
-| **formatter** | Auto-formats code after edits using hooks | `/plugin install formatter@claude-code-plugins` |
-| **security-agent** | Expert security agent for vulnerability detection | `/plugin install security-agent@claude-code-plugins` |
+| **hello-world** | Simple greeting command - perfect for learning | `/plugin install hello-world@claude-code-plugins-plus` |
+| **formatter** | Auto-formats code after edits using hooks | `/plugin install formatter@claude-code-plugins-plus` |
+| **security-agent** | Expert security agent for vulnerability detection | `/plugin install security-agent@claude-code-plugins-plus` |
 
 ---
 
@@ -201,7 +201,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Identify technical debt hot spots with multi-dimensional analysis**
 
 ```bash
-/plugin install project-health-auditor@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins-plus
 /analyze /path/to/repo  # Comprehensive analysis workflow
 ```
 
@@ -220,7 +220,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Debug REST API failures using OpenAPI specs and HTTP logs**
 
 ```bash
-/plugin install conversational-api-debugger@claude-code-plugins
+/plugin install conversational-api-debugger@claude-code-plugins-plus
 /debug-api  # Guided debugging workflow
 ```
 
@@ -239,7 +239,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Knowledge base with TF-IDF semantic search (no ML dependencies)**
 
 ```bash
-/plugin install domain-memory-agent@claude-code-plugins
+/plugin install domain-memory-agent@claude-code-plugins-plus
 ```
 
 **What it does**:
@@ -259,7 +259,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Convert Figma designs and screenshots into production-ready code**
 
 ```bash
-/plugin install design-to-code@claude-code-plugins
+/plugin install design-to-code@claude-code-plugins-plus
 ```
 
 **What it does**:
@@ -277,7 +277,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **DAG-based workflow automation with parallel execution**
 
 ```bash
-/plugin install workflow-orchestrator@claude-code-plugins
+/plugin install workflow-orchestrator@claude-code-plugins-plus
 ```
 
 **What it does**:
@@ -317,7 +317,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 - Deployment automation and monitoring
 
 ```bash
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -342,7 +342,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 - API security and infrastructure hardening
 
 ```bash
-/plugin install security-pro-pack@claude-code-plugins
+/plugin install security-pro-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -369,7 +369,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Perfect for**: Bootcamp grads, junior developers, rapid prototyping
 
 ```bash
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -396,7 +396,7 @@ Both types are valid Claude Code plugins - they just operate through different m
 **Requirements**: Claude Code CLI, Anthropic or OpenAI API key
 
 ```bash
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -407,18 +407,18 @@ Both types are valid Claude Code plugins - they just operate through different m
 
 ```bash
 # Analyze your codebase health
-/plugin install project-health-auditor@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins-plus
 /analyze /path/to/repo
 
 # Debug API failures
-/plugin install conversational-api-debugger@claude-code-plugins
+/plugin install conversational-api-debugger@claude-code-plugins-plus
 /debug-api
 
 # Build a knowledge base
-/plugin install domain-memory-agent@claude-code-plugins
+/plugin install domain-memory-agent@claude-code-plugins-plus
 
 # Never write commit messages again
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 /gc
 ```
 
@@ -438,8 +438,8 @@ Share custom workflows across your organization:
     }
   },
   "enabledPlugins": {
-    "project-health-auditor@claude-code-plugins": true,
-    "conversational-api-debugger@claude-code-plugins": true
+    "project-health-auditor@claude-code-plugins-plus": true,
+    "conversational-api-debugger@claude-code-plugins-plus": true
   }
 }
 ```

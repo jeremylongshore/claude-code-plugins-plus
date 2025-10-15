@@ -20,7 +20,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/packages/devops-automation-pack",
   "license": "MIT",
-  "installation": "/plugin install devops-automation-pack@claude-code-plugins",
+  "installation": "/plugin install devops-automation-pack@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

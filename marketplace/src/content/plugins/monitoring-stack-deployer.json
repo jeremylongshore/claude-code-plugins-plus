@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/monitoring-stack-deployer",
   "license": "MIT",
-  "installation": "/plugin install monitoring-stack-deployer@claude-code-plugins",
+  "installation": "/plugin install monitoring-stack-deployer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

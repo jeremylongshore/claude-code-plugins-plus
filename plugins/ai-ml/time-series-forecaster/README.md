@@ -5,7 +5,7 @@ Time series forecasting and analysis
 ## Installation
 
 ```bash
-/plugin install time-series-forecaster@claude-code-plugins
+/plugin install time-series-forecaster@claude-code-plugins-plus
 ```
 
 ## Usage

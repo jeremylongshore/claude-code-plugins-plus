@@ -19,7 +19,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/test-doubles-generator",
   "license": "MIT",
-  "installation": "/plugin install test-doubles-generator@claude-code-plugins",
+  "installation": "/plugin install test-doubles-generator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

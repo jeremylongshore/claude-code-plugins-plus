@@ -5,7 +5,7 @@ Manage and execute deployment rollbacks with safety checks
 ## Installation
 
 ```bash
-/plugin install deployment-rollback-manager@claude-code-plugins
+/plugin install deployment-rollback-manager@claude-code-plugins-plus
 ```
 
 ## Usage

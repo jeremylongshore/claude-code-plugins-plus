@@ -5,7 +5,7 @@ Monitor and analyze application error rates for improved reliability.
 ## Installation
 
 ```bash
-/plugin install error-rate-monitor@claude-code-plugins
+/plugin install error-rate-monitor@claude-code-plugins-plus
 ```
 
 ## Usage

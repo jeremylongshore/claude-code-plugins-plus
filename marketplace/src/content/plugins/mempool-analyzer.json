@@ -19,7 +19,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/mempool-analyzer",
   "license": "MIT",
-  "installation": "/plugin install mempool-analyzer@claude-code-plugins",
+  "installation": "/plugin install mempool-analyzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

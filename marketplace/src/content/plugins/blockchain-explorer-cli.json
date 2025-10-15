@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/blockchain-explorer-cli",
   "license": "MIT",
-  "installation": "/plugin install blockchain-explorer-cli@claude-code-plugins",
+  "installation": "/plugin install blockchain-explorer-cli@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

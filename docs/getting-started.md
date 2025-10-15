@@ -26,7 +26,7 @@ This opens an interactive menu where you can:
 ### Install Specific Plugin
 
 ```bash
-/plugin install plugin-name@claude-code-plugins
+/plugin install plugin-name@claude-code-plugins-plus
 ```
 
 ### List Installed Plugins

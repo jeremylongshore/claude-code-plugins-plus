@@ -5,7 +5,7 @@ A specialized security review subagent for identifying vulnerabilities and provi
 ## Installation
 
 ```bash
-/plugin install security-agent@claude-code-plugins
+/plugin install security-agent@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -16,7 +16,7 @@ Automated API endpoint testing with intelligent test generation, validation, and
 ## Installation
 
 ```bash
-/plugin install api-test-automation@claude-code-plugins
+/plugin install api-test-automation@claude-code-plugins-plus
 ```
 
 ## Usage

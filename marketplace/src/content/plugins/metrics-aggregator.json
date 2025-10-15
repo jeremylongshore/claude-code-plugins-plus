@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/metrics-aggregator",
   "license": "MIT",
-  "installation": "/plugin install metrics-aggregator@claude-code-plugins",
+  "installation": "/plugin install metrics-aggregator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

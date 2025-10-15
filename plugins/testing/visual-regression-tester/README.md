@@ -5,7 +5,7 @@ Visual diff testing with Percy, Chromatic, BackstopJS - catch unintended UI chan
 ## Installation
 
 ```bash
-/plugin install visual-regression-tester@claude-code-plugins
+/plugin install visual-regression-tester@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/query-performance-analyzer",
   "license": "MIT",
-  "installation": "/plugin install query-performance-analyzer@claude-code-plugins",
+  "installation": "/plugin install query-performance-analyzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

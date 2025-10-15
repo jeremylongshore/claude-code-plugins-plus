@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/ml-model-trainer",
   "license": "MIT",
-  "installation": "/plugin install ml-model-trainer@claude-code-plugins",
+  "installation": "/plugin install ml-model-trainer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

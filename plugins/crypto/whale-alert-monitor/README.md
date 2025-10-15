@@ -11,7 +11,7 @@ Real-time monitoring of large cryptocurrency transactions and whale wallet movem
 
 ## Installation
 ```bash
-/plugin install whale-alert-monitor@claude-code-plugins
+/plugin install whale-alert-monitor@claude-code-plugins-plus
 ```
 
 ## Commands

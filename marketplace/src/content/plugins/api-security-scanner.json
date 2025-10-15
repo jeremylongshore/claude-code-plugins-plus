@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-security-scanner",
   "license": "MIT",
-  "installation": "/plugin install api-security-scanner@claude-code-plugins",
+  "installation": "/plugin install api-security-scanner@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

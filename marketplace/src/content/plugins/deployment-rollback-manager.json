@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/deployment-rollback-manager",
   "license": "MIT",
-  "installation": "/plugin install deployment-rollback-manager@claude-code-plugins",
+  "installation": "/plugin install deployment-rollback-manager@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

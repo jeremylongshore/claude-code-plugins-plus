@@ -5,7 +5,7 @@ Database plugin for database-health-monitor
 ## Installation
 
 ```bash
-/plugin install database-health-monitor@claude-code-plugins
+/plugin install database-health-monitor@claude-code-plugins-plus
 ```
 
 ## Usage

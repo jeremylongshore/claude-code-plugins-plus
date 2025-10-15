@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/anomaly-detection-system",
   "license": "MIT",
-  "installation": "/plugin install anomaly-detection-system@claude-code-plugins",
+  "installation": "/plugin install anomaly-detection-system@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

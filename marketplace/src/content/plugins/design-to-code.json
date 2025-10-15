@@ -19,7 +19,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/design-to-code",
   "license": "MIT",
-  "installation": "/plugin install design-to-code@claude-code-plugins",
+  "installation": "/plugin install design-to-code@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

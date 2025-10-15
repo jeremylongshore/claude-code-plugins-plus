@@ -21,7 +21,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/on-chain-analytics",
   "license": "MIT",
-  "installation": "/plugin install on-chain-analytics@claude-code-plugins",
+  "installation": "/plugin install on-chain-analytics@claude@claude-code-plugins-plus",
   "features": [
     "Multi-chain analytics (15+ blockchains supported)",
     "Real-time whale movement tracking",

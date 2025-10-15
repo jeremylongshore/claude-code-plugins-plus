@@ -5,7 +5,7 @@ Comprehensive model evaluation with multiple metrics
 ## Installation
 
 ```bash
-/plugin install model-evaluation-suite@claude-code-plugins
+/plugin install model-evaluation-suite@claude-code-plugins-plus
 ```
 
 ## Usage

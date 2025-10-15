@@ -5,7 +5,7 @@ Generate realistic test data and database seed scripts.
 ## Installation
 
 ```bash
-/plugin install data-seeder-generator@claude-code-plugins
+/plugin install data-seeder-generator@claude-code-plugins-plus
 ```
 
 ## Usage

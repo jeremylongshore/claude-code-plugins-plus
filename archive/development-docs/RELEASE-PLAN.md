@@ -215,7 +215,7 @@ sequenceDiagram
     Actions->>Pages: Deploy dist/ to GitHub Pages
     Pages->>User: Serve at jeremylongshore.github.io
     User->>User: /plugin marketplace add jeremylongshore/claude-code-plugins
-    User->>User: /plugin install project-health-auditor@claude-code-plugins
+    User->>User: /plugin install project-health-auditor@claude-code-plugins-plus
 ```
 
 ### GitHub Actions Workflow
@@ -385,11 +385,11 @@ curl -I https://jeremylongshore.github.io/claude-code-plugins/
 
 ```bash
 # In Claude Code, test each plugin:
-/plugin install project-health-auditor@claude-code-plugins
-/plugin install conversational-api-debugger@claude-code-plugins
-/plugin install domain-memory-agent@claude-code-plugins
-/plugin install design-to-code@claude-code-plugins
-/plugin install workflow-orchestrator@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins-plus
+/plugin install conversational-api-debugger@claude-code-plugins-plus
+/plugin install domain-memory-agent@claude-code-plugins-plus
+/plugin install design-to-code@claude-code-plugins-plus
+/plugin install workflow-orchestrator@claude-code-plugins-plus
 
 # Verify installations
 /plugin list

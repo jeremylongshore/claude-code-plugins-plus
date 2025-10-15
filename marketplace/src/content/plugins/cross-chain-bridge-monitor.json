@@ -19,7 +19,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/cross-chain-bridge-monitor",
   "license": "MIT",
-  "installation": "/plugin install cross-chain-bridge-monitor@claude-code-plugins",
+  "installation": "/plugin install cross-chain-bridge-monitor@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

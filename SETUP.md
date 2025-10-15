@@ -103,7 +103,7 @@ After pushing, configure your repository on GitHub:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Try installing a plugin
-/plugin install hello-world@claude-code-plugins
+/plugin install hello-world@claude-code-plugins-plus
 
 # Test the command
 /hello

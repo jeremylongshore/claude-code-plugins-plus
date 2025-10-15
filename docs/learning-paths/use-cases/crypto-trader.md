@@ -39,7 +39,7 @@ graph LR
 
 ### Install Crypto Tools
 ```bash
-/plugin install crypto-portfolio-tracker@claude-code-plugins
+/plugin install crypto-portfolio-tracker@claude-code-plugins-plus
 ```
 
 ### Track Your Portfolio
@@ -104,7 +104,7 @@ tax_report = portfolio.generate_tax_report(method="FIFO")
 
 ### Advanced Market Analysis
 ```bash
-/plugin install on-chain-analytics@claude-code-plugins
+/plugin install on-chain-analytics@claude-code-plugins-plus
 ```
 
 **1. Analyze Network Activity**
@@ -172,7 +172,7 @@ Exchange Holdings: 12.3% of supply
 
 ### Real-Time Whale Tracking
 ```bash
-/plugin install whale-alert-monitor@claude-code-plugins
+/plugin install whale-alert-monitor@claude-code-plugins-plus
 ```
 
 **Production-grade monitoring** (1,148 lines of code):
@@ -249,7 +249,7 @@ Market Impact: BEARISH
 
 ### Find Profitable Opportunities
 ```bash
-/plugin install arbitrage-opportunity-finder@claude-code-plugins
+/plugin install arbitrage-opportunity-finder@claude-code-plugins-plus
 ```
 
 **Advanced arbitrage scanner**:
@@ -348,7 +348,7 @@ contract FlashArbitrage {
 
 ### Sentiment Analysis
 ```bash
-/plugin install market-sentiment-analyzer@claude-code-plugins
+/plugin install market-sentiment-analyzer@claude-code-plugins-plus
 ```
 
 **AI-powered sentiment** (15+ platforms):

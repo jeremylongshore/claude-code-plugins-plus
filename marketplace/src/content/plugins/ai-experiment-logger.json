@@ -63,7 +63,7 @@
       "description": "Export all data to CSV format"
     }
   ],
-  "installation": "/plugin install ai-experiment-logger@claude-code-plugins",
+  "installation": "/plugin install ai-experiment-logger@claude@claude-code-plugins-plus",
   "usage": {
     "mcp": "Use MCP tools like log_experiment, list_experiments, get_statistics in Claude Code",
     "web": "Run 'npm run web' to start web dashboard at http://localhost:3000"
@@ -82,7 +82,15 @@
   ],
   "screenshots": [],
   "documentation": "https://github.com/jeremylongshore/claude-code-plugins/blob/main/plugins/mcp/ai-experiment-logger/README.md",
-  "tags": ["mcp", "ai", "experiments", "logging", "analytics", "dashboard", "productivity"],
+  "tags": [
+    "mcp",
+    "ai",
+    "experiments",
+    "logging",
+    "analytics",
+    "dashboard",
+    "productivity"
+  ],
   "featured": false,
   "verified": true,
   "downloads": 0,

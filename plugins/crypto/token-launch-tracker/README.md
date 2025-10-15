@@ -14,7 +14,7 @@ Track new token launches, detect rugpulls, and analyze smart contract security f
 ## Installation
 
 ```bash
-/plugin install token-launch-tracker@claude-code-plugins
+/plugin install token-launch-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

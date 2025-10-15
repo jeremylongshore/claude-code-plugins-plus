@@ -330,7 +330,7 @@ At $149 one-time price:
 
 ### Install Command
 ```bash
-/plugin install creator-studio-pack@claude-code-plugins
+/plugin install creator-studio-pack@claude-code-plugins-plus
 ```
 
 ---

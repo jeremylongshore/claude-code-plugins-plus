@@ -5,7 +5,7 @@ Analyze query performance with EXPLAIN plan interpretation and optimization reco
 ## Installation
 
 ```bash
-/plugin install query-performance-analyzer@claude-code-plugins
+/plugin install query-performance-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

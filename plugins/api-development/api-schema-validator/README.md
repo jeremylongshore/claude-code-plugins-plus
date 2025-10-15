@@ -5,7 +5,7 @@ Validate API schemas with JSON Schema, Joi, Yup, or Zod.
 ## Installation
 
 ```bash
-/plugin install api-schema-validator@claude-code-plugins
+/plugin install api-schema-validator@claude-code-plugins-plus
 ```
 
 ## Usage

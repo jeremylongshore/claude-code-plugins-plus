@@ -5,7 +5,7 @@ Quick smoke test suites to verify critical functionality after deployments.
 ## Installation
 
 ```bash
-/plugin install smoke-test-runner@claude-code-plugins
+/plugin install smoke-test-runner@claude-code-plugins-plus
 ```
 
 ## Usage

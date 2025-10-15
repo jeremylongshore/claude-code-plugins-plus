@@ -19,7 +19,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/token-launch-tracker",
   "license": "MIT",
-  "installation": "/plugin install token-launch-tracker@claude-code-plugins",
+  "installation": "/plugin install token-launch-tracker@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

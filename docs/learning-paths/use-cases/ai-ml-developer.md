@@ -39,7 +39,7 @@ graph LR
 
 ### Install AI/ML Pack
 ```bash
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 **Includes 12 plugins**:
