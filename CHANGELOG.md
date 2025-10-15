@@ -1,3 +1,38 @@
+## [1.0.38] - 2025-10-15
+
+### 🎯 Release Highlights
+
+**🚀 Marketplace Reliability Hotfix**
+
+Issue [#13](https://github.com/jeremylongshore/claude-code-plugins/issues/13) showed that our CLI marketplace import failed when extra metadata lived in `.claude-plugin/marketplace.json`. This release restores a frictionless `/plugin marketplace add` experience while keeping the website’s richer data intact.
+
+**What's New:**
+- CLI marketplace catalog is now regenerated from an extended source file, stripping unsupported keys (`featured`, `mcpTools`, `pluginCount`, `pricing`, `components`).
+- New `npm run sync-marketplace` command (backed by `scripts/sync-marketplace.cjs`) gives maintainers a one-step workflow to refresh the CLI-safe catalog.
+- CI guard runs the sync script on every PR, failing fast if someone forgets to regenerate the CLI catalog.
+
+---
+
+### 🛒 Marketplace Catalog
+
+- Introduced `.claude-plugin/marketplace.extended.json` as the single source of truth containing all metadata used by the Astro marketplace site.
+- Regenerated `.claude-plugin/marketplace.json` to be fully schema-compliant with Claude Code CLI, resolving the import failure reported in #13.
+- Updated marketplace generators (`marketplace/generate-content.js`, `marketplace/generate-missing-plugins.cjs`) to prefer the extended catalog so featured status, pricing, and component counts stay visible on the website without breaking the CLI.
+
+---
+
+### 🛠️ Tooling & CI
+
+- Added executable `scripts/sync-marketplace.cjs` plus a package script entry so contributors can refresh the CLI catalog with a single command.
+- Wired the sync step into `.github/workflows/validate-plugins.yml`; the workflow now blocks merges when `.claude-plugin/marketplace.json` is out of sync with the extended catalog.
+
+---
+
+### 📚 Documentation
+
+- Updated README, CLAUDE.md, CONTRIBUTING.md, SETUP.md, and the plugin creation learning path to walk through the new “edit extended catalog → run sync” process.
+- Highlighted the sync command in the common development tasks so marketplace updates stay CLI-safe before submission.
+
 ## [1.0.37] - 2025-10-13
 
 ### 🎯 Release Highlights
