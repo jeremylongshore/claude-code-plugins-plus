@@ -5,7 +5,7 @@ Create comprehensive Application Performance Monitoring dashboards.
 ## Installation
 
 ```bash
-/plugin install apm-dashboard-creator@claude-code-plugins
+/plugin install apm-dashboard-creator@claude-code-plugins-plus
 ```
 
 ## Usage

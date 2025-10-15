@@ -6,7 +6,7 @@ A simple example plugin demonstrating basic slash commands.
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install hello-world@claude-code-plugins
+/plugin install hello-world@claude-code-plugins-plus
 ```
 
 ## Usage

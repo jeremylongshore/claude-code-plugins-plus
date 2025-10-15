@@ -5,7 +5,7 @@ Feature creation, selection, and transformation tools
 ## Installation
 
 ```bash
-/plugin install feature-engineering-toolkit@claude-code-plugins
+/plugin install feature-engineering-toolkit@claude-code-plugins-plus
 ```
 
 ## Usage

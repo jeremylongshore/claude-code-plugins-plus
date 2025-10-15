@@ -5,7 +5,7 @@ Manage Kubernetes network policies and firewall rules
 ## Installation
 
 ```bash
-/plugin install network-policy-manager@claude-code-plugins
+/plugin install network-policy-manager@claude-code-plugins-plus
 ```
 
 ## Usage

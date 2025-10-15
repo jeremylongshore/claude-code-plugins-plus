@@ -5,7 +5,7 @@ API contract testing with Pact, OpenAPI validation, and consumer-driven contract
 ## Installation
 
 ```bash
-/plugin install contract-test-validator@claude-code-plugins
+/plugin install contract-test-validator@claude-code-plugins-plus
 ```
 
 ## Usage

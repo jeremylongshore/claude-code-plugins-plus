@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/clustering-algorithm-runner",
   "license": "MIT",
-  "installation": "/plugin install clustering-algorithm-runner@claude-code-plugins",
+  "installation": "/plugin install clustering-algorithm-runner@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

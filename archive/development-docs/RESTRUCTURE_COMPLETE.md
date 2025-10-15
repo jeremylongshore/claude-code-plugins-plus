@@ -277,7 +277,7 @@ claude-code-plugins/
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install flagship plugin
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 
 # Use it!
 git add .

@@ -5,7 +5,7 @@ Database plugin for database-deadlock-detector
 ## Installation
 
 ```bash
-/plugin install database-deadlock-detector@claude-code-plugins
+/plugin install database-deadlock-detector@claude-code-plugins-plus
 ```
 
 ## Usage

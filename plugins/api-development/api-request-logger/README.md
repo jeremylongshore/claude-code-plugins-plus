@@ -5,7 +5,7 @@ Implement structured logging with correlation IDs and log aggregation.
 ## Installation
 
 ```bash
-/plugin install api-request-logger@claude-code-plugins
+/plugin install api-request-logger@claude-code-plugins-plus
 ```
 
 ## Usage

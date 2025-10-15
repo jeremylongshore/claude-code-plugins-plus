@@ -84,7 +84,7 @@ marketplaceData.plugins.forEach(plugin => {
     featured: plugin.featured || false,
     repository: plugin.repository || `https://github.com/jeremylongshore/claude-code-plugins/tree/main/${plugin.source}`,
     license: plugin.license || 'MIT',
-    installation: `/plugin install ${plugin.name}@claude-code-plugins`,
+    installation: `/plugin install ${plugin.name}@claude-code-plugins-plus`,
     features: plugin.features || [],
     requirements: plugin.requirements || [],
     screenshots: plugin.screenshots || []

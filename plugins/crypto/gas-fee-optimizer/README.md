@@ -5,7 +5,7 @@ Optimize Ethereum transaction gas fees through strategic timing, routing alterna
 ## Installation
 
 ```bash
-/plugin install gas-fee-optimizer@claude-code-plugins
+/plugin install gas-fee-optimizer@claude-code-plugins-plus
 ```
 
 ## Usage

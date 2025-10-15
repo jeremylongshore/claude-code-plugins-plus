@@ -13,7 +13,7 @@ Analyze DeFi liquidity pools for APY, impermanent loss, and optimization opportu
 ## Installation
 
 ```bash
-/plugin install liquidity-pool-analyzer@claude-code-plugins
+/plugin install liquidity-pool-analyzer@claude-code-plugins-plus
 ```
 
 ## Commands

@@ -28,7 +28,7 @@ Track crypto wallets across multiple blockchains with comprehensive portfolio an
 ## Installation
 
 ```bash
-/plugin install wallet-portfolio-tracker@claude-code-plugins
+/plugin install wallet-portfolio-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

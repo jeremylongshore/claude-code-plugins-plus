@@ -5,7 +5,7 @@ Database plugin for database-documentation-gen
 ## Installation
 
 ```bash
-/plugin install database-documentation-gen@claude-code-plugins
+/plugin install database-documentation-gen@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Detect infrastructure drift from desired state
 ## Installation
 
 ```bash
-/plugin install infrastructure-drift-detector@claude-code-plugins
+/plugin install infrastructure-drift-detector@claude-code-plugins-plus
 ```
 
 ## Usage

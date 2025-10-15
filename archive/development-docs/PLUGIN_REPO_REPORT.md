@@ -238,11 +238,11 @@ mcp/
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install a plugin pack
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 
 # Install individual plugins
-/plugin install project-health-auditor@claude-code-plugins
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins-plus
+/plugin install git-commit-smart@claude-code-plugins-plus
 ```
 
 ### Example Invocations

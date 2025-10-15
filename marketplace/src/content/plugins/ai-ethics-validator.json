@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/ai-ethics-validator",
   "license": "MIT",
-  "installation": "/plugin install ai-ethics-validator@claude-code-plugins",
+  "installation": "/plugin install ai-ethics-validator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

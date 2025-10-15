@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/domain-memory-agent",
+  "name": "@claude-code-plugins-plus/domain-memory-agent",
   "version": "1.0.0",
   "description": "MCP server for domain-specific knowledge management with semantic search and summarization",
   "type": "module",

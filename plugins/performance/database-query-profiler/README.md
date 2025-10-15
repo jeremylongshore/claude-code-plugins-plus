@@ -5,7 +5,7 @@ Profile and optimize database queries for maximum performance.
 ## Installation
 
 ```bash
-/plugin install database-query-profiler@claude-code-plugins
+/plugin install database-query-profiler@claude-code-plugins-plus
 ```
 
 ## Usage

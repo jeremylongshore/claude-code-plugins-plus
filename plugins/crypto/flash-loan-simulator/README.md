@@ -14,7 +14,7 @@ Simulate and analyze flash loan strategies including arbitrage, liquidations, an
 ## Installation
 
 ```bash
-/plugin install flash-loan-simulator@claude-code-plugins
+/plugin install flash-loan-simulator@claude-code-plugins-plus
 ```
 
 ## Usage

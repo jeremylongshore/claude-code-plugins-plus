@@ -379,12 +379,12 @@ Valid Plugins: 25 / 25
 3. **Install Plugins**
 ```bash
 # Individual installation
-/plugin install database-migration-manager@claude-code-plugins
-/plugin install sql-query-optimizer@claude-code-plugins
+/plugin install database-migration-manager@claude-code-plugins-plus
+/plugin install sql-query-optimizer@claude-code-plugins-plus
 
 # Install by need
-/plugin install orm-code-generator@claude-code-plugins
-/plugin install database-backup-automator@claude-code-plugins
+/plugin install orm-code-generator@claude-code-plugins-plus
+/plugin install database-backup-automator@claude-code-plugins-plus
 ```
 
 4. **Use Plugins**

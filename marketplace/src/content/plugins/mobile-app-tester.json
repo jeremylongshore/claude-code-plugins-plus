@@ -19,7 +19,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/mobile-app-tester",
   "license": "MIT",
-  "installation": "/plugin install mobile-app-tester@claude-code-plugins",
+  "installation": "/plugin install mobile-app-tester@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

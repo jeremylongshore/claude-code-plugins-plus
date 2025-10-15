@@ -5,7 +5,7 @@ Analyze and optimize system throughput for maximum capacity.
 ## Installation
 
 ```bash
-/plugin install throughput-analyzer@claude-code-plugins
+/plugin install throughput-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

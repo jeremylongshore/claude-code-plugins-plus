@@ -5,7 +5,7 @@ Automatically formats code files after editing using hooks.
 ## Installation
 
 ```bash
-/plugin install formatter@claude-code-plugins
+/plugin install formatter@claude-code-plugins-plus
 ```
 
 ## Requirements

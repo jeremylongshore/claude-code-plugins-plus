@@ -5,7 +5,7 @@ Manage and update snapshot tests with intelligent diff analysis and selective up
 ## Installation
 
 ```bash
-/plugin install snapshot-test-manager@claude-code-plugins
+/plugin install snapshot-test-manager@claude-code-plugins-plus
 ```
 
 ## Usage

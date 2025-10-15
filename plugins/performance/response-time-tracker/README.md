@@ -5,7 +5,7 @@ Track and optimize application response times comprehensively.
 ## Installation
 
 ```bash
-/plugin install response-time-tracker@claude-code-plugins
+/plugin install response-time-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -112,7 +112,7 @@ Features Delivered:
 
 Installation:
 ```
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -139,7 +139,7 @@ Features Delivered:
 
 Installation:
 ```
-/plugin install security-pro-pack@claude-code-plugins
+/plugin install security-pro-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -168,7 +168,7 @@ Target Audience: Bootcamp grads, junior developers, rapid prototyping
 
 Installation:
 ```
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -197,7 +197,7 @@ Requirements: Claude Code CLI, Anthropic or OpenAI API key
 
 Installation:
 ```
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ---
@@ -277,10 +277,10 @@ Installation:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install any pack (single command)
-/plugin install devops-automation-pack@claude-code-plugins
-/plugin install security-pro-pack@claude-code-plugins
-/plugin install fullstack-starter-pack@claude-code-plugins
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
+/plugin install security-pro-pack@claude-code-plugins-plus
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 **User Benefits**:

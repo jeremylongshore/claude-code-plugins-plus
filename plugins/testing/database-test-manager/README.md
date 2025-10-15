@@ -5,7 +5,7 @@ Database testing utilities with test data setup, transaction rollback, and schem
 ## Installation
 
 ```bash
-/plugin install database-test-manager@claude-code-plugins
+/plugin install database-test-manager@claude-code-plugins-plus
 ```
 
 ## Usage

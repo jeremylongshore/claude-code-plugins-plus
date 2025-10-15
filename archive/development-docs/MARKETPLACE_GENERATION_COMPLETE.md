@@ -183,7 +183,7 @@ Each generated JSON file includes:
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/category/plugin-name",
   "license": "MIT",
-  "installation": "/plugin install plugin-name@claude-code-plugins",
+  "installation": "/plugin install plugin-name@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

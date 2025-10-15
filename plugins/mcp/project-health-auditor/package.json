@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/project-health-auditor",
+  "name": "@claude-code-plugins-plus/project-health-auditor",
   "version": "1.0.0",
   "description": "Analyze local repos for code health, complexity, test coverage gaps",
   "type": "module",

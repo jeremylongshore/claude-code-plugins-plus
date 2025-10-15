@@ -5,7 +5,7 @@ Set up distributed tracing for end-to-end visibility in microservices.
 ## Installation
 
 ```bash
-/plugin install distributed-tracing-setup@claude-code-plugins
+/plugin install distributed-tracing-setup@claude-code-plugins-plus
 ```
 
 ## Usage

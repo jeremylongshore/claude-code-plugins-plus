@@ -5,7 +5,7 @@ Generate trading signals from technical indicators, chart patterns, and multi-ti
 ## Installation
 
 ```bash
-/plugin install crypto-signal-generator@claude-code-plugins
+/plugin install crypto-signal-generator@claude-code-plugins-plus
 ```
 
 ## Usage

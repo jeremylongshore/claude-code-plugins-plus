@@ -16,7 +16,7 @@ This plugin transforms API debugging from guesswork into systematic analysis:
 ##  Installation
 
 ```bash
-/plugin install conversational-api-debugger@claude-code-plugins
+/plugin install conversational-api-debugger@claude-code-plugins-plus
 ```
 
 ##  Features

@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/nosql-data-modeler",
   "license": "MIT",
-  "installation": "/plugin install nosql-data-modeler@claude-code-plugins",
+  "installation": "/plugin install nosql-data-modeler@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

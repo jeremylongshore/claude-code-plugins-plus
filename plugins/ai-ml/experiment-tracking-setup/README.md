@@ -5,7 +5,7 @@ Set up ML experiment tracking
 ## Installation
 
 ```bash
-/plugin install experiment-tracking-setup@claude-code-plugins
+/plugin install experiment-tracking-setup@claude-code-plugins-plus
 ```
 
 ## Usage

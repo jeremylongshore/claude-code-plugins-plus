@@ -9,9 +9,9 @@ Get started with the Claude Code Security & Compliance Plugin Pack in 5 minutes.
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install individual plugins
-/plugin install vulnerability-scanner@claude-code-plugins
-/plugin install secret-scanner@claude-code-plugins
-/plugin install dependency-checker@claude-code-plugins
+/plugin install vulnerability-scanner@claude-code-plugins-plus
+/plugin install secret-scanner@claude-code-plugins-plus
+/plugin install dependency-checker@claude-code-plugins-plus
 ```
 
 ## Your First Security Scan (1 minute)

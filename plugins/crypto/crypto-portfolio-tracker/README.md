@@ -37,7 +37,7 @@ Professional-grade cryptocurrency portfolio tracking and analysis for Claude Cod
 ## Installation
 
 ```bash
-/plugin install crypto-portfolio-tracker@claude-code-plugins
+/plugin install crypto-portfolio-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Analyze application logs for performance insights and issue detection.
 ## Installation
 
 ```bash
-/plugin install log-analysis-tool@claude-code-plugins
+/plugin install log-analysis-tool@claude-code-plugins-plus
 ```
 
 ## Usage

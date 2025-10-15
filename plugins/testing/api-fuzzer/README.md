@@ -4,7 +4,7 @@ Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerabil
 
 ## Installation
 ```bash
-/plugin install api-fuzzer@claude-code-plugins
+/plugin install api-fuzzer@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -14,7 +14,7 @@ Comprehensive SQL injection vulnerability detection with pattern matching, conte
 ## Installation
 
 ```bash
-/plugin install sql-injection-detector@claude-code-plugins
+/plugin install sql-injection-detector@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Track and manage model versions
 ## Installation
 
 ```bash
-/plugin install model-versioning-tracker@claude-code-plugins
+/plugin install model-versioning-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

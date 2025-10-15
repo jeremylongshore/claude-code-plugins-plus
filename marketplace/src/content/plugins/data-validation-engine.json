@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/data-validation-engine",
   "license": "MIT",
-  "installation": "/plugin install data-validation-engine@claude-code-plugins",
+  "installation": "/plugin install data-validation-engine@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

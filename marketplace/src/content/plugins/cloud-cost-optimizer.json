@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/cloud-cost-optimizer",
   "license": "MIT",
-  "installation": "/plugin install cloud-cost-optimizer@claude-code-plugins",
+  "installation": "/plugin install cloud-cost-optimizer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

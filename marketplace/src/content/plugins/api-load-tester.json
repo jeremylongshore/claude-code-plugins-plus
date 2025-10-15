@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-load-tester",
   "license": "MIT",
-  "installation": "/plugin install api-load-tester@claude-code-plugins",
+  "installation": "/plugin install api-load-tester@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

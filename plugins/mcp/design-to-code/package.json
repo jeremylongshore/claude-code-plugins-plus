@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/design-to-code",
+  "name": "@claude-code-plugins-plus/design-to-code",
   "version": "1.0.0",
   "description": "Convert Figma designs and screenshots to code components (React, Svelte, Vue)",
   "type": "module",

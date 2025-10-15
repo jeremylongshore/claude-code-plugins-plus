@@ -102,8 +102,11 @@ After pushing, configure your repository on GitHub:
 # Test installing from your new marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
+# If you previously added this marketplace, remove the old slug first:
+# /plugin marketplace remove claude-code-plugins
+
 # Try installing a plugin
-/plugin install hello-world@claude-code-plugins
+/plugin install hello-world@claude-code-plugins-plus
 
 # Test the command
 /hello

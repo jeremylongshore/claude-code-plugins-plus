@@ -53,10 +53,10 @@ These plugins will be available through the Claude Code marketplace. Once publis
 
 ```bash
 # Install individual plugin
-/plugin install application-profiler@claude-code-plugins
+/plugin install application-profiler@claude-code-plugins-plus
 
 # Install another
-/plugin install memory-leak-detector@claude-code-plugins
+/plugin install memory-leak-detector@claude-code-plugins-plus
 ```
 
 ## Use Cases

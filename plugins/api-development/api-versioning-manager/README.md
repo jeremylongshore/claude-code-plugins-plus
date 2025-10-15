@@ -5,7 +5,7 @@ Manage API versions with backward compatibility, deprecation notices, and migrat
 ## Installation
 
 ```bash
-/plugin install api-versioning-manager@claude-code-plugins
+/plugin install api-versioning-manager@claude-code-plugins-plus
 ```
 
 ## Usage

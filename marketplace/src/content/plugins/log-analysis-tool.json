@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/log-analysis-tool",
   "license": "MIT",
-  "installation": "/plugin install log-analysis-tool@claude-code-plugins",
+  "installation": "/plugin install log-analysis-tool@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

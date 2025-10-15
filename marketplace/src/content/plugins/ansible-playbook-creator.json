@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/ansible-playbook-creator",
   "license": "MIT",
-  "installation": "/plugin install ansible-playbook-creator@claude-code-plugins",
+  "installation": "/plugin install ansible-playbook-creator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

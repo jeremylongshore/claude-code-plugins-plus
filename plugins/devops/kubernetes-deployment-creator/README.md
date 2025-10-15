@@ -5,7 +5,7 @@ Create production-ready Kubernetes deployments and services.
 ## Installation
 
 ```bash
-/plugin install kubernetes-deployment-creator@claude-code-plugins
+/plugin install kubernetes-deployment-creator@claude-code-plugins-plus
 ```
 
 ## Usage

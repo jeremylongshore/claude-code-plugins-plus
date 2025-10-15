@@ -272,38 +272,38 @@ Total: 220 plugins across 14 categories
 
 **DevOps:**
 ```bash
-/plugin install docker-compose-generator@claude-code-plugins
-/plugin install kubernetes-deployment-creator@claude-code-plugins
-/plugin install ci-cd-pipeline-builder@claude-code-plugins
+/plugin install docker-compose-generator@claude-code-plugins-plus
+/plugin install kubernetes-deployment-creator@claude-code-plugins-plus
+/plugin install ci-cd-pipeline-builder@claude-code-plugins-plus
 ```
 
 **AI/ML:**
 ```bash
-/plugin install ml-model-trainer@claude-code-plugins
-/plugin install data-preprocessing-pipeline@claude-code-plugins
-/plugin install model-deployment-helper@claude-code-plugins
+/plugin install ml-model-trainer@claude-code-plugins-plus
+/plugin install data-preprocessing-pipeline@claude-code-plugins-plus
+/plugin install model-deployment-helper@claude-code-plugins-plus
 ```
 
 **API Development:**
 ```bash
-/plugin install rest-api-generator@claude-code-plugins
-/plugin install graphql-server-builder@claude-code-plugins
-/plugin install api-security-scanner@claude-code-plugins
+/plugin install rest-api-generator@claude-code-plugins-plus
+/plugin install graphql-server-builder@claude-code-plugins-plus
+/plugin install api-security-scanner@claude-code-plugins-plus
 ```
 
 **Testing:**
 ```bash
-/plugin install snapshot-test-manager@claude-code-plugins
-/plugin install accessibility-test-scanner@claude-code-plugins
-/plugin install visual-regression-tester@claude-code-plugins
+/plugin install snapshot-test-manager@claude-code-plugins-plus
+/plugin install accessibility-test-scanner@claude-code-plugins-plus
+/plugin install visual-regression-tester@claude-code-plugins-plus
 ```
 
 **Plugin Packs:**
 ```bash
-/plugin install devops-automation-pack@claude-code-plugins
-/plugin install security-pro-pack@claude-code-plugins
-/plugin install fullstack-starter-pack@claude-code-plugins
-/plugin install ai-ml-engineering-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
+/plugin install security-pro-pack@claude-code-plugins-plus
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
+/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ## Use Case Examples

@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/model-evaluation-suite",
   "license": "MIT",
-  "installation": "/plugin install model-evaluation-suite@claude-code-plugins",
+  "installation": "/plugin install model-evaluation-suite@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -11,7 +11,7 @@ Analyze blockchain metrics including whale movements, holder distribution, and n
 
 ## Installation
 ```bash
-/plugin install on-chain-analytics@claude-code-plugins
+/plugin install on-chain-analytics@claude-code-plugins-plus
 ```
 
 ## Commands

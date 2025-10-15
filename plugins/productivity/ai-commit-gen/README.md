@@ -30,7 +30,7 @@ git add .
 
 ### Installation
 ```bash
-/plugin install ai-commit-gen@claude-code-plugins
+/plugin install ai-commit-gen@claude-code-plugins-plus
 ```
 
 ### Usage
@@ -245,7 +245,7 @@ The AI follows these commit message best practices:
 
 ```bash
 # Install
-/plugin install ai-commit-gen@claude-code-plugins
+/plugin install ai-commit-gen@claude-code-plugins-plus
 
 # Use
 git add .

@@ -5,7 +5,7 @@ Create mock API servers from OpenAPI specs with realistic data and customizable 
 ## Installation
 
 ```bash
-/plugin install api-mock-server@claude-code-plugins
+/plugin install api-mock-server@claude-code-plugins-plus
 ```
 
 ## Usage

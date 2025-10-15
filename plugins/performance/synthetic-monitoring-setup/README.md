@@ -5,7 +5,7 @@ Set up comprehensive synthetic monitoring for proactive performance tracking.
 ## Installation
 
 ```bash
-/plugin install synthetic-monitoring-setup@claude-code-plugins
+/plugin install synthetic-monitoring-setup@claude-code-plugins-plus
 ```
 
 ## Usage

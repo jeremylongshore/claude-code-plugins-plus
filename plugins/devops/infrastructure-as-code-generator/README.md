@@ -5,7 +5,7 @@ Generate production-ready IaC for Terraform, CloudFormation, and more.
 ## Installation
 
 ```bash
-/plugin install infrastructure-as-code-generator@claude-code-plugins
+/plugin install infrastructure-as-code-generator@claude-code-plugins-plus
 ```
 
 ## Usage

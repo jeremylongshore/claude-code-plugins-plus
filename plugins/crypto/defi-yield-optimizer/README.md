@@ -36,7 +36,7 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 ## Installation
 
 ```bash
-/plugin install defi-yield-optimizer@claude-code-plugins
+/plugin install defi-yield-optimizer@claude-code-plugins-plus
 ```
 
 ## Usage

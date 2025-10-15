@@ -5,7 +5,7 @@ Database plugin for database-archival-system
 ## Installation
 
 ```bash
-/plugin install database-archival-system@claude-code-plugins
+/plugin install database-archival-system@claude-code-plugins-plus
 ```
 
 ## Usage

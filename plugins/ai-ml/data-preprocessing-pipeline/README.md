@@ -5,7 +5,7 @@ Automated data preprocessing and cleaning pipelines
 ## Installation
 
 ```bash
-/plugin install data-preprocessing-pipeline@claude-code-plugins
+/plugin install data-preprocessing-pipeline@claude-code-plugins-plus
 ```
 
 ## Usage

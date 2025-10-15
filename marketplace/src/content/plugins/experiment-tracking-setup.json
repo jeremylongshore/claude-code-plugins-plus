@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/experiment-tracking-setup",
   "license": "MIT",
-  "installation": "/plugin install experiment-tracking-setup@claude-code-plugins",
+  "installation": "/plugin install experiment-tracking-setup@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

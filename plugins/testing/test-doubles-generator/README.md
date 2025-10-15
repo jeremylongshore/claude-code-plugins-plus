@@ -5,7 +5,7 @@ Generate mocks, stubs, spies, and fakes for unit testing with Jest, Sinon, and t
 ## Installation
 
 ```bash
-/plugin install test-doubles-generator@claude-code-plugins
+/plugin install test-doubles-generator@claude-code-plugins-plus
 ```
 
 ## Usage

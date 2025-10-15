@@ -4,7 +4,7 @@ Manage test environments with Docker Compose, Testcontainers, and environment is
 
 ## Installation
 ```bash
-/plugin install test-environment-manager@claude-code-plugins
+/plugin install test-environment-manager@claude-code-plugins-plus
 ```
 
 ## Usage

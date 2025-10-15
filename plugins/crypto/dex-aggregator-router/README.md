@@ -5,7 +5,7 @@ Find optimal routing for token swaps across multiple decentralized exchanges to 
 ## Installation
 
 ```bash
-/plugin install dex-aggregator-router@claude-code-plugins
+/plugin install dex-aggregator-router@claude-code-plugins-plus
 ```
 
 ## Usage

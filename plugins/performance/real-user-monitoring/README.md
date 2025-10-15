@@ -5,7 +5,7 @@ Implement Real User Monitoring to capture actual user performance experiences.
 ## Installation
 
 ```bash
-/plugin install real-user-monitoring@claude-code-plugins
+/plugin install real-user-monitoring@claude-code-plugins-plus
 ```
 
 ## Usage

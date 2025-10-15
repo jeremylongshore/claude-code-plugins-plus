@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/model-versioning-tracker",
   "license": "MIT",
-  "installation": "/plugin install model-versioning-tracker@claude-code-plugins",
+  "installation": "/plugin install model-versioning-tracker@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

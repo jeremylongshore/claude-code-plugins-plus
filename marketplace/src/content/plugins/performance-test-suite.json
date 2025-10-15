@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/performance-test-suite",
   "license": "MIT",
-  "installation": "/plugin install performance-test-suite@claude-code-plugins",
+  "installation": "/plugin install performance-test-suite@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

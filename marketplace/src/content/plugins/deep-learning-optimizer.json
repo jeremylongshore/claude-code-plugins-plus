@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/deep-learning-optimizer",
   "license": "MIT",
-  "installation": "/plugin install deep-learning-optimizer@claude-code-plugins",
+  "installation": "/plugin install deep-learning-optimizer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

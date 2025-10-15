@@ -14,7 +14,7 @@ Run and manage integration test suites with automatic environment setup, databas
 ## Installation
 
 ```bash
-/plugin install integration-test-runner@claude-code-plugins
+/plugin install integration-test-runner@claude-code-plugins-plus
 ```
 
 ## Usage

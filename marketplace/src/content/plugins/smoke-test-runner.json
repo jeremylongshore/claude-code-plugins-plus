@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/smoke-test-runner",
   "license": "MIT",
-  "installation": "/plugin install smoke-test-runner@claude-code-plugins",
+  "installation": "/plugin install smoke-test-runner@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

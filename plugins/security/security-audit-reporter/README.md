@@ -14,7 +14,7 @@ Generate comprehensive security audit reports with vulnerability assessments, co
 ## Installation
 
 ```bash
-/plugin install security-audit-reporter@claude-code-plugins
+/plugin install security-audit-reporter@claude-code-plugins-plus
 ```
 
 ## Usage

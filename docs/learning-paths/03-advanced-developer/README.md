@@ -711,7 +711,7 @@ Update marketplace.json:
 
 Users install with:
 ```bash
-/plugin install my-mcp-plugin@claude-code-plugins
+/plugin install my-mcp-plugin@claude-code-plugins-plus
 ```
 
 ---

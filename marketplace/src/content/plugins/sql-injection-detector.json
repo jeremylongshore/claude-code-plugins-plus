@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/sql-injection-detector",
   "license": "MIT",
-  "installation": "/plugin install sql-injection-detector@claude-code-plugins",
+  "installation": "/plugin install sql-injection-detector@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

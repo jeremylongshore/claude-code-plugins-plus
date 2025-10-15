@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/time-series-forecaster",
   "license": "MIT",
-  "installation": "/plugin install time-series-forecaster@claude-code-plugins",
+  "installation": "/plugin install time-series-forecaster@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

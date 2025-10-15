@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/database-query-profiler",
   "license": "MIT",
-  "installation": "/plugin install database-query-profiler@claude-code-plugins",
+  "installation": "/plugin install database-query-profiler@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

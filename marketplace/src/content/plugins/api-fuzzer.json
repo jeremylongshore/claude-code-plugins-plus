@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/api-fuzzer",
   "license": "MIT",
-  "installation": "/plugin install api-fuzzer@claude-code-plugins",
+  "installation": "/plugin install api-fuzzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

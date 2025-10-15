@@ -292,16 +292,16 @@ Auto-activate based on context:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install all testing plugins
-/plugin install unit-test-generator@claude-code-plugins
-/plugin install integration-test-runner@claude-code-plugins
-/plugin install api-test-automation@claude-code-plugins
-/plugin install performance-test-suite@claude-code-plugins
-/plugin install security-test-scanner@claude-code-plugins
-/plugin install e2e-test-framework@claude-code-plugins
-/plugin install test-coverage-analyzer@claude-code-plugins
-/plugin install mutation-test-runner@claude-code-plugins
-/plugin install regression-test-tracker@claude-code-plugins
-/plugin install test-data-generator@claude-code-plugins
+/plugin install unit-test-generator@claude-code-plugins-plus
+/plugin install integration-test-runner@claude-code-plugins-plus
+/plugin install api-test-automation@claude-code-plugins-plus
+/plugin install performance-test-suite@claude-code-plugins-plus
+/plugin install security-test-scanner@claude-code-plugins-plus
+/plugin install e2e-test-framework@claude-code-plugins-plus
+/plugin install test-coverage-analyzer@claude-code-plugins-plus
+/plugin install mutation-test-runner@claude-code-plugins-plus
+/plugin install regression-test-tracker@claude-code-plugins-plus
+/plugin install test-data-generator@claude-code-plugins-plus
 ```
 
 ---

@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/transfer-learning-adapter",
   "license": "MIT",
-  "installation": "/plugin install transfer-learning-adapter@claude-code-plugins",
+  "installation": "/plugin install transfer-learning-adapter@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -5,7 +5,7 @@ Detect and analyze potential memory leaks in your application code.
 ## Installation
 
 ```bash
-/plugin install memory-leak-detector@claude-code-plugins
+/plugin install memory-leak-detector@claude-code-plugins-plus
 ```
 
 ## Usage

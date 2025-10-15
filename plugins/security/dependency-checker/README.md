@@ -14,7 +14,7 @@ Check dependencies for known vulnerabilities, outdated packages, and license com
 ## Installation
 
 ```bash
-/plugin install dependency-checker@claude-code-plugins
+/plugin install dependency-checker@claude-code-plugins-plus
 ```
 
 ## Usage

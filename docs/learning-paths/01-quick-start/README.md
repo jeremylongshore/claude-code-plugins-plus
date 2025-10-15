@@ -28,6 +28,8 @@ First, add this plugin marketplace to Claude Code:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 ```
 
+> Already added this marketplace before October 2025? Run `/plugin marketplace remove claude-code-plugins` first so Claude registers the new `claude-code-plugins-plus` slug.
+
 **What just happened?**
 - Claude Code connected to this GitHub repository
 - You can now access 225+ plugins instantly
@@ -42,7 +44,7 @@ First, add this plugin marketplace to Claude Code:
 Let's start with the simplest plugin - `hello-world`:
 
 ```bash
-/plugin install hello-world@claude-code-plugins
+/plugin install hello-world@claude-code-plugins-plus
 ```
 
 **What's happening?**
@@ -53,7 +55,7 @@ Let's start with the simplest plugin - `hello-world`:
 **Verify Installation**:
 ```bash
 /plugin list
-# You should see: hello-world@claude-code-plugins
+# You should see: hello-world@claude-code-plugins-plus
 ```
 
 ---
@@ -96,7 +98,7 @@ Next steps:
 Now install a production-ready plugin:
 
 ```bash
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 ```
 
 **Use it to create a smart commit**:
@@ -130,7 +132,7 @@ Install a complete plugin pack for your domain:
 
 ### For DevOps Engineers:
 ```bash
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 This gives you 25 plugins:
@@ -142,7 +144,7 @@ This gives you 25 plugins:
 
 ### For Security Professionals:
 ```bash
-/plugin install security-pro-pack@claude-code-plugins
+/plugin install security-pro-pack@claude-code-plugins-plus
 ```
 
 This gives you 10 plugins:
@@ -206,7 +208,7 @@ This gives you 10 plugins:
 ### Plugin not found?
 ```bash
 # Refresh marketplace cache
-/plugin marketplace update jeremylongshore/claude-code-plugins
+/plugin marketplace update claude-code-plugins-plus
 ```
 
 ### Command not working?
@@ -253,19 +255,19 @@ You've successfully:
 
 ```bash
 # Improve code formatting
-/plugin install formatter@claude-code-plugins
+/plugin install formatter@claude-code-plugins-plus
 # Use: Automatically formats code on tool use
 
 # Professional commits
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 # Use: /commit-smart
 
 # Overnight development automation
-/plugin install overnight-dev@claude-code-plugins
+/plugin install overnight-dev@claude-code-plugins-plus
 # Use: /overnight-setup
 
 # Project health analysis
-/plugin install project-health-auditor@claude-code-plugins
+/plugin install project-health-auditor@claude-code-plugins-plus
 # Use: Analyze code complexity and health
 ```
 

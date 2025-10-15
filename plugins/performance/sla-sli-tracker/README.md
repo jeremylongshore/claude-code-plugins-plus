@@ -5,7 +5,7 @@ Define and track Service Level Agreements, Indicators, and Objectives.
 ## Installation
 
 ```bash
-/plugin install sla-sli-tracker@claude-code-plugins
+/plugin install sla-sli-tracker@claude-code-plugins-plus
 ```
 
 ## Usage
