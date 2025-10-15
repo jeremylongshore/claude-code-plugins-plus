@@ -17,7 +17,8 @@ This is **the comprehensive marketplace and learning hub for Claude Code plugins
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json                # Main marketplace catalog (220 plugins)
+│   ├── marketplace.extended.json       # Source catalog (full metadata for marketplace site)
+│   └── marketplace.json                # Generated CLI catalog (sync via scripts/sync-marketplace.cjs)
 ├── plugins/                            # 14 plugin categories
 │   ├── examples/                       # 3 fully functional example plugins
 │   │   ├── hello-world/               # Basic slash command demo
@@ -94,6 +95,9 @@ git commit -m "Initial commit"
 # Check markdown frontmatter
 python3 scripts/check-frontmatter.py
 
+# Regenerate CLI marketplace catalog after editing marketplace.extended.json
+pnpm run sync-marketplace  # or: npm run sync-marketplace
+
 # For MCP plugins with Node.js (if applicable)
 pnpm install
 pnpm build
@@ -144,7 +148,7 @@ EOF
    - `LICENSE` (MIT or Apache-2.0)
    - At least one component (commands/, agents/, hooks/, mcp/, or scripts/)
 
-3. **Update marketplace catalog** in `.claude-plugin/marketplace.json`:
+3. **Update marketplace catalog source** in `.claude-plugin/marketplace.extended.json`, then regenerate the CLI catalog with `pnpm run sync-marketplace` (or `npm run sync-marketplace`):
 ```json
 {
   "name": "your-plugin",
@@ -158,6 +162,11 @@ EOF
     "email": "your.email@example.com"
   }
 }
+```
+
+```bash
+# Regenerate CLI marketplace.json for Claude CLI users
+pnpm run sync-marketplace  # or: npm run sync-marketplace
 ```
 
 4. **Validate and test**:
@@ -368,7 +377,7 @@ find . -name "*.json" -exec sh -c 'echo "Checking {}"; jq empty {}' \;
 find . -name "*.sh" -ls | grep -v rwx
 
 # Test marketplace entry
-jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.json
+jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.extended.json
 ```
 
 ## Resources

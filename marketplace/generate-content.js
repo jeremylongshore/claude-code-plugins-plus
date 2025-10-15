@@ -11,10 +11,13 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load marketplace.json
-const marketplaceData = JSON.parse(
-  fs.readFileSync(path.join(__dirname, '..', '.claude-plugin', 'marketplace.json'), 'utf8')
-);
+// Load marketplace catalog (prefer extended metadata for site generation)
+const extendedMarketplacePath = path.join(__dirname, '..', '.claude-plugin', 'marketplace.extended.json');
+const marketplacePath = fs.existsSync(extendedMarketplacePath)
+  ? extendedMarketplacePath
+  : path.join(__dirname, '..', '.claude-plugin', 'marketplace.json');
+
+const marketplaceData = JSON.parse(fs.readFileSync(marketplacePath, 'utf8'));
 
 // Ensure content directory exists
 const contentDir = path.join(__dirname, 'src', 'content', 'plugins');

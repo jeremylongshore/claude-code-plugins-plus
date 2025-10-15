@@ -479,8 +479,9 @@ We welcome community plugin submissions! This ecosystem thrives on shared knowle
 
 1. **Fork** this repository
 2. **Add** your plugin to `plugins/community/your-plugin/`
-3. **Update** `.claude-plugin/marketplace.json` with your plugin entry
-4. **Submit** a pull request using our plugin submission template
+3. **Update** `.claude-plugin/marketplace.extended.json` with your plugin entry
+4. **Run** `pnpm run sync-marketplace` (or `npm run sync-marketplace`) to regenerate `.claude-plugin/marketplace.json`
+5. **Submit** a pull request using our plugin submission template
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 

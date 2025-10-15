@@ -5,7 +5,10 @@ const path = require('path');
 
 // Get repository root (go up one level from marketplace/)
 const repoRoot = path.join(__dirname, '..');
-const marketplaceJsonPath = path.join(repoRoot, '.claude-plugin/marketplace.json');
+const extendedMarketplacePath = path.join(repoRoot, '.claude-plugin', 'marketplace.extended.json');
+const marketplaceJsonPath = fs.existsSync(extendedMarketplacePath)
+  ? extendedMarketplacePath
+  : path.join(repoRoot, '.claude-plugin', 'marketplace.json');
 
 // Read marketplace.json
 const marketplaceData = JSON.parse(

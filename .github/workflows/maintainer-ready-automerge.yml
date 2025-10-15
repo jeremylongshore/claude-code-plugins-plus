@@ -1,0 +1,19 @@
+name: maintainer-ready-automerge
+on:
+  pull_request:
+    types: [labeled, synchronize, reopened, ready_for_review]
+permissions:
+  pull-requests: write
+  contents: write
+jobs:
+  enable-auto-merge:
+    # Enable auto-merge on PRs explicitly marked by maintainers
+    if: >-
+      contains(join(fromJson(toJson(github.event.pull_request.labels)).*.name, ','), 'maintainer-ready')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge (squash)
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash
