@@ -13,6 +13,32 @@
   },
   "plugins": [
     {
+      "name": "sugar",
+      "source": "./plugins/devops/sugar",
+      "description": "Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow automation",
+      "version": "2.0.0",
+      "category": "devops",
+      "keywords": [
+        "autonomous",
+        "development",
+        "ai",
+        "task-management",
+        "automation",
+        "agents",
+        "enterprise",
+        "workflow",
+        "productivity",
+        "mcp"
+      ],
+      "author": {
+        "name": "Steven Leggett",
+        "email": "contact@roboticforce.io"
+      },
+      "featured": true,
+      "mcpTools": 7,
+      "repository": "https://github.com/cdnsteve/sugar"
+    },
+    {
       "name": "git-commit-smart",
       "source": "./plugins/devops/git-commit-smart",
       "description": "AI-powered conventional commit message generator with smart analysis",

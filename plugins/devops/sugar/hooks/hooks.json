@@ -1,0 +1,196 @@
+{
+  "hooks": [
+    {
+      "name": "auto-task-discovery",
+      "description": "Automatically suggest task creation from error patterns",
+      "event": "tool-use",
+      "filter": {
+        "tool": ["Bash", "Read"],
+        "pattern": "error|exception|fail|bug|crash"
+      },
+      "action": {
+        "type": "prompt",
+        "message": "💡 Error detected! Would you like to create a Sugar task to fix this? Use /sugar-task to create one."
+      }
+    },
+    {
+      "name": "session-start-status",
+      "description": "Show Sugar status when starting a Claude Code session",
+      "event": "session-start",
+      "condition": {
+        "file_exists": ".sugar/sugar.db"
+      },
+      "action": {
+        "type": "command",
+        "command": "sugar status",
+        "display": "inline"
+      }
+    },
+    {
+      "name": "commit-task-update",
+      "description": "Update Sugar task status after git commits",
+      "event": "tool-use",
+      "filter": {
+        "tool": "Bash",
+        "pattern": "git commit"
+      },
+      "action": {
+        "type": "prompt",
+        "message": "📝 Code committed! If this completes a Sugar task, use:\n  sugar update TASK_ID --status completed"
+      }
+    },
+    {
+      "name": "test-failure-tracking",
+      "description": "Track test failures for task creation",
+      "event": "tool-use",
+      "filter": {
+        "tool": "Bash",
+        "pattern": "pytest|jest|npm test",
+        "output_contains": "FAILED|failed|error"
+      },
+      "action": {
+        "type": "suggest",
+        "suggestion": "Test failures detected. Consider creating a Sugar task:\n  /sugar-task \"Fix failing tests\" --type bug_fix --urgent"
+      }
+    },
+    {
+      "name": "suggest-autonomous-mode",
+      "description": "Suggest autonomous mode when multiple pending tasks exist",
+      "event": "tool-use",
+      "filter": {
+        "tool": "Bash",
+        "pattern": "sugar (add|list)"
+      },
+      "condition": {
+        "pending_tasks": ">5"
+      },
+      "action": {
+        "type": "prompt",
+        "message": "🤖 You have multiple pending tasks. Consider starting autonomous mode:\n  sugar run --dry-run --once  # Test first\n  sugar run  # Start autonomous development"
+      }
+    },
+    {
+      "name": "quality-reminder",
+      "description": "Remind about code review and testing",
+      "event": "tool-use",
+      "filter": {
+        "tool": ["Write", "Edit"],
+        "file_pattern": "\\.(py|js|ts|jsx|tsx)$"
+      },
+      "action": {
+        "type": "reminder",
+        "message": "💡 Remember to:\n  - Write tests for new code\n  - Run existing tests: pytest / npm test\n  - Consider code review before committing"
+      },
+      "throttle": {
+        "max_per_session": 3,
+        "min_interval_seconds": 300
+      }
+    },
+    {
+      "name": "github-issue-sync",
+      "description": "Suggest syncing GitHub issues to Sugar",
+      "event": "tool-use",
+      "filter": {
+        "tool": "Bash",
+        "pattern": "gh issue (list|view)"
+      },
+      "action": {
+        "type": "suggest",
+        "suggestion": "💡 Sync GitHub issues to Sugar tasks with:\n  /sugar-analyze --github\n  \nOr enable automatic syncing in .sugar/config.yaml:\n  discovery:\n    github:\n      enabled: true"
+      },
+      "throttle": {
+        "max_per_session": 1
+      }
+    },
+    {
+      "name": "doc-update-reminder",
+      "description": "Remind to update documentation after significant changes",
+      "event": "user-prompt-submit",
+      "filter": {
+        "keywords": ["feature", "implement", "add", "create", "new"]
+      },
+      "action": {
+        "type": "reminder",
+        "message": "📚 For new features, consider:\n  - Creating a Sugar task for documentation: /sugar-task \"Document new feature\" --type documentation\n  - Updating README and relevant docs"
+      },
+      "throttle": {
+        "max_per_session": 2,
+        "min_interval_seconds": 600
+      }
+    },
+    {
+      "name": "security-scan-reminder",
+      "description": "Suggest security scanning for auth/security related changes",
+      "event": "tool-use",
+      "filter": {
+        "tool": ["Write", "Edit"],
+        "content_pattern": "auth|password|token|secret|credential|security"
+      },
+      "action": {
+        "type": "warning",
+        "message": "🔒 Security-sensitive code detected!\n  - Review for security vulnerabilities\n  - Run security scan: bandit -r . (Python) or npm audit\n  - Consider creating security review task:\n    /sugar-task \"Security review for auth changes\" --type bug_fix --priority 5"
+      },
+      "throttle": {
+        "max_per_session": 5,
+        "min_interval_seconds": 180
+      }
+    },
+    {
+      "name": "performance-check",
+      "description": "Suggest performance review for database/API changes",
+      "event": "tool-use",
+      "filter": {
+        "tool": ["Write", "Edit"],
+        "file_pattern": "(models|database|api|query)\\.(py|js|ts)$"
+      },
+      "action": {
+        "type": "suggest",
+        "suggestion": "⚡ Database/API changes detected. Consider:\n  - Performance testing\n  - Index optimization\n  - Query analysis\n  \nCreate performance task:\n  /sugar-task \"Performance review\" --type refactor --priority 3"
+      },
+      "throttle": {
+        "max_per_session": 3,
+        "min_interval_seconds": 300
+      }
+    },
+    {
+      "name": "backup-reminder",
+      "description": "Remind to commit significant work",
+      "event": "session-end",
+      "condition": {
+        "uncommitted_changes": true
+      },
+      "action": {
+        "type": "reminder",
+        "message": "💾 You have uncommitted changes. Consider:\n  git add -A\n  git commit -m \"Your message\"\n  \nOr create a Sugar task to continue later:\n  /sugar-task \"Continue work on [feature]\" --priority 4"
+      }
+    },
+    {
+      "name": "task-type-suggestion",
+      "description": "Suggest custom task types for common patterns",
+      "event": "tool-use",
+      "filter": {
+        "tool": "Bash",
+        "pattern": "sugar add"
+      },
+      "action": {
+        "type": "suggest",
+        "suggestion": "💡 Did you know Sugar supports custom task types?\n  \nCreate your own:\n  sugar task-type add security_audit --name \"Security Audit\" --agent \"tech-lead\"\n  \nThen use:\n  sugar add \"Audit auth system\" --type security_audit"
+      },
+      "throttle": {
+        "max_per_session": 1
+      }
+    }
+  ],
+  "configuration": {
+    "enabled": true,
+    "default_throttle": {
+      "max_per_session": 10,
+      "min_interval_seconds": 60
+    },
+    "logging": {
+      "enabled": true,
+      "level": "info",
+      "file": ".sugar/hooks.log"
+    }
+  }
+}
