@@ -1,7 +1,7 @@
 ---
 name: commit
 description: Generate an AI-powered conventional commit message from your git diff and commit changes
-model: sonnet
+model: claude-sonnet-4-5-20250929
 ---
 
 You are an expert at analyzing code changes and writing clear, conventional commit messages.
