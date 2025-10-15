@@ -2,7 +2,7 @@
   "name": "whale-alert-monitor",
   "description": "Production-grade whale transaction monitoring system with real-time WebSocket tracking, multi-chain support, and automated alerting for $1M+ cryptocurrency movements",
   "version": "1.0.0",
-  "category": "crypto",
+  "category": "other",
   "keywords": [
     "whale",
     "alert",

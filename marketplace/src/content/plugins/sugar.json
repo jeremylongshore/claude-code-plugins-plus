@@ -1,6 +1,6 @@
 {
   "name": "sugar",
-  "description": "Autonomous AI development workflow: task orchestration, hooks, and MCP tools for Claude Code",
+  "description": "Autonomous AI development for Claude Code: create and manage tasks with rich context, run safe autonomous cycles, and get quality nudges via hooks — all powered by a minimal MCP bridge to the Sugar CLI.",
   "version": "2.0.0",
   "category": "devops",
   "keywords": [
@@ -34,4 +34,3 @@
   ],
   "screenshots": []
 }
-

@@ -12,6 +12,11 @@ const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
 const totalPlugins = allPlugins.length;
 const totalCategories = categories.length;
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
+const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
+  if (a.data.name === 'sugar') return -1;
+  if (b.data.name === 'sugar') return 1;
+  return a.data.name.localeCompare(b.data.name);
+});
 
 // Group plugins by category for category showcase
 const pluginsByCategory = categories.reduce((acc, cat) => {
@@ -98,7 +103,7 @@ const categoryIcons: Record<string, string> = {
         </div>
 
         <div class="plugins-grid">
-          {featuredPlugins.map(plugin => (
+          {featuredPluginsSorted.map(plugin => (
             <PluginCard {...plugin.data} />
           ))}
         </div>

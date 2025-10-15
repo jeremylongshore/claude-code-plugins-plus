@@ -2,7 +2,7 @@
   "name": "crypto-portfolio-tracker",
   "description": "Professional-grade crypto portfolio tracker with real-time price feeds, comprehensive PnL analysis, risk metrics, tax reporting, and multi-wallet aggregation across 50+ exchanges and DeFi protocols",
   "version": "1.0.0",
-  "category": "crypto",
+  "category": "other",
   "keywords": [
     "crypto",
     "portfolio",

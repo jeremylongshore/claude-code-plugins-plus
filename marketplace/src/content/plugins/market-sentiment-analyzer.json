@@ -2,7 +2,7 @@
   "name": "market-sentiment-analyzer",
   "description": "AI-powered market sentiment analyzer aggregating data from 15+ social platforms, 500+ news sources, and on-chain metrics with predictive modeling and trading signal generation",
   "version": "1.0.0",
-  "category": "crypto",
+  "category": "other",
   "keywords": [
     "sentiment",
     "analysis",
