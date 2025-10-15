@@ -12,6 +12,8 @@ Claude Code plugins are packages that extend Claude Code functionality with cust
 /plugin marketplace add jeremylongshore/claude-code-plugins
 ```
 
+> Upgrading from an older install? Remove the original slug first with `/plugin marketplace remove claude-code-plugins`, then run the add command above to register the new `claude-code-plugins-plus` marketplace.
+
 ### Browse Available Plugins
 
 ```bash

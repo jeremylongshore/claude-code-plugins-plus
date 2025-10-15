@@ -344,6 +344,8 @@ Users install plugins from this marketplace with:
 ```bash
 # Add marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
+# Already installed before Oct 2025? Remove the old slug first:
+# /plugin marketplace remove claude-code-plugins
 
 # Install plugins
 /plugin install devops-automation-pack@claude-code-plugins-plus

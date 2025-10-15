@@ -28,6 +28,8 @@ First, add this plugin marketplace to Claude Code:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 ```
 
+> Already added this marketplace before October 2025? Run `/plugin marketplace remove claude-code-plugins` first so Claude registers the new `claude-code-plugins-plus` slug.
+
 **What just happened?**
 - Claude Code connected to this GitHub repository
 - You can now access 225+ plugins instantly
