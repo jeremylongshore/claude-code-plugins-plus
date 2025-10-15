@@ -31,6 +31,10 @@
 **Related Issues:**
 <!-- Link to related issues: Closes #123, Fixes #456 -->
 
+## Security
+- Related alerts: GHSA-/CVE-
+- Impact assessment: None / Low / Medium / High
+
 ## Plugin Details (for plugin submissions/updates)
 
 **Plugin Name:**
@@ -57,6 +61,8 @@
 - [ ] I have commented my code where necessary
 - [ ] My changes generate no new warnings or errors
 - [ ] Documentation has been updated (if applicable)
+- [ ] CodeQL passes; no new code scanning alerts
+- [ ] No high/critical Dependabot alerts introduced
 
 ### For Plugin Submissions/Updates
 - [ ] Plugin has valid `.claude-plugin/plugin.json` with all required fields
