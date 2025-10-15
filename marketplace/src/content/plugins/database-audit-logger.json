@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-audit-logger",
   "license": "MIT",
-  "installation": "/plugin install database-audit-logger@claude-code-plugins",
+  "installation": "/plugin install database-audit-logger@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

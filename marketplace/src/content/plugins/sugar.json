@@ -1,6 +1,6 @@
 {
   "name": "sugar",
-  "description": "Autonomous AI development for Claude Code: create and manage tasks with rich context, run safe autonomous cycles, and get quality nudges via hooks — all powered by a minimal MCP bridge to the Sugar CLI.",
+  "description": "Autonomous AI development for Claude Code: create and manage tasks with rich context, run safe autonomous cycles, and get quality nudges via hooks \u2014 all powered by a minimal MCP bridge to the Sugar CLI.",
   "version": "2.0.0",
   "category": "devops",
   "keywords": [
@@ -20,7 +20,7 @@
   "featured": true,
   "repository": "https://github.com/cdnsteve/sugar",
   "license": "MIT",
-  "installation": "/plugin install sugar@claude-code-plugins",
+  "installation": "/plugin install sugar@claude@claude-code-plugins-plus",
   "features": [
     "Slash commands for tasks and status",
     "Hooks for discovery and quality reminders",

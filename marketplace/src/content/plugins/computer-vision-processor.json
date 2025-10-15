@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/computer-vision-processor",
   "license": "MIT",
-  "installation": "/plugin install computer-vision-processor@claude-code-plugins",
+  "installation": "/plugin install computer-vision-processor@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

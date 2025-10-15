@@ -5,7 +5,7 @@ Run clustering algorithms on datasets
 ## Installation
 
 ```bash
-/plugin install clustering-algorithm-runner@claude-code-plugins
+/plugin install clustering-algorithm-runner@claude-code-plugins-plus
 ```
 
 ## Usage

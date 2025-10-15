@@ -21,7 +21,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/market-sentiment-analyzer",
   "license": "MIT",
-  "installation": "/plugin install market-sentiment-analyzer@claude-code-plugins",
+  "installation": "/plugin install market-sentiment-analyzer@claude@claude-code-plugins-plus",
   "features": [
     "Multi-source sentiment aggregation (15+ platforms)",
     "Real-time Twitter/X sentiment tracking (streaming API)",

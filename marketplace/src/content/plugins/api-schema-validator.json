@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-schema-validator",
   "license": "MIT",
-  "installation": "/plugin install api-schema-validator@claude-code-plugins",
+  "installation": "/plugin install api-schema-validator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

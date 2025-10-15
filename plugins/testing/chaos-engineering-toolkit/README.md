@@ -5,7 +5,7 @@ Chaos testing for resilience with failure injection, latency simulation, and sys
 ## Installation
 
 ```bash
-/plugin install chaos-engineering-toolkit@claude-code-plugins
+/plugin install chaos-engineering-toolkit@claude-code-plugins-plus
 ```
 
 ## Usage

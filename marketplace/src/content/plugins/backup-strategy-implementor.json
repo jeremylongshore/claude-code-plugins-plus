@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/backup-strategy-implementor",
   "license": "MIT",
-  "installation": "/plugin install backup-strategy-implementor@claude-code-plugins",
+  "installation": "/plugin install backup-strategy-implementor@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

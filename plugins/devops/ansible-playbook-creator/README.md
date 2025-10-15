@@ -5,7 +5,7 @@ Create Ansible playbooks for configuration management
 ## Installation
 
 ```bash
-/plugin install ansible-playbook-creator@claude-code-plugins
+/plugin install ansible-playbook-creator@claude-code-plugins-plus
 ```
 
 ## Usage

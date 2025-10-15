@@ -5,7 +5,7 @@ Database plugin for database-partition-manager
 ## Installation
 
 ```bash
-/plugin install database-partition-manager@claude-code-plugins
+/plugin install database-partition-manager@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android a
 ## Installation
 
 ```bash
-/plugin install mobile-app-tester@claude-code-plugins
+/plugin install mobile-app-tester@claude-code-plugins-plus
 ```
 
 ## Usage

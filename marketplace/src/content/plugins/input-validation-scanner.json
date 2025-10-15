@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/input-validation-scanner",
   "license": "MIT",
-  "installation": "/plugin install input-validation-scanner@claude-code-plugins",
+  "installation": "/plugin install input-validation-scanner@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

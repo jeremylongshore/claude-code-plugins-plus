@@ -5,7 +5,7 @@ Database plugin for database-transaction-monitor
 ## Installation
 
 ```bash
-/plugin install database-transaction-monitor@claude-code-plugins
+/plugin install database-transaction-monitor@claude-code-plugins-plus
 ```
 
 ## Usage

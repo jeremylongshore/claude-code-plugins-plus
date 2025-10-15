@@ -27,7 +27,7 @@ What if Claude could keep working while you sleep?
 
 ```bash
 # 1. Install the plugin
-/plugin install overnight-dev@claude-code-plugins
+/plugin install overnight-dev@claude-code-plugins-plus
 
 # 2. Setup in your project
 /overnight-setup
@@ -204,7 +204,7 @@ Before installing, you need:
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install overnight-dev
-/plugin install overnight-dev@claude-code-plugins
+/plugin install overnight-dev@claude-code-plugins-plus
 ```
 
 ### Setup in Your Project
@@ -614,7 +614,7 @@ Strategy developed and refined through hundreds of autonomous overnight developm
 **Ready to 3x your productivity?**
 
 ```bash
-/plugin install overnight-dev@claude-code-plugins
+/plugin install overnight-dev@claude-code-plugins-plus
 /overnight-setup
 ```
 

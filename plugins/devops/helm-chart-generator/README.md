@@ -5,7 +5,7 @@ Generate Helm charts for Kubernetes applications
 ## Installation
 
 ```bash
-/plugin install helm-chart-generator@claude-code-plugins
+/plugin install helm-chart-generator@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -20,7 +20,7 @@ Analyze market sentiment from social media, news, and on-chain data to gauge mar
 ## Installation
 
 ```bash
-/plugin install market-sentiment-analyzer@claude-code-plugins
+/plugin install market-sentiment-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

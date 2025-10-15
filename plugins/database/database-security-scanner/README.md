@@ -5,7 +5,7 @@ Database plugin for database-security-scanner
 ## Installation
 
 ```bash
-/plugin install database-security-scanner@claude-code-plugins
+/plugin install database-security-scanner@claude-code-plugins-plus
 ```
 
 ## Usage

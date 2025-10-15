@@ -27,7 +27,7 @@ Transform Claude Code into a powerful investment research terminal using OpenBB'
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install OpenBB Terminal plugin
-/plugin install openbb-terminal@claude-code-plugins
+/plugin install openbb-terminal@claude-code-plugins-plus
 ```
 
 ### Prerequisites

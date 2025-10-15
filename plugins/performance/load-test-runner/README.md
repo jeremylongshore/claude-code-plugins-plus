@@ -5,7 +5,7 @@ Create and execute load tests for performance validation.
 ## Installation
 
 ```bash
-/plugin install load-test-runner@claude-code-plugins
+/plugin install load-test-runner@claude-code-plugins-plus
 ```
 
 ## Usage

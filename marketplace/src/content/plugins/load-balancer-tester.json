@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/load-balancer-tester",
   "license": "MIT",
-  "installation": "/plugin install load-balancer-tester@claude-code-plugins",
+  "installation": "/plugin install load-balancer-tester@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

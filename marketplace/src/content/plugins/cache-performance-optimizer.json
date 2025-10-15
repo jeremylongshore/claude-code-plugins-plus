@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/cache-performance-optimizer",
   "license": "MIT",
-  "installation": "/plugin install cache-performance-optimizer@claude-code-plugins",
+  "installation": "/plugin install cache-performance-optimizer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

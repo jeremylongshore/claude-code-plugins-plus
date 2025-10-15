@@ -5,7 +5,7 @@ Implement standardized error handling with proper HTTP status codes and consiste
 ## Installation
 
 ```bash
-/plugin install api-error-handler@claude-code-plugins
+/plugin install api-error-handler@claude-code-plugins-plus
 ```
 
 ## Usage

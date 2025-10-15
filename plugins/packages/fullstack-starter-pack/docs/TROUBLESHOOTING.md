@@ -24,7 +24,7 @@ Common issues and solutions when using the Fullstack Starter Pack.
 
 # 3. Reinstall pack
 /plugin uninstall fullstack-starter-pack
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 
 # 4. Check Claude Code version
 # Requires Claude Code >=0.1.0
@@ -39,7 +39,7 @@ claude --version
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Then install pack
-/plugin install fullstack-starter-pack@claude-code-plugins
+/plugin install fullstack-starter-pack@claude-code-plugins-plus
 ```
 
 ---

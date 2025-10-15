@@ -346,9 +346,9 @@ Users can add this marketplace to Claude Code:
 Then install any plugin:
 
 ```bash
-/plugin install ml-model-trainer@claude-code-plugins
-/plugin install docker-compose-generator@claude-code-plugins
-/plugin install rest-api-generator@claude-code-plugins
+/plugin install ml-model-trainer@claude-code-plugins-plus
+/plugin install docker-compose-generator@claude-code-plugins-plus
+/plugin install rest-api-generator@claude-code-plugins-plus
 ```
 
 ## Repository Structure

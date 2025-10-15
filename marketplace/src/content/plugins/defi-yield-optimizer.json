@@ -18,7 +18,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/defi-yield-optimizer",
   "license": "MIT",
-  "installation": "/plugin install defi-yield-optimizer@claude-code-plugins",
+  "installation": "/plugin install defi-yield-optimizer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

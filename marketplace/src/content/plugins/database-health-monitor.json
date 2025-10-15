@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-health-monitor",
   "license": "MIT",
-  "installation": "/plugin install database-health-monitor@claude-code-plugins",
+  "installation": "/plugin install database-health-monitor@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

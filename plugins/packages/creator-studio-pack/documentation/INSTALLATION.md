@@ -26,7 +26,7 @@
 ### Step 1: Install the Pack
 
 ```bash
-/plugin install creator-studio-pack@claude-code-plugins
+/plugin install creator-studio-pack@claude-code-plugins-plus
 ```
 
 ### Step 2: Verify Installation

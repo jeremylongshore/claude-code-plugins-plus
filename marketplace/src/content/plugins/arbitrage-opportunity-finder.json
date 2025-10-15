@@ -20,11 +20,11 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/arbitrage-opportunity-finder",
   "license": "MIT",
-  "installation": "/plugin install arbitrage-opportunity-finder@claude-code-plugins",
+  "installation": "/plugin install arbitrage-opportunity-finder@claude@claude-code-plugins-plus",
   "features": [
     "Multi-exchange arbitrage scanning (100+ CEX/DEX)",
     "Flash loan arbitrage opportunity detection",
-    "Triangular arbitrage analysis (A→B→C→A)",
+    "Triangular arbitrage analysis (A\u2192B\u2192C\u2192A)",
     "Cross-chain arbitrage identification",
     "Real-time profitability calculation with gas fees",
     "MEV (Maximal Extractable Value) monitoring",

@@ -71,24 +71,24 @@ These 4 plugins are marked as featured in the marketplace:
 ### Quick Start
 ```bash
 # Install the complete DevOps pack (25 plugins)
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 ### Individual Installation
 ```bash
 # Featured plugins
-/plugin install docker-compose-generator@claude-code-plugins
-/plugin install kubernetes-deployment-creator@claude-code-plugins
-/plugin install ci-cd-pipeline-builder@claude-code-plugins
-/plugin install infrastructure-as-code-generator@claude-code-plugins
+/plugin install docker-compose-generator@claude-code-plugins-plus
+/plugin install kubernetes-deployment-creator@claude-code-plugins-plus
+/plugin install ci-cd-pipeline-builder@claude-code-plugins-plus
+/plugin install infrastructure-as-code-generator@claude-code-plugins-plus
 
 # Security plugins
-/plugin install container-security-scanner@claude-code-plugins
-/plugin install compliance-checker@claude-code-plugins
+/plugin install container-security-scanner@claude-code-plugins-plus
+/plugin install compliance-checker@claude-code-plugins-plus
 
 # Monitoring plugins
-/plugin install monitoring-stack-deployer@claude-code-plugins
-/plugin install log-aggregation-setup@claude-code-plugins
+/plugin install monitoring-stack-deployer@claude-code-plugins-plus
+/plugin install log-aggregation-setup@claude-code-plugins-plus
 
 # And 17 more...
 ```

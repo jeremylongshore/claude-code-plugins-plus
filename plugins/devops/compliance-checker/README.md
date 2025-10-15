@@ -5,7 +5,7 @@ Check infrastructure compliance (SOC2, HIPAA, PCI-DSS)
 ## Installation
 
 ```bash
-/plugin install compliance-checker@claude-code-plugins
+/plugin install compliance-checker@claude-code-plugins-plus
 ```
 
 ## Usage

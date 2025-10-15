@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/resource-usage-tracker",
   "license": "MIT",
-  "installation": "/plugin install resource-usage-tracker@claude-code-plugins",
+  "installation": "/plugin install resource-usage-tracker@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

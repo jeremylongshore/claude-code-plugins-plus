@@ -5,7 +5,7 @@ Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test ac
 ## Installation
 
 ```bash
-/plugin install browser-compatibility-tester@claude-code-plugins
+/plugin install browser-compatibility-tester@claude-code-plugins-plus
 ```
 
 ## Usage

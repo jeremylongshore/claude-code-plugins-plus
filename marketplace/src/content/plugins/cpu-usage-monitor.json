@@ -15,7 +15,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/cpu-usage-monitor",
   "license": "MIT",
-  "installation": "/plugin install cpu-usage-monitor@claude-code-plugins",
+  "installation": "/plugin install cpu-usage-monitor@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

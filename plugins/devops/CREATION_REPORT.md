@@ -163,10 +163,10 @@ plugin-name/
 ### Installation Commands
 ```bash
 # Individual plugins
-/plugin install docker-compose-generator@claude-code-plugins
+/plugin install docker-compose-generator@claude-code-plugins-plus
 
 # Full pack (includes all 25)
-/plugin install devops-automation-pack@claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
 ## Quality Assurance

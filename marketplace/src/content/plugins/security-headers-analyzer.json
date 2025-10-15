@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/security-headers-analyzer",
   "license": "MIT",
-  "installation": "/plugin install security-headers-analyzer@claude-code-plugins",
+  "installation": "/plugin install security-headers-analyzer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

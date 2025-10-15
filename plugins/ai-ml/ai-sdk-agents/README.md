@@ -23,7 +23,7 @@ Transform complex workflows into multi-agent systems where specialized agents:
 
 ```bash
 # Install the plugin
-/plugin install ai-sdk-agents@claude-code-plugins
+/plugin install ai-sdk-agents@claude-code-plugins-plus
 
 # Install dependencies in your project
 npm install @ai-sdk-tools/agents ai zod
@@ -570,7 +570,7 @@ const result = await orchestrate({
 
 ```bash
 # 1. Install plugin
-/plugin install ai-sdk-agents@claude-code-plugins
+/plugin install ai-sdk-agents@claude-code-plugins-plus
 
 # 2. Set up project
 /ai-agents-setup --template code-pipeline

@@ -5,7 +5,7 @@ Analyze NFT rarity scores, trait distributions, and valuations to make informed 
 ## Installation
 
 ```bash
-/plugin install nft-rarity-analyzer@claude-code-plugins
+/plugin install nft-rarity-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

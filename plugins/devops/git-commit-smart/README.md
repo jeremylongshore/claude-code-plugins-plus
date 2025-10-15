@@ -18,7 +18,7 @@
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install the plugin
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 ```
 
 ## Usage

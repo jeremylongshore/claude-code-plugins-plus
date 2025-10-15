@@ -5,7 +5,7 @@ Database plugin for database-audit-logger
 ## Installation
 
 ```bash
-/plugin install database-audit-logger@claude-code-plugins
+/plugin install database-audit-logger@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -17,7 +17,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/graphql-server-builder",
   "license": "MIT",
-  "installation": "/plugin install graphql-server-builder@claude-code-plugins",
+  "installation": "/plugin install graphql-server-builder@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

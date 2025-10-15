@@ -5,7 +5,7 @@ Generate type-safe client SDKs from OpenAPI specs for multiple languages.
 ## Installation
 
 ```bash
-/plugin install api-sdk-generator@claude-code-plugins
+/plugin install api-sdk-generator@claude-code-plugins-plus
 ```
 
 ## Usage

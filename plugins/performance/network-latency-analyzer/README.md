@@ -5,7 +5,7 @@ Analyze and optimize network latency in your application.
 ## Installation
 
 ```bash
-/plugin install network-latency-analyzer@claude-code-plugins
+/plugin install network-latency-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

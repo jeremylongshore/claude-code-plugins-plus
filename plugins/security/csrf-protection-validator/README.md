@@ -13,7 +13,7 @@ Validate Cross-Site Request Forgery (CSRF) protection mechanisms in web applicat
 ## Installation
 
 ```bash
-/plugin install csrf-protection-validator@claude-code-plugins
+/plugin install csrf-protection-validator@claude-code-plugins-plus
 ```
 
 ## Usage

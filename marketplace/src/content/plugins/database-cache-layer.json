@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-cache-layer",
   "license": "MIT",
-  "installation": "/plugin install database-cache-layer@claude-code-plugins",
+  "installation": "/plugin install database-cache-layer@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

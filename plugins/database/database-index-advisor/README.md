@@ -5,7 +5,7 @@ Analyze query patterns and recommend optimal database indexes with impact analys
 ## Installation
 
 ```bash
-/plugin install database-index-advisor@claude-code-plugins
+/plugin install database-index-advisor@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Track and optimize resource usage across your application stack.
 ## Installation
 
 ```bash
-/plugin install resource-usage-tracker@claude-code-plugins
+/plugin install resource-usage-tracker@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -5,7 +5,7 @@ Build reusable Terraform modules
 ## Installation
 
 ```bash
-/plugin install terraform-module-builder@claude-code-plugins
+/plugin install terraform-module-builder@claude-code-plugins-plus
 ```
 
 ## Usage

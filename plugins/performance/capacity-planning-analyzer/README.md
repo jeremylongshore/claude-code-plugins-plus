@@ -5,7 +5,7 @@ Analyze capacity requirements and plan for future growth.
 ## Installation
 
 ```bash
-/plugin install capacity-planning-analyzer@claude-code-plugins
+/plugin install capacity-planning-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

@@ -14,7 +14,7 @@ Scan codebase for exposed secrets, API keys, passwords, and sensitive credential
 ## Installation
 
 ```bash
-/plugin install secret-scanner@claude-code-plugins
+/plugin install secret-scanner@claude-code-plugins-plus
 ```
 
 ## Usage

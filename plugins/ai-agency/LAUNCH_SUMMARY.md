@@ -228,14 +228,14 @@ plugins/ai-agency/
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install all automation platforms
-/plugin install n8n-workflow-designer@claude-code-plugins
-/plugin install make-scenario-builder@claude-code-plugins
-/plugin install zapier-zap-builder@claude-code-plugins
+/plugin install n8n-workflow-designer@claude-code-plugins-plus
+/plugin install make-scenario-builder@claude-code-plugins-plus
+/plugin install zapier-zap-builder@claude-code-plugins-plus
 
 # Install business tools
-/plugin install discovery-questionnaire@claude-code-plugins
-/plugin install sow-generator@claude-code-plugins
-/plugin install roi-calculator@claude-code-plugins
+/plugin install discovery-questionnaire@claude-code-plugins-plus
+/plugin install sow-generator@claude-code-plugins-plus
+/plugin install roi-calculator@claude-code-plugins-plus
 ```
 
 ---

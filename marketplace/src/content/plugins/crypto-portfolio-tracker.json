@@ -21,7 +21,7 @@
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/crypto-portfolio-tracker",
   "license": "MIT",
-  "installation": "/plugin install crypto-portfolio-tracker@claude-code-plugins",
+  "installation": "/plugin install crypto-portfolio-tracker@claude@claude-code-plugins-plus",
   "features": [
     "Multi-wallet aggregation (50+ exchanges, DeFi protocols)",
     "Real-time portfolio valuation and PnL tracking",

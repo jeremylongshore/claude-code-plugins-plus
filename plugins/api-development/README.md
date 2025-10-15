@@ -132,13 +132,13 @@ This collection provides tools for building, testing, securing, and monitoring A
 
 ```bash
 # REST API generator
-/plugin install rest-api-generator@claude-code-plugins
+/plugin install rest-api-generator@claude-code-plugins-plus
 
 # GraphQL server builder
-/plugin install graphql-server-builder@claude-code-plugins
+/plugin install graphql-server-builder@claude-code-plugins-plus
 
 # API security scanner
-/plugin install api-security-scanner@claude-code-plugins
+/plugin install api-security-scanner@claude-code-plugins-plus
 ```
 
 ### Install All API Development Plugins
@@ -152,7 +152,7 @@ for plugin in rest-api-generator graphql-server-builder api-documentation-genera
   api-contract-generator api-monitoring-dashboard api-load-tester api-authentication-builder \
   api-request-logger api-throttling-manager api-sdk-generator api-schema-validator \
   api-event-emitter api-batch-processor; do
-  /plugin install $plugin@claude-code-plugins
+  /plugin install $plugin@claude-code-plugins-plus
 done
 ```
 

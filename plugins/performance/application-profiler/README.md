@@ -5,7 +5,7 @@ Profile application performance with comprehensive analysis of CPU, memory, and 
 ## Installation
 
 ```bash
-/plugin install application-profiler@claude-code-plugins
+/plugin install application-profiler@claude-code-plugins-plus
 ```
 
 ## Usage

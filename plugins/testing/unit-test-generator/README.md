@@ -13,7 +13,7 @@ Automatically generate comprehensive unit tests from source code with intelligen
 ## Installation
 
 ```bash
-/plugin install unit-test-generator@claude-code-plugins
+/plugin install unit-test-generator@claude-code-plugins-plus
 ```
 
 ## Usage

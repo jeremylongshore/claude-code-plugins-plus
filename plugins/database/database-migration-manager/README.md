@@ -5,7 +5,7 @@ Manage database migrations with version control, rollback capabilities, and auto
 ## Installation
 
 ```bash
-/plugin install database-migration-manager@claude-code-plugins
+/plugin install database-migration-manager@claude-code-plugins-plus
 ```
 
 ## Usage

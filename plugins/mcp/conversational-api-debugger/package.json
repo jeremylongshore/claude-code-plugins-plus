@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/conversational-api-debugger",
+  "name": "@claude-code-plugins-plus/conversational-api-debugger",
   "version": "1.0.0",
   "description": "MCP server for debugging REST API failures using OpenAPI specs and HTTP logs",
   "type": "module",

@@ -43,7 +43,7 @@ claude --version
 
 ### 2. Add Plugin Marketplace
 
-Add the claude-code-plugins marketplace (if not already added):
+Add the claude-code-plugins-plus marketplace (if not already added):
 
 ```bash
 claude plugin marketplace add jeremylongshore/claude-code-plugins
@@ -54,7 +54,7 @@ claude plugin marketplace add jeremylongshore/claude-code-plugins
 Install the complete pack with all 12 plugins:
 
 ```bash
-claude plugin install ai-ml-engineering-pack@claude-code-plugins
+claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 This installs:
@@ -248,7 +248,7 @@ claude plugin update ai-ml-engineering-pack
 
 # Or reinstall
 claude plugin uninstall ai-ml-engineering-pack
-claude plugin install ai-ml-engineering-pack@claude-code-plugins
+claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ## Troubleshooting

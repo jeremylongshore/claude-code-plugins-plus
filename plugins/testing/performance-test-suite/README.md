@@ -15,7 +15,7 @@ Comprehensive load testing and performance benchmarking with intelligent metrics
 ## Installation
 
 ```bash
-/plugin install performance-test-suite@claude-code-plugins
+/plugin install performance-test-suite@claude-code-plugins-plus
 ```
 
 ## Usage

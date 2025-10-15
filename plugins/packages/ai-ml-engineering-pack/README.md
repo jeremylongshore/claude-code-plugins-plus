@@ -41,7 +41,7 @@ Master prompt engineering, LLM integration, RAG systems, and AI safety with 12 s
 claude plugin marketplace add jeremylongshore/claude-code-plugins
 
 # Install AI/ML Engineering Pack
-claude plugin install ai-ml-engineering-pack@claude-code-plugins
+claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 
 # Verify installation
 claude plugin list

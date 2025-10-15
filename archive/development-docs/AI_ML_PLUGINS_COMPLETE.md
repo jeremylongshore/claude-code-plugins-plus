@@ -203,19 +203,19 @@ Install individual plugins:
 
 ```bash
 # Model training
-/plugin install ml-model-trainer@claude-code-plugins
+/plugin install ml-model-trainer@claude-code-plugins-plus
 
 # Data preprocessing
-/plugin install data-preprocessing-pipeline@claude-code-plugins
+/plugin install data-preprocessing-pipeline@claude-code-plugins-plus
 
 # NLP
-/plugin install nlp-text-analyzer@claude-code-plugins
+/plugin install nlp-text-analyzer@claude-code-plugins-plus
 
 # MLOps
-/plugin install model-deployment-helper@claude-code-plugins
+/plugin install model-deployment-helper@claude-code-plugins-plus
 
 # Ethics
-/plugin install ai-ethics-validator@claude-code-plugins
+/plugin install ai-ethics-validator@claude-code-plugins-plus
 ```
 
 ## Usage Examples

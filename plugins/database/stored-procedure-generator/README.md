@@ -5,7 +5,7 @@ Database plugin for stored-procedure-generator
 ## Installation
 
 ```bash
-/plugin install stored-procedure-generator@claude-code-plugins
+/plugin install stored-procedure-generator@claude-code-plugins-plus
 ```
 
 ## Usage

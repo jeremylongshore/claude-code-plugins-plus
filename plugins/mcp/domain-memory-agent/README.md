@@ -16,7 +16,7 @@ A lightweight MCP server for domain-specific knowledge management using TF-IDF s
 ##  Installation
 
 ```bash
-/plugin install domain-memory-agent@claude-code-plugins
+/plugin install domain-memory-agent@claude-code-plugins-plus
 ```
 
 ##  6 MCP Tools

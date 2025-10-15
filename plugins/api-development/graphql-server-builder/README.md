@@ -5,7 +5,7 @@ Build production-ready GraphQL servers with schema-first design, resolvers, subs
 ## Installation
 
 ```bash
-/plugin install graphql-server-builder@claude-code-plugins
+/plugin install graphql-server-builder@claude-code-plugins-plus
 ```
 
 ## Usage

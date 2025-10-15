@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/session-security-checker",
   "license": "MIT",
-  "installation": "/plugin install session-security-checker@claude-code-plugins",
+  "installation": "/plugin install session-security-checker@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

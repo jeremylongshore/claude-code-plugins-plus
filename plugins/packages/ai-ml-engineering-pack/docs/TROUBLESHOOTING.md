@@ -23,8 +23,8 @@ Common issues and solutions when using the AI/ML Engineering Pack.
 
 **Symptoms:**
 ```bash
-claude plugin install ai-ml-engineering-pack@claude-code-plugins
-Error: Plugin 'ai-ml-engineering-pack' not found in marketplace 'claude-code-plugins'
+claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
+Error: Plugin 'ai-ml-engineering-pack' not found in marketplace 'claude-code-plugins-plus'
 ```
 
 **Solutions:**
@@ -42,7 +42,7 @@ claude plugin marketplace add jeremylongshore/claude-code-plugins
 
 3. **Update marketplace index:**
 ```bash
-claude plugin marketplace update claude-code-plugins
+claude plugin marketplace update claude-code-plugins-plus
 ```
 
 4. **Check Claude Code version:**
@@ -75,7 +75,7 @@ claude plugin list
 3. **Reinstall the pack:**
 ```bash
 claude plugin uninstall ai-ml-engineering-pack
-claude plugin install ai-ml-engineering-pack@claude-code-plugins
+claude plugin install ai-ml-engineering-pack@claude-code-plugins-plus
 ```
 
 ---

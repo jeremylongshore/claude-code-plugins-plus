@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/sentiment-analysis-tool",
   "license": "MIT",
-  "installation": "/plugin install sentiment-analysis-tool@claude-code-plugins",
+  "installation": "/plugin install sentiment-analysis-tool@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/orm-code-generator",
   "license": "MIT",
-  "installation": "/plugin install orm-code-generator@claude-code-plugins",
+  "installation": "/plugin install orm-code-generator@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

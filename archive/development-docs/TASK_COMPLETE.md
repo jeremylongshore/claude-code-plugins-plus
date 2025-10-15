@@ -64,7 +64,7 @@ Successfully generated **110 marketplace website JSON files** for the Claude Cod
   "featured": false,
   "repository": "https://github.com/...",
   "license": "MIT",
-  "installation": "/plugin install plugin-name@claude-code-plugins",
+  "installation": "/plugin install plugin-name@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

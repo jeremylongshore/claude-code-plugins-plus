@@ -5,7 +5,7 @@ Orchestrate complex multi-stage deployment pipelines
 ## Installation
 
 ```bash
-/plugin install deployment-pipeline-orchestrator@claude-code-plugins
+/plugin install deployment-pipeline-orchestrator@claude-code-plugins-plus
 ```
 
 ## Usage

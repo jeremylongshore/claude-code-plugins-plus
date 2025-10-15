@@ -185,7 +185,7 @@ as an open-source community-driven platform.
 
 \`\`\`bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 \`\`\`
 
 ### Documentation
@@ -253,7 +253,7 @@ gh issue create \
 Try it now:
 \`\`\`bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 /gc
 \`\`\`
 
@@ -410,7 +410,7 @@ It's an open-source marketplace with production-ready plugins and educational re
 **Flagship plugin: git-commit-smart**
 AI-powered conventional commit messages. Try it:
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install git-commit-smart@claude-code-plugins
+/plugin install git-commit-smart@claude-code-plugins-plus
 /gc
 
 **Also includes:**

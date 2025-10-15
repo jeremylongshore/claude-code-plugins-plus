@@ -20,7 +20,7 @@ Transform travel planning from hours of research into minutes of AI-powered assi
 
 ### Installation
 ```bash
-/plugin install travel-assistant@claude-code-plugins
+/plugin install travel-assistant@claude-code-plugins-plus
 ```
 
 ### Basic Usage
@@ -424,7 +424,7 @@ Works great with:
 
 ```bash
 # Install
-/plugin install travel-assistant@claude-code-plugins
+/plugin install travel-assistant@claude-code-plugins-plus
 
 # Plan your next trip
 /travel "Your Dream Destination" --days X --budget Y

@@ -14,7 +14,7 @@ Analyze code coverage metrics, identify untested code, and generate comprehensiv
 ## Installation
 
 ```bash
-/plugin install test-coverage-analyzer@claude-code-plugins
+/plugin install test-coverage-analyzer@claude-code-plugins-plus
 ```
 
 ## Usage

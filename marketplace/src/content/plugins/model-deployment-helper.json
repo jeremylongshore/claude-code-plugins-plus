@@ -16,7 +16,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/model-deployment-helper",
   "license": "MIT",
-  "installation": "/plugin install model-deployment-helper@claude-code-plugins",
+  "installation": "/plugin install model-deployment-helper@claude@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

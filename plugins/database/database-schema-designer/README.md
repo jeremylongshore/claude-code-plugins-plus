@@ -5,7 +5,7 @@ Design and visualize database schemas with normalization guidance and ERD genera
 ## Installation
 
 ```bash
-/plugin install database-schema-designer@claude-code-plugins
+/plugin install database-schema-designer@claude-code-plugins-plus
 ```
 
 ## Usage

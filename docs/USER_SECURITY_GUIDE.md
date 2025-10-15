@@ -88,7 +88,7 @@ mkdir /tmp/plugin-test
 cd /tmp/plugin-test
 
 # Install and test plugin
-/plugin install suspicious-plugin@claude-code-plugins
+/plugin install suspicious-plugin@claude-code-plugins-plus
 
 # Try the plugin commands
 /suspicious-command
@@ -99,7 +99,7 @@ cat ~/.claude/plugins/suspicious-plugin/commands/*.md
 
 # If satisfied, install in real project
 cd ~/my-real-project
-/plugin install suspicious-plugin@claude-code-plugins
+/plugin install suspicious-plugin@claude-code-plugins-plus
 ```
 
 ### Monitor Network Activity

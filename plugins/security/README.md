@@ -44,13 +44,13 @@ Comprehensive collection of 25 security and compliance plugins for Claude Code, 
 Install individual plugins:
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install vulnerability-scanner@claude-code-plugins
-/plugin install secret-scanner@claude-code-plugins
+/plugin install vulnerability-scanner@claude-code-plugins-plus
+/plugin install secret-scanner@claude-code-plugins-plus
 ```
 
 Or install the entire security pack (coming soon):
 ```bash
-/plugin install security-pack@claude-code-plugins
+/plugin install security-pack@claude-code-plugins-plus
 ```
 
 ## Common Workflows
