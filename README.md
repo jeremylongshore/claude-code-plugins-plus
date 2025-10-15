@@ -12,7 +12,7 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-Browse **225 plugins** • Install instantly • Contribute your own
+Browse **226 plugins** • Install instantly • Contribute your own
 
 ---
 
@@ -47,29 +47,38 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ---
 
-## 📚 Essential Documentation
+<details>
+  <summary><strong>📚 Essential Documentation</strong> (click to expand)</summary>
 
-| Document | Purpose |
-|----------|---------|
-| **[User Security Guide](./docs/USER_SECURITY_GUIDE.md)** | 🛡️ How to safely evaluate and install plugins |
-| **[SECURITY.md](./SECURITY.md)** | Security policy, threat model, vulnerability reporting |
-| **[CHANGELOG.md](./CHANGELOG.md)** | Release history & version updates |
-| **[CONTRIBUTING.md](./CONTRIBUTING.md)** | How to submit plugins |
-| **[Learning Paths](#-learning-paths)** | Structured guides from beginner to expert |
+  
+  | Document | Purpose |
+  |----------|---------|
+  | **[User Security Guide](./docs/USER_SECURITY_GUIDE.md)** | 🛡️ How to safely evaluate and install plugins |
+  | **[Code of Conduct](./CODE_OF_CONDUCT.md)** | Community standards and reporting |
+  | **[SECURITY.md](./SECURITY.md)** | Security policy, threat model, vulnerability reporting |
+  | **[CHANGELOG.md](./CHANGELOG.md)** | Release history & version updates |
+  | **[CONTRIBUTING.md](./CONTRIBUTING.md)** | How to submit plugins |
+  | **[Learning Paths](#-learning-paths)** | Structured guides from beginner to expert |
+
+</details>
 
 ---
 
-## 🎓 Learning Paths
+<details>
+  <summary><strong>🎓 Learning Paths</strong> (click to expand)</summary>
 
-**New to Claude Code plugins?** Follow structured paths:
+  
+  **New to Claude Code plugins?** Follow structured paths:
 
-| Path | Duration | Best For |
-|------|----------|----------|
-| 🚀 [Quick Start](./docs/learning-paths/01-quick-start/) | 15 min | Install and use your first plugin |
-| 🛠️ [Plugin Creator](./docs/learning-paths/02-plugin-creator/) | 3 hours | Build your first plugin from scratch |
-| ⚡ [Advanced Developer](./docs/learning-paths/03-advanced-developer/) | 1 day | Create production MCP servers |
+  | Path | Duration | Best For |
+  |------|----------|----------|
+  | 🚀 [Quick Start](./docs/learning-paths/01-quick-start/) | 15 min | Install and use your first plugin |
+  | 🛠️ [Plugin Creator](./docs/learning-paths/02-plugin-creator/) | 3 hours | Build your first plugin from scratch |
+  | ⚡ [Advanced Developer](./docs/learning-paths/03-advanced-developer/) | 1 day | Create production MCP servers |
 
-**By Use Case**: [DevOps](./docs/learning-paths/use-cases/devops-engineer.md) • [Security](./docs/learning-paths/use-cases/security-specialist.md) • [AI/ML](./docs/learning-paths/use-cases/ai-ml-developer.md) • [Crypto](./docs/learning-paths/use-cases/crypto-trader.md)
+  **By Use Case**: [DevOps](./docs/learning-paths/use-cases/devops-engineer.md) • [Security](./docs/learning-paths/use-cases/security-specialist.md) • [AI/ML](./docs/learning-paths/use-cases/ai-ml-developer.md) • [Crypto](./docs/learning-paths/use-cases/crypto-trader.md)
+
+</details>
 
 ---
 

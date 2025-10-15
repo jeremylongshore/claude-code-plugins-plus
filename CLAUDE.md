@@ -378,6 +378,7 @@ jq '.plugins[] | select(.name == "plugin-name")' .claude-plugin/marketplace.json
 - **Discord Community**: https://discord.com/invite/6PPFFzqPDZ (#claude-code channel)
 - **GitHub Issues**: https://github.com/jeremylongshore/claude-code-plugins/issues
 - **Contributing Guide**: See CONTRIBUTING.md
+- **Code of Conduct**: See CODE_OF_CONDUCT.md
 
 ---
 
