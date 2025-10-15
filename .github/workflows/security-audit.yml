@@ -1,0 +1,20 @@
+name: security-audit
+on:
+  schedule:
+    - cron: "0 4 * * 1"
+  workflow_dispatch:
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - shell: bash
+        run: |
+          set -e
+          if [ -f package-lock.json ]; then npm ci && npm audit --audit-level=high || true; fi
+          if [ -f yarn.lock ]; then corepack enable && yarn install --frozen-lockfile && yarn audit || true; fi
+          if [ -f pnpm-lock.yaml ]; then corepack enable && pnpm i --frozen-lockfile && pnpm audit || true; fi
