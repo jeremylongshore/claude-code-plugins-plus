@@ -1,0 +1,37 @@
+{
+  "name": "sugar",
+  "description": "Autonomous AI development workflow: task orchestration, hooks, and MCP tools for Claude Code",
+  "version": "2.0.0",
+  "category": "devops",
+  "keywords": [
+    "autonomous",
+    "development",
+    "ai",
+    "task-management",
+    "automation",
+    "agents",
+    "workflow",
+    "productivity",
+    "mcp"
+  ],
+  "author": {
+    "name": "cdnsteve"
+  },
+  "featured": true,
+  "repository": "https://github.com/cdnsteve/sugar",
+  "license": "MIT",
+  "installation": "/plugin install sugar@claude-code-plugins",
+  "features": [
+    "Slash commands for tasks and status",
+    "Hooks for discovery and quality reminders",
+    "MCP server bridging to Sugar CLI",
+    "Project-scoped autonomous execution"
+  ],
+  "requirements": [
+    "Python 3.11+",
+    "pip install sugarai",
+    "sugar init in your project"
+  ],
+  "screenshots": []
+}
+

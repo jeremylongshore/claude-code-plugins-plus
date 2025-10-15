@@ -1359,3 +1359,25 @@ All quality work (validation systems, templates, production plugin) was preserve
 **Repository**: https://github.com/jeremylongshore/claude-code-plugins
 **Installation**: `/plugin marketplace add jeremylongshore/claude-code-plugins`
 **Flagship Plugin**: `/plugin install git-commit-smart@claude-code-plugins`
+## [1.0.38] - 2025-10-15
+
+### 🎯 Release Highlights
+
+First external contributor spotlight. Welcoming @cdnsteve to the Claude Code Plugins Hub and featuring Sugar — an autonomous AI development plugin with task orchestration, hooks, and MCP tools.
+
+### 🔌 Plugin Ecosystem
+- New Plugin: **sugar** (devops) — Autonomous AI development workflow with MCP server and quality hooks
+- Plugin Count: +1 (featured)
+
+### 📚 Documentation
+- README: Added “Contributor Spotlight” with links to PR #8 and Sugar repo
+- New: `CONTRIBUTORS.md` listing @cdnsteve as First External Contributor
+
+### 🧭 Website
+- Marketplace: Added featured card for Sugar (`marketplace/src/content/plugins/sugar.json`)
+- Homepage: New “Contributor Spotlight” section celebrating @cdnsteve
+
+### 🤝 Contributor Spotlight
+- First external contributor: **@cdnsteve** — leading the Sugar launch
+
+---

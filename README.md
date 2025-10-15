@@ -15,6 +15,21 @@ Browse **225 plugins** • Install instantly • Contribute your own
 
 ---
 
+## Contributor Spotlight
+
+🎉 Huge thanks to our first external contributor: @cdnsteve
+
+- Added the new featured plugin: Sugar — autonomous AI development with task orchestration, hooks, and MCP tools
+- PR: https://github.com/jeremylongshore/claude-code-plugins/pull/8
+- Repo: https://github.com/cdnsteve/sugar
+
+Install Sugar:
+```bash
+/plugin install sugar@claude-code-plugins
+```
+
+---
+
 ## Quick Start
 
 **Install a plugin:**

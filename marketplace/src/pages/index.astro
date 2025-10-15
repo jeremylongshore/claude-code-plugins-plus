@@ -48,6 +48,27 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
+  <!-- Contributor Spotlight -->
+  <section class="spotlight-section">
+    <div class="container">
+      <div class="spotlight">
+        <img src="https://github.com/cdnsteve.png" alt="cdnsteve avatar" class="spotlight-avatar" width="84" height="84" />
+        <div class="spotlight-content">
+          <div class="spotlight-kicker">Contributor Spotlight</div>
+          <h2 class="spotlight-title">Honoring our first external contributor: <span class="spotlight-name">@cdnsteve</span></h2>
+          <p class="spotlight-text">
+            Huge thanks to <a href="https://github.com/cdnsteve" target="_blank" rel="noopener noreferrer">@cdnsteve</a> for adding
+            <strong>Sugar</strong> — an autonomous AI development plugin that brings task orchestration, quality hooks, and MCP tools to Claude Code.
+          </p>
+          <div class="spotlight-actions">
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/pull/8" target="_blank" rel="noopener noreferrer">View PR #8</a>
+            <a class="spotlight-btn secondary" href="https://github.com/cdnsteve/sugar" target="_blank" rel="noopener noreferrer">Sugar Repository</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Featured Plugins Section -->
   {featuredPlugins.length > 0 && (
     <section class="featured-section">
@@ -237,6 +258,40 @@ const categoryIcons: Record<string, string> = {
 </Layout>
 
 <style>
+  .spotlight-section {
+    padding: 2.5rem 0 1rem;
+  }
+  .spotlight {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem 1.25rem;
+    align-items: center;
+    background: var(--slate-850);
+    border: 1px solid var(--slate-800);
+    border-radius: 1rem;
+    padding: 1rem 1.25rem;
+  }
+  .spotlight-avatar {
+    border-radius: 9999px;
+    border: 2px solid var(--green-500);
+  }
+  .spotlight-content { display: flex; flex-direction: column; gap: 0.4rem; }
+  .spotlight-kicker { font-size: 0.8rem; color: var(--green-400); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+  .spotlight-title { font-size: 1.15rem; margin: 0; }
+  .spotlight-name { color: var(--green-400); }
+  .spotlight-text { margin: 0; color: var(--slate-200); }
+  .spotlight-actions { display: flex; gap: 0.75rem; margin-top: 0.4rem; }
+  .spotlight-btn {
+    display: inline-flex;
+    padding: 0.45rem 0.8rem;
+    border-radius: 0.5rem;
+    background: var(--green-600);
+    color: var(--slate-50);
+    border: 1px solid var(--green-500);
+    font-weight: 600;
+  }
+  .spotlight-btn.secondary { background: transparent; border-color: var(--slate-700); color: var(--slate-100); }
+
   /* Section Styling */
   section {
     padding: 4rem 0;
