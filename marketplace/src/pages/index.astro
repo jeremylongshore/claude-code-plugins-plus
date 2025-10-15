@@ -44,6 +44,17 @@ const categoryIcons: Record<string, string> = {
   title="Claude Code Plugins Marketplace - 220 Production-Ready Plugins"
   description="Discover professional Claude Code plugins. Browse 220 production-ready tools across 14 categories. Install instantly and supercharge your development workflow."
 >
+  <div class="announcement-bar">
+    <div class="container announcement-inner">
+      <span class="sparkle">✨</span>
+      <span>
+        Contributor Spotlight: <strong>@cdnsteve</strong> launches <strong>Sugar</strong> — autonomous AI development for Claude Code.
+      </span>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/pull/8" target="_blank" rel="noopener noreferrer" class="ann-link">View PR #8</a>
+      <a href="https://github.com/cdnsteve/sugar" target="_blank" rel="noopener noreferrer" class="ann-link">Sugar Repo</a>
+    </div>
+  </div>
+
   <Hero totalPlugins={totalPlugins} totalCategories={totalCategories} />
 
   <SearchBar />
@@ -258,6 +269,11 @@ const categoryIcons: Record<string, string> = {
 </Layout>
 
 <style>
+  .announcement-bar { background: linear-gradient(90deg, var(--green-700), var(--blue-700)); border-bottom: 1px solid var(--slate-800); }
+  .announcement-inner { display: flex; gap: .75rem; align-items: center; justify-content: center; padding: .6rem .75rem; color: var(--slate-50); font-weight: 600; }
+  .ann-link { color: var(--slate-50); text-decoration: underline; opacity: .95; }
+  .ann-link:hover { opacity: 1; }
+  .sparkle { filter: drop-shadow(0 0 6px rgba(255,255,255,.4)); }
   .spotlight-section {
     padding: 2.5rem 0 1rem;
   }
