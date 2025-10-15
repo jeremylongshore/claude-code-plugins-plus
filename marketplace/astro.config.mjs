@@ -4,8 +4,8 @@ import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://jeremylongshore.github.io',
-  base: '/claude-code-plugins',
+  site: 'https://claudecodeplugins.io',
+  base: '/',
   build: {
     assets: '_astro',
     inlineStylesheets: 'auto'
