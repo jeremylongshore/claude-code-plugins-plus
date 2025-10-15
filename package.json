@@ -8,7 +8,8 @@
     "build": "pnpm --filter '*' build",
     "test": "pnpm --filter '*' test",
     "lint": "pnpm --filter '*' lint",
-    "typecheck": "pnpm --filter '*' typecheck"
+    "typecheck": "pnpm --filter '*' typecheck",
+    "sync-marketplace": "node scripts/sync-marketplace.cjs"
   },
   "keywords": [
     "claude-code",

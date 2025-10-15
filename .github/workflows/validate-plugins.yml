@@ -14,6 +14,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Sync CLI marketplace catalog
+        run: |
+          node scripts/sync-marketplace.cjs
+          if ! git diff --quiet .claude-plugin/marketplace.json; then
+            echo "Marketplace CLI catalog was out of date. Run: node scripts/sync-marketplace.cjs"
+            git diff --stat
+            exit 1
+          fi
+
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."

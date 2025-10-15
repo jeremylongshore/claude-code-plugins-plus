@@ -117,7 +117,7 @@ EOF
 
 #### 5. Update Marketplace Catalog
 
-Edit `.claude-plugin/marketplace.json` and add your plugin:
+Edit `.claude-plugin/marketplace.extended.json` and add your plugin:
 
 ```json
 {
@@ -135,6 +135,11 @@ Edit `.claude-plugin/marketplace.json` and add your plugin:
 }
 ```
 
+```bash
+# Regenerate the CLI-facing marketplace catalog
+pnpm run sync-marketplace  # or: npm run sync-marketplace
+```
+
 #### 6. Create Pull Request
 
 ```bash
@@ -143,7 +148,7 @@ git checkout -b add-my-plugin
 
 # Add your changes
 git add plugins/community/my-plugin/
-git add .claude-plugin/marketplace.json
+git add .claude-plugin/marketplace.extended.json .claude-plugin/marketplace.json
 
 # Commit with clear message
 git commit -m "Add my-plugin: Brief description of what it does"

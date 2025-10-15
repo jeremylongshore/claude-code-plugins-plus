@@ -154,7 +154,8 @@ Create comprehensive README.md:
 **Option A: Add to this marketplace**
 - Fork this repository
 - Add plugin to `plugins/community/`
-- Update `.claude-plugin/marketplace.json`
+- Update `.claude-plugin/marketplace.extended.json`
+- Run `pnpm run sync-marketplace` (or `npm run sync-marketplace`)
 - Submit pull request
 
 **Option B: Create own repository**

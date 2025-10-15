@@ -34,6 +34,8 @@
         "name": "Steven Leggett",
         "email": "contact@roboticforce.io"
       },
+      "featured": true,
+      "mcpTools": 7,
       "repository": "https://github.com/cdnsteve/sugar"
     },
     {
@@ -53,7 +55,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "devops-automation-pack",
@@ -75,7 +78,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "project-health-auditor",
@@ -95,7 +99,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "conversational-api-debugger",
@@ -116,7 +122,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "domain-memory-agent",
@@ -136,7 +144,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 6
     },
     {
       "name": "design-to-code",
@@ -157,7 +167,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 3
     },
     {
       "name": "workflow-orchestrator",
@@ -177,7 +189,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "hello-world",
@@ -235,7 +249,8 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
-      }
+      },
+      "featured": true
     },
     {
       "name": "make-scenario-builder",
@@ -348,7 +363,8 @@
         "name": "Intent Solutions IO",
         "url": "https://intentsolutions.io",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "security-pro-pack",
@@ -371,7 +387,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 10
     },
     {
       "name": "fullstack-starter-pack",
@@ -393,7 +411,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 15
     },
     {
       "name": "ai-ml-engineering-pack",
@@ -416,7 +436,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 12
     },
     {
       "name": "snapshot-test-manager",
@@ -726,7 +748,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "graphql-server-builder",
@@ -745,7 +768,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "api-documentation-generator",
@@ -1157,7 +1181,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "kubernetes-deployment-creator",
@@ -1175,7 +1200,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "ci-cd-pipeline-builder",
@@ -1194,7 +1220,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "infrastructure-as-code-generator",
@@ -1213,7 +1240,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "container-security-scanner",
@@ -2065,7 +2093,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "blockchain-explorer-cli",
@@ -2164,7 +2193,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "crypto-signal-generator",
@@ -2358,7 +2388,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "mempool-analyzer",
@@ -2416,7 +2447,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "options-flow-analyzer",
@@ -2531,7 +2563,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "data-seeder-generator",
@@ -4002,6 +4035,17 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "pricing": {
+        "model": "one-time",
+        "price": 149,
+        "currency": "USD"
+      },
+      "components": {
+        "agents": 10,
+        "commands": 10,
+        "total": 20
       }
     },
     {
@@ -4028,6 +4072,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "agents": 1,
+        "commands": 3,
+        "total": 4
       }
     },
     {
@@ -4048,6 +4098,11 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 1,
+        "total": 1
       }
     },
     {
@@ -4073,6 +4128,14 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "hooks": 2,
+        "scripts": 3,
+        "total": 15
       }
     },
     {
@@ -4101,6 +4164,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "total": 10
       }
     }
   ]

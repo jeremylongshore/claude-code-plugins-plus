@@ -457,7 +457,7 @@ EOF
 
 3. **Update marketplace catalog**
 
-   Edit `.claude-plugin/marketplace.json`, add:
+   Edit `.claude-plugin/marketplace.extended.json`, add:
    ```json
    {
      "name": "my-first-plugin",
@@ -472,6 +472,11 @@ EOF
      }
    }
    ```
+
+```bash
+# Regenerate CLI marketplace.json
+pnpm run sync-marketplace  # or: npm run sync-marketplace
+```
 
 4. **Submit Pull Request**
    ```bash

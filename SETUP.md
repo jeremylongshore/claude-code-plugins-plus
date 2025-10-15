@@ -4,7 +4,7 @@
 
 Your repository structure has been created successfully with:
 
--  Main marketplace catalog (`.claude-plugin/marketplace.json`)
+-  Main marketplace catalog source (`.claude-plugin/marketplace.extended.json` + sync script that generates `.claude-plugin/marketplace.json`)
 -  3 Complete example plugins (hello-world, auto-formatter, security-reviewer)
 -  4 Plugin templates (minimal, command, agent, full)
 -  6 Documentation files
@@ -116,7 +116,8 @@ After pushing, configure your repository on GitHub:
 ```
 claude-code-plugins/
 ├── .claude-plugin/
-│   └── marketplace.json                     Main catalog
+│   ├── marketplace.extended.json            Source catalog (full metadata)
+│   └── marketplace.json                     Generated CLI catalog
 ├── plugins/
 │   ├── examples/
 │   │   ├── hello-world/                     Command example
