@@ -51,7 +51,7 @@ The repository is already configured for GitHub Pages deployment.
 **Automatic Deployment**:
 1. Push changes to `main` branch
 2. GitHub Actions will automatically build and deploy
-3. Site will be live at: `https://jeremylongshore.github.io/claude-code-plugins/`
+3. Site will be live at: `https://claudecodeplugins.io/`
 
 **Manual Deployment**:
 ```bash
@@ -316,7 +316,7 @@ When adding new plugins, update these files:
 ---
 
 **Deployment Status**: READY
-**Live URL**: `https://jeremylongshore.github.io/claude-code-plugins/`
+**Live URL**: `https://claudecodeplugins.io/`
 **Last Build**: 2025-10-11
 **Build Time**: ~1.6s
 **Total Size**: 2.5MB

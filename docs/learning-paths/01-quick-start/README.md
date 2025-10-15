@@ -247,7 +247,7 @@ You've successfully:
 → [Use Case Paths](../use-cases/) (domain-specific)
 
 **Just want to use more plugins?**
-→ [Browse the Marketplace](https://jeremylongshore.github.io/claude-code-plugins/)
+→ [Browse the Marketplace](https://claudecodeplugins.io/)
 
 ---
 

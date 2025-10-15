@@ -14,6 +14,8 @@
 
 Browse **226 plugins** • Install instantly • Contribute your own
 
+Looking for broader AI automation and delivery tooling? Explore our full portfolio at [Intent Solutions](https://www.intentsolutions.io/).
+
 ---
 
 ## Contributor Spotlight
@@ -42,7 +44,7 @@ Install Sugar:
 > Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug. Existing plugins keep working either way.
 
 **Browse the catalog:**
-Visit **[Claude Code Plugins Marketplace](https://jeremylongshore.github.io/claude-code-plugins/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
+Visit **[Claude Code Plugins Marketplace](https://claudecodeplugins.io/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
 
 **Learn to build:**
 See [Learning Paths](#-learning-paths) for step-by-step guides

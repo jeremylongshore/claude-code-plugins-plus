@@ -126,7 +126,7 @@ marketplace/src/content/plugins/
 
 ## GitHub Pages Verification
 
-**URL:** https://jeremylongshore.github.io/claude-code-plugins/
+**URL:** https://claudecodeplugins.io/
 
 ### Sections Present:
 -  Hero Section
@@ -228,7 +228,7 @@ marketplace/src/content/plugins/
 -  Mobile Responsive: Yes
 
 ### Repository Settings
--  Homepage URL: https://jeremylongshore.github.io/claude-code-plugins
+-  Homepage URL: https://claudecodeplugins.io
 -  Description: Comprehensive marketplace for Claude Code plugins
 -  Topics: None configured (OPPORTUNITY)
 

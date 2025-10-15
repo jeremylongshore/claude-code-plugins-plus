@@ -311,7 +311,7 @@ npm run preview    # Preview production build locally
 
 **Deployment**: Automatically deployed to GitHub Pages via `.github/workflows/deploy-marketplace.yml` on pushes to main branch.
 
-**Live Site**: https://jeremylongshore.github.io/claude-code-plugins/
+**Live Site**: https://claudecodeplugins.io/
 
 ## GitHub Workflows
 

@@ -45,6 +45,13 @@ const { totalPlugins, totalCategories } = Astro.props;
             Copy
           </button>
         </div>
+        <p class="install-note">
+          Switching from the legacy slug? Run <code>/plugin marketplace remove claude-code-plugins</code> first, then add the marketplace again to pick up <code>claude-code-plugins-plus</code>.
+        </p>
+        <p class="intent-note">
+          Need broader AI delivery or MCP services? Explore our partner offerings at
+          <a href="https://www.intentsolutions.io/" target="_blank" rel="noopener noreferrer">Intent Solutions</a>.
+        </p>
       </div>
     </div>
   </div>
@@ -205,6 +212,33 @@ const { totalPlugins, totalCategories } = Astro.props;
 
   .copy-btn:active {
     transform: translateY(0);
+  }
+
+  .install-note,
+  .intent-note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--slate-400);
+    line-height: 1.6;
+  }
+
+  .install-note code {
+    background: rgba(148, 163, 184, 0.12);
+    color: var(--green-300);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.35rem;
+    font-size: 0.8rem;
+  }
+
+  .intent-note a {
+    color: var(--green-300);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(45, 212, 191, 0.4);
+  }
+
+  .intent-note a:hover {
+    border-bottom-color: rgba(45, 212, 191, 0.8);
   }
 
   @media (max-width: 640px) {
