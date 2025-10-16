@@ -1,3 +1,81 @@
+## [1.0.39] - 2025-10-16
+
+### 🎉 Highlights
+
+**🔒 Security and Maintenance Release**
+
+This release resolves critical dependency management issues that prevented Dependabot from scanning MCP plugin directories, fixes esbuild security vulnerabilities across all MCP plugins, and includes community contributions improving plugin reliability.
+
+**Key Improvements:**
+- Fixed Dependabot configuration to properly scan all 9 npm directories (root, marketplace, 6 MCP plugins, sugar MCP server)
+- Resolved esbuild security vulnerability (GHSA-67mh-4wv8-2f99) across all 6 MCP plugins
+- Updated vitest to v3.2.4 for improved testing reliability
+- Community bug fix from @thetonymaster for ai-commit-gen model specification
+
+---
+
+### 👥 Contributors
+
+🎉 **Special thanks to @thetonymaster (Antonio Cabrera)** for contributing the ai-commit-gen model specification fix!
+
+- GitHub: [@thetonymaster](https://github.com/thetonymaster)
+- PR: [#25](https://github.com/jeremylongshore/claude-code-plugins/pull/25)
+- Fix: Updated `/commit` command to use correct model identifier `claude-sonnet-4-5-20250929`
+
+---
+
+### 🐛 Bug Fixes
+
+- **ai-commit-gen plugin**: Fixed model specification in `/commit` command - changed from generic "sonnet" to specific `claude-sonnet-4-5-20250929` (thanks @thetonymaster!) [#25](https://github.com/jeremylongshore/claude-code-plugins/pull/25) `plugins/productivity/ai-commit-gen/commands/commit.md:4`
+
+---
+
+### 🔧 Infrastructure & Dependencies
+
+**Dependabot Configuration Fix:**
+- Added 7 new package-ecosystem entries to `.github/dependabot.yml` for comprehensive dependency scanning
+- Now properly scans: root, marketplace, 6 MCP plugins, sugar MCP server
+- Previously only scanned root directory, missing all MCP plugin vulnerabilities
+
+**Security Updates:**
+- Resolved esbuild <=0.24.2 moderate severity vulnerability (GHSA-67mh-4wv8-2f99) in all 6 MCP plugins
+- Updated vitest from v2.1.9 to v3.2.4 across:
+  - `plugins/mcp/project-health-auditor/`
+  - `plugins/mcp/domain-memory-agent/`
+  - `plugins/mcp/ai-experiment-logger/`
+  - `plugins/mcp/conversational-api-debugger/`
+  - `plugins/mcp/design-to-code/`
+  - `plugins/mcp/workflow-orchestrator/`
+- Updated Express and @types/express in ai-experiment-logger [#32](https://github.com/jeremylongshore/claude-code-plugins/pull/32)
+
+**Dependency Management:**
+- Created missing `package-lock.json` files for improved dependency tracking
+- All MCP plugins now report 0 security vulnerabilities
+- Improved audit trail with granular dependency updates
+
+---
+
+### 📊 Repository Health
+
+- **Total Plugins:** 226 (unchanged)
+- **Security Vulnerabilities:** 0 (down from 6)
+- **Open Pull Requests:** 0 (cleaned up 20 PRs)
+- **Active Branches:** 5 (down from 27)
+- **Dependabot Status:** ✅ Fully operational across all directories
+
+---
+
+### 🔗 Pull Requests
+
+**Merged:**
+- [#25](https://github.com/jeremylongshore/claude-code-plugins/pull/25) - fix(commit): update model to specific sonnet 4.5 version (@thetonymaster)
+- [#32](https://github.com/jeremylongshore/claude-code-plugins/pull/32) - chore(deps): bump express and @types/express
+
+**Closed (Deferred):**
+- 18 Dependabot PRs for major version updates - deferred for comprehensive review in future release
+
+---
+
 ## [1.0.38] - 2025-10-15
 
 ### 🎯 Release Highlights
