@@ -1,7 +1,7 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.39-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-226-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.0.40-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-227-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Security](https://img.shields.io/badge/security-audited-success)](SECURITY.md)
@@ -12,7 +12,7 @@
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-Browse **226 plugins** • Install instantly • Contribute your own
+Browse **227 plugins** • Install instantly • Contribute your own
 
 Looking for broader AI automation and delivery tooling? Explore our full portfolio at [Intent Solutions](https://www.intentsolutions.io/).
 
@@ -124,9 +124,9 @@ All three types are **fully functional** but operate through different mechanism
 
 ---
 
-## 🎉 v1.0.36 - 225 PLUGINS AVAILABLE!
+## 🎉 v1.0.40 - 227 PLUGINS AVAILABLE!
 
-**The Claude Code Plugin Hub continues to grow!** Now with **225 production-ready plugins** across 15 categories, including advanced AI-powered automation and professional finance tools.
+**The Claude Code Plugin Hub continues to grow!** Now with **227 production-ready plugins** across 15 categories, including the first Skills-based meta-plugin for automated plugin management.
 
 ### Plugin Packs (62 AI Instruction Templates)
 
@@ -660,4 +660,4 @@ Made with dedication by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 1.0.35 | **Last Updated**: October 12, 2025
+**Status**: Public Beta | **Version**: 1.0.40 | **Last Updated**: October 16, 2025

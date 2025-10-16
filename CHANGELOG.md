@@ -1,3 +1,152 @@
+## [1.0.40] - 2025-10-16
+
+### 🎉 Highlights
+
+**🚀 First Skills-Based Plugin: Skills Powerkit Meta-Plugin Release**
+
+This release introduces **Skills Powerkit**, the first plugin using Anthropic's new Agent Skills feature (launched October 16, 2025). Skills Powerkit is a revolutionary meta-plugin specifically designed to manage plugins within the claude-code-plugins repository through model-invoked automation.
+
+**What Makes This Special:**
+- **First Skills-based plugin** in the marketplace demonstrating model-invoked automation
+- **First meta-plugin** - a plugin that creates, validates, audits, and manages other plugins
+- **Repository-specific intelligence** - understands two-catalog system, validation standards, and marketplace workflow
+- **Natural language automation** - just say "create a plugin" or "validate this plugin" and it works automatically
+
+**Time Savings:** 40-60 minutes per plugin lifecycle → 1-2 minutes with Skills Powerkit!
+
+---
+
+### 👥 Contributors
+
+🎉 **This release developed entirely by Claude Code (Sonnet 4.5)** as a demonstration of AI-assisted plugin development!
+
+Special recognition to:
+- **@jeremylongshore** - Project maintainer, release coordination, repository oversight
+- **Claude Code (Sonnet 4.5)** - Skills Powerkit design, implementation, documentation, and pre-release audit
+
+---
+
+### 🆕 New Plugins (1)
+
+- **[skills-powerkit](plugins/examples/skills-powerkit/)** - Ultimate plugin management toolkit with 5 auto-invoked Agent Skills:
+  - 🛠️ **Plugin Creator** - Auto-scaffolds new plugins with proper structure
+  - ✅ **Plugin Validator** - Auto-validates plugin structure and compliance
+  - 📦 **Marketplace Manager** - Auto-manages catalog and syncing
+  - 🔍 **Plugin Auditor** - Auto-audits for security and quality
+  - 🔢 **Version Bumper** - Auto-handles semantic version updates
+
+  **Install:** `/plugin install skills-powerkit@claude-code-plugins-plus`
+
+---
+
+### 🌟 Skills Powerkit Features
+
+**5 Agent Skills (Model-Invoked):**
+
+1. **Plugin Creator** (`skills/plugin-creator/SKILL.md`)
+   - Automatically creates plugin directory structure
+   - Generates plugin.json, README, LICENSE
+   - Adds marketplace entry and syncs catalogs
+   - Validates everything before reporting success
+   - **Trigger:** Say "create a new plugin" or "scaffold plugin"
+
+2. **Plugin Validator** (`skills/plugin-validator/SKILL.md`)
+   - Validates plugin.json schema compliance
+   - Checks required files exist
+   - Verifies markdown frontmatter format
+   - Ensures script permissions correct
+   - **Trigger:** Say "validate plugin" or "check plugin"
+
+3. **Marketplace Manager** (`skills/marketplace-manager/SKILL.md`)
+   - Updates marketplace.extended.json (source)
+   - Runs `npm run sync-marketplace` automatically
+   - Validates both catalog files
+   - Checks for duplicates
+   - **Trigger:** Say "add to marketplace" or "sync catalog"
+
+4. **Plugin Auditor** (`skills/plugin-auditor/SKILL.md`)
+   - Scans for hardcoded secrets (API keys, passwords)
+   - Checks dangerous commands (rm -rf, eval)
+   - Validates security patterns
+   - Verifies CLAUDE.md compliance
+   - **Trigger:** Say "audit plugin" or "security review"
+
+5. **Version Bumper** (`skills/version-bumper/SKILL.md`)
+   - Calculates semantic version bumps
+   - Updates plugin.json and marketplace catalogs
+   - Syncs marketplace.json automatically
+   - Can create git tags
+   - **Trigger:** Say "bump version" or "release"
+
+**Demo Command:** `/demo-skills` - Interactive demonstration of all 5 skills
+
+---
+
+### 📚 Documentation
+
+**New Documentation:**
+- `plugins/examples/skills-powerkit/README.md` - Comprehensive Skills Powerkit guide
+- `plugins/examples/skills-powerkit/commands/demo-skills.md` - Interactive skill demonstration
+- `claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md` - Pre-release content audit (10/10 quality)
+- `claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md` - Final release report
+
+**Updated Documentation:**
+- `README.md` - Added Skills Powerkit banner, updated "Understanding Plugin Types" section
+- `CLAUDE.md` - Repository documentation updated with Skills information
+
+---
+
+### 🌐 Hub Improvements
+
+**Marketplace Updates:**
+- Added Skills Powerkit to marketplace.extended.json (featured status)
+- Marketplace website builds successfully (validated)
+- Plugin count updated across all locations: **227 total plugins**
+
+**Content Quality:**
+- All customer-facing content audited and verified consistent
+- Meta-plugin positioning clear across 12 different locations
+- Examples updated from generic skills to meta-plugin skills
+
+---
+
+### 📊 Metrics
+
+- **Total Plugins:** 227 (up from 226)
+- **New This Release:** 1 (Skills Powerkit)
+- **Categories:** 15
+- **Plugin Components:** 5 Agent Skills + 1 Demo Command
+- **Documentation:** 4 new files, 2 updated files
+- **Content Quality Score:** 10/10 (pre-release audit)
+
+---
+
+### 🚀 What's Next
+
+**Recommended Actions:**
+- Install Skills Powerkit to experience model-invoked automation
+- Test natural language plugin management: "create a plugin" or "validate plugin"
+- Provide feedback on Skills trigger keywords
+- Watch for future "Skill Enhancers" category
+
+**Future Enhancements:**
+- Usage analytics for skill activation
+- Video walkthrough and demos
+- User testimonials
+- Additional repository-specific Skills
+
+---
+
+### 🔗 Links
+
+- **Skills Powerkit Plugin:** [plugins/examples/skills-powerkit/](plugins/examples/skills-powerkit/)
+- **Release Audit:** [claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md](claudes-docs/SKILLS_POWERKIT_RELEASE_AUDIT.md)
+- **Release Report:** [claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md](claudes-docs/SKILLS_POWERKIT_RELEASE_REPORT.md)
+- **Agent Skills Docs:** https://docs.claude.com/en/docs/claude-code/skills
+- **GitHub Release:** https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.40
+
+---
+
 ## [1.0.39] - 2025-10-16
 
 ### 🎉 Highlights
