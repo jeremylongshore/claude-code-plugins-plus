@@ -7,12 +7,12 @@
 [![Security](https://img.shields.io/badge/security-audited-success)](SECURITY.md)
 [![Discord](https://img.shields.io/badge/Discord-Claude%20Developers-5865F2)](https://discord.com/invite/6PPFFzqPDZ)
 [![Discussions](https://img.shields.io/github/discussions/jeremylongshore/claude-code-plugins?label=discussions)](https://github.com/jeremylongshore/claude-code-plugins/discussions)
-[![Contributor: @cdnsteve](https://img.shields.io/badge/Contributor-%40cdnsteve-2ea44f?logo=github)](https://github.com/jeremylongshore/claude-code-plugins/pull/8)
+[![Skills Powerkit](https://img.shields.io/badge/NEW-Skills%20Powerkit-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/skills-powerkit)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **The comprehensive marketplace and learning hub for Claude Code plugins.**
 
-Browse **227 plugins** • Install instantly • Contribute your own
+Browse **227 plugins** • First Agent Skills plugin • Install instantly • Contribute your own
 
 Looking for broader AI automation and delivery tooling? Explore our full portfolio at [Intent Solutions](https://www.intentsolutions.io/).
 
