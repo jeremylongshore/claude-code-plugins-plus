@@ -18,18 +18,27 @@ Looking for broader AI automation and delivery tooling? Explore our full portfol
 
 ---
 
-## Contributor Spotlight
+## 🚀 NEW: Skills Powerkit Plugin
 
-🎉 Huge thanks to our first external contributor: @cdnsteve
+**Agent Skills are here!** Anthropic just launched Skills (October 16, 2025) - model-invoked capabilities that Claude uses automatically.
 
-- Added the new featured plugin: Sugar — autonomous AI development with task orchestration, hooks, and MCP tools
-- PR: https://github.com/jeremylongshore/claude-code-plugins/pull/8
-- Repo: https://github.com/cdnsteve/sugar
+**Skills Powerkit** - Our new example plugin showcasing 5 professional Agent Skills:
+- 🔍 **Code Quality Analyzer** - Auto-analyzes code for quality issues
+- ✅ **Test Generator** - Auto-generates comprehensive test suites
+- 📝 **Documentation Writer** - Auto-creates professional documentation
+- 🔒 **Security Scanner** - Auto-scans for OWASP Top 10 vulnerabilities
+- ⚡ **Performance Optimizer** - Auto-identifies and fixes bottlenecks
 
-Install Sugar:
+**Unlike slash commands, Skills auto-invoke based on conversation context!**
+
+Install Skills Powerkit:
 ```bash
-/plugin install sugar@claude-code-plugins-plus
+/plugin install skills-powerkit@claude-code-plugins-plus
 ```
+
+Then just say "analyze this code" or "generate tests" - Skills activate automatically!
+
+[Learn more about Agent Skills →](#understanding-plugin-types)
 
 ---
 
@@ -88,21 +97,30 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ## Understanding Plugin Types
 
-This marketplace contains **two types of plugins** that work differently:
+This marketplace contains **three types of extensions** that work differently:
 
-### 1. AI Instruction Plugins (Plugin Packs & Templates)
+### 1. Agent Skills 🆕 (Model-Invoked)
+- **What they are**: Capabilities Claude automatically uses when relevant
+- **How they work**: Claude decides when to activate based on conversation context
+- **Examples**: Skills Powerkit (code analyzer, test generator, security scanner)
+- **Invocation**: Automatic - you say "analyze code" and Claude uses the skill
+- **NEW**: Launched October 16, 2025 by Anthropic
+
+**Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
+
+### 2. AI Instruction Plugins (Plugin Packs & Templates)
 - **What they are**: Detailed markdown instructions that guide Claude's behavior
 - **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
 - **Examples**: DevOps pack, Security pack, AI Agency toolkit
 - **No external code execution** - work entirely through Claude's interpretation
 
-### 2. MCP Server Plugins (Executable Code)
+### 3. MCP Server Plugins (Executable Code)
 - **What they are**: Real TypeScript/JavaScript applications
 - **How they work**: Run as separate Node.js processes that Claude can communicate with
 - **Examples**: project-health-auditor, conversational-api-debugger
 - **Actual compiled code** - 13-26KB of executable JavaScript
 
-Both types are **fully functional** but operate through different mechanisms. Most plugins in this marketplace are AI instruction templates designed specifically for Claude Code.
+All three types are **fully functional** but operate through different mechanisms. Plugins can bundle Skills, Commands, Agents, and MCP servers together.
 
 ---
 

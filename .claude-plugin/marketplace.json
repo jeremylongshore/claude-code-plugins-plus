@@ -13,6 +13,41 @@
   },
   "plugins": [
     {
+      "name": "skills-powerkit",
+      "source": "./plugins/examples/skills-powerkit",
+      "description": "Professional Skills demonstration with 5 auto-invoked capabilities: code analysis, test generation, documentation, security scanning, and performance optimization",
+      "version": "1.0.0",
+      "category": "example",
+      "keywords": [
+        "skills",
+        "agent-skills",
+        "code-analysis",
+        "testing",
+        "documentation",
+        "security",
+        "performance",
+        "example",
+        "demo",
+        "model-invoked"
+      ],
+      "author": {
+        "name": "Claude Code Plugins",
+        "email": "[email protected]"
+      },
+      "skills": {
+        "count": 5,
+        "included": [
+          "code-analyzer",
+          "test-generator",
+          "doc-writer",
+          "security-scanner",
+          "performance-optimizer"
+        ],
+        "requiresCodeExecution": true
+      },
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+    },
+    {
       "name": "sugar",
       "source": "./plugins/devops/sugar",
       "description": "Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow automation",
