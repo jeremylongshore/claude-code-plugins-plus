@@ -1,0 +1,277 @@
+title: "[Plugin Pack Request] "
+labels: ["plugin-pack-request", "enhancement", "community-request"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        # 🎯 Plugin Pack Request
+
+        **Request a new plugin pack with Agents, Skills, Commands, and more!**
+
+        Plugin packs bundle multiple related plugins together. Examples:
+        - **DevOps Automation Pack** - 25 plugins (git, CI/CD, Docker, Kubernetes, Terraform)
+        - **Security Pro Pack** - 10 plugins (OWASP, compliance, cryptography, pentesting)
+        - **Skills Powerkit** - Meta-plugin with 5 Agent Skills
+
+        Help us understand what you need by filling out this request!
+
+  - type: input
+    id: pack-name
+    attributes:
+      label: Plugin Pack Name
+      description: What should we call this plugin pack?
+      placeholder: "Example: ML Engineering Pack, Finance Automation Pack, Content Creator Pack"
+    validations:
+      required: true
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case / Problem
+      description: What problem does this plugin pack solve? Who is it for?
+      placeholder: |
+        Example: I'm a data scientist who needs to automate ML workflows including data cleaning, model training, experiment tracking, and deployment. Current tools are fragmented and require switching between multiple plugins.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: pack-components
+    attributes:
+      label: Desired Plugin Components
+      description: What types of plugins should be included? (Check all that apply)
+      options:
+        - label: "**Agent Skills** (Model-invoked, auto-activate based on context)"
+        - label: "**Subagents** (Specialized AI agents for specific domains)"
+        - label: "**Slash Commands** (Custom shortcuts with /command syntax)"
+        - label: "**Hooks** (Event-driven automation on tool usage)"
+        - label: "**MCP Servers** (External tools with real code execution)"
+        - label: "**Scripts** (Shell scripts for automation)"
+
+  - type: textarea
+    id: agent-skills-requested
+    attributes:
+      label: Agent Skills Requested (If Applicable)
+      description: |
+        List specific Agent Skills you'd like. Skills are model-invoked and activate automatically.
+
+        **Format:** Skill name + what it does + trigger keywords
+      placeholder: |
+        Example:
+        - **Data Cleaner** - Automatically cleans datasets when I mention "clean data" or "handle missing values"
+        - **Model Trainer** - Trains ML models when I say "train model" or "run training"
+        - **Experiment Tracker** - Logs experiments when I mention "track experiment" or "log results"
+      value: |
+        1. **Skill Name** - What it does - Trigger keywords: "keyword1", "keyword2"
+        2. **Skill Name** - What it does - Trigger keywords: "keyword1", "keyword2"
+        3. (Add more as needed)
+
+  - type: textarea
+    id: subagents-requested
+    attributes:
+      label: Subagents Requested (If Applicable)
+      description: |
+        List specific AI subagents you'd like. Subagents are invoked explicitly.
+
+        **Format:** Agent name + domain expertise + what it helps with
+      placeholder: |
+        Example:
+        - **PyTorch Expert** - Deep learning frameworks, model architectures, training loops
+        - **MLOps Engineer** - Model deployment, monitoring, CI/CD for ML
+        - **Data Viz Specialist** - matplotlib, seaborn, plotly visualizations
+      value: |
+        1. **Agent Name** - Domain expertise - What it helps with
+        2. **Agent Name** - Domain expertise - What it helps with
+        3. (Add more as needed)
+
+  - type: textarea
+    id: commands-requested
+    attributes:
+      label: Slash Commands Requested (If Applicable)
+      description: |
+        List specific commands you'd like. Commands use /command-name syntax.
+
+        **Format:** /command-name - What it does - Parameters
+      placeholder: |
+        Example:
+        - /train-model - Scaffolds model training script with hyperparameters - [model_type, dataset]
+        - /deploy-model - Creates deployment config for ML model - [model_path, endpoint_name]
+        - /experiment - Sets up experiment tracking boilerplate - [experiment_name]
+      value: |
+        1. /command-name - What it does - Parameters (if any)
+        2. /command-name - What it does - Parameters (if any)
+        3. (Add more as needed)
+
+  - type: textarea
+    id: workflows
+    attributes:
+      label: Example Workflows
+      description: Describe 2-3 common workflows you'd use this plugin pack for
+      placeholder: |
+        Example Workflow 1: Data Science Pipeline
+        1. Say "clean dataset" → Data Cleaner skill activates
+        2. Say "train XGBoost model" → Model Trainer skill starts training
+        3. Say "track this experiment" → Experiment Tracker logs results
+        4. /deploy-model to production
+
+        Example Workflow 2: Quick Experimentation
+        1. /experiment "test-new-feature"
+        2. Write code with AI assistance
+        3. Say "evaluate model" → Auto-generates evaluation metrics
+        4. Say "compare to baseline" → Skills analyzes results
+    validations:
+      required: true
+
+  - type: dropdown
+    id: target-audience
+    attributes:
+      label: Target Audience
+      description: Who is this plugin pack primarily for?
+      options:
+        - Data Scientists / ML Engineers
+        - Software Developers / Engineers
+        - DevOps / SRE / Platform Engineers
+        - Security Engineers / Pentesters
+        - Product Managers / Analysts
+        - Content Creators / Writers
+        - Finance / Trading Professionals
+        - Students / Educators
+        - Researchers / Scientists
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: experience-level
+    attributes:
+      label: Experience Level
+      description: What skill level is this pack designed for?
+      options:
+        - Beginner-friendly (tutorials, guided workflows)
+        - Intermediate (assumes domain knowledge)
+        - Advanced (expert-level, complex operations)
+        - All levels (adapts to user)
+    validations:
+      required: true
+
+  - type: textarea
+    id: existing-tools
+    attributes:
+      label: Existing Tools / Inspiration
+      description: Are there existing tools or plugins that inspired this request?
+      placeholder: |
+        Example:
+        - MLflow for experiment tracking
+        - Weights & Biases for model monitoring
+        - DVC for data versioning
+        - But I want them integrated into Claude Code workflow
+
+  - type: dropdown
+    id: time-savings
+    attributes:
+      label: Estimated Time Savings
+      description: How much time would this plugin pack save per day/week?
+      options:
+        - 15-30 minutes/day
+        - 30-60 minutes/day
+        - 1-2 hours/day
+        - 2-4 hours/day
+        - 4+ hours/day
+        - Hard to estimate
+
+  - type: checkboxes
+    id: pack-size
+    attributes:
+      label: Preferred Pack Size
+      description: How comprehensive should this pack be?
+      options:
+        - label: "**Small Pack** (3-5 plugins) - Focused on core workflows"
+        - label: "**Medium Pack** (6-12 plugins) - Covers most use cases"
+        - label: "**Large Pack** (13-25 plugins) - Comprehensive solution"
+        - label: "**Meta-Plugin** (Like Skills Powerkit) - Self-managing system"
+
+  - type: textarea
+    id: integration-requirements
+    attributes:
+      label: Integration Requirements
+      description: Does this pack need to integrate with specific tools or APIs?
+      placeholder: |
+        Example:
+        - AWS SageMaker API
+        - Google Cloud Vertex AI
+        - MLflow tracking server
+        - PostgreSQL database
+        - Docker containers
+        - GitHub Actions
+
+  - type: textarea
+    id: security-considerations
+    attributes:
+      label: Security / Privacy Considerations
+      description: Any security or privacy concerns we should consider?
+      placeholder: |
+        Example:
+        - Should not hardcode API keys
+        - Needs to handle sensitive data (PII, credentials)
+        - Must comply with HIPAA/GDPR/SOC2
+        - Should validate all inputs
+        - Requires encrypted storage
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution Interest
+      description: Would you like to contribute to this plugin pack?
+      options:
+        - label: "I'd like to help design this pack"
+        - label: "I can help write documentation"
+        - label: "I can help test this pack"
+        - label: "I'm willing to provide use case examples"
+        - label: "I can submit a PR once structure is defined"
+        - label: "Just requesting - happy to wait for community/maintainers"
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Anything else we should know?
+      placeholder: |
+        - Similar tools you've used
+        - Common pain points
+        - Edge cases to consider
+        - Related plugin pack ideas
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Request Checklist
+      description: Please confirm before submitting
+      options:
+        - label: I've searched existing discussions to avoid duplicates
+          required: true
+        - label: I've provided clear use cases and workflows
+          required: true
+        - label: I understand this is a community-driven project (no guaranteed timelines)
+          required: true
+        - label: I'm open to feedback and iteration on this request
+          required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+
+        ## What Happens Next?
+
+        1. **Community Discussion** - Other users can +1, add suggestions, or offer to help
+        2. **Feasibility Review** - Maintainers assess scope, complexity, and priority
+        3. **Design Phase** - If approved, we'll create a design doc with community input
+        4. **Implementation** - Community contributors or maintainers build the pack
+        5. **Testing & Release** - Beta testing, feedback, and official release
+
+        **Timeline:** Plugin packs typically take 2-6 weeks depending on complexity and contributor availability.
+
+        **Want to speed it up?** Offer to help with design, testing, or documentation!
+
+        ---
+
+        **Thank you for helping shape the Claude Code Plugins ecosystem!** 🚀
