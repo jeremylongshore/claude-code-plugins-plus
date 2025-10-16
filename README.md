@@ -102,8 +102,8 @@ This marketplace contains **three types of extensions** that work differently:
 ### 1. Agent Skills 🆕 (Model-Invoked)
 - **What they are**: Capabilities Claude automatically uses when relevant
 - **How they work**: Claude decides when to activate based on conversation context
-- **Examples**: Skills Powerkit (code analyzer, test generator, security scanner)
-- **Invocation**: Automatic - you say "analyze code" and Claude uses the skill
+- **Examples**: Skills Powerkit (plugin creator, plugin validator, marketplace manager, plugin auditor, version bumper)
+- **Invocation**: Automatic - you say "create a plugin" and Claude uses the skill
 - **NEW**: Launched October 16, 2025 by Anthropic
 
 **Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
