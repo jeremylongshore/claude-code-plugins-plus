@@ -15,20 +15,19 @@
     {
       "name": "skills-powerkit",
       "source": "./plugins/examples/skills-powerkit",
-      "description": "Professional Skills demonstration with 5 auto-invoked capabilities: code analysis, test generation, documentation, security scanning, and performance optimization",
+      "description": "Ultimate plugin management toolkit with 5 auto-invoked Skills for creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
       "version": "1.0.0",
       "category": "example",
       "keywords": [
         "skills",
         "agent-skills",
-        "code-analysis",
-        "testing",
-        "documentation",
-        "security",
-        "performance",
-        "example",
-        "demo",
-        "model-invoked"
+        "plugin-management",
+        "marketplace",
+        "validation",
+        "audit",
+        "versioning",
+        "meta-plugin",
+        "repository-tools"
       ],
       "author": {
         "name": "Claude Code Plugins",

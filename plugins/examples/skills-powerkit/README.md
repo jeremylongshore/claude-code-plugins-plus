@@ -1,115 +1,144 @@
 # Skills Powerkit
 
-**The ultimate demonstration of Claude Code Agent Skills** - 5 professional, auto-invoked capabilities that showcase the power of model-invoked skills.
+**The ultimate plugin management toolkit for the claude-code-plugins marketplace** - 5 specialized Agent Skills that auto-manage plugin development, validation, auditing, and marketplace updates.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-brightgreen)](.)
 [![Skills](https://img.shields.io/badge/skills-5-blue)](.)
-[![Type](https://img.shields.io/badge/type-example-orange)](.)
+[![Type](https://img.shields.io/badge/type-meta--plugin-purple)](.)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-## What Are Agent Skills?
+## What Is This?
 
-**Agent Skills are model-invoked capabilities** that Claude automatically uses when relevant to your request. Unlike slash commands (which you explicitly type), skills activate automatically based on conversation context.
+**Skills Powerkit is a "meta-plugin"** - a plugin specifically designed to help you CREATE, VALIDATE, AUDIT, and MANAGE plugins within the claude-code-plugins repository.
 
-**Think of it like this:**
-- **Slash Command**: You say "/format-code" → Claude formats code
-- **Agent Skill**: You say "this code is messy" → Claude automatically uses code formatter skill
-
-Skills make Claude **smarter and more context-aware** without requiring you to remember specific commands.
+**Think of it as your AI assistant FOR building plugins** - it knows the repository structure, standards, and workflows, and automatically handles all the tedious tasks.
 
 ---
 
 ## 5 Included Skills
 
-### 1. 🔍 Code Quality Analyzer
-**Automatically analyzes code for quality issues**
+### 1. 🛠️ Plugin Creator
+**Automatically scaffolds new plugins from scratch**
 
-**Activates when you mention:**
-- Code quality, code review, analyze code
-- Technical debt, refactoring
-- Complexity, code smells, maintainability
+**Activates when you say:**
+- "Create a new plugin"
+- "Scaffold a plugin for [purpose]"
+- "Add new plugin to marketplace"
 
 **What it does:**
-- Scans for high complexity hotspots
-- Detects code smells (long methods, deep nesting, duplicates)
-- Identifies anti-patterns
-- Provides prioritized, actionable recommendations
+- Creates complete directory structure
+- Generates plugin.json with proper schema
+- Creates README, LICENSE, component files
+- Adds entry to marketplace catalog
+- Syncs marketplace.json
+- Validates everything
 
-**Example:** "Can you review the code quality in src/api/?"
+**Example:** "Create a security plugin called 'owasp-scanner' with commands"
 
 ---
 
-### 2. ✅ Test Generator
-**Automatically generates comprehensive test suites**
+### 2. ✅ Plugin Validator
+**Automatically validates plugin structure and compliance**
 
-**Activates when you mention:**
-- Generate tests, write tests
-- Test coverage, unit tests
-- Integration tests, test cases
+**Activates when you say:**
+- "Validate this plugin"
+- "Check plugin for errors"
+- "Is my plugin ready to commit?"
 
 **What it does:**
-- Creates unit and integration tests
-- Includes happy path + edge cases
-- Generates mock configurations
-- Supports Jest, pytest, JUnit, RSpec, and more
+- Validates plugin.json schema
+- Checks required files exist
+- Validates markdown frontmatter
+- Verifies script permissions
+- Checks marketplace compliance
+- Runs comprehensive validation suite
 
-**Example:** "Generate tests for the UserService class"
+**Example:** "Validate the skills-powerkit plugin"
 
 ---
 
-### 3. 📝 Documentation Writer
-**Automatically generates professional documentation**
+### 3. 📦 Marketplace Manager
+**Automatically manages marketplace catalog and syncing**
 
-**Activates when you mention:**
-- Documentation, docs
-- API documentation, README
-- Explain code, add comments
+**Activates when you say:**
+- "Add plugin to marketplace"
+- "Sync marketplace catalog"
+- "Update marketplace version"
 
 **What it does:**
-- Generates API documentation (JSDoc, docstrings)
-- Creates README files with examples
-- Adds inline code comments
-- Writes user guides and tutorials
+- Updates marketplace.extended.json
+- Runs `npm run sync-marketplace`
+- Validates both catalog files
+- Checks for duplicates
+- Ensures catalog integrity
 
-**Example:** "Create a README for this project"
+**Example:** "Add the new security-scanner to marketplace"
 
 ---
 
-### 4. 🔒 Security Scanner
-**Automatically scans for security vulnerabilities**
+### 4. 🔍 Plugin Auditor
+**Automatically audits plugins for security and quality**
 
-**Activates when you mention:**
-- Security, security scan, vulnerability
-- Security review, OWASP
-- Injection attacks, XSS, SQL injection
+**Activates when you say:**
+- "Audit this plugin"
+- "Security review"
+- "Check best practices"
 
 **What it does:**
-- Scans for OWASP Top 10 vulnerabilities
-- Identifies injection risks (SQL, XSS, command)
-- Checks authentication/authorization issues
-- Provides secure code examples and remediation
+- Scans for security vulnerabilities
+- Checks hardcoded secrets
+- Validates best practices
+- Verifies CLAUDE.md compliance
+- Generates quality score
+- Provides recommendations
 
-**Example:** "Check this code for security issues"
+**Example:** "Audit the security-scanner plugin for production"
 
 ---
 
-### 5. ⚡ Performance Optimizer
-**Automatically identifies and fixes performance bottlenecks**
+### 5. 🔢 Version Bumper
+**Automatically handles semantic version updates**
 
-**Activates when you mention:**
-- Performance, optimize, slow code
-- Speed up, bottleneck
-- Memory leak, improve performance
+**Activates when you say:**
+- "Bump version to patch/minor/major"
+- "Release version [x.y.z]"
+- "Update plugin version"
 
 **What it does:**
-- Identifies algorithm complexity issues (O(n²) → O(n))
-- Detects memory leaks
-- Finds N+1 query problems
-- Provides optimized code with benchmarks
+- Calculates new semantic version
+- Updates plugin.json
+- Updates marketplace catalog
+- Syncs marketplace.json
+- Updates CHANGELOG.md (if exists)
+- Creates git tags (optional)
 
-**Example:** "This function is slow, can you optimize it?"
+**Example:** "Bump the security-scanner plugin to patch version"
+
+---
+
+## Who Is This For?
+
+### For Repository Maintainers
+- Create new plugins quickly with proper structure
+- Validate plugins before merging PRs
+- Audit plugins for quality and security
+- Manage marketplace catalog efficiently
+
+### For Plugin Contributors
+- Ensure your plugin meets all standards
+- Validate before submitting PR
+- Check compliance with CLAUDE.md
+- Get quality recommendations
+
+### For This Repository Specifically
+This plugin is **optimized for claude-code-plugins** workflow:
+- Knows the two-catalog system (extended vs CLI)
+- Understands repository structure
+- Follows CLAUDE.md standards
+- Handles Skills, Commands, Agents, MCP plugins
+- Manages marketplace sync automatically
 
 ---
 
@@ -123,83 +152,107 @@ Skills make Claude **smarter and more context-aware** without requiring you to r
 /plugin install skills-powerkit@claude-code-plugins-plus
 ```
 
-**That's it!** All 5 skills are now active and will automatically invoke when relevant.
+**That's it!** All 5 skills are now active in this repository.
 
 ---
 
 ## How to Use
 
-**You don't need to do anything special** - just talk naturally!
+**Just talk naturally while working on plugins!**
 
-### Example Conversations
+### Example Workflows
 
-**Conversation 1: Code Review**
+**Workflow 1: Create New Plugin**
 ```
-You: "I need to review the authentication code for security issues and code quality"
+You: "I need to create a new DevOps plugin called 'docker-optimizer' with commands"
 
-Claude automatically:
-1. Recognizes "security issues" → Invokes Security Scanner
-2. Recognizes "code quality" → Invokes Code Quality Analyzer
-3. Scans authentication code with both skills
-4. Reports security vulnerabilities + quality issues
-5. Provides fixes and recommendations
-```
-
-**Conversation 2: New Feature**
-```
-You: "I added a payment processing function, need tests and docs"
-
-Claude automatically:
-1. Recognizes "need tests" → Invokes Test Generator
-2. Recognizes "docs" → Invokes Documentation Writer
-3. Generates comprehensive test suite
-4. Creates API documentation
-5. Delivers both without you asking twice
+Skills Powerkit automatically:
+1. Recognizes "create new plugin" → Invokes Plugin Creator
+2. Scaffolds plugins/devops/docker-optimizer/
+3. Generates plugin.json, README, LICENSE, commands/
+4. Adds to marketplace.extended.json
+5. Syncs marketplace.json
+6. Validates everything
+7. Reports: "✅ Plugin created and ready!"
 ```
 
-**Conversation 3: Performance Issue**
+**Workflow 2: Validate Before Commit**
 ```
-You: "The search endpoint is slow, optimize it"
+You: "Is my owasp-scanner plugin ready to commit?"
 
-Claude automatically:
-1. Recognizes "slow, optimize" → Invokes Performance Optimizer
-2. Analyzes search endpoint code
-3. Identifies bottlenecks (probably N+1 queries)
-4. Provides optimized version with benchmarks
+Skills Powerkit automatically:
+1. Recognizes "ready to commit" → Invokes Plugin Validator
+2. Checks plugin.json schema
+3. Validates frontmatter
+4. Verifies marketplace entry
+5. Checks permissions
+6. Reports: "✅ PASSED - Ready to commit!"
+```
+
+**Workflow 3: Security Audit**
+```
+You: "Security audit on the new password-manager plugin"
+
+Skills Powerkit automatically:
+1. Recognizes "security audit" → Invokes Plugin Auditor
+2. Scans for hardcoded secrets
+3. Checks dangerous commands
+4. Validates security patterns
+5. Generates audit report
+6. Reports: "⚠️ Found 2 issues - no hardcoded credentials allowed"
+```
+
+**Workflow 4: Release Management**
+```
+You: "Bump docker-optimizer to minor version and update marketplace"
+
+Skills Powerkit automatically:
+1. Recognizes "bump to minor" → Invokes Version Bumper
+2. Calculates new version (1.0.0 → 1.1.0)
+3. Updates plugin.json
+4. Recognizes "update marketplace" → Invokes Marketplace Manager
+5. Updates marketplace.extended.json
+6. Syncs marketplace.json
+7. Reports: "✅ Version bumped to 1.1.0, marketplace updated"
 ```
 
 ---
 
-## Skills vs Commands
+## Why Is This Powerful?
 
-| Feature | Skills (This Plugin) | Slash Commands |
-|---------|---------------------|----------------|
-| **Invocation** | Automatic (Claude decides) | Manual (you type `/command`) |
-| **Trigger** | Keywords in conversation | Explicit `/command` |
-| **Intelligence** | Context-aware | Single-purpose |
-| **User Experience** | Natural conversation | Command-driven |
-| **Example** | "check security" → auto-scans | `/security-scan` → scans |
+### Auto-Invoked Intelligence
+- **You don't run commands** - Skills activate based on what you say
+- **Context-aware** - Knows you're working in claude-code-plugins
+- **Workflow understanding** - Knows the two-catalog system
+- **Repository-specific** - Follows CLAUDE.md standards
 
-**Skills feel more natural** - like talking to an expert who knows when to use their capabilities.
+### Complete Automation
+- Creates plugins in seconds
+- Validates before you forget
+- Audits for security automatically
+- Manages marketplace with zero effort
+- Handles versioning correctly
 
----
-
-## Demo Command
-
-Want to see all skills in action? Try the demo command:
-
-```bash
-/demo-skills
-```
-
-This shows examples of how each skill auto-invokes and what triggers them.
+### Quality Assurance
+- Ensures CLAUDE.md compliance
+- Validates against CI standards
+- Checks marketplace integrity
+- Enforces best practices
+- Prevents common mistakes
 
 ---
 
-## Included Slash Commands
+## Skills vs Manual Work
 
-### `/demo-skills`
-Comprehensive guide to all 5 skills with trigger examples and use cases.
+| Task | Manual | With Skills Powerkit |
+|------|--------|---------------------|
+| **Create Plugin** | 15-30 min (create dirs, write JSON, update catalog, sync) | Say "create plugin X" → Done in seconds |
+| **Validate Plugin** | 5-10 min (run scripts, check files, review) | Say "validate plugin" → Instant report |
+| **Update Marketplace** | 3-5 min (edit JSON, sync, validate) | Say "add to marketplace" → Auto-synced |
+| **Version Bump** | 5 min (update 3 files, sync, validate) | Say "bump version" → All files updated |
+| **Security Audit** | 10-15 min (grep patterns, check secrets) | Say "audit plugin" → Full report |
+
+**Time saved per plugin:** ~40-60 minutes
 
 ---
 
@@ -207,138 +260,157 @@ Comprehensive guide to all 5 skills with trigger examples and use cases.
 
 ### Skill Restrictions
 
-All skills use **read-only or minimal write access** for safety:
+All skills use appropriate tool access:
 
-| Skill | Allowed Tools |
-|-------|--------------|
-| Code Quality Analyzer | Read, Grep (read-only) |
-| Test Generator | Read, Write, Grep |
-| Documentation Writer | Read, Write, Grep |
-| Security Scanner | Read, Grep (read-only) |
-| Performance Optimizer | Read, Grep (read-only) |
+| Skill | Allowed Tools | Purpose |
+|-------|--------------|---------|
+| Plugin Creator | Read, Write, Grep, Bash | Full creation capabilities |
+| Plugin Validator | Read, Grep, Bash | Read-only validation |
+| Marketplace Manager | Read, Write, Edit, Grep, Bash | Catalog management |
+| Plugin Auditor | Read, Grep, Bash | Read-only auditing |
+| Version Bumper | Read, Write, Edit, Grep, Bash | Version management |
 
-**Safe for production use** - no destructive operations!
+### Repository Knowledge
 
-### Skill Structure
+Skills Powerkit understands:
+- **Two-catalog system**: marketplace.extended.json (source) → marketplace.json (generated)
+- **Directory structure**: plugins/[category]/[plugin-name]/
+- **Required files**: plugin.json, README.md, LICENSE
+- **Validation scripts**: ./scripts/validate-all.sh, check-frontmatter.py
+- **Sync command**: npm run sync-marketplace
+- **Valid categories**: 14 plugin categories
+- **CLAUDE.md standards**: All repository conventions
 
-Each skill follows Claude Code's SKILL.md format:
+---
 
+## Example Conversations
+
+### Creating a Plugin
+
+**You:** "I want to create a new testing plugin for Jest test generation"
+
+**Skills Powerkit:**
+1. Activates Plugin Creator skill
+2. "I'll create a testing plugin called 'jest-test-generator'. What should it include - commands, agents, or both?"
+
+**You:** "Both commands and agents"
+
+**Skills Powerkit:**
 ```
-skills/
-├── code-analyzer/
-│   └── SKILL.md
-├── test-generator/
-│   └── SKILL.md
-├── doc-writer/
-│   └── SKILL.md
-├── security-scanner/
-│   └── SKILL.md
-└── performance-optimizer/
-    └── SKILL.md
+✅ Created plugin: jest-test-generator
+📁 Location: plugins/testing/jest-test-generator/
+📝 Files created:
+   - .claude-plugin/plugin.json
+   - README.md
+   - LICENSE
+   - commands/generate.md
+   - agents/jest-expert.md
+🔍 Validation: PASSED
+📦 Marketplace: UPDATED (synced)
+✨ Ready to customize and commit!
+```
+
+### Validating a Plugin
+
+**You:** "Check if my jest-test-generator plugin is valid"
+
+**Skills Powerkit:**
+```
+🔍 PLUGIN VALIDATION REPORT
+Plugin: jest-test-generator
+
+✅ PASSED (9/10)
+- Required files present
+- Valid plugin.json
+- Proper frontmatter
+- Marketplace entry exists
+- No security issues
+
+⚠️ WARNINGS (1)
+- 1 script missing execute permission
+  Fix: chmod +x scripts/generate.sh
+
+OVERALL: PASSED with warnings
 ```
 
 ---
 
-## Use Cases
+## Integration with Repository Workflow
 
-### For Developers
-- Code reviews with automatic quality + security analysis
-- Test generation for new features
-- Documentation creation without context switching
-- Performance optimization with benchmarks
+### Works With Existing Tools
 
-### For Teams
-- Consistent code quality standards
-- Security-first development
-- Comprehensive test coverage
-- Professional documentation
+Skills Powerkit **enhances** existing tools:
+- Uses `./scripts/validate-all.sh` under the hood
+- Calls `npm run sync-marketplace` automatically
+- Validates with `jq` and `python3 scripts/check-frontmatter.py`
+- Follows same standards as CI/CD
 
-### For Learning
-- See how professional skills are structured
-- Understand model-invoked vs user-invoked
-- Use as templates for your own skills
-- Learn skill authoring best practices
+### CI/CD Compatibility
 
----
-
-## Why This Plugin?
-
-**Skills Powerkit demonstrates the future of AI-assisted development:**
-
-1. **Context-Aware** - Claude knows when to use each capability
-2. **Natural Interaction** - No memorizing commands
-3. **Multiple Skills** - Different skills work together seamlessly
-4. **Professional Quality** - Production-ready skill examples
-5. **Educational** - Learn by example from well-crafted skills
-
-**This is what makes Claude Code + Skills powerful** - AI that understands context and applies the right tools automatically.
+Skills run the **same checks as GitHub Actions**:
+- `.github/workflows/validate-plugins.yml` checks
+- Security scans match CI patterns
+- Validation matches CI requirements
+- **Fix issues before CI fails**
 
 ---
 
 ## Requirements
 
-- Claude Code CLI
-- Claude Code version with Skills support (October 2025+)
-- Pro, Team, or Enterprise plan (Skills require code execution)
+- Claude Code CLI with Skills support (October 2025+)
+- Working in `claude-code-plugins` repository
+- Node.js for `npm run sync-marketplace`
+- Python 3 for frontmatter validation
+- `jq` for JSON validation
 
 ---
 
-## Security Note
+## Pro Tips
 
-⚠️ **Skills can execute code** through Claude's Code Execution Tool. This plugin's skills are designed with safety in mind:
+### 💡 Tip 1: Chain Skills
+Say: "Create a security plugin, validate it, and add to marketplace"
+→ All 3 skills activate automatically in sequence
 
-- Read-only tools where possible
-- No destructive operations
-- No external API calls
-- Safe for production codebases
+### 💡 Tip 2: Pre-Commit Check
+Say: "Is everything ready to commit?"
+→ Validator runs comprehensive check
 
-**Always review skills from unknown sources before installation.**
+### 💡 Tip 3: Quality Assurance
+Say: "Full audit for featured plugin status"
+→ Auditor runs with higher quality thresholds
+
+### 💡 Tip 4: Version Releases
+Say: "Bump to minor and update marketplace"
+→ Version Bumper + Marketplace Manager work together
 
 ---
 
-## Examples in the Wild
+## Troubleshooting
 
-**Example 1: Full Feature Development**
-```
-You: "Build user authentication with JWT tokens"
+### "Skills not activating"
+- Ensure you're in claude-code-plugins repository
+- Check you said trigger keywords ("create plugin", "validate", etc.)
+- Verify Skills Powerkit is installed: `/plugin list`
 
-Skills automatically activate:
-1. Security Scanner → Validates auth implementation security
-2. Test Generator → Creates auth tests
-3. Documentation Writer → Generates API docs
-4. Code Quality Analyzer → Reviews code structure
-```
+### "Marketplace sync fails"
+- Run manually: `npm run sync-marketplace`
+- Check marketplace.extended.json syntax with `jq`
+- Verify no duplicate plugin names
 
-**Example 2: Legacy Code Maintenance**
-```
-You: "Refactor this old module - it's slow and messy"
-
-Skills automatically activate:
-1. Performance Optimizer → Identifies bottlenecks
-2. Code Quality Analyzer → Finds quality issues
-3. Test Generator → Adds missing tests (for safety)
-4. Documentation Writer → Explains refactored code
-```
-
-**Example 3: Security Audit**
-```
-You: "Full security audit of the API layer"
-
-Skills automatically activate:
-1. Security Scanner → OWASP Top 10 scan
-2. Code Quality Analyzer → Finds security-impacting code smells
-3. Documentation Writer → Documents security requirements
-```
+### "Validation fails"
+- Check error message for specific issue
+- Run: `./scripts/validate-all.sh plugins/your-plugin/`
+- Fix reported issues
 
 ---
 
 ## Contributing
 
-Want to improve these skills? Found a bug?
+Found a bug or want to improve Skills Powerkit?
 
 **Report issues:** https://github.com/jeremylongshore/claude-code-plugins/issues
 
-**Submit improvements:** Fork, enhance, and create PR
+**Improve skills:** Fork, enhance SKILL.md files, submit PR
 
 ---
 
@@ -352,7 +424,7 @@ MIT License - See [LICENSE](LICENSE) file
 
 - **Agent Skills Documentation:** https://docs.claude.com/en/docs/claude-code/skills
 - **Plugin Guide:** https://docs.claude.com/en/docs/claude-code/plugins
-- **Marketplace:** https://claudecodeplugins.io
+- **Repository CLAUDE.md:** [View CLAUDE.md](../../CLAUDE.md)
 
 ---
 
@@ -360,16 +432,17 @@ MIT License - See [LICENSE](LICENSE) file
 
 ### v1.0.0 (2025-10-16)
 - Initial release
-- 5 professional Agent Skills
-- Demo command
-- Comprehensive documentation
+- 5 repository-specific Agent Skills
+- Plugin Creator, Validator, Marketplace Manager, Auditor, Version Bumper
+- Optimized for claude-code-plugins workflow
+- Auto-invoked based on conversation context
 
 ---
 
-**Ready to experience the future of AI-assisted development?**
+**Ready to supercharge your plugin development workflow?**
 
 ```bash
 /plugin install skills-powerkit@claude-code-plugins-plus
 ```
 
-Then just start coding - the skills will help when you need them! 🚀
+Then just start working on plugins - the skills will help automatically! 🚀
