@@ -34,17 +34,6 @@
         "name": "Claude Code Plugins",
         "email": "[email protected]"
       },
-      "skills": {
-        "count": 5,
-        "included": [
-          "code-analyzer",
-          "test-generator",
-          "doc-writer",
-          "security-scanner",
-          "performance-optimizer"
-        ],
-        "requiresCodeExecution": true
-      },
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
