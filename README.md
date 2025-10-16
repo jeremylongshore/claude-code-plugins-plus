@@ -18,25 +18,25 @@ Looking for broader AI automation and delivery tooling? Explore our full portfol
 
 ---
 
-## 🚀 NEW: Skills Powerkit Plugin
+## 🚀 NEW: Skills Powerkit - Meta-Plugin for Plugin Management
 
 **Agent Skills are here!** Anthropic just launched Skills (October 16, 2025) - model-invoked capabilities that Claude uses automatically.
 
-**Skills Powerkit** - Our new example plugin showcasing 5 professional Agent Skills:
-- 🔍 **Code Quality Analyzer** - Auto-analyzes code for quality issues
-- ✅ **Test Generator** - Auto-generates comprehensive test suites
-- 📝 **Documentation Writer** - Auto-creates professional documentation
-- 🔒 **Security Scanner** - Auto-scans for OWASP Top 10 vulnerabilities
-- ⚡ **Performance Optimizer** - Auto-identifies and fixes bottlenecks
+**Skills Powerkit** - The ultimate meta-plugin for managing THIS marketplace:
+- 🛠️ **Plugin Creator** - Auto-scaffolds new plugins with proper structure
+- ✅ **Plugin Validator** - Auto-validates plugin structure and compliance
+- 📦 **Marketplace Manager** - Auto-manages catalog and syncing
+- 🔍 **Plugin Auditor** - Auto-audits for security and quality
+- 🔢 **Version Bumper** - Auto-handles semantic version updates
 
-**Unlike slash commands, Skills auto-invoke based on conversation context!**
+**Repository-specific Skills for claude-code-plugins workflow!**
 
 Install Skills Powerkit:
 ```bash
 /plugin install skills-powerkit@claude-code-plugins-plus
 ```
 
-Then just say "analyze this code" or "generate tests" - Skills activate automatically!
+Then just say "create a new plugin" or "validate this plugin" - Skills manage your plugins automatically!
 
 [Learn more about Agent Skills →](#understanding-plugin-types)
 
