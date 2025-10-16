@@ -1,22 +1,48 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.40-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-227-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Skills Powerkit](https://img.shields.io/badge/NEW-Skills%20Powerkit-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/skills-powerkit)
+[![Version](https://img.shields.io/badge/version-1.0.41-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-228-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**227 production-ready Claude Code plugins • First Agent Skills plugin available**
+**228 production-ready Claude Code plugins • Skills + Plugins = Magic ✨**
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install skills-powerkit@claude-code-plugins-plus
 ```
 
-🎯 **NEW:** Say "create a plugin" and Skills Powerkit auto-manages everything
+🎯 **NEW:** Skill Enhancers - Plugins that extend Claude's Skills with automation
 
 ---
 
-## 🚀 NEW: Skills Powerkit - Meta-Plugin for Plugin Management
+## ✨ NEW: Skill Enhancers - The Missing Link
+
+**Anthropic gave Claude Skills (search, read, analyze). We give you the automation layer.**
+
+### The Pattern
+```
+Claude's Skill (Input) → Your Plugin (Action) → Real Result
+```
+
+### Example: Web Search → GitHub Issue
+```bash
+claude: "research PostgreSQL indexing best practices and create a ticket"
+
+# Claude searches web (web_search Skill)
+# Plugin creates formatted GitHub issue
+# ✅ Issue #247 created with findings
+```
+
+**Available Skill Enhancers:**
+- 🔍 **web-to-github-issue** - Research → GitHub tickets
+- More coming soon!
+
+[Explore Skill Enhancers →](plugins/skill-enhancers/)
+
+---
+
+## 🚀 Skills Powerkit - Meta-Plugin for Plugin Management
 
 **Agent Skills are here!** Anthropic just launched Skills (October 16, 2025) - model-invoked capabilities that Claude uses automatically.
 

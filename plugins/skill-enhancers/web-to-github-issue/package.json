@@ -1,0 +1,24 @@
+{
+  "name": "web-to-github-issue",
+  "version": "1.0.0",
+  "description": "Enhances Claude's web_search Skill by creating GitHub issues from research",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Tests coming soon\""
+  },
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "github",
+    "automation",
+    "skill-enhancer"
+  ],
+  "author": "Claude Code Plugins Team",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^20.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -22,6 +22,7 @@ const pluginsCollection = defineCollection({
       'cloud-infrastructure',
       'accessibility',
       'mobile',
+      'skill-enhancers',
       'other'
     ]),
     keywords: z.array(z.string()),

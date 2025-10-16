@@ -1,3 +1,109 @@
+## [1.0.41] - 2025-10-16
+
+### 🎉 Highlights
+
+**✨ Introducing Skill Enhancers - The Missing Link Between Skills and Actions**
+
+This release introduces **Skill Enhancers**, a new category of plugins that extend Claude's built-in Skills with automation. Anthropic gave Claude the ability to search, read, and analyze - we're giving you the ability to automate what happens next.
+
+**The Pattern:**
+```
+Claude's Skill (Input) → Your Plugin (Action) → Real Result
+```
+
+**Example:**
+```bash
+claude: "research PostgreSQL indexing and create a ticket"
+
+# Claude uses web_search Skill → finds 5 sources
+# web-to-github-issue plugin → creates formatted issue
+# ✅ GitHub issue #247 created with findings
+```
+
+**First Skill Enhancer:** web-to-github-issue - Automatically creates GitHub issues from web research
+
+---
+
+### 👥 Contributors
+
+- **@jeremylongshore** - Project maintainer, release coordination
+- **Claude Code (Sonnet 4.5)** - Skill Enhancers design, web-to-github-issue plugin implementation
+
+---
+
+### 🆕 New Plugins (1)
+
+- **[web-to-github-issue](plugins/skill-enhancers/web-to-github-issue/)** - First Skill Enhancer plugin
+  - **Enhances:** `web_search` and `web_fetch` Skills
+  - **Action:** Automatically creates formatted GitHub issues from research findings
+  - **Features:**
+    - 🔍 Intelligent content extraction from search results
+    - 📝 Markdown-formatted issues with sources
+    - 🏷️ Smart priority detection (urgent/normal)
+    - ✅ Actionable checklists for implementation
+    - 🔗 Preserved source links
+  - **Install:** `/plugin install web-to-github-issue@claude-code-plugins-plus`
+
+---
+
+### 🌟 What Are Skill Enhancers?
+
+**Skill Enhancers** are plugins that bridge the gap between Claude's understanding and real-world actions:
+
+- **Claude's Skills** provide input (search results, file contents, calendar events)
+- **Your Plugins** provide output (create tickets, deploy code, send notifications)
+- **Together** = Complete workflow automation
+
+**Use Cases:**
+- Research → GitHub tickets (web-to-github-issue)
+- Search → Slack digests (coming soon)
+- Analysis → Infrastructure deployment (coming soon)
+- Calendar → Meeting prep automation (coming soon)
+
+---
+
+### 📚 New Category: skill-enhancers
+
+Added new plugin category for Skill Enhancers:
+- Category added to marketplace website schema
+- Featured in README above-the-fold
+- New directory structure: `plugins/skill-enhancers/`
+
+---
+
+### 🔧 Technical Updates
+
+- **Plugin Count:** 227 → 228
+- **New Category:** skill-enhancers (first of its kind)
+- **Marketplace Version:** 1.0.40 → 1.0.41
+- **Website Build:** Updated content schema with skill-enhancers category
+
+---
+
+### 📖 Documentation
+
+**New Documentation:**
+- `plugins/skill-enhancers/web-to-github-issue/README.md` - Comprehensive plugin guide
+- `plugins/skill-enhancers/web-to-github-issue/commands/research-and-ticket.md` - Command documentation
+
+**Updated Documentation:**
+- `README.md` - Added Skill Enhancers section above-the-fold
+- `.claude-plugin/marketplace.extended.json` - Added web-to-github-issue entry
+- `marketplace/src/content/config.ts` - Added skill-enhancers category
+
+---
+
+### 🚀 What's Next
+
+More Skill Enhancers coming soon:
+- web-to-slack-digest - Research → Team updates
+- file-to-api-spec - Documentation → OpenAPI specs
+- calendar-to-standup - Schedule → Standup notes
+
+**Community:** We're opening this up! Build your own Skill Enhancers and contribute.
+
+---
+
 ## [1.0.40] - 2025-10-16
 
 ### 🎉 Highlights

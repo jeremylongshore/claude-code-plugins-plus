@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.0.39",
+    "version": "1.0.41",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -35,6 +35,30 @@
       },
       "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+    },
+    {
+      "name": "web-to-github-issue",
+      "source": "./plugins/skill-enhancers/web-to-github-issue",
+      "description": "Enhances web_search Skill by automatically creating GitHub issues from research findings. Research topics, extract key insights, and generate formatted tickets in seconds.",
+      "version": "1.0.0",
+      "category": "skill-enhancers",
+      "keywords": [
+        "web-search",
+        "github",
+        "automation",
+        "research",
+        "issue-tracking",
+        "skill-enhancer",
+        "productivity",
+        "workflow"
+      ],
+      "author": {
+        "name": "Claude Code Plugins Team",
+        "email": "[email protected]"
+      },
+      "featured": true,
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "enhances": ["web_search", "web_fetch"]
     },
     {
       "name": "sugar",
