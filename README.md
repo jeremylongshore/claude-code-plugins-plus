@@ -2,19 +2,17 @@
 
 [![Version](https://img.shields.io/badge/version-1.0.40-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-227-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Beta](https://img.shields.io/badge/status-beta-orange)](https://www.anthropic.com/news/claude-code-plugins)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Security](https://img.shields.io/badge/security-audited-success)](SECURITY.md)
-[![Discord](https://img.shields.io/badge/Discord-Claude%20Developers-5865F2)](https://discord.com/invite/6PPFFzqPDZ)
-[![Discussions](https://img.shields.io/github/discussions/jeremylongshore/claude-code-plugins?label=discussions)](https://github.com/jeremylongshore/claude-code-plugins/discussions)
 [![Skills Powerkit](https://img.shields.io/badge/NEW-Skills%20Powerkit-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/skills-powerkit)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**The comprehensive marketplace and learning hub for Claude Code plugins.**
+**227 production-ready Claude Code plugins • First Agent Skills plugin available**
 
-Browse **227 plugins** • First Agent Skills plugin • Install instantly • Contribute your own
+```bash
+/plugin marketplace add jeremylongshore/claude-code-plugins
+/plugin install skills-powerkit@claude-code-plugins-plus
+```
 
-Looking for broader AI automation and delivery tooling? Explore our full portfolio at [Intent Solutions](https://www.intentsolutions.io/).
+🎯 **NEW:** Say "create a plugin" and Skills Powerkit auto-manages everything
 
 ---
 
