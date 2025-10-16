@@ -1,5 +1,6 @@
 version: 2
 updates:
+  # Root npm dependencies
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
@@ -9,6 +10,69 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+
+  # Marketplace
+  - package-ecosystem: "npm"
+    directory: "/marketplace"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # MCP Plugins
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/project-health-auditor"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/conversational-api-debugger"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/domain-memory-agent"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/design-to-code"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/workflow-orchestrator"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/mcp/ai-experiment-logger"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  - package-ecosystem: "npm"
+    directory: "/plugins/devops/sugar/mcp-server"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    rebase-strategy: "auto"
+
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
