@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.41-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.42-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-228-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
@@ -13,6 +13,8 @@
 ```
 
 🎯 **NEW:** Skill Enhancers - Plugins that extend Claude's Skills with automation
+
+💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
 
 ---
 

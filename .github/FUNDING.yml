@@ -1,9 +1,13 @@
 # Support this project
 # https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
 
-# Buy Me a Coffee
+# GitHub Sponsors (Preferred - supports tier system)
+github: jeremylongshore
+
+# Buy Me a Coffee (One-time donations)
 buy_me_a_coffee: jeremylongshore
 
-# Community support and discussions
+# Additional sponsor links
 custom:
+  - "https://claudecodeplugins.io/sponsor"
   - "https://github.com/jeremylongshore/claude-code-plugins/discussions"
