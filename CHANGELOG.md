@@ -637,7 +637,7 @@ Special recognition to:
 
 ### 🆕 New Plugins (1)
 
-- **[skills-powerkit](plugins/examples/skills-powerkit/)** - Ultimate plugin management toolkit built with Anthropic's Agent Skills technology - automates 5 workflows:
+- **[skills-powerkit](plugins/examples/skills-powerkit/)** - Ultimate plugin management toolkit with 5 Agent Skills:
   - 🛠️ **Plugin Creator** - Auto-scaffolds new plugins with proper structure
   - ✅ **Plugin Validator** - Auto-validates plugin structure and compliance
   - 📦 **Marketplace Manager** - Auto-manages catalog and syncing
@@ -650,7 +650,7 @@ Special recognition to:
 
 ### 🌟 Skills Powerkit Features
 
-**5 Automated Workflows (Built with Anthropic's Agent Skills Technology):**
+**5 Included Agent Skills:**
 
 1. **Plugin Creator** (`skills/plugin-creator/SKILL.md`)
    - Automatically creates plugin directory structure
