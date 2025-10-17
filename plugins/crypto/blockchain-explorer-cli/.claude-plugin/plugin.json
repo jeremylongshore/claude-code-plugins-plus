@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["blockchain", "explorer", "etherscan", "transactions", "addresses", "contracts"],
-  "category": "crypto"
+  "keywords": [
+    "blockchain",
+    "explorer",
+    "etherscan",
+    "transactions",
+    "addresses",
+    "contracts"
+  ]
 }

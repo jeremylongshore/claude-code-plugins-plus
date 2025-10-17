@@ -16,7 +16,6 @@
     "passwords",
     "agent-skills"
   ],
-  "category": "security",
   "capabilities": [
     "secret-detection",
     "credential-scanning",

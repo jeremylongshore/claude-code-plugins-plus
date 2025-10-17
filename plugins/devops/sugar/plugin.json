@@ -18,10 +18,6 @@
     "agents",
     "enterprise"
   ],
-  "requires": {
-    "claude-code": ">=1.0.0",
-    "python": ">=3.11"
-  },
   "capabilities": {
     "commands": true,
     "agents": true,

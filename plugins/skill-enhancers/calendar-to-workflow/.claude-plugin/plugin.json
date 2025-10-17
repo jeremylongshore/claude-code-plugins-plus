@@ -15,8 +15,6 @@
     "productivity",
     "skill-enhancer"
   ],
-  "category": "skill-enhancers",
-  "enhances": ["calendar", "schedule"],
   "status": "planned",
   "tier": "pro",
   "expectedRelease": "Q1 2025"

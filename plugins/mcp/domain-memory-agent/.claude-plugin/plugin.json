@@ -17,7 +17,6 @@
     "summarization",
     "mcp"
   ],
-  "category": "productivity",
   "mcp": {
     "server": "servers/knowledge-base.ts"
   }

@@ -17,7 +17,6 @@
     "troubleshooting",
     "mcp"
   ],
-  "category": "debugging",
   "mcp": {
     "server": "servers/api-debugger.ts"
   }

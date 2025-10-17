@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["crypto", "staking", "defi", "yield", "optimization", "rewards"],
-  "category": "crypto"
+  "keywords": [
+    "crypto",
+    "staking",
+    "defi",
+    "yield",
+    "optimization",
+    "rewards"
+  ]
 }

@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["gas", "fees", "ethereum", "optimization", "transaction", "l2"],
-  "category": "crypto"
+  "keywords": [
+    "gas",
+    "fees",
+    "ethereum",
+    "optimization",
+    "transaction",
+    "l2"
+  ]
 }

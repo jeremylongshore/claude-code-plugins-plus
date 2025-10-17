@@ -15,8 +15,6 @@
     "devops",
     "skill-enhancer"
   ],
-  "category": "skill-enhancers",
-  "enhances": ["web_search", "web_fetch"],
   "status": "planned",
   "tier": "enterprise",
   "expectedRelease": "Q1 2025"

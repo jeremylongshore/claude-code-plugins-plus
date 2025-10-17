@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["nft", "rarity", "valuation", "traits", "opensea", "crypto"],
-  "category": "crypto"
+  "keywords": [
+    "nft",
+    "rarity",
+    "valuation",
+    "traits",
+    "opensea",
+    "crypto"
+  ]
 }

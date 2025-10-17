@@ -17,7 +17,6 @@
     "vulnerabilities",
     "agent-skills"
   ],
-  "category": "security",
   "capabilities": [
     "dependency-analysis",
     "cve-checking",

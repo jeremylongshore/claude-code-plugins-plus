@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["trading", "signals", "technical-analysis", "indicators", "crypto"],
-  "category": "crypto"
+  "keywords": [
+    "trading",
+    "signals",
+    "technical-analysis",
+    "indicators",
+    "crypto"
+  ]
 }
