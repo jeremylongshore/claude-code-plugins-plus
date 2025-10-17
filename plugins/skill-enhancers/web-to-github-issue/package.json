@@ -4,7 +4,11 @@
   "description": "Enhances Claude's web_search Skill by creating GitHub issues from research",
   "type": "module",
   "scripts": {
-    "test": "echo \"Tests coming soon\""
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "test:coverage:ui": "vitest --ui --coverage"
   },
   "keywords": [
     "claude-code",
@@ -20,5 +24,10 @@
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "vitest": "^3.2.4"
   }
 }

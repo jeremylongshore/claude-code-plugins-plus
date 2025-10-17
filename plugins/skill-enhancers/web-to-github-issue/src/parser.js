@@ -21,13 +21,23 @@ export function parseSearchResults(results, options = {}) {
   const topResults = results.slice(0, maxSources);
 
   const insights = {
-    sources: topResults.map(result => ({
-      title: result.title || 'Untitled',
-      url: result.url,
-      snippet: result.snippet || result.description || '',
-      domain: extractDomain(result.url),
-      relevance: result.score || 1.0
-    })),
+    sources: topResults
+      .map(result => {
+        // Skip results with invalid URLs
+        if (!result.url || typeof result.url !== 'string') {
+          console.warn('Skipping result with invalid URL:', result);
+          return null;
+        }
+
+        return {
+          title: result.title || 'Untitled',
+          url: result.url,
+          snippet: result.snippet || result.description || '',
+          domain: extractDomain(result.url),
+          relevance: result.score || 1.0
+        };
+      })
+      .filter(Boolean), // Remove null entries
     keyPoints: [],
     detectedPriority: null,
     actionable: false,
