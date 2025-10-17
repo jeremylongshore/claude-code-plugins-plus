@@ -44,11 +44,15 @@ const { title, description = "The definitive marketplace for professional Claude
         </div>
 
         <div class="nav-links">
-          <a href="#featured" class="nav-link">Featured</a>
-          <a href="#all-plugins" class="nav-link">All Plugins</a>
-          <a href="#categories" class="nav-link">Categories</a>
-          <a href="https://www.intentsolutions.io/" class="nav-link" target="_blank" rel="noopener noreferrer">
-            Intent Solutions
+          <a href="/" class="nav-link">Home</a>
+          <a href="#all-plugins" class="nav-link">Plugins</a>
+          <a href="/skill-enhancers" class="nav-link">Skill Enhancers</a>
+          <a href="/spotlight" class="nav-link">Spotlight</a>
+          <a href="/sponsor" class="nav-link sponsor-link">
+            <svg class="sponsor-heart" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" />
+            </svg>
+            Sponsor
           </a>
           <a href="https://github.com/jeremylongshore/claude-code-plugins" class="nav-link github-link" target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -202,6 +206,32 @@ const { title, description = "The definitive marketplace for professional Claude
     color: var(--green-400);
   }
 
+  /* Sponsor Link - Intent Solutions Accent */
+  .sponsor-link {
+    color: #0066CC;
+    font-weight: 600;
+    position: relative;
+  }
+
+  .sponsor-link:hover {
+    color: #0052a3;
+  }
+
+  .sponsor-heart {
+    width: 1.125rem;
+    height: 1.125rem;
+    animation: heartbeat 1.5s ease-in-out infinite;
+  }
+
+  @keyframes heartbeat {
+    0%, 100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+  }
+
   .github-link svg {
     width: 1.25rem;
     height: 1.25rem;
@@ -343,26 +373,27 @@ const { title, description = "The definitive marketplace for professional Claude
     }
 
     .nav-brand {
-      justify-content: center;
+      justify-content: space-between;
+      width: 100%;
     }
 
     .nav-links {
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .footer-container {
-      grid-template-columns: 1fr;
-    }
-
-    .footer-bottom .footer-container {
       flex-direction: column;
-      text-align: center;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--slate-800);
     }
 
-    .footer-copyright {
-      align-items: center;
+    .nav-link {
+      padding: 0.5rem 0;
+      justify-content: center;
+    }
+  }
+
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .nav-links {
+      gap: 1rem;
+      font-size: 0.8125rem;
     }
   }
 </style>

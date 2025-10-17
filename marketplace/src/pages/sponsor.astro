@@ -1,0 +1,1156 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const seo = {
+  title: "Sponsor Claude Code Plugins - Support Open Source AI Tools",
+  description: "Support 228+ free Claude Code plugins with GitHub Sponsors. Get early access, premium plugins, and priority support. From $5/mo. 100% open source marketplace.",
+  canonical: "https://claudecodeplugins.io/sponsor",
+  keywords: "Claude Code plugins sponsor, GitHub Sponsors, AI developer tools, open source sponsorship, Claude AI plugins, premium plugins, developer automation, AI tools marketplace",
+  ogImage: "https://claudecodeplugins.io/images/sponsor-og-image.png",
+  twitterImage: "https://claudecodeplugins.io/images/sponsor-twitter-card.png",
+  twitterCard: "summary_large_image",
+  author: "Jeremy Longshore",
+  type: "website"
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <meta name="keywords" content={seo.keywords} />
+    <meta name="author" content={seo.author} />
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="theme-color" content="#10b981" />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={seo.canonical} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content={seo.type} />
+    <meta property="og:url" content={seo.canonical} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:image" content={seo.ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="Claude Code Plugins" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content={seo.twitterCard} />
+    <meta name="twitter:site" content="@jeremylongshore" />
+    <meta name="twitter:creator" content="@jeremylongshore" />
+    <meta name="twitter:url" content={seo.canonical} />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+    <meta name="twitter:image" content={seo.twitterImage} />
+    <meta name="twitter:image:alt" content="Claude Code Plugins Sponsorship - Support open source AI development tools" />
+
+    <!-- Language -->
+    <link rel="alternate" hreflang="en" href={seo.canonical} />
+
+    <!-- Mobile -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Claude Code Plugins Sponsor" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Schema.org JSON-LD Markup -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Claude Code Plugins Sponsorship Tiers",
+        "description": "Support open source Claude Code plugin development with GitHub Sponsors",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": "Supporter Tier",
+            "description": "Individual developers who benefit from Claude Code plugins - Early access to new plugins, Discord community access, and contributor recognition",
+            "price": "5.00",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "5.00",
+              "priceCurrency": "USD",
+              "unitText": "monthly subscription"
+            },
+            "availability": "https://schema.org/InStock",
+            "url": "https://github.com/sponsors/jeremylongshore",
+            "seller": {
+              "@type": "Person",
+              "name": "Jeremy Longshore",
+              "url": "https://github.com/jeremylongshore"
+            },
+            "category": "Software Support"
+          },
+          {
+            "@type": "Offer",
+            "name": "Pro Tier",
+            "description": "Professional developers and small teams - Premium Skill Enhancer plugins, priority support, feature request priority, and 1:1 consultation",
+            "price": "19.00",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "19.00",
+              "priceCurrency": "USD",
+              "unitText": "monthly subscription"
+            },
+            "availability": "https://schema.org/InStock",
+            "url": "https://github.com/sponsors/jeremylongshore",
+            "seller": {
+              "@type": "Person",
+              "name": "Jeremy Longshore",
+              "url": "https://github.com/jeremylongshore"
+            },
+            "category": "Software Support"
+          },
+          {
+            "@type": "Offer",
+            "name": "Enterprise Tier",
+            "description": "Companies and development teams (5+ developers) - Custom plugin development, private hosting, white-label solutions, dedicated support, and SLA guarantees",
+            "price": "199.00",
+            "priceCurrency": "USD",
+            "priceSpecification": {
+              "@type": "UnitPriceSpecification",
+              "price": "199.00",
+              "priceCurrency": "USD",
+              "unitText": "monthly subscription"
+            },
+            "availability": "https://schema.org/InStock",
+            "url": "mailto:jeremy@intentsolutions.io?subject=Enterprise%20Sponsorship%20Inquiry",
+            "seller": {
+              "@type": "Person",
+              "name": "Jeremy Longshore",
+              "url": "https://github.com/jeremylongshore"
+            },
+            "category": "Software Support"
+          }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I sponsor for just one month?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Cancel anytime, no commitments. You keep access to plugins downloaded during your sponsorship."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What happens to my premium plugins if I cancel?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You keep using them, but won't receive updates or new premium plugins. No features are removed."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I expense this as a business expense?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! GitHub Sponsors provides invoices suitable for business tax deductions."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do you offer annual pricing?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Contact jeremy@intentsolutions.io for 20% discount on annual commitments."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I access premium plugins?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Pro/Enterprise sponsors get access to private claude-code-marketplace repository with premium plugin catalog."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What if I need a custom plugin not on the roadmap?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Enterprise sponsors get 1 custom plugin per month. Pro sponsors get 1 per quarter. Community requests via Discord."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I sponsor with company funds?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! Many sponsors expense this as Developer Tools or SaaS Subscriptions. We provide invoices."
+            }
+          }
+        ]
+      }
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Claude Code Plugins",
+        "url": "https://claudecodeplugins.io",
+        "logo": "https://claudecodeplugins.io/images/logo.png",
+        "description": "The definitive marketplace for professional Claude Code plugins. 228+ open source plugins across 15 categories.",
+        "founder": {
+          "@type": "Person",
+          "name": "Jeremy Longshore",
+          "url": "https://github.com/jeremylongshore"
+        },
+        "foundingDate": "2025",
+        "sameAs": [
+          "https://github.com/jeremylongshore/claude-code-plugins",
+          "https://github.com/sponsors/jeremylongshore"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "jeremy@intentsolutions.io",
+          "contactType": "Enterprise Sales",
+          "availableLanguage": "English"
+        }
+      }
+    </script>
+
+    <style>
+      /* Import global styles */
+      @import url('../styles/global.css');
+
+      /* Override theme for sponsor page - Intent Solutions minimalist white theme */
+      body {
+        background: #FFFFFF;
+        color: #1a1a1a;
+      }
+
+      /* Hero Section */
+      .sponsor-hero {
+        background: #FFFFFF;
+        padding: 4rem 1rem;
+        text-align: center;
+        border-bottom: 1px solid #E5E5E5;
+      }
+
+      .sponsor-hero-content {
+        max-width: 56rem;
+        margin: 0 auto;
+      }
+
+      .sponsor-hero h1 {
+        font-size: clamp(2.5rem, 5vw, 3rem);
+        font-weight: 800;
+        line-height: 1.2;
+        color: #1a1a1a;
+        margin-bottom: 1.5rem;
+      }
+
+      .sponsor-hero-description {
+        font-size: 1.25rem;
+        line-height: 1.6;
+        color: #666666;
+        max-width: 42rem;
+        margin: 0 auto 2rem;
+      }
+
+      .sponsor-hero-stats {
+        display: flex;
+        gap: 2rem;
+        justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid #E5E5E5;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #0066CC;
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-size: 0.875rem;
+        color: #666666;
+        margin-top: 0.5rem;
+      }
+
+      /* Primary CTA */
+      .cta-primary {
+        display: inline-block;
+        padding: 1rem 2rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #FFFFFF;
+        background: #0066CC;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .cta-primary:hover {
+        background: #0052a3;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0, 102, 204, 0.2);
+      }
+
+      .cta-secondary {
+        display: inline-block;
+        padding: 1rem 2rem;
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        background: transparent;
+        border: 2px solid #E5E5E5;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .cta-secondary:hover {
+        border-color: #0066CC;
+        color: #0066CC;
+      }
+
+      .hero-ctas {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      /* Container */
+      .container {
+        max-width: 75rem;
+        margin: 0 auto;
+        padding: 0 1rem;
+      }
+
+      /* Section */
+      .section {
+        padding: 4rem 1rem;
+        background: #FFFFFF;
+      }
+
+      .section-alt {
+        background: #FAFAFA;
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 3rem;
+      }
+
+      .section-title {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+      }
+
+      .section-description {
+        font-size: 1.125rem;
+        color: #666666;
+        max-width: 42rem;
+        margin: 0 auto;
+      }
+
+      /* Pricing Tiers */
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        gap: 2rem;
+        max-width: 75rem;
+        margin: 0 auto;
+      }
+
+      .pricing-card {
+        background: #FFFFFF;
+        border: 2px solid #E5E5E5;
+        border-radius: 1rem;
+        padding: 2rem;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .pricing-card:hover {
+        border-color: #0066CC;
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      }
+
+      .pricing-card.featured {
+        border-color: #0066CC;
+        position: relative;
+        background: linear-gradient(180deg, #FFFFFF 0%, #f8f9ff 100%);
+      }
+
+      .pricing-card.featured::before {
+        content: "Most Popular";
+        position: absolute;
+        top: -1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0066CC;
+        color: #FFFFFF;
+        padding: 0.375rem 1rem;
+        border-radius: 2rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+      }
+
+      .pricing-tier {
+        font-size: 0.875rem;
+        font-weight: 700;
+        color: #0066CC;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+      }
+
+      .pricing-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+      }
+
+      .pricing-price {
+        display: flex;
+        align-items: baseline;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .price-amount {
+        font-size: 3rem;
+        font-weight: 900;
+        color: #1a1a1a;
+      }
+
+      .price-currency {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #666666;
+      }
+
+      .price-period {
+        font-size: 1rem;
+        color: #666666;
+      }
+
+      .pricing-description {
+        color: #666666;
+        margin-bottom: 1.5rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #E5E5E5;
+      }
+
+      .pricing-features {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+        flex-grow: 1;
+      }
+
+      .pricing-features li {
+        padding: 0.75rem 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        color: #1a1a1a;
+        font-size: 0.875rem;
+        line-height: 1.5;
+      }
+
+      .pricing-features li::before {
+        content: "✓";
+        color: #10b981;
+        font-weight: 700;
+        font-size: 1.125rem;
+        flex-shrink: 0;
+      }
+
+      .pricing-cta {
+        display: block;
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #FFFFFF;
+        background: #0066CC;
+        border: none;
+        border-radius: 0.5rem;
+        text-align: center;
+        text-decoration: none;
+        transition: all 0.2s ease;
+      }
+
+      .pricing-cta:hover {
+        background: #0052a3;
+      }
+
+      .pricing-card:not(.featured) .pricing-cta {
+        background: transparent;
+        color: #0066CC;
+        border: 2px solid #0066CC;
+      }
+
+      .pricing-card:not(.featured) .pricing-cta:hover {
+        background: #0066CC;
+        color: #FFFFFF;
+      }
+
+      /* Comparison Table */
+      .comparison-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+        background: #FFFFFF;
+        border: 1px solid #E5E5E5;
+        border-radius: 1rem;
+        overflow: hidden;
+      }
+
+      .comparison-table th,
+      .comparison-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #E5E5E5;
+      }
+
+      .comparison-table th {
+        background: #FAFAFA;
+        font-weight: 700;
+        color: #1a1a1a;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.05em;
+      }
+
+      .comparison-table td {
+        color: #666666;
+      }
+
+      .comparison-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .check-icon {
+        color: #10b981;
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+
+      .cross-icon {
+        color: #E5E5E5;
+        font-weight: 700;
+        font-size: 1.25rem;
+      }
+
+      /* Roadmap */
+      .roadmap-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        gap: 2rem;
+      }
+
+      .roadmap-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E5E5;
+        border-radius: 1rem;
+        padding: 2rem;
+        transition: all 0.3s ease;
+      }
+
+      .roadmap-card:hover {
+        border-color: #0066CC;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+      }
+
+      .roadmap-tier {
+        display: inline-block;
+        padding: 0.375rem 0.875rem;
+        background: #f0f7ff;
+        color: #0066CC;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border-radius: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 1rem;
+      }
+
+      .roadmap-plugin {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.5rem;
+      }
+
+      .roadmap-description {
+        color: #666666;
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      .roadmap-quarter {
+        font-size: 0.75rem;
+        color: #0066CC;
+        font-weight: 600;
+        margin-top: 1rem;
+      }
+
+      /* FAQ */
+      .faq-grid {
+        max-width: 50rem;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .faq-item {
+        background: #FFFFFF;
+        border: 1px solid #E5E5E5;
+        border-radius: 1rem;
+        padding: 2rem;
+      }
+
+      .faq-question {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 0.75rem;
+      }
+
+      .faq-answer {
+        color: #666666;
+        line-height: 1.6;
+      }
+
+      /* Success Stories */
+      .success-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        gap: 2rem;
+      }
+
+      .success-card {
+        background: #FFFFFF;
+        border: 1px solid #E5E5E5;
+        border-radius: 1rem;
+        padding: 2rem;
+      }
+
+      .success-industry {
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #0066CC;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+      }
+
+      .success-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+      }
+
+      .success-result {
+        font-weight: 600;
+        color: #10b981;
+        margin-bottom: 0.5rem;
+      }
+
+      .success-tech {
+        font-size: 0.875rem;
+        color: #666666;
+        margin-bottom: 1rem;
+      }
+
+      .success-quote {
+        font-style: italic;
+        color: #666666;
+        border-left: 3px solid #0066CC;
+        padding-left: 1rem;
+        margin-top: 1rem;
+      }
+
+      /* Final CTA */
+      .final-cta {
+        background: linear-gradient(135deg, #0066CC 0%, #0052a3 100%);
+        padding: 4rem 1rem;
+        text-align: center;
+        color: #FFFFFF;
+      }
+
+      .final-cta h2 {
+        font-size: clamp(2rem, 4vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #FFFFFF;
+      }
+
+      .final-cta p {
+        font-size: 1.125rem;
+        margin-bottom: 2rem;
+        opacity: 0.95;
+      }
+
+      .final-cta .cta-primary {
+        background: #FFFFFF;
+        color: #0066CC;
+      }
+
+      .final-cta .cta-primary:hover {
+        background: #f0f7ff;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .sponsor-hero {
+          padding: 3rem 1rem;
+        }
+
+        .sponsor-hero h1 {
+          font-size: 2rem;
+        }
+
+        .pricing-grid,
+        .roadmap-grid,
+        .success-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .comparison-table {
+          font-size: 0.875rem;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+          padding: 0.75rem 0.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Hero Section -->
+    <section class="sponsor-hero">
+      <div class="sponsor-hero-content">
+        <h1>Support Claude Code Plugins - Fuel Open Source AI Development</h1>
+        <p class="sponsor-hero-description">
+          All 228 plugins in the Claude Code Plugins marketplace are free and open source.
+          Your GitHub Sponsors support enables continuous development of premium AI automation
+          tools, priority community support, and exclusive Skill Enhancer plugins.
+        </p>
+
+        <div class="hero-ctas">
+          <a href="https://github.com/sponsors/jeremylongshore" class="cta-primary" target="_blank" rel="noopener noreferrer">
+            Become a Sponsor - Support 228+ Free Plugins
+          </a>
+          <a href="#pricing" class="cta-secondary">
+            View Pricing Tiers
+          </a>
+        </div>
+
+        <div class="sponsor-hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">228</div>
+            <div class="stat-label">Free Plugins</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">15</div>
+            <div class="stat-label">Categories</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">1,500+</div>
+            <div class="stat-label">Users</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">100%</div>
+            <div class="stat-label">Open Source</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Tiers -->
+    <section id="pricing" class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">GitHub Sponsors Tiers for Claude Code Plugins</h2>
+          <p class="section-description">
+            Choose from three sponsorship tiers starting at just $5/month to support the Claude AI plugin
+            ecosystem while gaining early access to cutting-edge developer productivity tools.
+          </p>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Supporter Tier -->
+          <div class="pricing-card">
+            <div class="pricing-tier">Individual</div>
+            <h3 class="pricing-name">🌟 Supporter</h3>
+            <div class="pricing-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">5</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="pricing-description">
+              Perfect for individual developers who benefit from the plugins
+            </p>
+            <ul class="pricing-features">
+              <li>Early access to new plugins (1 week before public release)</li>
+              <li>Discord community access (#supporters channel)</li>
+              <li>Your name in README.md Contributors section</li>
+              <li>Sponsor badge on your GitHub profile</li>
+              <li>Support open source development</li>
+              <li>Monthly plugin updates newsletter</li>
+            </ul>
+            <a href="https://github.com/sponsors/jeremylongshore" class="pricing-cta" target="_blank" rel="noopener noreferrer">
+              Become a Supporter
+            </a>
+          </div>
+
+          <!-- Pro Tier -->
+          <div class="pricing-card featured">
+            <div class="pricing-tier">Professional</div>
+            <h3 class="pricing-name">💎 Pro</h3>
+            <div class="pricing-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">19</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="pricing-description">
+              Perfect for professional developers and small teams
+            </p>
+            <ul class="pricing-features">
+              <li>Everything in Supporter tier</li>
+              <li>Premium Skill Enhancer plugins (search-to-slack, file-to-code, calendar-to-workflow)</li>
+              <li>Priority support (24-hour response time)</li>
+              <li>Feature request priority (your ideas built first)</li>
+              <li>1:1 consultation (30 minutes per quarter)</li>
+              <li>Private Discord channel (#pro-members)</li>
+              <li>Custom plugin requests (1 per quarter)</li>
+            </ul>
+            <a href="https://github.com/sponsors/jeremylongshore" class="pricing-cta" target="_blank" rel="noopener noreferrer">
+              Upgrade to Pro
+            </a>
+          </div>
+
+          <!-- Enterprise Tier -->
+          <div class="pricing-card">
+            <div class="pricing-tier">Enterprise</div>
+            <h3 class="pricing-name">🏢 Enterprise</h3>
+            <div class="pricing-price">
+              <span class="price-currency">$</span>
+              <span class="price-amount">199</span>
+              <span class="price-period">/month</span>
+            </div>
+            <p class="pricing-description">
+              Perfect for companies and development teams (5+ developers)
+            </p>
+            <ul class="pricing-features">
+              <li>Everything in Pro tier</li>
+              <li>Custom plugin development (1 per month)</li>
+              <li>Private plugin hosting (use private claude-code-marketplace repo)</li>
+              <li>White-label plugin solutions for your organization</li>
+              <li>Dedicated Slack/Discord channel for your team</li>
+              <li>2 hours consulting per month (architecture, best practices)</li>
+              <li>SLA guarantees (99.9% uptime for plugin availability)</li>
+              <li>Priority bug fixes (same-day response)</li>
+              <li>Team training (2-hour workshop per quarter)</li>
+              <li>Logo on claudecodeplugins.io homepage</li>
+              <li>Company spotlight in newsletter (8,000+ readers)</li>
+            </ul>
+            <a href="mailto:jeremy@intentsolutions.io?subject=Enterprise%20Sponsorship%20Inquiry" class="pricing-cta">
+              Contact for Enterprise
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparison Table -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Compare Sponsorship Tiers</h2>
+        </div>
+
+        <table class="comparison-table">
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th>Supporter</th>
+              <th>Pro</th>
+              <th>Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Early Access</td>
+              <td><span class="check-icon">✓</span> 1 week</td>
+              <td><span class="check-icon">✓</span> 2 weeks</td>
+              <td><span class="check-icon">✓</span> Immediate</td>
+            </tr>
+            <tr>
+              <td>Premium Plugins</td>
+              <td><span class="cross-icon">—</span></td>
+              <td><span class="check-icon">✓</span> 3/month</td>
+              <td><span class="check-icon">✓</span> Unlimited</td>
+            </tr>
+            <tr>
+              <td>Support Response</td>
+              <td>72 hours</td>
+              <td>24 hours</td>
+              <td>Same-day</td>
+            </tr>
+            <tr>
+              <td>Custom Plugins</td>
+              <td><span class="cross-icon">—</span></td>
+              <td>1 per quarter</td>
+              <td>1 per month</td>
+            </tr>
+            <tr>
+              <td>Consultation Time</td>
+              <td><span class="cross-icon">—</span></td>
+              <td>30 min/quarter</td>
+              <td>2 hours/month</td>
+            </tr>
+            <tr>
+              <td>Private Plugin Hosting</td>
+              <td><span class="cross-icon">—</span></td>
+              <td><span class="cross-icon">—</span></td>
+              <td><span class="check-icon">✓</span></td>
+            </tr>
+            <tr>
+              <td>SLA Guarantees</td>
+              <td><span class="cross-icon">—</span></td>
+              <td><span class="cross-icon">—</span></td>
+              <td><span class="check-icon">✓</span> 99.9%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Premium Plugin Roadmap -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Premium Plugin Access for Pro Sponsors</h2>
+          <p class="section-description">
+            Pro and Enterprise sponsors get exclusive access to premium Skill Enhancer plugins
+            that save 10+ hours per month with advanced automation workflows.
+          </p>
+        </div>
+
+        <div class="roadmap-grid">
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Pro Tier</span>
+            <h3 class="roadmap-plugin">📢 search-to-slack</h3>
+            <p class="roadmap-description">
+              Automated research digests sent directly to Slack. AI-powered content curation and summarization.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Pro Tier</span>
+            <h3 class="roadmap-plugin">💻 file-to-code</h3>
+            <p class="roadmap-description">
+              Transform requirements documents into production-ready code. Supports React, Vue, Node.js, Python.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Pro Tier</span>
+            <h3 class="roadmap-plugin">📅 calendar-to-workflow</h3>
+            <p class="roadmap-description">
+              Meeting preparation automation. Generate agendas, pull context, and create follow-up tasks.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Enterprise Tier</span>
+            <h3 class="roadmap-plugin">🚀 research-to-deploy</h3>
+            <p class="roadmap-description">
+              Complete infrastructure automation from research to production deployment. Terraform, AWS, GCP, Azure.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Enterprise Tier</span>
+            <h3 class="roadmap-plugin">🔐 ai-security-auditor</h3>
+            <p class="roadmap-description">
+              Comprehensive code security scanning with AI-powered vulnerability detection and remediation suggestions.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+
+          <div class="roadmap-card">
+            <span class="roadmap-tier">Enterprise Tier</span>
+            <h3 class="roadmap-plugin">📊 analytics-dashboard-gen</h3>
+            <p class="roadmap-description">
+              Auto-generate analytics dashboards from data sources. Supports Grafana, Tableau, PowerBI.
+            </p>
+            <p class="roadmap-quarter">Q1 2025</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Success Stories: Projects Built with Claude Code Plugins</h2>
+          <p class="section-description">
+            Real-world applications leveraging Claude Code plugins to accelerate development
+          </p>
+        </div>
+
+        <div class="success-grid">
+          <div class="success-card">
+            <div class="success-industry">Automotive SaaS</div>
+            <h3 class="success-title">DiagnosticPro</h3>
+            <p class="success-result">Automated diagnostic service ($4.99/diagnostic)</p>
+            <p class="success-tech"><strong>Tech:</strong> Firebase + Vertex AI Gemini + Claude Code plugins</p>
+            <p class="success-quote">
+              "Claude Code plugins saved 40+ hours in development time"
+              <br>- Jeremy Longshore
+            </p>
+          </div>
+
+          <div class="success-card">
+            <div class="success-industry">Sports Tech</div>
+            <h3 class="success-title">HUSTLE - Youth Sports Analytics</h3>
+            <p class="success-result">Full-stack MVP in 4 weeks</p>
+            <p class="success-tech"><strong>Tech:</strong> Next.js 15 + PostgreSQL + Claude Code plugins</p>
+            <p class="success-quote">
+              "From idea to production using Claude Code automation"
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Frequently Asked Questions About Sponsorship</h2>
+        </div>
+
+        <div class="faq-grid">
+          <div class="faq-item">
+            <h3 class="faq-question">Can I sponsor for just one month?</h3>
+            <p class="faq-answer">
+              Yes! Cancel anytime, no commitments. You keep access to plugins downloaded during your sponsorship.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">What happens to my premium plugins if I cancel?</h3>
+            <p class="faq-answer">
+              You keep using them, but won't receive updates or new premium plugins. No features are removed.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Can I expense this as a business expense?</h3>
+            <p class="faq-answer">
+              Yes! GitHub Sponsors provides invoices suitable for business tax deductions.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Do you offer annual pricing?</h3>
+            <p class="faq-answer">
+              Yes! Contact <a href="mailto:jeremy@intentsolutions.io" style="color: #0066CC; text-decoration: underline;">jeremy@intentsolutions.io</a> for 20% discount on annual commitments.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">How do I access premium plugins?</h3>
+            <p class="faq-answer">
+              Pro/Enterprise sponsors get access to private <code>claude-code-marketplace</code> repository with premium plugin catalog.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">What if I need a custom plugin not on the roadmap?</h3>
+            <p class="faq-answer">
+              Enterprise sponsors get 1 custom plugin per month. Pro sponsors get 1 per quarter. Community requests via Discord.
+            </p>
+          </div>
+
+          <div class="faq-item">
+            <h3 class="faq-question">Can I sponsor with company funds?</h3>
+            <p class="faq-answer">
+              Yes! Many sponsors expense this as "Developer Tools" or "SaaS Subscriptions". We provide invoices.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta">
+      <div class="container">
+        <h2>Ready to Sponsor?</h2>
+        <p>Join the growing community of sponsors supporting open source AI development tools</p>
+        <a href="https://github.com/sponsors/jeremylongshore" class="cta-primary" target="_blank" rel="noopener noreferrer">
+          💖 Sponsor on GitHub - Support Open Source
+        </a>
+        <div style="margin-top: 2rem; opacity: 0.9;">
+          <strong>228 plugins • 15 categories • 1,500+ users • 100% open source</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- Minimal Footer with Back to Home -->
+    <footer style="background: #FAFAFA; border-top: 1px solid #E5E5E5; padding: 2rem 1rem; text-align: center;">
+      <div class="container">
+        <p style="margin: 0 0 1rem 0; color: #666666;">
+          <a href="/" style="color: #0066CC; text-decoration: none; font-weight: 600;">← Back to Marketplace</a>
+        </p>
+        <p style="margin: 0; color: #666666; font-size: 0.875rem;">
+          © 2025 Claude Code Plugins. Open Source under MIT License.
+        </p>
+        <p style="margin: 0.5rem 0 0 0; color: #999999; font-size: 0.75rem;">
+          Built with Astro 5 + Tailwind CSS v4
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

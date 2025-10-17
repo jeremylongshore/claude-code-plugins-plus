@@ -1,0 +1,1489 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const seo = {
+  title: "Skill Enhancers - AI Automation Plugins for Claude Code Tools",
+  description: "Discover Skill Enhancer plugins that extend Claude's AI capabilities with automation. Convert research to GitHub issues, Slack digests, and production code.",
+  canonical: "https://claudecodeplugins.io/skill-enhancers",
+  keywords: "Claude Skill Enhancers, AI automation plugins, Claude Code extensions, web search to GitHub, research automation, AI developer tools, Claude AI plugins, workflow automation",
+  ogImage: "https://claudecodeplugins.io/images/skill-enhancers-og-image.png",
+  twitterImage: "https://claudecodeplugins.io/images/skill-enhancers-twitter-card.png",
+  twitterCard: "summary_large_image",
+  author: "Jeremy Longshore",
+  type: "website"
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "https://claudecodeplugins.io"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Categories",
+      "item": "https://claudecodeplugins.io#categories"
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": "Skill Enhancers",
+      "item": "https://claudecodeplugins.io/skill-enhancers"
+    }
+  ]
+};
+
+const collectionSchema = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": "Skill Enhancers - Claude Code Plugins",
+  "description": "AI automation plugins that extend Claude's Skills with workflow automation. Convert research to actionable outputs like GitHub issues, Slack digests, and production code.",
+  "url": "https://claudecodeplugins.io/skill-enhancers",
+  "mainEntity": {
+    "@type": "ItemList",
+    "name": "Skill Enhancer Plugins",
+    "itemListElement": [
+      {
+        "@type": "SoftwareApplication",
+        "position": 1,
+        "name": "web-to-github-issue",
+        "description": "Converts Claude's web research into actionable GitHub issues automatically",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "url": "https://claudecodeplugins.io/plugins/web-to-github-issue"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "position": 2,
+        "name": "search-to-slack",
+        "description": "Automated research digests sent to Slack channels (Pro Tier)",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "eligibleCustomerType": "Pro Sponsors"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "position": 3,
+        "name": "file-to-code",
+        "description": "Requirements to production code automation (Pro Tier)",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "eligibleCustomerType": "Pro Sponsors"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "position": 4,
+        "name": "calendar-to-workflow",
+        "description": "Meeting preparation automation from calendar events (Pro Tier)",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {
+          "@type": "Offer",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "eligibleCustomerType": "Pro Sponsors"
+        }
+      },
+      {
+        "@type": "SoftwareApplication",
+        "position": 5,
+        "name": "research-to-deploy",
+        "description": "Infrastructure automation from research to deployment (Enterprise Tier)",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": {
+          "@type": "Offer",
+          "price": "199.00",
+          "priceCurrency": "USD",
+          "availability": "https://schema.org/InStock",
+          "eligibleCustomerType": "Enterprise Sponsors"
+        }
+      }
+    ]
+  },
+  "about": {
+    "@type": "Thing",
+    "name": "AI Automation",
+    "description": "Plugins that bridge Claude's AI capabilities with automated workflows"
+  }
+};
+---
+
+<Layout title={seo.title} description={seo.description}>
+  <!-- SEO Meta Tags -->
+  <link rel="canonical" href={seo.canonical} slot="head" />
+  <meta name="keywords" content={seo.keywords} slot="head" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" slot="head" />
+  <meta name="author" content={seo.author} slot="head" />
+  <meta name="theme-color" content="#10b981" slot="head" />
+
+  <!-- Open Graph -->
+  <meta property="og:type" content={seo.type} slot="head" />
+  <meta property="og:url" content={seo.canonical} slot="head" />
+  <meta property="og:title" content={seo.title} slot="head" />
+  <meta property="og:description" content={seo.description} slot="head" />
+  <meta property="og:image" content={seo.ogImage} slot="head" />
+  <meta property="og:image:width" content="1200" slot="head" />
+  <meta property="og:image:height" content="630" slot="head" />
+  <meta property="og:site_name" content="Claude Code Plugins" slot="head" />
+  <meta property="og:locale" content="en_US" slot="head" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content={seo.twitterCard} slot="head" />
+  <meta name="twitter:site" content="@jeremylongshore" slot="head" />
+  <meta name="twitter:creator" content="@jeremylongshore" slot="head" />
+  <meta name="twitter:url" content={seo.canonical} slot="head" />
+  <meta name="twitter:title" content="Skill Enhancers - AI Automation Plugins for Claude Code" slot="head" />
+  <meta name="twitter:description" content="Extend Claude's AI capabilities with Skill Enhancer automation plugins. Research to GitHub, Slack digests, production code generation." slot="head" />
+  <meta name="twitter:image" content={seo.twitterImage} slot="head" />
+  <meta name="twitter:image:alt" content="Claude Code Skill Enhancers - AI automation plugins for developer workflows" slot="head" />
+
+  <!-- Language -->
+  <link rel="alternate" hreflang="en" href={seo.canonical} slot="head" />
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} slot="head"></script>
+  <script type="application/ld+json" set:html={JSON.stringify(collectionSchema)} slot="head"></script>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="badge-new">NEW CATEGORY</span>
+        <span class="badge-count">5 Plugins</span>
+      </div>
+
+      <h1 class="hero-title">
+        <span class="gradient-text">Skill Enhancers</span>
+        <br />AI Automation for Claude Code
+      </h1>
+
+      <p class="hero-description">
+        Transform Claude's built-in Skills into automated workflows. Convert research to GitHub issues,
+        Slack digests, production code, and infrastructure deployments—all without manual copy-paste.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="#free-plugin" class="btn-primary">
+          Try Free Plugin
+        </a>
+        <a href="#the-pattern" class="btn-secondary">
+          Learn How It Works
+        </a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <div class="stat-value">95%</div>
+          <div class="stat-label">Time Saved</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">5</div>
+          <div class="stat-label">Plugins</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">3</div>
+          <div class="stat-label">Tiers</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What Are Skill Enhancers -->
+  <section class="section-what">
+    <div class="container">
+      <h2 class="section-title">What Are Skill Enhancers?</h2>
+      <p class="section-intro">
+        Skill Enhancers are plugins that extend Claude's built-in Skills (web_search, file_operations, calendar)
+        by adding automation layers. When Claude performs research or analysis, these plugins automatically
+        create formatted outputs in your development tools.
+      </p>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <div class="concept-icon">🧠</div>
+          <h3 class="concept-title">Claude's Skills</h3>
+          <p class="concept-description">
+            Built-in capabilities like web_search, file_read, and calendar_read that Claude uses to gather information.
+          </p>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-icon">+</div>
+          <h3 class="concept-title">Automation Layer</h3>
+          <p class="concept-description">
+            Plugins that intercept Skill results and transform them into actionable outputs automatically.
+          </p>
+        </div>
+
+        <div class="concept-card">
+          <div class="concept-icon">🚀</div>
+          <h3 class="concept-title">Automated Output</h3>
+          <p class="concept-description">
+            GitHub issues, Slack messages, production code, or infrastructure deployments created instantly.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Pattern Section -->
+  <section class="section-pattern" id="the-pattern">
+    <div class="container">
+      <h2 class="section-title">The Pattern: Skill → Plugin → Automation</h2>
+
+      <div class="pattern-flow">
+        <div class="flow-step">
+          <div class="flow-number">1</div>
+          <div class="flow-content">
+            <h3 class="flow-title">Claude Uses a Skill</h3>
+            <p class="flow-description">
+              Claude performs web research, reads files, or accesses your calendar using built-in Skills.
+            </p>
+            <code class="flow-example">claude: "research PostgreSQL indexing best practices"</code>
+          </div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-number">2</div>
+          <div class="flow-content">
+            <h3 class="flow-title">Plugin Intercepts Results</h3>
+            <p class="flow-description">
+              Skill Enhancer plugin captures the results and processes them automatically.
+            </p>
+            <code class="flow-example">Extracting key findings, sources, and action items...</code>
+          </div>
+        </div>
+
+        <div class="flow-arrow">→</div>
+
+        <div class="flow-step">
+          <div class="flow-number">3</div>
+          <div class="flow-content">
+            <h3 class="flow-title">Automated Output Created</h3>
+            <p class="flow-description">
+              Formatted output appears in GitHub, Slack, your codebase, or infrastructure.
+            </p>
+            <code class="flow-example">GitHub issue created with sources and checklist ✓</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Free Plugin -->
+  <section class="section-featured" id="free-plugin">
+    <div class="container">
+      <div class="featured-badge">
+        <span class="badge-tier-free">COMMUNITY TIER - FREE</span>
+      </div>
+
+      <h2 class="section-title">Featured: Web to GitHub Issue</h2>
+
+      <div class="featured-grid">
+        <div class="featured-content">
+          <h3 class="featured-subtitle">Convert Research into GitHub Issues</h3>
+          <p class="featured-description">
+            The <strong>web-to-github-issue</strong> plugin automatically transforms Claude's web research
+            into beautifully formatted GitHub issues with sources, key findings, and action checklists.
+          </p>
+
+          <div class="featured-benefits">
+            <div class="benefit">
+              <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+              </svg>
+              <span>Automatic source preservation</span>
+            </div>
+            <div class="benefit">
+              <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+              </svg>
+              <span>Smart priority detection (CVEs, security)</span>
+            </div>
+            <div class="benefit">
+              <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+              </svg>
+              <span>Action checklists for next steps</span>
+            </div>
+            <div class="benefit">
+              <svg class="benefit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+              </svg>
+              <span>Related topic extraction</span>
+            </div>
+          </div>
+
+          <div class="install-section">
+            <h4 class="install-title">Installation</h4>
+            <pre class="install-code"><code># Add marketplace
+/plugin marketplace add jeremylongshore/claude-code-plugins
+
+# Install plugin
+/plugin install web-to-github-issue@claude-code-plugins-plus</code></pre>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers/web-to-github-issue" class="btn-primary" target="_blank" rel="noopener noreferrer">
+              View Full Documentation →
+            </a>
+          </div>
+        </div>
+
+        <div class="featured-demo">
+          <div class="demo-card">
+            <div class="demo-header">
+              <span class="demo-label">BEFORE</span>
+              <span class="demo-time">15 minutes</span>
+            </div>
+            <ol class="demo-steps">
+              <li>Ask Claude to research topic</li>
+              <li>Read through results</li>
+              <li>Manually open GitHub</li>
+              <li>Create new issue</li>
+              <li>Copy/paste findings</li>
+              <li>Format markdown</li>
+              <li>Add labels</li>
+              <li>Find and paste URLs</li>
+            </ol>
+          </div>
+
+          <div class="demo-card demo-card-after">
+            <div class="demo-header">
+              <span class="demo-label">AFTER</span>
+              <span class="demo-time demo-time-saved">30 seconds (95% saved)</span>
+            </div>
+            <ol class="demo-steps">
+              <li>"Research PostgreSQL indexing and create ticket"</li>
+            </ol>
+            <div class="demo-badge">✓ Done automatically</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Plugins Roadmap -->
+  <section class="section-premium">
+    <div class="container">
+      <h2 class="section-title">Premium Skill Enhancers</h2>
+      <p class="section-intro">
+        Sponsor to unlock advanced automation plugins for Pro and Enterprise workflows.
+      </p>
+
+      <div class="premium-grid">
+        <!-- Pro Tier Plugin 1 -->
+        <div class="premium-card">
+          <div class="premium-tier">
+            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
+          </div>
+          <h3 class="premium-title">search-to-slack</h3>
+          <p class="premium-description">
+            Automated research digests sent to Slack channels. Schedule daily industry updates,
+            competitor monitoring, or technology trend reports directly to your team.
+          </p>
+          <ul class="premium-features">
+            <li>Scheduled research automation</li>
+            <li>Custom Slack channel routing</li>
+            <li>Digest formatting templates</li>
+            <li>Thread management</li>
+          </ul>
+          <div class="premium-status">
+            <span class="status-label">Status:</span>
+            <span class="status-badge status-roadmap">On Roadmap</span>
+          </div>
+        </div>
+
+        <!-- Pro Tier Plugin 2 -->
+        <div class="premium-card">
+          <div class="premium-tier">
+            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
+          </div>
+          <h3 class="premium-title">file-to-code</h3>
+          <p class="premium-description">
+            Convert requirements documents into production-ready code with tests, types, and documentation.
+            Supports React, Vue, Svelte, and backend frameworks.
+          </p>
+          <ul class="premium-features">
+            <li>Requirements parsing</li>
+            <li>Component generation with tests</li>
+            <li>TypeScript type definitions</li>
+            <li>Documentation generation</li>
+          </ul>
+          <div class="premium-status">
+            <span class="status-label">Status:</span>
+            <span class="status-badge status-roadmap">On Roadmap</span>
+          </div>
+        </div>
+
+        <!-- Pro Tier Plugin 3 -->
+        <div class="premium-card">
+          <div class="premium-tier">
+            <span class="tier-badge tier-pro">PRO TIER - $19/mo</span>
+          </div>
+          <h3 class="premium-title">calendar-to-workflow</h3>
+          <p class="premium-description">
+            Automatically prepare for meetings by creating agendas, gathering relevant documents,
+            and summarizing previous discussions based on calendar events.
+          </p>
+          <ul class="premium-features">
+            <li>Meeting agenda generation</li>
+            <li>Document preparation</li>
+            <li>Context gathering</li>
+            <li>Follow-up automation</li>
+          </ul>
+          <div class="premium-status">
+            <span class="status-label">Status:</span>
+            <span class="status-badge status-roadmap">On Roadmap</span>
+          </div>
+        </div>
+
+        <!-- Enterprise Tier Plugin -->
+        <div class="premium-card premium-card-enterprise">
+          <div class="premium-tier">
+            <span class="tier-badge tier-enterprise">ENTERPRISE TIER - $199/mo</span>
+          </div>
+          <h3 class="premium-title">research-to-deploy</h3>
+          <p class="premium-description">
+            Full-stack automation from research to infrastructure deployment. Evaluates technologies,
+            generates Terraform/CloudFormation, and deploys to cloud providers.
+          </p>
+          <ul class="premium-features">
+            <li>Technology evaluation</li>
+            <li>IaC generation (Terraform/CloudFormation)</li>
+            <li>Multi-cloud deployment</li>
+            <li>Cost estimation</li>
+          </ul>
+          <div class="premium-status">
+            <span class="status-label">Status:</span>
+            <span class="status-badge status-roadmap">On Roadmap</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sponsor-cta">
+        <p class="sponsor-text">
+          Premium plugins are available to GitHub Sponsors. Support development and unlock advanced automation.
+        </p>
+        <a href="https://github.com/sponsors/jeremylongshore" class="btn-sponsor" target="_blank" rel="noopener noreferrer">
+          Become a Sponsor →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Use Cases -->
+  <section class="section-use-cases">
+    <div class="container">
+      <h2 class="section-title">Real-World Use Cases</h2>
+
+      <div class="use-cases-grid">
+        <div class="use-case-card">
+          <div class="use-case-number">1</div>
+          <h3 class="use-case-title">Technical Research → GitHub Issues</h3>
+          <p class="use-case-scenario">
+            <strong>Scenario:</strong> Your team needs to evaluate new technologies before implementation.
+          </p>
+          <div class="use-case-comparison">
+            <div class="comparison-item">
+              <div class="comparison-label">Without Skill Enhancers</div>
+              <ul class="comparison-steps">
+                <li>Manually research best practices</li>
+                <li>Copy findings to notes</li>
+                <li>Open GitHub and format issue</li>
+                <li>Add links and sources</li>
+              </ul>
+              <div class="comparison-time">Time: 15-20 minutes</div>
+            </div>
+            <div class="comparison-item comparison-item-better">
+              <div class="comparison-label">With web-to-github-issue</div>
+              <ul class="comparison-steps">
+                <li>"Research PostgreSQL indexing and create ticket"</li>
+                <li>Plugin creates formatted issue with sources</li>
+              </ul>
+              <div class="comparison-time comparison-time-saved">Time: 30 seconds (95% saved)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-number">2</div>
+          <h3 class="use-case-title">Daily Research → Slack Digests</h3>
+          <p class="use-case-scenario">
+            <strong>Scenario:</strong> Stay updated on industry trends for your team.
+          </p>
+          <div class="use-case-comparison">
+            <div class="comparison-item">
+              <div class="comparison-label">Without Skill Enhancers</div>
+              <ul class="comparison-steps">
+                <li>Research topics daily</li>
+                <li>Summarize findings</li>
+                <li>Format for Slack and post to channel</li>
+              </ul>
+              <div class="comparison-time">Time: 30 minutes/day</div>
+            </div>
+            <div class="comparison-item comparison-item-better">
+              <div class="comparison-label">With search-to-slack (Pro)</div>
+              <ul class="comparison-steps">
+                <li>Schedule: "research AI news daily, post to #engineering"</li>
+                <li>Automated digests every morning</li>
+              </ul>
+              <div class="comparison-time comparison-time-saved">Time: 0 minutes (100% automated)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="use-case-card">
+          <div class="use-case-number">3</div>
+          <h3 class="use-case-title">Requirements → Production Code</h3>
+          <p class="use-case-scenario">
+            <strong>Scenario:</strong> Convert product requirements into working code.
+          </p>
+          <div class="use-case-comparison">
+            <div class="comparison-item">
+              <div class="comparison-label">Without Skill Enhancers</div>
+              <ul class="comparison-steps">
+                <li>Read requirements document</li>
+                <li>Design architecture</li>
+                <li>Write boilerplate code</li>
+                <li>Add error handling and tests</li>
+              </ul>
+              <div class="comparison-time">Time: 2-4 hours</div>
+            </div>
+            <div class="comparison-item comparison-item-better">
+              <div class="comparison-label">With file-to-code (Pro)</div>
+              <ul class="comparison-steps">
+                <li>"Convert requirements.md to production React component"</li>
+                <li>Generates component with tests, types, and docs</li>
+              </ul>
+              <div class="comparison-time comparison-time-saved">Time: 5 minutes (90%+ saved)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="time-saved-summary">
+        <h3 class="summary-title">Average Time Saved Across All Workflows</h3>
+        <div class="summary-stat">93.8%</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Installation Instructions -->
+  <section class="section-install">
+    <div class="container">
+      <h2 class="section-title">Get Started with Skill Enhancers</h2>
+
+      <div class="install-steps">
+        <div class="step-card">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3 class="step-title">Prerequisites</h3>
+            <ul class="step-list">
+              <li>Claude Code CLI installed</li>
+              <li>GitHub Personal Access Token (repo scope)</li>
+              <li>Node.js 18+ (if applicable)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3 class="step-title">Add Marketplace</h3>
+            <pre class="step-code"><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3 class="step-title">Install Free Plugin</h3>
+            <pre class="step-code"><code>/plugin install web-to-github-issue@claude-code-plugins-plus</code></pre>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <h3 class="step-title">Configure</h3>
+            <pre class="step-code"><code>export GITHUB_TOKEN=ghp_your_token_here
+export GITHUB_DEFAULT_REPO=owner/repo</code></pre>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">5</div>
+          <div class="step-content">
+            <h3 class="step-title">Use It!</h3>
+            <pre class="step-code"><code>claude: "research Docker security and create a ticket"</code></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="help-section">
+        <p class="help-text">
+          Need help? Check the
+          <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers/web-to-github-issue" target="_blank" rel="noopener noreferrer">
+            full documentation
+          </a> or
+          <a href="https://github.com/jeremylongshore/claude-code-plugins/issues" target="_blank" rel="noopener noreferrer">
+            open an issue
+          </a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Hero Section */
+  .hero {
+    padding: 6rem 1rem 4rem;
+    background: linear-gradient(180deg, var(--slate-900) 0%, var(--slate-950) 100%);
+    border-bottom: 1px solid var(--slate-800);
+  }
+
+  .hero-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+
+  .badge-new {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge-count {
+    padding: 0.5rem 1rem;
+    background: var(--slate-800);
+    color: var(--slate-400);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+  }
+
+  .hero-description {
+    font-size: 1.25rem;
+    color: var(--slate-400);
+    text-align: center;
+    max-width: 50rem;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+
+  .hero-ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 4rem;
+  }
+
+  .btn-primary {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all var(--transition-base);
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .btn-secondary {
+    padding: 1rem 2rem;
+    background: transparent;
+    color: var(--green-400);
+    border: 2px solid var(--green-500);
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all var(--transition-base);
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .btn-secondary:hover {
+    background: rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-value {
+    font-size: 3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--green-400), var(--blue-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: var(--font-mono);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 0.5rem;
+  }
+
+  /* Section Styles */
+  .section-what,
+  .section-pattern,
+  .section-featured,
+  .section-premium,
+  .section-use-cases,
+  .section-install {
+    padding: 4rem 1rem;
+    border-bottom: 1px solid var(--slate-800);
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: var(--slate-100);
+  }
+
+  .section-intro {
+    font-size: 1.125rem;
+    color: var(--slate-400);
+    text-align: center;
+    max-width: 45rem;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+  }
+
+  /* Concept Grid */
+  .concept-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .concept-card {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all var(--transition-base);
+  }
+
+  .concept-card:hover {
+    border-color: var(--green-500);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-4px);
+  }
+
+  .concept-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .concept-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .concept-description {
+    color: var(--slate-400);
+    line-height: 1.6;
+  }
+
+  /* Pattern Flow */
+  .pattern-flow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3rem;
+  }
+
+  .flow-step {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    flex: 1;
+    min-width: 280px;
+    max-width: 350px;
+  }
+
+  .flow-number {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .flow-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: var(--slate-100);
+  }
+
+  .flow-description {
+    color: var(--slate-400);
+    margin-bottom: 1rem;
+    line-height: 1.6;
+  }
+
+  .flow-example {
+    display: block;
+    padding: 0.75rem;
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--green-400);
+    overflow-x: auto;
+  }
+
+  .flow-arrow {
+    font-size: 2rem;
+    color: var(--slate-600);
+    font-weight: 700;
+  }
+
+  /* Featured Section */
+  .section-featured {
+    background: linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
+  }
+
+  .featured-badge {
+    text-align: center;
+    margin-bottom: 2rem;
+  }
+
+  .badge-tier-free {
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .featured-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 1024px) {
+    .featured-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .featured-subtitle {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .featured-description {
+    font-size: 1.125rem;
+    color: var(--slate-400);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+
+  .featured-benefits {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .benefit {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--slate-300);
+  }
+
+  .benefit-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--green-400);
+    flex-shrink: 0;
+  }
+
+  .install-section {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+
+  .install-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .install-code {
+    background: var(--slate-950);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+  }
+
+  .install-code code {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--green-400);
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .featured-demo {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .demo-card {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+  }
+
+  .demo-card-after {
+    border-color: var(--green-600);
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .demo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--slate-800);
+  }
+
+  .demo-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .demo-time {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--slate-400);
+  }
+
+  .demo-time-saved {
+    color: var(--green-400);
+    font-weight: 600;
+  }
+
+  .demo-steps {
+    list-style: decimal;
+    padding-left: 1.5rem;
+    color: var(--slate-400);
+    line-height: 1.8;
+  }
+
+  .demo-badge {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--green-600);
+    border-radius: 0.5rem;
+    color: var(--green-400);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  /* Premium Grid */
+  .premium-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .premium-card {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+    transition: all var(--transition-base);
+  }
+
+  .premium-card:hover {
+    border-color: var(--green-500);
+    transform: translateY(-4px);
+  }
+
+  .premium-card-enterprise {
+    border-color: var(--blue-500);
+  }
+
+  .premium-card-enterprise:hover {
+    border-color: var(--blue-400);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  .premium-tier {
+    margin-bottom: 1rem;
+  }
+
+  .tier-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .tier-pro {
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+  }
+
+  .tier-enterprise {
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+    color: white;
+  }
+
+  .premium-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+    font-family: var(--font-mono);
+  }
+
+  .premium-description {
+    color: var(--slate-400);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .premium-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .premium-features li {
+    padding: 0.5rem 0;
+    color: var(--slate-400);
+    padding-left: 1.5rem;
+    position: relative;
+  }
+
+  .premium-features li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--green-400);
+    font-weight: 700;
+  }
+
+  .premium-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--slate-800);
+  }
+
+  .status-label {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    font-weight: 600;
+  }
+
+  .status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .status-roadmap {
+    background: rgba(234, 179, 8, 0.1);
+    color: var(--yellow-500);
+    border: 1px solid var(--yellow-500);
+  }
+
+  .sponsor-cta {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+  }
+
+  .sponsor-text {
+    font-size: 1.125rem;
+    color: var(--slate-400);
+    margin-bottom: 1.5rem;
+  }
+
+  .btn-sponsor {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--blue-500), var(--blue-400));
+    color: white;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all var(--transition-base);
+    display: inline-block;
+  }
+
+  .btn-sponsor:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+
+  /* Use Cases Grid */
+  .use-cases-grid {
+    display: grid;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+
+  .use-case-card {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+  }
+
+  .use-case-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+  }
+
+  .use-case-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .use-case-scenario {
+    color: var(--slate-400);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .use-case-comparison {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .use-case-comparison {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .comparison-item {
+    background: var(--slate-950);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .comparison-item-better {
+    border-color: var(--green-600);
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+  }
+
+  .comparison-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .comparison-steps {
+    list-style: disc;
+    padding-left: 1.5rem;
+    color: var(--slate-400);
+    margin-bottom: 1rem;
+    line-height: 1.8;
+  }
+
+  .comparison-time {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--slate-400);
+    padding: 0.5rem 1rem;
+    background: var(--slate-900);
+    border-radius: 0.25rem;
+    display: inline-block;
+  }
+
+  .comparison-time-saved {
+    color: var(--green-400);
+    background: rgba(16, 185, 129, 0.1);
+    border: 1px solid var(--green-600);
+    font-weight: 600;
+  }
+
+  .time-saved-summary {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--slate-900);
+    border: 1px solid var(--green-600);
+    border-radius: 0.75rem;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+  }
+
+  .summary-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .summary-stat {
+    font-size: 4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--green-400), var(--blue-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-family: var(--font-mono);
+  }
+
+  /* Installation Steps */
+  .install-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+
+  .step-card {
+    display: flex;
+    gap: 1.5rem;
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 2rem;
+  }
+
+  .step-number {
+    width: 3rem;
+    height: 3rem;
+    background: linear-gradient(135deg, var(--green-600), var(--green-500));
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--slate-100);
+  }
+
+  .step-list {
+    list-style: disc;
+    padding-left: 1.5rem;
+    color: var(--slate-400);
+    line-height: 1.8;
+  }
+
+  .step-code {
+    background: var(--slate-950);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.5rem;
+    padding: 1rem;
+    overflow-x: auto;
+  }
+
+  .step-code code {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--green-400);
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+
+  .help-section {
+    text-align: center;
+    margin-top: 3rem;
+    padding: 2rem;
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+  }
+
+  .help-text {
+    color: var(--slate-400);
+    font-size: 1rem;
+  }
+
+  .help-text a {
+    color: var(--green-400);
+    text-decoration: underline;
+  }
+
+  .help-text a:hover {
+    color: var(--green-300);
+  }
+
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .hero {
+      padding: 4rem 1rem 3rem;
+    }
+
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-description {
+      font-size: 1rem;
+    }
+
+    .hero-stats {
+      gap: 2rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+    }
+
+    .section-title {
+      font-size: 2rem;
+    }
+
+    .pattern-flow {
+      flex-direction: column;
+    }
+
+    .flow-arrow {
+      transform: rotate(90deg);
+    }
+
+    .step-card {
+      flex-direction: column;
+    }
+  }
+</style>
