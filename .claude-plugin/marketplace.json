@@ -36,6 +36,30 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
+      "name": "plugin-orchestrator",
+      "source": "./plugins/examples/plugin-orchestrator",
+      "description": "Smart task router that automatically picks the best plugin for your task, extracts its skills, and applies them - you don't pick plugins, it picks for you. Part of our initiative to update all plugins with appropriate skill sets.",
+      "version": "1.0.0",
+      "category": "example",
+      "keywords": [
+        "agent-skills",
+        "task-router",
+        "auto-selector",
+        "plugin-picker",
+        "smart-orchestrator",
+        "skill-extraction",
+        "easy-mode",
+        "automatic",
+        "no-thinking-required",
+        "intelligent-dispatch"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]"
+      },
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+    },
+    {
       "name": "web-to-github-issue",
       "source": "./plugins/skill-enhancers/web-to-github-issue",
       "description": "Enhances web_search Skill by automatically creating GitHub issues from research findings. Research topics, extract key insights, and generate formatted tickets in seconds.",
