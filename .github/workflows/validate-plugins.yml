@@ -128,8 +128,8 @@ jobs:
           fi
 
           # Check for private keys (critical - always fail)
-          # Exclude README files (documentation of patterns to look for)
-          PRIVATE_KEYS=$(grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "Pattern:" || true)
+          # Exclude README and SKILL files (documentation of patterns to look for)
+          PRIVATE_KEYS=$(grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "SKILL.md" | grep -v "Pattern:" || true)
           if [ -n "$PRIVATE_KEYS" ]; then
             echo "❌ ERROR: Private key detected!"
             echo "$PRIVATE_KEYS"
