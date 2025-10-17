@@ -55,11 +55,7 @@
         "name": "Claude Code Plugins Team",
         "email": "[email protected]"
       },
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
-      "enhances": [
-        "web_search",
-        "web_fetch"
-      ]
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sugar",
