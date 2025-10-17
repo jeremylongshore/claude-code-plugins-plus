@@ -1,3 +1,76 @@
+## [1.0.44] - 2025-10-17
+
+### 🎯 Major Feature: Plugin Orchestrator
+
+**FEATURED PLUGIN:** One solution to manage all 228 plugins with intelligent task routing.
+
+**The Problem You Had:**
+- 228 plugins installed
+- Which one do you use?
+- Who remembers all the commands?
+- Constantly searching docs
+
+**The Solution:**
+Plugin Orchestrator automatically picks the best plugin for your task, extracts its skills, and applies them. Zero thinking from you.
+
+**How It Works:**
+1. You say what you want in plain English
+2. Plugin Orchestrator analyzes your task
+3. Searches your installed plugins automatically
+4. Picks the best one(s)
+5. Extracts their capabilities on-the-fly
+6. Applies them to your problem
+7. Done - Easy mode: ON 🎯
+
+**Real Examples:**
+```bash
+"Check my code for security issues"
+→ Finds: security-scanner + code-quality
+→ Extracts: OWASP checks + quality scan
+→ Runs combined analysis
+→ Reports findings
+
+"Deploy my app"
+→ Finds: deployment-pipeline
+→ Extracts: Build → Test → Deploy workflow
+→ Runs your deployment
+→ Reports success
+
+"Generate API docs"
+→ Finds: api-documenter
+→ Extracts documentation patterns
+→ Scans your API code
+→ Generates OpenAPI spec + Markdown
+```
+
+**Installation:**
+```bash
+/plugin install plugin-orchestrator@claude-code-plugins-plus
+```
+
+**Technical Details:**
+- **Location**: `plugins/examples/plugin-orchestrator/`
+- **Components**: 1 Agent Skill (skill-adapter)
+- **Category**: Example/Productivity
+- **Featured**: Yes
+- **License**: MIT
+
+**Part of Initiative:**
+This is the first plugin in our initiative to update all plugins with appropriate Agent Skills for their missions. More skill-enhanced plugins coming soon.
+
+**Files Added:**
+- `plugins/examples/plugin-orchestrator/.claude-plugin/plugin.json`
+- `plugins/examples/plugin-orchestrator/skills/skill-adapter/SKILL.md`
+- `plugins/examples/plugin-orchestrator/README.md`
+- `plugins/examples/plugin-orchestrator/LICENSE`
+
+**Marketplace Updates:**
+- Added to `marketplace.extended.json` with featured status
+- Added to `marketplace.json` (CLI catalog)
+- Updated README.md with prominent "What's New" announcement
+
+---
+
 ## [1.0.43] - 2025-10-16
 
 ### 🎉 Highlights

@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.42-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.44-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-228-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
@@ -70,6 +70,36 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 ---
 
 ## 🆕 What's New
+
+### 🎯 Plugin Orchestrator - Never Pick Plugins Again
+**FEATURED:** One solution to manage all 228 plugins with intelligent task routing.
+
+**The Problem:** You installed plugins because they're useful. But which one do you use? Who remembers all 228?
+
+**The Solution:** Plugin Orchestrator automatically:
+- ✅ Analyzes your task in plain English
+- ✅ Searches your installed plugins
+- ✅ Picks the best one(s) automatically
+- ✅ Extracts their skills on-the-fly
+- ✅ Applies them to your problem
+- ✅ Done - zero thinking from you
+
+```bash
+/plugin install plugin-orchestrator@claude-code-plugins-plus
+
+# Then just say what you want:
+"Check my code for security issues"
+"Deploy my app"
+"Generate API docs"
+
+# Plugin Orchestrator picks, extracts skills, runs it. Easy mode: ON 🎯
+```
+
+**Part of our initiative to update all plugins with appropriate Agent Skills for their missions.**
+
+[Read more about Plugin Orchestrator →](plugins/examples/plugin-orchestrator/)
+
+---
 
 ### Skills Powerkit - First Agent Skills Plugin
 **NEW:** The first plugin using Anthropic's Agent Skills feature (launched Oct 16, 2025). Say "create a plugin" or "validate this plugin" and Claude automatically uses these model-invoked capabilities:
