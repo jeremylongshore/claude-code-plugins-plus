@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["transfer-learning", "fine-tuning", "pretrained", "adapters"
+  "keywords": [
+    "transfer-learning",
+    "fine-tuning",
+    "pretrained",
+    "adapters",
+    "agent-skills"
   ]
 }

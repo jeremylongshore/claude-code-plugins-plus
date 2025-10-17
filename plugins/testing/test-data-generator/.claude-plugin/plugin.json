@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "test-data", "fake-data", "fixtures", "factory"]
+  "keywords": [
+    "testing",
+    "test-data",
+    "fake-data",
+    "fixtures",
+    "factory",
+    "agent-skills"
+  ]
 }

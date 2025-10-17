@@ -8,5 +8,14 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "accessibility", "a11y", "wcag", "aria", "screen-reader", "compliance"]
+  "keywords": [
+    "testing",
+    "accessibility",
+    "a11y",
+    "wcag",
+    "aria",
+    "screen-reader",
+    "compliance",
+    "agent-skills"
+  ]
 }

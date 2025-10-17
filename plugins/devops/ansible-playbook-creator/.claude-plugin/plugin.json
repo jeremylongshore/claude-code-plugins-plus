@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["ansible", "automation", "configuration", "playbooks", "devops"]
+  "keywords": [
+    "ansible",
+    "automation",
+    "configuration",
+    "playbooks",
+    "devops",
+    "agent-skills"
+  ]
 }

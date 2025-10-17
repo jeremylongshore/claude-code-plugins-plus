@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["response-time", "latency", "performance", "monitoring"]
+  "keywords": [
+    "response-time",
+    "latency",
+    "performance",
+    "monitoring",
+    "agent-skills"
+  ]
 }

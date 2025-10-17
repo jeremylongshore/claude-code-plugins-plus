@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "chaos-engineering", "resilience", "failure-injection", "fault-tolerance", "reliability"]
+  "keywords": [
+    "testing",
+    "chaos-engineering",
+    "resilience",
+    "failure-injection",
+    "fault-tolerance",
+    "reliability",
+    "agent-skills"
+  ]
 }

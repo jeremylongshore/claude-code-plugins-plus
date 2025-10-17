@@ -22,7 +22,8 @@
     "git",
     "cicd",
     "package",
-    "collection"
+    "collection",
+    "agent-skills"
   ],
   "commands": "./plugins/*/commands",
   "agents": "./plugins/*/agents",

@@ -15,12 +15,20 @@
     "automation",
     "research",
     "issue-tracking",
-    "skill-enhancer"
+    "skill-enhancer",
+    "agent-skills"
   ],
   "category": "skill-enhancers",
-  "enhances": ["web_search", "web_fetch"],
+  "enhances": [
+    "web_search",
+    "web_fetch"
+  ],
   "requires": {
-    "authentication": ["github"],
-    "environment": ["GITHUB_TOKEN"]
+    "authentication": [
+      "github"
+    ],
+    "environment": [
+      "GITHUB_TOKEN"
+    ]
   }
 }

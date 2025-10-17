@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["deployment", "serving", "production", "api"
+  "keywords": [
+    "deployment",
+    "serving",
+    "production",
+    "api",
+    "agent-skills"
   ]
 }

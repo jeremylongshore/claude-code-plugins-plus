@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["ci-cd", "github-actions", "gitlab-ci", "jenkins", "devops", "automation"]
+  "keywords": [
+    "ci-cd",
+    "github-actions",
+    "gitlab-ci",
+    "jenkins",
+    "devops",
+    "automation",
+    "agent-skills"
+  ]
 }

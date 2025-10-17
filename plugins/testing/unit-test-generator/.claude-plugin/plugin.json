@@ -8,5 +8,14 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "unit-tests", "test-generation", "jest", "pytest", "mocha", "junit"]
+  "keywords": [
+    "testing",
+    "unit-tests",
+    "test-generation",
+    "jest",
+    "pytest",
+    "mocha",
+    "junit",
+    "agent-skills"
+  ]
 }

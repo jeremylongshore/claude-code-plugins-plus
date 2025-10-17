@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["network-policy", "security", "kubernetes", "firewall", "devops"]
+  "keywords": [
+    "network-policy",
+    "security",
+    "kubernetes",
+    "firewall",
+    "devops",
+    "agent-skills"
+  ]
 }

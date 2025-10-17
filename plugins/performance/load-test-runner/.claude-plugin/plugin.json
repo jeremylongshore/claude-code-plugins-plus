@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["load-testing", "performance", "stress-test", "k6"]
+  "keywords": [
+    "load-testing",
+    "performance",
+    "stress-test",
+    "k6",
+    "agent-skills"
+  ]
 }

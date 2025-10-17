@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["performance-budget", "validation", "ci-cd", "testing"]
+  "keywords": [
+    "performance-budget",
+    "validation",
+    "ci-cd",
+    "testing",
+    "agent-skills"
+  ]
 }

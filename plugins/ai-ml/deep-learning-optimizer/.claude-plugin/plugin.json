@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["optimization", "adam", "sgd", "learning-rate"
+  "keywords": [
+    "optimization",
+    "adam",
+    "sgd",
+    "learning-rate",
+    "agent-skills"
   ]
 }

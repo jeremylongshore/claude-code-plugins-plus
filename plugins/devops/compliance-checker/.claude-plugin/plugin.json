@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["compliance", "security", "audit", "soc2", "hipaa", "devops"]
+  "keywords": [
+    "compliance",
+    "security",
+    "audit",
+    "soc2",
+    "hipaa",
+    "devops",
+    "agent-skills"
+  ]
 }

@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["monitoring", "prometheus", "grafana", "observability", "devops"]
+  "keywords": [
+    "monitoring",
+    "prometheus",
+    "grafana",
+    "observability",
+    "devops",
+    "agent-skills"
+  ]
 }

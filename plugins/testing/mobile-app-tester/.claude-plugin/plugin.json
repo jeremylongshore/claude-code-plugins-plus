@@ -8,5 +8,15 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "mobile", "appium", "detox", "xcuitest", "espresso", "ios", "android"]
+  "keywords": [
+    "testing",
+    "mobile",
+    "appium",
+    "detox",
+    "xcuitest",
+    "espresso",
+    "ios",
+    "android",
+    "agent-skills"
+  ]
 }

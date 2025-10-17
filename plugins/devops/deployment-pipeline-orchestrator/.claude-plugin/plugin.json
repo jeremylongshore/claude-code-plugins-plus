@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["pipeline", "orchestration", "deployment", "cicd", "devops"]
+  "keywords": [
+    "pipeline",
+    "orchestration",
+    "deployment",
+    "cicd",
+    "devops",
+    "agent-skills"
+  ]
 }

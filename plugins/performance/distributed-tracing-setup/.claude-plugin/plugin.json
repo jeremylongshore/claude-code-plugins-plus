@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["tracing", "observability", "microservices", "opentelemetry"]
+  "keywords": [
+    "tracing",
+    "observability",
+    "microservices",
+    "opentelemetry",
+    "agent-skills"
+  ]
 }

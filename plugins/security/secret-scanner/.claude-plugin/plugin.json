@@ -8,7 +8,18 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["security", "secrets", "api-keys", "credentials", "passwords"],
+  "keywords": [
+    "security",
+    "secrets",
+    "api-keys",
+    "credentials",
+    "passwords",
+    "agent-skills"
+  ],
   "category": "security",
-  "capabilities": ["secret-detection", "credential-scanning", "entropy-analysis"]
+  "capabilities": [
+    "secret-detection",
+    "credential-scanning",
+    "entropy-analysis"
+  ]
 }

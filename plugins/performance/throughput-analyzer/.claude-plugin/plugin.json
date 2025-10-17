@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["throughput", "performance", "capacity", "optimization"]
+  "keywords": [
+    "throughput",
+    "performance",
+    "capacity",
+    "optimization",
+    "agent-skills"
+  ]
 }

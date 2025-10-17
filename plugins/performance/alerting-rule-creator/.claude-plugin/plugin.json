@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["alerting", "monitoring", "sre", "observability"]
+  "keywords": [
+    "alerting",
+    "monitoring",
+    "sre",
+    "observability",
+    "agent-skills"
+  ]
 }

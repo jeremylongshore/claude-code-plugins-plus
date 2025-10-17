@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "smoke-tests", "deployment", "sanity-check", "critical-path"]
+  "keywords": [
+    "testing",
+    "smoke-tests",
+    "deployment",
+    "sanity-check",
+    "critical-path",
+    "agent-skills"
+  ]
 }

@@ -8,6 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["git", "commits", "conventional-commits", "automation", "devops"],
+  "keywords": [
+    "git",
+    "commits",
+    "conventional-commits",
+    "automation",
+    "devops",
+    "agent-skills"
+  ],
   "category": "devops"
 }

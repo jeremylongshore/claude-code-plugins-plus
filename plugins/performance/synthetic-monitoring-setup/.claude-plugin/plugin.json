@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["synthetic-monitoring", "uptime", "performance", "testing"]
+  "keywords": [
+    "synthetic-monitoring",
+    "uptime",
+    "performance",
+    "testing",
+    "agent-skills"
+  ]
 }

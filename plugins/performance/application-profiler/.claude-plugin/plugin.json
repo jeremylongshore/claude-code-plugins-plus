@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["performance", "profiling", "monitoring", "optimization"]
+  "keywords": [
+    "performance",
+    "profiling",
+    "monitoring",
+    "optimization",
+    "agent-skills"
+  ]
 }

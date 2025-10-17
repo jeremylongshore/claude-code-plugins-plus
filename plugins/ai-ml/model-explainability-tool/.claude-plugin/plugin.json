@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["explainability", "shap", "lime", "interpretability"
+  "keywords": [
+    "explainability",
+    "shap",
+    "lime",
+    "interpretability",
+    "agent-skills"
   ]
 }

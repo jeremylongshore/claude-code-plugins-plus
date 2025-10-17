@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["classification", "supervised", "predictor", "labels"
+  "keywords": [
+    "classification",
+    "supervised",
+    "predictor",
+    "labels",
+    "agent-skills"
   ]
 }

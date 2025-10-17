@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["logging", "elk", "loki", "splunk", "observability", "devops"]
+  "keywords": [
+    "logging",
+    "elk",
+    "loki",
+    "splunk",
+    "observability",
+    "devops",
+    "agent-skills"
+  ]
 }

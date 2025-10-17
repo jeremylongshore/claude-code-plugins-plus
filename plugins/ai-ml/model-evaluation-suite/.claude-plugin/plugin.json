@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["evaluation", "metrics", "testing", "validation"
+  "keywords": [
+    "evaluation",
+    "metrics",
+    "testing",
+    "validation",
+    "agent-skills"
   ]
 }

@@ -8,5 +8,14 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "visual-regression", "ui-testing", "percy", "chromatic", "backstop", "screenshot-testing"]
+  "keywords": [
+    "testing",
+    "visual-regression",
+    "ui-testing",
+    "percy",
+    "chromatic",
+    "backstop",
+    "screenshot-testing",
+    "agent-skills"
+  ]
 }

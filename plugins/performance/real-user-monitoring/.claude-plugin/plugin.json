@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["rum", "monitoring", "performance", "user-experience"]
+  "keywords": [
+    "rum",
+    "monitoring",
+    "performance",
+    "user-experience",
+    "agent-skills"
+  ]
 }

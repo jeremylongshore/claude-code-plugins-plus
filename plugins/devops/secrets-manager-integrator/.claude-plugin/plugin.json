@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["secrets", "vault", "aws", "security", "credentials", "devops"]
+  "keywords": [
+    "secrets",
+    "vault",
+    "aws",
+    "security",
+    "credentials",
+    "devops",
+    "agent-skills"
+  ]
 }

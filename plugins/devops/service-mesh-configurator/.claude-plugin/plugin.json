@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["service-mesh", "istio", "linkerd", "microservices", "devops"]
+  "keywords": [
+    "service-mesh",
+    "istio",
+    "linkerd",
+    "microservices",
+    "devops",
+    "agent-skills"
+  ]
 }

@@ -21,7 +21,8 @@
     "google",
     "claude",
     "ai",
-    "coordination"
+    "coordination",
+    "agent-skills"
   ],
   "dependencies": {
     "@ai-sdk-tools/agents": "^0.1.0-beta.1",

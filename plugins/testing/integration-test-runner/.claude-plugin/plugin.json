@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "integration-tests", "test-runner", "e2e", "api-testing"]
+  "keywords": [
+    "testing",
+    "integration-tests",
+    "test-runner",
+    "e2e",
+    "api-testing",
+    "agent-skills"
+  ]
 }

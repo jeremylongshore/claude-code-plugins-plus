@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "mutation-testing", "test-quality", "stryker", "pitest"]
+  "keywords": [
+    "testing",
+    "mutation-testing",
+    "test-quality",
+    "stryker",
+    "pitest",
+    "agent-skills"
+  ]
 }

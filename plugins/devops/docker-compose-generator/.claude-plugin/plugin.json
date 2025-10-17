@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["docker", "docker-compose", "containers", "orchestration", "devops"]
+  "keywords": [
+    "docker",
+    "docker-compose",
+    "containers",
+    "orchestration",
+    "devops",
+    "agent-skills"
+  ]
 }

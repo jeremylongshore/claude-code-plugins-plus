@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["anomaly", "outliers", "detection", "isolation"
+  "keywords": [
+    "anomaly",
+    "outliers",
+    "detection",
+    "isolation",
+    "agent-skills"
   ]
 }

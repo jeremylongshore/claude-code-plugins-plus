@@ -6,6 +6,12 @@
     "name": "Jeremy Longshore"
   },
   "license": "MIT",
-  "keywords": ["security", "agent", "code-review", "vulnerability"],
+  "keywords": [
+    "security",
+    "agent",
+    "code-review",
+    "vulnerability",
+    "agent-skills"
+  ],
   "agents": "./agents/"
 }

@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["features", "engineering", "selection", "transformation"
+  "keywords": [
+    "features",
+    "engineering",
+    "selection",
+    "transformation",
+    "agent-skills"
   ]
 }

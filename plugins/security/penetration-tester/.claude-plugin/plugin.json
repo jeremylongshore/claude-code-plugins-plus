@@ -8,7 +8,18 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["security", "penetration-testing", "pentesting", "owasp", "exploitation"],
+  "keywords": [
+    "security",
+    "penetration-testing",
+    "pentesting",
+    "owasp",
+    "exploitation",
+    "agent-skills"
+  ],
   "category": "security",
-  "capabilities": ["penetration-testing", "vulnerability-exploitation", "security-assessment"]
+  "capabilities": [
+    "penetration-testing",
+    "vulnerability-exploitation",
+    "security-assessment"
+  ]
 }

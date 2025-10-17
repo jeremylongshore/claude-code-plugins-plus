@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["security", "compliance", "auditing"],
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ],
   "category": "security"
 }

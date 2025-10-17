@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["recommendations", "collaborative", "content-based", "ranking"
+  "keywords": [
+    "recommendations",
+    "collaborative",
+    "content-based",
+    "ranking",
+    "agent-skills"
   ]
 }

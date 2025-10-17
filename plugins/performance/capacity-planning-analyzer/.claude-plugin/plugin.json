@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["capacity-planning", "scaling", "forecasting", "infrastructure"]
+  "keywords": [
+    "capacity-planning",
+    "scaling",
+    "forecasting",
+    "infrastructure",
+    "agent-skills"
+  ]
 }

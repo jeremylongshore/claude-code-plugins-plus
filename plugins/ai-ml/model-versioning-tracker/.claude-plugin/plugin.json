@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["versioning", "mlflow", "tracking", "registry"
+  "keywords": [
+    "versioning",
+    "mlflow",
+    "tracking",
+    "registry",
+    "agent-skills"
   ]
 }

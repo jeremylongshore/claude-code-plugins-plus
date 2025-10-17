@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["sentiment", "opinion", "emotion", "polarity"
+  "keywords": [
+    "sentiment",
+    "opinion",
+    "emotion",
+    "polarity",
+    "agent-skills"
   ]
 }

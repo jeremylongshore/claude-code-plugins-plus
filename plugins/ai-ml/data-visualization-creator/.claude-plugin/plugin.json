@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["visualization", "plots", "charts", "graphs"
+  "keywords": [
+    "visualization",
+    "plots",
+    "charts",
+    "graphs",
+    "agent-skills"
   ]
 }

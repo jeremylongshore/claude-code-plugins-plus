@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["database", "migration", "schema", "version-control", "backend"]
+  "keywords": [
+    "database",
+    "migration",
+    "schema",
+    "version-control",
+    "backend",
+    "agent-skills"
+  ]
 }

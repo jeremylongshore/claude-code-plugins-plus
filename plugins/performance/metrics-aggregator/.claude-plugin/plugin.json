@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["metrics", "aggregation", "prometheus", "monitoring"]
+  "keywords": [
+    "metrics",
+    "aggregation",
+    "prometheus",
+    "monitoring",
+    "agent-skills"
+  ]
 }

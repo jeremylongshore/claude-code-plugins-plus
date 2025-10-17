@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["hyperparameters", "optimization", "tuning", "search"
+  "keywords": [
+    "hyperparameters",
+    "optimization",
+    "tuning",
+    "search",
+    "agent-skills"
   ]
 }

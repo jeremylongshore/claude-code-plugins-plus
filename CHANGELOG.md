@@ -1,3 +1,168 @@
+## [1.1.0] - 2025-10-17
+
+### 🎉 Major Feature: Agent Skills Now Available on 164 Plugins!
+
+**GAME CHANGING UPDATE:** We've equipped 164 plugins with intelligent Agent Skills that automatically activate based on your context and needs!
+
+### 🤖 What Are Agent Skills?
+
+Agent Skills are Claude's newest superpower - SKILL.md files that automatically activate when their expertise is needed. No commands to remember, no menus to navigate. Just describe your task and the right plugins activate automatically.
+
+**How It Works:**
+1. You mention something in your conversation: "I need to backup my database"
+2. The relevant Agent Skill (like Database Backup Automator) instantly recognizes it
+3. The plugin activates and assists you automatically
+4. You get expert help without even asking
+
+### 🚀 What's New
+
+**164 Plugins Now Have Agent Skills** across all categories:
+- ✅ **30 DevOps plugins** - Infrastructure, CI/CD, monitoring, deployment
+- ✅ **27 AI/ML plugins** - Model training, data pipelines, ML ops
+- ✅ **25 Database plugins** - Schema design, migrations, optimization
+- ✅ **25 Security plugins** - Compliance, vulnerability scanning, audits
+- ✅ **25 Performance plugins** - Monitoring, profiling, optimization
+- ✅ **22 Testing plugins** - E2E, integration, load testing, coverage
+- ✅ **Plus**: API development, crypto, fullstack, and utility plugins
+
+**1 New Plugin Added:**
+- **[fairdb-operations-kit](plugins/devops/fairdb-operations-kit/)** - Complete PostgreSQL-as-a-Service operations with VPS provisioning, backup automation, customer onboarding, and incident response
+
+### 🎯 Key Improvements
+
+**Proactive Assistance:**
+- Plugins now activate automatically based on conversation context
+- No need to remember command names or plugin names
+- Expert help appears exactly when you need it
+
+**Intelligent Context Awareness:**
+- Agent Skills understand trigger keywords and patterns
+- They recognize when their expertise is relevant
+- Multiple skills can collaborate on complex tasks
+
+**Enhanced Documentation:**
+- Every Agent Skill includes clear activation triggers
+- Examples of when and how skills activate
+- Integration with existing plugin commands and agents
+
+### 📊 Metrics
+
+- **Total Plugins:** 236 (was 235)
+- **Plugins with Agent Skills:** 164 (was 7)
+- **New Skills Generated:** 157
+- **Categories Covered:** All 10+ categories
+- **Processing Method:** Vertex AI Gemini 2.0 Flash (safe batch generation)
+
+### 🛠️ Technical Details
+
+**Generation Process:**
+- Used Vertex AI Gemini 2.0 Flash Experimental
+- 30-second rate limiting to avoid quota issues
+- 8-point validation for each generated skill
+- Full audit trail in SQLite database
+- Comprehensive safety checks
+
+**Skill Format:**
+```yaml
+---
+name: Skill Name
+description: What it does AND when to use it
+---
+
+# Skill Content
+Purpose, activation triggers, capabilities, workflows
+```
+
+### 💡 Examples
+
+**Before (v1.0.45):**
+```
+User: "I need to set up backups for my database"
+You: Need to find the right plugin, read docs, run commands
+```
+
+**After (v1.1.0):**
+```
+User: "I need to set up backups for my database"
+Agent Skill: Database Backup Automator activates automatically!
+- Assesses your database type
+- Recommends backup strategy
+- Configures automated backups
+- Sets up monitoring
+```
+
+### 🎁 Featured Plugins with Agent Skills
+
+**DevOps Excellence:**
+- backup-strategy-implementor
+- disaster-recovery-planner
+- terraform-module-builder
+- kubernetes-deployment-creator
+
+**Database Mastery:**
+- database-backup-automator
+- database-migration-manager
+- query-performance-analyzer
+- database-health-monitor
+
+**Security Automation:**
+- vulnerability-scanner
+- compliance-checker
+- secret-scanner
+- security-audit-reporter
+
+**Testing Powerhouse:**
+- e2e-test-framework
+- performance-test-suite
+- chaos-engineering-toolkit
+- test-coverage-analyzer
+
+### 🔥 Try It Now!
+
+```bash
+# Agent Skills work automatically - just describe your needs:
+"I need to optimize my database queries"
+"Help me set up CI/CD pipeline"
+"Scan my code for security vulnerabilities"
+"Create end-to-end tests for my API"
+
+# The right plugins activate and assist you!
+```
+
+### 📈 Impact
+
+**For Users:**
+- Zero learning curve - skills activate when needed
+- Faster workflows - no command memorization
+- Better results - expert guidance automatically
+
+**For Plugin Developers:**
+- Enhanced discoverability - skills advertise capabilities
+- Automatic activation - users find your plugins naturally
+- Better integration - skills work together seamlessly
+
+### 🙏 Acknowledgments
+
+Special thanks to:
+- **Anthropic** for Agent Skills feature in Claude Code
+- **Google Cloud** for Vertex AI Gemini capabilities
+- **Community** for plugin contributions and feedback
+
+### 📚 Learn More
+
+- [Agent Skills Documentation](docs/agent-skills/)
+- [Plugin Catalog](https://claudecodeplugins.io)
+- [Getting Started Guide](docs/getting-started/)
+- [Skills Generation Audit](backups/skills-audit/skills_generation.db)
+
+### 🔗 Resources
+
+- [Full Plugin List with Skills](https://claudecodeplugins.io/skills)
+- [Agent Skills Guide](docs/guides/agent-skills.md)
+- [API Reference](docs/api/)
+
+---
+
 ## [1.0.45] - 2025-10-17
 
 ### 🎯 Plugin Renamed: PI Pathfinder

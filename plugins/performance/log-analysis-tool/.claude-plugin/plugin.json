@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["logs", "analysis", "performance", "debugging"]
+  "keywords": [
+    "logs",
+    "analysis",
+    "performance",
+    "debugging",
+    "agent-skills"
+  ]
 }

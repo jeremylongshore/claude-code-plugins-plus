@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["replication", "high-availability", "failover", "database", "devops"]
+  "keywords": [
+    "replication",
+    "high-availability",
+    "failover",
+    "database",
+    "devops",
+    "agent-skills"
+  ]
 }

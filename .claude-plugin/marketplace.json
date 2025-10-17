@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.0.45",
+    "version": "1.1.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -123,6 +123,34 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       }
+    },
+    {
+      "name": "fairdb-operations-kit",
+      "source": "./plugins/devops/fairdb-operations-kit",
+      "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "fairdb",
+        "postgresql",
+        "database",
+        "saas",
+        "operations",
+        "devops",
+        "backup",
+        "monitoring",
+        "vps",
+        "contabo",
+        "wasabi",
+        "pgbackrest",
+        "automation",
+        "incident-response"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "devops-automation-pack",

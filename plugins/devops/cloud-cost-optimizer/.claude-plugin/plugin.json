@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["cost", "optimization", "finops", "cloud", "aws", "devops"]
+  "keywords": [
+    "cost",
+    "optimization",
+    "finops",
+    "cloud",
+    "aws",
+    "devops",
+    "agent-skills"
+  ]
 }

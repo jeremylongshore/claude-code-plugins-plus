@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["regression", "performance", "ci-cd", "testing"]
+  "keywords": [
+    "regression",
+    "performance",
+    "ci-cd",
+    "testing",
+    "agent-skills"
+  ]
 }

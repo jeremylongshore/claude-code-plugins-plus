@@ -2,8 +2,19 @@
   "name": "test-orchestrator",
   "version": "1.0.0",
   "description": "Orchestrate complex test workflows with dependencies, parallel execution, and smart test selection",
-  "author": {"name": "Claude Code Plugin Hub", "email": "[email protected]"},
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "orchestration", "workflow", "parallel", "test-selection", "ci-cd"]
+  "keywords": [
+    "testing",
+    "orchestration",
+    "workflow",
+    "parallel",
+    "test-selection",
+    "ci-cd",
+    "agent-skills"
+  ]
 }

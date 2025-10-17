@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["resources", "monitoring", "optimization", "metrics"]
+  "keywords": [
+    "resources",
+    "monitoring",
+    "optimization",
+    "metrics",
+    "agent-skills"
+  ]
 }

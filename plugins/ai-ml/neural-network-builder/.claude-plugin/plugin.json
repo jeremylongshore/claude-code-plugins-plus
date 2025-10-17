@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["neural-networks", "deep-learning", "architecture", "pytorch"
+  "keywords": [
+    "neural-networks",
+    "deep-learning",
+    "architecture",
+    "pytorch",
+    "agent-skills"
   ]
 }

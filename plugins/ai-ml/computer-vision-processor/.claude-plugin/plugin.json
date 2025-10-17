@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["cv", "vision", "images", "detection"
+  "keywords": [
+    "cv",
+    "vision",
+    "images",
+    "detection",
+    "agent-skills"
   ]
 }

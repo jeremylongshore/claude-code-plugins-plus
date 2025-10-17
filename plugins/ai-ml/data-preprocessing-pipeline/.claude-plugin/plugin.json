@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["preprocessing", "cleaning", "etl", "pipeline"
+  "keywords": [
+    "preprocessing",
+    "cleaning",
+    "etl",
+    "pipeline",
+    "agent-skills"
   ]
 }

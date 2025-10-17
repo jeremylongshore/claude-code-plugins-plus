@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["time-series", "forecasting", "arima", "prophet"
+  "keywords": [
+    "time-series",
+    "forecasting",
+    "arima",
+    "prophet",
+    "agent-skills"
   ]
 }

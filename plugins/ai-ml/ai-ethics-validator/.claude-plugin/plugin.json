@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["ethics", "fairness", "bias", "responsible-ai"
+  "keywords": [
+    "ethics",
+    "fairness",
+    "bias",
+    "responsible-ai",
+    "agent-skills"
   ]
 }

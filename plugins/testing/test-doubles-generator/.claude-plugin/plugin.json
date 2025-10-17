@@ -8,5 +8,15 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "mocks", "stubs", "spies", "fakes", "test-doubles", "jest", "sinon"]
+  "keywords": [
+    "testing",
+    "mocks",
+    "stubs",
+    "spies",
+    "fakes",
+    "test-doubles",
+    "jest",
+    "sinon",
+    "agent-skills"
+  ]
 }

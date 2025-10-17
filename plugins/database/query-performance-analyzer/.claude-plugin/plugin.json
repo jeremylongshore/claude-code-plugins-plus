@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["performance", "query", "optimization", "explain", "database"]
+  "keywords": [
+    "performance",
+    "query",
+    "optimization",
+    "explain",
+    "database",
+    "agent-skills"
+  ]
 }

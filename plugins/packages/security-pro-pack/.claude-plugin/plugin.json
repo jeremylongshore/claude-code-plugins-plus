@@ -27,7 +27,8 @@
     "API-security",
     "threat-modeling",
     "STRIDE",
-    "devsecops"
+    "devsecops",
+    "agent-skills"
   ],
   "categories": [
     "security",

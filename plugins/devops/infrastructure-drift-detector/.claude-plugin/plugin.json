@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["drift", "terraform", "infrastructure", "monitoring", "devops"]
+  "keywords": [
+    "drift",
+    "terraform",
+    "infrastructure",
+    "monitoring",
+    "devops",
+    "agent-skills"
+  ]
 }

@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["nlp", "text", "analysis", "tokenization"
+  "keywords": [
+    "nlp",
+    "text",
+    "analysis",
+    "tokenization",
+    "agent-skills"
   ]
 }

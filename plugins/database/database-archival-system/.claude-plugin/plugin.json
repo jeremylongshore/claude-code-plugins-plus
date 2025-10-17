@@ -8,5 +8,10 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["database", "backend", "archival"]
+  "keywords": [
+    "database",
+    "backend",
+    "archival",
+    "agent-skills"
+  ]
 }

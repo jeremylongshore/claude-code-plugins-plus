@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["gitops", "argocd", "flux", "cd", "kubernetes", "devops"]
+  "keywords": [
+    "gitops",
+    "argocd",
+    "flux",
+    "cd",
+    "kubernetes",
+    "devops",
+    "agent-skills"
+  ]
 }

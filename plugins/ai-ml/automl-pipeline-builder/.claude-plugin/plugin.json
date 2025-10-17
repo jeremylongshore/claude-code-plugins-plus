@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["automl", "automated", "pipeline", "h2o"
+  "keywords": [
+    "automl",
+    "automated",
+    "pipeline",
+    "h2o",
+    "agent-skills"
   ]
 }

@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "api", "rest", "graphql", "automation", "endpoints"]
+  "keywords": [
+    "testing",
+    "api",
+    "rest",
+    "graphql",
+    "automation",
+    "endpoints",
+    "agent-skills"
+  ]
 }

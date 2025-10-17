@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["registry", "containers", "docker", "ecr", "gcr", "devops"]
+  "keywords": [
+    "registry",
+    "containers",
+    "docker",
+    "ecr",
+    "gcr",
+    "devops",
+    "agent-skills"
+  ]
 }

@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["experiments", "mlflow", "wandb", "tracking"
+  "keywords": [
+    "experiments",
+    "mlflow",
+    "wandb",
+    "tracking",
+    "agent-skills"
   ]
 }

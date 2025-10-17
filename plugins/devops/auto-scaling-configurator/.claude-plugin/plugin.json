@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["autoscaling", "scaling", "hpa", "kubernetes", "devops"]
+  "keywords": [
+    "autoscaling",
+    "scaling",
+    "hpa",
+    "kubernetes",
+    "devops",
+    "agent-skills"
+  ]
 }

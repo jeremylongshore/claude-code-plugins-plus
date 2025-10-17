@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["helm", "kubernetes", "packaging", "charts", "devops"]
+  "keywords": [
+    "helm",
+    "kubernetes",
+    "packaging",
+    "charts",
+    "devops",
+    "agent-skills"
+  ]
 }

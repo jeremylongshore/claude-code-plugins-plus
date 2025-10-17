@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "coverage", "code-coverage", "metrics", "analysis"]
+  "keywords": [
+    "testing",
+    "coverage",
+    "code-coverage",
+    "metrics",
+    "analysis",
+    "agent-skills"
+  ]
 }

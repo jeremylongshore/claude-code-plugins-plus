@@ -25,7 +25,8 @@
     "embeddings",
     "semantic-search",
     "prompt-injection",
-    "cost-optimization"
+    "cost-optimization",
+    "agent-skills"
   ],
   "categories": [
     "ai",

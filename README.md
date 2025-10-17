@@ -1,11 +1,13 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.45-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-229-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.1.0-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-164%20plugins-orange?logo=sparkles)](CHANGELOG.md#110---2025-10-17)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**229 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**236 production-ready Claude Code plugins for automation, development, and AI workflows.**
+🎉 **NEW in v1.1.0:** 164 plugins now have **Agent Skills** that activate automatically!
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -13,6 +15,30 @@
 ```
 
 💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
+
+---
+
+## 🆕 What's New in v1.1.0
+
+### 🤖 Agent Skills Now Available!
+
+**164 plugins equipped with intelligent Agent Skills** that automatically activate based on your conversation context. No commands to remember - just describe what you need and the right plugins activate automatically!
+
+**How It Works:**
+- You mention: "I need to backup my database"
+- Agent Skill activates: Database Backup Automator
+- You get expert help instantly - zero commands needed!
+
+**Categories with Agent Skills:**
+- ✅ 30 DevOps plugins - Infrastructure, CI/CD, deployments
+- ✅ 27 AI/ML plugins - Model training, data pipelines
+- ✅ 25 Database plugins - Migrations, optimization, backups
+- ✅ 25 Security plugins - Compliance, vulnerability scanning
+- ✅ 25 Performance plugins - Monitoring, profiling
+- ✅ 22 Testing plugins - E2E, integration, load testing
+- ✅ Plus API development, crypto, and utility plugins
+
+[**Read full changelog →**](CHANGELOG.md#110---2025-10-17)
 
 ---
 
@@ -98,6 +124,95 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 **Part of our initiative to update all plugins with appropriate Agent Skills for their missions.**
 
 [Read more about PI Pathfinder →](plugins/examples/pi-pathfinder/)
+
+---
+
+## 🎓 Understanding Agent Skills
+
+**What are Agent Skills?** They're instruction manuals that teach Claude Code **when** and **how** to use your installed plugins automatically.
+
+### How It Works: The 4-Step Flow
+
+```
+1. DISCOVERY (Marketplace)
+   └─ You browse claudecodeplugins.io
+   └─ Find "ansible-playbook-creator"
+   └─ Install: /plugin install ansible-playbook-creator@claude-code-plugins-plus
+
+2. INSTALLATION (Files Copied)
+   └─ Plugin files copied to your machine
+   └─ Including skills/skill-adapter/SKILL.md ← The instruction manual!
+
+3. STARTUP (Claude Learns)
+   └─ Claude Code reads SKILL.md frontmatter from ALL installed plugins
+   └─ Loads trigger phrases: "ansible playbook", "automate deployment"
+   └─ Now Claude knows this plugin exists and when to use it
+
+4. USAGE (Automatic Activation)
+   └─ You: "Create an Ansible playbook for Apache"
+   └─ Claude: Sees "ansible playbook" trigger → reads full SKILL.md
+   └─ Claude: Activates plugin with correct workflow automatically!
+```
+
+### Real Example: Before vs After
+
+**WITHOUT Agent Skills:**
+```
+You: "Create ansible playbook"
+Claude: "I have ansible-playbook-creator installed somewhere...
+         Let me manually search and figure out how to use it..."
+Result: ❌ Plugin sits unused, you have to name it explicitly
+```
+
+**WITH Agent Skills:**
+```
+You: "Create ansible playbook"
+Claude: *Recognizes trigger phrase instantly*
+        *Reads SKILL.md for workflow*
+        "I'll use ansible-playbook-creator for this!"
+        *Automatically applies best practices*
+Result: ✅ Instant activation, correct usage, zero thinking
+```
+
+### What's in a SKILL.md?
+
+Each plugin gets ONE skill file teaching Claude:
+
+```yaml
+---
+name: Creating Ansible Playbooks
+description: |
+  Automates Ansible playbook creation. Use when you need to automate
+  server configurations or deployments. Trigger with "ansible playbook"
+  or "create playbook for [task]".
+---
+
+## How It Works
+1. Receives user request with infrastructure details
+2. Generates production-ready Ansible playbook
+3. Includes best practices and security configurations
+
+## When to Use This Skill
+- Automate server configuration tasks
+- Deploy applications consistently
+- Create repeatable infrastructure setups
+
+## Examples
+User: "Create ansible playbook to install Apache on Ubuntu"
+Skill activates → Generates playbook → Ready to deploy
+```
+
+### Key Points
+
+- ✅ **Not creating new plugins** - Adding instruction manuals to existing ones
+- ✅ **Automatic activation** - Claude recognizes trigger phrases
+- ✅ **Best practices built-in** - Each skill teaches optimal workflows
+- ✅ **One skill per plugin** - Comprehensive instruction manual
+- ✅ **Only for installed plugins** - Not for discovering new ones
+
+**Status:** Batch-generating Agent Skills for all 229 plugins using Vertex AI. Progress tracked in audit database with full backups.
+
+[Learn more about Agent Skills →](backups/HOW_AGENT_SKILLS_WORK.md)
 
 ---
 

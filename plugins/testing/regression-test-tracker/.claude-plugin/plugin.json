@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "regression-testing", "test-tracking", "ci-cd", "quality-assurance"]
+  "keywords": [
+    "testing",
+    "regression-testing",
+    "test-tracking",
+    "ci-cd",
+    "quality-assurance",
+    "agent-skills"
+  ]
 }

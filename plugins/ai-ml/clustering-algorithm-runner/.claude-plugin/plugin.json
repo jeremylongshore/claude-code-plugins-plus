@@ -8,6 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["clustering", "kmeans", "dbscan", "hierarchical"
+  "keywords": [
+    "clustering",
+    "kmeans",
+    "dbscan",
+    "hierarchical",
+    "agent-skills"
   ]
 }

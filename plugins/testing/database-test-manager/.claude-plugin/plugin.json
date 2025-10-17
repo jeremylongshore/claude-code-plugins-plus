@@ -8,5 +8,14 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "database", "sql", "test-data", "fixtures", "migrations", "transactions"]
+  "keywords": [
+    "testing",
+    "database",
+    "sql",
+    "test-data",
+    "fixtures",
+    "migrations",
+    "transactions",
+    "agent-skills"
+  ]
 }

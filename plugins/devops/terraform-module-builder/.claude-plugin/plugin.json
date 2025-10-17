@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["terraform", "iac", "modules", "infrastructure", "devops"]
+  "keywords": [
+    "terraform",
+    "iac",
+    "modules",
+    "infrastructure",
+    "devops",
+    "agent-skills"
+  ]
 }

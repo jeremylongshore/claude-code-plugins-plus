@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["errors", "monitoring", "reliability", "sre"]
+  "keywords": [
+    "errors",
+    "monitoring",
+    "reliability",
+    "sre",
+    "agent-skills"
+  ]
 }

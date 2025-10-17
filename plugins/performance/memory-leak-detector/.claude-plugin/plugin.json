@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["memory", "leak", "detection", "performance"]
+  "keywords": [
+    "memory",
+    "leak",
+    "detection",
+    "performance",
+    "agent-skills"
+  ]
 }

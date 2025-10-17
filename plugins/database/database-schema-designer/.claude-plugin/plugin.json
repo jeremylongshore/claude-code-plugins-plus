@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["database", "schema", "design", "erd", "normalization"]
+  "keywords": [
+    "database",
+    "schema",
+    "design",
+    "erd",
+    "normalization",
+    "agent-skills"
+  ]
 }

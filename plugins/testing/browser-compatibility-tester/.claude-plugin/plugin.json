@@ -8,5 +8,13 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["testing", "cross-browser", "browserstack", "selenium", "playwright", "compatibility"]
+  "keywords": [
+    "testing",
+    "cross-browser",
+    "browserstack",
+    "selenium",
+    "playwright",
+    "compatibility",
+    "agent-skills"
+  ]
 }

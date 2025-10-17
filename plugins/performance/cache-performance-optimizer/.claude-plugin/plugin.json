@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["cache", "performance", "optimization", "redis"]
+  "keywords": [
+    "cache",
+    "performance",
+    "optimization",
+    "redis",
+    "agent-skills"
+  ]
 }

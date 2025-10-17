@@ -8,5 +8,11 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["disaster-recovery", "dr", "business-continuity", "devops"]
+  "keywords": [
+    "disaster-recovery",
+    "dr",
+    "business-continuity",
+    "devops",
+    "agent-skills"
+  ]
 }
