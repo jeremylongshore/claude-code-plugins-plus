@@ -5,66 +5,14 @@
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**228 production-ready tools • Skills + Automation = Magic ✨**
+**228 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install skills-powerkit@claude-code-plugins-plus
+/plugin install devops-automation-pack@claude-code-plugins-plus
 ```
-
-🎯 **NEW:** Skill Enhancers - Plugins that extend Claude's Skills with automation
 
 💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
-
----
-
-## ✨ NEW: Skill Enhancers - The Missing Link
-
-**Anthropic gave Claude Skills (search, read, analyze). We give you the automation layer.**
-
-### The Pattern
-```
-Claude's Skill (Input) → Your Plugin (Action) → Real Result
-```
-
-### Example: Web Search → GitHub Issue
-```bash
-claude: "research PostgreSQL indexing best practices and create a ticket"
-
-# Claude searches web (web_search Skill)
-# Plugin creates formatted GitHub issue
-# ✅ Issue #247 created with findings
-```
-
-**Available Skill Enhancers:**
-- 🔍 **web-to-github-issue** - Research → GitHub tickets
-- More coming soon!
-
-[Explore Skill Enhancers →](plugins/skill-enhancers/)
-
----
-
-## 🚀 Skills Powerkit - Meta-Plugin for Plugin Management
-
-**Agent Skills are here!** Anthropic just launched Skills (October 16, 2025) - model-invoked capabilities that Claude uses automatically.
-
-**Skills Powerkit** - The ultimate meta-plugin for managing THIS marketplace:
-- 🛠️ **Plugin Creator** - Auto-scaffolds new plugins with proper structure
-- ✅ **Plugin Validator** - Auto-validates plugin structure and compliance
-- 📦 **Marketplace Manager** - Auto-manages catalog and syncing
-- 🔍 **Plugin Auditor** - Auto-audits for security and quality
-- 🔢 **Version Bumper** - Auto-handles semantic version updates
-
-**Repository-specific Skills for claude-code-plugins workflow!**
-
-Install Skills Powerkit:
-```bash
-/plugin install skills-powerkit@claude-code-plugins-plus
-```
-
-Then just say "create a new plugin" or "validate this plugin" - Skills manage your plugins automatically!
-
-[Learn more about Agent Skills →](#understanding-plugin-types)
 
 ---
 
@@ -121,30 +69,56 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ---
 
+## 🆕 What's New
+
+### Skills Powerkit - First Agent Skills Plugin
+**NEW:** The first plugin using Anthropic's Agent Skills feature (launched Oct 16, 2025). Say "create a plugin" or "validate this plugin" and Claude automatically uses these model-invoked capabilities:
+- 🛠️ Plugin Creator - Auto-scaffolds plugins
+- ✅ Plugin Validator - Auto-validates structure
+- 📦 Marketplace Manager - Auto-manages catalog
+- 🔍 Plugin Auditor - Auto-audits security
+- 🔢 Version Bumper - Auto-handles versions
+
+```bash
+/plugin install skills-powerkit@claude-code-plugins-plus
+```
+
+### Skill Enhancers - Automation for Claude's Skills
+**NEW CATEGORY:** Plugins that extend Claude's built-in Skills (web_search, web_fetch) with automation. Claude searches → Plugin acts.
+
+Example: `web-to-github-issue` - Research → GitHub tickets
+
+[Explore Skill Enhancers →](plugins/skill-enhancers/)
+
+---
+
 ## Understanding Plugin Types
 
 This marketplace contains **three types of extensions** that work differently:
 
-### 1. Agent Skills 🆕 (Model-Invoked)
-- **What they are**: Capabilities Claude automatically uses when relevant
+### 1. AI Instruction Plugins (97% of marketplace)
+- **What they are**: Markdown instructions that guide Claude's behavior
+- **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
+- **Examples**: DevOps pack, Security pack, API development tools
+- **Count**: ~221 plugins
+- **No external code execution** - work entirely through Claude's interpretation
+
+### 2. MCP Server Plugins (2% of marketplace)
+- **What they are**: TypeScript/JavaScript applications
+- **How they work**: Run as separate Node.js processes that Claude can communicate with
+- **Examples**: project-health-auditor, conversational-api-debugger, domain-memory-agent
+- **Count**: 5 plugins (21 MCP tools total)
+- **Actual compiled code** - 13-26KB of executable JavaScript per plugin
+
+### 3. Agent Skills 🆕 (< 1% of marketplace)
+- **What they are**: Model-invoked capabilities Claude automatically uses when relevant
 - **How they work**: Claude decides when to activate based on conversation context
-- **Examples**: Skills Powerkit (plugin creator, plugin validator, marketplace manager, plugin auditor, version bumper)
+- **Example**: Skills Powerkit (5 skills: plugin creator, validator, manager, auditor, version bumper)
+- **Count**: 1 plugin
 - **Invocation**: Automatic - you say "create a plugin" and Claude uses the skill
 - **NEW**: Launched October 16, 2025 by Anthropic
 
 **Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
-
-### 2. AI Instruction Plugins (Plugin Packs & Templates)
-- **What they are**: Detailed markdown instructions that guide Claude's behavior
-- **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
-- **Examples**: DevOps pack, Security pack, AI Agency toolkit
-- **No external code execution** - work entirely through Claude's interpretation
-
-### 3. MCP Server Plugins (Executable Code)
-- **What they are**: Real TypeScript/JavaScript applications
-- **How they work**: Run as separate Node.js processes that Claude can communicate with
-- **Examples**: project-health-auditor, conversational-api-debugger
-- **Actual compiled code** - 13-26KB of executable JavaScript
 
 All three types are **fully functional** but operate through different mechanisms. Plugins can bundle Skills, Commands, Agents, and MCP servers together.
 
