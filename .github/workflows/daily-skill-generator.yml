@@ -1,0 +1,151 @@
+name: Daily Skill Generator
+on:
+  schedule:
+    - cron: "0 10 * * *"  # 10 AM UTC daily (5 AM EST)
+  workflow_dispatch:  # Manual trigger
+
+jobs:
+  add-skill:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Find next plugin needing skills
+        id: find
+        run: |
+          # Get all plugins
+          PLUGINS=$(jq -r '.plugins[].name' .claude-plugin/marketplace.json)
+
+          # Find first plugin WITHOUT agent-skills keyword
+          NEXT_PLUGIN=$(jq -r '.plugins[] |
+            select((.keywords[]? == "agent-skills") | not) |
+            select(.category == "devops" or .category == "security" or .category == "testing" or .category == "ai-ml") |
+            .name' .claude-plugin/marketplace.json | head -n 1)
+
+          if [ -z "$NEXT_PLUGIN" ]; then
+            echo "No plugins left to process!"
+            exit 0
+          fi
+
+          # Get plugin details
+          PLUGIN_PATH=$(jq -r ".plugins[] | select(.name == \"$NEXT_PLUGIN\") | .source" .claude-plugin/marketplace.json)
+          PLUGIN_DESC=$(jq -r ".plugins[] | select(.name == \"$NEXT_PLUGIN\") | .description" .claude-plugin/marketplace.json)
+          PLUGIN_CAT=$(jq -r ".plugins[] | select(.name == \"$NEXT_PLUGIN\") | .category" .claude-plugin/marketplace.json)
+
+          echo "plugin_name=$NEXT_PLUGIN" >> $GITHUB_OUTPUT
+          echo "plugin_path=$PLUGIN_PATH" >> $GITHUB_OUTPUT
+          echo "plugin_desc=$PLUGIN_DESC" >> $GITHUB_OUTPUT
+          echo "plugin_category=$PLUGIN_CAT" >> $GITHUB_OUTPUT
+
+      - name: Create issue for Claude Code
+        if: steps.find.outputs.plugin_name != ''
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pluginName = '${{ steps.find.outputs.plugin_name }}';
+            const pluginPath = '${{ steps.find.outputs.plugin_path }}';
+            const pluginDesc = '${{ steps.find.outputs.plugin_desc }}';
+            const pluginCat = '${{ steps.find.outputs.plugin_category }}';
+
+            const issueBody = `## 🤖 Daily Skill Generator Task
+
+**Plugin:** \`${pluginName}\`
+**Path:** \`${pluginPath}\`
+**Category:** \`${pluginCat}\`
+**Description:** ${pluginDesc}
+
+---
+
+### Task for Claude Code
+
+Create an Agent Skill for this plugin:
+
+1. **Read the plugin's existing files:**
+   - \`${pluginPath}/README.md\` (understand what it does)
+   - \`${pluginPath}/commands/\` or \`${pluginPath}/agents/\` (see how it works)
+
+2. **Create skill folder:**
+   \`\`\`bash
+   mkdir -p ${pluginPath}/skills/skill-adapter
+   \`\`\`
+
+3. **Write SKILL.md** at \`${pluginPath}/skills/skill-adapter/SKILL.md\`:
+   \`\`\`yaml
+   ---
+   name: ${pluginName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Skill
+   description: |
+     [Based on plugin description: ${pluginDesc}]
+     Write 2-3 sentences explaining WHEN this skill activates and WHAT it does.
+   allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
+   ---
+
+   ## How It Works
+
+   [Explain the skill's workflow in 3-5 steps]
+
+   ## Examples
+
+   ### Example 1: [Common Use Case]
+   \`\`\`
+   [Show example commands/usage]
+   \`\`\`
+
+   ### Example 2: [Another Use Case]
+   \`\`\`
+   [Show example]
+   \`\`\`
+
+   ## Tips
+   - [Tip 1]
+   - [Tip 2]
+   \`\`\`
+
+4. **Update plugin.json:**
+   Add \`"agent-skills"\` to keywords array
+
+5. **Update marketplace.extended.json:**
+   Add \`"agent-skills"\` to keywords for this plugin
+
+6. **Sync marketplace:**
+   \`\`\`bash
+   node scripts/sync-marketplace.cjs
+   \`\`\`
+
+7. **Commit:**
+   \`\`\`bash
+   git checkout -b skill/${pluginName}
+   git add ${pluginPath}/skills/ ${pluginPath}/.claude-plugin/plugin.json .claude-plugin/marketplace.extended.json .claude-plugin/marketplace.json
+   git commit -m "feat(skills): add Agent Skill to ${pluginName}"
+   git push origin skill/${pluginName}
+   \`\`\`
+
+8. **Create PR** via GitHub UI
+
+---
+
+### ⏱️ Time Limit
+**Keep this under 10 minutes of work.** Focus on quality over complexity.
+
+### ✅ Success Criteria
+- [ ] SKILL.md exists with proper YAML frontmatter
+- [ ] Skill description is specific to this plugin's purpose
+- [ ] Examples show realistic use cases
+- [ ] Keywords updated in all 3 places
+- [ ] Marketplace synced
+- [ ] PR created
+
+---
+
+**Close this issue when the PR is merged.**
+`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🤖 Add Agent Skill: ${pluginName}`,
+              body: issueBody,
+              labels: ['daily-skill-generator', 'agent-skills']
+            });
