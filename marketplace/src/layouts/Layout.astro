@@ -163,27 +163,51 @@ const { title, description = "The definitive marketplace for professional Claude
       </div>
     </footer>
 
-    <script>
-      // Mobile menu toggle
-      const menuToggle = document.querySelector('.mobile-menu-toggle');
-      const navLinks = document.querySelector('.nav-links');
+    <script is:inline>
+      // Mobile menu toggle - runs after DOM loads
+      document.addEventListener('DOMContentLoaded', function() {
+        const menuToggle = document.querySelector('.mobile-menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
 
-      if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
-          navLinks.classList.toggle('active');
-          menuToggle.classList.toggle('active');
-          document.body.classList.toggle('menu-open');
-        });
-
-        // Close menu when clicking a link
-        navLinks.querySelectorAll('.nav-link').forEach(link => {
-          link.addEventListener('click', () => {
+        function closeMenu() {
+          if (navLinks && menuToggle) {
             navLinks.classList.remove('active');
             menuToggle.classList.remove('active');
             document.body.classList.remove('menu-open');
+          }
+        }
+
+        if (menuToggle && navLinks) {
+          // Toggle menu on button click
+          menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+            document.body.classList.toggle('menu-open');
           });
-        });
-      }
+
+          // Close menu when clicking a link
+          navLinks.querySelectorAll('.nav-link').forEach(function(link) {
+            link.addEventListener('click', closeMenu);
+          });
+
+          // Close menu when clicking outside
+          document.addEventListener('click', function(e) {
+            if (navLinks.classList.contains('active')) {
+              if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                closeMenu();
+              }
+            }
+          });
+
+          // Close menu on escape key
+          document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+              closeMenu();
+            }
+          });
+        }
+      });
     </script>
   </body>
 </html>
