@@ -5,7 +5,7 @@
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**228 production-ready Claude Code plugins • Skills + Plugins = Magic ✨**
+**228 production-ready tools • Skills + Automation = Magic ✨**
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins

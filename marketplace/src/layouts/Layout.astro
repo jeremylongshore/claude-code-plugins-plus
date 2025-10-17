@@ -19,17 +19,30 @@ const { title, description = "The definitive marketplace for professional Claude
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
+    <!-- Security Headers (via meta tags for GitHub Pages) -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://claudecodeplugins.io/" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:site_name" content="Claude Code Plugins" />
 
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="https://claudecodeplugins.io/" />
-    <meta property="twitter:title" content={title} />
-    <meta property="twitter:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://claudecodeplugins.io/" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:site" content="@jeremylongshore" />
+    <meta name="twitter:creator" content="@jeremylongshore" />
+
+    <!-- Verification & Trust Signals -->
+    <link rel="canonical" href="https://claudecodeplugins.io/" />
+    <meta name="robots" content="index, follow" />
   </head>
   <body>
     <!-- Modern Navigation Header -->
