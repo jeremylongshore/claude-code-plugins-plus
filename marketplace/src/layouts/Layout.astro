@@ -41,9 +41,17 @@ const { title, description = "The definitive marketplace for professional Claude
           </svg>
           <span class="brand-name">Claude Code Plugins</span>
           <span class="brand-badge">v1.1.0</span>
+          <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg class="close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
-        <div class="nav-links">
+        <div class="nav-links" id="mobile-nav">
           <a href="/" class="nav-link">Home</a>
           <a href="#all-plugins" class="nav-link">Plugins</a>
           <a href="/skill-enhancers" class="nav-link">Skill Enhancers</a>
@@ -131,6 +139,29 @@ const { title, description = "The definitive marketplace for professional Claude
         </div>
       </div>
     </footer>
+
+    <script>
+      // Mobile menu toggle
+      const menuToggle = document.querySelector('.mobile-menu-toggle');
+      const navLinks = document.querySelector('.nav-links');
+
+      if (menuToggle && navLinks) {
+        menuToggle.addEventListener('click', () => {
+          navLinks.classList.toggle('active');
+          menuToggle.classList.toggle('active');
+          document.body.classList.toggle('menu-open');
+        });
+
+        // Close menu when clicking a link
+        navLinks.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+            navLinks.classList.remove('active');
+            menuToggle.classList.remove('active');
+            document.body.classList.remove('menu-open');
+          });
+        });
+      }
+    </script>
   </body>
 </html>
 
@@ -365,28 +396,85 @@ const { title, description = "The definitive marketplace for professional Claude
     height: 1.25rem;
   }
 
+  /* Mobile Menu Toggle */
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--slate-400);
+    cursor: pointer;
+    padding: 0.5rem;
+    margin-left: auto;
+  }
+
+  .mobile-menu-toggle svg {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+
+  .mobile-menu-toggle .close-icon {
+    display: none;
+  }
+
+  .mobile-menu-toggle.active .menu-icon {
+    display: none;
+  }
+
+  .mobile-menu-toggle.active .close-icon {
+    display: block;
+  }
+
+  /* Prevent body scroll when mobile menu is open */
+  body.menu-open {
+    overflow: hidden;
+  }
+
   /* Responsive */
   @media (max-width: 768px) {
     .nav-container {
-      flex-direction: column;
-      align-items: stretch;
+      flex-wrap: nowrap;
     }
 
     .nav-brand {
-      justify-content: space-between;
       width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .mobile-menu-toggle {
+      display: block;
     }
 
     .nav-links {
+      position: fixed;
+      top: 0;
+      right: -100%;
+      width: 80%;
+      max-width: 300px;
+      height: 100vh;
+      background: var(--slate-900);
+      border-left: 1px solid var(--slate-800);
       flex-direction: column;
-      gap: 0.75rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--slate-800);
+      gap: 0;
+      padding: 5rem 1rem 2rem;
+      transition: right var(--transition-base);
+      overflow-y: auto;
+      z-index: 999;
+    }
+
+    .nav-links.active {
+      right: 0;
     }
 
     .nav-link {
-      padding: 0.5rem 0;
-      justify-content: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--slate-800);
+      justify-content: flex-start;
+    }
+
+    .nav-link:last-child {
+      border-bottom: none;
     }
   }
 
