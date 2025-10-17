@@ -13,10 +13,13 @@ const totalPlugins = allPlugins.length;
 const totalCategories = categories.length;
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
 const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
-  // Skills Powerkit first (newest featured plugin)
+  // Plugin Orchestrator first (newest featured plugin - v1.0.44)
+  if (a.data.name === 'plugin-orchestrator') return -1;
+  if (b.data.name === 'plugin-orchestrator') return 1;
+  // Skills Powerkit second
   if (a.data.name === 'skills-powerkit') return -1;
   if (b.data.name === 'skills-powerkit') return 1;
-  // Sugar second
+  // Sugar third
   if (a.data.name === 'sugar') return -1;
   if (b.data.name === 'sugar') return 1;
   return a.data.name.localeCompare(b.data.name);
@@ -57,10 +60,10 @@ const categoryIcons: Record<string, string> = {
     <div class="container announcement-inner">
       <span class="sparkle">🎯</span>
       <span>
-        <strong>NEW:</strong> Skills Powerkit — First Agent Skills plugin! Auto-create, validate, audit, and manage plugins with natural language.
+        <strong>v1.0.44:</strong> Plugin Orchestrator — Never pick plugins again! Automatically selects the best of 229 plugins for your task, extracts their skills, and runs them. Easy mode: ON
       </span>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.40" class="ann-link">Release v1.0.40</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/skills-powerkit" target="_blank" rel="noopener noreferrer" class="ann-link">View Plugin</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" class="ann-link">Release v1.0.44</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/plugin-orchestrator" target="_blank" rel="noopener noreferrer" class="ann-link">View Plugin</a>
     </div>
   </div>
 
@@ -68,28 +71,32 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
-  <!-- Skills Powerkit Spotlight -->
+  <!-- Plugin Orchestrator Spotlight -->
   <section class="spotlight-section">
     <div class="container">
       <div class="spotlight">
         <div class="spotlight-icon">🎯</div>
         <div class="spotlight-content">
-          <div class="spotlight-kicker">First Agent Skills Plugin</div>
-          <h2 class="spotlight-title">Introducing <span class="spotlight-name">Skills Powerkit</span></h2>
+          <div class="spotlight-kicker">New in v1.0.44 • Ultra-Think: OFF • Easy Mode: ON</div>
+          <h2 class="spotlight-title">Introducing <span class="spotlight-name">Plugin Orchestrator</span></h2>
           <p class="spotlight-text">
-            The first plugin using Anthropic's Agent Skills feature (launched Oct 16, 2025). Auto-create, validate, audit, and manage plugins
-            with natural language. Just say "create a plugin" and watch it work! <strong>Saves 40-60 minutes per plugin lifecycle.</strong>
+            <strong>One solution to manage all 229 plugins.</strong> Never pick plugins again! Plugin Orchestrator automatically analyzes your task,
+            searches your installed plugins, picks the best one(s), extracts their skills on-the-fly, and applies them.
+            <strong>Zero thinking from you.</strong>
           </p>
           <div class="spotlight-features">
-            <span class="feature-badge">🛠️ Plugin Creator</span>
-            <span class="feature-badge">✅ Plugin Validator</span>
-            <span class="feature-badge">📦 Marketplace Manager</span>
-            <span class="feature-badge">🔍 Plugin Auditor</span>
-            <span class="feature-badge">🔢 Version Bumper</span>
+            <span class="feature-badge">🔍 Auto-Selects Best Plugin</span>
+            <span class="feature-badge">🧠 Extracts Skills On-The-Fly</span>
+            <span class="feature-badge">⚡ Applies Automatically</span>
+            <span class="feature-badge">🎯 Easy Mode Always ON</span>
           </div>
+          <p class="spotlight-subtext">
+            <strong>Part of our initiative to update all 229 plugins with appropriate Agent Skills for their missions.</strong>
+            More skill-enhanced plugins coming soon.
+          </p>
           <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/skills-powerkit" target="_blank" rel="noopener noreferrer">View Plugin</a>
-            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.40" target="_blank" rel="noopener noreferrer">Release Notes</a>
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/plugin-orchestrator" target="_blank" rel="noopener noreferrer">View Plugin</a>
+            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" target="_blank" rel="noopener noreferrer">Release Notes</a>
           </div>
         </div>
       </div>
@@ -365,6 +372,7 @@ const categoryIcons: Record<string, string> = {
   .spotlight-title { font-size: 1.15rem; margin: 0; }
   .spotlight-name { color: var(--green-400); }
   .spotlight-text { margin: 0; color: var(--slate-200); }
+  .spotlight-subtext { margin-top: 0.75rem; font-size: 0.875rem; color: var(--slate-300); font-style: italic; }
   .spotlight-features { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
   .feature-badge {
     font-size: 0.75rem;
