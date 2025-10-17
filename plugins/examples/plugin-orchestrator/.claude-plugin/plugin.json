@@ -1,0 +1,23 @@
+{
+  "name": "plugin-orchestrator",
+  "version": "1.0.0",
+  "description": "Smart task router that automatically picks the best plugin for your task, extracts its skills, and applies them - you don't pick plugins, it picks for you",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "agent-skills",
+    "task-router",
+    "auto-selector",
+    "plugin-picker",
+    "smart-orchestrator",
+    "skill-extraction",
+    "easy-mode",
+    "automatic",
+    "no-thinking-required",
+    "intelligent-dispatch"
+  ]
+}
