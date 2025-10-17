@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.0.44",
+    "version": "1.0.45",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -36,22 +36,22 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
-      "name": "plugin-orchestrator",
-      "source": "./plugins/examples/plugin-orchestrator",
-      "description": "Smart task router that automatically picks the best plugin for your task, extracts its skills, and applies them - you don't pick plugins, it picks for you. Part of our initiative to update all plugins with appropriate skill sets.",
+      "name": "pi-pathfinder",
+      "source": "./plugins/examples/pi-pathfinder",
+      "description": "PI Pathfinder - Finds the path through 229 plugins. Automatically picks the best plugin for your task, extracts its skills, and applies them. You don't pick plugins, PI does. Part of our initiative to update all plugins with appropriate skill sets.",
       "version": "1.0.0",
       "category": "example",
       "keywords": [
         "agent-skills",
+        "pi",
+        "pathfinder",
+        "plugin-intelligence",
         "task-router",
         "auto-selector",
-        "plugin-picker",
-        "smart-orchestrator",
         "skill-extraction",
         "easy-mode",
         "automatic",
-        "no-thinking-required",
-        "intelligent-dispatch"
+        "no-thinking-required"
       ],
       "author": {
         "name": "Jeremy Longshore",

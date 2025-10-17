@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.0.44-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.0.45-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-229-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
@@ -71,12 +71,12 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ## 🆕 What's New
 
-### 🎯 Plugin Orchestrator - Never Pick Plugins Again
-**FEATURED:** One solution to manage all 229 plugins with intelligent task routing.
+### 🎯 PI Pathfinder - Never Pick Plugins Again
+**FEATURED:** Finds the path through all 229 plugins automatically.
 
 **The Problem:** You installed plugins because they're useful. But which one do you use? Who remembers all 229?
 
-**The Solution:** Plugin Orchestrator automatically:
+**The Solution:** PI Pathfinder automatically:
 - ✅ Analyzes your task in plain English
 - ✅ Searches your installed plugins
 - ✅ Picks the best one(s) automatically
@@ -85,19 +85,19 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 - ✅ Done - zero thinking from you
 
 ```bash
-/plugin install plugin-orchestrator@claude-code-plugins-plus
+/plugin install pi-pathfinder@claude-code-plugins-plus
 
 # Then just say what you want:
 "Check my code for security issues"
 "Deploy my app"
 "Generate API docs"
 
-# Plugin Orchestrator picks, extracts skills, runs it. Easy mode: ON 🎯
+# PI Pathfinder picks, extracts skills, runs it. Easy mode: ON 🎯
 ```
 
 **Part of our initiative to update all plugins with appropriate Agent Skills for their missions.**
 
-[Read more about Plugin Orchestrator →](plugins/examples/plugin-orchestrator/)
+[Read more about PI Pathfinder →](plugins/examples/pi-pathfinder/)
 
 ---
 

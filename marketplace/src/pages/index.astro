@@ -13,9 +13,9 @@ const totalPlugins = allPlugins.length;
 const totalCategories = categories.length;
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
 const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
-  // Plugin Orchestrator first (newest featured plugin - v1.0.44)
-  if (a.data.name === 'plugin-orchestrator') return -1;
-  if (b.data.name === 'plugin-orchestrator') return 1;
+  // PI Pathfinder first (newest featured plugin - v1.0.44)
+  if (a.data.name === 'pi-pathfinder') return -1;
+  if (b.data.name === 'pi-pathfinder') return 1;
   // Skills Powerkit second
   if (a.data.name === 'skills-powerkit') return -1;
   if (b.data.name === 'skills-powerkit') return 1;
@@ -60,10 +60,10 @@ const categoryIcons: Record<string, string> = {
     <div class="container announcement-inner">
       <span class="sparkle">🎯</span>
       <span>
-        <strong>v1.0.44:</strong> Plugin Orchestrator — Never pick plugins again! Automatically selects the best of 229 plugins for your task, extracts their skills, and runs them. Easy mode: ON
+        <strong>v1.0.44:</strong> PI Pathfinder — Never pick plugins again! Automatically selects the best of 229 plugins for your task, extracts their skills, and runs them. Easy mode: ON
       </span>
       <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" class="ann-link">Release v1.0.44</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/plugin-orchestrator" target="_blank" rel="noopener noreferrer" class="ann-link">View Plugin</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/pi-pathfinder" target="_blank" rel="noopener noreferrer" class="ann-link">View Plugin</a>
     </div>
   </div>
 
@@ -71,16 +71,16 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
-  <!-- Plugin Orchestrator Spotlight -->
+  <!-- PI Pathfinder Spotlight -->
   <section class="spotlight-section">
     <div class="container">
       <div class="spotlight">
         <div class="spotlight-icon">🎯</div>
         <div class="spotlight-content">
           <div class="spotlight-kicker">New in v1.0.44 • Ultra-Think: OFF • Easy Mode: ON</div>
-          <h2 class="spotlight-title">Introducing <span class="spotlight-name">Plugin Orchestrator</span></h2>
+          <h2 class="spotlight-title">Introducing <span class="spotlight-name">PI Pathfinder</span></h2>
           <p class="spotlight-text">
-            <strong>One solution to manage all 229 plugins.</strong> Never pick plugins again! Plugin Orchestrator automatically analyzes your task,
+            <strong>One solution to manage all 229 plugins.</strong> Never pick plugins again! PI Pathfinder automatically analyzes your task,
             searches your installed plugins, picks the best one(s), extracts their skills on-the-fly, and applies them.
             <strong>Zero thinking from you.</strong>
           </p>
@@ -95,7 +95,7 @@ const categoryIcons: Record<string, string> = {
             More skill-enhanced plugins coming soon.
           </p>
           <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/plugin-orchestrator" target="_blank" rel="noopener noreferrer">View Plugin</a>
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/pi-pathfinder" target="_blank" rel="noopener noreferrer">View Plugin</a>
             <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" target="_blank" rel="noopener noreferrer">Release Notes</a>
           </div>
         </div>

@@ -1,6 +1,26 @@
+## [1.0.45] - 2025-10-17
+
+### 🎯 Plugin Renamed: PI Pathfinder
+
+**Plugin Orchestrator → PI Pathfinder**
+
+Renamed for clarity and impact. "PI" is clean, memorable, and people know it's intelligent. "Pathfinder" perfectly describes what it does - finds the path through 229 plugins.
+
+**Updates:**
+- Plugin name: `plugin-orchestrator` → `pi-pathfinder`
+- Directory: `plugins/examples/plugin-orchestrator/` → `plugins/examples/pi-pathfinder/`
+- Install command: `/plugin install pi-pathfinder@claude-code-plugins-plus`
+- All documentation updated with new name
+- Marketplace catalogs updated
+- Website updated with PI Pathfinder branding
+
+**Everything else remains the same - same functionality, same Agent Skill, same "Easy mode: ON" experience.**
+
+---
+
 ## [1.0.44] - 2025-10-17
 
-### 🎯 Major Feature: Plugin Orchestrator
+### 🎯 Major Feature: PI Pathfinder
 
 **FEATURED PLUGIN:** One solution to manage all 229 plugins with intelligent task routing.
 
@@ -11,11 +31,11 @@
 - Constantly searching docs
 
 **The Solution:**
-Plugin Orchestrator automatically picks the best plugin for your task, extracts its skills, and applies them. Zero thinking from you.
+PI Pathfinder automatically picks the best plugin for your task, extracts its skills, and applies them. Zero thinking from you.
 
 **How It Works:**
 1. You say what you want in plain English
-2. Plugin Orchestrator analyzes your task
+2. PI Pathfinder analyzes your task
 3. Searches your installed plugins automatically
 4. Picks the best one(s)
 5. Extracts their capabilities on-the-fly
@@ -45,11 +65,11 @@ Plugin Orchestrator automatically picks the best plugin for your task, extracts 
 
 **Installation:**
 ```bash
-/plugin install plugin-orchestrator@claude-code-plugins-plus
+/plugin install pi-pathfinder@claude-code-plugins-plus
 ```
 
 **Technical Details:**
-- **Location**: `plugins/examples/plugin-orchestrator/`
+- **Location**: `plugins/examples/pi-pathfinder/`
 - **Components**: 1 Agent Skill (skill-adapter)
 - **Category**: Example/Productivity
 - **Featured**: Yes
@@ -59,10 +79,10 @@ Plugin Orchestrator automatically picks the best plugin for your task, extracts 
 This is the first plugin in our initiative to update all plugins with appropriate Agent Skills for their missions. More skill-enhanced plugins coming soon.
 
 **Files Added:**
-- `plugins/examples/plugin-orchestrator/.claude-plugin/plugin.json`
-- `plugins/examples/plugin-orchestrator/skills/skill-adapter/SKILL.md`
-- `plugins/examples/plugin-orchestrator/README.md`
-- `plugins/examples/plugin-orchestrator/LICENSE`
+- `plugins/examples/pi-pathfinder/.claude-plugin/plugin.json`
+- `plugins/examples/pi-pathfinder/skills/skill-adapter/SKILL.md`
+- `plugins/examples/pi-pathfinder/README.md`
+- `plugins/examples/pi-pathfinder/LICENSE`
 
 **Marketplace Updates:**
 - Added to `marketplace.extended.json` with featured status
@@ -71,9 +91,9 @@ This is the first plugin in our initiative to update all plugins with appropriat
 
 ### 📊 Release Metrics
 - **Total Plugins:** 229 (228 → 229)
-- **New This Release:** 1 (Plugin Orchestrator)
+- **New This Release:** 1 (PI Pathfinder)
 - **Categories:** 14
-- **Agent Skills Plugins:** 2 (Skills Powerkit, Plugin Orchestrator)
+- **Agent Skills Plugins:** 2 (Skills Powerkit, PI Pathfinder)
 - **Contributors:** Jeremy Longshore
 
 ---

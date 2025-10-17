@@ -1,8 +1,8 @@
-# Plugin Orchestrator
+# PI Pathfinder
 
-**One solution to manage all your plugins with skilled components** 🎯
+**Finds the path through 229 plugins** 🎯
 
-You don't pick plugins - it picks for you. Smart task router that analyzes your request, automatically selects the best plugin, extracts its skills, and applies them.
+You don't pick plugins - PI does. Smart pathfinder that analyzes your request, automatically selects the best plugin, extracts its skills, and applies them.
 
 **Ultra-think mode: OFF | Easy mode: ON**
 
@@ -29,9 +29,9 @@ Result: Wrong plugin
 **NOW:**
 ```
 You: "Scan my code for security issues"
-Plugin Orchestrator: *picks best plugin automatically*
-Plugin Orchestrator: *extracts its skills*
-Plugin Orchestrator: *runs it*
+PI Pathfinder: *picks best plugin automatically*
+PI Pathfinder: *extracts its skills*
+PI Pathfinder: *runs it*
 Done. Zero thinking from you.
 ```
 
@@ -41,7 +41,7 @@ Done. Zero thinking from you.
 
 **You:** Describe what you want in plain English
 
-**Plugin Orchestrator:**
+**PI Pathfinder:**
 1. Understands your task
 2. Searches your installed plugins (all 228 if you want)
 3. Picks the best one(s) automatically
@@ -62,7 +62,7 @@ Done. Zero thinking from you.
 ### "Check my code for vulnerabilities"
 
 ```
-Plugin Orchestrator automatically:
+PI Pathfinder automatically:
 ✓ Searches your plugins for: security, scan, vulnerability
 ✓ Finds: owasp-scanner + security-audit + code-quality
 ✓ Extracts all 3 approaches
@@ -71,13 +71,13 @@ Plugin Orchestrator automatically:
 ✓ Reports: "Found 3 SQL injection risks, 2 XSS issues"
 
 You did: 5 words
-Plugin Orchestrator did: Everything else
+PI Pathfinder did: Everything else
 ```
 
 ### "Deploy my app"
 
 ```
-Plugin Orchestrator automatically:
+PI Pathfinder automatically:
 ✓ Searches: deploy, automation, docker
 ✓ Finds: deployment-pipeline + docker-composer
 ✓ Extracts: Build → Test → Deploy workflow
@@ -85,13 +85,13 @@ Plugin Orchestrator automatically:
 ✓ Reports: "Deployed. Health checks passing."
 
 You did: 3 words
-Plugin Orchestrator did: Entire deployment
+PI Pathfinder did: Entire deployment
 ```
 
 ### "Make API docs"
 
 ```
-Plugin Orchestrator automatically:
+PI Pathfinder automatically:
 ✓ Searches: documentation, api, swagger
 ✓ Finds: api-documenter + swagger-generator
 ✓ Extracts how they work
@@ -100,7 +100,7 @@ Plugin Orchestrator automatically:
 ✓ Done: "Created docs in /docs/"
 
 You did: 3 words
-Plugin Orchestrator did: Complete documentation system
+PI Pathfinder did: Complete documentation system
 ```
 
 ---
@@ -119,7 +119,7 @@ Plugin Orchestrator did: Complete documentation system
 ### New Way
 ```
 1. Say what you want
-[Plugin Orchestrator does 2-5]
+[PI Pathfinder does 2-5]
 Done.
 ```
 
@@ -131,8 +131,8 @@ Done.
 # Add marketplace
 /plugin marketplace add jeremylongshore/claude-code-plugins
 
-# Install Plugin Orchestrator  
-/plugin install plugin-orchestrator@claude-code-plugins-plus
+# Install PI Pathfinder  
+/plugin install pi-pathfinder@claude-code-plugins-plus
 
 # Install plugins you want (as many as you want)
 /plugin install devops-automation-pack@claude-code-plugins-plus
@@ -145,7 +145,7 @@ Done.
 "Generate docs"
 ```
 
-Plugin Orchestrator picks the right plugins automatically.
+PI Pathfinder picks the right plugins automatically.
 
 ---
 
@@ -180,7 +180,7 @@ Just say what you want:
 "Fix issues"
 ```
 
-Plugin Orchestrator figures out which plugins to use, extracts their skills, applies them.
+PI Pathfinder figures out which plugins to use, extracts their skills, applies them.
 
 **You never pick. It picks for you.**
 
@@ -258,7 +258,7 @@ Applies learned skills → Runs analysis → Reports results
 You shouldn't think about which plugin to use.
 
 You installed plugins because they're useful.
-Plugin Orchestrator makes sure you USE them without thinking.
+PI Pathfinder makes sure you USE them without thinking.
 
 Just describe what you want.
 It handles the rest.
