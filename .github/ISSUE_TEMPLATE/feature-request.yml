@@ -1,91 +1,26 @@
 name: Feature Request
-description: Suggest a new feature or enhancement
+description: Suggest a feature
 title: "[Feature] "
-labels: ["enhancement", "feature-request"]
+labels: ["enhancement"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for suggesting a feature! Please provide details below.
-
-  - type: dropdown
-    id: feature-type
-    attributes:
-      label: Feature Type
-      options:
-        - New plugin idea
-        - Enhancement to existing plugin
-        - Marketplace improvement
-        - Documentation enhancement
-        - New command/agent
-        - Integration request
-        - Other
-    validations:
-      required: true
-
-  - type: input
-    id: related-plugin
-    attributes:
-      label: Related Plugin (if applicable)
-      description: Which plugin would this feature enhance?
-      placeholder: project-health-auditor
-
   - type: textarea
-    id: problem
+    id: idea
     attributes:
-      label: Problem Statement
-      description: What problem does this feature solve?
-      placeholder: Currently, users have to manually...
-    validations:
-      required: true
-
-  - type: textarea
-    id: solution
-    attributes:
-      label: Proposed Solution
-      description: How would you like this feature to work?
-      placeholder: Add a command that automatically...
-    validations:
-      required: true
-
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives Considered
-      description: What other solutions have you considered?
-
-  - type: textarea
-    id: use-cases
-    attributes:
-      label: Use Cases
-      description: Who would benefit from this feature and how?
+      label: What do you want?
+      description: Describe the feature you'd like
       placeholder: |
-        - Developers working on...
-        - Teams that need to...
+        I want a plugin that does X because Y.
+
+        It would work like this:
+        /command-name --option
     validations:
       required: true
 
   - type: textarea
-    id: example
+    id: why
     attributes:
-      label: Example Usage
-      description: Show how you'd use this feature
-      placeholder: |
-        ```bash
-        /new-command --option value
-        ```
-
-  - type: checkboxes
-    id: implementation
-    attributes:
-      label: Implementation Willingness
-      options:
-        - label: I'd be willing to implement this feature myself
-        - label: I'd be willing to help test this feature
-        - label: I'd be willing to contribute documentation
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Context
-      description: Any other information, mockups, or references
+      label: Why is this useful?
+      description: Who would benefit from this?
+      placeholder: This would help developers who...
+    validations:
+      required: true

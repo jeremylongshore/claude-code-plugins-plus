@@ -1,85 +1,24 @@
-name: Documentation Improvement
-description: Report outdated, missing, or unclear documentation
+name: Documentation Issue
+description: Report bad docs
 title: "[Docs] "
 labels: ["documentation"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for helping improve our docs!
-
-  - type: dropdown
-    id: doc-type
-    attributes:
-      label: Documentation Type
-      options:
-        - Plugin README
-        - Marketplace README
-        - Command documentation
-        - Agent documentation
-        - Installation guide
-        - API reference
-        - Tutorial/guide
-        - Other
-    validations:
-      required: true
-
   - type: input
     id: location
     attributes:
-      label: Documentation Location
-      description: Which file or section needs improvement?
-      placeholder: plugins/openbb-terminal/README.md or section "Installation"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: issue-type
-    attributes:
-      label: Issue Type
-      options:
-        - Outdated information
-        - Missing information
-        - Unclear/confusing
-        - Incorrect information
-        - Broken link
-        - Typo/grammar
-        - Missing example
-        - Other
+      label: Where are the docs wrong?
+      placeholder: plugins/my-plugin/README.md or "Installation section"
     validations:
       required: true
 
   - type: textarea
-    id: current
+    id: problem
     attributes:
-      label: Current Documentation
-      description: What does the documentation currently say?
+      label: What's the problem?
+      description: What's wrong or missing?
       placeholder: |
-        Currently it says: "Install with npm install..."
+        It says to do X but that doesn't work.
 
-  - type: textarea
-    id: suggestion
-    attributes:
-      label: Suggested Improvement
-      description: How should it be improved?
-      placeholder: |
-        Should say: "Install with pip install openbb..."
+        Should say Y instead.
     validations:
       required: true
-
-  - type: textarea
-    id: impact
-    attributes:
-      label: Impact
-      description: Who is affected by this documentation issue?
-      placeholder: |
-        - New users trying to install the plugin
-        - Anyone following the quickstart guide
-
-  - type: checkboxes
-    id: contribution
-    attributes:
-      label: Contribution
-      options:
-        - label: I'd be willing to submit a PR to fix this
-        - label: I have a screenshot/example to share

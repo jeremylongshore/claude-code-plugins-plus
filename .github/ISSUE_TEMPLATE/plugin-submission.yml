@@ -1,27 +1,30 @@
 name: Plugin Submission
-description: Submit a new plugin to the marketplace
-title: "[Plugin Submission] "
+description: Submit a plugin
+title: "[Plugin] "
 labels: ["plugin-submission"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thanks for submitting a plugin! Please fill out the information below.
-
   - type: input
     id: plugin-name
     attributes:
       label: Plugin Name
-      description: Name of your plugin
       placeholder: my-awesome-plugin
+    validations:
+      required: true
+
+  - type: input
+    id: repository
+    attributes:
+      label: GitHub Repo URL
+      placeholder: https://github.com/username/plugin
     validations:
       required: true
 
   - type: textarea
     id: description
     attributes:
-      label: Description
-      description: Brief description of what your plugin does
+      label: What does it do?
+      description: Brief description
+      placeholder: This plugin automates X by doing Y...
     validations:
       required: true
 
@@ -33,63 +36,26 @@ body:
         - productivity
         - security
         - testing
-        - deployment
-        - documentation
-        - analysis
-        - integration
-        - ai
         - devops
-        - finance
-        - crypto
+        - ai-ml
         - database
         - api-development
-        - performance
-        - debugging
-        - code-quality
-        - design
-        - ai-ml
         - other
     validations:
       required: true
 
-  - type: input
-    id: repository
-    attributes:
-      label: Repository URL
-      description: Link to your plugin repository
-      placeholder: https://github.com/username/plugin
-    validations:
-      required: true
-
-  - type: textarea
-    id: keywords
-    attributes:
-      label: Keywords
-      description: Comma-separated keywords for discoverability
-      placeholder: formatting, automation, hooks
-    validations:
-      required: true
-
   - type: checkboxes
-    id: requirements
+    id: checklist
     attributes:
-      label: Submission Requirements
+      label: Checklist
       options:
-        - label: Plugin has valid `.claude-plugin/plugin.json`
+        - label: Has plugin.json
           required: true
-        - label: Plugin includes comprehensive README.md
+        - label: Has README.md
           required: true
-        - label: Plugin includes LICENSE file
+        - label: Has LICENSE
           required: true
-        - label: All scripts are executable (chmod +x)
+        - label: Tested locally
           required: true
-        - label: Plugin has been tested locally
+        - label: No hardcoded secrets
           required: true
-        - label: No hardcoded secrets or credentials
-          required: true
-
-  - type: textarea
-    id: additional
-    attributes:
-      label: Additional Information
-      description: Any other details about your plugin
