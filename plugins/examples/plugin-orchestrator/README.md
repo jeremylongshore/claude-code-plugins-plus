@@ -14,7 +14,7 @@ You don't pick plugins - it picks for you. Smart task router that analyzes your 
 
 ## The Problem You Had
 
-228 plugins installed. Which one do you use? Who remembers?
+229 plugins installed. Which one do you use? Who remembers?
 
 **BEFORE:**
 ```

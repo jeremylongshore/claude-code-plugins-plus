@@ -1,11 +1,11 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-1.0.44-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-228-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Plugins](https://img.shields.io/badge/plugins-229-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**228 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**229 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -72,9 +72,9 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 ## 🆕 What's New
 
 ### 🎯 Plugin Orchestrator - Never Pick Plugins Again
-**FEATURED:** One solution to manage all 228 plugins with intelligent task routing.
+**FEATURED:** One solution to manage all 229 plugins with intelligent task routing.
 
-**The Problem:** You installed plugins because they're useful. But which one do you use? Who remembers all 228?
+**The Problem:** You installed plugins because they're useful. But which one do you use? Who remembers all 229?
 
 **The Solution:** Plugin Orchestrator automatically:
 - ✅ Analyzes your task in plain English
