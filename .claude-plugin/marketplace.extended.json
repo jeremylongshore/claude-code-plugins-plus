@@ -15,7 +15,7 @@
     {
       "name": "skills-powerkit",
       "source": "./plugins/examples/skills-powerkit",
-      "description": "Ultimate plugin management toolkit with 5 auto-invoked Skills for creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
+      "description": "Ultimate plugin management toolkit built with Anthropic's Agent Skills technology - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
       "version": "1.0.0",
       "category": "example",
       "keywords": [

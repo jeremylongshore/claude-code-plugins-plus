@@ -1,6 +1,6 @@
 # Skills Powerkit
 
-**The ultimate plugin management toolkit for the claude-code-plugins marketplace** - 5 specialized Agent Skills that auto-manage plugin development, validation, auditing, and marketplace updates.
+**The ultimate plugin management toolkit for the claude-code-plugins marketplace** - Built with Anthropic's Agent Skills technology to automate plugin development, validation, auditing, and marketplace updates through 5 model-invoked workflows.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-brightgreen)](.)
 [![Skills](https://img.shields.io/badge/skills-5-blue)](.)
@@ -17,7 +17,7 @@
 
 ---
 
-## 5 Included Skills
+## 5 Automated Workflows (Using Anthropic's Agent Skills Feature)
 
 ### 1. 🛠️ Plugin Creator
 **Automatically scaffolds new plugins from scratch**
