@@ -1,3 +1,36 @@
+## [1.0.46] - 2025-10-18
+
+### 🐛 Bug Fixes
+
+**Fixed Duplicate Plugin Cards on Mobile**
+- Resolved JavaScript bug in SearchBar.astro where `querySelector` only targeted the first `.plugins-grid` container
+- Changed to `querySelectorAll` to handle each grid (Featured and All Plugins) independently
+- Fixes issue where plugins appeared duplicated when scrolling on mobile devices
+- Each grid now manages its own plugin cards without cross-contamination
+
+### 📚 Documentation
+
+**Enhanced CLAUDE.md**
+- Added comprehensive Agent Skills generation commands and workflows
+- Added marketplace website development commands
+- Added missing GitHub Actions workflows documentation (daily-skill-generator, security-audit)
+- Added version consistency requirements across 4 files
+- Added complete workflow examples (plugin creation, releases, deployment)
+- Updated stats to 236 plugins with 164 Agent Skills
+- Added troubleshooting for Agent Skills generation issues
+
+### 📊 Metrics
+
+- **Total Plugins:** 237
+- **Bug Fixes:** 1 critical mobile UX issue
+- **Documentation Updates:** 1 major CLAUDE.md enhancement
+
+### 👥 Contributors
+
+This release was made possible by user bug reports and Claude Code assistance.
+
+---
+
 ## [1.1.0] - 2025-10-17
 
 ### 🎉 Major Feature: Agent Skills Now Available on 164 Plugins!
