@@ -275,33 +275,33 @@ const categories = [
       }
     });
 
-    // Sort visible plugins
-    const visibleCards = pluginCards.filter(card =>
-      (card as HTMLElement).style.display !== 'none'
-    );
+    // Reorder in DOM - handle each grid separately
+    const containers = document.querySelectorAll('.plugins-grid');
+    containers.forEach((container) => {
+      const cardsInThisContainer = Array.from(container.querySelectorAll('.plugin-card'));
+      const visibleCardsInThisContainer = cardsInThisContainer.filter(card =>
+        (card as HTMLElement).style.display !== 'none'
+      );
 
-    visibleCards.sort((a, b) => {
-      const aName = a.getAttribute('data-name') || '';
-      const bName = b.getAttribute('data-name') || '';
-      const aFeatured = a.getAttribute('data-featured') === 'true';
-      const bFeatured = b.getAttribute('data-featured') === 'true';
+      visibleCardsInThisContainer.sort((a, b) => {
+        const aName = a.getAttribute('data-name') || '';
+        const bName = b.getAttribute('data-name') || '';
+        const aFeatured = a.getAttribute('data-featured') === 'true';
+        const bFeatured = b.getAttribute('data-featured') === 'true';
 
-      if (sortBy === 'featured') {
-        if (aFeatured && !bFeatured) return -1;
-        if (!aFeatured && bFeatured) return 1;
-        return aName.localeCompare(bName);
-      } else if (sortBy === 'name-desc') {
-        return bName.localeCompare(aName);
-      } else {
-        return aName.localeCompare(bName);
-      }
+        if (sortBy === 'featured') {
+          if (aFeatured && !bFeatured) return -1;
+          if (!aFeatured && bFeatured) return 1;
+          return aName.localeCompare(bName);
+        } else if (sortBy === 'name-desc') {
+          return bName.localeCompare(aName);
+        } else {
+          return aName.localeCompare(bName);
+        }
+      });
+
+      visibleCardsInThisContainer.forEach(card => container.appendChild(card));
     });
-
-    // Reorder in DOM
-    const container = document.querySelector('.plugins-grid');
-    if (container) {
-      visibleCards.forEach(card => container.appendChild(card));
-    }
 
     // Update results count
     const total = pluginCards.length;

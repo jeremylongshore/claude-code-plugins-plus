@@ -7,9 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is **the comprehensive marketplace and learning hub for Claude Code plugins**. It serves as both a distribution platform for plugins and an educational resource for plugin developers.
 
 **Repository Stats:**
-- 226 marketplace plugins across 14 categories
+- 236 marketplace plugins across 15 categories
 - 221 AI instruction plugins (markdown-based templates)
 - 5 MCP server plugins (TypeScript/Node.js executables with 21 tools)
+- 164 plugins with Agent Skills (v1.1.0)
 - Live marketplace at https://claudecodeplugins.io/
 - Monorepo using pnpm workspaces
 
@@ -48,16 +49,24 @@ This is a pnpm workspace with two separate package ecosystems:
 
 ```
 claude-code-plugins/
-├── plugins/mcp/                    # MCP plugins (TypeScript/Node.js)
-│   ├── project-health-auditor/    # 4 MCP tools
-│   ├── conversational-api-debugger/ # 4 MCP tools
-│   ├── domain-memory-agent/       # 6 MCP tools
-│   ├── design-to-code/            # 3 MCP tools
-│   └── workflow-orchestrator/     # 4 MCP tools
-├── marketplace/                    # Astro website (Node.js)
-│   ├── src/                       # Astro 5.14.5 + Tailwind 4
-│   └── dist/                      # Built site → GitHub Pages
-└── pnpm-workspace.yaml            # Workspace config
+├── plugins/
+│   ├── mcp/                       # MCP plugins (TypeScript/Node.js)
+│   │   ├── project-health-auditor/    # 4 MCP tools
+│   │   ├── conversational-api-debugger/ # 4 MCP tools
+│   │   ├── domain-memory-agent/       # 6 MCP tools
+│   │   ├── design-to-code/            # 3 MCP tools
+│   │   └── workflow-orchestrator/     # 4 MCP tools
+│   ├── examples/                  # Example/featured plugins
+│   ├── packages/                  # Plugin packs
+│   ├── community/                 # Community-contributed plugins
+│   ├── skill-enhancers/          # Skill automation plugins
+│   └── fairdb-operations-kit/    # Production database operations
+├── marketplace/                   # Astro website (Node.js)
+│   ├── src/                      # Astro 5.14.5 + Tailwind 4
+│   └── dist/                     # Built site → GitHub Pages
+├── scripts/                      # Build and validation scripts
+├── .github/workflows/            # CI/CD automation
+└── pnpm-workspace.yaml           # Workspace config
 ```
 
 ## Common Development Commands
@@ -111,6 +120,12 @@ cd plugins/mcp/[plugin-name]/ && pnpm test  # Specific plugin
 
 # Type checking:
 pnpm typecheck
+
+# Lint code:
+pnpm lint
+
+# Development mode (watch mode):
+pnpm dev
 ```
 
 ### Marketplace Website Development
@@ -126,6 +141,28 @@ npm run build
 
 # Preview production build:
 npm run preview
+
+# Generate missing plugin pages:
+node generate-missing-plugins.cjs
+
+# Generate plugin content:
+node generate-content.js
+```
+
+### Agent Skills Generation (v1.1.0+)
+
+```bash
+# Generate skills for next plugin in queue:
+./scripts/next-skill.sh
+
+# Generate skills using Gemini API (batch mode):
+python3 scripts/generate-skills-gemini.py
+
+# Generate skills using Vertex AI (safe mode with backups):
+python3 scripts/vertex-skills-generator-safe.py
+
+# Fix plugin manifests (remove invalid fields):
+./scripts/fix-manifests.sh
 ```
 
 ### Local Plugin Testing Workflow
@@ -163,6 +200,7 @@ EOF
 mkdir -p plugins/community/your-plugin/.claude-plugin
 mkdir -p plugins/community/your-plugin/commands  # If using commands
 mkdir -p plugins/community/your-plugin/agents    # If using agents
+mkdir -p plugins/community/your-plugin/skills/skill-adapter  # For Agent Skills
 ```
 
 2. **Create required files:**
@@ -246,6 +284,31 @@ plugin-name/
         └── server.json   # MCP server configuration
 ```
 
+### Agent Skills (v1.1.0+)
+
+- Model-invoked capabilities that activate automatically
+- Claude decides when to use based on conversation context
+- Placed in `skills/skill-adapter/SKILL.md`
+- Contains trigger phrases and workflow instructions
+
+**Agent Skills structure:**
+```
+plugin-name/
+└── skills/
+    └── skill-adapter/
+        └── SKILL.md      # Agent skill definition
+```
+
+**SKILL.md frontmatter:**
+```yaml
+---
+name: Skill Name
+description: |
+  What this skill does and when to use it.
+  Include trigger phrases for automatic activation.
+---
+```
+
 ## Critical Conventions
 
 ### Path Variables
@@ -271,7 +334,7 @@ find . -type f -name "*.sh" -exec chmod +x {} \;
 
 ### Plugin Categories
 
-Valid categories: `productivity`, `security`, `testing`, `deployment`, `documentation`, `analysis`, `integration`, `ai`, `devops`, `debugging`, `code-quality`, `design`, `example`, `api-development`, `database`, `crypto`, `performance`, `ai-ml`, `other`
+Valid categories: `productivity`, `security`, `testing`, `deployment`, `documentation`, `analysis`, `integration`, `ai`, `devops`, `debugging`, `code-quality`, `design`, `example`, `api-development`, `database`, `crypto`, `performance`, `ai-ml`, `skill-enhancers`, `other`
 
 ### Versioning
 
@@ -280,6 +343,12 @@ Follow semantic versioning (MAJOR.MINOR.PATCH):
 - `1.1.0` - New feature, backward compatible
 - `1.1.1` - Bug fix
 - `2.0.0` - Breaking change
+
+Version must be updated in:
+1. `VERSION` file (root)
+2. `package.json` (root)
+3. `marketplace.extended.json` (metadata.version)
+4. Individual plugin `plugin.json` files (when updating plugins)
 
 ## CI/CD Pipeline
 
@@ -307,6 +376,15 @@ Follow semantic versioning (MAJOR.MINOR.PATCH):
    - Creates GitHub releases with changelog
    - Semantic versioning tags
 
+4. **`.github/workflows/daily-skill-generator.yml`** (scheduled)
+   - Automated Agent Skills generation using Vertex AI
+   - Runs daily to process plugin queue
+   - Creates database backups before generation
+
+5. **`.github/workflows/security-audit.yml`** (security scanning)
+   - CodeQL analysis
+   - Dependency vulnerability scanning
+
 ### Pre-commit Checklist
 
 Before committing changes:
@@ -326,6 +404,11 @@ find . -name "*.json" -exec sh -c 'jq empty {}' \;
 
 # 5. Check for secrets:
 grep -r "password\|secret\|api_key" plugins/ | grep -v placeholder
+
+# 6. Update version numbers if needed:
+# - VERSION file
+# - package.json
+# - marketplace.extended.json (metadata.version)
 ```
 
 ## Common Issues & Troubleshooting
@@ -348,7 +431,7 @@ git commit --amend --no-edit
 2. Entry exists in `marketplace.extended.json`
 3. Ran `pnpm run sync-marketplace` after adding entry
 4. Plugin source path is correct relative to repo root
-5. At least one component directory exists (commands/, agents/, hooks/, mcp/, or scripts/)
+5. At least one component directory exists (commands/, agents/, hooks/, mcp/, skills/, or scripts/)
 
 ### Scripts Not Executing
 
@@ -373,6 +456,26 @@ git commit --amend --no-edit
 3. Wrong Node version → Use Node.js 20+
 4. Missing `@modelcontextprotocol/sdk` → Check package.json
 
+### Agent Skills Generation Issues
+
+**Common issues:**
+1. API key not configured → Set `GOOGLE_APPLICATION_CREDENTIALS` or Vertex AI credentials
+2. Database locked → Wait for current generation to complete
+3. Quota exceeded → Vertex AI has rate limits
+4. Invalid plugin structure → Ensure plugin has proper README.md and plugin.json
+
+**Recovery:**
+```bash
+# Check generation status:
+cat backups/skills_generation.db | sqlite3
+
+# Restart from backup:
+cp backups/skills_generation.db.backup backups/skills_generation.db
+
+# Process next plugin manually:
+./scripts/next-skill.sh
+```
+
 ## Security Requirements
 
 1. **Never hardcode secrets** - Use environment variables or user prompts
@@ -382,6 +485,7 @@ git commit --amend --no-edit
 5. **No destructive operations** without explicit user confirmation
 6. **All `.sh` files must be executable** - Enforced by CI
 7. **No private keys or AWS keys** - Blocks CI immediately
+8. **Agent Skills security** - Never include API keys or credentials in SKILL.md files
 
 ## File Structure Requirements
 
@@ -393,7 +497,7 @@ plugin-name/
 │   └── plugin.json              # REQUIRED: name, version, description, author
 ├── README.md                     # REQUIRED: Documentation with examples
 ├── LICENSE                       # REQUIRED: MIT or Apache-2.0 recommended
-└── [commands|agents|hooks|mcp|scripts]/  # At least one component
+└── [commands|agents|hooks|mcp|scripts|skills]/  # At least one component
 ```
 
 ### plugin.json Schema
@@ -425,6 +529,29 @@ model: sonnet
 # Command Title
 
 Detailed instructions for Claude...
+```
+
+### Agent Skills Markdown Format
+
+```markdown
+---
+name: Skill Name
+description: |
+  Brief description of what this skill does.
+  Include trigger phrases that activate this skill.
+---
+
+## How It Works
+Step-by-step explanation of the skill workflow
+
+## When to Use This Skill
+- Trigger phrase 1
+- Trigger phrase 2
+- Use case descriptions
+
+## Examples
+User: "trigger phrase"
+Skill activates → performs action → result
 ```
 
 ### Hooks Format
@@ -466,6 +593,9 @@ pnpm add dependency-name
 
 # Update all dependencies:
 pnpm update -r
+
+# Clean all node_modules:
+pnpm --filter '*' clean
 ```
 
 ## Marketplace Distribution
@@ -504,12 +634,13 @@ There is no monetization mechanism for Claude Code plugins. All plugins are free
 
 Claude Code plugins are in public beta. Features and best practices evolve. This marketplace stays updated with latest changes.
 
-### Two Plugin Types Coexist
+### Three Plugin Types Coexist
 
 - **AI Instruction Plugins:** Guide Claude's behavior through markdown templates (221 plugins)
 - **MCP Server Plugins:** Execute TypeScript/Node.js code in separate processes (5 plugins)
+- **Agent Skills:** Model-invoked capabilities that activate automatically (164 plugins equipped)
 
-Both are valid and fully functional approaches.
+All three types are valid and fully functional approaches. Plugins can bundle Skills, Commands, Agents, and MCP servers together.
 
 ## Resources
 
@@ -530,6 +661,9 @@ Both are valid and fully functional approaches.
 - **USER_SECURITY_GUIDE.md** - Safe plugin evaluation
 - **MCP-SERVERS-STATUS.md** - MCP plugin configurations
 - **CHANGELOG.md** - Version history
+- **SETUP.md** - Development environment setup
+- **scripts/PRODUCTION_SAFETY_GUIDE.md** - Production deployment guidelines
+- **scripts/SKILLS_AUTOMATION.md** - Agent Skills generation documentation
 
 ## Development Principles
 
@@ -540,14 +674,96 @@ When working in this repository:
 3. **Test locally first:** Use test marketplace pattern to verify plugins work
 4. **Executable scripts:** All `.sh` files need `chmod +x` (CI enforced)
 5. **JSON validation:** Use `jq empty file.json` to validate syntax
-6. **Frontmatter required:** All command/agent markdown files need YAML frontmatter
+6. **Frontmatter required:** All command/agent/skill markdown files need YAML frontmatter
 7. **Portable paths:** Always use `${CLAUDE_PLUGIN_ROOT}` in hooks
 8. **Documentation first:** Every plugin needs comprehensive README.md
 9. **Security conscious:** No hardcoded secrets, validate inputs, minimal permissions
 10. **Two-catalog awareness:** Edit `.extended.json` (source), generate `.json` (CLI)
+11. **Version consistency:** Update VERSION, package.json, and marketplace.extended.json together
+12. **Agent Skills best practices:** Include trigger phrases in descriptions, follow SKILL.md format
+
+## Key Workflows
+
+### Adding a Plugin with Agent Skills
+
+```bash
+# 1. Create plugin structure
+mkdir -p plugins/community/my-plugin/.claude-plugin
+mkdir -p plugins/community/my-plugin/commands
+mkdir -p plugins/community/my-plugin/skills/skill-adapter
+
+# 2. Create plugin.json, README.md, LICENSE, commands/
+
+# 3. Generate Agent Skill
+./scripts/next-skill.sh  # Interactive skill generation
+
+# 4. Update marketplace
+# Edit .claude-plugin/marketplace.extended.json
+pnpm run sync-marketplace
+
+# 5. Validate
+./scripts/validate-all.sh plugins/community/my-plugin/
+
+# 6. Test locally
+# Use test marketplace workflow
+
+# 7. Commit and PR
+git add .
+git commit -m "feat: add my-plugin with Agent Skills"
+```
+
+### Deploying Website Updates
+
+```bash
+# 1. Build marketplace website
+cd marketplace/
+npm run build
+
+# 2. Test locally
+npm run preview
+
+# 3. Commit changes
+git add dist/
+git commit -m "build: update marketplace website"
+
+# 4. Push to main (auto-deploys via GitHub Actions)
+git push origin main
+
+# 5. Verify deployment at https://claudecodeplugins.io/
+```
+
+### Creating a Release
+
+```bash
+# 1. Update version numbers
+echo "1.1.1" > VERSION
+# Edit package.json version field
+# Edit marketplace.extended.json metadata.version
+
+# 2. Update CHANGELOG.md
+# Add release notes for version 1.1.1
+
+# 3. Sync marketplace
+pnpm run sync-marketplace
+
+# 4. Validate everything
+./scripts/validate-all.sh
+
+# 5. Commit version bump
+git add VERSION package.json .claude-plugin/marketplace.extended.json .claude-plugin/marketplace.json CHANGELOG.md
+git commit -m "chore: bump version to 1.1.1"
+
+# 6. Create tag
+git tag -a v1.1.1 -m "Release v1.1.1"
+
+# 7. Push with tags
+git push origin main --tags
+
+# 8. GitHub Actions will create the release automatically
+```
 
 ---
 
 **Last Updated:** October 2025
-**Repository Version:** 1.0.39 (226 plugins)
+**Repository Version:** 1.0.43 (236 plugins, 164 with Agent Skills)
 **Status:** Active, accepting community contributions
