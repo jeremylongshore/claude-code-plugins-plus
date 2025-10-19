@@ -1,7 +1,7 @@
 ---
 name: fairdb-onboard-customer
 description: Complete customer onboarding workflow for FairDB PostgreSQL service
-model: opus
+model: sonnet
 ---
 
 # FairDB Customer Onboarding Workflow

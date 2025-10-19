@@ -1,7 +1,7 @@
 ---
 name: fairdb-setup-wizard
 description: Guided setup wizard for complete FairDB VPS configuration from scratch
-model: opus
+model: sonnet
 ---
 
 # FairDB Complete Setup Wizard

@@ -1,7 +1,7 @@
 ---
 name: incident-p0-database-down
 description: Emergency response procedure for SOP-201 P0 - Database Down (Critical)
-model: opus
+model: sonnet
 ---
 
 # SOP-201: P0 - Database Down (CRITICAL)

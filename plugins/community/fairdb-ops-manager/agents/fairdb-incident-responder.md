@@ -1,7 +1,7 @@
 ---
 name: fairdb-incident-responder
 description: Autonomous incident response agent for FairDB database emergencies
-model: opus
+model: sonnet
 ---
 
 # FairDB Incident Response Agent

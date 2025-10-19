@@ -1,7 +1,7 @@
 ---
 name: fairdb-emergency-response
 description: Emergency incident response procedures for critical FairDB issues
-model: opus
+model: sonnet
 ---
 
 # FairDB Emergency Incident Response

@@ -1,7 +1,7 @@
 ---
 name: fairdb-automation-agent
 description: Intelligent automation agent for FairDB PostgreSQL operations
-model: opus
+model: sonnet
 capabilities:
   - Proactive monitoring and alerting
   - Automated incident response

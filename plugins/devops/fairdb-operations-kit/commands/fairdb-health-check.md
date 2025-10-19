@@ -1,7 +1,7 @@
 ---
 name: fairdb-health-check
 description: Comprehensive health check for FairDB PostgreSQL infrastructure
-model: opus
+model: sonnet
 ---
 
 # FairDB System Health Check

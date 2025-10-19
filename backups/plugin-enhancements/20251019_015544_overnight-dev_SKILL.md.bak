@@ -1,0 +1,8 @@
+ERROR: (gcloud.ai.models) Invalid choice: 'generate-content'.
+Maybe you meant:
+  gcloud ai model-garden
+  gcloud ai models
+  gcloud ai-platform models
+
+To search the help text of gcloud commands, run:
+  gcloud help -- SEARCH_TERMS

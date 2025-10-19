@@ -1,7 +1,7 @@
 ---
 name: fairdb-setup-backup
 description: Configure pgBackRest with Wasabi S3 for automated PostgreSQL backups
-model: opus
+model: sonnet
 ---
 
 # FairDB pgBackRest Backup Configuration with Wasabi S3
