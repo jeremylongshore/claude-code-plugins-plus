@@ -1,13 +1,15 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.1.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-164%20plugins-orange?logo=sparkles)](CHANGELOG.md#110---2025-10-17)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-159%20plugins-orange?logo=sparkles)](CHANGELOG.md#120---2025-10-20)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **236 production-ready Claude Code plugins for automation, development, and AI workflows.**
-🎉 **NEW in v1.1.0:** 164 plugins now have **Agent Skills** that activate automatically!
+🎉 **NEW in v1.2.0:** 159 high-quality **Agent Skills** with production-grade batch processing!
+
+**Latest:** [v1.2.0 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.0) - 231 plugins enhanced, 100% success, $0 cost
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -18,11 +20,22 @@
 
 ---
 
-## 🆕 What's New in v1.1.0
+## 🆕 What's New in v1.2.0
 
-### 🤖 Agent Skills Now Available!
+### 🎯 Agent Skills Quality Enhancement
 
-**164 plugins equipped with intelligent Agent Skills** that automatically activate based on your conversation context. No commands to remember - just describe what you need and the right plugins activate automatically!
+**159 high-quality Agent Skills** generated via production-grade AI batch processing with Vertex AI Gemini 2.0 Flash. Achieved 100% success rate at $0 cost with comprehensive documentation.
+
+**Key Achievements:**
+- 231 plugins enhanced (98% of marketplace)
+- 100% success rate, zero failures
+- $0 processing cost (Vertex AI free tier)
+- 13 documentation files + 2 blog posts
+- Agent Skills 17x larger than Anthropic's examples
+
+**Technical Deep-Dives:**
+- 📖 [Batch Processing Implementation](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
+- 💼 [Systems Architecture](https://jeremylongshore.com/posts/scaling-ai-systems-production-batch-processing-with-built-in-disaster-recovery/)
 
 **How It Works:**
 - You mention: "I need to backup my database"
