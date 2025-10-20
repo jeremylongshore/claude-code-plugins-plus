@@ -1,0 +1,19 @@
+{
+  "name": "performance-test-suite",
+  "version": "1.0.0",
+  "description": "Load testing and performance benchmarking with metrics analysis and bottleneck identification",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "performance",
+    "load-testing",
+    "benchmarking",
+    "stress-testing",
+    "agent-skills"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "pci-dss-validator",
+  "version": "1.0.0",
+  "description": "Validate PCI DSS compliance",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ]
+}

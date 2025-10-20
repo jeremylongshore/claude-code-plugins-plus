@@ -1,0 +1,19 @@
+{
+  "name": "monitoring-stack-deployer",
+  "version": "1.0.0",
+  "description": "Deploy monitoring stacks (Prometheus, Grafana, Datadog)",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "monitoring",
+    "prometheus",
+    "grafana",
+    "observability",
+    "devops",
+    "agent-skills"
+  ]
+}

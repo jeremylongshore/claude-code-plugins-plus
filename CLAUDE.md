@@ -61,6 +61,9 @@ claude-code-plugins/
 │   ├── community/                 # Community-contributed plugins
 │   ├── skill-enhancers/          # Skill automation plugins
 │   └── fairdb-operations-kit/    # Production database operations
+│       ├── agents/                # Database health, emergency response
+│       ├── commands/              # Setup, onboarding workflows
+│       └── skills/                # Automated database management
 ├── marketplace/                   # Astro website (Node.js)
 │   ├── src/                      # Astro 5.14.5 + Tailwind 4
 │   └── dist/                     # Built site → GitHub Pages
@@ -165,6 +168,22 @@ python3 scripts/vertex-skills-generator-safe.py
 ./scripts/fix-manifests.sh
 ```
 
+### FairDB Operations (Production Database Plugin)
+
+```bash
+# Health check for PostgreSQL infrastructure:
+/fairdb-operations-kit:fairdb-health-check
+
+# Emergency incident response:
+/fairdb-operations-kit:fairdb-emergency-response
+
+# Configure pgBackRest with Wasabi S3 backups:
+/fairdb-operations-kit:fairdb-setup-backup
+
+# Complete customer onboarding workflow:
+/fairdb-operations-kit:fairdb-onboard-customer
+```
+
 ### Local Plugin Testing Workflow
 
 ```bash
@@ -258,9 +277,11 @@ jq '.plugins[] | select(.name == "your-plugin")' .claude-plugin/marketplace.json
 ---
 name: command-name
 description: What this does
-model: sonnet  # or opus, haiku
+model: sonnet  # or haiku
 ---
 ```
+
+**Important:** As of v1.0.46, the `opus` model identifier has been deprecated. Use `sonnet` for production plugins requiring advanced reasoning, or `haiku` for simple tasks.
 
 ### MCP Server Plugins (5 plugins)
 
@@ -385,6 +406,15 @@ Version must be updated in:
    - CodeQL analysis
    - Dependency vulnerability scanning
 
+6. **`.github/workflows/automerge.yml`** (automated PR merging)
+   - Auto-merges dependabot PRs after CI passes
+   - Reduces maintenance overhead for dependency updates
+
+7. **`.github/workflows/maintainer-ready-automerge.yml`** (maintainer workflow)
+   - Auto-merges PRs labeled "maintainer-ready"
+   - Requires all CI checks to pass
+   - Streamlines approved PR merging
+
 ### Pre-commit Checklist
 
 Before committing changes:
@@ -409,6 +439,10 @@ grep -r "password\|secret\|api_key" plugins/ | grep -v placeholder
 # - VERSION file
 # - package.json
 # - marketplace.extended.json (metadata.version)
+
+# 7. Verify model identifiers (no 'opus'):
+grep -r "model: opus" plugins/ commands/ agents/
+# Should return empty - replace with 'sonnet' if found
 ```
 
 ## Common Issues & Troubleshooting
@@ -474,6 +508,29 @@ cp backups/skills_generation.db.backup backups/skills_generation.db
 
 # Process next plugin manually:
 ./scripts/next-skill.sh
+```
+
+### Invalid Model Identifier Errors
+
+**Error:** Plugin fails with "Invalid model: opus"
+
+**Solution:**
+The `opus` model identifier was deprecated in v1.0.46. Update your plugin frontmatter:
+
+```bash
+# Find all instances:
+grep -r "model: opus" plugins/
+
+# Replace with:
+model: sonnet  # For advanced reasoning tasks
+# or
+model: haiku   # For simple, fast tasks
+```
+
+After updating, validate and sync:
+```bash
+./scripts/validate-all.sh
+pnpm run sync-marketplace
 ```
 
 ## Security Requirements
@@ -765,5 +822,6 @@ git push origin main --tags
 ---
 
 **Last Updated:** October 2025
-**Repository Version:** 1.0.43 (236 plugins, 164 with Agent Skills)
+**Repository Version:** 1.0.46 (236 plugins, 164 with Agent Skills)
 **Status:** Active, accepting community contributions
+**Recent Changes:** Model standardization (opus→sonnet), FairDB Operations Kit added, automerge workflows

@@ -1,0 +1,22 @@
+{
+  "name": "cross-chain-bridge-monitor",
+  "version": "1.0.0",
+  "description": "Monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "crypto",
+    "cross-chain",
+    "bridge",
+    "security",
+    "monitoring",
+    "layer2",
+    "multichain",
+    "defi"
+  ]
+}

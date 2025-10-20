@@ -33,15 +33,19 @@ from vertexai.generative_models import GenerativeModel, SafetySetting, Part
 # Configuration
 PROJECT_ID = "ccpi-web-app-prod"
 LOCATION = "us-central1"
-RATE_LIMIT_DELAY = 90.0  # 90 seconds base delay (ultra-conservative)
-RATE_LIMIT_RANDOMNESS = 30.0  # Add 0-30 seconds random variation
+RATE_LIMIT_DELAY = 45.0  # 45 seconds base delay (conservative but faster)
+RATE_LIMIT_RANDOMNESS = 15.0  # Add 0-15 seconds random variation
 MAX_RETRIES = 3
 BACKUP_DIR = Path(__file__).parent.parent / 'backups' / 'plugin-enhancements'
 DB_PATH = BACKUP_DIR / 'enhancements.db'
 STANDARDS_DOC = Path(__file__).parent.parent / 'claudes-docs' / 'anthropic-skills-comparison-2025-10-19.md'
 
-# Plugin categories to process
-CATEGORIES = ['productivity', 'security', 'testing', 'packages', 'examples', 'community', 'mcp']
+# Plugin categories to process (ALL CATEGORIES - 236 plugins)
+CATEGORIES = [
+    'productivity', 'security', 'testing', 'packages', 'examples', 'community', 'mcp',
+    'ai-agency', 'ai-ml', 'api-development', 'crypto', 'database', 'devops',
+    'fairdb-operations-kit', 'finance', 'performance', 'skill-enhancers'
+]
 
 class PluginEnhancer:
     def __init__(self):

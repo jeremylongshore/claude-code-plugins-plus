@@ -1,0 +1,124 @@
+{
+  "description": "Automatically formats code files after editing using Prettier, demonstrating best practices for PostToolUse hooks and event-driven automation",
+  "version": "2.0.0",
+  "author": "claude-code-examples",
+  "lastUpdated": "2025-10-11",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "description": "Auto-format code files after Write or Edit operations",
+        "matcher": "Write|Edit",
+        "priority": 100,
+        "enabled": true,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format.sh",
+            "description": "Runs Prettier formatter on supported file types (JS, TS, JSON, CSS, MD)",
+            "timeout": 5000,
+            "continueOnError": true,
+            "environment": {
+              "NODE_ENV": "production",
+              "PRETTIER_CONFIG": "${CLAUDE_PLUGIN_ROOT}/config/.prettierrc"
+            }
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "description": "Optional: Validate file format before editing (disabled by default)",
+        "matcher": "Edit",
+        "priority": 50,
+        "enabled": false,
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-format.sh",
+            "description": "Checks if file is already formatted to avoid unnecessary changes",
+            "timeout": 3000,
+            "continueOnError": true
+          }
+        ]
+      }
+    ]
+  },
+  "configuration": {
+    "supportedExtensions": [
+      ".js", ".jsx", ".ts", ".tsx", ".json",
+      ".css", ".scss", ".less", ".md", ".mdx",
+      ".yaml", ".yml", ".html", ".vue", ".svelte"
+    ],
+    "prettierOptions": {
+      "semi": true,
+      "singleQuote": true,
+      "tabWidth": 2,
+      "trailingComma": "es5",
+      "printWidth": 100,
+      "bracketSpacing": true,
+      "arrowParens": "avoid"
+    },
+    "excludePatterns": [
+      "node_modules/**",
+      "dist/**",
+      "build/**",
+      "*.min.js",
+      "*.min.css",
+      "vendor/**"
+    ]
+  },
+  "troubleshooting": {
+    "commonIssues": [
+      {
+        "issue": "Formatter not running",
+        "solutions": [
+          "Ensure Node.js is installed: node --version",
+          "Check if npx is available: which npx",
+          "Verify script permissions: ls -la scripts/format.sh",
+          "Check hook is enabled in this config"
+        ]
+      },
+      {
+        "issue": "Files not formatting correctly",
+        "solutions": [
+          "Check if Prettier is installed globally or locally",
+          "Verify file type is supported",
+          "Check for .prettierignore file blocking formatting",
+          "Look for syntax errors preventing formatting"
+        ]
+      },
+      {
+        "issue": "Performance issues",
+        "solutions": [
+          "Consider disabling for large files",
+          "Adjust timeout value if needed",
+          "Use excludePatterns to skip unnecessary files"
+        ]
+      }
+    ],
+    "debugMode": {
+      "enable": "export FORMATTER_DEBUG=true",
+      "logLocation": "${CLAUDE_PLUGIN_ROOT}/logs/formatter.log"
+    }
+  },
+  "examples": [
+    {
+      "scenario": "Format JavaScript file after editing",
+      "trigger": "Claude uses Edit tool on app.js",
+      "action": "PostToolUse hook triggers format.sh",
+      "result": "app.js is formatted with Prettier"
+    },
+    {
+      "scenario": "Create new React component",
+      "trigger": "Claude uses Write tool to create Button.jsx",
+      "action": "PostToolUse hook triggers after file creation",
+      "result": "Button.jsx is automatically formatted"
+    },
+    {
+      "scenario": "Edit configuration file",
+      "trigger": "Claude edits package.json",
+      "action": "PostToolUse hook formats JSON",
+      "result": "package.json has consistent formatting"
+    }
+  ]
+}

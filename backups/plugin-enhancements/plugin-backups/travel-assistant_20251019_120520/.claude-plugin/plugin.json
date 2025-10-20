@@ -1,0 +1,25 @@
+{
+  "name": "travel-assistant",
+  "version": "1.0.0",
+  "description": "Intelligent travel assistant with real-time weather, currency conversion, timezone info, and AI-powered itinerary planning. Your complete travel companion.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "travel",
+    "weather",
+    "currency",
+    "timezone",
+    "itinerary",
+    "vacation",
+    "trip-planning",
+    "ai-travel",
+    "real-time",
+    "api-integration",
+    "budget",
+    "packing-list"
+  ]
+}

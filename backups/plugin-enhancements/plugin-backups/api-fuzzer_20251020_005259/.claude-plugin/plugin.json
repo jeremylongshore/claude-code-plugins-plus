@@ -1,0 +1,20 @@
+{
+  "name": "api-fuzzer",
+  "version": "1.0.0",
+  "description": "Fuzz testing for APIs with malformed inputs, edge cases, and security vulnerability detection",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "fuzzing",
+    "api",
+    "security",
+    "edge-cases",
+    "input-validation",
+    "agent-skills"
+  ]
+}

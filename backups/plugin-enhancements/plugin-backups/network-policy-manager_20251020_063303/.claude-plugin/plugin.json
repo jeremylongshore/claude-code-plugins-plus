@@ -1,0 +1,19 @@
+{
+  "name": "network-policy-manager",
+  "version": "1.0.0",
+  "description": "Manage Kubernetes network policies and firewall rules",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "network-policy",
+    "security",
+    "kubernetes",
+    "firewall",
+    "devops",
+    "agent-skills"
+  ]
+}

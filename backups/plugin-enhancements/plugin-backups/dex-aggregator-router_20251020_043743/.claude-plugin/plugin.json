@@ -1,0 +1,19 @@
+{
+  "name": "dex-aggregator-router",
+  "version": "1.0.0",
+  "description": "Find optimal DEX routes for token swaps across multiple exchanges",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "dex",
+    "swap",
+    "trading",
+    "defi",
+    "aggregator",
+    "routing"
+  ]
+}

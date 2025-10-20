@@ -1,0 +1,13 @@
+{
+  "name": "on-chain-analytics",
+  "version": "1.0.0",
+  "description": "Analyze on-chain metrics including whale movements, network activity, and holder distribution",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["on-chain", "analytics", "whale", "metrics", "blockchain"]
+}

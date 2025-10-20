@@ -1,0 +1,20 @@
+{
+  "name": "api-test-automation",
+  "version": "1.0.0",
+  "description": "Automated API endpoint testing with request generation, validation, and comprehensive test coverage",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "api",
+    "rest",
+    "graphql",
+    "automation",
+    "endpoints",
+    "agent-skills"
+  ]
+}

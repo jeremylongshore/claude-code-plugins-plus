@@ -1,0 +1,17 @@
+{
+  "name": "database-deadlock-detector",
+  "version": "1.0.0",
+  "description": "Database plugin for database-deadlock-detector",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "backend",
+    "deadlock",
+    "agent-skills"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "penetration-tester",
+  "version": "1.0.0",
+  "description": "Automated penetration testing for web applications with OWASP Top 10 coverage",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "penetration-testing",
+    "pentesting",
+    "owasp",
+    "exploitation",
+    "agent-skills"
+  ],
+  "capabilities": [
+    "penetration-testing",
+    "vulnerability-exploitation",
+    "security-assessment"
+  ]
+}

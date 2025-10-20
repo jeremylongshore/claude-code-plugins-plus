@@ -1,0 +1,20 @@
+{
+  "name": "chaos-engineering-toolkit",
+  "version": "1.0.0",
+  "description": "Chaos testing for resilience with failure injection, latency simulation, and system resilience validation",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "chaos-engineering",
+    "resilience",
+    "failure-injection",
+    "fault-tolerance",
+    "reliability",
+    "agent-skills"
+  ]
+}

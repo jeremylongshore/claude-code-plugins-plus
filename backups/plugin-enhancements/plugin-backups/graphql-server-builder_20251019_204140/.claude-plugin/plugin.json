@@ -1,0 +1,12 @@
+{
+  "name": "graphql-server-builder",
+  "version": "1.0.0",
+  "description": "Build GraphQL servers with schema-first design, resolvers, and subscriptions",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["graphql", "api", "server", "apollo", "schema", "resolvers"]
+}

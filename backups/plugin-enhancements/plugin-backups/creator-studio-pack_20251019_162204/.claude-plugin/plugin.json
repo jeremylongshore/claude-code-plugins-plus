@@ -1,0 +1,60 @@
+{
+  "name": "creator-studio-pack",
+  "version": "1.0.0",
+  "description": "Complete plugin suite for builder-filmmakers: Build products AND create viral videos explaining them. 20 plugins covering documentation, video production, content strategy, and workflow optimization.",
+  "keywords": [
+    "video",
+    "content creation",
+    "youtube",
+    "filmmaking",
+    "creator",
+    "documentation",
+    "screencast",
+    "tutorial",
+    "video editing",
+    "content strategy",
+    "distribution",
+    "thumbnails",
+    "subtitles",
+    "repurposing",
+    "batch recording",
+    "analytics"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremylongshore@gmail.com"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "pricing": {
+    "model": "one-time",
+    "price": 149,
+    "currency": "USD"
+  },
+  "features": [
+    "Auto-document builds with build-logger-agent",
+    "AI-assisted video editing via DaVinci Resolve",
+    "Generate YouTube thumbnails automatically",
+    "Optimize titles for CTR with A/B testing",
+    "Distribute to 8+ platforms with one command",
+    "Repurpose 1 video into 30+ content pieces",
+    "Batch record multiple videos efficiently",
+    "Track analytics and optimize strategy"
+  ],
+  "requirements": {
+    "claude_code": ">=1.0.0",
+    "optional_integrations": [
+      "DaVinci Resolve API",
+      "FFmpeg",
+      "YouTube API",
+      "Twitter API",
+      "LinkedIn API"
+    ]
+  },
+  "components": {
+    "agents": 10,
+    "commands": 10,
+    "hooks": 0,
+    "scripts": 5
+  }
+}

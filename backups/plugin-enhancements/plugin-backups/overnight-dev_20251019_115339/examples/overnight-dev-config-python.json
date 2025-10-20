@@ -1,0 +1,11 @@
+{
+  "name": "Python Example Configuration",
+  "testCommand": "pytest --cov=. --cov-report=term-missing --cov-fail-under=80",
+  "lintCommand": "flake8 . && black --check . && mypy .",
+  "requireCoverage": true,
+  "minCoverage": 80,
+  "autoFix": false,
+  "maxAttempts": 50,
+  "stopOnMorning": true,
+  "morningHour": 7
+}

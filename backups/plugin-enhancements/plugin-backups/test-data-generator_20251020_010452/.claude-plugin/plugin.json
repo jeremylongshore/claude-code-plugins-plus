@@ -1,0 +1,19 @@
+{
+  "name": "test-data-generator",
+  "version": "1.0.0",
+  "description": "Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "test-data",
+    "fake-data",
+    "fixtures",
+    "factory",
+    "agent-skills"
+  ]
+}

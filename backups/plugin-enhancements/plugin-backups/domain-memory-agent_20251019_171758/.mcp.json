@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "knowledge-base": {
+      "command": "node",
+      "args": ["dist/servers/knowledge-base.js"]
+    }
+  }
+}

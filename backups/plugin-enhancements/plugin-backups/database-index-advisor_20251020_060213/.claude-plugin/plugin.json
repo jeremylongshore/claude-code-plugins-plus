@@ -1,0 +1,18 @@
+{
+  "name": "database-index-advisor",
+  "version": "1.0.0",
+  "description": "Analyze query patterns and recommend optimal database indexes with impact analysis",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "indexes",
+    "optimization",
+    "performance",
+    "agent-skills"
+  ]
+}

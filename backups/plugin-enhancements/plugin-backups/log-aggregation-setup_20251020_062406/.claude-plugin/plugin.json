@@ -1,0 +1,20 @@
+{
+  "name": "log-aggregation-setup",
+  "version": "1.0.0",
+  "description": "Set up log aggregation (ELK, Loki, Splunk)",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "logging",
+    "elk",
+    "loki",
+    "splunk",
+    "observability",
+    "devops",
+    "agent-skills"
+  ]
+}

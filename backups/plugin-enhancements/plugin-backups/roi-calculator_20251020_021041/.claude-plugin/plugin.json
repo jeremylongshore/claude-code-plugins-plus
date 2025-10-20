@@ -1,0 +1,13 @@
+{
+  "name": "roi-calculator",
+  "version": "1.0.0",
+  "description": "Calculate and present ROI for AI automation projects",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "categories": ["ai-agency", "sales", "business"],
+  "keywords": ["roi", "return on investment", "calculator", "sales", "value", "ai-agency"]
+}

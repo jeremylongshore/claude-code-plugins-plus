@@ -1,0 +1,22 @@
+{
+  "name": "workflow-orchestrator",
+  "version": "1.0.0",
+  "description": "Orchestrate complex workflows with DAG-based execution, parallel tasks, and run history tracking",
+  "author": {
+    "name": "Intent Solutions",
+    "url": "https://intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "orchestration",
+    "dag",
+    "automation",
+    "parallel",
+    "mcp"
+  ],
+  "mcp": {
+    "server": "servers/workflow-engine.ts"
+  }
+}

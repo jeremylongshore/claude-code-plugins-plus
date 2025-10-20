@@ -1,0 +1,20 @@
+{
+  "name": "ai-commit-gen",
+  "version": "1.0.0",
+  "description": "AI-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit",
+    "conventional-commits",
+    "ai",
+    "automation",
+    "productivity",
+    "devops"
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "name": "ai-ml-engineering-pack",
+  "version": "1.0.0",
+  "description": "Professional AI/ML Engineering toolkit: Prompt engineering, LLM integration, RAG systems, AI safety with 12 expert plugins",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://github.com/jeremylongshore"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "homepage": "https://claudecodeplugins.io/",
+  "license": "MIT",
+  "keywords": [
+    "ai",
+    "ml",
+    "llm",
+    "prompt-engineering",
+    "rag",
+    "vector-database",
+    "ai-safety",
+    "openai",
+    "anthropic",
+    "claude",
+    "gpt",
+    "embeddings",
+    "semantic-search",
+    "prompt-injection",
+    "cost-optimization",
+    "agent-skills"
+  ],
+  "categories": [
+    "ai",
+    "ml",
+    "prompt-engineering",
+    "rag",
+    "security"
+  ],
+  "plugins": [
+    {
+      "name": "prompt-architect",
+      "type": "agent",
+      "path": "plugins/01-prompt-engineering/agents/prompt-architect.md"
+    },
+    {
+      "name": "prompt-optimizer",
+      "type": "agent",
+      "path": "plugins/01-prompt-engineering/agents/prompt-optimizer.md"
+    },
+    {
+      "name": "prompt-template-gen",
+      "type": "command",
+      "shortcut": "ptg",
+      "path": "plugins/01-prompt-engineering/commands/prompt-template-gen.md"
+    },
+    {
+      "name": "llm-integration-expert",
+      "type": "agent",
+      "path": "plugins/02-llm-integration/agents/llm-integration-expert.md"
+    },
+    {
+      "name": "model-selector",
+      "type": "agent",
+      "path": "plugins/02-llm-integration/agents/model-selector.md"
+    },
+    {
+      "name": "llm-api-scaffold",
+      "type": "command",
+      "shortcut": "las",
+      "path": "plugins/02-llm-integration/commands/llm-api-scaffold.md"
+    },
+    {
+      "name": "rag-architect",
+      "type": "agent",
+      "path": "plugins/03-rag-systems/agents/rag-architect.md"
+    },
+    {
+      "name": "vector-db-expert",
+      "type": "agent",
+      "path": "plugins/03-rag-systems/agents/vector-db-expert.md"
+    },
+    {
+      "name": "rag-pipeline-gen",
+      "type": "command",
+      "shortcut": "rpg",
+      "path": "plugins/03-rag-systems/commands/rag-pipeline-gen.md"
+    },
+    {
+      "name": "ai-safety-expert",
+      "type": "agent",
+      "path": "plugins/04-ai-safety/agents/ai-safety-expert.md"
+    },
+    {
+      "name": "prompt-injection-defender",
+      "type": "agent",
+      "path": "plugins/04-ai-safety/agents/prompt-injection-defender.md"
+    },
+    {
+      "name": "ai-monitoring-setup",
+      "type": "command",
+      "shortcut": "ams",
+      "path": "plugins/04-ai-safety/commands/ai-monitoring-setup.md"
+    }
+  ],
+  "documentation": {
+    "readme": "README.md"
+  },
+  "requirements": {
+    "claudeCode": ">=0.1.0",
+    "optional": {
+      "python": ">=3.10",
+      "nodejs": ">=18.0.0",
+      "docker": ">=20.10"
+    }
+  }
+}

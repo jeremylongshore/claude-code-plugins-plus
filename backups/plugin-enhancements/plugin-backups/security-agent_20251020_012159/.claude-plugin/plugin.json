@@ -1,0 +1,17 @@
+{
+  "name": "security-agent",
+  "version": "1.0.0",
+  "description": "Specialized security review subagent",
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "agent",
+    "code-review",
+    "vulnerability",
+    "agent-skills"
+  ],
+  "agents": "./agents/"
+}

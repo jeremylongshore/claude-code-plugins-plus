@@ -1,0 +1,12 @@
+{
+  "name": "api-migration-tool",
+  "version": "1.0.0",
+  "description": "Migrate APIs between versions with backward compatibility",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["migration", "versioning", "api", "backward-compatibility"]
+}

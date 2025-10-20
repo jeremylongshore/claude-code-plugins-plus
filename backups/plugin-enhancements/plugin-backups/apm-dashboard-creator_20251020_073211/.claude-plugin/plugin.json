@@ -1,0 +1,19 @@
+{
+  "name": "apm-dashboard-creator",
+  "version": "1.0.0",
+  "description": "Create Application Performance Monitoring dashboards",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "apm",
+    "monitoring",
+    "dashboard",
+    "grafana",
+    "datadog",
+    "agent-skills"
+  ]
+}

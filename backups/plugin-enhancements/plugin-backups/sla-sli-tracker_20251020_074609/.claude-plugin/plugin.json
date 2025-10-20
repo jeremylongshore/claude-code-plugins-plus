@@ -1,0 +1,19 @@
+{
+  "name": "sla-sli-tracker",
+  "version": "1.0.0",
+  "description": "Track SLAs, SLIs, and SLOs for service reliability",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "sla",
+    "sli",
+    "slo",
+    "sre",
+    "reliability",
+    "agent-skills"
+  ]
+}

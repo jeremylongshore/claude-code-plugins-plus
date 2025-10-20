@@ -1,0 +1,22 @@
+{
+  "name": "mobile-app-tester",
+  "version": "1.0.0",
+  "description": "Mobile app test automation with Appium, Detox, XCUITest - test iOS and Android apps",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "mobile",
+    "appium",
+    "detox",
+    "xcuitest",
+    "espresso",
+    "ios",
+    "android",
+    "agent-skills"
+  ]
+}

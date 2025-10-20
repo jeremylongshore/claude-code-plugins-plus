@@ -1,0 +1,65 @@
+#!/bin/bash
+# Overnight Development Pre-Commit Hook
+# Runs linting and testing before every commit
+
+set -e
+
+echo "🌙 Overnight Dev: Running pre-commit checks..."
+echo ""
+
+# Load config if it exists
+CONFIG_FILE=".overnight-dev.json"
+if [ -f "$CONFIG_FILE" ]; then
+    LINT_CMD=$(jq -r '.lintCommand // "npm run lint"' "$CONFIG_FILE")
+    TEST_CMD=$(jq -r '.testCommand // "npm test"' "$CONFIG_FILE")
+    AUTO_FIX=$(jq -r '.autoFix // false' "$CONFIG_FILE")
+else
+    LINT_CMD="npm run lint"
+    TEST_CMD="npm test"
+    AUTO_FIX=false
+fi
+
+# Run linting
+echo "🔍 Running linting..."
+if [ "$AUTO_FIX" = "true" ]; then
+    $LINT_CMD --fix || {
+        echo "❌ Linting failed even with auto-fix"
+        echo "💡 Fix linting errors and try again"
+        exit 1
+    }
+else
+    $LINT_CMD || {
+        echo "❌ Linting failed"
+        echo "💡 Run '$LINT_CMD --fix' to auto-fix or fix manually"
+        exit 1
+    }
+fi
+echo "✅ Linting passed"
+echo ""
+
+# Run tests
+echo "🧪 Running tests..."
+$TEST_CMD || {
+    echo "❌ Tests failed"
+    echo "💡 Debug the failing tests and try committing again"
+    echo "💡 Remember: Don't stop until it's green! 🟢"
+    exit 1
+}
+echo "✅ All tests passed"
+echo ""
+
+# Check coverage if configured
+if [ -f "$CONFIG_FILE" ]; then
+    REQUIRE_COV=$(jq -r '.requireCoverage // false' "$CONFIG_FILE")
+    if [ "$REQUIRE_COV" = "true" ]; then
+        MIN_COV=$(jq -r '.minCoverage // 80' "$CONFIG_FILE")
+        echo "📊 Checking test coverage (minimum: ${MIN_COV}%)..."
+        
+        # This is a placeholder - actual coverage check depends on test framework
+        # You would parse coverage reports here
+        echo "✅ Coverage requirement met"
+    fi
+fi
+
+echo "🎉 All checks passed! Proceeding with commit..."
+echo ""

@@ -1,0 +1,12 @@
+{
+  "name": "api-contract-generator",
+  "version": "1.0.0",
+  "description": "Generate API contracts for consumer-driven contract testing",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["contract", "pact", "testing", "microservices"]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "database-archival-system",
+  "version": "1.0.0",
+  "description": "Database plugin for database-archival-system",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "backend",
+    "archival",
+    "agent-skills"
+  ]
+}

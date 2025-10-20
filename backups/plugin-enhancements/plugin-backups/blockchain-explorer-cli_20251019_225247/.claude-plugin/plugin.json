@@ -1,0 +1,19 @@
+{
+  "name": "blockchain-explorer-cli",
+  "version": "1.0.0",
+  "description": "Command-line blockchain explorer for transactions, addresses, and contracts",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "blockchain",
+    "explorer",
+    "etherscan",
+    "transactions",
+    "addresses",
+    "contracts"
+  ]
+}

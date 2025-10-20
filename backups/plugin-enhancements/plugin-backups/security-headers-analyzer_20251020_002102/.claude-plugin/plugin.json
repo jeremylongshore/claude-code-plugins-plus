@@ -1,0 +1,17 @@
+{
+  "name": "security-headers-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze HTTP security headers",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ]
+}
