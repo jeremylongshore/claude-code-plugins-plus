@@ -19,6 +19,33 @@ Special thanks to the community for 100+ ⭐ GitHub stars!
 - **$0 processing cost** (Vertex AI free tier)
 - **99.4% YAML validation pass rate**
 
+### 🧠 Understanding Agent Skills
+
+**What Are Agent Skills?**
+
+Agent Skills are automatic capabilities that Claude activates based on your conversation context - no slash commands needed!
+
+**File Structure:**
+```
+your-plugin/
+└── skills/
+    └── skill-adapter/
+        └── SKILL.md       # Agent skill definition
+```
+
+**How It Works:**
+1. Install plugin: `/plugin install postgres-backup-pro@claude-code-plugins-plus`
+2. Mention need: "I need to backup my production database"
+3. Claude automatically activates the relevant skill and guides you through the workflow
+4. Get expert help with multi-phase workflows, code examples, and best practices
+
+**Key Difference: Skills vs Commands**
+- Commands: Manual activation with `/command-name`
+- Skills: Automatic activation when Claude detects relevant context
+- Result: More natural, conversational development workflow
+
+See README for full educational guide with examples.
+
 **Production Infrastructure:**
 - Smart rate limiting (45-60s per plugin with 71.6% API quota remaining)
 - SQLite audit trail with complete compliance tracking
