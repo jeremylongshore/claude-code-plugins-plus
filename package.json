@@ -23,7 +23,7 @@
     "@types/node": "^20.19.21",
     "typescript": "^5.5.0",
     "vitest": "^2.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^9.38.0",
     "prettier": "^3.3.0"
   }
 }
