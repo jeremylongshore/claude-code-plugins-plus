@@ -1,79 +1,119 @@
 version: 2
 updates:
-  # Root npm dependencies
+  # Root npm dependencies - GROUPED
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 3
     rebase-strategy: "auto"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    groups:
+      dependencies:
+        patterns:
+          - "*"
 
-  # Marketplace
+  # Marketplace - GROUPED
   - package-ecosystem: "npm"
     directory: "/marketplace"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     rebase-strategy: "auto"
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
+    groups:
+      marketplace-dependencies:
+        patterns:
+          - "*"
 
-  # MCP Plugins
+  # MCP Plugins - GROUPED
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/project-health-auditor"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/conversational-api-debugger"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/domain-memory-agent"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/design-to-code"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/workflow-orchestrator"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/mcp/ai-experiment-logger"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/plugins/devops/sugar/mcp-server"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 2
     rebase-strategy: "auto"
+    groups:
+      mcp-dependencies:
+        patterns:
+          - "*"
 
-  # GitHub Actions
+  # GitHub Actions - GROUPED
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
