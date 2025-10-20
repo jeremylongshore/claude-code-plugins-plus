@@ -164,38 +164,6 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ---
 
-## 🆕 What's New
-
-### 🎯 PI Pathfinder - Never Pick Plugins Again
-**FEATURED:** Finds the path through all 229 plugins automatically.
-
-**The Problem:** You installed plugins because they're useful. But which one do you use? Who remembers all 229?
-
-**The Solution:** PI Pathfinder automatically:
-- ✅ Analyzes your task in plain English
-- ✅ Searches your installed plugins
-- ✅ Picks the best one(s) automatically
-- ✅ Extracts their skills on-the-fly
-- ✅ Applies them to your problem
-- ✅ Done - zero thinking from you
-
-```bash
-/plugin install pi-pathfinder@claude-code-plugins-plus
-
-# Then just say what you want:
-"Check my code for security issues"
-"Deploy my app"
-"Generate API docs"
-
-# PI Pathfinder picks, extracts skills, runs it. Easy mode: ON 🎯
-```
-
-**Part of our initiative to update all plugins with appropriate Agent Skills for their missions.**
-
-[Read more about PI Pathfinder →](plugins/examples/pi-pathfinder/)
-
----
-
 ## 🎓 Understanding Agent Skills
 
 **What are Agent Skills?** They're instruction manuals that teach Claude Code **when** and **how** to use your installed plugins automatically.
