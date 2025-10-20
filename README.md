@@ -31,27 +31,83 @@
 - 100% success rate, zero failures
 - $0 processing cost (Vertex AI free tier)
 - 13 documentation files + 2 blog posts
-- Agent Skills 17x larger than Anthropic's examples
+- Agent Skills 17x larger than Anthropic's examples (3,210 bytes avg vs 500 bytes)
 
 **Technical Deep-Dives:**
 - 📖 [Batch Processing Implementation](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
 - 💼 [Systems Architecture](https://jeremylongshore.com/posts/scaling-ai-systems-production-batch-processing-with-built-in-disaster-recovery/)
 
-**How It Works:**
-- You mention: "I need to backup my database"
-- Agent Skill activates: Database Backup Automator
-- You get expert help instantly - zero commands needed!
+### 🧠 How Agent Skills Work
 
-**Categories with Agent Skills:**
-- ✅ 30 DevOps plugins - Infrastructure, CI/CD, deployments
-- ✅ 27 AI/ML plugins - Model training, data pipelines
+Agent Skills are **automatic capabilities** that Claude activates based on your conversation context - no commands needed!
+
+**File Structure:**
+```
+your-plugin/
+└── skills/
+    └── skill-adapter/
+        └── SKILL.md       # Agent skill definition
+```
+
+**SKILL.md Format:**
+```markdown
+---
+name: Database Backup Automator
+description: |
+  Automatically handles database backup operations when user mentions
+  backup, restore, or data protection needs.
+---
+
+## What This Skill Does
+Multi-phase database backup workflow with validation...
+
+## When It Activates
+- "I need to backup my database"
+- "How do I restore from backup?"
+- "Set up automated backups"
+```
+
+**How It Works in Practice:**
+
+1. **You install a plugin:**
+   ```bash
+   /plugin install postgres-backup-pro@claude-code-plugins-plus
+   ```
+
+2. **You mention your need naturally:**
+   > "I need to backup my production PostgreSQL database before the migration"
+
+3. **Claude automatically:**
+   - Detects the backup skill is relevant
+   - Activates `Database Backup Automator` skill
+   - Guides you through: connection → backup → verification → storage
+   - No slash commands needed!
+
+4. **You get expert help:**
+   - Multi-phase workflows (analysis → execution → validation)
+   - Code examples and error handling
+   - Best practices built-in
+   - Context-aware recommendations
+
+**Key Difference from Commands:**
+- **Commands:** You type `/backup-database` explicitly
+- **Skills:** Claude recognizes "I need to backup" and helps automatically
+- **Result:** More natural, conversational development workflow
+
+**Categories with 100% Agent Skills Coverage:**
+- ✅ 27 AI/ML plugins - Model training, data pipelines, MLOps
 - ✅ 25 Database plugins - Migrations, optimization, backups
-- ✅ 25 Security plugins - Compliance, vulnerability scanning
-- ✅ 25 Performance plugins - Monitoring, profiling
-- ✅ 22 Testing plugins - E2E, integration, load testing
-- ✅ Plus API development, crypto, and utility plugins
+- ✅ 27 Security plugins - Compliance, vulnerability scanning, audits
+- ✅ 25 Testing plugins - E2E, integration, load testing
+- ✅ 28 DevOps plugins (96.6%) - Infrastructure, CI/CD, deployments
+- ✅ 24 Performance plugins (96.0%) - Monitoring, profiling, optimization
 
-[**Read full changelog →**](CHANGELOG.md#110---2025-10-17)
+**Quality Metrics:**
+- Average SKILL.md size: 3,210 bytes (17x larger than Anthropic's 500-byte examples)
+- Includes: Multi-phase workflows, code examples, error handling, progressive disclosure
+- YAML validation: 99.4% pass rate
+
+[**Read full changelog →**](CHANGELOG.md#120---2025-10-20)
 
 ---
 
