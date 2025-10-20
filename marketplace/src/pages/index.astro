@@ -13,15 +13,15 @@ const totalPlugins = allPlugins.length;
 const totalCategories = categories.length;
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
 const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
-  // PI Pathfinder first (newest featured plugin - v1.0.44)
-  if (a.data.name === 'pi-pathfinder') return -1;
-  if (b.data.name === 'pi-pathfinder') return 1;
-  // Skills Powerkit second
+  // Skills Powerkit first (v1.2.0 release highlight)
   if (a.data.name === 'skills-powerkit') return -1;
   if (b.data.name === 'skills-powerkit') return 1;
-  // Sugar third
+  // Sugar second
   if (a.data.name === 'sugar') return -1;
   if (b.data.name === 'sugar') return 1;
+  // PI Pathfinder third
+  if (a.data.name === 'pi-pathfinder') return -1;
+  if (b.data.name === 'pi-pathfinder') return 1;
   return a.data.name.localeCompare(b.data.name);
 });
 
@@ -60,10 +60,10 @@ const categoryIcons: Record<string, string> = {
     <div class="container announcement-inner">
       <span class="sparkle">🎯</span>
       <span>
-        <strong>v1.0.44:</strong> PI Pathfinder — Never pick plugins again! Automatically selects the best of 229 plugins for your task, extracts their skills, and runs them. Easy mode: ON
+        <strong>v1.2.0:</strong> Agent Skills Quality Enhancement — 231 plugins enhanced (98% of marketplace) with high-quality Agent Skills. Auto-activating capabilities based on conversation context. Zero manual commands needed.
       </span>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" class="ann-link">Release v1.0.44</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/pi-pathfinder" target="_blank" rel="noopener noreferrer" class="ann-link">View Plugin</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.0" class="ann-link">Release v1.2.0</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins#-how-agent-skills-work" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
     </div>
   </div>
 
@@ -71,32 +71,32 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
-  <!-- PI Pathfinder Spotlight -->
+  <!-- Agent Skills Spotlight -->
   <section class="spotlight-section">
     <div class="container">
       <div class="spotlight">
-        <div class="spotlight-icon">🎯</div>
+        <div class="spotlight-icon">🧠</div>
         <div class="spotlight-content">
-          <div class="spotlight-kicker">New in v1.0.44 • Ultra-Think: OFF • Easy Mode: ON</div>
-          <h2 class="spotlight-title">Introducing <span class="spotlight-name">PI Pathfinder</span></h2>
+          <div class="spotlight-kicker">New in v1.2.0 • Production-Grade AI Batch Processing • $0 Cost</div>
+          <h2 class="spotlight-title">Marketplace-Wide <span class="spotlight-name">Agent Skills Enhancement</span></h2>
           <p class="spotlight-text">
-            <strong>One solution to manage all 229 plugins.</strong> Never pick plugins again! PI Pathfinder automatically analyzes your task,
-            searches your installed plugins, picks the best one(s), extracts their skills on-the-fly, and applies them.
-            <strong>Zero thinking from you.</strong>
+            <strong>231 plugins enhanced (98% of marketplace) with high-quality Agent Skills.</strong> Claude now activates relevant capabilities automatically based on your conversation context.
+            No slash commands needed. Just mention what you need, and Claude activates the right skills.
+            <strong>100% success rate, zero failures.</strong>
           </p>
           <div class="spotlight-features">
-            <span class="feature-badge">🔍 Auto-Selects Best Plugin</span>
-            <span class="feature-badge">🧠 Extracts Skills On-The-Fly</span>
-            <span class="feature-badge">⚡ Applies Automatically</span>
-            <span class="feature-badge">🎯 Easy Mode Always ON</span>
+            <span class="feature-badge">🤖 Auto-Activating Capabilities</span>
+            <span class="feature-badge">📚 Multi-Phase Workflows</span>
+            <span class="feature-badge">💡 Rich Code Examples</span>
+            <span class="feature-badge">✅ 159 New SKILL.md Files</span>
           </div>
           <p class="spotlight-subtext">
-            <strong>Part of our initiative to update all 229 plugins with appropriate Agent Skills for their missions.</strong>
-            More skill-enhanced plugins coming soon.
+            <strong>Powered by Vertex AI Gemini 2.0 Flash on free tier.</strong>
+            Enhanced using production-grade batch processing with SQLite audit trails and comprehensive disaster recovery.
           </p>
           <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/examples/pi-pathfinder" target="_blank" rel="noopener noreferrer">View Plugin</a>
-            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.0.44" target="_blank" rel="noopener noreferrer">Release Notes</a>
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins#-how-agent-skills-work" target="_blank" rel="noopener noreferrer">Learn About Agent Skills</a>
+            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer">Release Notes</a>
           </div>
         </div>
       </div>
