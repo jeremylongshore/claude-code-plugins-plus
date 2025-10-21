@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "pubmed-research": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "PUBMED_API_KEY": "",
+        "EMAIL": ""
+      }
+    }
+  }
+}

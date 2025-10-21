@@ -1,0 +1,12 @@
+{
+  "name": "pubmed-research-master",
+  "version": "1.0.0",
+  "description": "Complete PubMed research toolkit with 10 MCP tools, offline caching, and citation management",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "contact@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["pubmed", "research", "scientific", "citations", "mcp"]
+}
