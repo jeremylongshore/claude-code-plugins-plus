@@ -1,5 +1,5 @@
 ---
-name: Managing Database Partitions
+name: managing-database-partitions
 description: |
   This skill enables Claude to design, implement, and manage table partitioning strategies for large databases. It is triggered when the user needs to optimize query performance, manage time-series data, or reduce maintenance windows for tables exceeding 100GB. Use this skill when asked to "create database partitions", "optimize database queries with partitioning", "manage large database tables", or when the user mentions "partitioning strategy", "data archival", or uses the command `/partition`. The skill helps automate partition maintenance and data lifecycle management. It focuses on database best practices and production-ready implementations.
 ---

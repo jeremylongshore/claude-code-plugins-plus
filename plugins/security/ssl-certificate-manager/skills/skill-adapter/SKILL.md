@@ -1,5 +1,5 @@
 ---
-name: Managing SSL/TLS Certificates
+name: managing-ssltls-certificates
 description: |
   This skill enables Claude to manage and monitor SSL/TLS certificates using the ssl-certificate-manager plugin. It is activated when the user requests actions related to SSL certificates, such as checking certificate expiry, renewing certificates, or listing installed certificates. Use this skill when the user mentions "SSL certificate", "TLS certificate", "certificate expiry", "renew certificate", or similar phrases related to SSL/TLS certificate management. The plugin can list, check, and renew certificates, providing vital information for maintaining secure connections.
 ---

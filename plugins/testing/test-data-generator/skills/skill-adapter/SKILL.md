@@ -1,5 +1,5 @@
 ---
-name: Generating Test Data
+name: generating-test-data
 description: |
   This skill enables Claude to generate realistic test data for software development. It uses the test-data-generator plugin to create users, products, orders, and custom schemas for comprehensive testing. Use this skill when you need to populate databases, simulate user behavior, or create fixtures for automated tests. Trigger phrases include "generate test data", "create fake users", "populate database", "generate product data", "create test orders", or "generate data based on schema". This skill is especially useful for populating testing environments or creating sample data for demonstrations.
 ---

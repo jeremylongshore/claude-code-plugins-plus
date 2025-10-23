@@ -1,5 +1,5 @@
 ---
-name: Managing Database Replication
+name: managing-database-replication
 description: |
   This skill enables Claude to manage database replication, failover, and high availability configurations using the database-replication-manager plugin. It is designed to assist with tasks such as setting up master-slave replication, configuring automatic failover, monitoring replication lag, and implementing read scaling. Use this skill when the user requests help with "database replication", "failover configuration", "high availability", "replication lag", or "read scaling" for databases like PostgreSQL or MySQL. The plugin facilitates both physical and logical replication strategies.
 ---

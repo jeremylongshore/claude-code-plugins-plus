@@ -1,15 +1,16 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.2.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.1-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-159%20plugins-orange?logo=sparkles)](CHANGELOG.md#120---2025-10-20)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-165%20plugins-orange?logo=sparkles)](CHANGELOG.md#121---2025-10-23)
+[![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **236 production-ready Claude Code plugins for automation, development, and AI workflows.**
-🎉 **NEW in v1.2.0:** 159 high-quality **Agent Skills** with production-grade batch processing!
+✅ **NEW in v1.2.1:** **100% Anthropic Spec v1.0 Compliant** - All 164 Agent Skills updated to official format!
 
-**Latest:** [v1.2.0 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.0) - 231 plugins enhanced, 100% success, $0 cost
+**Latest:** [v1.2.1 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.1) - Anthropic Spec compliance, 164 skills updated
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -20,7 +21,28 @@
 
 ---
 
-## 🆕 What's New in v1.2.0
+## 🆕 What's New in v1.2.1
+
+### ✅ Anthropic Official Spec v1.0 Compliance
+
+**All 164 Agent Skills now comply with [Anthropic's official Agent Skills Spec v1.0](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)** released October 16, 2025.
+
+**What Changed:**
+- **Name format updated**: Title Case → hyphen-case (e.g., "Database Backup Automator" → "database-backup-automator")
+- **100% spec compliant**: All SKILL.md files follow official format requirements
+- **Forward compatible**: Ensures compatibility with future Claude Code releases
+- **No breaking changes**: Skills continue to work exactly as before
+
+**Quality Assessment:**
+Our comprehensive [comparison report](claudes-docs/ANTHROPIC_SKILLS_COMPARISON.md) shows our 165 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
+
+**Automated with:**
+- `scripts/fix-skill-names.py` - Batch conversion tool with validation
+- 164 skills fixed, 1 already correct, 0 errors
+
+---
+
+## What's New in v1.2.0
 
 ### 🎯 Agent Skills Quality Enhancement
 
@@ -49,10 +71,10 @@ your-plugin/
         └── SKILL.md       # Agent skill definition
 ```
 
-**SKILL.md Format:**
+**SKILL.md Format (Spec v1.0 Compliant):**
 ```markdown
 ---
-name: Database Backup Automator
+name: database-backup-automator
 description: |
   Automatically handles database backup operations when user mentions
   backup, restore, or data protection needs.
@@ -830,6 +852,33 @@ Join the conversation and connect with other plugin developers and users!
 
 ---
 
+## Documentation Filing System
+
+This repository uses a structured documentation filing system for all internal project documentation. All documentation files are stored in the **`000-docs/` directory** using a standardized naming convention.
+
+### File Naming Format
+
+```
+NNN-CC-ABCD-short-description.ext
+```
+
+- **NNN** = Zero-padded sequence number (001-999)
+- **CC** = Two-letter category code (PP, AT, DR, RA, etc.)
+- **ABCD** = Four-letter document type (PROD, GUID, REPT, etc.)
+- **short-description** = 1-4 words, kebab-case
+
+### Examples
+
+```
+048-RA-INDX-audit-index.md                   # Audit index report
+061-DR-REFF-vertex-ai-gemini-tiers.md       # Reference documentation
+086-PP-PLAN-release-v1-2-0.md               # Release plan
+```
+
+**Full specification:** See [`000-docs/000-DR-REFF-filing-system-standard-v2.md`](000-docs/000-DR-REFF-filing-system-standard-v2.md)
+
+---
+
 <div align="center">
 
 **[Star this repo](https://github.com/jeremylongshore/claude-code-plugins)** if you find it useful!
@@ -842,4 +891,4 @@ Made with dedication by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 1.0.40 | **Last Updated**: October 16, 2025
+**Status**: Public Beta | **Version**: 1.2.0 | **Last Updated**: October 20, 2025

@@ -1,5 +1,5 @@
 ---
-name: Detecting Performance Regressions
+name: detecting-performance-regressions
 description: |
   This skill enables Claude to automatically detect performance regressions in a CI/CD pipeline. It analyzes performance metrics, such as response time and throughput, and compares them against baselines or thresholds. Use this skill when the user requests to "detect performance regressions", "analyze performance metrics for regressions", or "find performance degradation" in a CI/CD environment. The skill is also triggered when the user mentions "baseline comparison", "statistical significance analysis", or "performance budget violations". It helps identify and report performance issues early in the development cycle.
 ---

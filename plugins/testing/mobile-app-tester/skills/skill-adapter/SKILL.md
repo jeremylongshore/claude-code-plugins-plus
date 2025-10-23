@@ -1,5 +1,5 @@
 ---
-name: Automating Mobile App Testing
+name: automating-mobile-app-testing
 description: |
   This skill enables automated testing of mobile applications on iOS and Android platforms using frameworks like Appium, Detox, XCUITest, and Espresso. It generates end-to-end tests, sets up page object models, and handles platform-specific elements. Use this skill when the user requests mobile app testing, test automation for iOS or Android, or needs assistance with setting up device farms and simulators. The skill is triggered by terms like "mobile testing", "appium", "detox", "xcuitest", "espresso", "android test", "ios test".
 ---

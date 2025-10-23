@@ -1,3 +1,49 @@
+## [1.2.1] - 2025-10-23
+
+### 🔧 Agent Skills Spec Compliance
+
+**Anthropic Official Spec Alignment** - Updated all 164 Agent Skills to comply with Anthropic's official Agent Skills Spec v1.0 (2025-10-16).
+
+### 👥 Contributors
+
+Built by @jeremylongshore with Claude Code
+
+### 🚀 What's New
+
+**Spec Compliance Updates:**
+- **164 SKILL.md files updated** to hyphen-case name format
+- **100% compliance** with Anthropic's official Agent Skills Spec v1.0
+- **Name format fixed**: Title Case → hyphen-case (e.g., "Creating GitHub Issues" → "creating-github-issues")
+- **Official spec reference**: https://github.com/anthropics/skills/blob/main/agent_skills_spec.md
+
+**Required Changes Per Spec:**
+- `name` field must be hyphen-case (lowercase alphanumeric + hyphen only)
+- Ensures forward compatibility with future Claude Code releases
+- Aligns with Anthropic's 17 official example skills
+
+**Script Added:**
+- `scripts/fix-skill-names.py` - Automated batch conversion tool
+- Converts Title Case to hyphen-case with validation
+- Handles 165 skills with error reporting and statistics
+
+**Documentation Added:**
+- `claudes-docs/ANTHROPIC_SKILLS_COMPARISON.md` - Comprehensive comparison report
+- Detailed spec analysis and compliance matrix
+- Quality assessment showing our skills exceed Anthropic's examples in documentation depth
+
+### 📊 Compliance Status
+
+| Aspect | Status |
+|--------|--------|
+| Name format (hyphen-case) | ✅ 100% Compliant (164 fixed, 1 already correct) |
+| YAML frontmatter | ✅ Compliant |
+| Required fields | ✅ Compliant |
+| Markdown content | ✅ Exceeds spec |
+
+**No Breaking Changes** - Skills continue to work exactly as before. This is a metadata formatting update only.
+
+---
+
 ## [1.2.0] - 2025-10-20
 
 ### 🎉 Agent Skills Quality Enhancement

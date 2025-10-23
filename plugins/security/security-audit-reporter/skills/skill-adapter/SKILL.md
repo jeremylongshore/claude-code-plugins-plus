@@ -1,5 +1,5 @@
 ---
-name: Generating Security Audit Reports
+name: generating-security-audit-reports
 description: |
   This skill enables Claude to generate comprehensive security audit reports. It is designed to provide insights into an application or system's security posture, compliance status, and recommended remediation steps. Use this skill when the user requests a "security audit report", wants to "audit security", or needs a "vulnerability assessment report". The skill analyzes security data and produces a detailed report in various formats. It is best used to identify vulnerabilities, track compliance, and create remediation roadmaps. The skill can be activated via the command `/audit-report` or its shortcut `/auditreport`.
 ---

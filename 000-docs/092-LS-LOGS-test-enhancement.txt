@@ -1,0 +1,346 @@
+/home/jeremy/.local/lib/python3.12/site-packages/vertexai/generative_models/_generative_models.py:433: UserWarning: This feature is deprecated as of June 24, 2025 and will be removed on June 24, 2026. For details, see https://cloud.google.com/vertex-ai/generative-ai/docs/deprecations/genai-vertexai-sdk.
+  warning_logs.show_deprecation_warning()
+✅ Vertex AI initialized: ccpi-web-app-prod / us-central1
+✅ Audit database initialized: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/enhancements.db
+✅ Loaded standards document (23936 chars)
+
+============================================================
+🌙 OVERNIGHT PLUGIN ENHANCEMENT BATCH
+============================================================
+Project: ccpi-web-app-prod
+Model: gemini-2.0-flash-exp
+Rate limit: 90.0s between calls
+Backup dir: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements
+============================================================
+
+✅ Found 70 plugins
+⚠️  Limited to first 10 plugins for testing
+
+
+
+############################################################
+Plugin 1/10
+############################################################
+
+============================================================
+🔧 Processing: overnight-dev (productivity)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 6.4s
+  ⏸️  Post-analysis delay: 102.7s...
+  Quality score: 45/100
+  Priority: HIGH
+  High priority gaps: 6
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/overnight-dev_20251019_115339
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 109.1s
+  ⏸️  Inter-plugin delay (1/10): 104.8s...
+
+
+############################################################
+Plugin 2/10
+############################################################
+
+============================================================
+🔧 Processing: ai-commit-gen (productivity)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 5.2s
+  ⏸️  Post-analysis delay: 100.5s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 6
+
+📝 Step 3: Creating comprehensive SKILL.md...
+  🤖 Generating comprehensive SKILL.md...
+  ✅ Generated SKILL.md (10012 bytes) in 17.1s
+  ⏸️  Post-generation delay: 115.3s...
+  ⚠️  Warning: SKILL.md doesn't start with frontmatter
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/ai-commit-gen_20251019_115922
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 238.1s
+  ⏸️  Inter-plugin delay (2/10): 103.4s...
+
+
+############################################################
+Plugin 3/10
+############################################################
+
+============================================================
+🔧 Processing: travel-assistant (productivity)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 6.2s
+  ⏸️  Post-analysis delay: 117.8s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 6
+
+📝 Step 3: Creating comprehensive SKILL.md...
+  🤖 Generating comprehensive SKILL.md...
+  ✅ Generated SKILL.md (13056 bytes) in 21.7s
+  ⏸️  Post-generation delay: 108.8s...
+  ⚠️  Warning: SKILL.md doesn't start with frontmatter
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/travel-assistant_20251019_120520
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 254.5s
+  ⏸️  Inter-plugin delay (3/10): 115.0s...
+
+
+############################################################
+Plugin 4/10
+############################################################
+
+============================================================
+🔧 Processing: input-validation-scanner (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 6.0s
+  ⏸️  Post-analysis delay: 114.5s...
+  Quality score: 45/100
+  Priority: HIGH
+  High priority gaps: 5
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/input-validation-scanner_20251019_120916
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 120.5s
+  ⏸️  Inter-plugin delay (4/10): 102.0s...
+
+
+############################################################
+Plugin 5/10
+############################################################
+
+============================================================
+🔧 Processing: sql-injection-detector (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 7.2s
+  ⏸️  Post-analysis delay: 103.4s...
+  Quality score: 45/100
+  Priority: HIGH
+  High priority gaps: 6
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/sql-injection-detector_20251019_121248
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 110.6s
+  ⏸️  Inter-plugin delay (5/10): 111.0s...
+
+
+############################################################
+Plugin 6/10
+############################################################
+
+============================================================
+🔧 Processing: dependency-checker (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 6.3s
+  ⏸️  Post-analysis delay: 105.9s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 6
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/dependency-checker_20251019_121631
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 112.1s
+  ⏸️  Inter-plugin delay (6/10): 101.1s...
+
+
+############################################################
+Plugin 7/10
+############################################################
+
+============================================================
+🔧 Processing: penetration-tester (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 5.4s
+  ⏸️  Post-analysis delay: 93.0s...
+  Quality score: 45/100
+  Priority: HIGH
+  High priority gaps: 6
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/penetration-tester_20251019_121951
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 98.5s
+  ⏸️  Inter-plugin delay (7/10): 107.4s...
+
+
+############################################################
+Plugin 8/10
+############################################################
+
+============================================================
+🔧 Processing: access-control-auditor (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 5.6s
+  ⏸️  Post-analysis delay: 119.0s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 5
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/access-control-auditor_20251019_122343
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 124.7s
+  ⏸️  Inter-plugin delay (8/10): 99.8s...
+
+
+############################################################
+Plugin 9/10
+############################################################
+
+============================================================
+🔧 Processing: pci-dss-validator (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 6.9s
+  ⏸️  Post-analysis delay: 119.1s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 5
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/pci-dss-validator_20251019_122729
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 126.0s
+  ⏸️  Inter-plugin delay (9/10): 106.9s...
+
+
+############################################################
+Plugin 10/10
+############################################################
+
+============================================================
+🔧 Processing: csrf-protection-validator (security)
+============================================================
+
+📊 Step 1: Analyzing plugin structure...
+
+🎯 Step 2: Generating enhancement plan...
+  🤖 Asking Gemini for enhancement plan...
+  ✅ Gemini responded in 5.4s
+  ⏸️  Post-analysis delay: 104.3s...
+  Quality score: 35/100
+  Priority: HIGH
+  High priority gaps: 5
+
+⏭️  Step 3: SKILL.md creation not needed
+
+✨ Step 4: Applying enhancements...
+  💾 Backup created: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/plugin-backups/csrf-protection-validator_20251019_123105
+  ✅ Created scripts/ directory with TODO README
+  ✅ Created references/ directory with TODO README
+  ✅ Created assets/ directory with TODO README
+  🎉 Enhancements applied successfully!
+
+⏱️  Total time: 109.7s
+
+
+============================================================
+🎉 BATCH COMPLETE
+============================================================
+Total plugins: 10
+Successful: 10
+Failed: 0
+Success rate: 100.0%
+Total time: 0.65 hours
+Database: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements/enhancements.db
+Backups: /home/jeremy/000-projects/claude-code-plugins/backups/plugin-enhancements
+============================================================
+

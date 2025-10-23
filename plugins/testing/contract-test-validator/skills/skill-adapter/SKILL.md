@@ -1,5 +1,5 @@
 ---
-name: Validating API Contracts
+name: validating-api-contracts
 description: |
   This skill validates API contracts using consumer-driven testing and OpenAPI validation. It leverages Pact for consumer-driven contract testing, ensuring that API providers adhere to the expectations of their consumers. It also validates APIs against OpenAPI specifications to guarantee compliance and identify breaking changes. Use this skill when the user asks to generate contract tests, validate API responses, check backward compatibility, or validate requests/responses using the terms "contract-test", "ct", "Pact", "OpenAPI validation", or "consumer-driven contract testing".
 ---

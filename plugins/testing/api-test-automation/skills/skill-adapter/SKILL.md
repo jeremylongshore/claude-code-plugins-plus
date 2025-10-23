@@ -1,5 +1,5 @@
 ---
-name: Automating API Testing
+name: automating-api-testing
 description: |
   This skill automates API endpoint testing, including request generation, validation, and comprehensive test coverage for REST and GraphQL APIs. It is used when the user requests API testing, contract testing, or validation against OpenAPI specifications. The skill analyzes API endpoints and generates test suites covering CRUD operations, authentication flows, and security aspects. It also validates response status codes, headers, and body structure. Use this skill when the user mentions "API testing", "REST API tests", "GraphQL API tests", "contract tests", or "OpenAPI validation".
 ---

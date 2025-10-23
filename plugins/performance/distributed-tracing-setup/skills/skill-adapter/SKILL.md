@@ -1,5 +1,5 @@
 ---
-name: Setting Up Distributed Tracing
+name: setting-up-distributed-tracing
 description: |
   This skill automates the setup of distributed tracing for microservices. It helps developers implement end-to-end request visibility by configuring context propagation, span creation, trace collection, and analysis. Use this skill when the user requests to set up distributed tracing, implement observability, or troubleshoot performance issues in a microservices architecture. The skill is triggered by phrases such as "setup tracing", "implement distributed tracing", "configure opentelemetry", or "add observability to microservices".
 ---

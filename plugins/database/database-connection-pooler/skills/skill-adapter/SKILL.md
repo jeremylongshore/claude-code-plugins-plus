@@ -1,5 +1,5 @@
 ---
-name: Optimizing Database Connection Pooling
+name: optimizing-database-connection-pooling
 description: |
   This skill optimizes database connection pooling for enhanced performance and resource management. It is activated when the user requests assistance with connection pooling, database performance tuning, or connection lifecycle management. Use this skill to implement and configure connection pools in various programming languages, identify optimal pool settings, and troubleshoot common connection-related issues. The skill is triggered by phrases like "connection pooling," "optimize database connections," or "improve database performance with connection pool."
 ---

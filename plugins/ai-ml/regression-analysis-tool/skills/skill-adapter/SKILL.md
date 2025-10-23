@@ -1,5 +1,5 @@
 ---
-name: Performing Regression Analysis
+name: performing-regression-analysis
 description: |
   This skill empowers Claude to perform regression analysis and modeling using the regression-analysis-tool plugin. It analyzes datasets, generates appropriate regression models (linear, polynomial, etc.), validates the models, and provides performance metrics. Use this skill when the user explicitly requests regression analysis, prediction based on data, or mentions terms like "linear regression," "polynomial regression," "regression model," or "predictive modeling." This skill is also helpful when the user needs to understand the relationship between variables in a dataset.
 ---

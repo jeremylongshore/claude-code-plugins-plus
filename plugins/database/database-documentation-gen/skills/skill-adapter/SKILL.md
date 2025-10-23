@@ -1,5 +1,5 @@
 ---
-name: Generating Database Documentation
+name: generating-database-documentation
 description: |
   This skill enables Claude to automatically generate comprehensive documentation for existing database schemas using the database-documentation-gen plugin. It is triggered when the user requests database documentation, ERD diagrams, or a data dictionary. The plugin supports multiple database engines and generates documentation that includes ERD diagrams, table relationships, column descriptions, indexes, triggers, stored procedures, and interactive HTML documentation. Use this skill when you need to document existing database schemas for team onboarding, architectural reviews, or data governance purposes. The trigger terms include "database documentation", "ERD diagram", "data dictionary", and `/db-docs`.
 ---

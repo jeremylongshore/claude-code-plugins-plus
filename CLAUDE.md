@@ -819,9 +819,89 @@ git push origin main --tags
 # 8. GitHub Actions will create the release automatically
 ```
 
+## Documentation Filing System
+
+This repository uses a **structured documentation filing system** for all internal project documentation.
+
+### Documentation Structure
+
+```
+claude-code-plugins/
+└── 000-docs/           # All project documentation (FLAT - no subdirectories)
+    ├── 001-XX-XXXX-description.md
+    ├── 002-XX-XXXX-description.md
+    └── ...
+```
+
+### File Naming Standard
+
+**Format:** `NNN-CC-ABCD-short-description.ext`
+
+- **NNN** = Zero-padded sequence (001-999) for chronological ordering
+- **CC** = Two-letter category code (see below)
+- **ABCD** = Four-letter document type abbreviation
+- **short-description** = 1-4 words, kebab-case, lowercase
+- **ext** = File extension (.md, .pdf, .txt, etc.)
+
+### Category Codes (2-letter)
+
+| Code | Category | Examples |
+|------|----------|----------|
+| **PP** | Product & Planning | Requirements, roadmaps, business planning |
+| **AT** | Architecture & Technical | Technical decisions, system design |
+| **DC** | Development & Code | Code documentation, modules |
+| **TQ** | Testing & Quality | Test plans, QA, bug reports |
+| **OD** | Operations & Deployment | DevOps, deployment guides |
+| **LS** | Logs & Status | Status logs, progress tracking |
+| **RA** | Reports & Analysis | Reports, analytics, research |
+| **MC** | Meetings & Communication | Meeting notes, memos |
+| **PM** | Project Management | Tasks, sprints, risks |
+| **DR** | Documentation & Reference | Guides, manuals, SOPs |
+| **UC** | User & Customer | User docs, training |
+| **BL** | Business & Legal | Contracts, compliance |
+| **RL** | Research & Learning | Research, experiments, POCs |
+| **AA** | After Action & Review | Post-mortems, retrospectives |
+| **MS** | Miscellaneous | General, drafts, archives |
+
+### Document Type Abbreviations (4-letter)
+
+Common examples:
+- **PROD** = Product Requirements Document
+- **ADEC** = Architecture Decision Record
+- **GUID** = User Guide/Documentation
+- **TEST** = Test Plan/Strategy
+- **REFF** = Reference Material/Guide
+- **TASK** = Task Documentation
+- **MEET** = Meeting Notes/Minutes
+- **SUMM** = Summary/Executive Summary
+- **REPT** = General Report
+- **SOPS** = Standard Operating Procedure
+- **CHKL** = Checklist
+- **RELS** = Release Notes
+
+**Full specification:** See `000-docs/000-DR-REFF-filing-system-standard-v2.md`
+
+### Examples
+
+```
+001-AT-ADEC-initial-architecture.md          # Architecture decision
+002-PP-PROD-core-features.md                 # Product requirements
+003-MC-MEET-kickoff-notes.md                 # Meeting notes
+048-RA-INDX-audit-index.md                   # Audit index
+075-OD-RELS-changelog-v1-2-0.md             # Release notes
+086-PP-PLAN-release-v1-2-0.md               # Release plan
+```
+
+### Rules
+
+1. **FLAT structure** - `000-docs/` contains NO subdirectories
+2. **Chronological order** - Sequence numbers enforce creation order
+3. **Standard files stay in root** - README.md, CHANGELOG.md, CLAUDE.md, etc. remain at project root
+4. **All internal docs go to 000-docs/** - Work logs, reports, guides, meeting notes, etc.
+
 ---
 
 **Last Updated:** October 2025
-**Repository Version:** 1.0.46 (236 plugins, 164 with Agent Skills)
+**Repository Version:** 1.2.0 (236 plugins, 159 with Agent Skills)
 **Status:** Active, accepting community contributions
-**Recent Changes:** Model standardization (opus→sonnet), FairDB Operations Kit added, automerge workflows
+**Recent Changes:** v1.2.0 Agent Skills Quality Enhancement, documentation reorganization, 000-docs/ filing system implemented

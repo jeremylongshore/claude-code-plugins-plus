@@ -1,5 +1,5 @@
 ---
-name: Analyzing Capacity Planning
+name: analyzing-capacity-planning
 description: |
   This skill enables Claude to analyze capacity requirements and plan for future growth. It uses the capacity-planning-analyzer plugin to assess current utilization, forecast growth trends, and recommend scaling strategies. Use this skill when the user asks to "analyze capacity", "plan for growth", "forecast infrastructure needs", or requests a "capacity roadmap". It is also useful when the user mentions specific capacity metrics like CPU usage, memory, database storage, network bandwidth, or connection pool saturation. This skill is ideal for proactive infrastructure planning and preventing performance bottlenecks.
 ---

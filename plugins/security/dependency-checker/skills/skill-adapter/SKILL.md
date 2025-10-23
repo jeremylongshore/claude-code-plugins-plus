@@ -1,5 +1,5 @@
 ---
-name: Analyzing Dependencies
+name: analyzing-dependencies
 description: |
   This skill analyzes project dependencies for security vulnerabilities, outdated packages, and license compliance issues. It helps identify potential risks in your project's dependencies using the dependency-checker plugin. Use this skill when you need to check dependencies for vulnerabilities, identify outdated packages that need updates, or ensure license compatibility. Trigger phrases include "check dependencies", "dependency check", "find vulnerabilities", "scan for outdated packages", "/depcheck", and "license compliance". This skill supports npm, pip, composer, gem, and go modules projects.
 ---

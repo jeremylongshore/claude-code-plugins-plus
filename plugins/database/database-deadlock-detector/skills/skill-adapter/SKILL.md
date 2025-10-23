@@ -1,5 +1,5 @@
 ---
-name: Detecting Database Deadlocks
+name: detecting-database-deadlocks
 description: |
   This skill uses the database-deadlock-detector plugin to detect, analyze, and prevent database deadlocks. It monitors database lock contention, analyzes transaction patterns, and suggests resolution strategies. Use this skill when the user asks to "detect database deadlocks", "analyze deadlock causes", "monitor database locks", or any requests related to database deadlock prevention and resolution. This skill is particularly useful for production database systems experiencing recurring deadlock issues. The plugin's command `/deadlock` is triggered by these requests.
 ---

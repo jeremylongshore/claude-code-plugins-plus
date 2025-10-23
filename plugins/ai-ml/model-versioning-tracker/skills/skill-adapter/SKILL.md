@@ -1,5 +1,5 @@
 ---
-name: Tracking Model Versions
+name: tracking-model-versions
 description: |
   This skill enables Claude to track and manage AI/ML model versions using the model-versioning-tracker plugin. It should be used when the user asks to manage model versions, track model lineage, log model performance, or implement version control for AI/ML models. Use this skill when the user mentions "track versions", "model registry", "MLflow", or requests assistance with AI/ML model deployment and management. This skill facilitates the implementation of best practices for model versioning, automation of model workflows, and performance optimization.
 ---

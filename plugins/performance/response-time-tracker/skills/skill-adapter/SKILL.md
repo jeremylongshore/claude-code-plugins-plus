@@ -1,5 +1,5 @@
 ---
-name: Tracking Application Response Times
+name: tracking-application-response-times
 description: |
   This skill enables Claude to track and optimize application response times. It uses the response-time-tracker plugin to monitor API endpoints, database queries, external service calls, frontend rendering, and background job execution. The plugin calculates P50, P95, and P99 percentiles, average and maximum response times. Use this skill when you need to identify performance bottlenecks, monitor SLOs, or receive alerts about performance degradation. Trigger this skill with phrases like "track response times", "optimize latency", or "monitor application performance".
 ---

@@ -1,5 +1,5 @@
 ---
-name: Integrating Secrets Managers
+name: integrating-secrets-managers
 description: |
   This skill enables Claude to seamlessly integrate with various secrets managers like HashiCorp Vault and AWS Secrets Manager. It generates configurations and setup code, ensuring best practices for secure credential management. Use this skill when you need to manage sensitive information, generate production-ready configurations, or implement a security-first approach for your DevOps infrastructure. Trigger terms include "integrate secrets manager", "configure Vault", "AWS Secrets Manager setup", "manage credentials securely", or requests for secure configuration generation.
 ---

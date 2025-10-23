@@ -1,5 +1,5 @@
 ---
-name: Managing Test Environments
+name: managing-test-environments
 description: |
   This skill enables Claude to manage isolated test environments using Docker Compose, Testcontainers, and environment variables. It is used to create consistent, reproducible testing environments for software projects. Claude should use this skill when the user needs to set up a test environment with specific configurations, manage Docker Compose files for test infrastructure, set up programmatic container management with Testcontainers, manage environment variables for tests, or ensure cleanup after tests. Trigger terms include "test environment", "docker compose", "testcontainers", "environment variables", "isolated environment", "env-setup", and "test setup".
 ---

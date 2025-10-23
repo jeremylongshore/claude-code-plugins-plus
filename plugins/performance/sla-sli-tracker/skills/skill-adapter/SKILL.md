@@ -1,5 +1,5 @@
 ---
-name: Tracking Service Reliability
+name: tracking-service-reliability
 description: |
   This skill enables Claude to define and track Service Level Agreements (SLAs), Service Level Indicators (SLIs), and Service Level Objectives (SLOs) for improved service reliability. It is triggered when the user needs to establish, monitor, or analyze service performance metrics. Use this skill when the user mentions "SLA", "SLI", "SLO", "error budget", "service reliability", or "track service performance". The skill helps to define key metrics, set targets, and monitor performance against those targets.
 ---

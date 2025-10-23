@@ -1,5 +1,5 @@
 ---
-name: Building AutoML Pipelines
+name: building-automl-pipelines
 description: |
   This skill empowers Claude to build AutoML pipelines using the automl-pipeline-builder plugin. It is triggered when the user requests the creation of an automated machine learning pipeline, specifies the use of AutoML techniques, or asks for assistance in automating the machine learning model building process. The skill analyzes the context, generates code for the ML task, includes data validation and error handling, provides performance metrics, and saves artifacts with documentation. Use this skill when the user explicitly asks to "build automl pipeline", "create automated ml pipeline", or needs help with "automating machine learning workflows".
 ---

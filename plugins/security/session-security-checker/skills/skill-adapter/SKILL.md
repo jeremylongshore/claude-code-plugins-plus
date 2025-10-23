@@ -1,5 +1,5 @@
 ---
-name: Checking Session Security
+name: checking-session-security
 description: |
   This skill enables Claude to check session security implementations within a codebase. It analyzes session management practices to identify potential vulnerabilities. Use this skill when a user requests to "check session security", "audit session handling", "review session implementation", or asks about "session security best practices" in their code. It helps identify issues like insecure session IDs, lack of proper session expiration, or insufficient protection against session fixation attacks. This skill leverages the session-security-checker plugin.
 ---

@@ -1,5 +1,5 @@
 ---
-name: Comparing Database Schemas
+name: comparing-database-schemas
 description: |
   This skill leverages the database-diff-tool plugin to compare database schemas, generate migration scripts, and provide rollback procedures. It is triggered when the user requests database schema comparisons, migration script generation, or database synchronization. Use this skill when asked to identify differences between database schemas (PostgreSQL or MySQL), create safe migration scripts with transaction safety, validate changes before deployment, or generate rollback procedures. The skill is activated by requests involving terms like "database diff", "schema comparison", "generate migration script", "database synchronization", or `/db-diff`.
 ---

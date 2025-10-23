@@ -1,5 +1,5 @@
 ---
-name: Aggregating Performance Metrics
+name: aggregating-performance-metrics
 description: |
   This skill enables Claude to aggregate and centralize performance metrics from various sources. It is used when the user needs to consolidate metrics from applications, systems, databases, caches, queues, and external services into a central location for monitoring and analysis. The skill is triggered by requests to "aggregate metrics", "centralize performance metrics", or similar phrases related to metrics aggregation and monitoring. It facilitates designing a metrics taxonomy, choosing appropriate aggregation tools, and setting up dashboards and alerts.
 ---

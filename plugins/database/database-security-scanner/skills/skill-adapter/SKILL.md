@@ -1,5 +1,5 @@
 ---
-name: Scanning Database Security
+name: scanning-database-security
 description: |
   This skill enables Claude to perform comprehensive database security scans using the database-security-scanner plugin. It is triggered when the user requests a security assessment of a database, including identifying vulnerabilities like weak passwords, SQL injection risks, and insecure configurations. The skill leverages OWASP guidelines to ensure thorough coverage and provides remediation suggestions. Use this skill when the user asks to "scan database security", "check database for vulnerabilities", "perform OWASP compliance check on database", or "assess database security posture". The plugin supports PostgreSQL and MySQL.
 ---

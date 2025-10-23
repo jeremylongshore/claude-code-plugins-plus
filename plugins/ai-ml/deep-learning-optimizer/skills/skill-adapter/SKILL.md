@@ -1,5 +1,5 @@
 ---
-name: Optimizing Deep Learning Models
+name: optimizing-deep-learning-models
 description: |
   This skill optimizes deep learning models using various techniques. It is triggered when the user requests improvements to model performance, such as increasing accuracy, reducing training time, or minimizing resource consumption. The skill leverages advanced optimization algorithms like Adam, SGD, and learning rate scheduling. It analyzes the existing model architecture, training data, and performance metrics to identify areas for enhancement. The skill then automatically applies appropriate optimization strategies and generates optimized code. Use this skill when the user mentions "optimize deep learning model", "improve model accuracy", "reduce training time", or "optimize learning rate".
 ---

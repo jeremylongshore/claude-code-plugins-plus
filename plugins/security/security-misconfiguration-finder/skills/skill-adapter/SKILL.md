@@ -1,5 +1,5 @@
 ---
-name: Finding Security Misconfigurations
+name: finding-security-misconfigurations
 description: |
   This skill enables Claude to identify potential security misconfigurations in various systems and configurations. It leverages the security-misconfiguration-finder plugin to analyze infrastructure-as-code, application configurations, and system settings, pinpointing common vulnerabilities and compliance issues. Use this skill when the user asks to "find security misconfigurations", "check for security vulnerabilities in my configuration", "audit security settings", or requests a security assessment of a specific system or file. This skill will assist in identifying and remediating potential security weaknesses.
 ---

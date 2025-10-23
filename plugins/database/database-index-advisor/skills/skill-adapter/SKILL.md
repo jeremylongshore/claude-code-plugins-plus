@@ -1,5 +1,5 @@
 ---
-name: Analyzing Database Indexes
+name: analyzing-database-indexes
 description: |
   This skill uses the database-index-advisor plugin to analyze query patterns and recommend optimal database indexes. It identifies missing indexes to improve query performance and unused indexes that can be removed to save storage and improve write performance. Use this skill when the user asks to "analyze database indexes", "optimize slow queries", "find missing indexes", "remove unused indexes", or requests help with "database index optimization". The plugin analyzes database workloads, detects potential indexing issues, and provides actionable recommendations for indexing strategies.
 ---

@@ -1,5 +1,5 @@
 ---
-name: Generating ORM Code
+name: generating-orm-code
 description: |
   This skill enables Claude to generate ORM models and database schemas. It is triggered when the user requests the creation of ORM models, database schemas, or wishes to generate code for interacting with databases. The skill supports various ORMs including TypeORM, Prisma, Sequelize, SQLAlchemy, Django ORM, Entity Framework, and Hibernate. Use this skill when the user mentions terms like "ORM model", "database schema", "generate entities", "create migrations", or specifies a particular ORM framework like "TypeORM entities" or "SQLAlchemy models". It facilitates both database-to-code and code-to-database schema generation.
 ---

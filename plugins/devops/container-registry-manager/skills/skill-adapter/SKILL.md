@@ -1,5 +1,5 @@
 ---
-name: Managing Container Registries
+name: managing-container-registries
 description: |
   This skill enables Claude to manage container registries, including ECR, GCR, and Harbor. It should be used when the user needs to create, configure, or manage container image registries. It helps generate production-ready configurations, implement best practices, and ensure a security-first approach. Use this skill when the user mentions terms like "container registry," "ECR," "GCR," "Harbor," "image repository," or requests assistance with managing container images. It's also helpful for generating configuration code for DevOps pipelines related to container registries.
 ---

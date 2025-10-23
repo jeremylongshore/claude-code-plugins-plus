@@ -1,5 +1,5 @@
 ---
-name: Analyzing Logs
+name: analyzing-logs
 description: |
   This skill enables Claude to analyze logs for performance insights and issue detection. It is triggered when the user requests log analysis, performance troubleshooting, or debugging assistance. The skill identifies slow requests, error patterns, resource warnings, and other key performance indicators within log files. Use this skill when the user mentions "analyze logs", "performance issues", "error patterns in logs", "slow requests", or requests help with "log aggregation". It helps identify performance bottlenecks and improve application stability by analyzing log data.
 ---

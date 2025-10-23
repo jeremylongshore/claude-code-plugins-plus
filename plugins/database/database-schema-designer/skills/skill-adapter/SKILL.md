@@ -1,5 +1,5 @@
 ---
-name: Designing Database Schemas
+name: designing-database-schemas
 description: |
   This skill enables Claude to design and visualize database schemas. It leverages normalization guidance (1NF through BCNF), relationship mapping, and ERD generation to create efficient and well-structured databases. Use this skill when the user requests to "design a database schema", "create a database model", "generate an ERD", "normalize a database", or needs help with "database design best practices". The skill is triggered by terms like "database schema", "ERD diagram", "database normalization", and "relational database design".
 ---

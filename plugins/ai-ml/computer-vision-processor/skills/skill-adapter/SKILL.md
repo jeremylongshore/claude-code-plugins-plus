@@ -1,5 +1,5 @@
 ---
-name: Processing Computer Vision Tasks
+name: processing-computer-vision-tasks
 description: |
   This skill enables Claude to process and analyze images using computer vision techniques. It's used to perform tasks such as object detection, image classification, and image segmentation. Use this skill when a user requests analysis of an image, asks for identification of objects within an image, or needs help with other computer vision related tasks. Trigger terms include "analyze image", "object detection", "image classification", "image segmentation", "computer vision", "process image", or when the user provides an image and asks for insights.
 ---
