@@ -1,3 +1,36 @@
+## [1.2.2] - 2025-10-23
+
+### ✨ New Plugins
+
+**Jeremy Personal Plugins** - Added two comprehensive productivity plugins:
+
+1. **001-jeremy-content-consistency-validator**
+   - Read-only validator for messaging consistency across website, GitHub, and local docs
+   - Supports ALL HTML-based websites (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.)
+   - Generates detailed discrepancy reports with priority levels (🔴🟡🟢)
+   - Provides exact file locations and line numbers for fixes
+   - 100% read-only - never modifies files
+   - Documentation: 43KB across SKILL.md, command, and README
+
+2. **001-jeremy-taskwarrior-integration**
+   - Enforces complete Taskwarrior protocol for ALL coding tasks
+   - Automatic activation when mentioning "taskwarrior" or "tw"
+   - 4-phase workflow: Task decomposition → Activation → Implementation → Completion
+   - Timewarrior integration for automatic time tracking
+   - Dependency management for complex multi-step projects
+   - Documentation: 43KB across SKILL.md, command, and README
+
+**Naming Convention:**
+- Both plugins follow `001-jeremy-*` naming pattern for personal use
+- Spec-compliant hyphen-case names
+- Full Agent Skills implementation for automatic activation
+
+### 👥 Contributors
+
+Built by @jeremylongshore with Claude Code
+
+---
+
 ## [1.2.1] - 2025-10-23
 
 ### 🔧 Agent Skills Spec Compliance
