@@ -4,7 +4,7 @@
 
 **Jeremy Personal Plugins** - Added two comprehensive productivity plugins:
 
-1. **001-jeremy-content-consistency-validator**
+1. **000-jeremy-content-consistency-validator**
    - Read-only validator for messaging consistency across website, GitHub, and local docs
    - Supports ALL HTML-based websites (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.)
    - Generates detailed discrepancy reports with priority levels (🔴🟡🟢)
@@ -21,7 +21,8 @@
    - Documentation: 43KB across SKILL.md, command, and README
 
 **Naming Convention:**
-- Both plugins follow `001-jeremy-*` naming pattern for personal use
+- Plugins numbered `000-jeremy-*`, `001-jeremy-*` for alphabetical sorting
+- Ensures personal plugins appear at top of marketplace list
 - Spec-compliant hyphen-case names
 - Full Agent Skills implementation for automatic activation
 

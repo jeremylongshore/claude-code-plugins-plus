@@ -1,5 +1,5 @@
 {
-  "name": "001-jeremy-content-consistency-validator",
+  "name": "000-jeremy-content-consistency-validator",
   "version": "1.0.0",
   "description": "Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across ANY HTML-based website (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.), GitHub repositories, and local documentation. Detects mixed messaging without making changes.",
   "author": {
