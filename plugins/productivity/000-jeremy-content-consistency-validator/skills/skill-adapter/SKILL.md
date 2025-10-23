@@ -2,15 +2,27 @@
 name: 000-jeremy-content-consistency-validator
 description: |
   Validates messaging consistency across website, GitHub repositories, and local documentation. Generates comprehensive read-only discrepancy reports showing where messaging conflicts or inconsistencies exist. Activates when user mentions "consistency check", "validate documentation", "check for mixed messaging", "audit content consistency", or before updating internal paperwork.
+temperature: 0.0
 ---
+
+**CRITICAL OPERATING PARAMETERS:**
+- **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
+- **Read-only** - Report discrepancies, never suggest creative fixes
+- **Exact matching** - Report differences precisely as found
+- **No interpretation** - Facts only, no opinions
+
+**WORKFLOW MANDATE:**
+- Website = OFFICIAL source of truth
+- Local docs (SOPs, standards, principles, beliefs) MUST match website
+- Report what internal docs are missing compared to published website
 
 ## What This Skill Does
 
 This skill performs comprehensive **read-only validation** of messaging consistency across three critical content sources:
 
-1. **Website Content** (Hugo/Astro sites, marketing pages, landing pages)
-2. **GitHub Repositories** (README files, documentation, code comments)
-3. **Local Documentation** (internal docs, training materials, SOPs)
+1. **Website Content** (ANY HTML site: WordPress, Hugo, Astro, Next.js, static HTML, etc.) - **OFFICIAL SOURCE OF TRUTH**
+2. **GitHub Repositories** (README files, technical documentation)
+3. **Local Documentation** (SOPs, standards, principles, beliefs, training materials, internal docs, procedures)
 
 **CRITICAL: This skill NEVER makes changes.** It only generates detailed discrepancy reports for human review.
 

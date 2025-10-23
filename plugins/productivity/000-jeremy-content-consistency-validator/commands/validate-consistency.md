@@ -2,14 +2,27 @@
 name: validate-consistency
 description: Generate comprehensive read-only discrepancy report comparing messaging consistency across website, GitHub, and local documentation
 model: sonnet
+temperature: 0.0
 ---
+
+**CRITICAL INSTRUCTIONS:**
+- **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
+- **Read-only** - Report discrepancies, never suggest creative solutions
+- **Exact matching** - Report differences precisely as they appear
+- **No interpretation** - List facts, not opinions or creative alternatives
 
 # Content Consistency Validation Report Generator
 
 Generate a comprehensive read-only discrepancy report that identifies messaging inconsistencies across:
-1. Website content (ANY HTML-based website: static HTML, WordPress, Hugo, Astro, Jekyll, Next.js, React, Vue, Gatsby, etc.)
-2. GitHub repositories (README, docs)
-3. Local documentation (internal docs, training materials)
+1. **Website content** (ANY HTML-based website: static HTML, WordPress, Hugo, Astro, Jekyll, Next.js, React, Vue, Gatsby, etc.) - **OFFICIAL SOURCE OF TRUTH**
+2. **GitHub repositories** (README, docs, technical documentation)
+3. **Local documentation** (SOPs, standards, principles, beliefs, training materials, internal docs, procedures)
+
+**WORKFLOW MANDATE:**
+- Website is the OFFICIAL documentation - always the source of truth
+- Internal docs (SOPs, standards, principles, beliefs) MUST match website
+- Report what's missing/different in local docs compared to published web content
+- Zero tolerance for creative interpretation - report exact differences only
 
 ## Report Structure
 
