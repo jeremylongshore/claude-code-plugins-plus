@@ -1,16 +1,16 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-1.2.1-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-165%20plugins-orange?logo=sparkles)](CHANGELOG.md#121---2025-10-23)
+[![Plugins](https://img.shields.io/badge/plugins-239-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-167%20plugins-orange?logo=sparkles)](CHANGELOG.md#121---2025-10-23)
 [![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**236 production-ready Claude Code plugins for automation, development, and AI workflows.**
-✅ **NEW in v1.2.1:** **100% Anthropic Spec v1.0 Compliant** - All 164 Agent Skills updated to official format!
+**239 production-ready Claude Code plugins for automation, development, and AI workflows.**
+✅ **NEW in v1.2.1:** **100% Anthropic Spec v1.0 Compliant** - All 167 Agent Skills updated to official format!
 
-**Latest:** [v1.2.1 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.1) - Anthropic Spec compliance, 164 skills updated
+**Latest:** [v1.2.1 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.1) - Anthropic Spec compliance, 167 skills updated
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -25,20 +25,22 @@
 
 ### ✅ Anthropic Official Spec v1.0 Compliance
 
-**All 164 Agent Skills now comply with [Anthropic's official Agent Skills Spec v1.0](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)** released October 16, 2025.
+**All 167 Agent Skills now comply with [Anthropic's official Agent Skills Spec v1.0](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)** released October 16, 2025.
 
 **What Changed:**
+- **Structure migration**: Moved from `skills/skill-adapter/` to `skills/{descriptive-name}/` per Anthropic specification
 - **Name format updated**: Title Case → hyphen-case (e.g., "Database Backup Automator" → "database-backup-automator")
 - **100% spec compliant**: All SKILL.md files follow official format requirements
 - **Forward compatible**: Ensures compatibility with future Claude Code releases
 - **No breaking changes**: Skills continue to work exactly as before
 
 **Quality Assessment:**
-Our comprehensive internal analysis shows our 165 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
+Our comprehensive internal analysis shows our 167 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
 
 **Automated with:**
+- `scripts/migrate-skills.py` - Structure migration tool
 - `scripts/fix-skill-names.py` - Batch conversion tool with validation
-- 164 skills fixed, 1 already correct, 0 errors
+- 167 skills migrated and validated, 100% success rate
 
 ---
 
