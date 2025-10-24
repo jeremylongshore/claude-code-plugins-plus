@@ -1,13 +1,13 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-1.2.1-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-239-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Plugins](https://img.shields.io/badge/plugins-240-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-167%20plugins-orange?logo=sparkles)](CHANGELOG.md#121---2025-10-23)
 [![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
 [![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**239 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**240 production-ready Claude Code plugins for automation, development, and AI workflows.**
 ✅ **NEW in v1.2.1:** **100% Anthropic Spec v1.0 Compliant** - All 167 Agent Skills updated to official format!
 
 **Latest:** [v1.2.1 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.1) - Anthropic Spec compliance, 167 skills updated
