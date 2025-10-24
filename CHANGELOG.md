@@ -1,3 +1,64 @@
+## [1.2.3] - 2025-10-23
+
+### 🎉 Highlights
+
+**Agent Context Manager** - Revolutionary new plugin that makes Claude Code automatically recognize and load `AGENTS.md` files alongside `CLAUDE.md` for specialized agent-specific instructions!
+
+### 👥 Contributors
+
+Special thanks to **Claude** (noreply@anthropic.com) for co-authoring this plugin with comprehensive documentation that exceeds Anthropic standards!
+
+### 🆕 New Plugins (1)
+
+- **[agent-context-manager](plugins/productivity/agent-context-manager/)** - Automatically detect and load AGENTS.md files for specialized agent behaviors
+  - **Category**: Productivity
+  - **Agent Skills**: 1 (agent-context-loader - 200+ line documentation)
+  - **Slash Commands**: 1 (/sync-agent-context)
+  - **Hooks**: 2 (onSessionStart, onDirectoryChange)
+  - **Features**:
+    - Three-layer redundancy system (proactive skill + hooks + manual command)
+    - Zero configuration - just create AGENTS.md and it works
+    - Automatic detection on directory change and session start
+    - Manual `/sync-agent-context` for permanent CLAUDE.md merge
+    - Comprehensive 400+ line README with examples and troubleshooting
+    - 100% Anthropic Agent Skills Spec v1.0 compliant
+    - Exceeds Anthropic documentation standards
+  - **Use Case**: Keep agent-specific rules separate from project context, enable different agent behaviors per project
+
+### 🌐 Hub Improvements
+
+- README completely redesigned around new Agent Context Manager plugin
+- Featured section with installation guide and quick start
+- Detailed "What's New" section highlighting all features
+- Updated badges: version, plugin count, agent skills count
+
+### 📚 Documentation
+
+- **Agent Context Manager Plugin**:
+  - 200+ line SKILL.md with progressive disclosure
+  - 400+ line comprehensive README
+  - Detailed slash command documentation
+  - Executable hook script with ANSI formatted output
+  - Examples, troubleshooting, best practices, API reference
+- **README.md**: Featured section, quick start guide, three-layer architecture explanation
+
+### 📊 Metrics
+
+- **Total Plugins:** 240 (was 239)
+- **New This Release:** 1 (agent-context-manager)
+- **Agent Skills:** 168 (was 167)
+- **Categories:** 19
+- **Contributors:** All-time contributors count maintained
+
+### 🔗 Links
+
+- [Full Plugin Documentation](plugins/productivity/agent-context-manager/README.md)
+- [SKILL.md](plugins/productivity/agent-context-manager/skills/agent-context-loader/SKILL.md)
+- [Slash Command Docs](plugins/productivity/agent-context-manager/commands/sync-agent-context.md)
+- [GitHub Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.3)
+
+---
+
 ## [1.2.2] - 2025-10-23
 
 ### ✨ New Plugins

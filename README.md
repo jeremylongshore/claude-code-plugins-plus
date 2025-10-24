@@ -1,16 +1,16 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.2.1-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.2.3-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-240-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-167%20plugins-orange?logo=sparkles)](CHANGELOG.md#121---2025-10-23)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-168%20plugins-orange?logo=sparkles)](CHANGELOG.md#123---2025-10-23)
 [![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
-[![Skill Enhancers](https://img.shields.io/badge/NEW-Skill%20Enhancers-blueviolet?logo=sparkles)](https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/skill-enhancers)
+[![NEW](https://img.shields.io/badge/NEW-Agent%20Context%20Manager-blueviolet?logo=sparkles)](plugins/productivity/agent-context-manager/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **240 production-ready Claude Code plugins for automation, development, and AI workflows.**
-✅ **NEW in v1.2.1:** **100% Anthropic Spec v1.0 Compliant** - All 167 Agent Skills updated to official format!
+🎯 **NEW in v1.2.3:** **Agent Context Manager** - Automatically load AGENTS.md files alongside CLAUDE.md for specialized agent behaviors!
 
-**Latest:** [v1.2.1 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.1) - Anthropic Spec compliance, 167 skills updated
+**Latest:** [v1.2.3 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.3) - Agent Context Manager plugin, automatic AGENTS.md loading
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -21,7 +21,70 @@
 
 ---
 
-## 🆕 What's New in v1.2.1
+## 🎯 Featured: Agent Context Manager
+
+**Automatic AGENTS.md Loading for Specialized Agent Behaviors**
+
+The new [Agent Context Manager](plugins/productivity/agent-context-manager/) plugin makes Claude Code automatically recognize and load `AGENTS.md` files alongside `CLAUDE.md`, enabling specialized agent-specific instructions without manual intervention.
+
+```bash
+# Install the plugin
+/plugin install agent-context-manager@claude-code-plugins-plus
+
+# Create AGENTS.md in your project
+cd /path/to/your/project
+echo "# AGENTS.md - Agent-Specific Rules" > AGENTS.md
+echo "- Always use TypeScript strict mode" >> AGENTS.md
+echo "- Never create files without permission" >> AGENTS.md
+
+# That's it! Claude Code will automatically load it
+```
+
+**Three-Layer System:**
+- **Layer 1**: Proactive skill automatically detects and loads AGENTS.md
+- **Layer 2**: Directory hooks print visual confirmation when AGENTS.md is detected
+- **Layer 3**: Manual `/sync-agent-context` command for permanent merge into CLAUDE.md
+
+**Why This Matters:**
+- Keep agent-specific rules separate from general project context
+- Different agent behaviors per project without CLAUDE.md pollution
+- Zero configuration - just create AGENTS.md and it works
+- Full documentation exceeding Anthropic standards
+
+[Read the full documentation →](plugins/productivity/agent-context-manager/README.md)
+
+---
+
+## 🆕 What's New in v1.2.3
+
+### 🎯 Agent Context Manager Plugin
+
+**NEW**: Automatic AGENTS.md detection and loading alongside CLAUDE.md
+
+- **Plugin**: [agent-context-manager](plugins/productivity/agent-context-manager/)
+- **Category**: Productivity
+- **Agent Skills**: 1 (agent-context-loader with 200+ line documentation)
+- **Slash Commands**: 1 (/sync-agent-context)
+- **Hooks**: 2 (onSessionStart, onDirectoryChange)
+
+**Features**:
+- Proactive auto-loading when AGENTS.md is detected
+- Directory change hooks with formatted visual feedback
+- Manual sync command for permanent CLAUDE.md merge
+- Three-layer redundancy system
+- Comprehensive documentation (400+ lines)
+- 100% Anthropic Agent Skills Spec v1.0 compliant
+- Exceeds Anthropic standards for documentation depth
+
+**Updates**:
+- Plugin count: 239 → 240
+- Agent Skills count: 167 → 168
+
+[Install now →](plugins/productivity/agent-context-manager/)
+
+---
+
+## What's New in v1.2.1
 
 ### ✅ Anthropic Official Spec v1.0 Compliance
 
