@@ -1,0 +1,84 @@
+────────────────────────────────────
+  ⏵⏵ bypass permissions on
+[16:24:02] [~/000-projects/claude-code-plugins] [main *]
+-> % hello
+zsh: command not found: hello
+[16:26:09] [~/000-projects/claude-code-plugins] [main *]
+-> % q
+
+[200~// (c) Anthropic PBC. All rights reserved. Use is subject to the Legal Agreements outlined here: https://docs.claude.com/en/docs/claude-code/legal-and-compliance.
+ 9 |
+10 | // Version: 2.0.22
+11 | var ROY=Object.create;var{getPrototypeOf:TOY,defineProperty:fi0,getOwnPropertyNames:POY}=Object;var yOY=Object.prototype.hasOwnProperty;var R=(Z,G,Y)=>{Y=Z!=null?ROY(TOY(Z)):{};let W=G||!Z||!Z.__esModule?fi0(Y,"default",{value:Z,enumerable:!0}):Y;for(let X of POY(Z))if(!yOY.call(W,X))fi0(W,X,{get:()=>Z[X],enumerable:!0});return W};var M=(Z,G)=>()=>(G||Z((G={exports:{}}).exports,G),G.exports);var VW=(Z,G)=>{for(var Y in G)fi0(Z,Y,{get:G[Y],enumerable:!0,configurable:!0,set:(W)=>G[Y]=()=>W})};var q=(Z,G)=>()=>(Z&&(G=Z(Z=0)),G);var X0=(Z)=>Promise.all(Z),V1=import.meta.require;var SOY,Wz0;var vi0=q(()=>{SOY=typeof global=="object"&&global&&global.Object===Object&&global,Wz0=SOY});var jOY,_OY,OV;var DN=q(()=>{vi0();jOY=typeof self=="object"&&self&&self.Object===Object&&self,_OY=Wz0||jOY||Function("return this")(),OV=_OY});var kOY,J7;var rh=q(()=>{DN();kOY=OV.Symbol,J7=kOY});function vOY(Z){var G=xOY.call(Z,DY0),Y=Z[DY0];try{Z[DY0]=void 0;var W=!0}catch(J){}var X=fOY.call(Z);if(W)if(G)Z[DY0]=Y;else delete Z[DY0];r | ... truncated
+12 | `);J=K[0]||"";for(let H=K.length-1;H>=1;H--){let z=K[H];if(z)yield z}}if(J)yield J}finally{await Y.close()}}var H_Y,z_Y;var gZ=q(()=>{H_Y={cwd(){return process.cwd()},existsSync(Z){return _W.existsSync(Z)},async stat(Z){return V_Y(Z)},statSync(Z){return _W.statSync(Z)},readFileSync(Z,G){return _W.readFileSync(Z,{encoding:G.encoding})},readFileBytesSync(Z){return _W.readFileSync(Z)},readSync(Z,G){let Y=void 0;try{Y=_W.openSync(Z,"r");let W=Buffer.alloc(G.length),X=_W.readSync(Y,W,0,G.length,0);return{buffer:W,bytesRead:X}}finally{if(Y)_W.closeSync(Y)}},writeFileSync(Z,G,Y){if(!Y.flush){let X={encoding:Y.encoding};if(Y.mode!==void 0)X.mode=Y.mode;_W.writeFileSync(Z,G,X);return}let W;try{let X=Y.mode!==void 0?Y.mode:void 0;W=_W.openSync(Z,"w",X),_W.writeFileSync(W,G,{encoding:Y.encoding}),_W.fsyncSync(W)}finally{if(W)_W.closeSync(W)}},appendFileSync(Z,G){_W.appendFileSync(Z,G)},copyFileSync(Z,G){_W.copyFileSync(Z,G)},unlinkSync(Z){_W.unlinkSync(Z)},renameSync(Z,G){_W.renameSync(Z,G)},linkSync(Z,G){_W.linkSync(Z, | ... truncated
+
+EACCES: permission denied, open
+ syscall: "open",
+   errno: -13,
+    code: "EACCES"
+
+      at appendFileSync (unknown:1:1)
+      at appendFileSync (/$bunfs/root/claude:12:882)
+      at r (/$bunfs/root/claude:14:103)
+      at k6 (/$bunfs/root/claude:3534:291)
+
+> /exit
+
+· Sprouting… (esc to interrupt)
+
+────────────────────────────────────
+> 
+────────────────────────────────────
+  ⏵⏵ bypass permissions on
+[16:24:02] [~/000-projects/claude-code-plugins] [main *]
+-> % hello
+zsh: command not found: hello
+[16:26:09] [~/000-projects/claude-code-plugins] [main *]
+-> % q
+
+[201~,existsSync(Z){return _W.existsSync(Z)},async stat(Z){return V_Y(Z)},statSync(Z){return _W.statSync(Z)},readFileSync(Z,G){return _W.readFileSync(Z,{encoding:G.encoding})},readFileBytesSync(Z){return _W.readFileSync(Z)},readSync(Z,G){let Y=void 0;try{Y=_W.openSync(Z,"r");let W=Buffer.alloc(G.length),X=_W.readSync(Y,W,0,G.length,0);return{buffer:W,bytesRead:X}}finally{if(Y)_W.closeSync(Y)}},writeFileSync(Z,G,Y){if(!Y.flush){let X={encoding:Y.encoding};if(Y.mode!==void 0)X.mode=Y.mode;_W.writeFileSync(Z,G,X);return}let W;try{let X=Y.mode!==void 0?Y.mode:void 0;W=_W.openSync(Z,"w",X),_W.writeFileSync(W,G,{encoding:Y.encoding}),_W.fsyncSync(W)}finally{if(W)_W.closeSync(W)}},appendFileSync(Z,G){_W.appendFileSync(Z,G)},copyFileSync(Z,G){_W.copyFileSync(Z,G)},unlinkSync(Z){_W.unlinkSync(Z)},renameSync(Z,G){_W.renameSync(Z,G)},linkSync(Z,G){_W.linkSync(Z, | ... truncated
+zsh: event not found: Y.flush){let
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % 
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % EACCES: permission denied, open
+zsh: command not found: EACCES:
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %  syscall: "open",
+zsh: command not found: syscall:
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %    errno: -13,
+zsh: command not found: errno:
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %     code: "EACCES"
+zsh: command not found: code:
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % 
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %       at appendFileSync (unknown:1:1)
+zsh: unknown username 'k'
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %       at appendFileSync (/$bunfs/root/claude:12:882)
+zsh: unknown sort specifier
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %       at r (/$bunfs/root/claude:14:103)
+zsh: unknown sort specifier
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> %       at k6 (/$bunfs/root/claude:3534:291)
+zsh: unknown sort specifier
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % 
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % > /exit
+zsh: permission denied: /exit
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % 
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % · Sprouting… (esc to interrupt)
+zsh: missing end of string
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+-> % 
+[16:26:14] [~/000-projects/claude-code-plugins] [main *]
+
+
+
