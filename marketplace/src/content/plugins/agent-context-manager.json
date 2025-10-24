@@ -1,0 +1,35 @@
+{
+  "name": "agent-context-manager",
+  "description": "Automatically detect and load AGENTS.md files alongside CLAUDE.md for specialized agent-specific instructions. Three-layer redundancy system with proactive skills, hooks, and manual sync.",
+  "version": "1.0.0",
+  "category": "productivity",
+  "keywords": [
+    "agent-skills",
+    "context",
+    "automation",
+    "claude-md",
+    "agents-md",
+    "proactive",
+    "hooks",
+    "anthropic-spec"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": true,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/agent-context-manager",
+  "license": "MIT",
+  "installation": "/plugin install agent-context-manager@claude-code-plugins-plus",
+  "features": [
+    "Automatic AGENTS.md detection and loading",
+    "Three-layer redundancy architecture (proactive skill + hooks + manual sync)",
+    "Progressive disclosure following Anthropic Agent Skills Spec v1.0",
+    "Directory change detection with visual notifications",
+    "Manual synchronization with /sync-agent-context command",
+    "Comprehensive 200+ line SKILL.md documentation",
+    "400+ line README with troubleshooting and examples",
+    "Exceeds Anthropic standards for Agent Skills"
+  ],
+  "requirements": [],
+  "screenshots": []
+}

@@ -13,13 +13,16 @@ const totalPlugins = allPlugins.length;
 const totalCategories = categories.length;
 const featuredPlugins = allPlugins.filter(p => p.data.featured);
 const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
-  // Skills Powerkit first (v1.2.0 release highlight)
+  // Agent Context Manager first (v1.2.3 release highlight)
+  if (a.data.name === 'agent-context-manager') return -1;
+  if (b.data.name === 'agent-context-manager') return 1;
+  // Skills Powerkit second
   if (a.data.name === 'skills-powerkit') return -1;
   if (b.data.name === 'skills-powerkit') return 1;
-  // Sugar second
+  // Sugar third
   if (a.data.name === 'sugar') return -1;
   if (b.data.name === 'sugar') return 1;
-  // PI Pathfinder third
+  // PI Pathfinder fourth
   if (a.data.name === 'pi-pathfinder') return -1;
   if (b.data.name === 'pi-pathfinder') return 1;
   return a.data.name.localeCompare(b.data.name);
@@ -48,6 +51,7 @@ const categoryIcons: Record<string, string> = {
   'cloud-infrastructure': '☁️',
   'accessibility': '♿',
   'mobile': '📱',
+  'productivity': '📋',
   'other': '🔧'
 };
 ---
@@ -60,10 +64,10 @@ const categoryIcons: Record<string, string> = {
     <div class="container announcement-inner">
       <span class="sparkle">🎯</span>
       <span>
-        <strong>v1.2.0:</strong> Agent Skills Quality Enhancement — 231 plugins enhanced (98% of marketplace) with high-quality Agent Skills. Auto-activating capabilities based on conversation context. Zero manual commands needed.
+        <strong>v1.2.3:</strong> Agent Context Manager Plugin — Automatically load AGENTS.md files alongside CLAUDE.md for specialized agent behaviors. Three-layer redundancy system with proactive skills, hooks, and manual sync.
       </span>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.0" class="ann-link">Release v1.2.0</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins#-how-agent-skills-work" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.3" class="ann-link">Release v1.2.3</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/agent-context-manager" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
     </div>
   </div>
 
@@ -71,32 +75,32 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
-  <!-- Agent Skills Spotlight -->
+  <!-- Agent Context Manager Spotlight -->
   <section class="spotlight-section">
     <div class="container">
       <div class="spotlight">
-        <div class="spotlight-icon">🧠</div>
+        <div class="spotlight-icon">📋</div>
         <div class="spotlight-content">
-          <div class="spotlight-kicker">New in v1.2.0 • Production-Grade AI Batch Processing • $0 Cost</div>
-          <h2 class="spotlight-title">Marketplace-Wide <span class="spotlight-name">Agent Skills Enhancement</span></h2>
+          <div class="spotlight-kicker">New in v1.2.3 • Anthropic Spec v1.0 Compliant • Fully Automatic</div>
+          <h2 class="spotlight-title">Introducing <span class="spotlight-name">Agent Context Manager</span></h2>
           <p class="spotlight-text">
-            <strong>231 plugins enhanced (98% of marketplace) with high-quality Agent Skills.</strong> Claude now activates relevant capabilities automatically based on your conversation context.
-            No slash commands needed. Just mention what you need, and Claude activates the right skills.
-            <strong>100% success rate, zero failures.</strong>
+            <strong>Automatically detect and load AGENTS.md files alongside CLAUDE.md.</strong> Separate your agent-specific instructions from general project context without manual intervention.
+            Three-layer redundancy system ensures your agent rules are always loaded.
+            <strong>Zero configuration, zero maintenance.</strong>
           </p>
           <div class="spotlight-features">
-            <span class="feature-badge">🤖 Auto-Activating Capabilities</span>
-            <span class="feature-badge">📚 Multi-Phase Workflows</span>
-            <span class="feature-badge">💡 Rich Code Examples</span>
-            <span class="feature-badge">✅ 159 New SKILL.md Files</span>
+            <span class="feature-badge">⚡ Proactive Auto-Loading</span>
+            <span class="feature-badge">🔔 Directory Change Detection</span>
+            <span class="feature-badge">🔄 Manual Sync Command</span>
+            <span class="feature-badge">✅ Exceeds Anthropic Standards</span>
           </div>
           <p class="spotlight-subtext">
-            <strong>Powered by Vertex AI Gemini 2.0 Flash on free tier.</strong>
-            Enhanced using production-grade batch processing with SQLite audit trails and comprehensive disaster recovery.
+            <strong>200+ line comprehensive SKILL.md • 400+ line README with examples.</strong>
+            Full compliance with Anthropic Agent Skills Specification v1.0 with progressive disclosure architecture.
           </p>
           <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins#-how-agent-skills-work" target="_blank" rel="noopener noreferrer">Learn About Agent Skills</a>
-            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.0" target="_blank" rel="noopener noreferrer">Release Notes</a>
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/agent-context-manager" target="_blank" rel="noopener noreferrer">Plugin Documentation</a>
+            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.3" target="_blank" rel="noopener noreferrer">Release Notes</a>
           </div>
         </div>
       </div>
