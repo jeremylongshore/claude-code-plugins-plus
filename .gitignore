@@ -52,6 +52,7 @@ build/
 coverage/
 
 # Private documentation and business documents (NEVER commit)
+000-docs/
 website/
 
 # Internal planning and research documents (do not commit to public repo)

@@ -34,7 +34,7 @@
 - **No breaking changes**: Skills continue to work exactly as before
 
 **Quality Assessment:**
-Our comprehensive [comparison report](claudes-docs/ANTHROPIC_SKILLS_COMPARISON.md) shows our 165 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
+Our comprehensive internal analysis shows our 165 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
 
 **Automated with:**
 - `scripts/fix-skill-names.py` - Batch conversion tool with validation
