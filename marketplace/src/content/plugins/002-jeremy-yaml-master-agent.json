@@ -2,7 +2,7 @@
   "name": "002-jeremy-yaml-master-agent",
   "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities (YAML ↔ JSON ↔ TOML ↔ XML)",
   "version": "1.0.0",
-  "category": "productivity",
+  "category": "automation",
   "keywords": [
     "yaml",
     "validation",

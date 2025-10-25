@@ -2,7 +2,7 @@
   "name": "agent-context-manager",
   "description": "Automatically detect and load AGENTS.md files alongside CLAUDE.md for specialized agent-specific instructions. Three-layer redundancy system with proactive skills, hooks, and manual sync.",
   "version": "1.0.0",
-  "category": "productivity",
+  "category": "automation",
   "keywords": [
     "agent-skills",
     "context",
