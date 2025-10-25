@@ -1,0 +1,42 @@
+{
+  "name": "002-jeremy-yaml-master-agent",
+  "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities (YAML ↔ JSON ↔ TOML ↔ XML)",
+  "version": "1.0.0",
+  "category": "productivity",
+  "keywords": [
+    "yaml",
+    "validation",
+    "linting",
+    "schema",
+    "json",
+    "toml",
+    "xml",
+    "conversion",
+    "kubernetes",
+    "docker-compose",
+    "ci-cd",
+    "agent-skills"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/002-jeremy-yaml-master-agent",
+  "license": "MIT",
+  "installation": "/plugin install 002-jeremy-yaml-master-agent@claude-code-plugins-plus",
+  "features": [
+    "Automatic YAML file detection and validation",
+    "Intelligent syntax error detection with fix suggestions",
+    "Schema inference and JSON Schema generation",
+    "Format conversion: YAML ↔ JSON ↔ TOML ↔ XML",
+    "Kubernetes manifest validation and best practices",
+    "Docker Compose optimization and security checks",
+    "CI/CD pipeline intelligence (GitHub Actions, GitLab CI, etc.)",
+    "YAML linting and style enforcement",
+    "Anchors and aliases mastery with DRY refactoring",
+    "Multi-document YAML support",
+    "Environment-specific configuration management"
+  ],
+  "requirements": [],
+  "screenshots": []
+}
