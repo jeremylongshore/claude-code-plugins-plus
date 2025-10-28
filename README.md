@@ -1,16 +1,16 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.2.3-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-240-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.2.4-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-234-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-168%20plugins-orange?logo=sparkles)](CHANGELOG.md#123---2025-10-23)
 [![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
 [![NEW](https://img.shields.io/badge/NEW-Agent%20Context%20Manager-blueviolet?logo=sparkles)](plugins/productivity/agent-context-manager/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**240 production-ready Claude Code plugins for automation, development, and AI workflows.**
-🎯 **NEW in v1.2.3:** **Agent Context Manager** - Automatically load AGENTS.md files alongside CLAUDE.md for specialized agent behaviors!
+**234 production-ready Claude Code plugins for automation, development, and AI workflows.**
+🎯 **NEW in v1.2.4:** **Excel Analyst Pro** - Professional financial modeling toolkit with auto-invoked Skills and Excel MCP integration!
 
-**Latest:** [v1.2.3 Release](https://github.com/jeremylongshore/claude-code-plugins-plus/releases/tag/v1.2.3) - Agent Context Manager plugin, automatic AGENTS.md loading
+**Latest:** [v1.2.4 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.4) - Excel Analyst Pro plugin for DCF models, LBO analysis, and financial modeling
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -21,37 +21,41 @@
 
 ---
 
-## 🎯 Featured: Agent Context Manager
+## 🎯 Featured: Excel Analyst Pro
 
-**Automatic AGENTS.md Loading for Specialized Agent Behaviors**
+**Professional Financial Modeling with Auto-Invoked Skills**
 
-The new [Agent Context Manager](plugins/productivity/agent-context-manager/) plugin makes Claude Code automatically recognize and load `AGENTS.md` files alongside `CLAUDE.md`, enabling specialized agent-specific instructions without manual intervention.
+The new [Excel Analyst Pro](plugins/business-tools/excel-analyst-pro/) plugin brings investment banking-grade financial modeling to Claude Code with automatic Skills activation and Excel MCP integration.
 
 ```bash
 # Install the plugin
-/plugin install agent-context-manager@claude-code-plugins-plus
+/plugin install excel-analyst-pro@claude-code-plugins-plus
 
-# Create AGENTS.md in your project
-cd /path/to/your/project
-echo "# AGENTS.md - Agent-Specific Rules" > AGENTS.md
-echo "- Always use TypeScript strict mode" >> AGENTS.md
-echo "- Never create files without permission" >> AGENTS.md
+# Build a DCF model with natural language
+"Build a 5-year DCF model for a SaaS company with 30% revenue growth"
 
-# That's it! Claude Code will automatically load it
+# Create an LBO analysis
+/build-lbo
+
+# Analyze budget variance
+/analyze-variance
 ```
 
-**Three-Layer System:**
-- **Layer 1**: Proactive skill automatically detects and loads AGENTS.md
-- **Layer 2**: Directory hooks print visual confirmation when AGENTS.md is detected
-- **Layer 3**: Manual `/sync-agent-context` command for permanent merge into CLAUDE.md
+**Four Auto-Invoked Skills:**
+- **DCF Modeler**: Build discounted cash flow valuation models
+- **LBO Modeler**: Create leveraged buyout analysis with debt schedules
+- **Variance Analyzer**: Generate executive variance reports
+- **Pivot Wizard**: Create pivot tables with natural language
 
 **Why This Matters:**
-- Keep agent-specific rules separate from general project context
-- Different agent behaviors per project without CLAUDE.md pollution
-- Zero configuration - just create AGENTS.md and it works
-- Full documentation exceeding Anthropic standards
+- Build complex financial models without remembering formulas
+- Investment banking-grade templates and best practices
+- Local Excel processing - no cloud upload required
+- Perfect timing with Anthropic's Claude for Excel announcement
+- Auto-invoked Skills activate automatically when needed
+- Comprehensive documentation with real-world examples
 
-[Read the full documentation →](plugins/productivity/agent-context-manager/README.md)
+[Read the full documentation →](plugins/business-tools/excel-analyst-pro/README.md)
 
 ---
 

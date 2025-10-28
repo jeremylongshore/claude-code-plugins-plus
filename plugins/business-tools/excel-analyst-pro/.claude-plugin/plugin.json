@@ -1,0 +1,61 @@
+{
+  "name": "excel-analyst-pro",
+  "version": "1.0.0",
+  "description": "Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.",
+  "author": {
+    "name": "ClaudeCodePlugins",
+    "email": "plugins@claudecodeplugins.io",
+    "url": "https://claudecodeplugins.io"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/excel-analyst-pro",
+  "keywords": [
+    "excel",
+    "financial-modeling",
+    "dcf",
+    "lbo",
+    "valuation",
+    "variance-analysis",
+    "pivot-tables",
+    "investment-banking",
+    "private-equity",
+    "financial-analysis"
+  ],
+  "category": "business-tools",
+  "skills": [
+    "skills/excel-dcf-modeler",
+    "skills/excel-lbo-modeler",
+    "skills/excel-variance-analyzer",
+    "skills/excel-pivot-wizard"
+  ],
+  "mcp_servers": [
+    {
+      "name": "excel",
+      "command": "npx",
+      "args": ["--yes", "@negokaz/excel-mcp-server"],
+      "env": {
+        "EXCEL_MCP_PAGING_CELLS_LIMIT": "4000"
+      }
+    }
+  ],
+  "slash_commands": [
+    "slash-commands/build-dcf.md",
+    "slash-commands/build-lbo.md",
+    "slash-commands/analyze-variance.md"
+  ],
+  "requirements": {
+    "claude_code": ">=1.0.0",
+    "node": ">=18.0.0"
+  },
+  "features": [
+    "Auto-invoked Skills for financial modeling workflows",
+    "DCF valuation models with projections and sensitivity analysis",
+    "LBO models with debt schedules and IRR calculations",
+    "Automated variance analysis with executive summaries",
+    "Natural language pivot table generation",
+    "Local Excel file processing (no cloud upload)",
+    "Investment banking-grade templates",
+    "Integration with @negokaz/excel-mcp-server"
+  ],
+  "installation": "/plugin install excel-analyst-pro@claude-code-plugins"
+}

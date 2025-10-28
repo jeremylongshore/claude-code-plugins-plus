@@ -1,3 +1,64 @@
+## [1.2.4] - 2025-10-27
+
+### 🎉 Highlights
+
+**Excel Analyst Pro** - Professional financial modeling toolkit with auto-invoked Agent Skills and Excel MCP integration! Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.
+
+### 👥 Contributors
+
+Special thanks to @jeremylongshore for building this plugin and launching a new **business-tools** category!
+
+### 🆕 New Plugins (1)
+
+- **[excel-analyst-pro](plugins/business-tools/excel-analyst-pro/)** - Professional financial modeling toolkit for Claude Code
+  - **Category**: Business Tools (NEW category!)
+  - **Agent Skills**: 4 (DCF Modeler, LBO Modeler, Variance Analyzer, Pivot Wizard)
+  - **Slash Commands**: 3 (/build-dcf, /build-lbo, /analyze-variance)
+  - **MCP Integration**: @negokaz/excel-mcp-server
+  - **Features**:
+    - Auto-invoked Skills for financial modeling workflows
+    - DCF valuation models with projections and sensitivity analysis
+    - LBO models with debt schedules and IRR calculations
+    - Automated variance analysis with executive summaries
+    - Natural language pivot table generation
+    - Local Excel file processing (no cloud upload required)
+    - Investment banking-grade templates and best practices
+  - **Use Cases**:
+    - Financial analysts building valuation models
+    - Investment bankers preparing pitch books
+    - Private equity professionals analyzing deals
+    - Business analysts creating financial reports
+  - **Timing**: Launched alongside Anthropic's Claude for Excel announcement (Oct 2025)
+
+### 🌐 Hub Improvements
+
+- Added new **business-tools** category to marketplace
+- Excel Analyst Pro marked as featured plugin
+- Integrated Excel MCP server support into plugin ecosystem
+
+### 📚 Documentation
+
+- **Excel Analyst Pro Plugin**:
+  - Comprehensive README with installation and usage guide
+  - 4 detailed Agent Skills for automatic financial modeling
+  - 3 slash commands with examples
+  - Production-ready templates for DCF, LBO, and variance analysis
+
+### 📊 Metrics
+
+- **Total Plugins:** 234 (was 233)
+- **New This Release:** 1 (excel-analyst-pro)
+- **Categories:** 20 (added business-tools)
+- **Agent Skills:** 168 plugins equipped
+- **Featured Plugins:** Increased by 1
+
+### 🔗 Links
+
+- [Excel Analyst Pro Documentation](plugins/business-tools/excel-analyst-pro/README.md)
+- [GitHub Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.4)
+
+---
+
 ## [1.2.3] - 2025-10-23
 
 ### 🎉 Highlights

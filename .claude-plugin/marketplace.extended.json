@@ -4366,6 +4366,37 @@
         "skills",
         "commands"
       ]
+    },
+    {
+      "name": "excel-analyst-pro",
+      "source": "./plugins/business-tools/excel-analyst-pro",
+      "description": "Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "excel",
+        "financial-modeling",
+        "dcf",
+        "lbo",
+        "valuation",
+        "variance-analysis",
+        "pivot-tables",
+        "investment-banking",
+        "private-equity",
+        "financial-analysis",
+        "skills",
+        "mcp"
+      ],
+      "author": {
+        "name": "ClaudeCodePlugins",
+        "email": "plugins@claudecodeplugins.io"
+      },
+      "featured": true,
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "components": {
+        "skills": 4,
+        "commands": 3
+      }
     }
   ]
 }
