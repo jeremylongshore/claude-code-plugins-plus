@@ -4255,29 +4255,6 @@
       }
     },
     {
-      "name": "pubmed-research-master",
-      "source": "./plugins/life-sciences/pubmed-research-master",
-      "description": "Complete PubMed research toolkit with 10 MCP tools for scientific literature search, citation management, and research workflows",
-      "version": "1.0.0",
-      "category": "ai-ml",
-      "keywords": [
-        "pubmed",
-        "research",
-        "scientific",
-        "citations",
-        "mcp",
-        "life-sciences",
-        "medical",
-        "literature-review",
-        "bibliometrics"
-      ],
-      "author": {
-        "name": "Intent Solutions IO",
-        "email": "[email protected]"
-      },
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
-    },
-    {
       "name": "excel-analyst-pro",
       "source": "./plugins/business-tools/excel-analyst-pro",
       "description": "Professional financial modeling toolkit for Claude Code with auto-invoked Skills and Excel MCP integration. Build DCF models, LBO analysis, variance reports, and pivot tables using natural language.",
