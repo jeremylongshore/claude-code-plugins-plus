@@ -901,7 +901,7 @@ Common examples:
 
 ---
 
-**Last Updated:** October 2025
-**Repository Version:** 1.2.0 (236 plugins, 159 with Agent Skills)
+**Last Updated:** October 28, 2025
+**Repository Version:** 1.2.5 (236 plugins, 171 with Agent Skills)
 **Status:** Active, accepting community contributions
 **Recent Changes:** v1.2.0 Agent Skills Quality Enhancement, documentation reorganization, 000-docs/ filing system implemented

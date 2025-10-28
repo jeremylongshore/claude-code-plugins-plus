@@ -1,3 +1,53 @@
+## [1.2.5] - 2025-10-28
+
+### 🎉 Highlights
+
+**Three New Google Cloud Plugins** - Comprehensive Vertex AI multimodal capabilities, YAML validation/transformation, and Google Cloud Agent SDK integration!
+
+### 👥 Contributors
+
+Special thanks to @jeremylongshore for creating these powerful Google Cloud integration plugins!
+
+### 🆕 New Plugins (3)
+
+- **[002-jeremy-yaml-master-agent](plugins/productivity/002-jeremy-yaml-master-agent/)** - Intelligent YAML validation, generation, and transformation agent
+  - **Category**: Productivity
+  - **Agent Skills**: 1 (YAML validation and schema inference)
+  - **Features**: Schema inference, linting, format conversion (YAML↔JSON), parsing validation
+
+- **[003-jeremy-vertex-ai-media-master](plugins/productivity/003-jeremy-vertex-ai-media-master/)** - Comprehensive Google Vertex AI multimodal mastery
+  - **Category**: Productivity
+  - **Agent Skills**: 1 (multimodal content generation)
+  - **Slash Commands**: 1 (/vertex-campaign)
+  - **Features**: Video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4, marketing campaign automation
+
+- **[004-jeremy-google-cloud-agent-sdk](plugins/productivity/004-jeremy-google-cloud-agent-sdk/)** - Google Cloud Agent Development Kit mastery
+  - **Category**: Productivity
+  - **Agent Skills**: 1 (agent development automation)
+  - **Slash Commands**: 1 (/create-agent)
+  - **Features**: Build containerized multi-agent systems, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, multi-agent orchestration
+
+### 🐛 Fixes
+
+- Fixed marketplace catalog registration for new plugins
+- Removed non-existent pubmed-research-master plugin entry
+- Renamed sync-marketplace script to match CI workflow expectations
+
+### 📊 Metrics
+
+- **Total Plugins:** 236 (was 234, added 3 new, removed 1 non-existent)
+- **New This Release:** 3 Google Cloud integration plugins
+- **Categories:** 20 (productivity expanded)
+- **Agent Skills:** 171 plugins equipped (3 new)
+
+### 🔗 Links
+
+- [002-jeremy-yaml-master-agent Documentation](plugins/productivity/002-jeremy-yaml-master-agent/README.md)
+- [003-jeremy-vertex-ai-media-master Documentation](plugins/productivity/003-jeremy-vertex-ai-media-master/README.md)
+- [004-jeremy-google-cloud-agent-sdk Documentation](plugins/productivity/004-jeremy-google-cloud-agent-sdk/README.md)
+
+---
+
 ## [1.2.4] - 2025-10-27
 
 ### 🎉 Highlights
@@ -46,7 +96,7 @@ Special thanks to @jeremylongshore for building this plugin and launching a new 
 
 ### 📊 Metrics
 
-- **Total Plugins:** 234 (was 233)
+- **Total Plugins:** 233 (was 232)
 - **New This Release:** 1 (excel-analyst-pro)
 - **Categories:** 20 (added business-tools)
 - **Agent Skills:** 168 plugins equipped

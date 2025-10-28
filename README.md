@@ -1,13 +1,13 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.2.4-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-234-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.2.5-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-168%20plugins-orange?logo=sparkles)](CHANGELOG.md#123---2025-10-23)
 [![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
 [![NEW](https://img.shields.io/badge/NEW-Agent%20Context%20Manager-blueviolet?logo=sparkles)](plugins/productivity/agent-context-manager/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**234 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**236 production-ready Claude Code plugins for automation, development, and AI workflows.**
 🎯 **NEW in v1.2.4:** **Excel Analyst Pro** - Professional financial modeling toolkit with auto-invoked Skills and Excel MCP integration!
 
 **Latest:** [v1.2.4 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.4) - Excel Analyst Pro plugin for DCF models, LBO analysis, and financial modeling
@@ -81,8 +81,8 @@ The new [Excel Analyst Pro](plugins/business-tools/excel-analyst-pro/) plugin br
 - Exceeds Anthropic standards for documentation depth
 
 **Updates**:
-- Plugin count: 239 → 240
-- Agent Skills count: 167 → 168
+- Plugin count: 236 (with 3 new Vertex AI and Google Cloud plugins)
+- Agent Skills count: 168
 
 [Install now →](plugins/productivity/agent-context-manager/)
 
