@@ -4302,6 +4302,77 @@
         "email": "plugins@claudecodeplugins.io"
       },
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+    },
+    {
+      "name": "002-jeremy-yaml-master-agent",
+      "source": "./plugins/productivity/002-jeremy-yaml-master-agent",
+      "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "yaml",
+        "validation",
+        "linting",
+        "schema",
+        "json",
+        "conversion",
+        "parsing",
+        "agent-skills"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "003-jeremy-vertex-ai-media-master",
+      "source": "./plugins/productivity/003-jeremy-vertex-ai-media-master",
+      "description": "Comprehensive Google Vertex AI multimodal mastery for Jeremy - video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4. Marketing campaign automation, content generation, and media asset production.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "vertex-ai",
+        "gemini",
+        "multimodal",
+        "video-processing",
+        "audio-generation",
+        "image-generation",
+        "marketing",
+        "campaigns",
+        "content-generation",
+        "imagen",
+        "media-production",
+        "google-cloud"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "004-jeremy-google-cloud-agent-sdk",
+      "source": "./plugins/productivity/004-jeremy-google-cloud-agent-sdk",
+      "description": "Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready templates, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, and multi-agent orchestration.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "agent-development-kit",
+        "adk",
+        "agent-starter-pack",
+        "multi-agent",
+        "containerized-agents",
+        "cloud-run",
+        "gke",
+        "agent-engine",
+        "rag-agents",
+        "react-agents",
+        "google-cloud",
+        "vertex-ai"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
     }
   ]
 }
