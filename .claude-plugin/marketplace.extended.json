@@ -4451,6 +4451,28 @@
         "skills": 1,
         "commands": 1
       }
+    },
+    {
+      "name": "agent-context-manager",
+      "source": "./plugins/productivity/agent-context-manager",
+      "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions alongside CLAUDE.md. Enables specialized agent behaviors without manual intervention.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "agents",
+        "context",
+        "automation",
+        "workflow",
+        "productivity"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 1
+      }
     }
   ]
 }
