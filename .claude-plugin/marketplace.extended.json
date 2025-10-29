@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.2.5",
+    "version": "1.2.6",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },

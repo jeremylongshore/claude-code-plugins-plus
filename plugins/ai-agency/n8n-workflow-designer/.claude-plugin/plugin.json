@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["automation", "ai-agency", "workflow"],
-  "keywords": ["n8n", "workflow", "automation", "self-hosted", "open-source", "ai-agency"]
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "self-hosted",
+    "open-source",
+    "ai-agency"
+  ]
 }

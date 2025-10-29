@@ -28,10 +28,5 @@
   ],
   "dependencies": {
     "openbb": "latest"
-  },
-  "requirements": [
-    "Python 3.9.21 - 3.12",
-    "pip install openbb",
-    "Optional: Data provider API keys for premium data"
-  ]
+  }
 }

@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["ai-agency", "sales", "business", "legal"],
-  "keywords": ["sow", "statement of work", "contract", "proposal", "agency", "ai-agency"]
+  "keywords": [
+    "sow",
+    "statement of work",
+    "contract",
+    "proposal",
+    "agency",
+    "ai-agency"
+  ]
 }

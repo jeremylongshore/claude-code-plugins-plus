@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["ai-agency", "sales", "business"],
-  "keywords": ["roi", "return on investment", "calculator", "sales", "value", "ai-agency"]
+  "keywords": [
+    "roi",
+    "return on investment",
+    "calculator",
+    "sales",
+    "value",
+    "ai-agency"
+  ]
 }

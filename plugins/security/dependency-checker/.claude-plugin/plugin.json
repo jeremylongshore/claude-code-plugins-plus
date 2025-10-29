@@ -16,10 +16,5 @@
     "composer",
     "vulnerabilities",
     "agent-skills"
-  ],
-  "capabilities": [
-    "dependency-analysis",
-    "cve-checking",
-    "license-scanning"
   ]
 }

@@ -7,7 +7,7 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.2.6",
+    "version": "1.2.2",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins"
   },
@@ -41,6 +41,10 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 1
       }
     },
     {
@@ -64,6 +68,10 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 1
       }
     },
     {
@@ -87,6 +95,7 @@
         "name": "Claude Code Plugins",
         "email": "[email protected]"
       },
+      "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
@@ -111,6 +120,10 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
+      "featured": true,
+      "components": {
+        "skills": 1
+      },
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
@@ -133,6 +146,7 @@
         "name": "Claude Code Plugins Team",
         "email": "[email protected]"
       },
+      "featured": true,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
@@ -157,6 +171,8 @@
         "name": "Steven Leggett",
         "email": "contact@roboticforce.io"
       },
+      "featured": true,
+      "mcpTools": 7,
       "repository": "https://github.com/cdnsteve/sugar"
     },
     {
@@ -176,7 +192,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "fairdb-operations-kit",
@@ -204,6 +221,7 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       },
+      "featured": false,
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
@@ -226,7 +244,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "project-health-auditor",
@@ -246,7 +265,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "conversational-api-debugger",
@@ -267,7 +288,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "domain-memory-agent",
@@ -287,7 +310,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 6
     },
     {
       "name": "design-to-code",
@@ -308,7 +333,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 3
     },
     {
       "name": "workflow-orchestrator",
@@ -328,7 +355,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "mcpTools": 4
     },
     {
       "name": "hello-world",
@@ -386,7 +415,8 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
-      }
+      },
+      "featured": true
     },
     {
       "name": "make-scenario-builder",
@@ -499,7 +529,8 @@
         "name": "Intent Solutions IO",
         "url": "https://intentsolutions.io",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "security-pro-pack",
@@ -522,7 +553,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 10
     },
     {
       "name": "fullstack-starter-pack",
@@ -544,7 +577,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 15
     },
     {
       "name": "ai-ml-engineering-pack",
@@ -567,7 +602,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true,
+      "pluginCount": 12
     },
     {
       "name": "snapshot-test-manager",
@@ -877,7 +914,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "graphql-server-builder",
@@ -896,7 +934,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "api-documentation-generator",
@@ -1308,7 +1347,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "kubernetes-deployment-creator",
@@ -1326,7 +1366,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "ci-cd-pipeline-builder",
@@ -1345,7 +1386,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "infrastructure-as-code-generator",
@@ -1364,7 +1406,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "container-security-scanner",
@@ -2216,7 +2259,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "blockchain-explorer-cli",
@@ -2315,7 +2359,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "crypto-signal-generator",
@@ -2509,7 +2554,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "mempool-analyzer",
@@ -2567,7 +2613,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "options-flow-analyzer",
@@ -2682,7 +2729,8 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "featured": true
     },
     {
       "name": "data-seeder-generator",
@@ -4153,6 +4201,17 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "pricing": {
+        "model": "one-time",
+        "price": 149,
+        "currency": "USD"
+      },
+      "components": {
+        "agents": 10,
+        "commands": 10,
+        "total": 20
       }
     },
     {
@@ -4179,6 +4238,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "agents": 1,
+        "commands": 3,
+        "total": 4
       }
     },
     {
@@ -4199,6 +4264,11 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 1,
+        "total": 1
       }
     },
     {
@@ -4224,6 +4294,14 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "hooks": 2,
+        "scripts": 3,
+        "total": 15
       }
     },
     {
@@ -4252,7 +4330,42 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "featured": true,
+      "components": {
+        "commands": 6,
+        "agents": 4,
+        "total": 10
       }
+    },
+    {
+      "name": "pubmed-research-master",
+      "source": "./plugins/life-sciences/pubmed-research-master",
+      "description": "Complete PubMed research toolkit with 10 MCP tools for scientific literature search, citation management, and research workflows",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "pubmed",
+        "research",
+        "scientific",
+        "citations",
+        "mcp",
+        "life-sciences",
+        "medical",
+        "literature-review",
+        "bibliometrics"
+      ],
+      "author": {
+        "name": "Intent Solutions IO",
+        "email": "[email protected]"
+      },
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "mcpTools": 10,
+      "components": [
+        "mcp",
+        "skills",
+        "commands"
+      ]
     },
     {
       "name": "excel-analyst-pro",
@@ -4278,77 +4391,11 @@
         "name": "ClaudeCodePlugins",
         "email": "plugins@claudecodeplugins.io"
       },
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
-    },
-    {
-      "name": "002-jeremy-yaml-master-agent",
-      "source": "./plugins/productivity/002-jeremy-yaml-master-agent",
-      "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "yaml",
-        "validation",
-        "linting",
-        "schema",
-        "json",
-        "conversion",
-        "parsing",
-        "agent-skills"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      }
-    },
-    {
-      "name": "003-jeremy-vertex-ai-media-master",
-      "source": "./plugins/productivity/003-jeremy-vertex-ai-media-master",
-      "description": "Comprehensive Google Vertex AI multimodal mastery for Jeremy - video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4. Marketing campaign automation, content generation, and media asset production.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "vertex-ai",
-        "gemini",
-        "multimodal",
-        "video-processing",
-        "audio-generation",
-        "image-generation",
-        "marketing",
-        "campaigns",
-        "content-generation",
-        "imagen",
-        "media-production",
-        "google-cloud"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      }
-    },
-    {
-      "name": "004-jeremy-google-cloud-agent-sdk",
-      "source": "./plugins/productivity/004-jeremy-google-cloud-agent-sdk",
-      "description": "Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready templates, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, and multi-agent orchestration.",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "agent-development-kit",
-        "adk",
-        "agent-starter-pack",
-        "multi-agent",
-        "containerized-agents",
-        "cloud-run",
-        "gke",
-        "agent-engine",
-        "rag-agents",
-        "react-agents",
-        "google-cloud",
-        "vertex-ai"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
+      "featured": true,
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "components": {
+        "skills": 4,
+        "commands": 3
       }
     }
   ]

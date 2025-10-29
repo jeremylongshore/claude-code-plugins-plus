@@ -6,15 +6,16 @@
   "author": "Jeremy Longshore",
   "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus",
   "category": "productivity",
-  "tags": ["agents", "context", "automation", "workflow", "productivity"],
+  "tags": [
+    "agents",
+    "context",
+    "automation",
+    "workflow",
+    "productivity"
+  ],
   "license": "MIT",
   "claudeCode": {
     "minVersion": "0.1.0"
-  },
-  "capabilities": {
-    "agentSkills": true,
-    "slashCommands": true,
-    "hooks": true
   },
   "hooks": {
     "onDirectoryChange": "skills/agent-context-loader/scripts/check-agents-md.sh",

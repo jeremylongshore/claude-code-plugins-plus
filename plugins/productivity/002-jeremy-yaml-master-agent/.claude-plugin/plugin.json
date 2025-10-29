@@ -8,11 +8,6 @@
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
   },
-  "capabilities": {
-    "agentSkills": true,
-    "slashCommands": false,
-    "hooks": false
-  },
   "keywords": [
     "yaml",
     "validation",

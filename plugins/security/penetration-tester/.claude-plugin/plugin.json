@@ -15,10 +15,5 @@
     "owasp",
     "exploitation",
     "agent-skills"
-  ],
-  "capabilities": [
-    "penetration-testing",
-    "vulnerability-exploitation",
-    "security-assessment"
   ]
 }

@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["automation", "ai-agency", "zapier"],
-  "keywords": ["zapier", "zap", "automation", "integration", "workflow", "ai-agency"]
+  "keywords": [
+    "zapier",
+    "zap",
+    "automation",
+    "integration",
+    "workflow",
+    "ai-agency"
+  ]
 }

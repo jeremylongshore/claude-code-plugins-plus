@@ -9,7 +9,6 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["productivity", "testing", "automation", "devops"],
   "keywords": [
     "overnight",
     "autonomous",

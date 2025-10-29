@@ -8,6 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "categories": ["ai-agency", "sales", "business"],
-  "keywords": ["discovery", "questionnaire", "client", "sales", "agency", "ai-agency"]
+  "keywords": [
+    "discovery",
+    "questionnaire",
+    "client",
+    "sales",
+    "agency",
+    "ai-agency"
+  ]
 }

@@ -15,10 +15,5 @@
     "credentials",
     "passwords",
     "agent-skills"
-  ],
-  "capabilities": [
-    "secret-detection",
-    "credential-scanning",
-    "entropy-analysis"
   ]
 }
