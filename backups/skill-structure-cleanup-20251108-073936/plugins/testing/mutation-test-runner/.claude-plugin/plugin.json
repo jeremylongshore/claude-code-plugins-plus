@@ -1,0 +1,19 @@
+{
+  "name": "mutation-test-runner",
+  "version": "1.0.0",
+  "description": "Mutation testing to validate test quality by introducing code changes and verifying tests catch them",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "mutation-testing",
+    "test-quality",
+    "stryker",
+    "pitest",
+    "agent-skills"
+  ]
+}

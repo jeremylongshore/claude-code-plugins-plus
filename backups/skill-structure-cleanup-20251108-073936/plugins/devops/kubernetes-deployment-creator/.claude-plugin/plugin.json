@@ -1,0 +1,19 @@
+{
+  "name": "kubernetes-deployment-creator",
+  "version": "1.0.0",
+  "description": "Create Kubernetes deployments, services, and configurations with best practices",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "kubernetes",
+    "k8s",
+    "deployment",
+    "orchestration",
+    "containers",
+    "agent-skills"
+  ]
+}

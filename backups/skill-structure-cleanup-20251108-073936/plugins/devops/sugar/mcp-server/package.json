@@ -1,0 +1,32 @@
+{
+  "name": "sugar-mcp-server",
+  "version": "1.9.1",
+  "description": "MCP server for Sugar autonomous development system",
+  "type": "module",
+  "main": "sugar-mcp.js",
+  "bin": {
+    "sugar-mcp": "./sugar-mcp.js"
+  },
+  "scripts": {
+    "start": "node sugar-mcp.js",
+    "test": "node --test test/*.test.js",
+    "lint": "eslint *.js"
+  },
+  "keywords": [
+    "sugar",
+    "claude-code",
+    "mcp",
+    "autonomous-development",
+    "ai",
+    "task-management"
+  ],
+  "author": "Steven Leggett <contact@roboticforce.io>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^8.0.0"
+  }
+}

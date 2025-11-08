@@ -1,0 +1,20 @@
+{
+  "name": "make-scenario-builder",
+  "version": "1.0.0",
+  "description": "Create Make.com (Integromat) scenarios with AI assistance - visual automation design",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "make",
+    "integromat",
+    "automation",
+    "scenarios",
+    "workflow",
+    "ai-agency",
+    "visual"
+  ]
+}

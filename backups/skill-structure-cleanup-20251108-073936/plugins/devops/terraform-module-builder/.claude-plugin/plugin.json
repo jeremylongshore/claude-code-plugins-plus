@@ -1,0 +1,19 @@
+{
+  "name": "terraform-module-builder",
+  "version": "1.0.0",
+  "description": "Build reusable Terraform modules",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "terraform",
+    "iac",
+    "modules",
+    "infrastructure",
+    "devops",
+    "agent-skills"
+  ]
+}

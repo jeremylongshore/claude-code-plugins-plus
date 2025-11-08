@@ -1,0 +1,17 @@
+{
+  "name": "sql-injection-detector",
+  "version": "1.0.0",
+  "description": "Detect SQL injection vulnerabilities",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ]
+}

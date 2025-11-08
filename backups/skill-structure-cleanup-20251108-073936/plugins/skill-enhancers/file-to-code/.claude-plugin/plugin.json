@@ -1,0 +1,21 @@
+{
+  "name": "file-to-code",
+  "version": "0.1.0",
+  "description": "Enhances file reading Skills by generating production-ready code from requirements documents",
+  "author": {
+    "name": "Claude Code Plugins Team",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "code-generation",
+    "requirements",
+    "automation",
+    "api-design",
+    "skill-enhancer"
+  ],
+  "status": "planned",
+  "tier": "pro",
+  "expectedRelease": "Q1 2025"
+}

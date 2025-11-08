@@ -1,0 +1,18 @@
+{
+  "name": "api-documentation-generator",
+  "version": "1.0.0",
+  "description": "Generate comprehensive API documentation from OpenAPI/Swagger specs",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "api",
+    "documentation",
+    "openapi",
+    "swagger",
+    "docs"
+  ]
+}

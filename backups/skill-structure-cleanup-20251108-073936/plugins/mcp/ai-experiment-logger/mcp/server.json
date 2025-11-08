@@ -1,0 +1,20 @@
+{
+  "mcpServers": {
+    "ai-experiment-logger": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/plugins/mcp/ai-experiment-logger/dist/index.js"
+      ],
+      "description": "Track and analyze AI experiments with comprehensive logging and statistics",
+      "tools": [
+        "log_experiment",
+        "list_experiments",
+        "get_experiment",
+        "update_experiment",
+        "delete_experiment",
+        "get_statistics",
+        "export_experiments"
+      ]
+    }
+  }
+}

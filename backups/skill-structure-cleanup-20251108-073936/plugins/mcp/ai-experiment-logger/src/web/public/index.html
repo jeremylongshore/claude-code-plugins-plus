@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Experiment Logger</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #888;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="h-10 w-10 bg-indigo-600 rounded-lg flex items-center justify-center">
+              <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+              </svg>
+            </div>
+            <div>
+              <h1 class="text-2xl font-bold text-gray-900">AI Experiment Logger</h1>
+              <p class="text-sm text-gray-500">Track and analyze your AI experiments</p>
+            </div>
+          </div>
+          <div class="flex space-x-2">
+            <button onclick="showView('log')" id="btnLog" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              Log Experiment
+            </button>
+            <button onclick="exportCSV()" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition">
+              Export CSV
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-gray-200">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex space-x-8">
+          <button onclick="showView('dashboard')" id="navDashboard" class="py-4 px-1 border-b-2 border-indigo-600 text-indigo-600 font-medium">
+            Dashboard
+          </button>
+          <button onclick="showView('statistics')" id="navStatistics" class="py-4 px-1 border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-medium">
+            Statistics
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Log Experiment View -->
+      <div id="viewLog" class="hidden">
+        <div class="bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+          <h2 class="text-xl font-bold text-gray-900 mb-6">Log New Experiment</h2>
+          <form id="experimentForm" class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">AI Tool Used *</label>
+              <input type="text" id="aiTool" required placeholder="e.g., ChatGPT, Claude, Gemini" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <input type="datetime-local" id="date" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Prompt/Query *</label>
+              <textarea id="prompt" required rows="3" placeholder="What did you ask the AI?" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Result Summary *</label>
+              <textarea id="result" required rows="3" placeholder="Summarize the AI's response" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Effectiveness Rating *</label>
+              <div class="flex space-x-2">
+                <button type="button" onclick="setRating(1)" id="star1" class="text-3xl text-gray-300 hover:text-yellow-400">★</button>
+                <button type="button" onclick="setRating(2)" id="star2" class="text-3xl text-gray-300 hover:text-yellow-400">★</button>
+                <button type="button" onclick="setRating(3)" id="star3" class="text-3xl text-gray-300 hover:text-yellow-400">★</button>
+                <button type="button" onclick="setRating(4)" id="star4" class="text-3xl text-gray-300 hover:text-yellow-400">★</button>
+                <button type="button" onclick="setRating(5)" id="star5" class="text-3xl text-gray-300 hover:text-yellow-400">★</button>
+              </div>
+              <input type="hidden" id="rating" required>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Tags (comma-separated)</label>
+              <input type="text" id="tags" placeholder="e.g., code-generation, research, creative-writing" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            <div class="flex space-x-3 pt-4">
+              <button type="submit" class="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition font-medium">
+                Save Experiment
+              </button>
+              <button type="button" onclick="showView('dashboard')" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Dashboard View -->
+      <div id="viewDashboard">
+        <!-- Search and Filters -->
+        <div class="bg-white rounded-lg shadow-md p-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <input type="text" id="searchQuery" placeholder="Search experiments..." class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <input type="text" id="filterAiTool" placeholder="Filter by AI tool..." class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <select id="filterRating" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+              <option value="">All ratings</option>
+              <option value="5">5 stars</option>
+              <option value="4">4 stars</option>
+              <option value="3">3 stars</option>
+              <option value="2">2 stars</option>
+              <option value="1">1 star</option>
+            </select>
+            <button onclick="applyFilters()" class="bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition font-medium">
+              Apply Filters
+            </button>
+          </div>
+        </div>
+
+        <!-- Experiments Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('date')">
+                    Date ↕
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('aiTool')">
+                    AI Tool ↕
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Prompt
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Result
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" onclick="sortTable('rating')">
+                    Rating ↕
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tags
+                  </th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="experimentsTable" class="bg-white divide-y divide-gray-200">
+                <!-- Populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+          <div id="emptyState" class="hidden text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">No experiments yet</h3>
+            <p class="mt-1 text-sm text-gray-500">Get started by logging your first AI experiment.</p>
+            <button onclick="showView('log')" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+              Log First Experiment
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Statistics View -->
+      <div id="viewStatistics" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-sm font-medium text-gray-500">Total Experiments</div>
+            <div class="mt-2 text-3xl font-bold text-gray-900" id="statTotal">0</div>
+          </div>
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-sm font-medium text-gray-500">Average Rating</div>
+            <div class="mt-2 text-3xl font-bold text-indigo-600" id="statAvgRating">0</div>
+          </div>
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-sm font-medium text-gray-500">Most Used Tool</div>
+            <div class="mt-2 text-2xl font-bold text-gray-900" id="statTopTool">-</div>
+          </div>
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <div class="text-sm font-medium text-gray-500">Unique Tags</div>
+            <div class="mt-2 text-3xl font-bold text-gray-900" id="statUniqueTags">0</div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Tool Statistics -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">AI Tool Performance</h3>
+            <div id="toolStats" class="space-y-3">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Rating Distribution -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Rating Distribution</h3>
+            <div id="ratingDistribution" class="space-y-3">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Top Tags -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Top Tags</h3>
+            <div id="topTags" class="flex flex-wrap gap-2">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-bold text-gray-900 mb-4">Recent Activity (30 days)</h3>
+            <div id="recentActivity" class="space-y-2">
+              <!-- Populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

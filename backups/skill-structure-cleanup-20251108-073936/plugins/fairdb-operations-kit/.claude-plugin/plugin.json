@@ -1,0 +1,25 @@
+{
+  "name": "fairdb-operations-kit",
+  "version": "1.0.0",
+  "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "fairdb",
+    "postgresql",
+    "database",
+    "saas",
+    "operations",
+    "devops",
+    "backup",
+    "monitoring",
+    "vps",
+    "contabo",
+    "wasabi",
+    "pgbackrest"
+  ]
+}

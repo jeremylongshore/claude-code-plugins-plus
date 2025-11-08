@@ -1,0 +1,12 @@
+{
+  "name": "api-batch-processor",
+  "version": "1.0.0",
+  "description": "Implement batch API operations with bulk processing and job queues",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["batch", "bulk", "queue", "job-processing"]
+}

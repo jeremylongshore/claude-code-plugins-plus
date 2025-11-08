@@ -1,0 +1,12 @@
+{
+  "name": "grpc-service-generator",
+  "version": "1.0.0",
+  "description": "Generate gRPC services with Protocol Buffers and streaming support",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["grpc", "protobuf", "microservices", "streaming"]
+}

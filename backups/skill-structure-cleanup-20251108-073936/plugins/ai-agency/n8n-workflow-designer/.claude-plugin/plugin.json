@@ -1,0 +1,19 @@
+{
+  "name": "n8n-workflow-designer",
+  "version": "1.0.0",
+  "description": "Design complex n8n workflows with AI assistance - loops, branching, error handling",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "n8n",
+    "workflow",
+    "automation",
+    "self-hosted",
+    "open-source",
+    "ai-agency"
+  ]
+}

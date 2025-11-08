@@ -1,0 +1,18 @@
+{
+  "name": "response-time-tracker",
+  "version": "1.0.0",
+  "description": "Track and optimize application response times",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "response-time",
+    "latency",
+    "performance",
+    "monitoring",
+    "agent-skills"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "004-jeremy-google-cloud-agent-sdk",
+  "version": "1.0.0",
+  "description": "Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready templates, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, and multi-agent orchestration.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "keywords": [
+    "agent-development-kit",
+    "adk",
+    "agent-starter-pack",
+    "multi-agent",
+    "containerized-agents",
+    "cloud-run",
+    "gke",
+    "agent-engine",
+    "rag-agents",
+    "react-agents",
+    "google-cloud",
+    "vertex-ai"
+  ],
+  "category": "productivity"
+}

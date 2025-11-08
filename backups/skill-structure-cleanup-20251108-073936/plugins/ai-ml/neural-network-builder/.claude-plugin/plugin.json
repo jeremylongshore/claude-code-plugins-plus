@@ -1,0 +1,18 @@
+{
+  "name": "neural-network-builder",
+  "version": "1.0.0",
+  "description": "Build and configure neural network architectures",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "neural-networks",
+    "deep-learning",
+    "architecture",
+    "pytorch",
+    "agent-skills"
+  ]
+}

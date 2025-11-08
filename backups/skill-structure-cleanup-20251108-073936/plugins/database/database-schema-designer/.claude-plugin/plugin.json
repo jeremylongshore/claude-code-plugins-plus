@@ -1,0 +1,19 @@
+{
+  "name": "database-schema-designer",
+  "version": "1.0.0",
+  "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "schema",
+    "design",
+    "erd",
+    "normalization",
+    "agent-skills"
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "database-replication-manager",
+  "version": "1.0.0",
+  "description": "Manage database replication, failover, and high availability configurations",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "replication",
+    "high-availability",
+    "failover",
+    "database",
+    "devops",
+    "agent-skills"
+  ]
+}

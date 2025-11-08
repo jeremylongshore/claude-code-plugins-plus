@@ -1,0 +1,20 @@
+{
+  "name": "load-balancer-configurator",
+  "version": "1.0.0",
+  "description": "Configure load balancers (ALB, NLB, Nginx, HAProxy)",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "load-balancer",
+    "alb",
+    "nginx",
+    "haproxy",
+    "networking",
+    "devops",
+    "agent-skills"
+  ]
+}

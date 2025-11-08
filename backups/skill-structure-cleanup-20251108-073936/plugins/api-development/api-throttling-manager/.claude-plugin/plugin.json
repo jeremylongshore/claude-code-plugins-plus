@@ -1,0 +1,12 @@
+{
+  "name": "api-throttling-manager",
+  "version": "1.0.0",
+  "description": "Manage API throttling with dynamic rate limits and quota management",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["throttling", "rate-limiting", "quota", "traffic-management"]
+}

@@ -1,0 +1,18 @@
+{
+  "name": "dataset-splitter",
+  "version": "1.0.0",
+  "description": "Split datasets for training, validation, and testing",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "split",
+    "train-test",
+    "validation",
+    "stratify",
+    "agent-skills"
+  ]
+}

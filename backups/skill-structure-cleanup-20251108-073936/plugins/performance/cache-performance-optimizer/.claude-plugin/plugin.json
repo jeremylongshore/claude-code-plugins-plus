@@ -1,0 +1,18 @@
+{
+  "name": "cache-performance-optimizer",
+  "version": "1.0.0",
+  "description": "Optimize caching strategies for improved performance",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "cache",
+    "performance",
+    "optimization",
+    "redis",
+    "agent-skills"
+  ]
+}

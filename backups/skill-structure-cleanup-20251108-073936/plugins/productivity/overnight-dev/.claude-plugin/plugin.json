@@ -1,0 +1,24 @@
+{
+  "name": "overnight-dev",
+  "version": "1.0.0",
+  "description": "Run Claude autonomously for 6-8 hours overnight using Git hooks that enforce TDD - wake up to fully tested features",
+  "author": {
+    "name": "Intent Solutions IO",
+    "url": "https://intentsolutions.io",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "overnight",
+    "autonomous",
+    "tdd",
+    "testing",
+    "git-hooks",
+    "automation",
+    "continuous-integration",
+    "test-driven-development",
+    "productivity"
+  ],
+  "featured": true
+}
