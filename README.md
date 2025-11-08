@@ -1063,4 +1063,4 @@ Made with dedication by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 1.2.0 | **Last Updated**: October 20, 2025
+**Status**: Public Beta | **Version**: 1.3.0 | **Last Updated**: November 8, 2025
