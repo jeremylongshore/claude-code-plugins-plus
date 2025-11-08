@@ -1,8 +1,9 @@
 ---
 name: excel-pivot-wizard
-description: Generate pivot tables and charts from raw data using natural language - analyze sales by region, summarize data by category, and create visualizations effortlessly
+description: |
+  Generate pivot tables and charts from raw data using natural language - analyze sales by region, summarize data by category, and create visualizations effortlessly Activates when you request "excel pivot wizard" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 version: 1.0.0
-dependencies: node>=18.0.0
 ---
 
 # Excel Pivot Wizard

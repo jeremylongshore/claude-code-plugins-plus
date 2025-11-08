@@ -2,6 +2,8 @@
 name: assisting-with-soc2-audit-preparation
 description: |
   This skill assists with SOC2 audit preparation by automating tasks related to evidence gathering and documentation. It leverages the soc2-audit-helper plugin to generate reports, identify potential compliance gaps, and suggest remediation steps. Use this skill when the user requests help with "SOC2 audit", "compliance check", "security controls", "audit preparation", or "evidence gathering" related to SOC2. It streamlines the initial stages of SOC2 compliance, focusing on automated data collection and preliminary analysis.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

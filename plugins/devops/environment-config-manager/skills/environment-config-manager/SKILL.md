@@ -2,6 +2,8 @@
 name: managing-environment-configurations
 description: |
   This skill enables Claude to manage environment configurations and secrets across different deployments using the environment-config-manager plugin. It is invoked when the user needs to generate, update, or retrieve configuration settings for various environments (e.g., development, staging, production). Use this skill when the user explicitly mentions "environment configuration," "secrets management," "deployment configuration," or asks to "generate config files". It helps streamline DevOps workflows by providing production-ready configurations based on best practices.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

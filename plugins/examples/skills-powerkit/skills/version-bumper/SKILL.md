@@ -1,7 +1,9 @@
 ---
 name: version-bumper
-description: Automatically handles semantic version updates across plugin.json and marketplace catalog when user mentions version bump, update version, or release. Ensures version consistency in claude-code-plugins repository.
+description: |
+  Automatically handles semantic version updates across plugin.json and marketplace catalog when user mentions version bump, update version, or release. Ensures version consistency in claude-code-plugins repository.
 allowed-tools: Read, Write, Edit, Grep, Bash
+version: 1.0.0
 ---
 
 # Version Bumper

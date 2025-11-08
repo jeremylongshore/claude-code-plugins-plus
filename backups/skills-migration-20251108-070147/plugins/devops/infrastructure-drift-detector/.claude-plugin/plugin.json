@@ -1,0 +1,19 @@
+{
+  "name": "infrastructure-drift-detector",
+  "version": "1.0.0",
+  "description": "Detect infrastructure drift from desired state",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "drift",
+    "terraform",
+    "infrastructure",
+    "monitoring",
+    "devops",
+    "agent-skills"
+  ]
+}

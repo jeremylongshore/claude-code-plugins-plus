@@ -7,10 +7,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is **the comprehensive marketplace and learning hub for Claude Code plugins**. It serves as both a distribution platform for plugins and an educational resource for plugin developers.
 
 **Repository Stats:**
-- 236 marketplace plugins across 15 categories
+- 244 marketplace plugins across 15 categories
 - 221 AI instruction plugins (markdown-based templates)
 - 5 MCP server plugins (TypeScript/Node.js executables with 21 tools)
-- 164 plugins with Agent Skills (v1.1.0)
+- 175 plugins with Agent Skills (v1.2.0 - 2025 schema compliant)
 - Live marketplace at https://claudecodeplugins.io/
 - Monorepo using pnpm workspaces
 
@@ -152,9 +152,15 @@ node generate-missing-plugins.cjs
 node generate-content.js
 ```
 
-### Agent Skills Generation (v1.1.0+)
+### Agent Skills Management (v1.2.0+)
 
 ```bash
+# Migrate skills to 2025 schema (adds allowed-tools and version):
+python3 scripts/migrate-skills-schema.py
+
+# Validate all skills comply with 2025 schema:
+python3 scripts/validate-skills-schema.py
+
 # Generate skills for next plugin in queue:
 ./scripts/next-skill.sh
 
@@ -305,30 +311,39 @@ plugin-name/
         └── server.json   # MCP server configuration
 ```
 
-### Agent Skills (v1.1.0+)
+### Agent Skills (v1.2.0 - 2025 Schema)
 
-- Model-invoked capabilities that activate automatically
+- Model-invoked capabilities that activate automatically based on trigger phrases
 - Claude decides when to use based on conversation context
-- Placed in `skills/skill-adapter/SKILL.md`
-- Contains trigger phrases and workflow instructions
+- Placed in `skills/[skill-name]/SKILL.md` directory structure
+- Contains trigger phrases, workflow instructions, and tool permissions
 
 **Agent Skills structure:**
 ```
 plugin-name/
 └── skills/
-    └── skill-adapter/
-        └── SKILL.md      # Agent skill definition
+    └── skill-name/           # Skill directory name
+        └── SKILL.md          # Agent skill definition
 ```
 
-**SKILL.md frontmatter:**
+**SKILL.md frontmatter (2025 schema):**
 ```yaml
 ---
-name: Skill Name
+name: skill-name
 description: |
   What this skill does and when to use it.
-  Include trigger phrases for automatic activation.
+  Include clear trigger phrases like "analyze code quality" or "optimize performance"
+  so users know when this skill will activate.
+allowed-tools: Read, Write, Edit, Grep, Bash  # Limits which tools skill can use
+version: 1.0.0  # Semantic versioning for skill updates
 ---
 ```
+
+**Key 2025 Schema Fields:**
+- `name` (required): lowercase, hyphens, max 64 chars
+- `description` (required): Clear "what" and "when", with trigger phrases, max 1024 chars
+- `allowed-tools` (recommended): Comma-separated list of allowed tools for security/performance
+- `version` (recommended): Semantic versioning (x.y.z) for tracking updates
 
 ## Critical Conventions
 
@@ -588,28 +603,37 @@ model: sonnet
 Detailed instructions for Claude...
 ```
 
-### Agent Skills Markdown Format
+### Agent Skills Markdown Format (2025 Schema)
 
 ```markdown
 ---
-name: Skill Name
+name: analyzing-performance-metrics
 description: |
-  Brief description of what this skill does.
-  Include trigger phrases that activate this skill.
+  Analyzes application performance metrics and identifies bottlenecks.
+  Use when requesting "analyze performance", "check CPU usage", or "optimize speed".
+allowed-tools: Read, Bash, Grep, Glob  # Read-only analysis tools
+version: 1.0.0
 ---
 
 ## How It Works
 Step-by-step explanation of the skill workflow
 
 ## When to Use This Skill
-- Trigger phrase 1
-- Trigger phrase 2
-- Use case descriptions
+- User requests "analyze performance metrics"
+- User asks to "identify bottlenecks"
+- User mentions "CPU usage" or "memory leaks"
 
 ## Examples
-User: "trigger phrase"
-Skill activates → performs action → result
+User: "analyze the performance of my app"
+Skill activates → reads metrics → identifies issues → provides recommendations
 ```
+
+**Tool Categories for allowed-tools:**
+- **Read-only analysis**: `Read, Grep, Glob, Bash`
+- **Code editing**: `Read, Write, Edit, Grep, Glob, Bash`
+- **Web research**: `Read, WebFetch, WebSearch, Grep`
+- **Database ops**: `Read, Write, Bash, Grep`
+- **Testing**: `Read, Bash, Grep, Glob`
 
 ### Hooks Format
 
@@ -901,7 +925,11 @@ Common examples:
 
 ---
 
-**Last Updated:** October 28, 2025
-**Repository Version:** 1.2.5 (236 plugins, 171 with Agent Skills)
+**Last Updated:** November 8, 2025
+**Repository Version:** 1.3.0 (244 plugins, 175 with Agent Skills - 100% 2025 schema compliant)
 **Status:** Active, accepting community contributions
-**Recent Changes:** v1.2.0 Agent Skills Quality Enhancement, documentation reorganization, 000-docs/ filing system implemented
+**Recent Changes:**
+- v1.3.0: Migrated all 175 skills to 2025 schema (added `allowed-tools` and `version` fields)
+- Enhanced skill descriptions with clear trigger phrases for better activation visibility
+- Added comprehensive skill activation documentation for users
+- Updated CLAUDE.md with 2025 schema standards and tool categorization guide

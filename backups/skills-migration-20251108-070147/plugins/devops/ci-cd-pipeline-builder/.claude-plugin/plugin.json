@@ -1,0 +1,20 @@
+{
+  "name": "ci-cd-pipeline-builder",
+  "version": "1.0.0",
+  "description": "Build CI/CD pipelines for GitHub Actions, GitLab CI, Jenkins, and more",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "ci-cd",
+    "github-actions",
+    "gitlab-ci",
+    "jenkins",
+    "devops",
+    "automation",
+    "agent-skills"
+  ]
+}

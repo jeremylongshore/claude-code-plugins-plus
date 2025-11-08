@@ -2,6 +2,8 @@
 name: running-integration-tests
 description: |
   This skill enables Claude to run and manage integration test suites. It automates environment setup, database seeding, service orchestration, and cleanup. Use this skill when the user asks to "run integration tests", "execute integration tests", or any command that implies running integration tests for a project, including specifying particular test suites or options like code coverage. It is triggered by phrases such as "/run-integration", "/rit", or requests mentioning "integration tests". The plugin handles database creation, migrations, seeding, and dependent service management.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

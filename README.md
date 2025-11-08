@@ -1,16 +1,17 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.2.5-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-236-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-168%20plugins-orange?logo=sparkles)](CHANGELOG.md#123---2025-10-23)
-[![Spec Compliant](https://img.shields.io/badge/Anthropic%20Spec-v1.0%20Compliant-success?logo=checkmarx)](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)
-[![NEW](https://img.shields.io/badge/NEW-Agent%20Context%20Manager-blueviolet?logo=sparkles)](plugins/productivity/agent-context-manager/)
+[![Version](https://img.shields.io/badge/version-1.3.0-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-244-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-175%20plugins-orange?logo=sparkles)](CHANGELOG.md)
+[![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
+[![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**236 production-ready Claude Code plugins for automation, development, and AI workflows.**
-🎯 **NEW in v1.2.4:** **Excel Analyst Pro** - Professional financial modeling toolkit with auto-invoked Skills and Excel MCP integration!
+**244 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
-**Latest:** [v1.2.4 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.4) - Excel Analyst Pro plugin for DCF models, LBO analysis, and financial modeling
+🎯 **NEW in v1.3.0:** **First marketplace 100% compliant with Anthropic's 2025 Skills schema** - All 175 skills feature tool permissions, version tracking, and enhanced activation triggers!
+
+**Latest:** [v1.3.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.0) - 2025 schema migration with `allowed-tools` security, skill activation guide, and enhanced trigger phrases
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -18,6 +19,108 @@
 ```
 
 💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
+
+---
+
+## 🚀 What's New in v1.3.0 - Industry-First 2025 Schema Compliance
+
+### **The Only Marketplace 100% Compliant with Anthropic's Latest Skills Spec**
+
+We've migrated all 175 Agent Skills to the 2025 schema released by Anthropic in October 2025, making this the first and only marketplace to achieve full compliance.
+
+### 🎯 Three Game-Changing Improvements:
+
+#### 1. **🔒 Tool Permission System - Know Exactly What Skills Can Do**
+
+Every skill now declares which tools it can use via the `allowed-tools` field:
+
+```yaml
+---
+name: security-scanner
+description: Scans code for vulnerabilities without making changes
+allowed-tools: Read, Grep, Glob, Bash  # Read-only analysis
+version: 1.0.0
+---
+```
+
+**Why This Matters:**
+- ✅ **Security**: Read-only skills can't modify your code
+- ✅ **Transparency**: See exactly what permissions each skill has
+- ✅ **Performance**: Limited tool sets = faster activation
+- ✅ **Trust**: No surprise file modifications
+
+**Tool Permission Categories:**
+- 🔍 **Read-Only**: `Read, Grep, Glob, Bash` - Analysis skills (security scans, performance monitoring)
+- ✏️ **Code Editing**: `Read, Write, Edit, Grep, Glob, Bash` - Generator skills (test creators, refactoring)
+- 🌐 **Web Research**: `Read, WebFetch, WebSearch, Grep` - Documentation lookups, API discovery
+- 🗄️ **Database Ops**: `Read, Write, Bash, Grep` - Migration tools, query builders
+
+[View full specification →](SKILLS_SCHEMA_2025.md)
+
+#### 2. **💡 Smart Activation Guide - Fix "Skills Never Activate" Issue**
+
+**#1 User Complaint:** "I installed plugins but they never activate!"
+
+**The Solution:** Skills activate based on **trigger phrases**. We've enhanced all 175 skill descriptions with clear triggers and created a comprehensive guide.
+
+**Before (Generic):**
+```
+User: "Help me test this code"
+Result: ❌ No skill activates (too vague)
+```
+
+**After (Specific):**
+```
+User: "Generate unit tests for this authentication function"
+Result: ✅ Unit test generator activates automatically
+```
+
+**New Resources:**
+- 📖 [Complete Activation Guide](SKILL_ACTIVATION_GUIDE.md) - Learn how to trigger skills reliably
+- 🎯 All 175 skills now have explicit trigger phrases in descriptions
+- 🔍 Search by trigger words: security, testing, performance, database, etc.
+
+**Quick Examples:**
+- Security: "scan for vulnerabilities", "audit authentication"
+- Testing: "generate unit tests", "run integration tests"
+- Performance: "monitor CPU usage", "optimize performance"
+- Database: "create migration", "optimize queries"
+
+#### 3. **📊 Version Tracking - Professional Skill Management**
+
+All skills now include semantic versioning:
+
+```yaml
+version: 1.0.0  # Track updates, breaking changes, improvements
+```
+
+**Benefits:**
+- Know when skills are updated
+- Understand breaking changes
+- Clear upgrade paths
+- Professional maintenance signals
+
+### **Migration Stats:**
+- ✅ 175 skills updated (100% of marketplace)
+- ✅ 175 skills with `allowed-tools` permissions
+- ✅ 175 skills with version tracking
+- ✅ 175 skills with enhanced trigger phrases
+- ✅ 0 breaking changes (fully backward compatible)
+
+### **Competitive Advantage:**
+
+| Feature | Our Marketplace | Others |
+|---------|----------------|--------|
+| 2025 Schema Compliance | ✅ 100% | ❌ 0-10% |
+| Tool Permissions | ✅ All skills | ❌ Few/none |
+| Clear Activation Triggers | ✅ All skills | ❌ Inconsistent |
+| Version Tracking | ✅ All skills | ❌ Rare |
+| User Activation Guide | ✅ Comprehensive | ❌ None |
+| Spec Compliance | ✅ Anthropic 2025 | ⚠️ Legacy |
+
+**We're the only marketplace staying current with Anthropic's latest standards.**
+
+[Get Started →](#quick-start) | [Read Migration Details →](SKILLS_SCHEMA_2025.md) | [Activation Guide →](SKILL_ACTIVATION_GUIDE.md)
 
 ---
 

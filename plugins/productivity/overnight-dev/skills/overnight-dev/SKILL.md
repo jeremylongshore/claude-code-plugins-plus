@@ -6,15 +6,10 @@ description: |
   ensuring all changes are fully tested and meet specified quality standards. Use when the user mentions "overnight development",
   "autonomous coding", or asks about TDD workflows and Git hooks. This skill leverages Git hooks to block commits until all tests pass,
   enforcing a rigorous TDD process and ensuring high-quality, production-ready code.
-license: "MIT"
-metadata:
-  author: "Intent Solutions IO"
-  version: "1.0.0"
-  category: "productivity"
-allowed-tools:
-  - Read
-  - Write
-  - Bash
+allowed-tools: - Read
+- Write
+- Bash
+version: 1.0.0
 ---
 
 # Overnight Development

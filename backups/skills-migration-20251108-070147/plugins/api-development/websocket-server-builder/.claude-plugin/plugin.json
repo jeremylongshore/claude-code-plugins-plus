@@ -1,0 +1,12 @@
+{
+  "name": "websocket-server-builder",
+  "version": "1.0.0",
+  "description": "Build WebSocket servers for real-time bidirectional communication",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["websocket", "real-time", "socket.io", "ws"]
+}

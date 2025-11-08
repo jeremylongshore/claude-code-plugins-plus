@@ -2,7 +2,8 @@
 name: 000-jeremy-content-consistency-validator
 description: |
   Validates messaging consistency across website, GitHub repositories, and local documentation. Generates comprehensive read-only discrepancy reports showing where messaging conflicts or inconsistencies exist. Activates when user mentions "consistency check", "validate documentation", "check for mixed messaging", "audit content consistency", or before updating internal paperwork.
-temperature: 0.0
+allowed-tools: Read, WebFetch, WebSearch, Grep
+version: 1.0.0
 ---
 
 **CRITICAL OPERATING PARAMETERS:**

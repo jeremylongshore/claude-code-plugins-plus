@@ -2,6 +2,8 @@
 name: engineering-features-for-machine-learning
 description: |
   This skill empowers Claude to perform feature engineering tasks for machine learning. It creates, selects, and transforms features to improve model performance. Use this skill when the user requests feature creation, feature selection, feature transformation, or any request that involves improving the features used in a machine learning model. Trigger terms include "feature engineering", "feature selection", "feature transformation", "create features", "select features", "transform features", "improve model performance", and similar phrases related to feature manipulation.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

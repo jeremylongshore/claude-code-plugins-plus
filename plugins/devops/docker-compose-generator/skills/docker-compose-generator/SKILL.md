@@ -2,6 +2,8 @@
 name: generating-docker-compose-files
 description: |
   This skill enables Claude to generate Docker Compose configurations for multi-container applications. It leverages best practices for production-ready deployments, including defining services, networks, volumes, health checks, and resource limits. Claude should use this skill when the user requests a Docker Compose file, specifies application architecture involving multiple containers, or mentions needs for container orchestration, environment variables, or persistent data management in a Docker environment. Trigger terms include "docker-compose", "docker compose file", "multi-container", "container orchestration", "docker environment", "service definition", "volume management", "network configuration", "health checks", "resource limits", and ".env files".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

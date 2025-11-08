@@ -1,0 +1,19 @@
+{
+  "name": "security-test-scanner",
+  "version": "1.0.0",
+  "description": "Automated security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "security",
+    "vulnerabilities",
+    "owasp",
+    "penetration-testing",
+    "agent-skills"
+  ]
+}

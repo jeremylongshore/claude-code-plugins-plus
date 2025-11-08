@@ -1,0 +1,12 @@
+{
+  "name": "api-request-logger",
+  "version": "1.0.0",
+  "description": "Log API requests with structured logging and correlation IDs",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["logging", "observability", "audit", "correlation"]
+}

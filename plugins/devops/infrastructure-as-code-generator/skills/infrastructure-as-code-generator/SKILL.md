@@ -2,6 +2,8 @@
 name: generating-infrastructure-as-code
 description: |
   This skill enables Claude to generate Infrastructure as Code (IaC) configurations. It uses the infrastructure-as-code-generator plugin to create production-ready IaC for Terraform, CloudFormation, Pulumi, ARM Templates, and CDK. Use this skill when the user requests IaC configurations for cloud infrastructure, specifying the platform (e.g., Terraform, CloudFormation) and cloud provider (e.g., AWS, Azure, GCP), or when the user needs help automating infrastructure deployment. Trigger terms include: "generate IaC", "create Terraform", "CloudFormation template", "Pulumi program", "infrastructure code".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

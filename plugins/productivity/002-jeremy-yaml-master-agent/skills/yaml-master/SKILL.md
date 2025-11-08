@@ -5,6 +5,8 @@ description: |
   CI/CD pipelines, Kubernetes manifests, Docker Compose, or any YAML-based workflows. Provides intelligent
   validation, schema inference, linting, format conversion (JSON/TOML/XML), and structural transformations
   with deep understanding of YAML specifications and common anti-patterns.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 # YAML Master Agent

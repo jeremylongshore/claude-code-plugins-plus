@@ -1,0 +1,20 @@
+{
+  "name": "browser-compatibility-tester",
+  "version": "1.0.0",
+  "description": "Cross-browser testing with BrowserStack, Selenium Grid, and Playwright - test across Chrome, Firefox, Safari, Edge",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "cross-browser",
+    "browserstack",
+    "selenium",
+    "playwright",
+    "compatibility",
+    "agent-skills"
+  ]
+}

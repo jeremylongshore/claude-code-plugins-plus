@@ -2,6 +2,8 @@
 name: analyzing-query-performance
 description: |
   This skill enables Claude to analyze and optimize database query performance. It activates when the user discusses query performance issues, provides an EXPLAIN plan, or asks for optimization recommendations. The skill leverages the query-performance-analyzer plugin to interpret EXPLAIN plans, identify performance bottlenecks (e.g., slow queries, missing indexes), and suggest specific optimization strategies. It is useful for improving database query execution speed and resource utilization.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

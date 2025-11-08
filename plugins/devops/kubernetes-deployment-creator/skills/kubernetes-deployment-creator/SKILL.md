@@ -2,6 +2,8 @@
 name: creating-kubernetes-deployments
 description: |
   This skill enables Claude to generate Kubernetes deployment manifests, services, and related configurations following best practices. It should be used when the user asks to create a new Kubernetes deployment, service, ingress, or other related resources. Claude will generate YAML files for Deployments, Services, ConfigMaps, Secrets, Ingress, and Horizontal Pod Autoscalers. Use this skill when the user mentions "Kubernetes deployment", "K8s deployment", "create service", "define ingress", or asks for a manifest for any K8s resource.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

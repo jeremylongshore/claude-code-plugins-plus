@@ -1,0 +1,20 @@
+{
+  "name": "container-security-scanner",
+  "version": "1.0.0",
+  "description": "Scan containers for vulnerabilities using Trivy, Snyk, and other security tools",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "containers",
+    "scanning",
+    "vulnerabilities",
+    "trivy",
+    "devops",
+    "agent-skills"
+  ]
+}

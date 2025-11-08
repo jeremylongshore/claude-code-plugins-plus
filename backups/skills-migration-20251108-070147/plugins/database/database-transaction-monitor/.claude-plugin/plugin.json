@@ -1,0 +1,17 @@
+{
+  "name": "database-transaction-monitor",
+  "version": "1.0.0",
+  "description": "Database plugin for database-transaction-monitor",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "backend",
+    "transaction",
+    "agent-skills"
+  ]
+}

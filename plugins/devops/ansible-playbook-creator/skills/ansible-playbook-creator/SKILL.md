@@ -2,6 +2,8 @@
 name: creating-ansible-playbooks
 description: |
   This skill creates Ansible playbooks for automating configuration management tasks. It generates production-ready, multi-platform playbooks based on user-defined requirements, incorporating best practices and a security-first approach. Use this skill when you need to automate server configurations, software deployments, or infrastructure management using Ansible. Trigger this skill by requesting "Ansible playbook," specifying configuration details, or asking for automation of a particular setup.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

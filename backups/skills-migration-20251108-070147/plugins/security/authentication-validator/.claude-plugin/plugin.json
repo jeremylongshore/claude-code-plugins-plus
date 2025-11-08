@@ -1,0 +1,17 @@
+{
+  "name": "authentication-validator",
+  "version": "1.0.0",
+  "description": "Validate authentication implementations",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ]
+}

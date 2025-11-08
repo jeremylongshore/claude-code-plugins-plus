@@ -2,6 +2,8 @@
 name: optimizing-sql-queries
 description: |
   This skill analyzes and optimizes SQL queries for improved performance. It identifies potential bottlenecks, suggests optimal indexes, and proposes query rewrites. Use this when the user mentions "optimize SQL query", "improve SQL performance", "SQL query optimization", "slow SQL query", or asks for help with "SQL indexing". The skill helps enhance database efficiency by analyzing query structure, recommending indexes, and reviewing execution plans.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

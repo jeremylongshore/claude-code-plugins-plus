@@ -2,6 +2,8 @@
 name: running-mutation-tests
 description: |
   This skill enables Claude to validate test suite quality by performing mutation testing. It is triggered when the user asks to run mutation tests, analyze test effectiveness, or improve test coverage. The skill introduces code mutations, runs tests against the mutated code, and reports on the "survival rate" of the mutations, indicating the effectiveness of the test suite. Use this skill when the user requests to assess the quality of their tests using mutation testing techniques. Specific trigger terms include "mutation testing", "test effectiveness", "mutation score", and "surviving mutants".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

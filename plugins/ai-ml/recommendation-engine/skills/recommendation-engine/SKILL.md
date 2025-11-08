@@ -2,6 +2,8 @@
 name: building-recommendation-systems
 description: |
   This skill empowers Claude to construct recommendation systems using collaborative filtering, content-based filtering, or hybrid approaches. It analyzes user preferences, item features, and interaction data to generate personalized recommendations. Use this skill when the user requests to build a recommendation engine, needs help with collaborative filtering, wants to implement content-based filtering, or seeks to rank items based on relevance for a specific user or group of users. It is triggered by requests involving "recommendations", "collaborative filtering", "content-based filtering", "ranking items", or "building a recommender".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

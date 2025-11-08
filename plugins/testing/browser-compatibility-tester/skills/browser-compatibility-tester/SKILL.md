@@ -1,7 +1,9 @@
 ---
 name: conducting-browser-compatibility-tests
 description: |
-  This skill enables cross-browser compatibility testing for web applications using BrowserStack, Selenium Grid, or Playwright. It tests across Chrome, Firefox, Safari, and Edge, identifying browser-specific bugs and ensuring consistent functionality. It is used when a user requests to "test browser compatibility", "run cross-browser tests", or uses the `/browser-test` or `/bt` command to assess web application behavior across different browsers and devices. The skill generates a report detailing compatibility issues and screenshots for visual verification.
+  This skill enables cross-browser compatibility testing for web applications using BrowserStack, Selenium Grid, or Playwright. It tests across Chrome, Firefox, Safari, and Edge, identifying browser-specific bugs and ensuring consistent functionality. It is used when a user requests to "test browser compatibility", "run cross-browser tests", or uses the `/browser-test` or `/bt` command to assess web application behavior across different browsers and devices. The skill generates a report detailing compatibility issues and screenshots for visual verification. Activates when you request "conducting browser compatibility tests" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

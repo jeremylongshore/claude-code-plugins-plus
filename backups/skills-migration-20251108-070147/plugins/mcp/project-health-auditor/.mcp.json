@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "code-metrics": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/dist/servers/code-metrics.js"
+      ],
+      "env": {}
+    }
+  }
+}

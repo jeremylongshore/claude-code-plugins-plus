@@ -1,8 +1,9 @@
 ---
 name: excel-lbo-modeler
-description: Create leveraged buyout (LBO) models in Excel with sources & uses, debt schedules, cash flow waterfalls, and IRR calculations for private equity analysis
+description: |
+  Create leveraged buyout (LBO) models in Excel with sources & uses, debt schedules, cash flow waterfalls, and IRR calculations for private equity analysis Activates when you request "excel lbo modeler" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 version: 1.0.0
-dependencies: node>=18.0.0
 ---
 
 # Excel LBO Modeler

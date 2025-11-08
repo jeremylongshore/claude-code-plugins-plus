@@ -2,6 +2,8 @@
 name: detecting-infrastructure-drift
 description: |
   This skill enables Claude to detect infrastructure drift from a desired state. It uses the `drift-detect` command to identify discrepancies between the current infrastructure configuration and the intended configuration, as defined in infrastructure-as-code tools like Terraform. Use this skill when the user asks to check for infrastructure drift, identify configuration changes, or ensure that the current infrastructure matches the desired state. It is particularly useful in DevOps workflows for maintaining infrastructure consistency and preventing configuration errors. Trigger this skill when the user mentions "drift detection," "infrastructure changes," "configuration drift," or requests a "drift report."
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

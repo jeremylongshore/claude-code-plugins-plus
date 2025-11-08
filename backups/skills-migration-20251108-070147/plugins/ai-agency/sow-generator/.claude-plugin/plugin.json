@@ -1,0 +1,19 @@
+{
+  "name": "sow-generator",
+  "version": "1.0.0",
+  "description": "Generate professional Statements of Work for AI projects",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "sow",
+    "statement of work",
+    "contract",
+    "proposal",
+    "agency",
+    "ai-agency"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "name": "infrastructure-as-code-generator",
+  "version": "1.0.0",
+  "description": "Generate Infrastructure as Code for Terraform, CloudFormation, Pulumi, and more",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "iac",
+    "terraform",
+    "cloudformation",
+    "pulumi",
+    "infrastructure",
+    "devops",
+    "agent-skills"
+  ]
+}

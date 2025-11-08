@@ -2,6 +2,8 @@
 name: planning-disaster-recovery
 description: |
   This skill enables Claude to plan and implement disaster recovery (DR) procedures. It generates configurations and setup code based on specific requirements and infrastructure. Use this skill when the user requests assistance with disaster recovery planning, business continuity, or related DevOps tasks. Trigger this skill when the user mentions "disaster recovery", "DR plan", "business continuity", or requests help with setting up a recovery strategy. It provides production-ready configurations, implements best practices, and supports multi-platform environments.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

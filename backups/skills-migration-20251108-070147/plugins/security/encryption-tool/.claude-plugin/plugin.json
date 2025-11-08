@@ -1,0 +1,17 @@
+{
+  "name": "encryption-tool",
+  "version": "1.0.0",
+  "description": "Encrypt and decrypt data with various algorithms",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "compliance",
+    "auditing",
+    "agent-skills"
+  ]
+}

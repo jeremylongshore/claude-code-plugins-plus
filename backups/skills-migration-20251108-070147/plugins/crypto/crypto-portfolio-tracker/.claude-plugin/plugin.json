@@ -1,0 +1,21 @@
+{
+  "name": "crypto-portfolio-tracker",
+  "version": "1.0.0",
+  "description": "Professional crypto portfolio tracking with real-time prices, PnL analysis, and risk metrics",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "crypto",
+    "portfolio",
+    "trading",
+    "investment",
+    "bitcoin",
+    "ethereum",
+    "defi"
+  ]
+}

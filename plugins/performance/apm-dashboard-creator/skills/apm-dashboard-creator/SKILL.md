@@ -2,6 +2,8 @@
 name: creating-apm-dashboards
 description: |
   This skill enables Claude to create Application Performance Monitoring (APM) dashboards. It is triggered when the user requests the creation of a new APM dashboard, monitoring dashboard, or a dashboard for application performance. The skill helps define key metrics and visualizations for monitoring application health, performance, and user experience across multiple platforms like Grafana and Datadog. Use this skill when the user needs assistance setting up a new monitoring solution or expanding an existing one. The plugin supports the creation of dashboards focusing on golden signals, request metrics, resource utilization, database metrics, cache metrics, business metrics, and error tracking.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

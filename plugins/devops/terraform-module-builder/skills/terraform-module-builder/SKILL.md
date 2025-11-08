@@ -2,6 +2,8 @@
 name: building-terraform-modules
 description: |
   This skill empowers Claude to build reusable Terraform modules based on user specifications. It leverages the terraform-module-builder plugin to generate production-ready, well-documented Terraform module code, incorporating best practices for security, scalability, and multi-platform support. Use this skill when the user requests to create a new Terraform module, generate Terraform configuration, or needs help structuring infrastructure as code using Terraform. The trigger terms include "create Terraform module," "generate Terraform configuration," "Terraform module code," and "infrastructure as code."
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

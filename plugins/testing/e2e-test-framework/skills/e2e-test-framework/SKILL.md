@@ -2,6 +2,8 @@
 name: generating-end-to-end-tests
 description: |
   This skill enables Claude to generate end-to-end (E2E) tests for web applications. It leverages Playwright, Cypress, or Selenium to automate browser interactions and validate user workflows. Use this skill when the user requests to "create E2E tests", "generate end-to-end tests", or asks for help with "browser-based testing". The skill is particularly useful for testing user registration, login flows, shopping cart functionality, and other multi-step processes within a web application. It supports cross-browser testing and can be used to verify the responsiveness of web applications on different devices.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

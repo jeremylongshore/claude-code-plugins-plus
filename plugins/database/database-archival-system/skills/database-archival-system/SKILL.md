@@ -2,6 +2,8 @@
 name: archiving-databases
 description: |
   This skill automates database archival processes. It helps reduce primary database size by moving historical records to archive tables or cold storage solutions like S3, Azure Blob, or GCS. The plugin supports PostgreSQL and MySQL, implementing automated retention policies, compression, compliance tracking, and zero-downtime migration. Use this when the user mentions "database archival", "archive old database records", "retention policies", "cold storage", or "reduce database size." It is particularly useful for handling requests related to data lifecycle management and compliance requirements in database systems.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

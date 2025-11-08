@@ -1,8 +1,9 @@
 ---
 name: excel-dcf-modeler
-description: Build discounted cash flow (DCF) valuation models in Excel with free cash flow projections, WACC calculations, and sensitivity analysis for investment banking and corporate finance teams
+description: |
+  Build discounted cash flow (DCF) valuation models in Excel with free cash flow projections, WACC calculations, and sensitivity analysis for investment banking and corporate finance teams Activates when you request "excel dcf modeler" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 version: 1.0.0
-dependencies: node>=18.0.0
 ---
 
 # Excel DCF Modeler

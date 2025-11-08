@@ -2,6 +2,8 @@
 name: monitoring-database-transactions
 description: |
   This skill enables Claude to monitor database transactions for performance and lock issues using the database-transaction-monitor plugin. It is triggered when the user requests transaction monitoring, lock detection, or rollback rate analysis for databases. Use this skill when the user mentions "monitor database transactions," "detect long-running transactions," "identify lock contention," "track rollback rates," or asks about "transaction anomalies." The skill leverages the `/txn-monitor` command to provide real-time alerts and insights into database health.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

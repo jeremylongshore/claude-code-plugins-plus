@@ -1,0 +1,17 @@
+{
+  "name": "stored-procedure-generator",
+  "version": "1.0.0",
+  "description": "Database plugin for stored-procedure-generator",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "database",
+    "backend",
+    "procedure",
+    "agent-skills"
+  ]
+}

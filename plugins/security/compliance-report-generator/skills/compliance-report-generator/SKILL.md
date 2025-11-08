@@ -1,7 +1,9 @@
 ---
 name: generating-compliance-reports
 description: |
-  This skill enables Claude to generate compliance reports based on various security standards and frameworks. It leverages the compliance-report-generator plugin to automate the report creation process. Use this skill when a user requests a "compliance report", "security audit report", or needs documentation for "regulatory compliance". The skill is particularly useful for generating reports related to standards like PCI DSS, HIPAA, SOC 2, or ISO 27001. It can also assist with documenting adherence to specific security policies.
+  This skill enables Claude to generate compliance reports based on various security standards and frameworks. It leverages the compliance-report-generator plugin to automate the report creation process. Use this skill when a user requests a "compliance report", "security audit report", or needs documentation for "regulatory compliance". The skill is particularly useful for generating reports related to standards like PCI DSS, HIPAA, SOC 2, or ISO 27001. It can also assist with documenting adherence to specific security policies. Activates when you request "generating compliance reports" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

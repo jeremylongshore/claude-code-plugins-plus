@@ -2,11 +2,9 @@
 name: Vertex AI Media Master
 description: |
   Automatic activation for ALL Google Vertex AI multimodal operations - video processing, audio generation, image creation, and marketing campaigns.
-
   **TRIGGER PHRASES:**
   - "vertex ai", "gemini multimodal", "process video", "generate audio", "create images", "marketing campaign"
   - "imagen", "video understanding", "multimodal", "content generation", "media assets"
-
   **AUTO-INVOKES FOR:**
   - Video processing and understanding (up to 6 hours)
   - Audio generation and transcription
@@ -15,6 +13,8 @@ description: |
   - Social media content creation
   - Ad creative generation
   - Multimodal content workflows
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 # Vertex AI Media Master - Comprehensive Multimodal AI Operations

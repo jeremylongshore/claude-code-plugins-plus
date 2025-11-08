@@ -2,6 +2,8 @@
 name: validating-performance-budgets
 description: |
   This skill enables Claude to validate application performance against defined budgets. It's useful for identifying performance regressions early in the development lifecycle. The skill is triggered when the user mentions "performance budget", "validate budget", "performance regression", or requests a check against performance metrics like "page load times", "bundle sizes", "API response times", or "Lighthouse scores". The plugin validates against predefined thresholds and alerts on violations. It is especially helpful in CI/CD pipelines to prevent performance degradation in production.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

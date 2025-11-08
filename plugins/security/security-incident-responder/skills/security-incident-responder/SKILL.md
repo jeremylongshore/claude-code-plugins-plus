@@ -2,6 +2,8 @@
 name: responding-to-security-incidents
 description: |
   Assists with security incident response, investigation, and remediation. This skill is triggered when the user requests help with incident response, mentions specific incident types (e.g., data breach, ransomware, DDoS), or uses terms like "incident response plan", "containment", "eradication", or "post-incident activity". It guides the user through the incident response lifecycle, from preparation to post-incident analysis. It is useful for classifying incidents, creating response playbooks, collecting evidence, constructing timelines, and generating remediation steps. Use this skill when needing to respond to a "security incident".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

@@ -2,6 +2,8 @@
 name: training-machine-learning-models
 description: |
   This skill trains machine learning models using automated workflows. It analyzes datasets, selects appropriate model types (classification, regression, etc.), configures training parameters, trains the model with cross-validation, generates performance metrics, and saves the trained model artifact. Use this skill when the user requests to "train" a model, needs to evaluate a dataset for machine learning purposes, or wants to optimize model performance. The skill supports common frameworks like scikit-learn.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

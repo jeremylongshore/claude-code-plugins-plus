@@ -2,6 +2,8 @@
 name: generating-stored-procedures
 description: |
   This skill uses the stored-procedure-generator plugin to create production-ready stored procedures, functions, triggers, and custom database logic. It supports PostgreSQL, MySQL, and SQL Server. Use this skill when the user asks to "generate stored procedure", "create database function", "write a trigger", or needs help with "database logic", "optimizing database performance", or "ensuring transaction safety" in their database. The skill is activated by requests related to database stored procedures, functions, or triggers.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

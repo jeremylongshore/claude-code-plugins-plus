@@ -2,6 +2,8 @@
 name: detecting-performance-bottlenecks
 description: |
   This skill enables Claude to detect and resolve performance bottlenecks in applications. It analyzes CPU, memory, I/O, and database performance to identify areas of concern. Use this skill when you need to diagnose slow application performance, optimize resource usage, or proactively prevent performance issues. The skill is triggered by requests to "detect bottlenecks", "analyze performance", "find performance issues", or similar phrases related to performance optimization. It helps uncover root causes and suggest remediation strategies.
+allowed-tools: Read, Bash, Grep, Glob
+version: 1.0.0
 ---
 
 ## Overview

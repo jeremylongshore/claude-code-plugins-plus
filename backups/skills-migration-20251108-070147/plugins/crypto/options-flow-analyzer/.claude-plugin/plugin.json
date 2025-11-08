@@ -1,0 +1,20 @@
+{
+  "name": "options-flow-analyzer",
+  "version": "1.0.0",
+  "description": "Track institutional options flow, unusual activity, and smart money movements",
+  "author": {
+    "name": "Intent Solutions IO",
+    "email": "jeremy@intentsolutions.ai",
+    "url": "https://intentsolutions.ai"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "options",
+    "flow",
+    "institutional",
+    "trading",
+    "derivatives",
+    "smart money"
+  ]
+}

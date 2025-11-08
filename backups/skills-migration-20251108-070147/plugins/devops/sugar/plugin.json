@@ -1,0 +1,38 @@
+{
+  "name": "sugar",
+  "version": "2.0.0",
+  "description": "Sugar 🍰 - AI-powered autonomous development system for complex, multi-step development tasks",
+  "author": {
+    "name": "Steven Leggett",
+    "email": "contact@roboticforce.io"
+  },
+  "homepage": "https://github.com/cdnsteve/sugar",
+  "repository": "https://github.com/cdnsteve/sugar",
+  "license": "MIT",
+  "keywords": [
+    "autonomous",
+    "development",
+    "ai",
+    "task-management",
+    "automation",
+    "agents",
+    "enterprise"
+  ],
+  "installation": {
+    "prerequisites": [
+      "Python 3.11 or higher must be installed",
+      "Sugar CLI must be installed: pip install sugarai",
+      "Initialize Sugar in your project: sugar init"
+    ],
+    "verification": [
+      "sugar --version",
+      "sugar status"
+    ]
+  },
+  "configuration": {
+    "auto_detect_sugar": true,
+    "sugar_command": "sugar",
+    "enable_autonomous_mode": false,
+    "auto_task_creation": true
+  }
+}

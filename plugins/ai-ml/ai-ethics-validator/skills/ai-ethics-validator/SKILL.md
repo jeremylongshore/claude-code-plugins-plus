@@ -2,6 +2,8 @@
 name: validating-ai-ethics-and-fairness
 description: |
   This skill enables Claude to validate the ethical implications and fairness of AI/ML models and datasets. It is triggered when the user requests an ethics review, fairness assessment, or bias detection for an AI system. The skill uses the ai-ethics-validator plugin to analyze models, datasets, and code for potential biases and ethical concerns. It provides reports and recommendations for mitigating identified issues, ensuring responsible AI development and deployment. Use this skill when the user mentions "ethics validation", "fairness assessment", "bias detection", "responsible AI", or related terms in the context of AI/ML.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

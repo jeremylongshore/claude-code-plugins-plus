@@ -1,0 +1,19 @@
+{
+  "name": "test-coverage-analyzer",
+  "version": "1.0.0",
+  "description": "Analyze code coverage metrics, identify untested code, and generate comprehensive coverage reports",
+  "author": {
+    "name": "Claude Code Plugins",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "coverage",
+    "code-coverage",
+    "metrics",
+    "analysis",
+    "agent-skills"
+  ]
+}

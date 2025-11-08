@@ -1,0 +1,21 @@
+{
+  "name": "database-test-manager",
+  "version": "1.0.0",
+  "description": "Database testing utilities with test data setup, transaction rollback, and schema validation",
+  "author": {
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "testing",
+    "database",
+    "sql",
+    "test-data",
+    "fixtures",
+    "migrations",
+    "transactions",
+    "agent-skills"
+  ]
+}

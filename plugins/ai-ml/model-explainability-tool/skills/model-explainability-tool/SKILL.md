@@ -2,6 +2,8 @@
 name: explaining-machine-learning-models
 description: |
   This skill enables Claude to provide interpretability and explainability for machine learning models. It is triggered when the user requests explanations for model predictions, insights into feature importance, or help understanding model behavior. The skill leverages techniques like SHAP and LIME to generate explanations. It is useful when debugging model performance, ensuring fairness, or communicating model insights to stakeholders. Use this skill when the user mentions "explain model", "interpret model", "feature importance", "SHAP values", or "LIME explanations".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

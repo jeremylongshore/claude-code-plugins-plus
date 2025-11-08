@@ -2,6 +2,8 @@
 name: generating-helm-charts
 description: |
   This skill enables Claude to generate Helm charts for Kubernetes applications. It should be used when the user requests the creation of a new Helm chart, the modification of an existing chart, or assistance with packaging and deploying Kubernetes applications using Helm. The skill is triggered by requests that mention "Helm chart", "Kubernetes deployment", "package application for Kubernetes", or similar phrases related to Helm and Kubernetes. It helps streamline the process of creating and managing Kubernetes deployments.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

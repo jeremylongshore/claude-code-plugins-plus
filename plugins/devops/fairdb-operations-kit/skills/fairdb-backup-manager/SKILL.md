@@ -1,6 +1,9 @@
 ---
 name: fairdb-backup-manager
-description: Automatically manages PostgreSQL backups with pgBackRest and Wasabi S3 storage when working with FairDB databases
+description: |
+  Automatically manages PostgreSQL backups with pgBackRest and Wasabi S3 storage when working with FairDB databases Activates when you request "fairdb backup manager" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 # FairDB Backup Manager

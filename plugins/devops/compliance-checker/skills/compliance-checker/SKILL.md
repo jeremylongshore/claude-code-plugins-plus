@@ -2,6 +2,8 @@
 name: checking-infrastructure-compliance
 description: |
   This skill allows Claude to check infrastructure compliance against industry standards such as SOC2, HIPAA, and PCI-DSS. It analyzes existing infrastructure configurations and reports on potential compliance violations. Use this skill when the user asks to assess compliance, identify security risks related to compliance, or generate reports on compliance status for SOC2, HIPAA, or PCI-DSS. Trigger terms include: "compliance check", "SOC2 compliance", "HIPAA compliance", "PCI-DSS compliance", "compliance report", "infrastructure compliance", "security audit", "assess compliance".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

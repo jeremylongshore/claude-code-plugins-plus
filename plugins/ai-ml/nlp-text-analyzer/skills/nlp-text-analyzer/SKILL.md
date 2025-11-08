@@ -2,6 +2,8 @@
 name: analyzing-text-with-nlp
 description: |
   This skill enables Claude to perform natural language processing and text analysis using the nlp-text-analyzer plugin. It should be used when the user requests analysis of text, including sentiment analysis, keyword extraction, topic modeling, or other NLP tasks. The skill is triggered by requests involving "analyze text", "sentiment analysis", "keyword extraction", "topic modeling", or similar phrases related to text processing. It leverages AI/ML techniques to understand and extract insights from textual data.
+allowed-tools: Read, Bash, Grep, Glob
+version: 1.0.0
 ---
 
 ## Overview

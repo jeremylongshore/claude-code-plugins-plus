@@ -2,6 +2,8 @@
 name: optimizing-cache-performance
 description: |
   This skill enables Claude to analyze and improve application caching strategies. It optimizes cache hit rates, TTL configurations, cache key design, and invalidation strategies. Use this skill when the user requests to "optimize cache performance", "improve caching strategy", "analyze cache hit rate", or needs assistance with "cache key design", "TTL optimization", or "cache invalidation". The skill identifies potential bottlenecks and recommends adjustments for improved performance and efficiency of caching mechanisms like Redis.
+allowed-tools: Read, Write, Bash, Grep
+version: 1.0.0
 ---
 
 ## Overview

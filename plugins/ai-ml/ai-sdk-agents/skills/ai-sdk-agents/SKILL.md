@@ -2,6 +2,8 @@
 name: orchestrating-multi-agent-systems
 description: |
   This skill enables Claude to orchestrate multi-agent systems using the AI SDK v5. It allows Claude to set up agent handoffs, intelligent routing, and coordinated workflows across different AI providers like OpenAI, Anthropic, and Google. Use this skill when the user asks to create multi-agent systems, needs help with agent coordination, task routing, or wants to build complex workflows involving specialized agents. It is triggered by phrases like "multi-agent system", "agent orchestration", "agent handoff", "intelligent routing", or "coordinate agents".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

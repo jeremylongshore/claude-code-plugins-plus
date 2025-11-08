@@ -1,7 +1,9 @@
 ---
 name: performing-security-audits
 description: |
-  This skill allows Claude to conduct comprehensive security audits of code, infrastructure, and configurations. It leverages various tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, cryptography review, and infrastructure security analysis. Use this skill when a user requests a "security audit," "vulnerability assessment," "compliance review," or any task involving identifying and mitigating security risks. It helps to ensure code and systems adhere to security best practices and compliance standards.
+  This skill allows Claude to conduct comprehensive security audits of code, infrastructure, and configurations. It leverages various tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, cryptography review, and infrastructure security analysis. Use this skill when a user requests a "security audit," "vulnerability assessment," "compliance review," or any task involving identifying and mitigating security risks. It helps to ensure code and systems adhere to security best practices and compliance standards. Activates when you request "performing security audits" functionality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
 ---
 
 ## Overview

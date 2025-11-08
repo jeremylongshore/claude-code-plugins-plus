@@ -1,0 +1,19 @@
+{
+  "name": "git-commit-smart",
+  "version": "1.0.0",
+  "description": "AI-powered conventional commit message generator with smart analysis",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commits",
+    "conventional-commits",
+    "automation",
+    "devops",
+    "agent-skills"
+  ]
+}
