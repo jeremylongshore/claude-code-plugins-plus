@@ -50,80 +50,35 @@ jobs:
             const pluginDesc = '${{ steps.find.outputs.plugin_desc }}';
             const pluginCat = '${{ steps.find.outputs.plugin_category }}';
 
-            const issueBody = `## 🤖 Daily Skill Generator Task
-
-**Plugin:** \`${pluginName}\`
-**Path:** \`${pluginPath}\`
-**Category:** \`${pluginCat}\`
-**Description:** ${pluginDesc}
-
----
-
-### Task for Claude Code
-
-Create an Agent Skill for this plugin:
-
-1. **Read the plugin's existing files:**
-   - \`${pluginPath}/README.md\` (understand what it does)
-   - \`${pluginPath}/commands/\` or \`${pluginPath}/agents/\` (see how it works)
-
-2. **Create skill folder:**
-   \`\`\`bash
-   mkdir -p ${pluginPath}/skills/skill-adapter
-   \`\`\`
-
-3. **Write SKILL.md** at \`${pluginPath}/skills/skill-adapter/SKILL.md\`:
-
-   Create a skill file with YAML frontmatter:
-   - name: ${pluginName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Skill
-   - description: Based on: ${pluginDesc}
-   - allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
-
-   Include sections: How It Works, Examples, Tips
-
-4. **Update plugin.json:**
-   Add \`"agent-skills"\` to keywords array
-
-5. **Update marketplace.extended.json:**
-   Add \`"agent-skills"\` to keywords for this plugin
-
-6. **Sync marketplace:**
-   \`\`\`bash
-   node scripts/sync-marketplace.cjs
-   \`\`\`
-
-7. **Commit:**
-   \`\`\`bash
-   git checkout -b skill/${pluginName}
-   git add ${pluginPath}/skills/ ${pluginPath}/.claude-plugin/plugin.json .claude-plugin/marketplace.extended.json .claude-plugin/marketplace.json
-   git commit -m "feat(skills): add Agent Skill to ${pluginName}"
-   git push origin skill/${pluginName}
-   \`\`\`
-
-8. **Create PR** via GitHub UI
-
----
-
-### ⏱️ Time Limit
-**Keep this under 10 minutes of work.** Focus on quality over complexity.
-
-### ✅ Success Criteria
-- [ ] SKILL.md exists with proper YAML frontmatter
-- [ ] Skill description is specific to this plugin's purpose
-- [ ] Examples show realistic use cases
-- [ ] Keywords updated in all 3 places
-- [ ] Marketplace synced
-- [ ] PR created
-
----
-
-**Close this issue when the PR is merged.**
-`;
+            const title = `Add Agent Skill: ${pluginName}`;
+            const body = [
+              '## Daily Skill Generator Task',
+              '',
+              `Plugin: ${pluginName}`,
+              `Path: ${pluginPath}`,
+              `Category: ${pluginCat}`,
+              `Description: ${pluginDesc}`,
+              '',
+              '## Steps',
+              '1. Read plugin README and commands/agents',
+              `2. Create ${pluginPath}/skills/skill-adapter/SKILL.md`,
+              '3. Add YAML frontmatter with name, description, allowed-tools',
+              '4. Add "agent-skills" keyword to plugin.json',
+              '5. Add "agent-skills" keyword to marketplace.extended.json',
+              '6. Run: node scripts/sync-marketplace.cjs',
+              `7. Create PR with branch: skill/${pluginName}`,
+              '',
+              '## Success Criteria',
+              '- SKILL.md with proper YAML',
+              '- Keywords updated in all files',
+              '- Marketplace synced',
+              '- PR created'
+            ].join('\n');
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `🤖 Add Agent Skill: ${pluginName}`,
-              body: issueBody,
+              title: title,
+              body: body,
               labels: ['daily-skill-generator', 'agent-skills']
             });
