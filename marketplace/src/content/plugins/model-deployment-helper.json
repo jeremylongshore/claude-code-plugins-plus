@@ -11,12 +11,13 @@
     "mlops"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/model-deployment-helper",
   "license": "MIT",
-  "installation": "/plugin install model-deployment-helper@claude@claude-code-plugins-plus",
+  "installation": "/plugin install model-deployment-helper@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

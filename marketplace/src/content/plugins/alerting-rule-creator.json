@@ -2,7 +2,7 @@
   "name": "alerting-rule-creator",
   "description": "Create intelligent alerting rules for performance monitoring",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "alerting",
     "monitoring",
@@ -10,12 +10,13 @@
     "observability"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/alerting-rule-creator",
   "license": "MIT",
-  "installation": "/plugin install alerting-rule-creator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install alerting-rule-creator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

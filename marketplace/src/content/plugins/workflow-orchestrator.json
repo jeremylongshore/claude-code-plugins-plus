@@ -13,12 +13,13 @@
     "parallel-execution"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/workflow-orchestrator",
   "license": "MIT",
-  "installation": "/plugin install workflow-orchestrator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install workflow-orchestrator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

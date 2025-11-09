@@ -12,12 +12,13 @@
     "crypto"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/wallet-portfolio-tracker",
   "license": "MIT",
-  "installation": "/plugin install wallet-portfolio-tracker@claude@claude-code-plugins-plus",
+  "installation": "/plugin install wallet-portfolio-tracker@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

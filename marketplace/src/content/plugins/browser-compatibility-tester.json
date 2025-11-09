@@ -12,12 +12,13 @@
     "compatibility"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub"
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/browser-compatibility-tester",
   "license": "MIT",
-  "installation": "/plugin install browser-compatibility-tester@claude@claude-code-plugins-plus",
+  "installation": "/plugin install browser-compatibility-tester@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

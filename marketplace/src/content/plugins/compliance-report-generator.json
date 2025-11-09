@@ -9,12 +9,13 @@
     "auditing"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/compliance-report-generator",
   "license": "MIT",
-  "installation": "/plugin install compliance-report-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install compliance-report-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -13,12 +13,13 @@
     "trading"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/market-movers-scanner",
   "license": "MIT",
-  "installation": "/plugin install market-movers-scanner@claude@claude-code-plugins-plus",
+  "installation": "/plugin install market-movers-scanner@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -13,12 +13,13 @@
     "transactions"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub"
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/database-test-manager",
   "license": "MIT",
-  "installation": "/plugin install database-test-manager@claude@claude-code-plugins-plus",
+  "installation": "/plugin install database-test-manager@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

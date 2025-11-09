@@ -2,7 +2,7 @@
   "name": "error-rate-monitor",
   "description": "Monitor and analyze application error rates",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "errors",
     "monitoring",
@@ -10,12 +10,13 @@
     "sre"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/error-rate-monitor",
   "license": "MIT",
-  "installation": "/plugin install error-rate-monitor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install error-rate-monitor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-agency/sow-generator",
   "license": "MIT",
-  "installation": "/plugin install sow-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install sow-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

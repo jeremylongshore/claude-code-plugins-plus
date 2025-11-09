@@ -17,7 +17,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-agency/zapier-zap-builder",
   "license": "MIT",
-  "installation": "/plugin install zapier-zap-builder@claude@claude-code-plugins-plus",
+  "installation": "/plugin install zapier-zap-builder@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

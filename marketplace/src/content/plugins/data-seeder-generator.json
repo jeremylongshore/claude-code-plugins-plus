@@ -2,7 +2,7 @@
   "name": "data-seeder-generator",
   "description": "Generate realistic test data and database seed scripts for development and testing environments",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "seeding",
     "test-data",
@@ -11,12 +11,13 @@
     "testing"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/data-seeder-generator",
   "license": "MIT",
-  "installation": "/plugin install data-seeder-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install data-seeder-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

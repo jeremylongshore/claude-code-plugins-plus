@@ -2,7 +2,7 @@
   "name": "cpu-usage-monitor",
   "description": "Monitor and analyze CPU usage patterns in applications",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "cpu",
     "monitoring",
@@ -10,12 +10,13 @@
     "optimization"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/cpu-usage-monitor",
   "license": "MIT",
-  "installation": "/plugin install cpu-usage-monitor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install cpu-usage-monitor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -12,12 +12,13 @@
     "test-management"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub"
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/snapshot-test-manager",
   "license": "MIT",
-  "installation": "/plugin install snapshot-test-manager@claude@claude-code-plugins-plus",
+  "installation": "/plugin install snapshot-test-manager@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

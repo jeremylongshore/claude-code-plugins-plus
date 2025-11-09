@@ -2,7 +2,7 @@
   "name": "performance-optimization-advisor",
   "description": "Get comprehensive performance optimization recommendations",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "optimization",
     "performance",
@@ -10,12 +10,13 @@
     "advisor"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/performance-optimization-advisor",
   "license": "MIT",
-  "installation": "/plugin install performance-optimization-advisor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install performance-optimization-advisor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

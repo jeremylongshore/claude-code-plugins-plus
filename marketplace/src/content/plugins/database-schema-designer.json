@@ -2,7 +2,7 @@
   "name": "database-schema-designer",
   "description": "Design and visualize database schemas with normalization guidance, relationship mapping, and ERD generation",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "database",
     "schema",
@@ -11,12 +11,13 @@
     "normalization"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-schema-designer",
   "license": "MIT",
-  "installation": "/plugin install database-schema-designer@claude@claude-code-plugins-plus",
+  "installation": "/plugin install database-schema-designer@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

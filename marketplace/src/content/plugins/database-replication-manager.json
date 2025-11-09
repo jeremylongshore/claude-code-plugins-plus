@@ -2,7 +2,7 @@
   "name": "database-replication-manager",
   "description": "Manage database replication, failover, and high availability configurations",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "replication",
     "high-availability",
@@ -11,12 +11,13 @@
     "devops"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-replication-manager",
   "license": "MIT",
-  "installation": "/plugin install database-replication-manager@claude@claude-code-plugins-plus",
+  "installation": "/plugin install database-replication-manager@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

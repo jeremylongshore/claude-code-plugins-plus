@@ -2,11 +2,7 @@
   "name": "creator-studio-pack",
   "description": "Complete plugin suite for builder-filmmakers: Build products AND create viral videos. 20 plugins covering documentation, video production, content strategy, and workflow optimization. Transform from code to published video in 30 minutes.",
   "version": "1.0.0",
-  "author": {
-    "name": "Jeremy Longshore",
-    "url": "https://github.com/jeremylongshore"
-  },
-  "category": "automation",
+  "category": "other",
   "keywords": [
     "video",
     "content-creation",
@@ -27,39 +23,15 @@
     "package",
     "premium"
   ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
   "featured": true,
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/packages/creator-studio-pack",
   "license": "MIT",
-  "installation": "/plugin install creator-studio-pack@claude@claude-code-plugins-plus",
-  "features": [
-    "Auto-document builds with build-logger-agent",
-    "Record screen with /record command (start/stop/mark)",
-    "Generate video scripts from code automatically",
-    "AI-assisted video editing via DaVinci Resolve",
-    "Generate YouTube thumbnails in 5 creator styles",
-    "Optimize titles for CTR with A/B testing",
-    "Generate animated subtitles (Mr Beast, Ali Abdaal styles)",
-    "Create viral video ideas from your builds",
-    "Distribute to 8+ platforms with one command",
-    "Repurpose 1 video into 30+ content pieces",
-    "Batch record 7 videos in 3.5 hours",
-    "Track analytics and optimize strategy",
-    "Template library for consistent branding",
-    "Content calendar with strategic planning",
-    "Collaboration manager for guest appearances",
-    "Save 6+ hours per video production time",
-    "ROI: Pays for itself in 1-2 videos",
-    "20 production-ready plugins included",
-    "10 AI agents + 10 commands",
-    "Comprehensive documentation and templates"
-  ],
-  "requirements": [
-    "Claude Code 1.0.0 or higher",
-    "FFmpeg for video processing",
-    "Git for build logging",
-    "Optional: DaVinci Resolve 18+ for professional editing",
-    "Optional: YouTube API credentials for automated uploads",
-    "Optional: Twitter API credentials for thread distribution",
-    "Optional: LinkedIn API credentials for professional content"
-  ]
+  "installation": "/plugin install creator-studio-pack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

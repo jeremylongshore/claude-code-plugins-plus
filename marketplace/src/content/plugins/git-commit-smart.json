@@ -12,12 +12,13 @@
     "productivity"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/git-commit-smart",
   "license": "MIT",
-  "installation": "/plugin install git-commit-smart@claude@claude-code-plugins-plus",
+  "installation": "/plugin install git-commit-smart@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

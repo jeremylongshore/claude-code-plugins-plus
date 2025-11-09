@@ -1,6 +1,6 @@
 {
   "name": "market-sentiment-analyzer",
-  "description": "AI-powered market sentiment analyzer aggregating data from 15+ social platforms, 500+ news sources, and on-chain metrics with predictive modeling and trading signal generation",
+  "description": "Analyze market sentiment from social media, news, and on-chain data",
   "version": "1.0.0",
   "category": "other",
   "keywords": [
@@ -9,49 +9,17 @@
     "social",
     "news",
     "market",
-    "crypto",
-    "nlp",
-    "machine-learning",
-    "trading-signals",
-    "prediction"
+    "crypto"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/market-sentiment-analyzer",
   "license": "MIT",
-  "installation": "/plugin install market-sentiment-analyzer@claude@claude-code-plugins-plus",
-  "features": [
-    "Multi-source sentiment aggregation (15+ platforms)",
-    "Real-time Twitter/X sentiment tracking (streaming API)",
-    "Reddit analysis (500K+ posts/day from crypto subreddits)",
-    "News sentiment from 500+ crypto news sources",
-    "Telegram group sentiment monitoring",
-    "Discord server sentiment analysis",
-    "Fear & Greed Index calculation",
-    "On-chain sentiment correlation analysis",
-    "NLP-based entity and topic extraction",
-    "Machine learning sentiment classification (95% accuracy)",
-    "Influencer impact scoring and tracking",
-    "Trend detection and viral content identification",
-    "Historical sentiment backtesting (2+ years)",
-    "Sentiment-price correlation analysis",
-    "Trading signal generation based on sentiment shifts",
-    "Custom sentiment indicators and alerts",
-    "Multi-language support (20+ languages)",
-    "Fake news and bot detection",
-    "Visualization dashboards with heatmaps",
-    "API for programmatic access"
-  ],
-  "requirements": [
-    "Python 3.9+ with NLP libraries (spaCy, NLTK)",
-    "Twitter/X API access (Essential tier minimum)",
-    "Reddit API credentials (PRAW)",
-    "News API key (newsapi.org or similar)",
-    "PostgreSQL for sentiment storage",
-    "Redis for real-time caching",
-    "GPU recommended for ML inference (optional)"
-  ],
+  "installation": "/plugin install market-sentiment-analyzer@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
   "screenshots": []
 }

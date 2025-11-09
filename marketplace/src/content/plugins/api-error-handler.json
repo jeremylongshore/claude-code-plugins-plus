@@ -10,12 +10,13 @@
     "exceptions"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-error-handler",
   "license": "MIT",
-  "installation": "/plugin install api-error-handler@claude@claude-code-plugins-plus",
+  "installation": "/plugin install api-error-handler@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

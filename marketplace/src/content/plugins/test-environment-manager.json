@@ -12,12 +12,13 @@
     "infrastructure"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub"
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/test-environment-manager",
   "license": "MIT",
-  "installation": "/plugin install test-environment-manager@claude@claude-code-plugins-plus",
+  "installation": "/plugin install test-environment-manager@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

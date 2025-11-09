@@ -15,12 +15,13 @@
     "package"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/packages/fullstack-starter-pack",
   "license": "MIT",
-  "installation": "/plugin install fullstack-starter-pack@claude@claude-code-plugins-plus",
+  "installation": "/plugin install fullstack-starter-pack@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

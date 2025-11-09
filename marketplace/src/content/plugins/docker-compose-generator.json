@@ -11,12 +11,13 @@
     "devops"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/docker-compose-generator",
   "license": "MIT",
-  "installation": "/plugin install docker-compose-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install docker-compose-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -10,12 +10,13 @@
     "stub"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-mock-server",
   "license": "MIT",
-  "installation": "/plugin install api-mock-server@claude@claude-code-plugins-plus",
+  "installation": "/plugin install api-mock-server@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

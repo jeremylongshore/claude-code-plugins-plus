@@ -11,12 +11,13 @@
     "containers"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/kubernetes-deployment-creator",
   "license": "MIT",
-  "installation": "/plugin install kubernetes-deployment-creator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install kubernetes-deployment-creator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

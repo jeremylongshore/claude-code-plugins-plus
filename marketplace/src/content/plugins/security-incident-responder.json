@@ -9,12 +9,13 @@
     "auditing"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/security/security-incident-responder",
   "license": "MIT",
-  "installation": "/plugin install security-incident-responder@claude@claude-code-plugins-plus",
+  "installation": "/plugin install security-incident-responder@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -10,12 +10,13 @@
     "job-processing"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-batch-processor",
   "license": "MIT",
-  "installation": "/plugin install api-batch-processor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install api-batch-processor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

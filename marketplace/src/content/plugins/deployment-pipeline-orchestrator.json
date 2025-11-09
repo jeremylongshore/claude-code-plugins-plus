@@ -11,12 +11,13 @@
     "devops"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/devops/deployment-pipeline-orchestrator",
   "license": "MIT",
-  "installation": "/plugin install deployment-pipeline-orchestrator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install deployment-pipeline-orchestrator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

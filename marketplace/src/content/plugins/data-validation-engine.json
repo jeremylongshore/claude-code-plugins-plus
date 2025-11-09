@@ -2,19 +2,20 @@
   "name": "data-validation-engine",
   "description": "Database plugin for data-validation-engine",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "database",
     "backend",
     "validation"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/data-validation-engine",
   "license": "MIT",
-  "installation": "/plugin install data-validation-engine@claude@claude-code-plugins-plus",
+  "installation": "/plugin install data-validation-engine@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

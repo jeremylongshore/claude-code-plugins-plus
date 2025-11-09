@@ -1,0 +1,21 @@
+{
+  "name": "research-to-deploy",
+  "description": "Transforms research findings into deployed solutions automatically",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "research",
+    "automation",
+    "deployment"
+  ],
+  "author": {
+    "name": "Claude Code Plugins Team"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/research-to-deploy",
+  "license": "MIT",
+  "installation": "/plugin install research-to-deploy@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

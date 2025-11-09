@@ -12,12 +12,13 @@
     "risk"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/trading-strategy-backtester",
   "license": "MIT",
-  "installation": "/plugin install trading-strategy-backtester@claude@claude-code-plugins-plus",
+  "installation": "/plugin install trading-strategy-backtester@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

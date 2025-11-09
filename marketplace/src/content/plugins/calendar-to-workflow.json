@@ -1,0 +1,22 @@
+{
+  "name": "calendar-to-workflow",
+  "description": "Enhances calendar Skills by automating meeting prep and workflow triggers",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "calendar",
+    "automation",
+    "meetings",
+    "productivity"
+  ],
+  "author": {
+    "name": "Claude Code Plugins Team"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/calendar-to-workflow",
+  "license": "MIT",
+  "installation": "/plugin install calendar-to-workflow@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

@@ -11,12 +11,13 @@
     "media"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/crypto-news-aggregator",
   "license": "MIT",
-  "installation": "/plugin install crypto-news-aggregator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install crypto-news-aggregator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -1,0 +1,31 @@
+{
+  "name": "003-jeremy-vertex-ai-media-master",
+  "description": "Comprehensive Google Vertex AI multimodal mastery for Jeremy - video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4. Marketing campaign automation, content generation, and media asset production.",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "vertex-ai",
+    "gemini",
+    "multimodal",
+    "video-processing",
+    "audio-generation",
+    "image-generation",
+    "marketing",
+    "campaigns",
+    "content-generation",
+    "imagen",
+    "media-production",
+    "google-cloud"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/productivity/003-jeremy-vertex-ai-media-master",
+  "license": "MIT",
+  "installation": "/plugin install 003-jeremy-vertex-ai-media-master@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

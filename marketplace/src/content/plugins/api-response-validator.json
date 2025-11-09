@@ -10,12 +10,13 @@
     "api"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-response-validator",
   "license": "MIT",
-  "installation": "/plugin install api-response-validator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install api-response-validator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

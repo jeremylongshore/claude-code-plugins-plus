@@ -2,19 +2,20 @@
   "name": "database-archival-system",
   "description": "Database plugin for database-archival-system",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "database",
     "backend",
     "archival"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/database-archival-system",
   "license": "MIT",
-  "installation": "/plugin install database-archival-system@claude@claude-code-plugins-plus",
+  "installation": "/plugin install database-archival-system@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

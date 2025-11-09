@@ -1,6 +1,6 @@
 {
   "name": "arbitrage-opportunity-finder",
-  "description": "Advanced arbitrage scanner discovering profitable opportunities across 100+ exchanges and DeFi protocols with real-time profitability analysis, MEV detection, and automated execution strategies",
+  "description": "Find and analyze arbitrage opportunities across exchanges and DeFi protocols",
   "version": "1.0.0",
   "category": "other",
   "keywords": [
@@ -8,48 +8,17 @@
     "trading",
     "defi",
     "mev",
-    "profit",
-    "flash-loans",
-    "triangular",
-    "cross-exchange",
-    "algorithmic-trading"
+    "profit"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/arbitrage-opportunity-finder",
   "license": "MIT",
-  "installation": "/plugin install arbitrage-opportunity-finder@claude@claude-code-plugins-plus",
-  "features": [
-    "Multi-exchange arbitrage scanning (100+ CEX/DEX)",
-    "Flash loan arbitrage opportunity detection",
-    "Triangular arbitrage analysis (A\u2192B\u2192C\u2192A)",
-    "Cross-chain arbitrage identification",
-    "Real-time profitability calculation with gas fees",
-    "MEV (Maximal Extractable Value) monitoring",
-    "Automated execution strategy generation",
-    "Risk scoring for each opportunity (0-100)",
-    "Slippage and liquidity depth analysis",
-    "Historical arbitrage performance tracking",
-    "Custom route optimization algorithms",
-    "WebSocket price feed aggregation (sub-second)",
-    "Transaction simulation before execution",
-    "Gas price prediction and optimization",
-    "Smart contract interaction planning",
-    "Multi-hop routing with path finding",
-    "Profit threshold filtering (customizable)",
-    "Exchange API rate limit management",
-    "Telegram/Discord alert integration",
-    "Backtest mode with historical data"
-  ],
-  "requirements": [
-    "Python 3.9+ or Node.js 18+",
-    "Exchange API keys (read-only minimum)",
-    "Ethereum node RPC endpoint (Infura/Alchemy)",
-    "Redis for real-time price caching",
-    "Web3.py or ethers.js for blockchain interaction",
-    "Minimum 0.1 ETH for gas (execution mode)"
-  ],
+  "installation": "/plugin install arbitrage-opportunity-finder@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
   "screenshots": []
 }

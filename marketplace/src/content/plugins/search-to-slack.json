@@ -1,0 +1,22 @@
+{
+  "name": "search-to-slack",
+  "description": "Automatically posts search results to Slack channels",
+  "version": "0.1.0",
+  "category": "other",
+  "keywords": [
+    "search",
+    "slack",
+    "automation",
+    "integration"
+  ],
+  "author": {
+    "name": "Claude Code Plugins Team"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/skill-enhancers/search-to-slack",
+  "license": "MIT",
+  "installation": "/plugin install search-to-slack@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

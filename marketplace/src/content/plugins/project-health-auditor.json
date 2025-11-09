@@ -13,12 +13,13 @@
     "analytics"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/project-health-auditor",
   "license": "MIT",
-  "installation": "/plugin install project-health-auditor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install project-health-auditor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

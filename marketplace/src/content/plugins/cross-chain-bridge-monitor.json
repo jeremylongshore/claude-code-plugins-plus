@@ -14,12 +14,13 @@
     "defi"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/cross-chain-bridge-monitor",
   "license": "MIT",
-  "installation": "/plugin install cross-chain-bridge-monitor@claude@claude-code-plugins-plus",
+  "installation": "/plugin install cross-chain-bridge-monitor@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

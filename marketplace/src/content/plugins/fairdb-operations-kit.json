@@ -1,0 +1,22 @@
+{
+  "name": "fairdb-operations-kit",
+  "description": "Production PostgreSQL operations toolkit with health monitoring and emergency response",
+  "version": "1.0.0",
+  "category": "other",
+  "keywords": [
+    "database",
+    "postgresql",
+    "operations",
+    "devops"
+  ],
+  "author": {
+    "name": "Jeremy Longshore"
+  },
+  "featured": false,
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/fairdb-operations-kit",
+  "license": "MIT",
+  "installation": "/plugin install fairdb-operations-kit@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
+}

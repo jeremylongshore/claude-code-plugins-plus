@@ -2,7 +2,7 @@
   "name": "bottleneck-detector",
   "description": "Detect and resolve performance bottlenecks",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "bottleneck",
     "performance",
@@ -10,12 +10,13 @@
     "profiling"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/bottleneck-detector",
   "license": "MIT",
-  "installation": "/plugin install bottleneck-detector@claude@claude-code-plugins-plus",
+  "installation": "/plugin install bottleneck-detector@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

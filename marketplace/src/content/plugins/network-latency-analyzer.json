@@ -2,7 +2,7 @@
   "name": "network-latency-analyzer",
   "description": "Analyze network latency and optimize request patterns",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "network",
     "latency",
@@ -10,12 +10,13 @@
     "api"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/network-latency-analyzer",
   "license": "MIT",
-  "installation": "/plugin install network-latency-analyzer@claude@claude-code-plugins-plus",
+  "installation": "/plugin install network-latency-analyzer@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

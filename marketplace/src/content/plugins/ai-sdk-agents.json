@@ -1,11 +1,7 @@
 {
   "name": "ai-sdk-agents",
-  "description": "Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google). Build sophisticated multi-agent systems with automatic handoffs, intelligent routing, and seamless coordination.",
+  "description": "Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider (OpenAI, Anthropic, Google)",
   "version": "1.0.0",
-  "author": {
-    "name": "Jeremy Longshore",
-    "url": "https://github.com/jeremylongshore"
-  },
   "category": "ai-ml-assistance",
   "keywords": [
     "ai-sdk",
@@ -20,43 +16,17 @@
     "google",
     "claude",
     "ai",
-    "coordination",
-    "ai-sdk-v5",
-    "vercel-ai",
-    "agent-systems"
+    "coordination"
   ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
+  },
   "featured": true,
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/ai-ml/ai-sdk-agents",
   "license": "MIT",
-  "installation": "/plugin install ai-sdk-agents@claude@claude-code-plugins-plus",
-  "features": [
-    "Initialize multi-agent projects with /ai-agents-setup",
-    "Create specialized agents with /ai-agent-create",
-    "Test agent systems with /ai-agents-test",
-    "Automatic agent handoffs between specialists",
-    "Intelligent routing by coordinator agent",
-    "Seamless coordination across multiple LLMs",
-    "Support for OpenAI, Anthropic, and Google AI",
-    "Built on AI SDK v5 (@ai-sdk-tools/agents)",
-    "Real-time handoff tracking and metrics",
-    "Code generation pipeline (architect \u2192 coder \u2192 tester \u2192 reviewer)",
-    "Research pipeline (searcher \u2192 analyzer \u2192 synthesizer \u2192 reporter)",
-    "Content creation pipeline (researcher \u2192 writer \u2192 editor \u2192 publisher)",
-    "Customer support routing (triager \u2192 specialists)",
-    "DevOps automation (monitor \u2192 diagnoser \u2192 fixer)",
-    "TypeScript type safety with Zod schemas",
-    "Performance benchmarking and optimization",
-    "Quality assessment scoring",
-    "Custom agent creation with tools and handoff rules",
-    "Multi-provider support in same system",
-    "Production-ready agent orchestration"
-  ],
-  "requirements": [
-    "Claude Code 1.0.0 or higher",
-    "Node.js 18+ for running multi-agent projects",
-    "npm or pnpm for package management",
-    "At least one AI provider API key (Anthropic/OpenAI/Google)",
-    "TypeScript 5.0+ for type safety",
-    "Zod for schema validation"
-  ]
+  "installation": "/plugin install ai-sdk-agents@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

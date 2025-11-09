@@ -13,12 +13,13 @@
     "junit"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/unit-test-generator",
   "license": "MIT",
-  "installation": "/plugin install unit-test-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install unit-test-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -2,7 +2,7 @@
   "name": "memory-leak-detector",
   "description": "Detect memory leaks and analyze memory usage patterns",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "memory",
     "leak",
@@ -10,12 +10,13 @@
     "performance"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/memory-leak-detector",
   "license": "MIT",
-  "installation": "/plugin install memory-leak-detector@claude@claude-code-plugins-plus",
+  "installation": "/plugin install memory-leak-detector@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

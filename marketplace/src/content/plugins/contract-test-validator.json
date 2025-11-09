@@ -13,12 +13,13 @@
     "consumer-driven"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub"
+    "name": "Claude Code Plugin Hub",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/contract-test-validator",
   "license": "MIT",
-  "installation": "/plugin install contract-test-validator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install contract-test-validator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

@@ -12,12 +12,13 @@
     "capital gains"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/crypto/crypto-tax-calculator",
   "license": "MIT",
-  "installation": "/plugin install crypto-tax-calculator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install crypto-tax-calculator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

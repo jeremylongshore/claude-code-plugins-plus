@@ -1,101 +1,22 @@
 {
   "name": "ai-experiment-logger",
-  "displayName": "AI Experiment Logger",
-  "category": "ai-ml-assistance",
-  "type": "mcp",
-  "description": "Track and analyze AI experiments with MCP tools and web dashboard. Log prompts, results, and ratings across different AI tools, with comprehensive statistics and CSV export.",
+  "description": "Track and analyze AI experiments with a web dashboard and MCP tools",
   "version": "1.0.0",
-  "author": {
-    "name": "Claude Code Plugins",
-    "email": "plugins@example.com",
-    "url": "https://github.com/jeremylongshore/claude-code-plugins"
-  },
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/mcp/ai-experiment-logger",
-  "license": "MIT",
+  "category": "ai-ml-assistance",
   "keywords": [
     "ai",
     "experiments",
     "logging",
-    "analytics",
-    "dashboard",
-    "mcp",
-    "tracking",
-    "statistics",
-    "prompt-engineering"
+    "mcp"
   ],
-  "features": [
-    "7 MCP tools for experiment management",
-    "Beautiful web dashboard with Tailwind CSS",
-    "Comprehensive statistics and analytics",
-    "Search and filter experiments",
-    "CSV export functionality",
-    "Local JSON storage",
-    "Track effectiveness ratings (1-5 stars)",
-    "Tag system for categorization"
-  ],
-  "tools": [
-    {
-      "name": "log_experiment",
-      "description": "Create a new experiment entry with tool, prompt, result, and rating"
-    },
-    {
-      "name": "list_experiments",
-      "description": "List all experiments with optional filtering and search"
-    },
-    {
-      "name": "get_experiment",
-      "description": "Retrieve a specific experiment by ID"
-    },
-    {
-      "name": "update_experiment",
-      "description": "Modify an existing experiment"
-    },
-    {
-      "name": "delete_experiment",
-      "description": "Remove an experiment from the log"
-    },
-    {
-      "name": "get_statistics",
-      "description": "Generate comprehensive analytics and performance metrics"
-    },
-    {
-      "name": "export_experiments",
-      "description": "Export all data to CSV format"
-    }
-  ],
-  "installation": "/plugin install ai-experiment-logger@claude@claude-code-plugins-plus",
-  "usage": {
-    "mcp": "Use MCP tools like log_experiment, list_experiments, get_statistics in Claude Code",
-    "web": "Run 'npm run web' to start web dashboard at http://localhost:3000"
+  "author": {
+    "name": "Claude Code Plugins"
   },
-  "examples": [
-    {
-      "title": "Log an AI experiment",
-      "description": "Track a code generation experiment with ChatGPT",
-      "code": "log_experiment:\n  aiTool: ChatGPT o1-preview\n  prompt: Write a Python function to calculate Fibonacci\n  result: Clean recursive implementation with complexity analysis\n  rating: 5\n  tags: [code-generation, python]"
-    },
-    {
-      "title": "Get statistics",
-      "description": "View which AI tools perform best",
-      "code": "get_statistics\n\nShows:\n- Average ratings by tool\n- Rating distribution\n- Top tags\n- Recent activity"
-    }
-  ],
-  "screenshots": [],
-  "documentation": "https://github.com/jeremylongshore/claude-code-plugins/blob/main/plugins/mcp/ai-experiment-logger/README.md",
-  "tags": [
-    "mcp",
-    "ai",
-    "experiments",
-    "logging",
-    "analytics",
-    "dashboard",
-    "productivity"
-  ],
   "featured": false,
-  "verified": true,
-  "downloads": 0,
-  "rating": 0,
-  "reviews": [],
-  "createdAt": "2025-10-13T23:50:00Z",
-  "updatedAt": "2025-10-13T23:50:00Z"
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/ai-experiment-logger",
+  "license": "MIT",
+  "installation": "/plugin install ai-experiment-logger@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
+  "screenshots": []
 }

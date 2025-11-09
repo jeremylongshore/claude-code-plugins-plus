@@ -14,7 +14,7 @@
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/examples/security-agent",
   "license": "MIT",
-  "installation": "/plugin install security-agent@claude@claude-code-plugins-plus",
+  "installation": "/plugin install security-agent@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

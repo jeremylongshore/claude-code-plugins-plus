@@ -11,12 +11,13 @@
     "docs"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/api-development/api-documentation-generator",
   "license": "MIT",
-  "installation": "/plugin install api-documentation-generator@claude@claude-code-plugins-plus",
+  "installation": "/plugin install api-documentation-generator@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

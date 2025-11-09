@@ -2,7 +2,7 @@
   "name": "real-user-monitoring",
   "description": "Implement Real User Monitoring for actual performance data",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "rum",
     "monitoring",
@@ -10,12 +10,13 @@
     "user-experience"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/real-user-monitoring",
   "license": "MIT",
-  "installation": "/plugin install real-user-monitoring@claude@claude-code-plugins-plus",
+  "installation": "/plugin install real-user-monitoring@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

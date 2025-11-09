@@ -2,7 +2,7 @@
   "name": "application-profiler",
   "description": "Profile application performance with CPU, memory, and execution time analysis",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "performance",
     "profiling",
@@ -10,12 +10,13 @@
     "optimization"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/application-profiler",
   "license": "MIT",
-  "installation": "/plugin install application-profiler@claude@claude-code-plugins-plus",
+  "installation": "/plugin install application-profiler@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

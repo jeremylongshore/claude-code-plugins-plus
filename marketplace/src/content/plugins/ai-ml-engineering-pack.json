@@ -16,12 +16,13 @@
     "package"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/packages/ai-ml-engineering-pack",
   "license": "MIT",
-  "installation": "/plugin install ai-ml-engineering-pack@claude@claude-code-plugins-plus",
+  "installation": "/plugin install ai-ml-engineering-pack@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

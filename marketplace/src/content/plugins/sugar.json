@@ -1,6 +1,6 @@
 {
   "name": "sugar",
-  "description": "Autonomous AI development for Claude Code: create and manage tasks with rich context, run safe autonomous cycles, and get quality nudges via hooks \u2014 all powered by a minimal MCP bridge to the Sugar CLI.",
+  "description": "Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow automation",
   "version": "2.0.0",
   "category": "devops",
   "keywords": [
@@ -10,27 +10,20 @@
     "task-management",
     "automation",
     "agents",
+    "enterprise",
     "workflow",
     "productivity",
     "mcp"
   ],
   "author": {
-    "name": "cdnsteve"
+    "name": "Steven Leggett",
+    "email": "contact@roboticforce.io"
   },
   "featured": true,
   "repository": "https://github.com/cdnsteve/sugar",
   "license": "MIT",
-  "installation": "/plugin install sugar@claude@claude-code-plugins-plus",
-  "features": [
-    "Slash commands for tasks and status",
-    "Hooks for discovery and quality reminders",
-    "MCP server bridging to Sugar CLI",
-    "Project-scoped autonomous execution"
-  ],
-  "requirements": [
-    "Python 3.11+",
-    "pip install sugarai",
-    "sugar init in your project"
-  ],
+  "installation": "/plugin install sugar@claude-code-plugins-plus",
+  "features": [],
+  "requirements": [],
   "screenshots": []
 }

@@ -2,7 +2,7 @@
   "name": "query-performance-analyzer",
   "description": "Analyze query performance with EXPLAIN plan interpretation, bottleneck identification, and optimization recommendations",
   "version": "1.0.0",
-  "category": "database",
+  "category": "other",
   "keywords": [
     "performance",
     "query",
@@ -11,12 +11,13 @@
     "database"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/database/query-performance-analyzer",
   "license": "MIT",
-  "installation": "/plugin install query-performance-analyzer@claude@claude-code-plugins-plus",
+  "installation": "/plugin install query-performance-analyzer@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

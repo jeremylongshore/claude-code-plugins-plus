@@ -2,7 +2,7 @@
   "name": "capacity-planning-analyzer",
   "description": "Analyze and plan for capacity requirements",
   "version": "1.0.0",
-  "category": "performance",
+  "category": "other",
   "keywords": [
     "capacity-planning",
     "scaling",
@@ -10,12 +10,13 @@
     "infrastructure"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/performance/capacity-planning-analyzer",
   "license": "MIT",
-  "installation": "/plugin install capacity-planning-analyzer@claude@claude-code-plugins-plus",
+  "installation": "/plugin install capacity-planning-analyzer@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []

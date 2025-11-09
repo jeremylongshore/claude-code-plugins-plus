@@ -14,12 +14,13 @@
     "http"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "[email protected]"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/mcp/conversational-api-debugger",
   "license": "MIT",
-  "installation": "/plugin install conversational-api-debugger@claude@claude-code-plugins-plus",
+  "installation": "/plugin install conversational-api-debugger@claude-code-plugins-plus",
   "features": [],
   "requirements": [],
   "screenshots": []
