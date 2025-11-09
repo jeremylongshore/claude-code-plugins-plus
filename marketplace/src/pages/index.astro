@@ -64,10 +64,10 @@ const categoryIcons: Record<string, string> = {
     <div class="container announcement-inner">
       <span class="sparkle">🎯</span>
       <span>
-        <strong>v1.2.3:</strong> Agent Context Manager Plugin — Automatically load AGENTS.md files alongside CLAUDE.md for specialized agent behaviors. Three-layer redundancy system with proactive skills, hooks, and manual sync.
+        <strong>v1.3.1:</strong> First marketplace 100% compliant with Anthropic's 2025 Skills schema — All 175 skills now feature tool permissions, version tracking, and enhanced activation triggers.
       </span>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.3" class="ann-link">Release v1.2.3</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/agent-context-manager" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1" class="ann-link">Release v1.3.1</a>
+      <a href="https://github.com/jeremylongshore/claude-code-plugins#-whats-new-in-v131---industry-first-2025-schema-compliance" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
     </div>
   </div>
 
@@ -75,32 +75,31 @@ const categoryIcons: Record<string, string> = {
 
   <SearchBar />
 
-  <!-- Agent Context Manager Spotlight -->
+  <!-- v1.3.1 Release Spotlight -->
   <section class="spotlight-section">
     <div class="container">
       <div class="spotlight">
-        <div class="spotlight-icon">📋</div>
+        <div class="spotlight-icon">🔒</div>
         <div class="spotlight-content">
-          <div class="spotlight-kicker">New in v1.2.3 • Anthropic Spec v1.0 Compliant • Fully Automatic</div>
-          <h2 class="spotlight-title">Introducing <span class="spotlight-name">Agent Context Manager</span></h2>
+          <div class="spotlight-kicker">New in v1.3.1 • Industry-First 2025 Schema • 100% Compliant</div>
+          <h2 class="spotlight-title">The Only Marketplace <span class="spotlight-name">100% Compliant with Anthropic's 2025 Skills Schema</span></h2>
           <p class="spotlight-text">
-            <strong>Automatically detect and load AGENTS.md files alongside CLAUDE.md.</strong> Separate your agent-specific instructions from general project context without manual intervention.
-            Three-layer redundancy system ensures your agent rules are always loaded.
-            <strong>Zero configuration, zero maintenance.</strong>
+            <strong>All 175 Agent Skills upgraded to the latest 2025 schema.</strong> We've migrated every single skill to include tool permissions, version tracking, and enhanced activation triggers.
+            <strong>Know exactly what each skill can do before it runs.</strong>
           </p>
           <div class="spotlight-features">
-            <span class="feature-badge">⚡ Proactive Auto-Loading</span>
-            <span class="feature-badge">🔔 Directory Change Detection</span>
-            <span class="feature-badge">🔄 Manual Sync Command</span>
-            <span class="feature-badge">✅ Exceeds Anthropic Standards</span>
+            <span class="feature-badge">🔒 Tool Permission System</span>
+            <span class="feature-badge">📊 Version Tracking</span>
+            <span class="feature-badge">🎯 Enhanced Triggers</span>
+            <span class="feature-badge">✅ 100% Schema Compliant</span>
           </div>
           <p class="spotlight-subtext">
-            <strong>200+ line comprehensive SKILL.md • 400+ line README with examples.</strong>
-            Full compliance with Anthropic Agent Skills Specification v1.0 with progressive disclosure architecture.
+            <strong>Security • Transparency • Performance • Trust.</strong>
+            Read-only skills can't modify your code. See exactly what permissions each skill has. Limited tool sets mean faster activation. No surprise file modifications.
           </p>
           <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity/agent-context-manager" target="_blank" rel="noopener noreferrer">Plugin Documentation</a>
-            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.2.3" target="_blank" rel="noopener noreferrer">Release Notes</a>
+            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins#-whats-new-in-v131---industry-first-2025-schema-compliance" target="_blank" rel="noopener noreferrer">What's New in v1.3.1</a>
+            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1" target="_blank" rel="noopener noreferrer">Release Notes</a>
           </div>
         </div>
       </div>
@@ -641,6 +640,66 @@ const categoryIcons: Record<string, string> = {
     .steps-grid,
     .resources-grid {
       grid-template-columns: 1fr;
+    }
+
+    /* Mobile spotlight section */
+    .spotlight-section {
+      padding: 1.5rem 0;
+    }
+
+    .spotlight {
+      grid-template-columns: 1fr;
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+
+    .spotlight-icon {
+      font-size: 2.5rem;
+      width: 64px;
+      height: 64px;
+      margin: 0 auto;
+    }
+
+    .spotlight-kicker {
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .spotlight-title {
+      font-size: 1rem;
+      line-height: 1.3;
+    }
+
+    .spotlight-text {
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .spotlight-subtext {
+      font-size: 0.8rem;
+    }
+
+    .spotlight-features {
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .feature-badge {
+      font-size: 0.7rem;
+      padding: 0.3rem 0.5rem;
+    }
+
+    .spotlight-actions {
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .spotlight-btn {
+      width: 100%;
+      justify-content: center;
+      padding: 0.6rem 1rem;
+      font-size: 0.875rem;
     }
   }
 </style>
