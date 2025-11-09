@@ -14,8 +14,7 @@
     "workflow"
   ],
   "author": {
-    "name": "Claude Code Plugins Team",
-    "email": "[email protected]"
+    "name": "Claude Code Plugins Team"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",

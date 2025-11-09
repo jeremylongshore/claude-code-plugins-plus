@@ -15,8 +15,7 @@
     "repository-tools"
   ],
   "author": {
-    "name": "Claude Code Plugins",
-    "email": "[email protected]"
+    "name": "Claude Code Plugins"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",

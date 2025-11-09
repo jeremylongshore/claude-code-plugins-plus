@@ -11,8 +11,7 @@
     "high-availability"
   ],
   "author": {
-    "name": "Claude Code Plugin Hub",
-    "email": "[email protected]"
+    "name": "Claude Code Plugin Hub"
   },
   "featured": false,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/testing/load-balancer-tester",

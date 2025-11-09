@@ -21,8 +21,7 @@
     "ai-finance"
   ],
   "author": {
-    "name": "Jeremy Longshore",
-    "email": "[email protected]"
+    "name": "Jeremy Longshore"
   },
   "featured": true,
   "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/finance/openbb-terminal",

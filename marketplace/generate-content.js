@@ -64,13 +64,13 @@ marketplaceData.plugins.forEach(plugin => {
     authorData = {
       name: plugin.author.name || 'Claude Code Plugin Hub'
     };
-    // Only add email if it exists and is not empty
-    if (plugin.author.email && plugin.author.email.trim() && plugin.author.email.trim() !== '') {
-      authorData.email = plugin.author.email;
+    // Only add email if it exists, is not empty, and contains @
+    if (plugin.author.email && typeof plugin.author.email === 'string' && plugin.author.email.includes('@') && plugin.author.email.trim().length > 3) {
+      authorData.email = plugin.author.email.trim();
     }
-    // Only add url if it exists and is not empty
-    if (plugin.author.url && plugin.author.url.trim()) {
-      authorData.url = plugin.author.url;
+    // Only add url if it exists, is not empty, and starts with http
+    if (plugin.author.url && typeof plugin.author.url === 'string' && plugin.author.url.startsWith('http')) {
+      authorData.url = plugin.author.url.trim();
     }
   }
 
