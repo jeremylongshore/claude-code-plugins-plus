@@ -1,17 +1,17 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-1.3.1-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-244-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Plugins](https://img.shields.io/badge/plugins-243-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-175%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**244 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**243 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
 🎯 **NEW in v1.3.1:** **First marketplace 100% compliant with Anthropic's 2025 Skills schema** - All 175 skills feature tool permissions, version tracking, and enhanced activation triggers!
 
-**Latest:** [v1.3.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1) - Workflow fixes, marketplace metadata updates, 244 plugins total
+**Latest:** [v1.3.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1) - Workflow fixes, marketplace metadata updates, 243 plugins total
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins

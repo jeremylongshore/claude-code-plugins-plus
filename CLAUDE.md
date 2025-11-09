@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is **the comprehensive marketplace and learning hub for Claude Code plugins**. It serves as both a distribution platform for plugins and an educational resource for plugin developers.
 
 **Repository Stats:**
-- 244 marketplace plugins across 15 categories
+- 243 marketplace plugins across 15 categories
 - 221 AI instruction plugins (markdown-based templates)
 - 5 MCP server plugins (TypeScript/Node.js executables with 21 tools)
 - 175 plugins with Agent Skills (v1.2.0 - 2025 schema compliant)
@@ -926,7 +926,7 @@ Common examples:
 ---
 
 **Last Updated:** November 8, 2025
-**Repository Version:** 1.3.0 (244 plugins, 175 with Agent Skills - 100% 2025 schema compliant)
+**Repository Version:** 1.3.1 (243 plugins, 175 with Agent Skills - 100% 2025 schema compliant)
 **Status:** Active, accepting community contributions
 **Recent Changes:**
 - v1.3.0: Migrated all 175 skills to 2025 schema (added `allowed-tools` and `version` fields)

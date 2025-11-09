@@ -1,19 +1,30 @@
 {
   "name": "fairdb-operations-kit",
-  "description": "Production PostgreSQL operations toolkit with health monitoring and emergency response",
+  "description": "Complete operations kit for FairDB PostgreSQL as a Service - VPS setup, PostgreSQL management, customer provisioning, monitoring, and backup automation",
   "version": "1.0.0",
-  "category": "other",
+  "category": "devops",
   "keywords": [
-    "database",
+    "fairdb",
     "postgresql",
+    "database",
+    "saas",
     "operations",
-    "devops"
+    "devops",
+    "backup",
+    "monitoring",
+    "vps",
+    "contabo",
+    "wasabi",
+    "pgbackrest",
+    "automation",
+    "incident-response"
   ],
   "author": {
-    "name": "Jeremy Longshore"
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
   },
   "featured": false,
-  "repository": "https://github.com/jeremylongshore/claude-code-plugins/tree/main/./plugins/fairdb-operations-kit",
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
   "installation": "/plugin install fairdb-operations-kit@claude-code-plugins-plus",
   "features": [],
