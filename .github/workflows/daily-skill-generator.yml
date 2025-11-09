@@ -73,35 +73,13 @@ Create an Agent Skill for this plugin:
    \`\`\`
 
 3. **Write SKILL.md** at \`${pluginPath}/skills/skill-adapter/SKILL.md\`:
-   \`\`\`yaml
-   ---
-   name: ${pluginName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Skill
-   description: |
-     [Based on plugin description: ${pluginDesc}]
-     Write 2-3 sentences explaining WHEN this skill activates and WHAT it does.
-   allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
-   ---
 
-   ## How It Works
+   Create a skill file with YAML frontmatter:
+   - name: ${pluginName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} Skill
+   - description: Based on: ${pluginDesc}
+   - allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
 
-   [Explain the skill's workflow in 3-5 steps]
-
-   ## Examples
-
-   ### Example 1: [Common Use Case]
-   \`\`\`
-   [Show example commands/usage]
-   \`\`\`
-
-   ### Example 2: [Another Use Case]
-   \`\`\`
-   [Show example]
-   \`\`\`
-
-   ## Tips
-   - [Tip 1]
-   - [Tip 2]
-   \`\`\`
+   Include sections: How It Works, Examples, Tips
 
 4. **Update plugin.json:**
    Add \`"agent-skills"\` to keywords array
