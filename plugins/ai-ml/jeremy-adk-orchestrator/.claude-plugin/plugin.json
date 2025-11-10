@@ -1,0 +1,23 @@
+{
+  "name": "jeremy-adk-orchestrator",
+  "version": "1.0.0",
+  "description": "Vertex AI Agent Development Kit (ADK) supervisory orchestrator with A2A protocol support, multi-agent systems, Code Execution Sandbox, Memory Bank, and production deployment for Python/Java/Go agents",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "vertex-ai",
+    "adk",
+    "agent-development-kit",
+    "a2a-protocol",
+    "multi-agent",
+    "code-execution",
+    "memory-bank",
+    "google-cloud",
+    "agent-engine",
+    "orchestration"
+  ]
+}

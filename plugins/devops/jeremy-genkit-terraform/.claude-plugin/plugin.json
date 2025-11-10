@@ -1,0 +1,21 @@
+{
+  "name": "jeremy-genkit-terraform",
+  "version": "1.0.0",
+  "description": "Terraform infrastructure specialist for deploying Firebase Genkit applications to Firebase Functions, Cloud Run, and GKE with monitoring, scaling, and production best practices",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "terraform",
+    "genkit",
+    "firebase",
+    "cloud-run",
+    "infrastructure",
+    "iac",
+    "deployment",
+    "google-cloud"
+  ]
+}

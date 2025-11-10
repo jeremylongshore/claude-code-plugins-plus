@@ -1,0 +1,20 @@
+{
+  "name": "jeremy-vertex-validator",
+  "version": "1.0.0",
+  "description": "Production readiness validator for Vertex AI, ADK, and Genkit deployments. Validates security, compliance, monitoring, performance, and best practices before production deployment",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "vertex-ai",
+    "validation",
+    "production-readiness",
+    "security",
+    "compliance",
+    "monitoring",
+    "best-practices"
+  ]
+}

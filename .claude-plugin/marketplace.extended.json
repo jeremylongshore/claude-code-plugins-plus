@@ -14,7 +14,10 @@
       "totalPlugins": 243,
       "skillsEnabled": 175,
       "lastUpdated": "2025-11-09"
-    }
+    },
+    "totalPlugins": 249,
+    "skillsEnabled": 181,
+    "lastUpdated": "2025-12-09"
   },
   "plugins": [
     {
@@ -4563,6 +4566,139 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
+      }
+    },
+    {
+      "name": "jeremy-genkit-pro",
+      "source": "./plugins/ai-ml/jeremy-genkit-pro",
+      "description": "Production-grade Firebase Genkit specialist with expert agents for AI flows, RAG systems, monitoring, and multi-language deployment (Node.js/Python/Go)",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "firebase",
+        "genkit",
+        "ai-flows",
+        "rag",
+        "monitoring",
+        "gemini",
+        "vertex-ai"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "agents": 1,
+        "commands": 1,
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-adk-orchestrator",
+      "source": "./plugins/ai-ml/jeremy-adk-orchestrator",
+      "description": "Vertex AI Agent Development Kit (ADK) supervisory orchestrator with A2A protocol support, multi-agent systems, Code Execution Sandbox, Memory Bank, and production deployment for Python/Java/Go agents",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vertex-ai",
+        "adk",
+        "a2a-protocol",
+        "multi-agent",
+        "code-execution",
+        "memory-bank"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "agents": 1,
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-vertex-validator",
+      "source": "./plugins/ai-ml/jeremy-vertex-validator",
+      "description": "Production readiness validator for Vertex AI, ADK, and Genkit deployments. Validates security, compliance, monitoring, performance, and best practices before production deployment",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vertex-ai",
+        "validation",
+        "production-readiness",
+        "security",
+        "compliance"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-genkit-terraform",
+      "source": "./plugins/devops/jeremy-genkit-terraform",
+      "description": "Terraform infrastructure specialist for deploying Firebase Genkit applications to Firebase Functions, Cloud Run, and GKE with monitoring, scaling, and production best practices",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "terraform",
+        "genkit",
+        "firebase",
+        "cloud-run",
+        "infrastructure"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-adk-terraform",
+      "source": "./plugins/devops/jeremy-adk-terraform",
+      "description": "Terraform infrastructure specialist for Vertex AI ADK Agent Engine deployment with VPC-SC, Code Execution Sandbox, Memory Bank, IAM, and multi-agent production infrastructure",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "terraform",
+        "adk",
+        "agent-engine",
+        "vertex-ai",
+        "infrastructure",
+        "vpc-sc"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-vertex-terraform",
+      "source": "./plugins/devops/jeremy-vertex-terraform",
+      "description": "Terraform infrastructure specialist for Vertex AI services including Model Garden, Gemini deployments, vector search, endpoints, pipelines, and enterprise AI infrastructure",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "terraform",
+        "vertex-ai",
+        "gemini",
+        "model-garden",
+        "infrastructure"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1
       }
     }
   ]

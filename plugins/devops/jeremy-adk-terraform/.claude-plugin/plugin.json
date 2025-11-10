@@ -1,0 +1,21 @@
+{
+  "name": "jeremy-adk-terraform",
+  "version": "1.0.0",
+  "description": "Terraform infrastructure specialist for Vertex AI ADK Agent Engine deployment with VPC-SC, Code Execution Sandbox, Memory Bank, IAM, and multi-agent production infrastructure",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "terraform",
+    "adk",
+    "agent-engine",
+    "vertex-ai",
+    "infrastructure",
+    "iac",
+    "vpc-sc",
+    "security"
+  ]
+}
