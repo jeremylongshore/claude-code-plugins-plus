@@ -15,8 +15,8 @@
       "skillsEnabled": 175,
       "lastUpdated": "2025-11-09"
     },
-    "totalPlugins": 250,
-    "skillsEnabled": 182,
+    "totalPlugins": 251,
+    "skillsEnabled": 183,
     "lastUpdated": "2025-12-09"
   },
   "plugins": [
@@ -4714,6 +4714,31 @@
         "agent-monitoring",
         "compliance",
         "production-validation"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "agents": 1,
+        "skills": 1
+      }
+    },
+    {
+      "name": "jeremy-gcp-starter-examples",
+      "source": "./plugins/ai-ml/jeremy-gcp-starter-examples",
+      "description": "Comprehensive Google Cloud starter kit examples aggregator. Expert in ADK samples, Genkit templates, Agent Starter Pack, Vertex AI examples, and production-ready code from official Google Cloud repositories",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "google-cloud",
+        "adk-samples",
+        "genkit-examples",
+        "vertex-ai",
+        "agent-starter-pack",
+        "code-examples",
+        "starter-kits",
+        "templates"
       ],
       "author": {
         "name": "Jeremy Longshore",
