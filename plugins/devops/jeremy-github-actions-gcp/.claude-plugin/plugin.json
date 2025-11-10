@@ -1,0 +1,25 @@
+{
+  "name": "jeremy-github-actions-gcp",
+  "version": "1.0.0",
+  "description": "GitHub Actions expert for Google Cloud deployments with Workload Identity Federation (WIF), Vertex AI Engine deployment validation, and comprehensive GitHub best practices enforcement",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "github-actions",
+    "google-cloud",
+    "workload-identity-federation",
+    "wif",
+    "vertex-ai",
+    "agent-engine",
+    "deployment",
+    "ci-cd",
+    "security",
+    "best-practices",
+    "oidc",
+    "iam"
+  ]
+}

@@ -15,8 +15,8 @@
       "skillsEnabled": 175,
       "lastUpdated": "2025-11-09"
     },
-    "totalPlugins": 251,
-    "skillsEnabled": 183,
+    "totalPlugins": 252,
+    "skillsEnabled": 184,
     "lastUpdated": "2025-12-09"
   },
   "plugins": [
@@ -4613,6 +4613,31 @@
         "code-examples",
         "starter-kits",
         "templates"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "jeremy-github-actions-gcp",
+      "source": "./plugins/devops/jeremy-github-actions-gcp",
+      "description": "GitHub Actions expert for Google Cloud and Vertex AI deployments with Workload Identity Federation (WIF), comprehensive security validation, and deployment best practices enforcement",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "github-actions",
+        "google-cloud",
+        "workload-identity-federation",
+        "wif",
+        "vertex-ai",
+        "agent-engine",
+        "deployment",
+        "ci-cd",
+        "security",
+        "best-practices",
+        "oidc",
+        "iam"
       ],
       "author": {
         "name": "Jeremy Longshore",
