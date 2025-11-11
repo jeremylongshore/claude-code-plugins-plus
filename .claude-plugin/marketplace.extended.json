@@ -4059,6 +4059,38 @@
       }
     },
     {
+      "name": "jeremy-firestore",
+      "source": "./plugins/community/jeremy-firestore",
+      "description": "Production-ready Firebase/Firestore operations: CRUD, security rules, batch operations, migrations, cost optimization, and performance monitoring",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "firebase",
+        "firestore",
+        "database",
+        "crud",
+        "security-rules",
+        "cloud-functions",
+        "batch-operations",
+        "data-migration",
+        "performance",
+        "cost-optimization",
+        "nosql",
+        "google-cloud",
+        "a2a",
+        "agent-to-agent",
+        "mcp",
+        "cloud-run",
+        "vertex-ai"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "[email protected]",
+        "url": "https://intentsolutions.io"
+      },
+      "featured": true
+    },
+    {
       "name": "sugar",
       "source": "./plugins/devops/sugar",
       "description": "Transform Claude Code into an autonomous AI development powerhouse with rich task context, specialized agents, and intelligent workflow automation",

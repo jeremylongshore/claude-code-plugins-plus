@@ -1,0 +1,26 @@
+{
+  "name": "jeremy-firestore",
+  "version": "1.0.0",
+  "description": "Production-ready Firebase/Firestore operations: CRUD, security rules, batch operations, migrations, cost optimization, and performance monitoring",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "firebase",
+    "firestore",
+    "database",
+    "crud",
+    "security-rules",
+    "cloud-functions",
+    "batch-operations",
+    "data-migration",
+    "performance",
+    "cost-optimization",
+    "nosql",
+    "google-cloud"
+  ]
+}
