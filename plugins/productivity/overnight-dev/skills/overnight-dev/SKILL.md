@@ -2,13 +2,11 @@
 name: overnight-development
 description: |
   Automates software development overnight using Git hooks to enforce test-driven development (TDD).
-  This skill should be used when Claude needs to build new features, refactor existing code, or fix bugs autonomously,
-  ensuring all changes are fully tested and meet specified quality standards. Use when the user mentions "overnight development",
-  "autonomous coding", or asks about TDD workflows and Git hooks. This skill leverages Git hooks to block commits until all tests pass,
-  enforcing a rigorous TDD process and ensuring high-quality, production-ready code.
-allowed-tools: - Read
-- Write
-- Bash
+  This skill activates when you request "overnight development", "autonomous coding", "work while I sleep",
+  or mention TDD workflows and Git hooks. It leverages Git hooks to block commits until all tests pass,
+  enforcing a rigorous TDD process and ensuring high-quality, production-ready code. Perfect for building
+  features autonomously - just define the goal and let Claude work overnight while tests enforce quality.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 version: 1.0.0
 ---
 
