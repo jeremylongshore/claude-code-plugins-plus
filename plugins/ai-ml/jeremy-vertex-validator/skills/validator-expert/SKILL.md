@@ -1,11 +1,12 @@
 ---
 name: validator-expert
 description: |
-  Production readiness validator for Vertex AI, ADK, and Genkit deployments.
-  Validates security (IAM, VPC-SC, encryption), monitoring, performance, compliance, and best practices.
-  Triggers: "validate deployment", "production readiness check", "security audit", "validate vertex ai"
+  Production readiness validator for Vertex AI Agent Engine deployments (ADK agents ONLY).
+  5-category validation: Security (IAM, VPC-SC, Model Armor), Monitoring (2025 dashboard, alerts, SLOs), Performance (auto-scaling, Code Execution TTL), Compliance (audit logs, data residency), Best Practices (Memory Bank, A2A protocol).
+  Generates weighted production readiness score (0-100%) with PASS/WARNING/FAIL status.
+  Triggers: "validate agent engine deployment", "production readiness", "security audit", "check compliance"
 allowed-tools: Read, Grep, Glob, Bash
-version: 1.0.0
+version: 1.0.1
 ---
 
 ## What This Skill Does
