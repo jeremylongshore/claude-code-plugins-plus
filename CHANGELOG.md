@@ -1,3 +1,243 @@
+## [1.3.1] - 2025-11-13
+
+### 🎉 Highlights
+
+**GOOGLE AI PLUGINS MAJOR UPDATE** - All 5 Google AI plugins completely rewritten with Agent Engine clarity, comprehensive Terraform modules, 2025 observability features, and production-ready documentation. 3,483 lines of new documentation added!
+
+### 🏆 Major Achievement
+
+**Agent Engine vs Cloud Run Clarity** - Eliminated all confusion about deployment targets across the Google AI plugin suite.
+
+### 🔧 Plugins Updated (5/5 Complete)
+
+#### 1. **jeremy-vertex-engine** (v1.0.0 → v1.0.1)
+- **Added**: 403 lines (+113% growth)
+- **New Sections**:
+  - Observability & Monitoring (174 lines) - 2025 Agent Engine dashboard, Cloud Trace, custom metrics
+  - Storage Integration (239 lines) - BigQuery connector, Cloud Storage, export patterns
+  - Prerequisites & Dependencies (144 lines) - Complete setup guide
+- **Features**: 15+ production code examples, 3 SQL analytics queries, 5 alert policy patterns
+
+#### 2. **jeremy-adk-orchestrator** (v1.0.0 → v1.0.1) - CRITICAL FIX
+- **Added**: 695 lines (README created from scratch - was completely missing!)
+- **New Content**:
+  - Complete A2A Protocol documentation (AgentCard discovery, task submission, status polling)
+  - Multi-agent orchestration patterns (supervisory architecture)
+  - Observability integration (Cloud Trace, Logging, custom metrics)
+  - BigQuery storage export for orchestration analytics
+- **Features**: 40+ production Python code examples
+
+#### 3. **jeremy-vertex-validator** (v1.0.0 → v1.0.1)
+- **Added**: 662 lines (+2006% growth from 33 lines)
+- **New Sections**:
+  - 5-category validation system (470 lines) - Security, Monitoring, Performance, Compliance, Best Practices
+  - Production readiness report format (120 lines) - Weighted scoring with example 87-line report
+  - Validation code examples (150+ lines) - Python validation functions
+- **Features**: Security checks (IAM, VPC-SC, Model Armor), weighted scoring (0-100%)
+
+#### 4. **jeremy-adk-terraform** (v1.0.0 → v1.0.1)
+- **Added**: 827 lines (was 35 lines with wrong content)
+- **Infrastructure Modules**:
+  - Core Agent Engine resource (65 lines HCL)
+  - IAM configuration with least privilege (40 lines)
+  - VPC Service Controls (25 lines)
+  - Observability infrastructure (155 lines) - Dashboards, alerts, 2025 features
+  - BigQuery analytics (105 lines) - Log sink, partitioned tables, sink IAM
+  - Cloud Storage artifacts (60 lines) - Lifecycle policies, versioning
+- **Features**: Complete terraform modules for Agent Engine deployment
+
+#### 5. **jeremy-vertex-terraform** (v1.0.0 → v1.0.1)
+- **Added**: 896 lines (was 35 lines with wrong content)
+- **Infrastructure Modules**:
+  - Gemini API endpoints (67 lines HCL)
+  - Vector Search infrastructure (95 lines) - ScaNN-based similarity search for RAG
+  - Custom model deployment (100 lines) - GPU serving endpoints
+  - Vertex AI Pipelines (80 lines) - Kubeflow integration
+  - Feature Store (50 lines) - ML feature management
+  - Batch prediction (40 lines) - Large-scale inference
+  - Monitoring dashboards (145 lines) - 4 widgets, 2 alert policies
+- **Features**: Model Garden, Gemini, Vector Search, Pipelines, Feature Store
+
+### 📊 Total Documentation Added
+
+- **3,483 lines** of production-grade documentation
+- **60+ working code examples** (Python, HCL, SQL, Bash)
+- **7 complete Terraform modules** for Agent Engine
+- **7 complete Terraform modules** for Vertex AI services
+- **3 BigQuery analytics queries** with partitioning
+- **10+ alert policy configurations**
+
+### 🎯 Key Improvements Across All Plugins
+
+✅ **Deployment Target Clarity**
+- Prominent 🎯 headers ("VERTEX AI AGENT ENGINE ONLY" vs "MODEL GARDEN & AI INFRASTRUCTURE")
+- Clear ✅ THIS PLUGIN IS FOR / ❌ THIS PLUGIN IS NOT FOR sections
+- Eliminated Cloud Run vs Agent Engine confusion
+
+✅ **Complete Prerequisites & Dependencies**
+- Google Cloud API enablement commands
+- Authentication setup (ADC and service accounts)
+- IAM permissions with specific role names
+- Python packages with minimum version requirements
+- gcloud CLI installation and verification
+- Terraform provider configuration
+
+✅ **2025 Observability Features** (NEW)
+- Agent Engine Observability Dashboard access
+- Cloud Trace integration with OpenTelemetry
+- Cloud Logging structured queries
+- Custom metrics and alerting policies
+- Token usage and cost tracking
+
+✅ **2025 Storage Integration** (NEW)
+- BigQuery connector for agent logs
+- Cloud Storage integration for artifacts
+- Data export patterns (real-time, daily, compliance)
+- Analytics SQL queries
+- Scheduled reports
+
+✅ **Skills Updated**
+- jeremy-adk-orchestrator/adk-deployment-specialist: v1.0.0 → v1.0.1 (A2A protocol focus)
+- jeremy-vertex-validator/validator-expert: v1.0.0 → v1.0.1 (2025 features)
+
+### 🔑 Critical Distinctions Documented
+
+**jeremy-adk-terraform vs jeremy-vertex-terraform:**
+
+| Plugin | Focus | Resources |
+|--------|-------|-----------|
+| **jeremy-adk-terraform** | ADK agents on Agent Engine | `google_vertex_ai_reasoning_engine` |
+| **jeremy-vertex-terraform** | Broader Vertex AI ML | Gemini endpoints, Vector Search, Pipelines |
+
+**Both plugins now have:**
+- Clear scope definitions
+- Non-overlapping use cases
+- Cross-references to each other
+- Complete Terraform examples
+
+### 📝 Supporting Documentation
+
+**New Release Notes**: `plugins/community/jeremy-firebase/000-usermanuals/010-plugin-updates-release-notes.md`
+- 30KB comprehensive release documentation
+- Breaking changes (none - documentation only)
+- Migration guide
+- Testing checklist
+- Communication plan
+- Success criteria
+
+### 🛠️ Dependencies Added/Updated
+
+**Python Packages:**
+```bash
+google-cloud-aiplatform[agent_engines]>=1.120.0
+google-adk>=1.15.1
+google-cloud-logging>=3.10.0
+google-cloud-monitoring>=2.21.0
+google-cloud-trace>=1.13.0
+a2a-sdk>=0.3.4
+google-cloud-security-center>=1.28.0 (validator)
+pylint>=3.0.0, flake8>=7.0.0, mypy>=1.8.0 (validator)
+```
+
+**Terraform Requirements:**
+```hcl
+terraform >= 1.5.0
+google provider >= 5.0
+google-beta provider >= 5.0
+```
+
+**Google Cloud APIs:**
+- aiplatform.googleapis.com
+- discoveryengine.googleapis.com
+- logging.googleapis.com
+- monitoring.googleapis.com
+- cloudtrace.googleapis.com
+- bigquery.googleapis.com
+- storage.googleapis.com
+
+### 🚀 Production Features
+
+**Agent Engine Terraform:**
+- Code Execution Sandbox (1-14 days TTL validation)
+- Memory Bank (retention policies, max memories)
+- VPC Service Controls perimeter
+- IAM least privilege
+- Auto-scaling configuration
+- Model Armor (prompt injection protection)
+- CMEK encryption
+
+**Vertex AI Terraform:**
+- Model Garden deployments (Gemini, PaLM, Claude, Llama)
+- Vector Search with ScaNN algorithm
+- Feature Store for ML features
+- Batch prediction jobs with GPUs
+- ML Pipelines with Kubeflow
+- Traffic splitting for blue/green deployments
+
+### 📈 Observability Features (2025)
+
+**Cloud Monitoring Dashboards:**
+- Request volume
+- Error rates
+- Latency distribution (p50, p90, p95, p99)
+- Token usage and cost estimation
+- Memory Bank cache hit rate
+- Code Execution Sandbox stats
+- Replica utilization
+
+**Alert Policies:**
+- High error rate (>5% for 5 minutes)
+- High latency (p95 > 10s)
+- Token budget exceeded
+- Memory Bank cache degradation
+- Code Execution timeout rate
+
+**BigQuery Analytics:**
+- Agent query volume and latency trends
+- Memory Bank cache performance
+- Token usage and cost analysis
+- Multi-agent workflow patterns
+- Component-level metrics (AGENT_QUERIES, MEMORY_BANK_OPERATIONS, CODE_EXECUTION_EVENTS)
+
+### 🎓 Use Cases Documented
+
+**Agent Engine:**
+- Pre-production validation
+- Post-deployment verification
+- Security audits
+- Multi-agent orchestration
+- A2A protocol communication
+
+**Vertex AI:**
+- Gemini API deployment
+- Vector search for RAG
+- Custom model serving
+- Batch predictions
+- Feature Store setup
+
+### 👥 Contributors
+
+Thanks to @jeremylongshore for the comprehensive Google AI plugin suite overhaul!
+
+### 📦 Installation
+
+```bash
+# All 5 plugins ready to use
+/plugin install jeremy-vertex-engine@claude-code-plugins-plus
+/plugin install jeremy-adk-orchestrator@claude-code-plugins-plus
+/plugin install jeremy-vertex-validator@claude-code-plugins-plus
+/plugin install jeremy-adk-terraform@claude-code-plugins-plus
+/plugin install jeremy-vertex-terraform@claude-code-plugins-plus
+```
+
+### 🔗 GitHub Commits
+
+- **237400f**: jeremy-vertex-engine, jeremy-adk-orchestrator, jeremy-vertex-validator + release notes
+- **528744a**: jeremy-adk-terraform
+- **1f76301**: jeremy-vertex-terraform
+
+---
+
 ## [1.3.0] - 2025-11-08
 
 ### 🎉 Highlights
