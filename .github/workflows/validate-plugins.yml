@@ -39,31 +39,25 @@ jobs:
       - name: Check plugin structure
         run: |
           echo "Checking plugin structure..."
-          for plugin in plugins/community/*/ plugins/examples/*/; do
-            if [ -d "$plugin" ]; then
-              echo "Validating $plugin"
+          # Find all plugin directories (any directory with .claude-plugin/plugin.json)
+          find plugins/ -name "plugin.json" -path "*/.claude-plugin/plugin.json" | while read plugin_json; do
+            plugin=$(dirname $(dirname "$plugin_json"))
+            echo "Validating $plugin"
 
-              # Check for required plugin.json
-              if [ ! -f "$plugin/.claude-plugin/plugin.json" ]; then
-                echo "Missing plugin.json in $plugin"
-                exit 1
-              fi
+            # Check for README
+            if [ ! -f "$plugin/README.md" ]; then
+              echo "Missing README.md in $plugin"
+              exit 1
+            fi
 
-              # Check for README
-              if [ ! -f "$plugin/README.md" ]; then
-                echo "Missing README.md in $plugin"
-                exit 1
-              fi
-
-              # Check scripts are executable
-              if [ -d "$plugin/scripts" ]; then
-                find "$plugin/scripts" -type f -name "*.sh" | while read script; do
-                  if [ ! -x "$script" ]; then
-                    echo "Script not executable: $script"
-                    exit 1
-                  fi
-                done
-              fi
+            # Check scripts are executable
+            if [ -d "$plugin/scripts" ]; then
+              find "$plugin/scripts" -type f -name "*.sh" | while read script; do
+                if [ ! -x "$script" ]; then
+                  echo "Script not executable: $script"
+                  exit 1
+                fi
+              done
             fi
           done
 
