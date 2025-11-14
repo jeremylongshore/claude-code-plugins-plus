@@ -24,8 +24,5 @@
     "package",
     "collection",
     "agent-skills"
-  ],
-  "commands": "./plugins/*/commands",
-  "agents": "./plugins/*/agents",
-  "hooks": "./plugins/*/hooks"
+  ]
 }
