@@ -1,3 +1,103 @@
+## [1.3.2] - 2025-11-15
+
+### 🔧 Maintenance Release
+
+**Focus:** Bug fixes, plugin completeness, and developer tooling improvements.
+
+### 🐛 Critical Fixes
+
+#### fullstack-starter-pack Plugin (CRITICAL)
+- **Fixed**: Plugin showed in `/plugin list` but had NO visible components
+- **Root Cause**: All 15 components nested in subdirectories (Claude Code doesn't search recursively)
+- **Solution**: Moved 9 commands + 6 agents to plugin root level
+- **Impact**: Plugin now fully functional with all components accessible
+- **User Report**: Claude Code v2.0.36 compatibility issue resolved
+
+#### LICENSE Coverage (120 plugins)
+- **Fixed**: 120 plugins missing LICENSE files (47% of total plugins)
+- **Template**: MIT License with 2025 copyright
+- **Coverage**: 100% achieved (253/253 plugins)
+- **Categories Affected**: api-development (30), crypto (25), ai-ml (23), database (19), devops (15), testing (8)
+
+#### Marketplace Website
+- **Fixed**: Skills count display (175 → 185)
+- **Updated**: Homepage announcement banner
+- **Updated**: Spotlight section messaging
+- **Deployed**: GitHub Pages with correct metrics
+
+#### Gemini Asset Generation
+- **Fixed**: Model identifier (`gemini-1.5-flash-002` → `gemini-1.5-flash`)
+- **Status**: Script ready for production use
+- **Database**: Asset tracking in `backups/asset_generation.db`
+
+### 📦 New Developer Package
+
+#### claude-plugin-validator (v1.0.0)
+Comprehensive quality checker for Claude Code plugins.
+
+**Features:**
+- Validates required files (README.md, LICENSE, plugin.json)
+- Checks 2025 schema compliance (allowed-tools, version)
+- Security scans (hardcoded secrets, dangerous commands)
+- Script permission validation (chmod +x)
+- Detailed fix instructions (WHY + HOW + EXAMPLE)
+- Auto-fix mode for common issues
+- Scans all installed plugins (--installed)
+- Grading system (A-F scores)
+
+**Usage:**
+```bash
+npx claude-plugin-validator ./my-plugin
+npx claude-plugin-validator --installed
+npx claude-plugin-validator --fix
+```
+
+**Location:** `packages/plugin-validator/`
+
+### 📊 Plugin Metrics
+
+**Completeness:**
+- Total Plugins: 253
+- Agent Skills: 185 (100% 2025 schema)
+- README Coverage: 253/253 (100%)
+- LICENSE Coverage: 253/253 (100%) ← **FIXED**
+- plugin.json Coverage: 253/253 (100%)
+
+### 🔗 Files Changed
+
+**Version Updates:**
+- `VERSION` → 1.3.2
+- `package.json` → 1.3.2
+- `marketplace.extended.json` → 1.3.2
+
+**Bug Fixes:**
+- `plugins/packages/fullstack-starter-pack/` - Restructured
+- `plugins/*/LICENSE` - 120 files added
+- `marketplace/src/pages/index.astro` - Skills count corrected
+- `scripts/generate-missing-assets.py` - Model name fixed
+
+**New Package:**
+- `packages/plugin-validator/` - Complete validator package
+
+### 💡 For Plugin Developers
+
+**Validate Before Publishing:**
+```bash
+npx claude-plugin-validator ./your-plugin
+```
+
+**Check Installed Plugins:**
+```bash
+npx claude-plugin-validator --installed
+```
+
+**Auto-Fix Common Issues:**
+```bash
+npx claude-plugin-validator --fix
+```
+
+---
+
 ## [1.3.1] - 2025-11-15
 
 ### 🎉 Highlights
