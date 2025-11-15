@@ -10,14 +10,9 @@
     "version": "1.3.1",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "stats": {
-      "totalPlugins": 243,
-      "skillsEnabled": 175,
-      "lastUpdated": "2025-11-09"
-    },
-    "totalPlugins": 252,
-    "skillsEnabled": 184,
-    "lastUpdated": "2025-12-09"
+    "totalPlugins": 253,
+    "skillsEnabled": 185,
+    "lastUpdated": "2025-11-15"
   },
   "plugins": [
     {
