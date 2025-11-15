@@ -19,6 +19,7 @@ import re
 import json
 import sqlite3
 import argparse
+import time
 from pathlib import Path
 from datetime import datetime
 from typing import List, Dict, Tuple
@@ -34,8 +35,9 @@ except ImportError:
 # Configuration
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "diagnostic-pro-start-up")
 REGION = "us-central1"
-MODEL_NAME = "gemini-2.0-flash-exp"
+MODEL_NAME = "gemini-1.5-flash-002"  # Use stable model instead of experimental
 DB_PATH = "backups/asset_generation.db"
+RATE_LIMIT_DELAY = 2  # Delay between API calls in seconds
 
 # Initialize Vertex AI
 vertexai.init(project=PROJECT_ID, location=REGION)
@@ -152,24 +154,46 @@ class AssetGenerator:
             # Generic template
             prompt = self.build_generic_prompt(filename, description, context)
 
-        try:
-            generation_config = GenerationConfig(
-                temperature=0.7,
-                top_p=0.95,
-                top_k=40,
-                max_output_tokens=8192
-            )
+        # Retry logic with exponential backoff
+        max_retries = 3
+        for attempt in range(max_retries):
+            try:
+                generation_config = GenerationConfig(
+                    temperature=0.7,
+                    top_p=0.95,
+                    top_k=40,
+                    max_output_tokens=8192
+                )
 
-            response = model.generate_content(
-                prompt,
-                generation_config=generation_config
-            )
+                response = model.generate_content(
+                    prompt,
+                    generation_config=generation_config
+                )
 
-            return response.text.strip()
+                # Add delay after successful generation to avoid rate limits
+                time.sleep(RATE_LIMIT_DELAY)
 
-        except Exception as e:
-            print(f"  ❌ Gemini generation failed: {e}")
-            return None
+                return response.text.strip()
+
+            except Exception as e:
+                error_str = str(e)
+
+                # Check if it's a rate limit error
+                if "429" in error_str or "Quota exceeded" in error_str:
+                    if attempt < max_retries - 1:
+                        # Exponential backoff: 5s, 15s, 45s
+                        wait_time = 5 * (3 ** attempt)
+                        print(f"    ⏳ Rate limited, waiting {wait_time}s before retry {attempt + 2}/{max_retries}")
+                        time.sleep(wait_time)
+                        continue
+                    else:
+                        print(f"  ❌ Rate limit exceeded after {max_retries} retries")
+                        return None
+                else:
+                    print(f"  ❌ Gemini generation failed: {e}")
+                    return None
+
+        return None
 
     def build_json_prompt(self, filename: str, description: str, context: Dict) -> str:
         return f"""Generate a JSON file for a Claude Code plugin asset.
