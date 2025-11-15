@@ -1,0 +1,116 @@
+# Configuration template for the Test Orchestrator plugin
+
+# Global settings for the test orchestration process
+global:
+  # Maximum number of parallel test executions
+  max_parallel_tests: 4  # Default: 4. Adjust based on available resources.
+
+  # Default timeout for individual test execution (in seconds)
+  default_test_timeout: 300 # Default: 300 seconds (5 minutes).  Use 0 for no timeout.
+
+  # Number of retry attempts for failed tests
+  retry_attempts: 2  # Default: 2. Set to 0 to disable retries.
+
+  # Base directory for test execution (relative to the repository root)
+  test_base_dir: "test" # Default: "test".  Change if your tests are in a different directory.
+
+  # Environment variables to apply to all test executions
+  environment:
+    # Example: API_KEY: "YOUR_API_KEY"
+    # REPLACE_ME : YOUR_VALUE_HERE
+
+# Definition of test suites and their dependencies
+test_suites:
+  # Example test suite definition
+  integration_tests:
+    # Description of the test suite
+    description: "Integration tests for the core application functionality"
+
+    # Test files to include in this suite (glob patterns)
+    include:
+      - "test/integration/**/*.test.js"
+      - "test/integration/**/*_spec.js"
+
+    # Test files to exclude from this suite (glob patterns)
+    exclude:
+      - "test/integration/deprecated/*.test.js" # Example: Exclude deprecated tests
+
+    # Dependencies: List of other test suites that must complete successfully before this one runs.
+    dependencies:
+      - unit_tests
+      # Example: - security_tests
+
+    # Environment variables specific to this test suite (overrides global environment)
+    environment:
+      # Example: DATABASE_URL: "YOUR_INTEGRATION_DATABASE_URL"
+      # REPLACE_ME : YOUR_VALUE_HERE
+
+  unit_tests:
+    description: "Unit tests for individual modules"
+    include:
+      - "test/unit/**/*.test.js"
+      - "test/unit/**/*_spec.js"
+    exclude: []
+    dependencies: []
+    environment: {}
+
+  # Add more test suites as needed
+  # Example:
+  # security_tests:
+  #   description: "Security vulnerability tests"
+  #   include:
+  #     - "test/security/**/*.test.js"
+  #   exclude: []
+  #   dependencies:
+  #     - integration_tests
+  #   environment:
+  #     SECURE_API_KEY: "YOUR_SECURE_API_KEY"
+
+# Smart test selection configuration (optional)
+smart_selection:
+  # Enable or disable smart test selection
+  enabled: false # Default: false. Set to true to enable.
+
+  # Git branch to compare against for changed files (e.g., "main", "develop")
+  base_branch: "main" # Default: "main".  The branch to compare against for changes.
+
+  # Regular expressions to identify source code files.
+  source_code_patterns:
+    - "src/**/*.js"
+    - "lib/**/*.py"
+    # Add more file patterns as needed
+
+  # Mapping of source code files to associated test files.
+  # Each key is a glob pattern matching source code files.
+  # Each value is a list of glob patterns matching associated test files.
+  source_to_test_mapping:
+    "src/auth/*.js":
+      - "test/unit/auth/*.test.js"
+      - "test/integration/auth/*.test.js"
+    # Add more mappings as needed
+
+# Reporting configuration
+reporting:
+  # Type of report to generate (e.g., "junit", "html")
+  report_type: "junit" # Default: "junit".  Available options depend on the reporting plugins.
+
+  # Output file for the test report
+  report_output_file: "test-results.xml" # Default: "test-results.xml".
+
+  # Additional reporting options (plugin-specific)
+  options:
+    # Example: include_console_output: true
+    # REPLACE_ME : YOUR_VALUE_HERE
+
+# CI/CD integration configuration (optional)
+ci_cd:
+  # Enable or disable CI/CD integration
+  enabled: false # Default: false. Set to true to enable.
+
+  # Type of CI/CD system (e.g., "github_actions", "gitlab_ci")
+  system_type: "github_actions" # Default: "github_actions".
+
+  # Additional CI/CD options (system-specific)
+  options:
+    # Example: upload_results_to_s3: true
+    # REPLACE_ME : YOUR_VALUE_HERE

@@ -1,0 +1,24 @@
+# Example CSV data for clustering algorithm testing.
+#
+# This file demonstrates the expected format for input data to the clustering algorithms.
+# Each row represents a data point, and each column represents a feature.
+#
+# Replace the placeholder data below with your own dataset.
+# You can add or remove columns as needed, but ensure the column headers are descriptive.
+#
+# Note: The first row MUST be the header row containing column names.
+#
+# Example usage:
+# 1. Save this file as 'example_data.csv' or a similar descriptive name.
+# 2. Run the clustering algorithm using the command: /run-clustering
+#    (The plugin will prompt you for the data file name if it isn't the default).
+
+feature_1,feature_2,feature_3
+1.0,2.0,3.0
+4.0,5.0,6.0
+7.0,8.0,9.0
+10.0,11.0,12.0
+13.0,14.0,15.0
+# Add more data points here...
+# Example: 16.0,17.0,18.0
+# Example: 19.0,20.0,21.0

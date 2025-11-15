@@ -1,0 +1,63 @@
+# API Key Example
+
+This document provides an example of a well-formatted API key and explains its structure.  Use this as a guideline for generating and managing your API keys.
+
+## API Key Format
+
+API keys should adhere to the following format for security and ease of use:
+
+```
+[PREFIX]-[RANDOM_STRING]-[CHECKSUM]
+```
+
+*   **PREFIX:** A short, descriptive identifier for your application or service.  This helps to quickly identify the source of the API key.  (e.g., `MYAPP`, `PAYMENTGW`, `DATAAPI`)
+*   **RANDOM_STRING:** A long, cryptographically secure random string. This is the main part of the API key and should be difficult to guess.  Use at least 32 characters.
+*   **CHECKSUM:** A simple checksum calculated from the prefix and random string. This allows you to quickly verify the integrity of the key.  A common checksum is the first 4 characters of the SHA-256 hash of the concatenated PREFIX and RANDOM_STRING.
+
+## Example API Key
+
+Here's an example of a properly formatted API key:
+
+```
+MYAPP-a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6-cdef
+```
+
+In this example:
+
+*   **PREFIX:** `MYAPP`
+*   **RANDOM_STRING:** `a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6`
+*   **CHECKSUM:** `cdef` (Hypothetical checksum - replace with your actual calculated checksum)
+
+## Generating API Keys
+
+You can generate API keys programmatically using a secure random number generator.  Here's a conceptual example (language-specific implementations will vary):
+
+1.  **Generate a random string:** Use a cryptographically secure random number generator to create a long, random string (at least 32 characters).
+2.  **Create a prefix:** Choose a short, descriptive prefix for your application.
+3.  **Calculate the checksum:** Calculate the checksum by hashing the concatenated prefix and random string (e.g., using SHA-256) and taking the first few characters.
+4.  **Concatenate the parts:** Combine the prefix, random string, and checksum using the specified format.
+
+## Important Considerations
+
+*   **Security:** Treat API keys as secrets.  Do not expose them in client-side code, version control systems, or public logs.
+*   **Storage:** Store API keys securely using encryption or a secure key management system.
+*   **Rotation:** Regularly rotate API keys to minimize the impact of potential compromises.
+*   **Permissions:** Associate API keys with specific permissions and roles to control access to resources.
+*   **Rate Limiting:** Implement rate limiting to prevent abuse and protect your API.
+
+## Customization
+
+*   **Prefix:**  Choose a prefix that accurately reflects your application or service.  Consider using a consistent naming convention for your prefixes.
+*   **Random String Length:** Increase the length of the random string to improve security.  A length of 64 characters is recommended.
+*   **Checksum Algorithm:**  Use a more robust checksum algorithm, such as SHA-256, for increased security.  Consider using a longer checksum for added protection.
+*   **Encoding:**  Consider encoding the API key (e.g., Base64) to avoid issues with special characters.
+
+## Your API Key
+
+Replace the placeholder with your generated API key:
+
+```
+YOUR_PREFIX-YOUR_RANDOM_STRING-YOUR_CHECKSUM
+```
+
+**Remember to store this API key securely!**

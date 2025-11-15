@@ -1,0 +1,90 @@
+# plugin_selection_rules.yaml
+# Configuration file for PI Pathfinder plugin selection logic.
+
+# Global settings for plugin selection behavior.
+global:
+  # Default preference for prioritizing plugins: "speed", "accuracy", "cost"
+  default_priority: "accuracy"
+  # Maximum number of plugins to consider for a given task.
+  max_plugins_considered: 10
+  # Minimum relevance score for a plugin to be considered. (0.0 - 1.0)
+  minimum_relevance_score: 0.2
+  # Enable/Disable verbose logging for debugging.
+  verbose_logging: false
+
+# Rules for selecting plugins based on keywords and task descriptions.
+keyword_rules:
+  # Define keywords and their associated plugin preferences.
+  # The higher the weight, the more preferred the plugin is for that keyword.
+  - keywords: ["image", "generate", "picture", "visual"]
+    plugin_preferences:
+      "DALL-E": 0.9  # Example: Prefer DALL-E for image generation
+      "Stable Diffusion": 0.8
+      "REPLACE_ME_IMAGE_PLUGIN": 0.5
+  - keywords: ["translate", "language", "multilingual"]
+    plugin_preferences:
+      "Google Translate": 0.95
+      "DeepL Translator": 0.9
+      "REPLACE_ME_TRANSLATION_PLUGIN": 0.6
+  - keywords: ["code", "programming", "algorithm", "debug"]
+    plugin_preferences:
+      "Code Interpreter": 0.9
+      "GitHub Copilot": 0.85
+      "REPLACE_ME_CODE_PLUGIN": 0.7
+  - keywords: ["data analysis", "statistics", "spreadsheet"]
+    plugin_preferences:
+      "Wolfram Alpha": 0.9
+      "Excel Online": 0.8
+      "REPLACE_ME_DATA_PLUGIN": 0.6
+
+# Rules for selecting plugins based on their stated capabilities.
+capability_rules:
+  # Define capability patterns and their associated plugin preferences.
+  # These rules are based on the plugin's description and advertised skills.
+  - capability_pattern: "Generates realistic images from text prompts."
+    plugin_preferences:
+      "DALL-E": 1.0
+      "Stable Diffusion": 0.9
+  - capability_pattern: "Translates text between multiple languages."
+    plugin_preferences:
+      "Google Translate": 1.0
+      "DeepL Translator": 0.95
+  - capability_pattern: "Executes code and analyzes data."
+    plugin_preferences:
+      "Code Interpreter": 1.0
+      "Wolfram Alpha": 0.8
+
+# Rules for handling user preferences.
+user_preferences:
+  # Default user preferences (can be overridden by user-specific settings).
+  defaults:
+    priority: "accuracy"  # Default priority: "speed", "accuracy", "cost"
+    preferred_plugins: [] # List of plugins the user prefers (e.g., ["DALL-E", "Google Translate"])
+    excluded_plugins: []  # List of plugins the user wants to avoid (e.g., ["Expensive Plugin"])
+
+  # Example: User-specific preferences (loaded from a user profile, for example).
+  user_id_123:
+    priority: "speed"
+    preferred_plugins: ["Google Translate"]
+    excluded_plugins: ["REPLACE_ME_EXPENSIVE_PLUGIN"]
+
+# Fallback plugin to use if no other plugin matches the criteria.
+fallback_plugin: "Web Search"
+
+# Advanced configuration (for expert users only).
+advanced:
+  # Weighting factors for combining different rule types.
+  keyword_weight: 0.6
+  capability_weight: 0.4
+  user_preference_weight: 0.2
+
+  # Threshold for considering a plugin "suitable" after applying all rules.
+  suitability_threshold: 0.7
+
+  # Plugin specific configurations (example).
+  plugin_configurations:
+    "DALL-E":
+      api_key: "REPLACE_ME_DALL_E_API_KEY"
+      image_size: "1024x1024"
+    "Google Translate":
+      target_language: "en" # Default target language

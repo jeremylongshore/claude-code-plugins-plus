@@ -1,0 +1,56 @@
+version: "3.9"
+
+services:
+  # Message Queue Service (e.g., RabbitMQ)
+  message_queue:
+    image: rabbitmq:3.9-management-alpine # Or choose your preferred message queue and version
+    container_name: rabbitmq_server
+    ports:
+      - "5672:5672"   # AMQP protocol port
+      - "15672:15672"  # Management UI port (optional)
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest" # REPLACE_ME: Change default user in production
+      RABBITMQ_DEFAULT_PASS: "guest" # REPLACE_ME: Change default password in production
+      RABBITMQ_DEFAULT_VHOST: "/"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persist data across restarts (optional)
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Optional: Event Streaming Platform (e.g., Kafka) - uncomment to include
+  # event_streaming:
+  #   image: confluentinc/cp-kafka:latest
+  #   container_name: kafka_server
+  #   ports:
+  #     - "9092:9092"
+  #   environment:
+  #     KAFKA_BROKER_ID: 1
+  #     KAFKA_LISTENERS: PLAINTEXT://:9092
+  #     KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092  # REPLACE_ME: Adjust for your environment
+  #     KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+  #   depends_on:
+  #     - zookeeper
+  #   healthcheck:
+  #     test: ["CMD", "kafka-topics", "--list", "--zookeeper", "zookeeper:2181"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
+  # Optional: Zookeeper (required for Kafka) - uncomment to include if using Kafka
+  # zookeeper:
+  #   image: confluentinc/cp-zookeeper:latest
+  #   container_name: zookeeper_server
+  #   ports:
+  #     - "2181:2181"
+  #   environment:
+  #     ZOOKEEPER_CLIENT_PORT: 2181
+  #     ZOOKEEPER_TICK_TIME: 2000
+
+# Define persistent volumes
+volumes:
+  rabbitmq_data: # Named volume for RabbitMQ data persistence
+  # kafka_data:   # Uncomment if using Kafka
+  # zookeeper_data: # Uncomment if using Zookeeper

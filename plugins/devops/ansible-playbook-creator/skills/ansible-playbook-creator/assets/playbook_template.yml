@@ -1,0 +1,75 @@
+---
+# Ansible Playbook Template
+# This template provides a starting point for creating Ansible playbooks.
+# It includes common sections and best practice configurations.
+
+- name: "REPLACE_ME - Playbook Description"
+  hosts: all  # Target hosts or groups (e.g., webservers, dbservers)
+  become: true  # Enable privilege escalation (sudo)
+  become_user: root # Specify the user to become (optional, defaults to root)
+  gather_facts: true  # Gather facts about the target hosts
+
+  # Define variables that can be used throughout the playbook
+  vars:
+    # Example variables
+    app_name: "YOUR_APP_NAME"
+    app_version: "1.0.0"
+    install_dir: "/opt/{{ app_name }}"
+    # Add more variables as needed
+
+  # Pre-tasks: Tasks that run before any roles are applied
+  pre_tasks:
+    - name: "Update apt cache (Debian/Ubuntu)"
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian"
+
+    - name: "Update yum cache (RedHat/CentOS)"
+      yum:
+        update_cache: yes
+      when: ansible_os_family == "RedHat"
+
+  # Roles: Group of tasks to perform a specific function
+  roles:
+    - role: common  # Example role for common configurations
+      # vars:  # Role-specific variables (optional)
+      #   some_var: "YOUR_VALUE_HERE"
+
+    # Add more roles as needed (e.g., webserver, database)
+    # - role: webserver
+
+  # Tasks: Individual steps to be executed
+  tasks:
+    - name: "Create installation directory"
+      file:
+        path: "{{ install_dir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: "Copy application files"
+      copy:
+        src: "files/{{ app_name }}"  # Path to application files on the control node
+        dest: "{{ install_dir }}"
+        owner: root
+        group: root
+        mode: "0644"
+
+    # Add more tasks as needed
+
+  # Post-tasks: Tasks that run after all roles and tasks have been applied
+  post_tasks:
+    - name: "Restart application service"
+      service:
+        name: "{{ app_name }}"
+        state: restarted
+      ignore_errors: true # Allows the playbook to continue even if the service restart fails
+
+  # Handlers: Tasks that are triggered by other tasks
+  handlers:
+    - name: "Restart web server"
+      service:
+        name: apache2
+        state: restarted
+      listen: "Restart web server"  # Triggered by tasks that notify "Restart web server"

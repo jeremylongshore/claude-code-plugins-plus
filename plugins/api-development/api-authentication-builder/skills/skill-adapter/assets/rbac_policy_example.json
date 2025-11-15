@@ -1,0 +1,102 @@
+{
+  "_comment": "Example RBAC policy definition for the API Authentication Builder plugin.",
+  "policy_name": "example_api_policy",
+  "description": "An example policy that grants specific roles access to certain API resources.",
+  "roles": [
+    {
+      "role_name": "administrator",
+      "description": "Grants full access to all API resources.",
+      "permissions": [
+        {
+          "resource": "*",
+          "actions": ["*"]
+        }
+      ]
+    },
+    {
+      "role_name": "content_editor",
+      "description": "Allows creating, reading, updating, and deleting content.",
+      "permissions": [
+        {
+          "resource": "/articles",
+          "actions": ["create", "read", "update", "delete"]
+        },
+        {
+          "resource": "/images",
+          "actions": ["create", "read", "update", "delete"]
+        }
+      ]
+    },
+    {
+      "role_name": "viewer",
+      "description": "Read-only access to specific resources.",
+      "permissions": [
+        {
+          "resource": "/articles",
+          "actions": ["read"]
+        },
+        {
+          "resource": "/reports",
+          "actions": ["read"]
+        }
+      ]
+    },
+    {
+      "role_name": "api_client",
+      "description": "Limited access for external API clients.",
+      "permissions": [
+        {
+          "resource": "/data",
+          "actions": ["read"]
+        },
+        {
+          "resource": "/status",
+          "actions": ["read"]
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "admin",
+      "roles": ["administrator"]
+    },
+    {
+      "username": "editor1",
+      "roles": ["content_editor"]
+    },
+    {
+      "username": "viewer1",
+      "roles": ["viewer"]
+    },
+     {
+      "username": "api_client_1",
+      "roles": ["api_client"]
+    }
+  ],
+  "groups": [
+    {
+      "group_name": "editors",
+      "description": "Group for content editors.",
+      "roles": ["content_editor"]
+    },
+    {
+      "group_name": "viewers",
+      "description": "Group for viewers.",
+      "roles": ["viewer"]
+    }
+  ],
+  "attributes": {
+    "_comment": "Example attribute-based access control (ABAC) rules.  These are not strictly RBAC, but included for completeness",
+    "resource_owner": {
+      "resource": "/articles/{article_id}",
+      "condition": "user.id == resource.owner_id",
+      "actions": ["read", "update", "delete"]
+    },
+    "user_location": {
+      "resource": "*",
+      "condition": "user.location == 'US'",
+      "actions": ["read"]
+    }
+  }
+}

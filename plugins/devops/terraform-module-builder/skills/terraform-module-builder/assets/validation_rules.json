@@ -1,0 +1,83 @@
+{
+  "_comment": "Validation rules for Terraform modules.  Each rule is a key, and the value is an object containing the regex, severity, and description.",
+  "naming_convention_variables": {
+    "regex": "^[a-z][a-z0-9_]*$",
+    "severity": "error",
+    "description": "Variable names should be lowercase, start with a letter, and contain only letters, numbers, and underscores."
+  },
+  "naming_convention_outputs": {
+    "regex": "^[a-z][a-z0-9_]*$",
+    "severity": "error",
+    "description": "Output names should be lowercase, start with a letter, and contain only letters, numbers, and underscores."
+  },
+  "naming_convention_resources": {
+    "regex": "^[a-z][a-z0-9_]*$",
+    "severity": "warning",
+    "description": "Resource names should be lowercase, start with a letter, and contain only letters, numbers, and underscores."
+  },
+  "variable_description_required": {
+    "regex": "(description\\s*=\\s*\"[^\"]+\")",
+    "severity": "error",
+    "description": "All variables must have a description."
+  },
+  "output_description_required": {
+    "regex": "(description\\s*=\\s*\"[^\"]+\")",
+    "severity": "error",
+    "description": "All outputs must have a description."
+  },
+  "variable_type_required": {
+    "regex": "(type\\s*=\\s*(string|number|bool|list|map|object|set)\\(.*\\))",
+    "severity": "error",
+    "description": "All variables must have a type defined."
+  },
+  "no_sensitive_data_in_defaults": {
+    "regex": "default\\s*=\\s*(\"[A-Za-z0-9+/=]{20,}\"|\\d{16})",
+    "severity": "warning",
+    "description": "Avoid storing sensitive data like passwords or API keys in variable defaults. Consider using input variables or secrets management instead."
+  },
+  "consistent_resource_naming": {
+    "regex": "resource\\s+\"[a-zA-Z]+\"\\s+\"([a-z0-9_]+)\"\\s+\"([a-z0-9_]+)\"",
+    "severity": "info",
+    "description": "Ensure resource names are consistently named within the module (e.g., using a prefix)."
+  },
+  "provider_version_pinning": {
+    "regex": "required_providers\\s*=\\s*\\{\\s*[a-z]+\\s*=\\s*\\{\\s*source\\s*=\\s*\"[a-z0-9/]+\"\\s*version\\s*=\\s*\"~>\\s*\\d+\\.\\d+\"",
+    "severity": "warning",
+    "description": "Pin provider versions to avoid unexpected changes. Use the '~>' operator for minor version updates."
+  },
+  "no_http_data_sources": {
+    "regex": "(data\\s*\"http\")",
+    "severity": "warning",
+    "description": "Avoid using http data sources directly; they are less secure and harder to manage.  Consider alternatives."
+  },
+  "no_local_exec": {
+    "regex": "(provisioner\\s*\"local-exec\")",
+    "severity": "warning",
+    "description": "Avoid using the local-exec provisioner; it makes modules less portable and harder to debug. Consider alternatives."
+  },
+  "required_files_present": {
+    "files": ["variables.tf", "outputs.tf", "main.tf", "README.md"],
+    "severity": "error",
+    "description": "Ensure the module contains the required files: variables.tf, outputs.tf, main.tf, and README.md."
+  },
+  "readme_contains_example": {
+    "regex": "(## Example)",
+    "severity": "warning",
+    "description": "README.md should contain an Example section."
+  },
+  "readme_contains_inputs": {
+    "regex": "(## Inputs)",
+    "severity": "warning",
+    "description": "README.md should contain an Inputs section."
+  },
+  "readme_contains_outputs": {
+    "regex": "(## Outputs)",
+    "severity": "warning",
+    "description": "README.md should contain an Outputs section."
+  },
+  "naming_convention_modules": {
+    "regex": "^[a-z][a-z0-9_]*$",
+    "severity": "warning",
+    "description": "Module names should be lowercase, start with a letter, and contain only letters, numbers, and underscores."
+  }
+}

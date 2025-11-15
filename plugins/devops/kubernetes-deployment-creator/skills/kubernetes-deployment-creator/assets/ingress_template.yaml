@@ -1,0 +1,46 @@
+# ingress_template.yaml
+# This file defines a basic Ingress resource for Kubernetes.
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: REPLACE_ME-ingress # Replace with your ingress name
+  namespace: REPLACE_ME-namespace # Replace with your namespace
+  annotations:
+    # Use cert-manager to automatically provision TLS certificates
+    cert-manager.io/cluster-issuer: letsencrypt-prod # Replace with your cert-manager issuer
+
+    # Optional: Configure rate limiting using ingress-nginx (replace with your desired limits)
+    # nginx.ingress.kubernetes.io/limit-rps: "10"
+    # nginx.ingress.kubernetes.io/limit-burst: "20"
+
+    # Optional: Configure rewrite target if needed
+    # nginx.ingress.kubernetes.io/rewrite-target: /$1
+
+    # Optional: Enable sticky sessions based on cookie
+    # nginx.ingress.kubernetes.io/affinity: "cookie"
+    # nginx.ingress.kubernetes.io/session-cookie-name: "ROUTEID"
+    # nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+
+spec:
+  # Define ingressClassName if using a specific ingress controller (e.g., nginx)
+  ingressClassName: nginx # Replace with your ingress class name if needed
+
+  tls:
+    # Configure TLS for secure communication
+    - hosts:
+        - REPLACE_ME.YOUR_DOMAIN_HERE # Replace with your domain name
+      secretName: REPLACE_ME-tls # Replace with the name of your TLS secret
+
+  rules:
+    # Define routing rules for incoming traffic
+    - host: REPLACE_ME.YOUR_DOMAIN_HERE # Replace with your domain name
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: REPLACE_ME-service # Replace with your service name
+                port:
+                  number: 80 # Replace with your service port

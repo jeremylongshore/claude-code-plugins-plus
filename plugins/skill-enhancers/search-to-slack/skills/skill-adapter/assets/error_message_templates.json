@@ -1,0 +1,43 @@
+{
+  "_comment": "Templates for error messages to provide informative feedback to the user.",
+  "slack_connection_error": {
+    "title": "Slack Connection Error",
+    "message": "Failed to connect to Slack. Please ensure your Slack API token is valid and properly configured. Check the plugin's settings for configuration instructions.\n\nDetails: {error_details}"
+  },
+  "channel_not_found": {
+    "title": "Channel Not Found",
+    "message": "The specified Slack channel '{channel_name}' was not found. Please verify the channel name and ensure the Slack app has access to it.\n\nDetails: {error_details}"
+  },
+  "message_posting_error": {
+    "title": "Message Posting Error",
+    "message": "Failed to post the message to Slack. Please check the Slack API token permissions and ensure the message content is valid.\n\nDetails: {error_details}"
+  },
+  "invalid_channel_format": {
+    "_comment": "Error when the user specifies a channel incorrectly, e.g., without a #",
+    "title": "Invalid Channel Format",
+    "message": "The Slack channel name '{channel_name}' is not in the correct format. Please ensure it starts with a '#', e.g., '#general' or '#engineering'."
+  },
+  "web_search_failed": {
+    "_comment": "Error to indicate that the underlying web search failed",
+    "title": "Web Search Failed",
+    "message": "The web search failed to retrieve information. Please check your query and try again.\n\nDetails: {error_details}"
+  },
+  "formatting_error": {
+    "_comment": "Error during message formatting",
+    "title": "Formatting Error",
+    "message": "An error occurred while formatting the search results for Slack. Please report this issue to the plugin developer. \n\nDetails: {error_details}"
+  },
+  "unknown_error": {
+    "_comment": "Generic error message for unexpected failures",
+    "title": "Unknown Error",
+    "message": "An unexpected error occurred. Please try again later. If the problem persists, contact support with the following details: \n\n{error_details}"
+  },
+  "rate_limit_exceeded": {
+    "title": "Slack Rate Limit Exceeded",
+    "message": "The Slack API rate limit has been exceeded. Please wait a few minutes and try again. Consider optimizing your usage to avoid frequent rate limiting.\n\nDetails: {error_details}"
+  },
+  "no_search_results": {
+    "title": "No Search Results",
+    "message": "No relevant search results were found for your query. Please try refining your search terms."
+  }
+}

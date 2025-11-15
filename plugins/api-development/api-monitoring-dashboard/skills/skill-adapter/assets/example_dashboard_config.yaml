@@ -1,0 +1,113 @@
+# Configuration file for API Monitoring Dashboard Plugin
+
+# API Endpoints to Monitor
+api_endpoints:
+  # Each entry defines an API endpoint to be monitored.
+  - name: "User Service API" # Descriptive name for the API
+    url: "https://api.example.com/users" # The actual API endpoint URL
+    method: "GET" # HTTP method (GET, POST, PUT, DELETE, etc.)
+    expected_status_code: 200 # Expected HTTP status code for a successful response
+    timeout: 5 # Timeout in seconds for the API request
+    headers: # Optional headers to include in the API request
+      Content-Type: "application/json"
+      Authorization: "Bearer REPLACE_ME"
+  - name: "Product Service API"
+    url: "https://api.example.com/products"
+    method: "GET"
+    expected_status_code: 200
+    timeout: 5
+  - name: "Order Service API (POST)"
+    url: "https://api.example.com/orders"
+    method: "POST"
+    expected_status_code: 201
+    timeout: 10
+    data: # Example data for POST requests (can be a placeholder)
+      item_id: 123
+      quantity: 2
+  - name: "Authentication API"
+    url: "https://auth.example.com/login"
+    method: "POST"
+    expected_status_code: 200
+    timeout: 5
+    data:
+      username: "YOUR_USERNAME"
+      password: "YOUR_PASSWORD"
+
+# Metrics to Collect and Display
+metrics:
+  # Each entry defines a metric to be collected from the API response.
+  - name: "Response Time (ms)" # Descriptive name for the metric
+    endpoint: "User Service API" # The API endpoint to collect the metric from (must match an entry in api_endpoints)
+    json_path: "response_time" # JSON path to extract the metric value from the response (if applicable)
+    unit: "ms" # Unit of measurement for the metric
+    type: "number" # Data type of the metric (number, string, boolean)
+  - name: "Data Size (KB)"
+    endpoint: "Product Service API"
+    json_path: "data_size"
+    unit: "KB"
+    type: "number"
+  - name: "Error Count"
+    endpoint: "Order Service API (POST)"
+    json_path: "error_count"
+    unit: "count"
+    type: "number"
+  - name: "Login Success Rate"
+    endpoint: "Authentication API"
+    json_path: "success_rate"
+    unit: "%"
+    type: "number"
+
+# Alerting Rules
+alerts:
+  # Each entry defines an alerting rule.
+  - name: "High Response Time" # Descriptive name for the alert
+    metric: "Response Time (ms)" # The metric to monitor (must match an entry in metrics)
+    threshold: 200 # Threshold value for the alert
+    operator: ">" # Operator to compare the metric value with the threshold (>, <, >=, <=, ==, !=)
+    severity: "critical" # Severity of the alert (critical, warning, info)
+    notification_channels: # List of notification channels to send the alert to
+      - "email"
+      - "slack"
+  - name: "Low Data Size"
+    metric: "Data Size (KB)"
+    threshold: 10
+    operator: "<"
+    severity: "warning"
+    notification_channels:
+      - "email"
+  - name: "High Error Count"
+    metric: "Error Count"
+    threshold: 5
+    operator: ">="
+    severity: "critical"
+    notification_channels:
+      - "slack"
+  - name: "Low Login Success Rate"
+    metric: "Login Success Rate"
+    threshold: 90
+    operator: "<"
+    severity: "warning"
+    notification_channels:
+      - "email"
+
+# Notification Channel Configurations (REPLACE_ME)
+notification_channels_config:
+  email:
+    smtp_server: "smtp.example.com"
+    smtp_port: 587
+    sender_email: "monitoring@example.com"
+    recipient_email: "alerts@example.com"
+    smtp_username: "YOUR_SMTP_USERNAME"
+    smtp_password: "YOUR_SMTP_PASSWORD"
+  slack:
+    slack_webhook_url: "YOUR_SLACK_WEBHOOK_URL"
+
+# Dashboard Configuration
+dashboard:
+  title: "API Monitoring Dashboard"
+  refresh_interval: 60 # Refresh interval in seconds
+  layout: # Define the layout of the dashboard (example only)
+    - "User Service API": ["Response Time (ms)"]
+    - "Product Service API": ["Data Size (KB)"]
+    - "Order Service API (POST)": ["Error Count"]
+    - "Authentication API": ["Login Success Rate"]

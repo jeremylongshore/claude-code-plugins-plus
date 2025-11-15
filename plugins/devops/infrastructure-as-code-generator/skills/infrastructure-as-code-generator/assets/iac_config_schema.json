@@ -1,0 +1,201 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Infrastructure as Code Configuration",
+  "description": "Configuration schema for generating Infrastructure as Code.",
+  "type": "object",
+  "properties": {
+    "provider": {
+      "type": "string",
+      "enum": ["aws", "azure", "gcp", "kubernetes", "terraform", "cloudformation", "pulumi"],
+      "description": "Cloud provider or IaC tool to use.",
+      "_comment": "Supported providers include AWS, Azure, GCP, Kubernetes, Terraform, CloudFormation, and Pulumi."
+    },
+    "region": {
+      "type": "string",
+      "description": "Cloud region to deploy resources to.",
+      "default": "us-east-1",
+      "_comment": "Defaults to us-east-1 if not specified. Required for cloud providers."
+    },
+    "name": {
+      "type": "string",
+      "description": "Name of the infrastructure stack.",
+      "default": "my-infrastructure",
+      "_comment": "Used for naming resources and deployments."
+    },
+    "resource_group": {
+      "type": "string",
+      "description": "Resource group or project name.",
+      "_comment": "Relevant for Azure and GCP.  Will be used to create the resource group if it doesn't exist (where possible)."
+    },
+    "resources": {
+      "type": "array",
+      "description": "List of resources to create.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["ec2", "s3", "rds", "vpc", "subnet", "lambda", "container", "load_balancer", "firewall", "storage_account", "virtual_machine", "database", "service_account"],
+            "description": "Type of resource to create.",
+            "_comment": "Supported resource types vary depending on the provider."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the resource."
+          },
+          "properties": {
+            "type": "object",
+            "description": "Resource-specific properties.",
+            "_comment": "These properties depend on the resource type and provider."
+          },
+          "dependencies": {
+            "type": "array",
+            "description": "List of resources this resource depends on.",
+            "items": {
+              "type": "string",
+              "description": "Name of a dependency."
+            },
+            "_comment": "Used to define resource creation order."
+          }
+        },
+        "required": ["type", "name"]
+      }
+    },
+    "outputs": {
+      "type": "array",
+      "description": "List of outputs to define.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of the output."
+          },
+          "value": {
+            "type": "string",
+            "description": "Expression for the output value (e.g., ARN of a resource)."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the output."
+          }
+        },
+        "required": ["name", "value", "description"]
+      }
+    },
+    "variables": {
+      "type": "object",
+      "description": "Variables to use in the IaC.",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": ["string", "number", "bool", "list", "map"],
+            "description": "Type of the variable."
+          },
+          "default": {
+            "type": ["string", "number", "boolean", "array", "object"],
+            "description": "Default value of the variable."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the variable."
+          }
+        },
+        "required": ["type", "description"]
+      }
+    },
+    "tags": {
+      "type": "object",
+      "description": "Tags to apply to resources.",
+      "additionalProperties": {
+        "type": "string",
+        "description": "Tag value."
+      }
+    }
+  },
+  "required": ["provider", "resources"],
+  "example": {
+    "_comment": "Example AWS configuration for a simple EC2 instance.",
+    "provider": "aws",
+    "region": "us-west-2",
+    "name": "my-ec2-instance",
+    "tags": {
+      "Environment": "Production",
+      "Project": "WebApp"
+    },
+    "resources": [
+      {
+        "type": "vpc",
+        "name": "main_vpc",
+        "properties": {
+          "cidr_block": "10.0.0.0/16",
+          "enable_dns_hostnames": true,
+          "enable_dns_support": true
+        }
+      },
+      {
+        "type": "subnet",
+        "name": "public_subnet",
+        "properties": {
+          "vpc_id": "${main_vpc.id}",
+          "cidr_block": "10.0.1.0/24",
+          "availability_zone": "us-west-2a",
+          "map_public_ip_on_launch": true
+        },
+        "dependencies": ["main_vpc"]
+      },
+      {
+        "type": "ec2",
+        "name": "web_server",
+        "properties": {
+          "ami": "ami-0c55b33c5d5a45fb9",
+          "instance_type": "t2.micro",
+          "subnet_id": "${public_subnet.id}",
+          "key_name": "my-key",
+          "security_groups": ["${web_sg.id}"]
+        },
+        "dependencies": ["public_subnet", "web_sg"]
+      },
+      {
+        "type": "firewall",
+        "name": "web_sg",
+        "properties": {
+          "description": "Allow web traffic",
+          "ingress": [
+            {
+              "from_port": 80,
+              "to_port": 80,
+              "protocol": "tcp",
+              "cidr_blocks": ["0.0.0.0/0"]
+            },
+            {
+              "from_port": 443,
+              "to_port": 443,
+              "protocol": "tcp",
+              "cidr_blocks": ["0.0.0.0/0"]
+            }
+          ],
+          "egress": [
+            {
+              "from_port": 0,
+              "to_port": 0,
+              "protocol": "-1",
+              "cidr_blocks": ["0.0.0.0/0"]
+            }
+          ],
+          "vpc_id": "${main_vpc.id}"
+        },
+        "dependencies": ["main_vpc"]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "public_ip",
+        "value": "${web_server.public_ip}",
+        "description": "Public IP address of the web server."
+      }
+    ]
+  }
+}

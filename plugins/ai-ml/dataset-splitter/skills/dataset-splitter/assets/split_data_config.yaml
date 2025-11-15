@@ -1,0 +1,42 @@
+# Configuration file for dataset splitting
+
+# Input dataset parameters
+input_dataset:
+  path: "REPLACE_ME/path/to/your/dataset.csv"  # Path to the input dataset file
+  format: "csv"  # Dataset format (e.g., csv, parquet, json)
+  header: True   # Whether the dataset has a header row (True/False)
+  separator: ","  # Separator used in the dataset (e.g., comma, tab, semicolon)
+
+# Splitting ratios for training, validation, and testing sets
+split_ratios:
+  train: 0.7   # Percentage of data for training (0.0 - 1.0)
+  validation: 0.15  # Percentage of data for validation (0.0 - 1.0)
+  test: 0.15  # Percentage of data for testing (0.0 - 1.0)
+
+# Random seed for reproducibility
+random_seed: 42  # Integer value for the random seed
+
+# Output directory for split datasets
+output_directory: "REPLACE_ME/path/to/output/directory"  # Directory where the split datasets will be saved
+
+# Naming convention for output files
+output_names:
+  train: "train.csv"   # Name of the training dataset file
+  validation: "validation.csv" # Name of the validation dataset file
+  test: "test.csv"  # Name of the test dataset file
+
+# Optional features (e.g., stratification)
+features:
+  stratify: False  # Whether to stratify the split based on a specific column (True/False)
+  stratify_column: "YOUR_VALUE_HERE" # Name of the column to use for stratification (if stratify is True)
+  shuffle: True   # Whether to shuffle the data before splitting (True/False)
+
+# Error handling configuration
+error_handling:
+  on_error: "warn"  # Action to take on error ("warn", "ignore", "raise") - default is warn
+  log_errors: True # Whether to log error messages to a file
+
+# Logging configuration
+logging:
+  level: "INFO"  # Logging level (e.g., DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  file: "split_data.log" # Log file path

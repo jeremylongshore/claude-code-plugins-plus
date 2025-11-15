@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Load Balancer Test Report</title>
+    <style>
+        /* Basic CSS Reset */
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #007bff; /* Primary color */
+        }
+
+        h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+
+        h3 {
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        li {
+            margin-bottom: 5px;
+        }
+
+        .status-good {
+            color: green;
+        }
+
+        .status-bad {
+            color: red;
+        }
+
+        .status-warning {
+            color: orange;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .section:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .table th, .table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .table th {
+            background-color: #f2f2f2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            h2 {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Load Balancer Test Report</h1>
+
+        <div class="section">
+            <h2>Test Summary</h2>
+            <p><strong>Test ID:</strong> {{test_id}}</p>
+            <p><strong>Date:</strong> {{test_date}}</p>
+            <p><strong>Load Balancer URL:</strong> {{load_balancer_url}}</p>
+            <p><strong>Overall Status:</strong> <span class="{{overall_status_class}}">{{overall_status}}</span></p>
+        </div>
+
+        <div class="section">
+            <h2>Traffic Distribution Validation</h2>
+            <h3>Expected Distribution:</h3>
+            <p>{{expected_distribution}}</p>
+            <h3>Actual Distribution:</h3>
+            <p>{{actual_distribution}}</p>
+            <h3>Distribution Status: <span class="{{distribution_status_class}}">{{distribution_status}}</span></h3>
+            <p>{{distribution_details}}</p>
+        </div>
+
+        <div class="section">
+            <h2>Failover Testing</h2>
+            <h3>Failover Status: <span class="{{failover_status_class}}">{{failover_status}}</span></h3>
+            <p>{{failover_details}}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Instance</th>
+                        <th>Status Before Failover</th>
+                        <th>Status After Failover</th>
+                        <th>Response Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{failover_table_rows}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Sticky Session Verification</h2>
+            <h3>Sticky Session Status: <span class="{{sticky_session_status_class}}">{{sticky_session_status}}</span></h3>
+            <p>{{sticky_session_details}}</p>
+        </div>
+
+        <div class="section">
+            <h2>Health Check Testing</h2>
+            <h3>Health Check Status: <span class="{{health_check_status_class}}">{{health_check_status}}</span></h3>
+            <p>{{health_check_details}}</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Instance</th>
+                        <th>Health Check Endpoint</th>
+                        <th>Status Code</th>
+                        <th>Response Time (ms)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{health_check_table_rows}}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2>Detailed Logs</h2>
+            <p>{{detailed_logs}}</p>
+        </div>
+
+        <div class="section">
+            <h2>Recommendations</h2>
+            <p>{{recommendations}}</p>
+        </div>
+
+        <footer>
+            <p style="text-align: center; font-size: 0.8em; color: #777;">Report generated by Load Balancer Tester</p>
+        </footer>
+    </div>
+</body>
+</html>

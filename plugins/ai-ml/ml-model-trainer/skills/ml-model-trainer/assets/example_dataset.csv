@@ -1,0 +1,39 @@
+# Sample dataset for training a machine learning model.
+# This dataset contains features and a target variable for demonstration purposes.
+# You can replace this with your own dataset.
+
+# Feature 1: Numerical feature representing age (e.g., of a customer).
+# Feature 2: Categorical feature representing location (e.g., city).
+# Feature 3: Binary feature representing whether a customer subscribed (1) or not (0).
+# Target Variable: Represents the outcome we want to predict (e.g., customer churn).
+
+age,location,subscribed,target
+25,New York,1,0
+30,Los Angeles,0,1
+40,Chicago,1,0
+22,Houston,0,0
+35,New York,1,1
+28,Los Angeles,0,0
+45,Chicago,1,1
+31,Houston,0,0
+27,New York,1,0
+33,Los Angeles,0,1
+42,Chicago,1,1
+24,Houston,0,0
+37,New York,1,0
+29,Los Angeles,0,0
+47,Chicago,1,1
+32,Houston,0,1
+26,New York,1,0
+34,Los Angeles,0,1
+41,Chicago,1,0
+23,Houston,0,0
+# Add more rows to create a robust dataset for training.
+# Consider increasing the number of rows and the diversity of data for better model performance.
+# Remember to clean and preprocess your data before training.
+# [ADD_MORE_DATA_HERE]
+# Example:
+# 50,San Francisco,1,1
+# 60,Seattle,0,0
+# 70,Boston,1,1
+# 80,Miami,0,0

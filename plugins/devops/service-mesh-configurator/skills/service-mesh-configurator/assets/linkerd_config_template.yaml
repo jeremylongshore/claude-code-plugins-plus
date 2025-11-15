@@ -1,0 +1,113 @@
+# Linkerd Configuration Template
+
+# This template provides a starting point for configuring Linkerd service mesh.
+# Replace placeholders (REPLACE_ME, YOUR_VALUE_HERE) with your actual values.
+
+# ---
+# Global Configuration
+# ---
+global:
+  # Namespace for Linkerd control plane components.  Consider a dedicated namespace.
+  namespace: linkerd
+
+  # Cluster domain.  Used for service discovery.
+  clusterDomain: cluster.local
+
+  # Enable tracing.  Requires a tracing backend like Jaeger or Zipkin.
+  tracing:
+    enabled: false
+    # Endpoint for the tracing collector (e.g., Jaeger).  Uncomment and configure if enabled.
+    # collectorEndpoint: http://jaeger.linkerd.svc.cluster.local:14268/api/traces
+
+  # Control plane version.  Should match the Linkerd version.
+  controlPlaneVersion: REPLACE_ME # Example: stable-2.14.3
+
+# ---
+# Namespace-Specific Configuration
+# ---
+namespaces:
+  - name: YOUR_NAMESPACE_HERE # The namespace where your microservices are deployed.
+    # Automatically inject Linkerd proxies into pods in this namespace.
+    autoInject: true
+
+    # Resources to be injected into the namespace.  Optional.
+    resources:
+      # Limit ranges for resource consumption.
+      limitRanges:
+        - name: default-limits
+          spec:
+            limits:
+              - default:
+                  cpu: "500m" # 0.5 CPU core
+                  memory: "512Mi"
+                defaultRequest:
+                  cpu: "100m" # 0.1 CPU core
+                  memory: "128Mi"
+                type: Container
+
+      # Resource quotas for the namespace.
+      resourceQuotas:
+        - name: default-quota
+          spec:
+            hard:
+              pods: "10" # Maximum number of pods in the namespace
+              cpu: "5" # 5 CPU cores
+              memory: "5Gi"
+
+# ---
+# Workload-Specific Configuration (Example: Deployment)
+# ---
+workloads:
+  - kind: Deployment
+    name: YOUR_DEPLOYMENT_NAME_HERE # Name of your deployment
+    namespace: YOUR_NAMESPACE_HERE
+    spec:
+      # Configure proxy settings for the workload.
+      proxy:
+        # CPU and memory requests/limits for the proxy container.  Adjust based on workload needs.
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "200m"
+            memory: "128Mi"
+
+        # Configure the proxy's outbound concurrency.  Helps prevent overwhelming downstream services.
+        # outboundConcurrency: 100 # Example value
+
+        # Enable traffic shifting.  Requires a traffic split resource.
+        trafficSplit:
+          enabled: false
+
+        # Set log level for the proxy.  Useful for debugging.
+        logLevel: info # Options: debug, info, warn, error
+
+        # Enable Prometheus metrics scraping for this workload.
+        metrics:
+          enabled: true
+
+        # Enable retries for failed requests.  Configure retry policies carefully.
+        retry:
+          enabled: false
+          # retryPolicy:
+          #   numRetries: 3
+          #   perTryTimeout: 1s
+
+# ---
+# Service-Specific Configuration (Example: Service)
+# ---
+services:
+  - name: YOUR_SERVICE_NAME_HERE # Name of your service
+    namespace: YOUR_NAMESPACE_HERE
+    spec:
+      # Configure service profile for the service.
+      serviceProfile:
+        enabled: true # Enables Linkerd to collect metrics and provide routing information
+        # Add routes for different endpoints. Example:
+        # routes:
+        #   - name: /api/v1/users
+        #     condition:
+        #       method: GET
+        #       pathRegex: /api/v1/users
+        #     isRetryable: true

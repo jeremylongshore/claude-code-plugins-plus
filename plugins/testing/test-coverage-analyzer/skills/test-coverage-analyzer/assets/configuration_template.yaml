@@ -1,0 +1,91 @@
+# Configuration for the Test Coverage Analyzer Plugin
+
+# General settings for the analysis
+general:
+  # Project name (used in reports)
+  project_name: "REPLACE_ME - Project Name"
+
+  # Root directory of the project (where the source code resides)
+  project_root: "/path/to/your/project/root" # REPLACE_ME
+
+  # Output directory for generated reports
+  report_output_dir: "coverage_reports"
+
+  # Enable/disable verbose logging
+  verbose: false
+
+# Coverage data settings
+coverage_data:
+  # Type of coverage data format. Supported values: lcov, cobertura, gcov
+  format: "lcov"
+
+  # Path to the coverage data file (e.g., lcov.info, coverage.xml, *.gcov)
+  # Can be a single file or a glob pattern.
+  data_file: "coverage.info" # REPLACE_ME
+
+  # Exclude files or directories from coverage analysis (glob patterns)
+  exclude:
+    - "**/test/**"
+    - "**/vendor/**"
+    - "**/node_modules/**"
+    - "**/migrations/**"
+
+# Threshold settings for enforcing minimum coverage
+thresholds:
+  # Enable or disable threshold checks
+  enabled: true
+
+  # Minimum overall coverage percentage required for the project to pass
+  overall: 80
+
+  # Minimum coverage percentage required for each file
+  file: 70
+
+  # Minimum coverage percentage required for each function
+  function: 60
+
+  # Allow thresholds to be bypassed on specific files or paths
+  exemptions:
+    # - path: "path/to/file.py"
+    #   overall: 70 # Reduced overall threshold for this specific file
+    #   file: 60    # Reduced file threshold for this specific file
+    #   function: 50 # Reduced function threshold for this specific file
+
+# Report generation settings
+report:
+  # Type of report to generate. Supported values: html, json, console
+  type: "html"
+
+  # Include uncovered code snippets in the report (can make reports larger)
+  include_uncovered_code: true
+
+  # Custom CSS file to apply to the HTML report (optional)
+  custom_css: "" # "path/to/custom.css"
+
+# Advanced settings (for specific coverage tools)
+advanced:
+  # GCOV specific settings
+  gcov:
+    # Path to the gcov executable
+    executable: "gcov" # /usr/bin/gcov
+
+  # Cobertura specific settings
+  cobertura:
+    # Path to the source root (if not correctly specified in the cobertura report)
+    source_root: "" # REPLACE_ME
+
+# Integration with CI/CD systems (optional)
+ci:
+  # Fail the build if coverage thresholds are not met
+  fail_on_threshold: true
+
+  # Output format for CI integration (e.g., junit)
+  output_format: "" # junit
+
+# Example configuration for a specific language (Python)
+python:
+  # Path to the python executable
+  executable: "python3" # REPLACE_ME
+
+  # Additional arguments to pass to the python executable
+  arguments: [] # ["-m", "pytest"]

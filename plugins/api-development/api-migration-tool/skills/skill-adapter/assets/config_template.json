@@ -1,0 +1,113 @@
+{
+  "_comment": "API Migration Configuration Template",
+  "source_api": {
+    "_comment": "Details of the API you are migrating *from*",
+    "version": "v1",
+    "base_url": "https://api.example.com/v1",
+    "authentication": {
+      "type": "apiKey",
+      "_comment": "Supported types: apiKey, oauth2, none",
+      "apiKey": {
+        "name": "X-API-Key",
+        "in": "header"
+      }
+    },
+    "endpoints": [
+      {
+        "path": "/users/{user_id}",
+        "method": "GET",
+        "description": "Retrieve user details by ID",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "integer",
+            "required": true
+          }
+        ]
+      },
+      {
+        "path": "/products",
+        "method": "GET",
+        "description": "Retrieve a list of products",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "description": "Maximum number of products to return",
+            "default": 10
+          }
+        ]
+      }
+    ]
+  },
+  "target_api": {
+    "_comment": "Details of the API you are migrating *to*",
+    "version": "v2",
+    "base_url": "https://api.example.com/v2",
+    "authentication": {
+      "type": "oauth2",
+      "flow": "authorizationCode",
+      "authorizationUrl": "https://example.com/oauth/authorize",
+      "tokenUrl": "https://example.com/oauth/token",
+      "scopes": ["read", "write"]
+    },
+    "endpoints": [
+      {
+        "path": "/users/{userId}",
+        "method": "GET",
+        "description": "Retrieve user details by ID",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ]
+      },
+      {
+        "path": "/products",
+        "method": "GET",
+        "description": "Retrieve a list of products",
+        "parameters": [
+          {
+            "name": "maxResults",
+            "in": "query",
+            "type": "integer",
+            "description": "Maximum number of products to return",
+            "default": 10
+          }
+        ]
+      }
+    ]
+  },
+  "migration_strategy": {
+    "_comment": "Configuration for how to handle breaking changes",
+    "parameter_mapping": [
+      {
+        "source_parameter": "user_id",
+        "target_parameter": "userId",
+        "transformation": "toString"
+      },
+      {
+        "source_parameter": "limit",
+        "target_parameter": "maxResults"
+      }
+    ],
+    "data_mapping": {
+      "_comment": "Example of how to map data fields (if needed).  Leave empty if not required.",
+      "user_name": "full_name"
+    },
+    "error_handling": {
+      "_comment": "How to handle errors during migration",
+      "strategy": "fallback",
+      "_comment": "Options: fallback, retry, abort",
+      "fallback_response": {
+        "status_code": 500,
+        "message": "Error during migration"
+      }
+    }
+  }
+}

@@ -1,0 +1,55 @@
+# API Gateway Configuration Template
+
+# Gateway Metadata
+name: my-api-gateway  # Name of the API gateway
+description: Production-ready API gateway configuration. # Description of the gateway
+
+# Global Configuration
+global:
+  # Default rate limit for all routes (requests per minute)
+  default_rate_limit: 60 # Requests per minute
+  # Enable/Disable global CORS settings.  Set to 'true' or 'false'.
+  enable_cors: true
+  # Allowed origins for CORS (e.g., ['https://example.com', 'https://another.com', '*'])
+  cors_allowed_origins: ['*'] # REPLACE_ME: List of allowed origins
+  # Allowed methods for CORS (e.g., ['GET', 'POST', 'PUT', 'DELETE'])
+  cors_allowed_methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  # Allowed headers for CORS (e.g., ['Content-Type', 'Authorization'])
+  cors_allowed_headers: ['Content-Type', 'Authorization', 'YOUR_HEADER_HERE']
+  # Expose headers for CORS (e.g., ['Content-Type', 'Authorization'])
+  cors_exposed_headers: ['Content-Type', 'Authorization']
+
+# Authentication Configuration
+authentication:
+  # Authentication type: 'jwt' or 'none'
+  type: jwt
+  jwt:
+    # JWT secret key (used for verifying signatures)
+    secret: REPLACE_ME # JWT Secret Key
+    # Audience (optional)
+    audience: YOUR_VALUE_HERE # JWT Audience
+    # Issuer (optional)
+    issuer: YOUR_VALUE_HERE # JWT Issuer
+
+# Routes Configuration
+routes:
+  - path: /users  # Path for the route
+    method: GET # HTTP method (GET, POST, PUT, DELETE, etc.)
+    upstream_url: http://users-service:8080 # URL of the upstream service
+    rate_limit: 120  # Route-specific rate limit (overrides global default)
+    authentication_required: true # Requires authentication for this route
+    # Optional plugins to apply to this route
+    plugins:
+      - name: circuit-breaker
+        config:
+          failure_threshold: 5
+          recovery_timeout: 30
+  - path: /products
+    method: POST
+    upstream_url: http://products-service:8080
+    rate_limit: 60
+    authentication_required: true
+  - path: /public
+    method: GET
+    upstream_url: http://public-service:8080
+    authentication_required: false  # Public route, no authentication required

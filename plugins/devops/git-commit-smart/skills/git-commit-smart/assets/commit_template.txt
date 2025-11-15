@@ -1,0 +1,114 @@
+# Commit Message Template
+
+This template is designed to help you create a well-structured and informative commit message following the Conventional Commits standard. Please fill in the placeholders below with relevant information about your changes.
+
+## Commit Type
+
+Choose one of the following commit types that best describes the nature of your changes:
+
+*   **feat**: A new feature
+*   **fix**: A bug fix
+*   **docs**: Documentation only changes
+*   **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
+*   **refactor**: A code change that neither adds a feature nor fixes a bug
+*   **perf**: A code change that improves performance
+*   **test**: Adding missing tests or correcting existing tests
+*   **build**: Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+*   **ci**: Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+*   **chore**: Other changes that don't modify src or test files
+*   **revert**: Reverts a previous commit
+
+**Placeholder:** `type(scope): description`
+
+**Example:** `feat(auth): Implement user authentication`
+
+## Scope (Optional)
+
+The scope could be anything specifying the place of the commit change. For example `auth`, `user`, `profile`, etc.
+
+*   If the change affects more than one scope, you can omit the scope entirely.
+*   If the change is a global change, you can use `*` as the scope.
+
+**Placeholder:** `(scope)`
+
+**Example:** `(api)`
+
+## Description
+
+Write a concise and clear description of the changes made. Use the imperative, present tense: "change" not "changed" nor "changes".
+
+**Placeholder:** `description`
+
+**Example:** `Add support for JWT authentication`
+
+## Body (Optional)
+
+Provide a more detailed explanation of the changes made. This section is optional but highly recommended for complex changes. Use the imperative, present tense: "change" not "changed" nor "changes".
+
+*   Explain the motivation for the change.
+*   Describe the approach taken.
+*   Include any relevant context or background information.
+
+**Placeholder:**
+
+```
+Longer explanation of the commit, if necessary.
+
+- Explain the problem and why this commit solves it.
+- Provide context about the changes.
+- Add any relevant details.
+```
+
+**Example:**
+
+```
+This commit introduces JWT authentication to improve the security of the API.
+
+The previous authentication mechanism was based on simple API keys, which were vulnerable to brute-force attacks. JWTs provide a more secure and scalable solution.
+
+The following steps were taken:
+
+- Added the `jsonwebtoken` library as a dependency.
+- Implemented a new `authenticate` middleware function.
+- Updated the API endpoints to use the new middleware.
+```
+
+## Footer(s) (Optional)
+
+Footers can be used to add metadata to the commit message, such as:
+
+*   **BREAKING CHANGE**: If the commit introduces a breaking change, add a `BREAKING CHANGE:` footer with a description of the change.
+*   **Closes**:  Referencing issue tracker ids.
+
+**Placeholder:**
+
+```
+BREAKING CHANGE: Description of the breaking change.
+
+Closes #123
+Refs #456
+```
+
+**Example:**
+
+```
+BREAKING CHANGE: The API endpoint `/users` has been renamed to `/profiles`.
+
+Closes #123
+```
+
+## Complete Example
+
+```
+feat(auth): Implement user authentication
+
+This commit introduces JWT authentication to improve the security of the API.
+
+The previous authentication mechanism was based on simple API keys, which were vulnerable to brute-force attacks. JWTs provide a more secure and scalable solution.
+
+The following steps were taken:
+
+- Added the `jsonwebtoken` library as a dependency.
+- Implemented a new `authenticate` middleware function.
+- Updated the API endpoints to use the new middleware.
+```

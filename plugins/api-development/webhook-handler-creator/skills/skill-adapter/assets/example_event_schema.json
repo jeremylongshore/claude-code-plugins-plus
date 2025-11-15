@@ -1,0 +1,125 @@
+{
+  "_comment": "Example JSON schema for a webhook event related to order processing.",
+  "type": "object",
+  "properties": {
+    "event_type": {
+      "type": "string",
+      "description": "Type of event. e.g., order.created, order.updated, order.cancelled",
+      "example": "order.created"
+    },
+    "event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the event.",
+      "example": "a1b2c3d4-e5f6-7890-1234-567890abcdef"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of when the event occurred (ISO 8601 format).",
+      "example": "2024-01-27T12:00:00Z"
+    },
+    "data": {
+      "type": "object",
+      "description": "The actual data associated with the event.",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Unique identifier for the order.",
+          "example": "ORD-2024-001"
+        },
+        "customer_id": {
+          "type": "string",
+          "description": "Unique identifier for the customer.",
+          "example": "CUST-001"
+        },
+        "amount": {
+          "type": "number",
+          "format": "float",
+          "description": "Total order amount.",
+          "example": 99.99
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (ISO 4217).",
+          "example": "USD"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the order.",
+          "example": "pending",
+          "enum": ["pending", "processing", "shipped", "delivered", "cancelled"]
+        },
+        "shipping_address": {
+          "type": "object",
+          "description": "Shipping address details.",
+          "properties": {
+            "street": {
+              "type": "string",
+              "example": "123 Main St"
+            },
+            "city": {
+              "type": "string",
+              "example": "Anytown"
+            },
+            "state": {
+              "type": "string",
+              "example": "CA"
+            },
+            "zip": {
+              "type": "string",
+              "example": "91234"
+            },
+            "country": {
+              "type": "string",
+              "example": "USA"
+            }
+          },
+          "required": ["street", "city", "state", "zip", "country"]
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the order.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "string",
+                "example": "PROD-001"
+              },
+              "quantity": {
+                "type": "integer",
+                "example": 2
+              },
+              "price": {
+                "type": "number",
+                "format": "float",
+                "example": 49.99
+              }
+            },
+            "required": ["product_id", "quantity", "price"]
+          }
+        }
+      },
+      "required": ["order_id", "customer_id", "amount", "currency", "status", "shipping_address", "items"]
+    },
+     "metadata": {
+        "type": "object",
+        "description": "Additional metadata about the event.",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Source of the event (e.g., 'payment_gateway', 'crm').",
+            "example": "payment_gateway"
+          },
+          "version": {
+            "type": "string",
+            "description": "Version of the event schema.",
+            "example": "1.0"
+          }
+        },
+        "required": ["source", "version"]
+      }
+  },
+  "required": ["event_type", "event_id", "timestamp", "data", "metadata"]
+}

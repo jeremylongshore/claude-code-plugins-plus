@@ -1,0 +1,36 @@
+{
+  "_comment": "Example web search results for 'AI news this week'. This is the expected format of the 'results' array returned by the web_search tool.",
+  "results": [
+    {
+      "title": "Google I/O 2024: AI takes center stage",
+      "url": "https://blog.google/technology/ai/google-io-2024-ai-announcements/",
+      "snippet": "Google's annual developer conference showcased the latest advancements in AI, including Gemini 1.5 Pro, Imagen 3, and Project Astra. Key announcements focused on improving AI's reasoning, multimodal capabilities, and real-time interaction.",
+      "_comment": "A typical news article result"
+    },
+    {
+      "title": "OpenAI unveils new GPT-4o model",
+      "url": "https://openai.com/blog/new-model-gpt-4o",
+      "snippet": "OpenAI released GPT-4o, a new flagship model that enhances multimodal capabilities, including processing text, audio, and vision inputs in real-time. The model is significantly faster and cheaper than GPT-4.",
+      "_comment": "Another news article"
+    },
+    {
+      "title": "AI ethics concerns grow as models become more powerful",
+      "url": "https://www.nytimes.com/2024/05/16/technology/ai-ethics-concerns.html",
+      "snippet": "Experts warn about the potential risks of increasingly powerful AI models, including bias, misinformation, and job displacement. Discussions around AI regulation and ethical guidelines are intensifying.",
+      "_comment": "An article discussing ethical implications"
+    },
+    {
+      "title": "Microsoft Build 2024: AI-powered developer tools",
+      "url": "https://news.microsoft.com/build-2024/",
+      "snippet": "Microsoft highlighted new AI-powered developer tools at its annual Build conference, including enhanced Copilot features, AI-assisted coding, and cloud services optimized for AI workloads. They focused on empowering developers with AI.",
+      "_comment": "Another news article from a major tech company"
+    },
+    {
+      "title": "AI investment surges to record levels in Q2 2024",
+      "url": "https://www.cbinsights.com/research/report/ai-investment-trends/",
+      "snippet": "Venture capital investment in AI startups reached a new high in the second quarter of 2024, driven by advancements in generative AI and machine learning. The report analyzes the latest funding trends and deals in the AI space.",
+      "_comment": "A report indicating investment trends"
+    }
+  ],
+  "_comment": "The 'results' array contains a list of search result objects. Each object has a 'title', 'url', and 'snippet'."
+}

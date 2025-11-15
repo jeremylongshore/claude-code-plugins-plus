@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Validation Report</title>
+  <style>
+    /* Inline CSS for styling */
+    body {
+      font-family: sans-serif;
+      line-height: 1.6;
+      margin: 20px;
+      background-color: #f8f9fa; /* Light gray background */
+      color: #343a40; /* Dark gray text */
+    }
+
+    h1 {
+      color: #007bff; /* Primary color for headings */
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #28a745; /* Success color for subheadings */
+      margin-top: 20px;
+    }
+
+    h3 {
+      color: #dc3545; /* Danger color for sub-subheadings */
+      margin-top: 15px;
+    }
+
+    .report-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ced4da; /* Light gray border */
+      border-radius: 5px;
+      background-color: #fff; /* White background */
+    }
+
+    .validation-summary {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ced4da; /* Light gray border */
+      border-radius: 5px;
+      background-color: #fff; /* White background */
+    }
+
+    .validation-summary p {
+      margin-bottom: 5px;
+    }
+
+    .success {
+      color: #28a745; /* Success color */
+    }
+
+    .failure {
+      color: #dc3545; /* Danger color */
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid #dee2e6; /* Lighter gray border for table cells */
+      padding: 8px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #e9ecef; /* Light gray background for table headers */
+    }
+
+    pre {
+      background-color: #f0f0f0; /* Light gray background for code blocks */
+      padding: 10px;
+      overflow-x: auto;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      body {
+        margin: 10px;
+      }
+      table {
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>API Validation Report</h1>
+
+  <div class="validation-summary">
+    <p><strong>Total Requests:</strong> {{total_requests}}</p>
+    <p class="success"><strong>Successful Validations:</strong> {{successful_validations}}</p>
+    <p class="failure"><strong>Failed Validations:</strong> {{failed_validations}}</p>
+  </div>
+
+  <div class="report-section">
+    <h2>Validation Results</h2>
+    {{validation_results}}
+  </div>
+
+  <div class="report-section">
+    <h2>Detailed Errors</h2>
+    {{detailed_errors}}
+  </div>
+
+  <div class="report-section">
+    <h2>Summary</h2>
+      <p>This report summarizes the API validation results. Please review the details for any failed validations.</p>
+      <p>Report generated at: {{report_generation_time}}</p>
+  </div>
+
+</body>
+</html>

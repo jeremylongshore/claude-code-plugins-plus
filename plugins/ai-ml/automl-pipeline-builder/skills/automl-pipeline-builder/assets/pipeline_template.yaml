@@ -1,0 +1,69 @@
+# pipeline_template.yaml
+
+# --- General Pipeline Configuration ---
+pipeline_name: "AutoML Pipeline - REPLACE_ME" # Name of the pipeline (e.g., Customer Churn Prediction)
+description: "Automated Machine Learning pipeline for REPLACE_ME." # Short description of the pipeline's purpose
+version: "1.0.0" # Pipeline version
+
+# --- Data Source Configuration ---
+data_source:
+  type: "csv" # Type of data source (e.g., csv, database, api)
+  location: "data/YOUR_DATASET.csv" # Path to the data file or connection string
+  target_column: "target" # Name of the target variable column
+  index_column: null # Name of the index column (optional)
+  delimiter: "," # Delimiter for CSV files (e.g., ",", ";", "\t")
+  quotechar: '"' # Quote character for CSV files
+  encoding: "utf-8" # Encoding of the data file
+
+# --- Feature Engineering Configuration ---
+feature_engineering:
+  enabled: true # Enable or disable feature engineering
+  numeric_imputation: "mean" # Strategy for handling missing numerical values (e.g., mean, median, most_frequent, constant)
+  categorical_encoding: "onehot" # Method for encoding categorical features (e.g., onehot, ordinal, target)
+  feature_scaling: "standard" # Scaling method for numeric features (e.g., standard, minmax, robust)
+  feature_selection:
+    enabled: false # Enable or disable feature selection
+    method: "variance_threshold" # Feature selection method (e.g., variance_threshold, selectkbest)
+    threshold: 0.01 # Threshold for feature selection (depends on the method)
+
+# --- Model Training Configuration ---
+model_training:
+  algorithm: "xgboost" # Machine learning algorithm to use (e.g., xgboost, lightgbm, randomforest, logisticregression)
+  hyperparameter_tuning:
+    enabled: true # Enable or disable hyperparameter tuning
+    method: "random_search" # Hyperparameter tuning method (e.g., random_search, grid_search, bayesian_optimization)
+    n_trials: 50 # Number of trials for hyperparameter tuning
+    scoring_metric: "roc_auc" # Metric to optimize for (e.g., roc_auc, accuracy, f1, precision, recall)
+    hyperparameter_space: # Define hyperparameter ranges for each algorithm
+      xgboost: # Example for XGBoost
+        n_estimators: [100, 200, 300]
+        learning_rate: [0.01, 0.1, 0.2]
+        max_depth: [3, 5, 7]
+      # Add hyperparameter spaces for other algorithms as needed
+
+# --- Model Evaluation Configuration ---
+model_evaluation:
+  split_ratio: 0.2 # Ratio for splitting data into training and validation sets
+  scoring_metrics: ["roc_auc", "accuracy", "f1", "precision", "recall"] # List of metrics to evaluate the model
+  cross_validation:
+    enabled: true # Enable or disable cross-validation
+    n_folds: 5 # Number of folds for cross-validation
+
+# --- Model Deployment Configuration ---
+model_deployment:
+  enabled: false # Enable or disable model deployment
+  environment: "staging" # Target deployment environment (e.g., staging, production)
+  model_registry: "local" # Location to store the trained model (e.g., local, s3, gcp)
+  model_path: "models/YOUR_MODEL.pkl" # Path to save the trained model
+  api_endpoint: "YOUR_API_ENDPOINT" # API endpoint for model deployment (if applicable)
+
+# --- Logging Configuration ---
+logging:
+  level: "INFO" # Logging level (e.g., DEBUG, INFO, WARNING, ERROR)
+  format: "%(asctime)s - %(levelname)s - %(message)s" # Logging format
+  file_path: "logs/pipeline.log" # Path to the log file
+
+# --- Error Handling Configuration ---
+error_handling:
+  on_failure: "email_notification" # Action to take on pipeline failure (e.g., email_notification, retry, stop)
+  email_recipients: ["YOUR_EMAIL@example.com"] # List of email addresses to notify on failure

@@ -1,0 +1,144 @@
+{
+  "_comment": "Example Figma specs document.  Used to demonstrate the file-to-code plugin's ability to generate code from design specifications.",
+  "documentName": "E-commerce Product Page",
+  "version": "1.0",
+  "dateCreated": "2024-01-26",
+  "lastUpdated": "2024-01-27",
+  "author": "Design Team",
+  "components": [
+    {
+      "name": "Product Image",
+      "type": "Image",
+      "location": {
+        "x": 20,
+        "y": 20
+      },
+      "size": {
+        "width": 300,
+        "height": 300
+      },
+      "altText": "Product Image",
+      "source": "https://example.com/product_image.jpg",
+      "_comment": "URL to the product image"
+    },
+    {
+      "name": "Product Title",
+      "type": "Text",
+      "location": {
+        "x": 340,
+        "y": 20
+      },
+      "font": "Arial",
+      "fontSize": 24,
+      "fontWeight": "bold",
+      "color": "#333",
+      "content": "Awesome Product",
+      "_comment": "The name of the product"
+    },
+    {
+      "name": "Product Description",
+      "type": "Text",
+      "location": {
+        "x": 340,
+        "y": 70
+      },
+      "font": "Arial",
+      "fontSize": 16,
+      "color": "#666",
+      "content": "This is a fantastic product description. It highlights the key features and benefits of the product.",
+      "maxLines": 3,
+      "_comment": "A brief description of the product"
+    },
+    {
+      "name": "Product Price",
+      "type": "Text",
+      "location": {
+        "x": 340,
+        "y": 150
+      },
+      "font": "Arial",
+      "fontSize": 20,
+      "fontWeight": "bold",
+      "color": "#007bff",
+      "content": "$99.99",
+      "_comment": "The price of the product"
+    },
+    {
+      "name": "Add to Cart Button",
+      "type": "Button",
+      "location": {
+        "x": 340,
+        "y": 200
+      },
+      "size": {
+        "width": 150,
+        "height": 40
+      },
+      "backgroundColor": "#28a745",
+      "textColor": "#fff",
+      "text": "Add to Cart",
+      "borderRadius": 5,
+      "onClick": "addToCart()",
+      "_comment": "Button to add the product to the shopping cart"
+    },
+    {
+      "name": "Quantity Input",
+      "type": "Input",
+      "location": {
+        "x": 500,
+        "y": 200
+      },
+      "size": {
+        "width": 50,
+        "height": 40
+      },
+      "inputType": "number",
+      "defaultValue": 1,
+      "minValue": 1,
+      "maxValue": 10,
+      "_comment": "Input field to specify the quantity of the product"
+    },
+    {
+      "name": "Product Reviews Section",
+      "type": "Section",
+      "location": {
+        "x": 20,
+        "y": 340
+      },
+      "size": {
+        "width": 760,
+        "height": 200
+      },
+      "children": [
+        {
+          "name": "Review 1",
+          "type": "Review",
+          "author": "John Doe",
+          "rating": 5,
+          "comment": "This product is amazing!"
+        },
+        {
+          "name": "Review 2",
+          "type": "Review",
+          "author": "Jane Smith",
+          "rating": 4,
+          "comment": "Great product, fast delivery."
+        }
+      ],
+      "_comment": "Section displaying product reviews"
+    }
+  ],
+  "interactions": [
+    {
+      "element": "Add to Cart Button",
+      "event": "onClick",
+      "action": "addToCart(productID)"
+    }
+  ],
+  "metadata": {
+    "pageType": "Product Page",
+    "keywords": ["e-commerce", "product", "shop"],
+    "responsive": true,
+    "_comment": "Metadata about the design."
+  }
+}

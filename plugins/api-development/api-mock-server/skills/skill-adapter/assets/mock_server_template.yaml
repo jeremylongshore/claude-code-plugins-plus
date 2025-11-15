@@ -1,0 +1,76 @@
+# Configuration for the API Mock Server Plugin
+
+# --- OpenAPI Specification ---
+# Path to your OpenAPI (Swagger) specification file (YAML or JSON).
+# This file defines the API endpoints, request parameters, and response schemas.
+openapi_spec_path: "REPLACE_ME/path/to/your/openapi.yaml"
+
+# --- Server Settings ---
+# Host and port for the mock server to listen on.
+host: "0.0.0.0"  # Listen on all interfaces
+port: 8080
+
+# --- Response Configuration ---
+# Default settings for generating responses.  These can be overridden per-endpoint.
+default_response:
+  # Simulate network latency (in milliseconds).
+  latency: 50  # milliseconds
+  # Probability of returning an error (0.0 to 1.0).
+  error_rate: 0.05 # 5% chance of error
+  # Default HTTP status code to return for successful requests.
+  success_status_code: 200
+
+# Endpoint-specific overrides.  Use the OpenAPI path as the key.
+endpoints:
+  "/users":
+    # Override the default latency for this endpoint.
+    latency: 100
+    # Example of a custom response for a specific HTTP method and status code.
+    GET:
+      200:
+        # Custom response body (JSON).  If not specified, will generate a fake response.
+        body:
+          message: "Successfully retrieved users"
+          users:
+            - id: "user1"
+              name: "John Doe"
+            - id: "user2"
+              name: "Jane Smith"
+      500:
+        body:
+          error: "Simulated server error"
+        status_code: 500
+
+  "/products/{product_id}":
+    GET:
+      404:
+        body:
+          error: "Product not found"
+        status_code: 404
+
+
+# --- Data Persistence ---
+# Whether to persist data between requests (stateful mocking).
+stateful: true
+# Path to a file where data will be stored.  If empty, data will be stored in memory.
+data_file: "REPLACE_ME/path/to/data.json" # Example: data.json
+
+# --- Security ---
+# API Key authentication (example).
+api_key:
+  enabled: false
+  # Header name for the API Key.
+  header_name: "X-API-Key"
+  # Valid API Key value.
+  valid_key: "YOUR_API_KEY_HERE"
+
+# --- Logging ---
+# Configure logging level. Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+log_level: INFO
+
+# --- Advanced Settings ---
+# CORS configuration (optional).
+cors:
+  enabled: true
+  # Allowed origins (e.g., "http://localhost:3000"). Use "*" to allow all origins (not recommended for production).
+  allowed_origins: "*"

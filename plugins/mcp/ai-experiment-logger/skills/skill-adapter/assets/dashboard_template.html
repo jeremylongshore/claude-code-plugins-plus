@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Experiment Logger Dashboard</title>
+    <style>
+        /* Basic Reset */
+        body, h1, h2, h3, p, ul, li {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Experiment Summary Section */
+        .experiment-summary {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .experiment-summary h2 {
+            margin-bottom: 10px;
+        }
+
+        /* Experiment List Section */
+        .experiment-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .experiment-list li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #eee;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .experiment-list li:hover {
+            background-color: #f0f0f0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Placeholder Styling */
+        .placeholder {
+            color: #999;
+            font-style: italic;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Main Heading -->
+        <h1>AI Experiment Logger Dashboard</h1>
+
+        <!-- Experiment Summary Section -->
+        <section class="experiment-summary">
+            <h2>Experiment Summary</h2>
+            <p>Total Experiments: <span id="total-experiments">{{total_experiments}}</span></p>
+            <p>Successful Experiments: <span id="successful-experiments">{{successful_experiments}}</span></p>
+            <p>Average Success Rate: <span id="average-success-rate">{{average_success_rate}}</span>%</p>
+        </section>
+
+        <!-- Experiment List Section -->
+        <section>
+            <h2>Recent Experiments</h2>
+            <ul class="experiment-list">
+                <!-- Placeholder for dynamically generated list items -->
+                <li>
+                    <strong>Experiment ID:</strong> <span class="placeholder">{{experiment_id_1}}</span><br>
+                    <strong>Description:</strong> <span class="placeholder">{{experiment_description_1}}</span><br>
+                    <strong>Status:</strong> <span class="placeholder">{{experiment_status_1}}</span>
+                </li>
+                <li>
+                    <strong>Experiment ID:</strong> <span class="placeholder">{{experiment_id_2}}</span><br>
+                    <strong>Description:</strong> <span class="placeholder">{{experiment_description_2}}</span><br>
+                    <strong>Status:</strong> <span class="placeholder">{{experiment_status_2}}</span>
+                </li>
+                <li>
+                    <strong>Experiment ID:</strong> <span class="placeholder">{{experiment_id_3}}</span><br>
+                    <strong>Description:</strong> <span class="placeholder">{{experiment_description_3}}</span><br>
+                    <strong>Status:</strong> <span class="placeholder">{{experiment_status_3}}</span>
+                </li>
+                <!-- Add more list items as needed -->
+            </ul>
+        </section>
+
+    </div>
+
+</body>
+</html>

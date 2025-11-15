@@ -1,0 +1,292 @@
+api_template.zip
+├── package.json
+│   ```json
+│   {
+│     "name": "rest-api-template",
+│     "version": "1.0.0",
+│     "description": "A basic REST API template",
+│     "main": "server.js",
+│     "scripts": {
+│       "start": "node server.js",
+│       "dev": "nodemon server.js"
+│     },
+│     "dependencies": {
+│       "express": "^4.18.2",
+│       "body-parser": "^1.20.2",
+│       "dotenv": "^16.3.1",
+│       "express-validator": "^7.0.1",
+│       "mongoose": "^8.0.0",
+│       "swagger-ui-express": "^5.0.0",
+│       "swagger-jsdoc": "^6.0.0"
+│     },
+│     "devDependencies": {
+│       "nodemon": "^3.0.1"
+│     },
+│     "keywords": [
+│       "rest",
+│       "api",
+│       "template"
+│     ],
+│     "author": "Claude Code Plugin",
+│     "license": "MIT"
+│   }
+│   ```
+│
+├── server.js
+│   ```javascript
+│   const express = require('express');
+│   const bodyParser = require('body-parser');
+│   const dotenv = require('dotenv');
+│   const mongoose = require('mongoose');
+│   const swaggerUi = require('swagger-ui-express');
+│   const swaggerSpec = require('./swagger');
+│
+│   const routes = require('./routes'); // Import routes
+│
+│   dotenv.config();
+│
+│   const app = express();
+│   const port = process.env.PORT || 3000;
+│
+│   // Middleware
+│   app.use(bodyParser.json());
+│   app.use(express.json()); // for parsing application/json
+│   app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+│
+│   // Swagger documentation
+│   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+│
+│   // Routes
+│   app.use('/', routes);
+│
+│   // Error handling middleware
+│   app.use((err, req, res, next) => {
+│       console.error(err.stack);
+│       res.status(500).send('Something broke!');
+│   });
+│
+│   // Connect to MongoDB
+│   mongoose.connect(process.env.MONGODB_URI, {
+│       useNewUrlParser: true,
+│       useUnifiedTopology: true
+│   })
+│   .then(() => {
+│       console.log('Connected to MongoDB');
+│       // Start the server only after successful MongoDB connection
+│       app.listen(port, () => {
+│           console.log(`Server is running on port ${port}`);
+│       });
+│   })
+│   .catch(err => {
+│       console.error('MongoDB connection error:', err);
+│   });
+│
+│   ```
+│
+├── routes.js
+│   ```javascript
+│   const express = require('express');
+│   const router = express.Router();
+│   const { param, validationResult } = require('express-validator');
+│
+│   // Import controllers
+│   const exampleController = require('./controllers/exampleController');
+│
+│   /**
+│    * @swagger
+│    * /example:
+│    *   get:
+│    *     summary: Get all examples
+│    *     responses:
+│    *       200:
+│    *         description: Successful operation
+│    */
+│   router.get('/example', exampleController.getAllExamples);
+│
+│   /**
+│    * @swagger
+│    * /example/{id}:
+│    *   get:
+│    *     summary: Get example by ID
+│    *     parameters:
+│    *       - in: path
+│    *         name: id
+│    *         required: true
+│    *         description: ID of the example to retrieve
+│    *         schema:
+│    *           type: string
+│    *     responses:
+│    *       200:
+│    *         description: Successful operation
+│    *       400:
+│    *         description: Invalid ID supplied
+│    *       404:
+│    *         description: Example not found
+│    */
+│   router.get('/example/:id', [
+│       param('id').isMongoId().withMessage('Invalid ID format')
+│   ], (req, res, next) => {
+│       const errors = validationResult(req);
+│       if (!errors.isEmpty()) {
+│           return res.status(400).json({ errors: errors.array() });
+│       }
+│       next();
+│   }, exampleController.getExampleById);
+│
+│   // Add more routes here
+│
+│   module.exports = router;
+│   ```
+│
+├── controllers
+│   └── exampleController.js
+│       ```javascript
+│       // controllers/exampleController.js
+│
+│       const Example = require('../models/Example');
+│
+│       // Get all examples
+│       exports.getAllExamples = async (req, res) => {
+│           try {
+│               const examples = await Example.find();
+│               res.json(examples);
+│           } catch (err) {
+│               console.error(err);
+│               res.status(500).send('Server error');
+│           }
+│       };
+│
+│       // Get example by ID
+│       exports.getExampleById = async (req, res) => {
+│           try {
+│               const example = await Example.findById(req.params.id);
+│               if (!example) {
+│                   return res.status(404).json({ msg: 'Example not found' });
+│               }
+│               res.json(example);
+│           } catch (err) {
+│               console.error(err);
+│               res.status(500).send('Server error');
+│           }
+│       };
+│
+│       // Add more controller functions here
+│       ```
+│
+├── models
+│   └── Example.js
+│       ```javascript
+│       const mongoose = require('mongoose');
+│
+│       const ExampleSchema = new mongoose.Schema({
+│           name: {
+│               type: String,
+│               required: true
+│           },
+│           description: {
+│               type: String
+│           },
+│           createdAt: {
+│               type: Date,
+│               default: Date.now
+│           }
+│       });
+│
+│       module.exports = mongoose.model('Example', ExampleSchema);
+│       ```
+│
+├── middleware
+│   └── auth.js
+│       ```javascript
+│       // middleware/auth.js
+│
+│       function auth(req, res, next) {
+│           // Implement authentication logic here (e.g., JWT verification)
+│           // This is a placeholder and needs to be replaced with actual authentication implementation
+│
+│           // Example: Check for an API key in the header
+│           const apiKey = req.header('x-api-key');
+│
+│           if (!apiKey || apiKey !== process.env.API_KEY) {
+│               return res.status(401).json({ msg: 'No API key, authorization denied' });
+│           }
+│
+│           // If authentication is successful, proceed to the next middleware/route handler
+│           next();
+│       }
+│
+│       module.exports = auth;
+│       ```
+│
+├── .env.example
+│   ```
+│   PORT=3000
+│   MONGODB_URI=mongodb://localhost:27017/your_database_name
+│   API_KEY=your_secret_api_key
+│   ```
+│
+├── swagger.js
+│   ```javascript
+│   const swaggerJsdoc = require('swagger-jsdoc');
+│
+│   const options = {
+│       definition: {
+│           openapi: '3.0.0',
+│           info: {
+│               title: 'REST API Template',
+│               version: '1.0.0',
+│               description: 'A basic REST API template with Swagger documentation',
+│           },
+│       },
+│       apis: ['./routes.js'], // Path to the API routes
+│   };
+│
+│   const swaggerSpec = swaggerJsdoc(options);
+│
+│   module.exports = swaggerSpec;
+│   ```
+│
+└── README.md
+    ```markdown
+    # REST API Template
+    This is a basic REST API template.
+
+    ## Installation
+
+    1.  Install dependencies: `npm install`
+    2.  Configure your environment variables in `.env`:
+        *   `PORT`: The port the server will listen on.
+        *   `MONGODB_URI`: The connection string for your MongoDB database.
+        *   `API_KEY`: A secret API key for authentication (example usage in middleware/auth.js).
+    3. Start the server: `npm start` or `npm run dev` (for development with nodemon)
+
+    ## API Documentation
+
+    API documentation is available at `/api-docs` using Swagger UI.
+
+    ## Structure
+
+    *   `server.js`: Main server file.
+    *   `routes.js`: Defines API routes.
+    *   `controllers`: Contains controller functions for handling requests.
+    *   `models`: Defines Mongoose models for data.
+    *   `middleware`: Contains middleware functions (e.g., authentication).
+    *   `.env`: Stores environment variables.
+    *   `swagger.js`: Configures Swagger documentation.
+
+    ## Example Usage
+
+    The template includes an example resource named "Example".  You can access it via:
+
+    *   `GET /example`: Get all examples.
+    *   `GET /example/:id`: Get a specific example by ID.
+
+    ## Customization
+
+    1.  Define your data models in the `models` directory.
+    2.  Create controller functions in the `controllers` directory to handle business logic.
+    3.  Define API routes in `routes.js`, mapping them to controller functions.
+    4. Implement authentication and authorization in the `middleware` directory.
+    5.  Add validation using `express-validator` to ensure data integrity.
+    6.  Update the Swagger documentation in `swagger.js` to reflect your API.
+    ```

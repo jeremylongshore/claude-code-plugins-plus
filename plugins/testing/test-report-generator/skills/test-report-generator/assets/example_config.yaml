@@ -1,0 +1,51 @@
+# Configuration file for the test-report-generator plugin
+
+# --- General Settings ---
+report_name: "Automated Test Report"  # Name of the report
+output_directory: "./reports"       # Directory to store generated reports
+report_format: "html"             # Report output format (html, pdf, json)
+timestamp_format: "%Y-%m-%d %H:%M:%S" # Format for timestamps in the report
+
+# --- Data Sources ---
+test_results:
+  type: "junit"                  # Type of test result files (junit, pytest, etc.)
+  path: "./test-results/*.xml"      # Path to the test result files (supports glob patterns)
+  # For multiple data sources, define additional entries:
+  # - type: "pytest"
+  #   path: "./pytest-results/results.xml"
+
+coverage_data:
+  type: "cobertura"              # Type of coverage data (cobertura, lcov)
+  path: "./coverage.xml"          # Path to the coverage data file
+  # If no coverage data is available, leave this section commented out:
+  # type: "none"
+  # path: ""
+
+# --- Report Customization ---
+logo_path: "YOUR_LOGO_PATH_HERE"         # Path to a logo to include in the report (optional)
+report_title: "REPLACE_ME - Project Test Report" # Title displayed in the report
+report_description: "Comprehensive test report for REPLACE_ME project, including test results and code coverage." # Description of the report
+
+# --- Thresholds and Alerts ---
+pass_rate_threshold: 0.95          # Minimum pass rate (as a fraction) to be considered successful
+coverage_threshold: 0.80           # Minimum code coverage (as a fraction) to be considered successful
+alert_on_failure: true             # Send alerts if any tests fail
+alert_recipients:                   # List of email addresses or channels to send alerts to
+  - "YOUR_EMAIL_ADDRESS_HERE"
+  # - "another_recipient@example.com"
+
+# --- Historical Data ---
+historical_data:
+  enabled: false                   # Enable historical data tracking and comparisons
+  database_url: "sqlite:///test_report_history.db" # URL for the database storing historical data (e.g., SQLite, PostgreSQL)
+  retention_period: "30d"          # How long to retain historical data (e.g., 30d, 90d, 1y)
+
+# --- Advanced Options ---
+include_stacktraces: true         # Include stack traces in the report
+collapse_long_messages: true       # Collapse long test messages for readability
+debug_mode: false                 # Enable debug mode for more verbose logging
+
+# --- Plugin-Specific Options ---
+# These options are specific to this test report generator plugin
+failure_analysis_enabled: true     # Enables automated failure analysis
+stakeholder_format: "executive"   # Format for stakeholder-friendly report (executive, detailed)

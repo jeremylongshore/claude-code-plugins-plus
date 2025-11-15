@@ -1,0 +1,87 @@
+{
+  "_comment": "Examples of standardized error responses for different API error scenarios.",
+  "bad_request": {
+    "_comment": "Invalid request body or parameters",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "Invalid input data. Please check your request body and parameters.",
+    "details": [
+      {
+        "field": "email",
+        "message": "Must be a valid email address."
+      },
+      {
+        "field": "password",
+        "message": "Must be at least 8 characters long."
+      }
+    ]
+  },
+  "unauthorized": {
+    "_comment": "Authentication failed or missing credentials",
+    "status": 401,
+    "error": "Unauthorized",
+    "message": "Authentication required to access this resource.",
+    "details": "Invalid API key or missing authentication token."
+  },
+  "forbidden": {
+    "_comment": "User does not have permission to access the resource",
+    "status": 403,
+    "error": "Forbidden",
+    "message": "You do not have permission to access this resource.",
+    "details": "Insufficient privileges for this operation."
+  },
+  "not_found": {
+    "_comment": "Resource not found",
+    "status": 404,
+    "error": "Not Found",
+    "message": "The requested resource was not found.",
+    "details": "Resource with ID '123' not found."
+  },
+  "method_not_allowed": {
+    "_comment": "HTTP method not supported for this resource",
+    "status": 405,
+    "error": "Method Not Allowed",
+    "message": "The specified HTTP method is not allowed for this resource.",
+    "details": "Only GET requests are allowed on this endpoint."
+  },
+  "conflict": {
+    "_comment": "Resource already exists",
+    "status": 409,
+    "error": "Conflict",
+    "message": "The resource already exists.",
+    "details": "A user with this email address already exists."
+  },
+  "unprocessable_entity": {
+    "_comment": "Validation failed on the server side",
+    "status": 422,
+    "error": "Unprocessable Entity",
+    "message": "The request could not be processed due to validation errors.",
+    "details": [
+      {
+        "field": "name",
+        "message": "Name cannot be empty."
+      }
+    ]
+  },
+  "too_many_requests": {
+    "_comment": "Rate limit exceeded",
+    "status": 429,
+    "error": "Too Many Requests",
+    "message": "You have exceeded the rate limit for this API.",
+    "details": "Please wait before making another request."
+  },
+  "internal_server_error": {
+    "_comment": "Unexpected server error",
+    "status": 500,
+    "error": "Internal Server Error",
+    "message": "An unexpected error occurred on the server.",
+    "details": "Please try again later or contact support."
+  },
+  "service_unavailable": {
+    "_comment": "Service is temporarily unavailable",
+    "status": 503,
+    "error": "Service Unavailable",
+    "message": "The service is currently unavailable.",
+    "details": "The server is temporarily overloaded or under maintenance."
+  }
+}

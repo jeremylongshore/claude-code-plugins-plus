@@ -1,0 +1,20 @@
+{
+  "_comment": "Example document for the domain-memory-agent knowledge base.",
+  "title": "Understanding Quantum Entanglement",
+  "source": "Scientific American, January 2023",
+  "author": "Dr. Alice Quantum",
+  "date_published": "2023-01-15",
+  "tags": ["quantum mechanics", "entanglement", "physics", "non-locality"],
+  "content": "Quantum entanglement is a physical phenomenon that occurs when a pair or group of particles are generated, interact, or share spatial proximity in a way such that the quantum state of each particle of the pair or group cannot be described independently of the state of the others, even when the particles are separated by a large distance. This means that measuring the quantum state of one particle instantaneously influences the state of the other particle(s), a phenomenon sometimes referred to as 'spooky action at a distance' by Albert Einstein.  The phenomenon has been demonstrated repeatedly through experimentation, and has potential applications in quantum computing and quantum cryptography.  Further research is ongoing to fully understand the implications of entanglement and to explore its possible uses.",
+  "summary": "Quantum entanglement is a phenomenon where two or more particles become linked in such a way that they share the same fate, no matter how far apart they are. Measuring the state of one instantly affects the state of the other. It has potential for quantum computing and cryptography.",
+  "metadata": {
+    "page_count": 5,
+    "document_type": "journal article",
+    "relevance_score": 0.95,
+    "_comment": "Example metadata fields; can be customized based on domain."
+  },
+  "keywords": ["quantum", "entanglement", "non-locality", "quantum computing", "quantum cryptography"],
+  "related_documents": ["doc_id_123", "doc_id_456"],
+  "id": "doc_id_789",
+  "_comment": "Unique ID for the document within the knowledge base."
+}

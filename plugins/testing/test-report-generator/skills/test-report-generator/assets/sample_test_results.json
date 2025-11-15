@@ -1,0 +1,128 @@
+{
+  "_comment": "Sample test results for test-report-generator plugin",
+  "report_metadata": {
+    "report_id": "test-report-2024-10-27-1430",
+    "generated_at": "2024-10-27T14:30:00Z",
+    "test_environment": "Production",
+    "report_version": "1.0",
+    "_comment": "Version of the report format. Allows for future schema changes."
+  },
+  "summary": {
+    "total_tests": 100,
+    "passed": 95,
+    "failed": 3,
+    "skipped": 2,
+    "pass_rate": 95.0,
+    "fail_rate": 3.0,
+    "skip_rate": 2.0,
+    "total_duration_seconds": 120.5,
+    "_comment": "Overall summary of the test run"
+  },
+  "test_suites": [
+    {
+      "suite_name": "User Authentication",
+      "total_tests": 20,
+      "passed": 19,
+      "failed": 1,
+      "skipped": 0,
+      "duration_seconds": 25.2,
+      "tests": [
+        {
+          "test_name": "Valid login",
+          "status": "passed",
+          "duration_seconds": 1.2,
+          "error_message": null,
+          "stack_trace": null
+        },
+        {
+          "test_name": "Invalid password",
+          "status": "failed",
+          "duration_seconds": 0.8,
+          "error_message": "Authentication failed",
+          "stack_trace": "at UserAuthentication.InvalidPasswordTest(UserAuthentication.cs:25)"
+        }
+      ]
+    },
+    {
+      "suite_name": "Payment Processing",
+      "total_tests": 30,
+      "passed": 28,
+      "failed": 1,
+      "skipped": 1,
+      "duration_seconds": 45.8,
+      "tests": [
+        {
+          "test_name": "Successful payment",
+          "status": "passed",
+          "duration_seconds": 1.5,
+          "error_message": null,
+          "stack_trace": null
+        },
+        {
+          "test_name": "Insufficient funds",
+          "status": "failed",
+          "duration_seconds": 1.1,
+          "error_message": "Payment declined: Insufficient funds",
+          "stack_trace": "at PaymentProcessing.InsufficientFundsTest(PaymentProcessing.cs:42)"
+        },
+        {
+          "test_name": "Timeout",
+          "status": "skipped",
+          "duration_seconds": 0,
+          "error_message": "External API timeout",
+          "stack_trace": null
+        }
+      ]
+    },
+    {
+      "suite_name": "Data Validation",
+      "total_tests": 50,
+      "passed": 48,
+      "failed": 1,
+      "skipped": 1,
+      "duration_seconds": 49.5,
+      "tests": [
+        {
+          "test_name": "Valid data input",
+          "status": "passed",
+          "duration_seconds": 0.7,
+          "error_message": null,
+          "stack_trace": null
+        },
+        {
+          "test_name": "Invalid email format",
+          "status": "failed",
+          "duration_seconds": 0.9,
+          "error_message": "Invalid email format",
+          "stack_trace": "at DataValidation.InvalidEmailTest(DataValidation.cs:17)"
+        },
+        {
+          "test_name": "Empty field",
+          "status": "skipped",
+          "duration_seconds": 0,
+          "error_message": "Pending implementation",
+          "stack_trace": null
+        }
+      ]
+    }
+  ],
+  "coverage": {
+    "line_coverage": 85.2,
+    "branch_coverage": 70.5,
+    "function_coverage": 90.1,
+    "_comment": "Code coverage metrics"
+  },
+  "trends": {
+    "pass_rate_history": [
+      {"date": "2024-10-20", "pass_rate": 92.0},
+      {"date": "2024-10-21", "pass_rate": 93.5},
+      {"date": "2024-10-22", "pass_rate": 94.0},
+      {"date": "2024-10-23", "pass_rate": 94.5},
+      {"date": "2024-10-24", "pass_rate": 94.7},
+      {"date": "2024-10-25", "pass_rate": 94.8},
+      {"date": "2024-10-26", "pass_rate": 94.9},
+      {"date": "2024-10-27", "pass_rate": 95.0}
+    ],
+    "_comment": "Historical trend of pass rates over time"
+  }
+}

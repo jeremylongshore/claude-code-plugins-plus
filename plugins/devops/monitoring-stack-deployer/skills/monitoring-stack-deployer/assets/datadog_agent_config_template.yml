@@ -1,0 +1,90 @@
+# Datadog Agent Configuration Template
+
+# This file provides a template for configuring the Datadog agent.
+# Replace placeholders with your specific values.
+
+# Agent Configuration
+agent_hostname: REPLACE_ME_HOSTNAME # The hostname reported to Datadog.  Defaults to system hostname.
+# agent_tags:  # Optional: List of tags to apply to all metrics sent by this agent.
+#   - env:production
+#   - role:webserver
+
+# API Key
+api_key: YOUR_DATADOG_API_KEY # Your Datadog API key. Required.
+
+# Site
+# site: datadoghq.com  # The Datadog site.  Defaults to datadoghq.com
+
+# Listen Address
+# listen_address: 0.0.0.0  # The address the agent listens on for HTTP requests. Defaults to 127.0.0.1
+
+# Log Level
+log_level: INFO # Valid values: DEBUG, INFO, WARN, ERROR, CRITICAL
+
+# Log to file
+# log_file: /var/log/datadog/agent.log  # Uncomment to log to a file.  Ensure proper permissions are set.
+
+# Enable/Disable Agent
+# enabled: true  # Defaults to true
+
+# --- Integrations ---
+
+# Example: System Check
+system_core_check:
+  enabled: true
+  collect_count: true # Collect CPU core counts
+  # use_mount: false # Disable mount point metrics (defaults to true)
+
+# Example: Network Check
+network:
+  enabled: true
+  collect_connection_state: true # Collect TCP connection states
+  excluded_interfaces:
+    - lo # Exclude loopback interface
+
+# Example: Disk Check
+disk:
+  enabled: true
+  all_partitions: false # Only monitor certain partitions
+  partitions:
+    - /
+    - /var
+    - /tmp
+  # use_mount: false # Disable mount point metrics (defaults to true)
+  # excluded_filesystems:  # Optional: List of filesystem types to exclude.
+  #   - tmpfs
+
+# --- Advanced Configuration ---
+
+# Proxy settings (if required)
+# proxy:
+#   http: http://YOUR_PROXY_SERVER:YOUR_PROXY_PORT
+#   https: https://YOUR_PROXY_SERVER:YOUR_PROXY_PORT
+#   no_proxy: localhost,127.0.0.1,YOUR_INTERNAL_DOMAIN
+
+# DogStatsD Configuration (for custom metrics)
+dogstatsd_port: 8125 # UDP port for DogStatsD
+# dogstatsd_non_local_traffic: true # Enable for non-local traffic (security implications!)
+
+# --- Autodiscovery ---
+# For containerized environments (Docker, Kubernetes)
+# autodiscovery_listeners:
+#   - name: docker
+#   - name: kubelet
+
+# Example: Custom check
+# confd_path: /etc/datadog-agent/conf.d
+
+# --- Process Agent ---
+# process_config:
+#   enabled: true # Enable process collection
+#   process_collection:
+#     enabled: true
+#   container_collection:
+#     enabled: true
+#   process_discovery:
+#     enabled: false # Disable process discovery by default for security
+
+# --- Security Agent ---
+# security_agent:
+#   enabled: false # Disable security agent by default

@@ -1,0 +1,42 @@
+# Percy configuration file example
+# This file defines the settings for running visual regression tests using Percy.
+
+version: 2
+# Percy configuration version.  Keep this as 2 for the latest stable features.
+
+percy:
+  # Percy specific settings
+  token: REPLACE_ME # Your Percy project token.  Get this from the Percy dashboard.
+  branch: main # The branch to compare against.  Defaults to 'main' or environment variable.
+  parallel: true # Enable parallel test execution for faster results.
+  widths: # Viewport widths to capture screenshots at.  Important for responsive testing.
+    - 375 # Mobile
+    - 768 # Tablet
+    - 1280 # Desktop
+  minimum_height: 1024 # Minimum height for the screenshot.  Useful for pages that dynamically load content.
+  debug: false # Enable debug logging.  Useful for troubleshooting.
+
+# Generic configuration for test execution
+test:
+  url: "YOUR_VALUE_HERE" # The base URL of your application.  e.g., "https://example.com"
+  files:
+    - "path/to/your/test/file.js" # Example test file.  Can be a glob pattern.
+    - "another/test/file.spec.ts" # Example test file.  Can be a glob pattern.
+  # Test framework specific configurations.  These are examples, adjust to your framework.
+  # This plugin doesn't execute the tests, it just passes the config along to Percy CLI or similar.
+  framework:
+    type: playwright # Example: "playwright", "cypress", "selenium"
+    options: # Framework specific options. Consult your framework's documentation.
+      headless: true # Run tests in headless mode.  Good for CI/CD.
+      browser: chromium # Browser to use for testing.  e.g., "chromium", "firefox", "webkit"
+
+# Environment variables to pass to the test execution environment.
+# Useful for injecting credentials or other configuration values.
+environment:
+  API_KEY: "YOUR_API_KEY" # Example API key.  Replace with your actual key.
+  DATABASE_URL: "YOUR_DATABASE_URL" # Example database URL. Replace with your actual URL.
+
+# Optional: Configure custom snapshot names.  Useful for making reports easier to read.
+snapshots:
+  prefix: "Component_" # Prefix for all snapshot names.
+  suffix: "_Example" # Suffix for all snapshot names.

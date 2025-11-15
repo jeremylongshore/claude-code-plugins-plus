@@ -1,0 +1,86 @@
+# OAuth2 Configuration
+
+oauth2:
+  # Enable or disable OAuth2 authentication
+  enabled: true
+
+  # Authorization server settings
+  authorization_server:
+    # Issuer URL of the authorization server
+    issuer_url: "https://example.com/oauth2/issuer" # REPLACE_ME: Your authorization server's issuer URL
+
+    # Authorization endpoint URL
+    authorization_endpoint: "https://example.com/oauth2/authorize" # REPLACE_ME: Your authorization endpoint
+
+    # Token endpoint URL
+    token_endpoint: "https://example.com/oauth2/token" # REPLACE_ME: Your token endpoint
+
+    # User info endpoint URL (optional)
+    userinfo_endpoint: "https://example.com/oauth2/userinfo" # REPLACE_ME: Your userinfo endpoint, if available
+
+    # JWKS URI (JSON Web Key Set URI) for verifying token signatures
+    jwks_uri: "https://example.com/oauth2/jwks" # REPLACE_ME: Your JWKS URI
+
+  # Client configuration
+  client:
+    # Client ID registered with the authorization server
+    client_id: "YOUR_CLIENT_ID" # REPLACE_ME: Your client ID
+
+    # Client secret (keep this secure!)
+    client_secret: "YOUR_CLIENT_SECRET" # REPLACE_ME: Your client secret
+
+    # Redirect URI(s) registered with the authorization server
+    redirect_uris:
+      - "https://your-app.com/callback" # REPLACE_ME: Your redirect URI
+      - "https://your-app.com/callback2" # Optional: Add more redirect URIs
+
+    # Scopes requested during authorization
+    scopes:
+      - "openid"
+      - "profile"
+      - "email"
+      - "YOUR_CUSTOM_SCOPE" # Optional: Add custom scopes
+
+  # Token validation settings
+  token_validation:
+    # Audience to validate in the access token (should match your client ID or resource server identifier)
+    audience: "YOUR_CLIENT_ID" # REPLACE_ME: The intended audience of the token
+
+    # Require HTTPS for all endpoints (recommended for production)
+    require_https: true
+
+    # Allowed clock skew in seconds (adjust if needed due to clock synchronization issues)
+    allowed_clock_skew: 60
+
+  # Session management settings
+  session:
+    # Session timeout in seconds (e.g., 3600 for 1 hour)
+    timeout: 3600
+
+    # Session cookie settings
+    cookie:
+      # Cookie name
+      name: "oauth2_session"
+
+      # Cookie domain (optional, leave empty for current domain)
+      domain: "" # YOUR_VALUE_HERE: Optionally specify a domain
+
+      # Cookie path
+      path: "/"
+
+      # Secure flag (required for HTTPS)
+      secure: true
+
+      # HttpOnly flag (recommended for security)
+      http_only: true
+
+      # SameSite attribute (strict, lax, or none)
+      same_site: "strict"
+
+  # Error handling
+  error_handling:
+    # Redirect URI for errors (optional)
+    error_redirect_uri: "https://your-app.com/error" # REPLACE_ME: Optional error redirect URI
+
+    # Log errors (true/false)
+    log_errors: true

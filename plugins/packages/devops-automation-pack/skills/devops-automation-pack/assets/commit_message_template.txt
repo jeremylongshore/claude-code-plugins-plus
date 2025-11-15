@@ -1,0 +1,114 @@
+# Commit Message Template
+
+This template provides a standardized format for creating clear and informative commit messages. Using this template will improve team communication, code review, and project maintainability.
+
+## Format
+
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer(s)]
+```
+
+## Sections
+
+### Type
+
+The type of commit. Choose from the following:
+
+*   **feat:** A new feature
+*   **fix:** A bug fix
+*   **docs:** Documentation only changes
+*   **style:** Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc.)
+*   **refactor:** A code change that neither fixes a bug nor adds a feature
+*   **perf:** A code change that improves performance
+*   **test:** Adding missing tests or correcting existing tests
+*   **build:** Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)
+*   **ci:** Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)
+*   **chore:** Other changes that don't modify src or test files
+*   **revert:** Reverts a previous commit
+
+**Example:** `feat(user-authentication): Implement password reset functionality`
+
+### Scope
+
+The scope of the commit. This could be a module, component, or area of the codebase affected by the change.  Keep it concise.
+
+**Example:** `feat(api): Add endpoint for retrieving user profiles`
+
+### Subject
+
+A brief and concise description of the change. Use the imperative, present tense: "change" not "changed" nor "changes".
+
+*   Limit to 50 characters.
+*   Do not end with a period.
+
+**Example:** `fix(layout): Correct alignment issues on mobile devices`
+
+### Body (Optional)
+
+A more detailed explanation of the change.  Use the imperative, present tense.  Explain the *why* and *how*.
+
+*   Wrap lines at 72 characters.
+*   Can include multiple paragraphs.
+*   Use bullet points for lists when appropriate.
+
+**Example:**
+
+```
+This commit addresses a critical bug in the user authentication module.  The previous implementation allowed users to bypass the password reset process under certain circumstances.
+
+This was achieved by:
+
+*   Adding a validation check to ensure the password reset token is valid.
+*   Implementing rate limiting to prevent brute-force attacks.
+*   Improving error handling to provide more informative feedback to the user.
+```
+
+### Footer (Optional)
+
+*   **Breaking Changes:**  If the commit introduces a breaking change, describe the change, justification, and migration notes. Start with `BREAKING CHANGE:`.
+*   **Related Issues:** Refer to related issues using `Closes #<issue_number>`, `Fixes #<issue_number>`, or `See #<issue_number>`.
+*   **Co-authored-by:** Credit collaborators using `Co-authored-by: Name <email@example.com>`.
+
+**Example - Breaking Change:**
+
+```
+BREAKING CHANGE:  The API endpoint for retrieving user profiles has been renamed from `/users` to `/profiles`.
+
+Migration: Update all client applications to use the new endpoint.
+```
+
+**Example - Issue Fix:**
+
+```
+Fixes #123:  Resolved issue where users were unable to log in.
+```
+
+## Example Commit Message
+
+```
+feat(payment-gateway): Integrate Stripe payment processing
+
+This commit adds support for Stripe payment processing to the application.
+
+The following changes were made:
+
+*   Implemented the Stripe API integration.
+*   Added a new payment form to the checkout page.
+*   Updated the database schema to store payment information.
+
+Closes #456: Implement Stripe integration
+```
+
+## Best Practices
+
+*   Write clear and concise commit messages.
+*   Use the imperative, present tense.
+*   Limit the subject line to 50 characters.
+*   Provide context in the body of the message.
+*   Include relevant information in the footer.
+*   Review your commit messages before pushing them.
+*   Be consistent with your commit message style.

@@ -1,0 +1,37 @@
+{
+  "_comment": "JWT Claims Template",
+  "iss": "your-issuer.com",
+  "_comment": "Issuer of the JWT (e.g., your application domain)",
+  "sub": "user123",
+  "_comment": "Subject of the JWT (e.g., user ID)",
+  "aud": "your-api",
+  "_comment": "Audience of the JWT (e.g., API identifier)",
+  "exp": 1678886400,
+  "_comment": "Expiration time (Unix timestamp, seconds since epoch)",
+  "nbf": 1678800000,
+  "_comment": "Not Before time (Unix timestamp, seconds since epoch)",
+  "iat": 1678803600,
+  "_comment": "Issued At time (Unix timestamp, seconds since epoch)",
+  "jti": "unique-jwt-id-123",
+  "_comment": "JWT ID (unique identifier for the JWT)",
+  "name": "John Doe",
+  "_comment": "User's name (optional)",
+  "email": "john.doe@example.com",
+  "_comment": "User's email address (optional)",
+  "roles": [
+    "administrator",
+    "editor"
+  ],
+  "_comment": "User's roles or permissions (optional, array of strings)",
+  "permissions": [
+    "read:data",
+    "write:data"
+  ],
+  "_comment": "Specific permissions granted to the user (optional, array of strings)",
+  "custom_claim": "some-custom-value",
+  "_comment": "Example of a custom claim (optional)",
+  "account_id": "account456",
+  "_comment": "Account identifier(optional)",
+  "organization_id": "org789",
+  "_comment": "Organization identifier(optional)"
+}

@@ -1,0 +1,84 @@
+{
+  "_comment": "Example text inputs and expected outputs for the NLP Text Analyzer plugin.",
+  "examples": [
+    {
+      "_comment": "Sentiment Analysis Example",
+      "task": "sentiment_analysis",
+      "input_text": "This is the best day ever! I'm so happy and excited.",
+      "expected_output": {
+        "sentiment": "positive",
+        "confidence": 0.95
+      }
+    },
+    {
+      "_comment": "Sentiment Analysis Example - Negative",
+      "task": "sentiment_analysis",
+      "input_text": "I'm feeling really down today. Everything seems to be going wrong.",
+      "expected_output": {
+        "sentiment": "negative",
+        "confidence": 0.88
+      }
+    },
+    {
+      "_comment": "Sentiment Analysis Example - Neutral",
+      "task": "sentiment_analysis",
+      "input_text": "The weather is cloudy today.",
+      "expected_output": {
+        "sentiment": "neutral",
+        "confidence": 0.75
+      }
+    },
+    {
+      "_comment": "Named Entity Recognition Example",
+      "task": "named_entity_recognition",
+      "input_text": "Barack Obama was the 44th President of the United States.",
+      "expected_output": [
+        {
+          "entity": "Barack Obama",
+          "type": "PERSON"
+        },
+        {
+          "entity": "President",
+          "type": "TITLE"
+        },
+        {
+          "entity": "United States",
+          "type": "GPE"
+        }
+      ]
+    },
+    {
+      "_comment": "Text Summarization Example",
+      "task": "text_summarization",
+      "input_text": "The quick brown fox jumps over the lazy dog. This is a classic pangram, a sentence that contains all the letters of the alphabet. Pangrams are often used to test fonts or keyboard layouts. They can also be used to demonstrate handwriting skills.",
+      "expected_output": "This text is a classic pangram, a sentence containing all letters of the alphabet, used for testing fonts, keyboard layouts, and handwriting skills."
+    },
+    {
+      "_comment": "Keyword Extraction Example",
+      "task": "keyword_extraction",
+      "input_text": "Artificial intelligence is rapidly transforming various industries. Machine learning algorithms are becoming increasingly sophisticated, enabling automation and improved decision-making.",
+      "expected_output": [
+        "artificial intelligence",
+        "machine learning",
+        "algorithms",
+        "automation",
+        "decision-making"
+      ]
+    },
+    {
+      "_comment": "Text Translation Example",
+      "task": "text_translation",
+      "source_language": "en",
+      "target_language": "es",
+      "input_text": "Hello, how are you?",
+      "expected_output": "Hola, ¿cómo estás?"
+    },
+    {
+      "_comment": "Question Answering Example",
+      "task": "question_answering",
+      "context_text": "The capital of France is Paris.",
+      "question_text": "What is the capital of France?",
+      "expected_output": "Paris"
+    }
+  ]
+}

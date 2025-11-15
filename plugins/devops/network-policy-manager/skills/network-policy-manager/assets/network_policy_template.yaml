@@ -1,0 +1,52 @@
+# network_policy_template.yaml
+# A template for creating Kubernetes Network Policies.
+# Replace placeholders with your desired values.
+
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: REPLACE_ME-network-policy # A unique name for your network policy
+  namespace: YOUR_VALUE_HERE # The namespace this policy applies to
+  labels:
+    app: REPLACE_ME # Optional labels for organization
+    tier: REPLACE_ME # Optional labels for organization
+spec:
+  podSelector:
+    matchLabels:
+      app: REPLACE_ME # Selects the pods this policy applies to.  Must match a pod label.
+      tier: REPLACE_ME # Selects the pods this policy applies to.  Must match a pod label.
+  policyTypes:
+    - Ingress # Defines whether this policy applies to incoming traffic
+    - Egress  # Defines whether this policy applies to outgoing traffic
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: YOUR_VALUE_HERE # Allow traffic from pods with this label
+              tier: YOUR_VALUE_HERE # Allow traffic from pods with this label
+        - namespaceSelector:
+            matchLabels:
+              name: YOUR_VALUE_HERE # Allow traffic from pods in this namespace
+      ports:
+        - protocol: TCP # Protocol allowed for ingress traffic
+          port: 80 # Port allowed for ingress traffic
+        - protocol: UDP
+          port: 53 # Example: Allow DNS resolution
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app: YOUR_VALUE_HERE # Allow traffic to pods with this label
+              tier: YOUR_VALUE_HERE # Allow traffic to pods with this label
+        - namespaceSelector:
+            matchLabels:
+              name: YOUR_VALUE_HERE # Allow traffic to pods in this namespace
+        - ipBlock: # Allows traffic to a specific IP address range
+            cidr: 10.0.0.0/8 # Example: Allow traffic to internal network
+            except: # Optional: Exclude specific IP ranges from the CIDR
+              - 10.0.1.0/24
+      ports:
+        - protocol: TCP # Protocol allowed for egress traffic
+          port: 443 # Port allowed for egress traffic
+        - protocol: UDP
+          port: 53 # Example: Allow DNS resolution

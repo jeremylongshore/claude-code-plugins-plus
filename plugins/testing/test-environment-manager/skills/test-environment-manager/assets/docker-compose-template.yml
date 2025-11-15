@@ -1,0 +1,53 @@
+# docker-compose-template.yml
+# Template for defining services and dependencies for test environments.
+
+version: "3.9"  # Specify the Docker Compose file version
+
+services:
+  # Database service (e.g., PostgreSQL)
+  db:
+    image: postgres:14  # Use a specific PostgreSQL version
+    container_name: test-db  # A descriptive container name
+    restart: always  # Automatically restart the container if it fails
+    ports:
+      - "5432:5432"  # Map host port 5432 to container port 5432
+    environment:
+      POSTGRES_USER: REPLACE_ME  # Replace with your desired username
+      POSTGRES_PASSWORD: REPLACE_ME  # Replace with a strong password
+      POSTGRES_DB: test_database  # The database name
+    volumes:
+      - db_data:/var/lib/postgresql/data  # Persist data even if the container is stopped
+
+  # Redis service (for caching or messaging)
+  redis:
+    image: redis:latest  # Use the latest Redis image
+    container_name: test-redis
+    restart: always
+    ports:
+      - "6379:6379"  # Map host port 6379 to container port 6379
+
+  # Application service (the service you are testing)
+  app:
+    build:
+      context: .  # Path to the application's Dockerfile
+      dockerfile: Dockerfile  # Name of the Dockerfile
+    container_name: test-app
+    restart: always
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080
+    environment:
+      DATABASE_URL: "postgresql://REPLACE_ME:REPLACE_ME@db:5432/test_database" # Database connection string
+      REDIS_URL: "redis://redis:6379" # Redis connection string
+      YOUR_APP_CONFIG: YOUR_VALUE_HERE # Example: App-specific configuration
+    depends_on:
+      - db  # Ensure the database is running before starting the application
+      - redis # Ensure redis is running before starting the application
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/health || exit 1"] # Example: Health check endpoint
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+# Define named volumes for data persistence
+volumes:
+  db_data:

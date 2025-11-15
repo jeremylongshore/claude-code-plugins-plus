@@ -35,7 +35,7 @@ except ImportError:
 # Configuration
 PROJECT_ID = os.getenv("GOOGLE_CLOUD_PROJECT", "diagnostic-pro-start-up")
 REGION = "us-central1"
-MODEL_NAME = "gemini-1.5-flash-002"  # Use stable model instead of experimental
+MODEL_NAME = "gemini-1.5-flash"  # Use stable model (002 variant not available in this project)
 DB_PATH = "backups/asset_generation.db"
 RATE_LIMIT_DELAY = 2  # Delay between API calls in seconds
 

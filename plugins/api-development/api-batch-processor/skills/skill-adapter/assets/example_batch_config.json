@@ -1,0 +1,54 @@
+{
+  "_comment": "Example configuration for a batch processing job.  Customize this for your specific API and data.",
+  "job_name": "process_user_data_2024-10-27",
+  "description": "Batch process user data updates from the latest CSV file.",
+  "api_endpoint": "https://api.example.com/users",
+  "api_method": "PUT",
+  "api_headers": {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer YOUR_API_KEY"
+  },
+  "data_source": {
+    "_comment": "Specify where the data comes from.  Currently supports CSV files.",
+    "type": "csv",
+    "file_path": "/data/user_updates_2024-10-27.csv",
+    "delimiter": ",",
+    "quotechar": "\"",
+    "header": true,
+    "fields": {
+      "user_id": "user_id",
+      "email": "email",
+      "status": "status",
+      "subscription_type": "subscription"
+    }
+  },
+  "batch_size": 50,
+  "max_retries": 3,
+  "retry_delay": 5,
+  "error_handling": {
+    "_comment": "Defines how to handle errors during processing.",
+    "on_error": "continue",
+    "log_errors": true,
+    "error_log_path": "/logs/user_update_errors.log"
+  },
+  "success_handling": {
+    "_comment": "Defines how to handle successful updates.",
+    "log_successes": true,
+    "success_log_path": "/logs/user_update_successes.log"
+  },
+  "transformation": {
+    "_comment": "Optional transformation to apply to each data record before sending to the API.  Use a python function name.",
+    "function_name": "transform_user_data"
+  },
+  "reporting": {
+    "_comment": "Options for reporting the job's progress.",
+    "progress_interval": 60,
+    "report_to_console": true,
+    "report_to_file": "/reports/user_update_report.txt"
+  },
+   "rate_limiting": {
+    "_comment": "Prevent overwhelming the API.",
+    "requests_per_second": 10
+  },
+  "dry_run": false
+}

@@ -1,0 +1,121 @@
+# Configuration file for Deployment Rollback Manager Plugin
+
+# --- General Settings ---
+general:
+  # Description of this rollback configuration.  Useful for identifying different scenarios.
+  description: "Rollback to version 1.2.3 due to critical bug found in 1.2.4"
+
+  # Environment to perform the rollback in.  Should match your deployment environment.
+  environment: "production"  # Example: production, staging, dev
+
+  # Whether to automatically approve the rollback after safety checks pass.
+  # Set to false for manual approval after checks.
+  auto_approve: false
+
+# --- Deployment Settings ---
+deployment:
+  # Target application or service name.
+  application_name: "YOUR_APPLICATION_NAME"
+
+  # Deployment platform to rollback. Options: kubernetes, docker, aws_ecs, manual_script
+  platform: "kubernetes"
+
+  # Version to rollback to.
+  rollback_version: "1.2.3"
+
+  # Current version being rolled back from. This is used for verification.
+  current_version: "1.2.4"
+
+# --- Kubernetes Specific Settings (only applicable if platform is kubernetes) ---
+kubernetes:
+  # Namespace where the application is deployed.
+  namespace: "default"
+
+  # Deployment name.
+  deployment_name: "YOUR_DEPLOYMENT_NAME"
+
+  # Image tag to rollback to.
+  image_tag: "1.2.3"
+
+  # Number of replicas to verify after the rollback.
+  replica_count: 3
+
+# --- Docker Specific Settings (only applicable if platform is docker) ---
+docker:
+  # Docker compose file path.
+  compose_file: "docker-compose.yml"
+
+  # Service name to rollback.
+  service_name: "YOUR_SERVICE_NAME"
+
+# --- AWS ECS Specific Settings (only applicable if platform is aws_ecs) ---
+aws_ecs:
+  # ECS cluster name
+  cluster_name: "YOUR_ECS_CLUSTER_NAME"
+
+  # ECS service name
+  service_name: "YOUR_ECS_SERVICE_NAME"
+
+  # Task definition family name
+  task_definition_family: "YOUR_TASK_DEFINITION_FAMILY"
+
+# --- Manual Script Settings (only applicable if platform is manual_script) ---
+manual_script:
+  # Path to the script to execute for the rollback.
+  script_path: "/path/to/rollback_script.sh"
+
+  # Arguments to pass to the script.
+  script_arguments: ["--rollback", "--version", "1.2.3"]
+
+# --- Safety Checks ---
+safety_checks:
+  # List of checks to perform before initiating the rollback.
+  checks:
+    - type: "health_check"
+      # URL to check for application health.
+      url: "https://YOUR_APPLICATION_URL/health"
+      # Expected HTTP status code for a healthy application.
+      expected_status_code: 200
+      # Timeout in seconds for the health check.
+      timeout: 10
+
+    - type: "database_check"
+      # SQL query to execute.
+      query: "SELECT COUNT(*) FROM users;"
+      # Expected result from the query.
+      expected_result: "REPLACE_ME"
+
+    - type: "metric_check"
+      # Metric name to check.
+      metric_name: "error_rate"
+      # Maximum acceptable value for the metric.
+      max_value: 0.01  # Example: 1% error rate
+      # Monitoring system (e.g., prometheus, cloudwatch)
+      monitoring_system: "prometheus"
+      # Query to get the metric from the monitoring system.
+      query: "sum(rate(http_requests_total{status=~'5..'}[5m])) / sum(rate(http_requests_total[5m]))"
+
+# --- Notification Settings ---
+notifications:
+  # List of notification channels to send rollback status updates to.
+  channels:
+    - type: "slack"
+      # Slack webhook URL.
+      webhook_url: "YOUR_SLACK_WEBHOOK_URL"
+      # Channel to send notifications to.
+      channel: "#deployment-alerts"
+
+    - type: "email"
+      # Recipient email addresses.
+      recipients: ["admin@example.com", "devops@example.com"]
+
+# --- Advanced Settings ---
+advanced:
+  # Timeout in seconds for the entire rollback process.
+  rollback_timeout: 3600 # 1 hour
+
+  # Number of retries for failed operations.
+  retries: 2
+
+  # Delay in seconds between retries.
+  retry_delay: 30

@@ -1,0 +1,47 @@
+# Customizable Greeting Template
+
+This template allows you to customize the greeting message used by the `/hello` command in the Hello World plugin. You can modify the greeting, the introductory question, and even add personalized touches.
+
+## Instructions
+
+1.  **Replace the placeholders** below with your desired text.
+2.  **Save the file** as `greeting.txt` (or any other name you prefer).
+3.  **Configure the plugin** (if necessary) to use your custom greeting file.  (This functionality would be handled in the plugin's code, not the template itself.)
+
+## Template
+
+### Greeting
+
+```
+Hello! Welcome to our service.
+```
+
+**Example:**
+
+```
+Greetings, valued user! Welcome to the Hello World plugin.
+```
+
+### Introductory Question
+
+```
+How can I assist you today?
+```
+
+**Example:**
+
+```
+What can I do for you today to make your coding experience better?
+```
+
+### Optional: Personalized Touch
+
+You can add a personalized touch to your greeting based on user information or other factors (if the plugin is designed to handle that).
+
+**Example (Hypothetical - Plugin Support Required):**
+
+```
+Hello, {{user.name}}!  I see you're working on a {{user.project}}. How can I help you with that today?
+```
+
+**Note:** The `{{user.name}}` and `{{user.project}}` placeholders in the example above are for demonstration purposes only. The plugin code would need to be specifically designed to handle and replace these placeholders with actual user data.  This template simply shows the *potential* for customization.

@@ -1,0 +1,79 @@
+# Auto-Scaling Configuration Template
+
+# --- Global Settings ---
+global:
+  # Enable or disable auto-scaling globally
+  enabled: true
+
+  # Default cooldown period (in seconds) after a scaling event
+  cooldown: 300 # seconds (5 minutes)
+
+# --- Application Configuration ---
+application:
+  name: REPLACE_ME # Application Name (e.g., web-app, api-server)
+  type: web  # Application type (e.g., web, api, worker)
+
+  # Resource limits (CPU, Memory)
+  resources:
+    cpu:
+      min: 0.5  # Minimum CPU units
+      max: 4    # Maximum CPU units
+    memory:
+      min: 512  # Minimum memory in MB
+      max: 4096 # Maximum memory in MB
+
+# --- Scaling Policies ---
+scaling_policies:
+  # --- CPU Utilization Scaling ---
+  cpu_utilization:
+    enabled: true
+    target_utilization: 70 # Target CPU utilization percentage
+    scale_up_threshold: 80  # CPU usage percentage to trigger scale-up
+    scale_down_threshold: 40 # CPU usage percentage to trigger scale-down
+    scale_up_increment: 1    # Number of instances to add during scale-up
+    scale_down_decrement: 1  # Number of instances to remove during scale-down
+
+  # --- Memory Utilization Scaling ---
+  memory_utilization:
+    enabled: true
+    target_utilization: 75 # Target Memory utilization percentage
+    scale_up_threshold: 85  # Memory usage percentage to trigger scale-up
+    scale_down_threshold: 50 # Memory usage percentage to trigger scale-down
+    scale_up_increment: 1    # Number of instances to add during scale-up
+    scale_down_decrement: 1  # Number of instances to remove during scale-down
+
+  # --- Request Latency Scaling ---
+  request_latency:
+    enabled: false # Enable only if latency metrics are available
+    target_latency: 200 # Target request latency in milliseconds
+    scale_up_threshold: 500 # Latency in milliseconds to trigger scale-up
+    scale_down_threshold: 100 # Latency in milliseconds to trigger scale-down
+    scale_up_increment: 1    # Number of instances to add during scale-up
+    scale_down_decrement: 1  # Number of instances to remove during scale-down
+
+  # --- Custom Metric Scaling ---
+  custom_metric:
+    enabled: false # Enable only if a custom metric is available
+    metric_name: YOUR_VALUE_HERE # Name of the custom metric
+    target_value: YOUR_VALUE_HERE # Target value for the custom metric
+    scale_up_threshold: YOUR_VALUE_HERE # Threshold to trigger scale-up
+    scale_down_threshold: YOUR_VALUE_HERE # Threshold to trigger scale-down
+    scale_up_increment: 1    # Number of instances to add during scale-up
+    scale_down_decrement: 1  # Number of instances to remove during scale-down
+
+# --- Infrastructure Configuration ---
+infrastructure:
+  platform: aws # Cloud platform (e.g., aws, azure, gcp, on-prem)
+  region: us-east-1 # Cloud region
+  instance_type: t3.medium # Instance type for new instances
+  min_instances: 1    # Minimum number of instances
+  max_instances: 5    # Maximum number of instances
+
+# --- Monitoring Configuration ---
+monitoring:
+  # Integration with monitoring tools (e.g., CloudWatch, Prometheus)
+  # Configure details for your monitoring system here
+  # Example:
+  type: cloudwatch # Monitoring system type
+  namespace: MyApp # Monitoring namespace
+  metric_prefix: MyAppInstance # Metric prefix

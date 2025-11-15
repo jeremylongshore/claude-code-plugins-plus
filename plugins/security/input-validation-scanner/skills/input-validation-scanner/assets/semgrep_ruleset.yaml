@@ -1,0 +1,248 @@
+# semgrep_ruleset.yaml
+# Example Semgrep ruleset for scanning input validation practices.
+
+rules:
+  # Rule 1: Detect missing input validation on user-provided data
+  - id: input-validation.missing-validation
+    message: |
+      Missing input validation for user-provided data.
+      Consider adding validation to prevent injection attacks, XSS, etc.
+    severity: WARNING
+    languages:
+      - python
+      - javascript
+    patterns:
+      - pattern-either:
+          - pattern: $variable = request.GET["$input"] # Python Django example
+          - pattern: $variable = request.args.get("$input") # Python Flask example
+          - pattern: $variable = $_GET["$input"] # PHP example
+          - pattern: $variable = req.query.$input # Javascript Express example
+          - pattern: $variable = req.body.$input # Javascript Express example
+      - pattern-not: |
+          # Example: Check if $variable is validated before use
+          if validate($variable):
+            ...
+          else:
+            raise Exception("Invalid input")
+    # Example metavariable regex constraint - require input to be a string
+    #constraints:
+    #  $input:
+    #    regex: "^[a-zA-Z_][a-zA-Z0-9_]*$"
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-20: Improper Input Validation"
+      references:
+        - "https://owasp.org/Top10/A03_2021-Injection/"
+      confidence: LOW # Adjust based on the accuracy of the rule
+
+  # Rule 2: Detect use of eval() without proper sanitization
+  - id: input-validation.unsafe-eval
+    message: |
+      Detected use of eval() function.  This can be dangerous if user-provided input is used without proper sanitization.
+      Consider using safer alternatives.
+    severity: CRITICAL
+    languages:
+      - python
+      - javascript
+    patterns:
+      - pattern: eval($input)
+    # Example metavariable regex constraint - require input to be a string
+    constraints:
+      $input:
+        not: "safe_string"  # Prevent flagging safe uses, REPLACE_ME: Add logic to identify safe strings
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection')"
+      references:
+        - "https://owasp.org/www-community/attacks/Code_Injection"
+      confidence: MEDIUM
+
+  # Rule 3: Detect potential SQL injection vulnerabilities (basic example)
+  - id: input-validation.sql-injection-basic
+    message: |
+      Potential SQL injection vulnerability detected.
+      Ensure that user-provided input is properly sanitized and parameterized before use in SQL queries.
+    severity: HIGH
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: db_query("SELECT * FROM users WHERE username = '" + $username + "'") # Generic string concatenation
+          - pattern: db_query(f"SELECT * FROM users WHERE username = '{ $username }'") # Python f-string
+          - pattern: db_query("SELECT * FROM users WHERE username = " . $username) # PHP concatenation
+      - pattern-not: |
+          # Example: Check if $username is properly escaped before use
+          $username = escape_sql($username)
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+      references:
+        - "https://owasp.org/www-community/attacks/SQL_Injection"
+      confidence: MEDIUM
+
+  # Rule 4: Detect use of shell injection vulnerabilities (basic example)
+  - id: input-validation.shell-injection-basic
+    message: |
+      Potential shell injection vulnerability detected.
+      Ensure that user-provided input is properly sanitized and parameterized before use in shell commands.
+    severity: HIGH
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: subprocess.call($command, shell=True) # Python shell=True is dangerous
+          - pattern: exec($command) # PHP
+          - pattern: child_process.exec($command) # Javascript
+      - pattern-not: |
+          # Example: Check if $command is properly escaped before use
+          $command = escape_shell($command)
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection')"
+      references:
+        - "https://owasp.org/www-community/attacks/OS_Command_Injection"
+      confidence: MEDIUM
+
+  # Rule 5: Detect HTML injection vulnerabilities (basic example)
+  - id: input-validation.html-injection-basic
+    message: |
+      Potential HTML injection vulnerability detected.
+      Ensure that user-provided input is properly sanitized and escaped before use in HTML output.
+    severity: MEDIUM
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: document.write($input) # JavaScript
+          - pattern: echo $input # PHP
+          - pattern: return HttpResponse($input) # Python Django
+      - pattern-not: |
+          # Example: Check if $input is properly escaped before use
+          $input = escape_html($input)
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting')"
+      references:
+        - "https://owasp.org/www-community/attacks/xss/"
+      confidence: MEDIUM
+
+  # Rule 6: Detect missing CSRF protection in forms (Django example)
+  - id: input-validation.missing-csrf-protection
+    message: |
+      Missing CSRF protection in Django form. Add {% csrf_token %} to your form.
+    severity: HIGH
+    languages:
+      - html
+    patterns:
+      - pattern: |
+          <form method="POST" ...>
+            ...
+          </form>
+      - pattern-not: |
+          <form method="POST" ...>
+            {% csrf_token %}
+            ...
+          </form>
+    metadata:
+      owasp: "A01:2021 - Broken Access Control"
+      cwe: "CWE-352: Cross-Site Request Forgery (CSRF)"
+      references:
+        - "https://owasp.org/www-community/attacks/CSRF"
+      confidence: MEDIUM
+
+  # Rule 7: Detect use of hardcoded secrets (Placeholder, REPLACE_ME)
+  - id: input-validation.hardcoded-secret
+    message: |
+      Hardcoded secret detected.  Avoid storing secrets directly in code.
+      Use environment variables or a secrets management system instead.
+    severity: CRITICAL
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: API_KEY = "YOUR_API_KEY_HERE" # Python
+          - pattern: const API_KEY = "YOUR_API_KEY_HERE"; # JavaScript
+          - pattern: $apiKey = "YOUR_API_KEY_HERE"; # PHP
+          - pattern: API_KEY = "REPLACE_ME"
+          - pattern: const API_KEY = "REPLACE_ME";
+          - pattern: $apiKey = "REPLACE_ME";
+    metadata:
+      owasp: "A05:2021 - Security Misconfiguration"
+      cwe: "CWE-798: Use of Hard-coded Credentials"
+      references:
+        - "https://owasp.org/Top10/A05_2021-Security_Misconfiguration/"
+      confidence: HIGH
+
+  # Rule 8: Example for detecting weak password storage (Placeholder, REPLACE_ME)
+  - id: input-validation.weak-password-storage
+    message: |
+      Weak password storage detected.  Use a strong hashing algorithm like bcrypt or Argon2.
+    severity: CRITICAL
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: hashlib.md5($password).hexdigest() # Python MD5
+          - pattern: md5($password) # PHP MD5
+          - pattern: SHA1($password) # PHP SHA1
+      - pattern-not: |
+          # Example: Check if $password is properly hashed with bcrypt
+          bcrypt.hashpw($password, bcrypt.gensalt())
+    metadata:
+      owasp: "A07:2021 - Identification and Authentication Failures"
+      cwe: "CWE-916: Use of Password Hash With Insufficient Computational Effort"
+      references:
+        - "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/"
+      confidence: MEDIUM
+
+  # Rule 9:  Catching the usage of unsafe functions like gets() in C/C++
+  - id: input-validation.unsafe-function-gets
+    message: |
+      The `gets()` function is inherently unsafe due to lack of bounds checking.
+      Use `fgets()` instead.
+    severity: CRITICAL
+    languages:
+      - c
+      - cpp
+    patterns:
+      - pattern: gets($buf);
+    metadata:
+      owasp: "A03:2021 - Injection"
+      cwe: "CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')"
+      references:
+        - "https://cwe.mitre.org/data/definitions/120.html"
+      confidence: HIGH
+
+  # Rule 10: Detect path traversal vulnerabilities (Placeholder, REPLACE_ME)
+  - id: input-validation.path-traversal
+    message: |
+      Potential path traversal vulnerability detected. Ensure that file paths are properly validated to prevent access to unauthorized files.
+    severity: HIGH
+    languages:
+      - python
+      - javascript
+      - php
+    patterns:
+      - pattern-either:
+          - pattern: open($filepath, 'r') # Python
+          - pattern: fs.readFile($filepath) # Javascript
+          - pattern: fopen($filepath, 'r') # PHP
+      - pattern-not: |
+          # Example: Check if $filepath is properly validated before use
+          $filepath = validate_filepath($filepath)
+    metadata:
+      owasp: "A01:2021 - Broken Access Control"
+      cwe: "CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal')"
+      references:
+        - "https://owasp.org/www-community/attacks/Path_Traversal"
+      confidence: MEDIUM

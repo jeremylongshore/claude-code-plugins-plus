@@ -1,0 +1,75 @@
+# Loki Configuration File
+# This file configures the Loki log aggregation system.
+
+auth_enabled: false # Disable authentication for simplicity (REPLACE_ME: Enable authentication in production)
+
+server:
+  http_listen_port: 3100 # Port Loki listens on for HTTP requests
+  grpc_listen_port: 9096 # Port Loki listens on for gRPC requests
+
+ingester:
+  lifecycler:
+    address: 127.0.0.1 # Address of the ingester
+    ring:
+      kvstore:
+        store: inmemory # Use in-memory store for simplicity (REPLACE_ME: Use a persistent store like Consul or etcd in production)
+      replication_factor: 1 # Number of replicas for log data
+  wal:
+    enabled: true # Enable Write-Ahead Log for durability
+    dir: /tmp/loki/wal # Directory for the Write-Ahead Log (REPLACE_ME: Use a persistent volume in production)
+  chunk_idle_period: 1h # Time after which an inactive chunk is flushed to storage
+  chunk_block_size: 262144 # Size of each chunk block (256KB)
+  chunk_retain_period: 24h # Time after which a chunk is deleted from the ingester
+  max_transfer_retries: 0 # Maximum number of retries for transferring chunks
+
+schema_config:
+  configs:
+    - from: 2020-10-24 # Start date for this schema
+      store: boltdb-shipper # Use BoltDB shipper for index storage
+      object_store: filesystem # Use filesystem for chunk storage
+      schema: v11 # Schema version
+      index:
+        prefix: index_ # Prefix for index keys
+        period: 24h # Index rotation period
+
+storage_config:
+  boltdb_shipper:
+    active_index_directory: /tmp/loki/index # Directory for the active index (REPLACE_ME: Use a persistent volume in production)
+    shared_dir: /tmp/loki/chunks # Directory for shared chunks (REPLACE_ME: Use a persistent volume in production)
+  filesystem:
+    path: /tmp/loki/chunks # Directory for chunk storage (REPLACE_ME: Use a persistent volume in production)
+
+limits_config:
+  enforce_metric_name: false # Disable enforcement of metric names
+  reject_old_samples: true # Reject samples older than the configured time
+  reject_old_samples_max_age: 168h # Maximum age of samples (7 days)
+  max_global_streams_per_user: 0 # 0 means unlimited
+  max_streams_per_user: 0 # 0 means unlimited
+  ingestion_rate_mb: 100 # Maximum ingestion rate in MB/s
+  ingestion_burst_size_mb: 200 # Maximum burst size in MB
+  max_line_size: 512000 # Maximum line size in bytes (500KB)
+  max_line_length: 512000 # DEPRECATED: use max_line_size instead
+  max_query_lookback: 720h # Maximum query lookback (30 days)
+  split_queries_by_interval: 12h # Split queries by this interval
+  max_concurrent_queries: 30 # Maximum number of concurrent queries
+  max_query_series: 1000 # Maximum number of series returned by a query
+  max_query_parallelism: 16 # Maximum query parallelism
+  max_query_length: 720h # Maximum query length (30 days)
+
+compactor:
+  working_directory: /tmp/loki/compactor # Directory for compactor working files (REPLACE_ME: Use a persistent volume in production)
+  shared_store: filesystem # Use filesystem for shared storage
+  compaction_interval: 1h # Interval between compactor runs
+  retention_enabled: true # Enable retention of old chunks
+  retention_delete_delay: 24h # Delay before deleting old chunks
+  retention_max_age: 720h # Maximum age of chunks to retain (30 days)
+
+ruler:
+  storage:
+    type: local
+    local:
+      directory: /tmp/loki/rules # Directory to store the rules (REPLACE_ME: Use a persistent volume in production)
+  rule_path: /tmp/loki/rules # Path where rules are stored (REPLACE_ME: Use a persistent volume in production)
+  alertmanager_url: "" # URL of the Alertmanager instance (REPLACE_ME: YOUR_ALERTMANAGER_URL)
+  poll_interval: 30s # Interval to poll for rule changes
+  enable_api: true # Enable the API for managing rules

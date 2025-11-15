@@ -1,0 +1,104 @@
+{
+  "_comment": "Example API Definition - Use this as a template for your API gateway configuration.",
+  "api_name": "MyAwesomeAPI",
+  "version": "v1",
+  "base_path": "/api/v1",
+  "authentication": {
+    "_comment": "Authentication configuration.  'jwt' is currently the only supported method.",
+    "type": "jwt",
+    "jwt": {
+      "_comment": "JWT specific configuration.",
+      "issuer": "https://my-auth-server.example.com",
+      "jwks_uri": "https://my-auth-server.example.com/.well-known/jwks.json",
+      "audience": "my-api-audience"
+    }
+  },
+  "rate_limiting": {
+    "_comment": "Global rate limiting configuration. Applies to all routes.",
+    "enabled": true,
+    "requests_per_minute": 100,
+    "burst_size": 200,
+    "identifier": "ip"
+  },
+  "routes": [
+    {
+      "_comment": "Route for getting user details.",
+      "path": "/users/{user_id}",
+      "method": "GET",
+      "target_url": "http://user-service.example.com/users/{user_id}",
+      "authentication_required": true,
+      "rate_limiting": {
+        "_comment": "Override global rate limiting for this route.",
+        "enabled": true,
+        "requests_per_minute": 20,
+        "burst_size": 40,
+        "identifier": "user_id"
+      },
+      "circuit_breaker": {
+        "_comment": "Circuit breaker configuration for this route.",
+        "enabled": true,
+        "error_threshold_percentage": 50,
+        "reset_timeout_ms": 30000,
+        "volume_threshold": 10
+      }
+    },
+    {
+      "_comment": "Route for creating a new user.",
+      "path": "/users",
+      "method": "POST",
+      "target_url": "http://user-service.example.com/users",
+      "authentication_required": false,
+      "rate_limiting": {
+        "_comment": "Use global rate limiting."
+      },
+       "circuit_breaker": {
+        "_comment": "Use global circuit breaker settings or disable circuit breaker",
+        "enabled": false
+      }
+    },
+    {
+      "_comment": "Route for listing all products.",
+      "path": "/products",
+      "method": "GET",
+      "target_url": "http://product-service.example.com/products",
+      "authentication_required": true,
+      "rate_limiting": {
+        "_comment": "Override global rate limiting for this route.",
+        "enabled": true,
+        "requests_per_minute": 50,
+        "burst_size": 100,
+        "identifier": "ip"
+      },
+      "circuit_breaker": {
+        "_comment": "Circuit breaker configuration for this route.",
+        "enabled": true,
+        "error_threshold_percentage": 50,
+        "reset_timeout_ms": 30000,
+        "volume_threshold": 10
+      }
+    },
+     {
+      "_comment": "Route for health check.",
+      "path": "/health",
+      "method": "GET",
+      "target_url": "http://health-service.example.com/health",
+      "authentication_required": false,
+      "rate_limiting": {
+        "_comment": "No rate limiting for health check.",
+        "enabled": false
+      },
+       "circuit_breaker": {
+        "_comment": "Disable circuit breaker for health check",
+        "enabled": false
+      }
+    }
+  ],
+  "load_balancing": {
+    "_comment": "Load balancing configuration",
+    "algorithm": "round_robin",
+    "targets": [
+      "http://user-service-instance1.example.com",
+      "http://user-service-instance2.example.com"
+    ]
+  }
+}

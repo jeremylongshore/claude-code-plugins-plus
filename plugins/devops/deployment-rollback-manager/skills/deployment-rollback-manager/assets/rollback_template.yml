@@ -1,0 +1,71 @@
+# rollback_template.yml
+# This file defines the configuration for a deployment rollback.
+
+# General Rollback Information
+rollback_name: "REPLACE_ME - Descriptive Rollback Name" # e.g., "Rollback to v1.2.3 due to login issues"
+description: "Detailed description of the rollback purpose and context." # More details on why this rollback is necessary.
+
+# Target Environment
+environment: "production" # e.g., "staging", "production", "qa"
+region: "us-east-1" # AWS region or equivalent
+
+# Deployment Details
+application_name: "YOUR_VALUE_HERE - Application Name" # e.g., "web-app", "api-service"
+current_version: "YOUR_VALUE_HERE - Current Deployed Version" # e.g., "v1.2.4", "release-2023-10-27"
+rollback_version: "YOUR_VALUE_HERE - Version to Rollback To" # e.g., "v1.2.3", "release-2023-10-26"
+
+# Deployment Strategy (Choose one)
+deployment_strategy: "blue_green"  # Options: "blue_green", "rolling_update", "canary"
+
+# Blue/Green Specific Configuration
+blue_green:
+  active_color: "blue" # e.g., "blue", "green" - Which color is currently serving traffic?
+  inactive_color: "green" # e.g., "green", "blue" - Which color will be promoted?
+  switch_traffic_method: "dns_swap" # Options: "dns_swap", "load_balancer_update"
+  dns_record: "api.example.com" # DNS record to update (if using dns_swap)
+  load_balancer_arn: "YOUR_VALUE_HERE - ARN of the Load Balancer" # ARN of the load balancer (if using load_balancer_update)
+
+# Rolling Update Specific Configuration
+rolling_update:
+  batch_size: 2 # Number of instances/pods to update in each batch
+  wait_time: 60 # Seconds to wait between batches for health checks
+
+# Canary Deployment Specific Configuration
+canary:
+  initial_percentage: 10 # Percentage of traffic to route to the canary version initially
+  increment_percentage: 10 # Percentage to increase traffic to the canary version in each step
+  increment_interval: 300 # Seconds between traffic increments
+  max_percentage: 50 # Maximum percentage of traffic to route to the canary version
+
+# Health Check Configuration
+health_check:
+  type: "http" # Options: "http", "tcp", "custom"
+  url: "/health" # URL to check for HTTP health checks
+  port: 8080 # Port to check for TCP health checks
+  timeout: 30 # Seconds before health check times out
+  success_codes: [200, 204] # HTTP status codes indicating success
+  interval: 15 # Seconds between health checks
+  max_failures: 3 # Number of consecutive failures before rollback is considered failed
+
+# Pre-Rollback Checks
+pre_rollback_checks:
+  database_backup: true # Perform a database backup before rollback
+  monitoring_enabled: true # Ensure monitoring is enabled
+  alerting_configured: true # Ensure alerting is configured
+
+# Post-Rollback Checks
+post_rollback_checks:
+  health_check_success: true # Verify health checks are passing
+  performance_metrics_stable: true # Verify performance metrics are within acceptable limits
+  error_rates_acceptable: true # Verify error rates are within acceptable limits
+
+# Notifications
+notifications:
+  on_success:
+    - "slack:YOUR_VALUE_HERE - Slack Channel ID" # Send a notification to Slack on success
+  on_failure:
+    - "email:YOUR_VALUE_HERE - Email Address" # Send an email on failure
+
+# Advanced Configuration
+dry_run: false # Set to true to simulate the rollback without actually executing it
+force: false # Set to true to bypass certain safety checks (use with caution)

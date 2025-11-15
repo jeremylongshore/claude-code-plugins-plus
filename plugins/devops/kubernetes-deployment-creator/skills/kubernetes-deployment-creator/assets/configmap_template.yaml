@@ -1,0 +1,33 @@
+# Kubernetes ConfigMap Template
+# This ConfigMap stores configuration data that can be consumed by pods.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: REPLACE_ME-config  # Replace with your ConfigMap name (e.g., myapp-config)
+  namespace: default       # Optional: Specify the namespace (e.g., production, staging)
+  labels:
+    app: REPLACE_ME        # Replace with your application name (e.g., myapp)
+    tier: backend         # Optional: Tier or component of the application
+
+data:
+  # Define your configuration key-value pairs here.
+  # These values can be accessed by your application running in the pod.
+
+  # Example: Application settings
+  APP_ENVIRONMENT: "production" # or "staging", "development"
+  LOG_LEVEL: "INFO"          # or "DEBUG", "WARNING", "ERROR"
+
+  # Example: Database connection details
+  DATABASE_HOST: "YOUR_VALUE_HERE"    # Replace with your database hostname/IP address
+  DATABASE_PORT: "5432"            # Replace with your database port
+  DATABASE_NAME: "YOUR_VALUE_HERE"    # Replace with your database name
+  DATABASE_USER: "YOUR_VALUE_HERE"    # Replace with your database username
+
+  # Example: Feature flags (boolean values as strings)
+  ENABLE_NEW_FEATURE: "true"     # or "false"
+
+  # Example: API endpoint
+  API_ENDPOINT: "https://api.example.com" # Replace with your API endpoint
+
+  # Add more configuration entries as needed.  Remember to quote values that might be interpreted as numbers or booleans if you want them to be strings.

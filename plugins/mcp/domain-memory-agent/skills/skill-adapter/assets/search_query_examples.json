@@ -1,0 +1,55 @@
+{
+  "_comment": "Example search queries for the Domain Memory Agent plugin.",
+  "examples": [
+    {
+      "query": "What are the key risk factors for developing type 2 diabetes?",
+      "expected_result": "Documents discussing obesity, family history, age, and sedentary lifestyle as risk factors for type 2 diabetes.",
+      "_comment": "Example searching for medical information."
+    },
+    {
+      "query": "Summarize the latest research on CRISPR gene editing.",
+      "expected_result": "A summary of recent publications highlighting advancements and challenges in CRISPR technology.",
+      "_comment": "Example requesting a summary of a specific topic."
+    },
+    {
+      "query": "Find documents tagged with 'financial_modeling' and 'risk_assessment'.",
+      "expected_result": "A list of documents related to financial modeling and risk assessment.",
+      "_comment": "Example using tags to refine the search."
+    },
+    {
+      "query": "What are the best practices for software development security?",
+      "expected_result": "Documents outlining secure coding practices, vulnerability assessments, and security audits.",
+      "_comment": "Example searching for best practices in software development."
+    },
+    {
+      "query": "Show me documents related to the 'Project Phoenix' initiative.",
+      "expected_result": "All documents tagged or referencing 'Project Phoenix'.",
+      "_comment": "Example searching for project-specific information."
+    },
+    {
+      "query": "Explain the concept of blockchain technology in simple terms.",
+      "expected_result": "Documents explaining blockchain concepts like distributed ledgers, cryptography, and consensus mechanisms.",
+      "_comment": "Example requesting a simple explanation of a complex topic."
+    },
+    {
+      "query": "What are the environmental impacts of plastic pollution?",
+      "expected_result": "Documents discussing the effects of plastic on marine life, ecosystems, and human health.",
+      "_comment": "Example searching for information on environmental issues."
+    },
+    {
+      "query": "Find the document titled 'Sales Strategy Q3 2024'.",
+      "expected_result": "The specific document titled 'Sales Strategy Q3 2024'.",
+      "_comment": "Example searching for a document by its title."
+    },
+     {
+      "query": "summarize documents related to 'supply chain optimization'",
+      "expected_result": "A summary of documents discussing strategies to improve efficiency and reduce costs in the supply chain.",
+      "_comment": "Example using 'summarize' keyword with a specific topic."
+    },
+    {
+      "query": "documents tagged with 'legal' and containing the phrase 'contract termination'",
+      "expected_result": "A list of documents tagged as 'legal' that contain the phrase 'contract termination'.",
+       "_comment": "Example combining tags and phrase search."
+    }
+  ]
+}

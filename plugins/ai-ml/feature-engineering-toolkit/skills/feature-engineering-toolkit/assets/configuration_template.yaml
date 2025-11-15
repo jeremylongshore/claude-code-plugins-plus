@@ -1,0 +1,129 @@
+# Configuration template for the feature engineering toolkit plugin
+# This file allows you to customize the feature engineering pipeline.
+
+# --- Data Input ---
+data_input:
+  # Path to the input data file (CSV, Parquet, etc.)
+  # Supported formats: csv, parquet
+  data_path: "data/input.csv" # REPLACE_ME: Path to your input data
+  # File type of the input data
+  file_type: "csv"
+  # Separator for CSV files (e.g., comma, tab)
+  csv_separator: ","
+  # Quote character for CSV files
+  csv_quotechar: '"'
+  # Encoding of the input file
+  encoding: "utf-8"
+  # Target variable name
+  target_variable: "target" # REPLACE_ME: Name of your target variable
+  # Index column (optional)
+  index_column: null  # Set to column name if you have an index column
+
+# --- Feature Creation ---
+feature_creation:
+  # Enable or disable automated feature creation
+  enabled: true
+  # List of feature creation techniques to apply
+  # Available techniques: polynomial_features, interaction_terms, aggregation_features, datetime_features
+  techniques:
+    - "polynomial_features"
+    - "interaction_terms"
+    - "datetime_features"
+  # Polynomial Features configuration
+  polynomial_features:
+    degree: 2
+    include_bias: false
+  # Interaction Terms configuration
+  interaction_terms:
+    interaction_degree: 2
+  # Aggregation Features configuration
+  aggregation_features:
+    # Group by column for aggregation (e.g., user_id, product_id)
+    group_by: "user_id" # REPLACE_ME: Column to group by for aggregation
+    # Aggregation functions to apply (e.g., mean, sum, count)
+    aggregations:
+      - "mean"
+      - "sum"
+  # Datetime Features configuration
+  datetime_features:
+    # List of datetime columns to extract features from
+    datetime_columns:
+      - "date" # REPLACE_ME: Name of your datetime column
+    # List of datetime features to extract (e.g., year, month, day, dayofweek)
+    features_to_extract:
+      - "year"
+      - "month"
+      - "dayofweek"
+
+# --- Feature Selection ---
+feature_selection:
+  # Enable or disable feature selection
+  enabled: true
+  # Selection method
+  # Available methods: variance_threshold, select_k_best, recursive_feature_elimination
+  method: "select_k_best"
+  # Variance Threshold configuration
+  variance_threshold:
+    threshold: 0.0
+  # Select K Best configuration
+  select_k_best:
+    k: 10 # REPLACE_ME: Number of top features to select
+    score_func: "f_classif" # Or "f_regression"
+  # Recursive Feature Elimination configuration
+  recursive_feature_elimination:
+    n_features_to_select: 10
+    step: 1
+
+# --- Feature Transformation ---
+feature_transformation:
+  # Enable or disable feature transformation
+  enabled: true
+  # Transformation method
+  # Available methods: standard_scaler, min_max_scaler, robust_scaler, power_transformer, quantile_transformer
+  method: "standard_scaler"
+  # Standard Scaler configuration (no specific parameters)
+  standard_scaler: {}
+  # Min-Max Scaler configuration
+  min_max_scaler:
+    feature_range: [0, 1]
+  # Robust Scaler configuration
+  robust_scaler:
+    quantile_range: [25.0, 75.0]
+  # Power Transformer configuration
+  power_transformer:
+    method: "yeo-johnson"
+    standardize: true
+  # Quantile Transformer configuration
+  quantile_transformer:
+    n_quantiles: 100
+    output_distribution: "uniform"
+
+# --- Output ---
+output:
+  # Path to save the processed data
+  output_path: "data/processed.csv" # REPLACE_ME: Path to save the processed data
+  # Save format for the output data
+  output_format: "csv"
+  # Save the feature engineering report
+  save_report: true
+  # Path to save the feature engineering report
+  report_path: "reports/feature_engineering_report.html"
+  # Save the trained model (if applicable, e.g., for feature importance selection)
+  save_model: false
+  # Path to save the trained model
+  model_path: "models/feature_selection_model.pkl"
+
+# --- Advanced Options ---
+advanced:
+  # Number of CPU cores to use for parallel processing
+  n_jobs: -1 # -1 means using all available cores
+  # Random seed for reproducibility
+  random_state: 42 # YOUR_VALUE_HERE: Set a random seed for reproducibility
+  # Verbosity level (0: silent, 1: info, 2: debug)
+  verbosity: 1
+  # Handle missing values (imputation)
+  handle_missing: true
+  # Imputation strategy (mean, median, most_frequent, constant)
+  imputation_strategy: "mean"
+  # Constant value for imputation (if imputation_strategy is "constant")
+  imputation_constant: 0

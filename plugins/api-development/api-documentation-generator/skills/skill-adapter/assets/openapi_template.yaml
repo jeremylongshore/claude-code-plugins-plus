@@ -1,0 +1,137 @@
+# openapi_template.yaml
+# This is a template for creating OpenAPI 3.0.3 documentation.
+
+openapi: 3.0.3
+info:
+  title: REPLACE_ME - API Documentation
+  version: 1.0.0
+  description: YOUR_VALUE_HERE - Description of the API.
+  termsOfService: https://example.com/terms/
+  contact:
+    name: API Support
+    url: https://example.com/support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+# Define the servers where the API is hosted.
+servers:
+  - url: https://YOUR_VALUE_HERE/api/v1
+    description: Production server
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+# Define security schemes (e.g., API key, OAuth2).
+components:
+  securitySchemes:
+    ApiKeyAuth: # Security scheme name
+      type: apiKey
+      in: header # Can be "header", "query" or "cookie"
+      name: X-API-Key # The name of the header/query parameter/cookie
+
+# Define paths and operations.
+paths:
+  /items:
+    get:
+      summary: Get a list of items
+      description: Returns a list of all available items.
+      security:
+        - ApiKeyAuth: [] # Apply the ApiKeyAuth security scheme
+      tags:
+        - Items
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+        '500':
+          description: Internal server error
+
+    post:
+      summary: Create a new item
+      description: Creates a new item with the given data.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemInput'
+      responses:
+        '201':
+          description: Item created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Bad request
+
+  /items/{itemId}:
+    get:
+      summary: Get an item by ID
+      description: Returns a single item based on its ID.
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: integer
+          description: The ID of the item to retrieve.
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '404':
+          description: Item not found
+
+# Define reusable schemas.
+components:
+  schemas:
+    Item:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: The unique identifier for the item.
+        name:
+          type: string
+          description: The name of the item.
+        description:
+          type: string
+          description: A description of the item.
+        price:
+          type: number
+          format: float
+          description: The price of the item.
+      required:
+        - id
+        - name
+    ItemInput:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the item.
+        description:
+          type: string
+          description: A description of the item.
+        price:
+          type: number
+          format: float
+          description: The price of the item.
+      required:
+        - name
+        - price
+
+# Define tags for grouping operations.
+tags:
+  - name: Items
+    description: Operations related to items.

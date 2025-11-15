@@ -1,0 +1,110 @@
+{
+  "_comment": "Example JSON file for AI Experiment Logger plugin.  Represents a collection of experiments.",
+  "experiments": [
+    {
+      "_comment": "First experiment - a simple sentiment analysis task",
+      "experiment_id": "sentiment-analysis-v1",
+      "experiment_name": "Sentiment Analysis with Claude",
+      "description": "Experiment to evaluate Claude's sentiment analysis accuracy on customer reviews.",
+      "model": "Claude-v2",
+      "dataset": "Customer Reviews - Product A",
+      "date_created": "2024-01-15",
+      "date_completed": "2024-01-16",
+      "status": "completed",
+      "parameters": {
+        "temperature": 0.2,
+        "max_tokens": 200,
+        "prompt_template": "Analyze the sentiment of the following review: {review}"
+      },
+      "metrics": {
+        "accuracy": 0.92,
+        "precision": 0.90,
+        "recall": 0.94,
+        "f1_score": 0.92
+      },
+      "artifacts": {
+        "results_csv": "sentiment_analysis_results.csv",
+        "model_config": "claude_config.json"
+      },
+      "notes": "High accuracy achieved.  Consider testing with more diverse datasets."
+    },
+    {
+      "_comment": "Second experiment - a more complex text summarization task",
+      "experiment_id": "text-summarization-v2",
+      "experiment_name": "Text Summarization Experiment with Gemini",
+      "description": "Experiment to compare different summarization techniques using Gemini.",
+      "model": "Gemini-Pro",
+      "dataset": "News Articles - Technology",
+      "date_created": "2024-01-20",
+      "date_completed": "2024-01-22",
+      "status": "completed",
+      "parameters": {
+        "temperature": 0.5,
+        "max_tokens": 500,
+        "summarization_type": "extractive",
+        "prompt_template": "Summarize the following article: {article}"
+      },
+      "metrics": {
+        "rouge_1": 0.45,
+        "rouge_2": 0.22,
+        "rouge_l": 0.38,
+        "bleu_score": 0.28
+      },
+      "artifacts": {
+        "summaries_json": "summaries.json",
+        "hyperparameter_search_log": "hyperparameter_search.log"
+      },
+      "notes": "Extractive summarization performed better than abstractive.  Needs further tuning."
+    },
+    {
+      "_comment": "Third experiment - still in progress",
+      "experiment_id": "image-classification-v1",
+      "experiment_name": "Image Classification with a Custom Model",
+      "description": "Training and evaluating a custom image classification model.",
+      "model": "Custom CNN",
+      "dataset": "Custom Image Dataset - Flowers",
+      "date_created": "2024-01-25",
+      "date_completed": null,
+      "status": "running",
+      "parameters": {
+        "learning_rate": 0.001,
+        "batch_size": 32,
+        "epochs": 10
+      },
+      "metrics": {
+        "training_loss": 0.25,
+        "validation_accuracy": 0.85
+      },
+       "artifacts": {
+        "model_checkpoint": "model_checkpoint_epoch_5.pth",
+        "training_logs": "training.log"
+      },
+      "notes": "Training in progress.  Validation accuracy is improving."
+    },
+    {
+      "_comment": "Fourth experiment - trying to compare the models",
+      "experiment_id": "model-comparison-v1",
+      "experiment_name": "Model Comparison for Question Answering",
+      "description": "Comparing Claude and Gemini for question answering accuracy",
+      "model": "Claude-v2, Gemini-Pro",
+      "dataset": "SQuAD",
+      "date_created": "2024-02-01",
+      "date_completed": "2024-02-03",
+      "status": "completed",
+      "parameters": {
+        "question_length": "short",
+        "context_length": "medium"
+      },
+      "metrics": {
+        "claude_exact_match": 0.75,
+        "claude_f1": 0.82,
+        "gemini_exact_match": 0.78,
+        "gemini_f1": 0.85
+      },
+      "artifacts": {
+        "results_table": "qa_results.csv"
+      },
+      "notes": "Gemini slightly outperforms Claude on F1 score. Further investigation needed with longer contexts."
+    }
+  ]
+}

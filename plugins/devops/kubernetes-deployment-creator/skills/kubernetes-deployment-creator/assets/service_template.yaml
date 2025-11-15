@@ -1,0 +1,25 @@
+# Kubernetes Service Manifest Template
+# This file defines a Kubernetes Service, which exposes your application to the network.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: REPLACE_ME-service # Replace with your service name
+  namespace: default # Change if you're using a different namespace
+  labels:
+    app: REPLACE_ME # Replace with your application name
+    tier: frontend # Or backend, database, etc.
+spec:
+  type: ClusterIP #  Options: ClusterIP, NodePort, LoadBalancer
+                  #  ClusterIP: Exposes the service on a cluster-internal IP. Choose this if you only need access from within the cluster.
+                  #  NodePort:  Exposes the service on each Node's IP at a static port (the NodePort). Choose this for external access during development.
+                  #  LoadBalancer: Exposes the service externally using a cloud provider's load balancer.  Choose this for production external access.
+  selector:
+    app: REPLACE_ME #  Must match the labels of your deployment's pods
+  ports:
+    - port: 80 # The port the service exposes internally
+      targetPort: 8080 # The port your application is listening on within the pod
+      protocol: TCP
+      name: http # Optional, but helpful for clarity
+  # sessionAffinity: ClientIP # Uncomment this line to enable session affinity (sticky sessions) based on the client's IP address.  Useful for applications that require session persistence.
+  # externalTrafficPolicy: Cluster # Uncomment for LoadBalancer.  Options: Cluster or Local.  Local preserves the client source IP.

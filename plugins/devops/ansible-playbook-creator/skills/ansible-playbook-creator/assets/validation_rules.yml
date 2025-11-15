@@ -1,0 +1,94 @@
+# validation_rules.yml
+
+# --- General Playbook Structure Rules ---
+playbook_structure:
+  # Rule: Playbook must have a name
+  name_required: true
+  # Rule: Playbook must have at least one host
+  hosts_required: true
+  # Rule: Playbook should have a gather_facts setting (explicitly true or false)
+  gather_facts_required: true
+  gather_facts_default: true # Consider setting to false if facts are not needed for performance
+  # Rule: Playbook should have a become setting (explicitly true or false) if privilege escalation is needed
+  become_recommended: true # Recommend setting this, but don't enforce.
+  become_default: false # Set to true if most tasks require sudo.
+
+# --- Task Specific Rules ---
+task_rules:
+  # Rule: Each task must have a name
+  name_required: true
+  # Rule: Avoid using the 'shell' module unless necessary. Prefer specific modules.
+  no_shell_unless_necessary: true
+  shell_exceptions: # List of commands where shell is acceptable.  Helps reduce false positives.
+    - "ls"
+    - "grep"
+    - "awk"
+    - "sed"
+  # Rule: Use 'changed_when' instead of relying on return codes for idempotency.
+  changed_when_recommended: true
+  # Rule: Use 'failed_when' to handle unexpected errors.
+  failed_when_recommended: true
+
+# --- Security Best Practices ---
+security_rules:
+  # Rule: Avoid storing secrets directly in playbooks. Use Ansible Vault or a secrets management system.
+  no_plain_text_secrets: true
+  secret_keywords: # List of keywords that indicate a potential secret
+    - "password"
+    - "secret"
+    - "token"
+    - "key"
+  # Rule: Use 'become' with caution.  Limit its scope to only the tasks that require it.
+  become_caution: true
+  # Rule: Avoid using '*' in host patterns in production. Be specific.
+  no_wildcard_hosts: true
+  # Rule: Validate input parameters to prevent injection vulnerabilities.
+  validate_input: true
+  input_validation_regex: "REPLACE_ME" # Example regex for validating input.  Should be customized per variable.
+
+# --- Idempotency Rules ---
+idempotency_rules:
+  # Rule: Ensure tasks are idempotent. They should only make changes when necessary.
+  idempotent_tasks: true
+  # Rule: Use 'creates' or 'removes' in file/copy/template modules for idempotency.
+  file_idempotency: true
+  # Rule: Use 'state' parameter where applicable (e.g., present/absent for files/packages).
+  state_parameter_required: true
+  state_parameter_exceptions:  # Some modules don't use state, so exclude them
+    - "debug"
+    - "include_tasks"
+    - "include_role"
+
+# --- Error Handling Rules ---
+error_handling_rules:
+  # Rule: Implement proper error handling using 'rescue' and 'always' blocks.
+  rescue_blocks_recommended: true
+  always_blocks_recommended: true
+  # Rule: Use 'ignore_errors' with caution.  Document why it is necessary.
+  ignore_errors_caution: true
+
+# --- Variable Usage Rules ---
+variable_rules:
+  # Rule: Use descriptive variable names.
+  descriptive_variable_names: true
+  # Rule: Define variables in a structured way (e.g., group_vars, host_vars).
+  structured_variables: true
+  # Rule: Avoid using hardcoded values directly in tasks. Use variables instead.
+  no_hardcoded_values: true
+
+# --- Module Specific Rules (Example for apt module) ---
+apt_module_rules:
+  # Rule: Ensure 'update_cache' is set to 'yes' when installing packages for the first time.
+  update_cache_recommended: true
+  # Rule: Specify a state (present/absent) when managing packages.
+  state_required: true
+  default_package: "YOUR_VALUE_HERE" # Example default package
+
+# --- Platform Specific Rules ---
+platform_rules:
+  # Rule: Use conditional statements ('when') to handle platform-specific differences.
+  conditional_platform_tasks: true
+  supported_platforms: # List of supported platforms
+    - "Ubuntu"
+    - "CentOS"
+    - "Windows"

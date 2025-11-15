@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoML Model Evaluation Report</title>
+    <style>
+        /* Basic Reset */
+        body, h1, h2, h3, p, table, th, td {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            font-size: 100%;
+            font: inherit;
+            vertical-align: baseline;
+        }
+
+        /* General Styles */
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3 {
+            margin-bottom: 15px;
+            color: #0056b3;
+        }
+
+        h1 {
+            font-size: 2.5em;
+        }
+
+        h2 {
+            font-size: 2em;
+        }
+
+        h3 {
+            font-size: 1.5em;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            h3 {
+                font-size: 1.3em;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+
+        /* Specific Styles */
+        .model-summary {
+            margin-bottom: 30px;
+        }
+
+        .evaluation-metrics {
+            margin-bottom: 30px;
+        }
+
+        .visualizations {
+            margin-bottom: 30px;
+        }
+
+        .conclusion {
+            margin-bottom: 20px;
+        }
+
+        .visualization-image {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Report Header -->
+        <h1>AutoML Model Evaluation Report</h1>
+        <p>Generated on: {{generation_date}}</p>
+
+        <!-- Model Summary -->
+        <section class="model-summary">
+            <h2>Model Summary</h2>
+            <p><strong>Model Name:</strong> {{model_name}}</p>
+            <p><strong>Algorithm:</strong> {{algorithm}}</p>
+            <p><strong>Dataset:</strong> {{dataset_name}}</p>
+            <p><strong>Features Used:</strong> {{features_used}}</p>
+        </section>
+
+        <!-- Evaluation Metrics -->
+        <section class="evaluation-metrics">
+            <h2>Evaluation Metrics</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Accuracy</td>
+                        <td>{{accuracy}}</td>
+                    </tr>
+                    <tr>
+                        <td>Precision</td>
+                        <td>{{precision}}</td>
+                    </tr>
+                    <tr>
+                        <td>Recall</td>
+                        <td>{{recall}}</td>
+                    </tr>
+                    <tr>
+                        <td>F1-Score</td>
+                        <td>{{f1_score}}</td>
+                    </tr>
+                    <tr>
+                        <td>AUC-ROC</td>
+                        <td>{{auc_roc}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Visualizations -->
+        <section class="visualizations">
+            <h2>Visualizations</h2>
+            <h3>Confusion Matrix</h3>
+            <img src="{{confusion_matrix_image}}" alt="Confusion Matrix" class="visualization-image">
+
+            <h3>ROC Curve</h3>
+            <img src="{{roc_curve_image}}" alt="ROC Curve" class="visualization-image">
+
+            <h3>Feature Importance</h3>
+            <img src="{{feature_importance_image}}" alt="Feature Importance" class="visualization-image">
+        </section>
+
+        <!-- Conclusion -->
+        <section class="conclusion">
+            <h2>Conclusion</h2>
+            <p>{{conclusion_text}}</p>
+        </section>
+
+        <!-- Additional Notes -->
+        <section class="notes">
+            <h3>Additional Notes</h3>
+            <p>{{additional_notes}}</p>
+        </section>
+    </div>
+
+</body>
+</html>

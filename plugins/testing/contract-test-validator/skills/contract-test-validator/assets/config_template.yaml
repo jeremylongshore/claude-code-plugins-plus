@@ -1,0 +1,80 @@
+# Configuration for the Contract Test Validator plugin.
+
+# General settings
+general:
+  # Enable or disable the plugin
+  enabled: true
+  # Log level (debug, info, warning, error, critical)
+  log_level: info
+  # Directory to store temporary files and reports.
+  temp_dir: ./tmp/contract_tests # REPLACE_ME: Choose a suitable temporary directory
+  # Fail fast. Stop on first error?
+  fail_fast: false
+
+# Pact settings
+pact:
+  # Enable Pact contract testing
+  enabled: true
+  # Directory to store Pact files
+  pact_dir: ./pacts # REPLACE_ME: Choose a directory for pact files
+  # URL of the Pact Broker (optional)
+  broker_url: YOUR_VALUE_HERE # e.g., https://pact-broker.example.com
+  # Username for Pact Broker authentication (optional)
+  broker_username: YOUR_VALUE_HERE
+  # Password for Pact Broker authentication (optional)
+  broker_password: YOUR_VALUE_HERE
+  # Publish verification results to the Pact Broker
+  publish_verification_results: false
+  # Consumer version tag to use when publishing to the broker
+  consumer_version_tag: main # REPLACE_ME: Specify the consumer version tag
+  # Provider version tag to use when verifying from the broker
+  provider_version_tag: main # REPLACE_ME: Specify the provider version tag
+
+# OpenAPI validation settings
+openapi:
+  # Enable OpenAPI validation
+  enabled: true
+  # Directory containing OpenAPI specifications
+  spec_dir: ./openapi_specs # REPLACE_ME: Choose a directory for OpenAPI specs
+  # Base URL to use for validation
+  base_url: http://localhost:8080 # REPLACE_ME: The base URL of your API
+
+# Breaking change detection settings
+breaking_change:
+  # Enable breaking change detection
+  enabled: true
+  # Previous API definition file (e.g., OpenAPI spec)
+  previous_api_definition: ./openapi_specs/previous.yaml # REPLACE_ME: Path to previous API definition
+  # Current API definition file (e.g., OpenAPI spec)
+  current_api_definition: ./openapi_specs/current.yaml # REPLACE_ME: Path to current API definition
+  # Report format (text, json)
+  report_format: text
+  # Output file for breaking change report
+  report_file: ./reports/breaking_changes.txt # REPLACE_ME: Choose a location for report
+
+# Custom scripts (e.g., for setup and teardown)
+scripts:
+  # Script to run before contract tests
+  before_all: ./scripts/before_all.sh # REPLACE_ME: Path to setup script (optional)
+  # Script to run after contract tests
+  after_all: ./scripts/after_all.sh # REPLACE_ME: Path to teardown script (optional)
+
+# Notification settings (e.g., Slack, email)
+notifications:
+  # Enable notifications
+  enabled: false
+  # Type of notification (slack, email)
+  type: slack # or email
+  # Slack webhook URL (if using Slack notifications)
+  slack_webhook_url: YOUR_VALUE_HERE # REPLACE_ME: Your Slack webhook URL
+  # Email configuration (if using email notifications)
+  email:
+    sender: YOUR_VALUE_HERE # REPLACE_ME: Sender email address
+    recipients: # REPLACE_ME: List of recipient email addresses
+      - recipient1@example.com
+      - recipient2@example.com
+    smtp_server: YOUR_VALUE_HERE # REPLACE_ME: SMTP server address
+    smtp_port: 587
+    smtp_username: YOUR_VALUE_HERE # REPLACE_ME: SMTP username
+    smtp_password: YOUR_VALUE_HERE # REPLACE_ME: SMTP password
+    use_tls: true

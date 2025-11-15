@@ -1,0 +1,114 @@
+# Infrastructure Configuration for Compliance Checker Plugin
+
+# General Settings
+general:
+  environment: production # Environment (development, staging, production)
+  region: us-west-2 # AWS Region (e.g., us-east-1, eu-west-1)
+  account_id: REPLACE_ME # AWS Account ID or equivalent for other platforms
+  organization_name: YOUR_VALUE_HERE # Your organization's name
+  contact_email: compliance@example.com # Contact email for compliance inquiries
+
+# Compliance Standards to Check
+compliance_standards:
+  soc2:
+    enabled: true # Enable SOC2 compliance check
+    type_i: false # Check for Type I compliance (point-in-time)
+    type_ii: true # Check for Type II compliance (period-of-time)
+  hipaa:
+    enabled: false # Enable HIPAA compliance check
+    business_associate_agreement: true # Indicates a BAA is in place
+  pci_dss:
+    enabled: false # Enable PCI DSS compliance check
+    cardholder_data_environment: false # Indicates a cardholder data environment exists
+
+# Infrastructure Components to Evaluate
+infrastructure:
+  compute:
+    ec2: # AWS EC2 Instances
+      enabled: true
+      instance_ids: # List of EC2 instance IDs to check. Leave empty to check all.
+        - REPLACE_ME #Example instance id
+        - YOUR_VALUE_HERE #Another example instance id
+      security_group_rules: # Security Group rules to enforce
+        ingress:
+          - port: 22
+            protocol: tcp
+            cidr_blocks:
+              - 10.0.0.0/16 # Allow SSH access from internal network.  REPLACE WITH MORE SECURE RULES IN PRODUCTION.
+        egress:
+          - port: 80
+            protocol: tcp
+            cidr_blocks:
+              - 0.0.0.0/0 # Allow HTTP access to the internet. REPLACE WITH MORE RESTRICTIVE RULES IN PRODUCTION.
+    lambda: # AWS Lambda Functions
+      enabled: false
+      function_names: # List of Lambda function names to check.  Leave empty to check all.
+        - REPLACE_ME
+    gcp_compute_engine: # Google Cloud Compute Engine Instances
+      enabled: false
+      instance_names: # List of Compute Engine instance names to check. Leave empty to check all.
+        - YOUR_VALUE_HERE
+  storage:
+    s3: # AWS S3 Buckets
+      enabled: true
+      bucket_names: # List of S3 bucket names to check. Leave empty to check all.
+        - REPLACE_ME
+      encryption_enabled: true # Require encryption at rest
+      public_access_blocked: true # Block public access to buckets
+    cloud_storage: # Google Cloud Storage Buckets
+      enabled: false
+      bucket_names: # List of Cloud Storage bucket names to check. Leave empty to check all.
+        - YOUR_VALUE_HERE
+  database:
+    rds: # AWS RDS Databases
+      enabled: true
+      instance_ids: # List of RDS instance IDs to check. Leave empty to check all.
+        - REPLACE_ME
+      encryption_enabled: true # Require encryption at rest
+      publicly_accessible: false # Ensure databases are not publicly accessible
+    cloud_sql: # Google Cloud SQL Instances
+      enabled: false
+      instance_names: # List of Cloud SQL instance names to check. Leave empty to check all.
+        - YOUR_VALUE_HERE
+  network:
+    vpc: # AWS VPCs
+      enabled: true
+      vpc_ids: # List of VPC IDs to check. Leave empty to check all.
+        - REPLACE_ME
+      flow_logs_enabled: true # Require VPC Flow Logs for auditing
+    virtual_network: # Google Cloud VPCs
+      enabled: false
+      network_names: # List of VPC network names to check. Leave empty to check all.
+        - YOUR_VALUE_HERE
+
+# Logging and Monitoring Configuration
+logging:
+  cloudwatch: # AWS CloudWatch
+    enabled: true
+    log_group_retention_days: 30 # Retention period for CloudWatch logs
+  stackdriver: # Google Cloud Stackdriver Logging
+    enabled: false
+    log_retention_days: 30 # Retention period for Stackdriver logs
+
+# Identity and Access Management (IAM) Configuration
+iam:
+  aws_iam: # AWS IAM
+    enabled: true
+    mfa_required: true # Require multi-factor authentication for privileged users
+    password_policy: # Password policy requirements
+      minimum_length: 14
+      require_symbols: true
+      require_numbers: true
+      require_uppercase: true
+      require_lowercase: true
+      password_reuse_prevention: 24 # Number of passwords to prevent reuse
+  google_cloud_iam: # Google Cloud IAM
+    enabled: false
+    mfa_required: true # Require multi-factor authentication for privileged users
+
+# Reporting Configuration
+reporting:
+  frequency: weekly # How often to generate compliance reports (daily, weekly, monthly)
+  report_recipients: # List of email addresses to receive compliance reports
+    - REPLACE_ME # Example compliance report email
+  output_format: pdf # Report output format (pdf, csv, json)

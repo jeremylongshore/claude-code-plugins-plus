@@ -1,0 +1,76 @@
+# Teleprompter Script Template
+
+**Project Title:** [Project Title - e.g., "Introducing the New Widget Pro"]
+
+**Version:** 1.0
+
+**Date:** [Date - e.g., "2024-10-27"]
+
+**Author:** [Your Name]
+
+## 1. Introduction (Hook & Problem)
+
+*   **Target Audience:** [Describe your ideal viewer - e.g., "Small business owners", "Software developers"]
+*   **Goal:** [What do you want viewers to do after watching? - e.g., "Visit the website", "Sign up for a trial"]
+*   **Hook:** [Write a compelling opening line to grab attention. Examples: "Are you tired of...", "Imagine a world where...", "The biggest problem with..."]
+    *   **Example Hook:** "Are you tired of spending hours manually resizing images for social media?"
+*   **Problem Statement:** [Clearly define the problem your product/video solves.]
+    *   **Example Problem:** "Resizing images for different platforms is tedious, time-consuming, and often leads to pixelation."
+
+## 2. Solution (Product Introduction)
+
+*   **Transition:** [A smooth transition from the problem to your solution. Examples: "That's why we created...", "Introducing...", "The solution is here..."]
+    *   **Example Transition:** "That's why we created Image Resizer Pro, the easiest way to resize images in seconds."
+*   **Product Introduction:** [Briefly introduce your product/solution.]
+    *   **Example Product Introduction:** "Image Resizer Pro is a cloud-based tool that automatically resizes your images for all major social media platforms."
+*   **Key Features (3-5 bullets):** [List the most important features and benefits.]
+    *   **Feature 1:** [Feature Name] - [Benefit - How does it help the viewer?]
+        *   **Example:** "Automatic Resizing - Save time and effort by letting our AI resize your images perfectly."
+    *   **Feature 2:** [Feature Name] - [Benefit - How does it help the viewer?]
+        *   **Example:** "Preset Templates - Choose from hundreds of pre-designed templates for all social media platforms."
+    *   **Feature 3:** [Feature Name] - [Benefit - How does it help the viewer?]
+        *   **Example:** "Cloud-Based - Access Image Resizer Pro from anywhere, on any device."
+    *   **Feature 4:** [Feature Name] - [Benefit - How does it help the viewer?]
+        *   **Example:** "High-Quality Output - Ensure your images always look their best, without pixelation or distortion."
+
+## 3. Demonstration (Show, Don't Tell)
+
+*   **Call to Action (CTA) to Demo:** [Prompt the viewer to watch a demo.]
+    *   **Example CTA:** "Let me show you how easy it is to use Image Resizer Pro."
+*   **Demo Outline:** [Briefly list the steps you'll demonstrate. This is for your reference, not the teleprompter.]
+    *   **Step 1:** Upload an image.
+    *   **Step 2:** Select a platform (e.g., Instagram).
+    *   **Step 3:** Download the resized image.
+*   **Demo Script (Concise & Clear):** [Write the script for your demo. Keep it short and to the point.]
+    *   **Example:** "First, upload your image by clicking the 'Upload' button. Next, select the platform you want to resize for, like Instagram. Finally, click 'Download' to get your perfectly resized image."
+
+## 4. Benefits Recap & Call to Action
+
+*   **Recap Key Benefits:** [Reiterate the main benefits of your product/solution.]
+    *   **Example:** "With Image Resizer Pro, you can save time, improve your image quality, and reach a wider audience on social media."
+*   **Strong Call to Action (CTA):** [Tell the viewer exactly what you want them to do.]
+    *   **Example CTA:** "Visit our website today at [website address] to start your free trial. That's [website address]."
+*   **Optional: Limited-Time Offer:** [If applicable, mention a special offer.]
+    *   **Example Offer:** "For a limited time, get 20% off your first month with code 'LAUNCH20'."
+*   **Thank You:** [Express gratitude to the viewer.]
+    *   **Example:** "Thanks for watching!"
+
+## 5. Visuals & B-Roll Notes
+
+*   **Timestamp:** [Time in the video] - **Visual:** [Description of the visual] - **Notes:** [Any additional notes for editing]
+    *   **Example:** "0:00-0:05 - B-roll of someone struggling to resize an image - Show frustration."
+    *   **Example:** "0:05-0:15 - Screen recording of Image Resizer Pro in action - Highlight ease of use."
+    *   **Example:** "0:30-0:45 - Customer testimonials - Show happy customers."
+
+## 6. Music & Sound Effects
+
+*   **Timestamp:** [Time in the video] - **Description:** [Description of the music/sound effect] - **Notes:** [Any additional notes]
+    *   **Example:** "0:00-0:10 - Upbeat, energetic music - Set a positive tone."
+    *   **Example:** "0:15 - Click sound effect when button is pressed - Reinforce interactivity."
+
+## 7. Legal & Disclaimers (If Applicable)
+
+*   [Include any necessary legal disclaimers or disclosures here.]
+    *   **Example:** "Results may vary. See our terms of service for details."
+
+**End of Script**

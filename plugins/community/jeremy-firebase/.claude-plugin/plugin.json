@@ -1,0 +1,28 @@
+{
+  "name": "jeremy-firebase",
+  "version": "1.0.0",
+  "description": "Production-ready Firebase platform operations with Vertex AI Gemini integration: Auth, Storage, Hosting, Cloud Functions, Analytics, and AI-powered features",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "[email protected]",
+    "url": "https://intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": [
+    "firebase",
+    "vertex-ai",
+    "gemini",
+    "authentication",
+    "storage",
+    "hosting",
+    "cloud-functions",
+    "analytics",
+    "ai-integration",
+    "google-cloud",
+    "embeddings",
+    "model-deployment",
+    "ai-powered",
+    "production-ready"
+  ]
+}

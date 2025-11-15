@@ -1,0 +1,67 @@
+# Regression Test Tracker Plugin Configuration
+
+# Database settings (for storing test results and history)
+database:
+  type: "sqlite"  # Options: sqlite, postgresql, mysql, etc.
+  connection_string: "regression_tests.db" # REPLACE_ME: Database connection string
+  # Example PostgreSQL connection string:
+  # connection_string: "postgresql://user:password@host:port/database"
+
+# Test execution settings
+test_execution:
+  runner: "pytest" # REPLACE_ME: Test runner command (e.g., pytest, unittest)
+  test_directory: "tests" # Directory containing test files
+  pattern: "test_*.py" # Pattern to identify test files
+  concurrency: 4 # Number of parallel test processes
+  timeout: 60 # Timeout in seconds for each test
+  retry_attempts: 2 # Number of retry attempts for failed tests
+  report_format: "xml" # Test report format (e.g., xml, json, html)
+  report_file: "test_report.xml" # Path to the generated test report
+
+# Regression test suite definition
+regression_suite:
+  tags: # List of tags to identify regression tests
+    - "regression"
+    - "critical"
+  # Optionally, specify specific test files or directories to include/exclude
+  include_paths: # Paths to include in the regression test suite.  Leave empty to include all tests tagged above.
+    - "tests/important_feature_tests"
+  exclude_paths: # Paths to exclude from the regression test suite.
+    - "tests/experimental_tests"
+
+# Change impact analysis settings
+change_impact:
+  vcs: "git" # Version control system (e.g., git, mercurial)
+  # Command to get list of changed files since last regression test run.
+  # REPLACE_ME:  You might need to customize this based on your workflow.
+  changed_files_command: "git diff --name-only HEAD^ HEAD"
+  mapping: # Mapping between files and affected tests
+    "src/feature_a.py": # Example: if feature_a.py is changed, run these tests
+      - "tests/test_feature_a.py::test_function_1"
+      - "tests/test_integration.py::test_feature_a_integration"
+    "src/common_utils.py": # Example: If a common utility file changes, run a broad suite of tests
+      - "tests/test_all.py"
+
+# Flaky test detection settings
+flaky_test_detection:
+  enabled: true # Enable flaky test detection
+  failure_threshold: 3 # Number of failures within a window to consider a test flaky
+  window_size: 10 # Number of test runs to consider for flaky test detection
+
+# Notification settings (e.g., Slack, email)
+notifications:
+  enabled: false # Enable notifications
+  type: "slack" # Notification type (e.g., slack, email)
+  webhook_url: "YOUR_VALUE_HERE" # REPLACE_ME: Slack webhook URL
+  # OR email settings
+  # email:
+  #   sender: "test_tracker@example.com"
+  #   recipient: "developers@example.com"
+  #   smtp_server: "smtp.example.com"
+  #   smtp_port: 587
+  #   smtp_username: "YOUR_VALUE_HERE"
+  #   smtp_password: "YOUR_VALUE_HERE"
+
+# Advanced settings
+advanced:
+  debug_mode: false # Enable debug mode for verbose logging

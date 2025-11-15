@@ -1,0 +1,74 @@
+# istio_config_template.yaml
+# Template for generating Istio service mesh configurations.
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: REPLACE_ME-gateway # Name of the gateway
+  namespace: YOUR_NAMESPACE_HERE # Namespace where the gateway is deployed
+spec:
+  selector:
+    istio: ingressgateway # Use Istio's default ingress gateway
+  servers:
+  - port:
+      number: 80
+      name: http
+      protocol: HTTP
+    hosts:
+    - REPLACE_ME.example.com # Hostname for your service
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: REPLACE_ME-virtual-service # Name of the virtual service
+  namespace: YOUR_NAMESPACE_HERE # Namespace where the virtual service is deployed
+spec:
+  hosts:
+  - REPLACE_ME.example.com # Hostname to route traffic to
+  gateways:
+  - REPLACE_ME-gateway # Gateway to use for routing
+  http:
+  - match:
+    - uri:
+        prefix: / # Match all URIs
+    route:
+    - destination:
+        host: REPLACE_ME-service # Name of the service to route to
+        port:
+          number: 8080 # Port of the service
+
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: DestinationRule
+metadata:
+  name: REPLACE_ME-destination-rule # Name of the destination rule
+  namespace: YOUR_NAMESPACE_HERE # Namespace where the destination rule is deployed
+spec:
+  host: REPLACE_ME-service # Name of the service
+  trafficPolicy:
+    loadBalancer:
+      simple: ROUND_ROBIN # Load balancing policy. Options: ROUND_ROBIN, LEAST_CONN, RANDOM, PASSTHROUGH
+    # Optional: Configure TLS settings
+    # tls:
+    #   mode: ISTIO_MUTUAL # Use Istio mutual TLS
+
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: REPLACE_ME-authz-policy # Name of the authorization policy
+  namespace: YOUR_NAMESPACE_HERE # Namespace where the authorization policy is deployed
+spec:
+  selector:
+    matchLabels:
+      app: REPLACE_ME-service # Apply the policy to the service
+  action: ALLOW # Default action: ALLOW or DENY
+  # Optional: Add rules for specific requests
+  # rules:
+  # - from:
+  #   - source:
+  #       principals: ["cluster.local/ns/YOUR_NAMESPACE_HERE/sa/YOUR_SERVICE_ACCOUNT_HERE"] # Allow requests from a specific service account
+  #   to:
+  #   - operation:
+  #       methods: ["GET", "POST"] # Allow only GET and POST methods

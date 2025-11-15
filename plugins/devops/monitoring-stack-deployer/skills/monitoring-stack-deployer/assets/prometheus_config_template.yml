@@ -1,0 +1,73 @@
+# Global configuration for Prometheus
+global:
+  scrape_interval:     30s  # How frequently to scrape targets. Adjust based on your needs.
+  evaluation_interval: 30s  # How frequently to evaluate rules. Adjust based on your needs.
+  # scrape_timeout is set to the global default (10s).
+
+  # External labels to identify the Prometheus instance.
+  external_labels:
+    monitor: 'REPLACE_ME_MONITORING_INSTANCE'  # A label identifying this Prometheus instance.
+
+# Rule files that define alerting rules.
+rule_files:
+  # - "prometheus.rules" # Example: Uncomment and adjust path to include your rules file.
+
+# Scrape configuration for Prometheus.
+scrape_configs:
+  # Example: Scrape Prometheus itself.  Good for monitoring Prometheus's own health.
+  - job_name: 'prometheus'
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+
+    static_configs:
+      - targets: ['localhost:9090']  # Prometheus's default port.  Change if needed.
+
+  # Example: Scrape node_exporter metrics.  Provides system-level metrics.
+  - job_name: 'node_exporter'
+    static_configs:
+      - targets: ['REPLACE_ME_NODE_EXPORTER_ADDRESS:9100'] # Replace with the actual node_exporter address and port.
+
+  # Example: Scrape cadvisor metrics.  Provides container-level metrics.
+  - job_name: 'cadvisor'
+    static_configs:
+      - targets: ['REPLACE_ME_CADVISOR_ADDRESS:8080'] # Replace with the actual cadvisor address and port.
+
+  # Example: Scrape Kubernetes pods with specific labels.
+  - job_name: 'kubernetes-pods'
+    kubernetes_sd_configs:
+      - role: pod
+
+    relabel_configs:
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+        action: keep
+        regex: true
+      - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+        action: replace
+        target_label: __metrics_path__
+        regex: (.+)
+      - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+        action: replace
+        regex: ([^:]+)(?::\d+)?;(\d+)
+        replacement: $1:$2
+        target_label: __address__
+      - action: labelmap
+        regex: __meta_kubernetes_pod_annotation_prometheus_io_param_(.+)
+        replacement: __param_$1
+      - action: replace
+        source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+      - source_labels: [__meta_kubernetes_pod_name]
+        target_label: pod
+
+# Alerting configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets: ['REPLACE_ME_ALERTMANAGER_ADDRESS:9093']  # Replace with your Alertmanager address.
+
+# Remote write configuration to send metrics to a remote endpoint (e.g., Grafana Cloud, Cortex).
+# remote_write:
+#   - url: "YOUR_VALUE_HERE" # Example: Grafana Cloud remote write endpoint.
+#     basic_auth:
+#       username: "YOUR_VALUE_HERE" # Example: Grafana Cloud username.
+#       password: "YOUR_VALUE_HERE" # Example: Grafana Cloud API key.

@@ -1,0 +1,68 @@
+{
+  "_comment": "Mapping of error code prefixes to API modules/services. Used for determining the origin and handling strategy for different error types.",
+  "mappings": {
+    "AUTH": {
+      "_comment": "Authentication-related errors",
+      "module": "AuthenticationService",
+      "http_status_code": 401,
+      "description": "Errors related to user authentication, authorization, or session management.",
+      "handling_strategy": "Retry with re-authentication if possible, otherwise log and return a 401 Unauthorized error."
+    },
+    "USER": {
+      "_comment": "User management errors",
+      "module": "UserService",
+      "http_status_code": 400,
+      "description": "Errors related to user creation, modification, or deletion.",
+      "handling_strategy": "Return a 400 Bad Request error with specific details about the invalid user data or operation."
+    },
+    "PROD": {
+      "_comment": "Product catalog errors",
+      "module": "ProductCatalogService",
+      "http_status_code": 500,
+      "description": "Errors related to retrieving or managing product information.",
+      "handling_strategy": "Retry a limited number of times. If still failing, log the error and return a 500 Internal Server Error with a generic message.  Monitor for widespread issues."
+    },
+    "ORD": {
+      "_comment": "Order processing errors",
+      "module": "OrderProcessingService",
+      "http_status_code": 409,
+      "description": "Errors related to order placement, modification, or fulfillment.",
+      "handling_strategy": "Return a 409 Conflict error if the order is in an invalid state.  For other errors, attempt to automatically correct the order if possible, otherwise notify support and return a 500 Internal Server Error."
+    },
+    "PAY": {
+      "_comment": "Payment processing errors",
+      "module": "PaymentGatewayService",
+      "http_status_code": 402,
+      "description": "Errors related to payment authorization, capture, or refund.",
+      "handling_strategy": "Return a 402 Payment Required error.  Provide specific instructions to the user on how to resolve the payment issue."
+    },
+    "RATE": {
+      "_comment": "Rate limiting errors",
+      "module": "RateLimiter",
+      "http_status_code": 429,
+      "description": "Errors indicating that the client has exceeded their rate limit.",
+      "handling_strategy": "Return a 429 Too Many Requests error with a 'Retry-After' header indicating when the client can retry."
+    },
+    "DATA": {
+      "_comment": "Data validation or database errors",
+      "module": "DatabaseService",
+      "http_status_code": 503,
+      "description": "Errors related to accessing or manipulating data in the database.  Includes validation failures.",
+      "handling_strategy": "Retry database operations with exponential backoff. If persistent, return a 503 Service Unavailable error, indicating a temporary issue.  Alert the database administrators."
+    },
+    "INTEG": {
+      "_comment": "Integration errors with external services",
+      "module": "IntegrationService",
+      "http_status_code": 502,
+      "description": "Errors encountered when communicating with external APIs or services.",
+      "handling_strategy": "Implement circuit breaker pattern to prevent cascading failures. Return a 502 Bad Gateway error if the external service is unavailable."
+    },
+    "NOTF": {
+      "_comment": "Notification service errors",
+      "module": "NotificationService",
+      "http_status_code": 500,
+      "description": "Errors related to sending emails, SMS messages, or push notifications.",
+      "handling_strategy": "Queue failed notifications for retry. Log errors and monitor for persistent failures. Return a 500 Internal Server Error to the client, indicating a temporary issue with notifications."
+    }
+  }
+}

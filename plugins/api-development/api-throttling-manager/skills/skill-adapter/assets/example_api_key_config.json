@@ -1,0 +1,77 @@
+{
+  "_comment": "API Key Configuration - Defines permissions and rate limits for API keys",
+  "api_keys": [
+    {
+      "api_key": "abcdefg1234567890",
+      "description": "Key for internal analytics dashboard",
+      "enabled": true,
+      "permissions": [
+        "read:analytics",
+        "write:events"
+      ],
+      "rate_limits": {
+        "_comment": "Rate limits are defined as requests per time window",
+        "requests_per_minute": 60,
+        "requests_per_hour": 1000,
+        "requests_per_day": 10000
+      },
+      "quota": {
+        "_comment": "Quota is defined as the total number of requests allowed",
+        "monthly_request_quota": 50000,
+        "reset_date": "2024-01-01T00:00:00Z"
+      }
+    },
+    {
+      "api_key": "uvwxyz9876543210",
+      "description": "Key for external partner integration",
+      "enabled": true,
+      "permissions": [
+        "read:data",
+        "write:data"
+      ],
+      "rate_limits": {
+        "requests_per_minute": 30,
+        "requests_per_hour": 500,
+        "requests_per_day": 5000
+      },
+      "quota": {
+        "monthly_request_quota": 25000,
+        "reset_date": "2024-01-01T00:00:00Z"
+      },
+      "usage_tiers": [
+        {
+          "_comment": "Additional rate limits for specific usage tiers",
+          "tier": "basic",
+          "requests_per_minute": 10
+        },
+        {
+          "tier": "premium",
+          "requests_per_minute": 60
+        }
+      ]
+    },
+    {
+      "api_key": "hijklm0123456789",
+      "description": "Key for developer sandbox - limited access",
+      "enabled": false,
+      "permissions": [
+        "read:test"
+      ],
+      "rate_limits": {
+        "requests_per_minute": 10,
+        "requests_per_hour": 100,
+        "requests_per_day": 500
+      },
+      "quota": {
+        "monthly_request_quota": 1000,
+        "reset_date": "2024-01-01T00:00:00Z"
+      }
+    }
+  ],
+  "default_rate_limits": {
+    "_comment": "Default rate limits applied if no API key is provided or found",
+    "requests_per_minute": 5,
+    "requests_per_hour": 50,
+    "requests_per_day": 200
+  }
+}

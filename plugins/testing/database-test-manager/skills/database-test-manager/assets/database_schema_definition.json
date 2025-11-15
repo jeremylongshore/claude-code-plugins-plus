@@ -1,0 +1,142 @@
+{
+  "_comment": "Example database schema definition for validation. This can be used as a template.",
+  "schema_name": "public",
+  "tables": [
+    {
+      "table_name": "users",
+      "_comment": "Table for storing user information",
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "SERIAL",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "is_unique": true,
+          "_comment": "Unique identifier for the user"
+        },
+        {
+          "column_name": "username",
+          "data_type": "VARCHAR(50)",
+          "is_nullable": false,
+          "is_unique": true,
+          "_comment": "Unique username for login"
+        },
+        {
+          "column_name": "email",
+          "data_type": "VARCHAR(255)",
+          "is_nullable": false,
+          "is_unique": true,
+          "_comment": "Email address of the user"
+        },
+        {
+          "column_name": "password_hash",
+          "data_type": "VARCHAR(255)",
+          "is_nullable": false,
+          "_comment": "Hashed password for security"
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "TIMESTAMP",
+          "is_nullable": false,
+          "default_value": "NOW()",
+          "_comment": "Timestamp of user creation"
+        }
+      ],
+      "constraints": [
+        {
+          "constraint_name": "unique_username",
+          "constraint_type": "UNIQUE",
+          "columns": ["username"],
+          "_comment": "Ensures usernames are unique"
+        },
+        {
+          "constraint_name": "unique_email",
+          "constraint_type": "UNIQUE",
+          "columns": ["email"],
+          "_comment": "Ensures email addresses are unique"
+        }
+      ]
+    },
+    {
+      "table_name": "products",
+      "_comment": "Table for storing product information",
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "SERIAL",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "is_unique": true,
+          "_comment": "Unique identifier for the product"
+        },
+        {
+          "column_name": "name",
+          "data_type": "VARCHAR(100)",
+          "is_nullable": false,
+          "_comment": "Name of the product"
+        },
+        {
+          "column_name": "description",
+          "data_type": "TEXT",
+          "is_nullable": true,
+          "_comment": "Detailed description of the product"
+        },
+        {
+          "column_name": "price",
+          "data_type": "NUMERIC(10, 2)",
+          "is_nullable": false,
+          "_comment": "Price of the product"
+        },
+        {
+          "column_name": "created_at",
+          "data_type": "TIMESTAMP",
+          "is_nullable": false,
+          "default_value": "NOW()",
+          "_comment": "Timestamp of product creation"
+        }
+      ]
+    },
+    {
+      "table_name": "orders",
+      "_comment": "Table for storing order information",
+      "columns": [
+        {
+          "column_name": "id",
+          "data_type": "SERIAL",
+          "is_nullable": false,
+          "is_primary_key": true,
+          "is_unique": true,
+          "_comment": "Unique identifier for the order"
+        },
+        {
+          "column_name": "user_id",
+          "data_type": "INTEGER",
+          "is_nullable": false,
+          "_comment": "Foreign key referencing the users table"
+        },
+        {
+          "column_name": "order_date",
+          "data_type": "TIMESTAMP",
+          "is_nullable": false,
+          "default_value": "NOW()",
+          "_comment": "Date and time the order was placed"
+        },
+        {
+          "column_name": "total_amount",
+          "data_type": "NUMERIC(10, 2)",
+          "is_nullable": false,
+          "_comment": "Total amount of the order"
+        }
+      ],
+      "foreign_keys": [
+        {
+          "constraint_name": "fk_user_id",
+          "columns": ["user_id"],
+          "referenced_table": "users",
+          "referenced_columns": ["id"],
+          "_comment": "Foreign key relationship to the users table"
+        }
+      ]
+    }
+  ]
+}

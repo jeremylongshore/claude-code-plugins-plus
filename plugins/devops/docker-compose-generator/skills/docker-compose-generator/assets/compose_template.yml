@@ -1,0 +1,91 @@
+version: "3.9"
+
+# Define services for your application
+services:
+
+  # Example web application service
+  web:
+    image: nginx:latest # Replace with your web application image
+    container_name: web_app
+    ports:
+      - "80:80" # Expose port 80 for HTTP traffic
+      - "443:443" # Expose port 443 for HTTPS traffic (configure SSL certificates)
+    volumes:
+      - ./html:/usr/share/nginx/html # Mount your web application files
+      - ./nginx/conf.d:/etc/nginx/conf.d # Mount Nginx configuration files
+    depends_on:
+      - app # Ensure the app service is running before starting the web service
+    restart: always # Restart the service if it fails
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost || exit 1"] # Check if the web server is responding
+      interval: 30s # Check every 30 seconds
+      timeout: 10s # Timeout after 10 seconds
+      retries: 3 # Retry up to 3 times
+    networks:
+      - app_network # Connect to the application network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5" # Limit CPU usage to 0.5 cores
+          memory: 512M # Limit memory usage to 512MB
+    environment:
+      - REPLACE_ME=YOUR_VALUE_HERE # Example environment variable
+
+  # Example application service
+  app:
+    build:
+      context: ./app # Path to the application Dockerfile
+    container_name: app_service
+    environment:
+      - DATABASE_URL=postgres://user:password@db:5432/database # Database connection string
+      - SECRET_KEY=YOUR_SECRET_KEY # Secret key for your application
+    depends_on:
+      - db # Ensure the database service is running before starting the app service
+    restart: always # Restart the service if it fails
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"] # Check if the application is responding
+      interval: 30s # Check every 30 seconds
+      timeout: 10s # Timeout after 10 seconds
+      retries: 3 # Retry up to 3 times
+    networks:
+      - app_network # Connect to the application network
+    deploy:
+      resources:
+        limits:
+          cpus: "1" # Limit CPU usage to 1 core
+          memory: 1G # Limit memory usage to 1GB
+    volumes:
+      - ./app:/app  # Mount the application code
+
+  # Example database service
+  db:
+    image: postgres:14 # Use Postgres version 14
+    container_name: database
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persist database data
+    environment:
+      - POSTGRES_USER=user # Database user
+      - POSTGRES_PASSWORD=password # Database password
+      - POSTGRES_DB=database # Database name
+    restart: always # Restart the service if it fails
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d database"] # Check if the database is ready
+      interval: 30s # Check every 30 seconds
+      timeout: 10s # Timeout after 10 seconds
+      retries: 3 # Retry up to 3 times
+    networks:
+      - app_network # Connect to the application network
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5" # Limit CPU usage to 0.5 cores
+          memory: 512M # Limit memory usage to 512MB
+
+# Define networks for communication between services
+networks:
+  app_network:
+    driver: bridge # Use a bridge network for internal communication
+
+# Define volumes for persistent data storage
+volumes:
+  db_data: # Volume for database data

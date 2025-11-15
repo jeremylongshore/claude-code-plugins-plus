@@ -1,0 +1,43 @@
+{
+  "_comment": "Prettier configuration file",
+  "semi": true,
+  "_comment.semi": "Add semicolons at the end of statements",
+  "trailingComma": "es5",
+  "_comment.trailingComma": "Add trailing commas wherever possible (ES5 syntax)",
+  "singleQuote": true,
+  "_comment.singleQuote": "Use single quotes instead of double quotes",
+  "printWidth": 100,
+  "_comment.printWidth": "Line length that the printer will wrap on",
+  "tabWidth": 2,
+  "_comment.tabWidth": "Number of spaces per indentation level",
+  "useTabs": false,
+  "_comment.useTabs": "Indent lines with tabs instead of spaces",
+  "bracketSpacing": true,
+  "_comment.bracketSpacing": "Print spaces between brackets in object literals",
+  "arrowParens": "always",
+  "_comment.arrowParens": "Include parentheses around a sole arrow function parameter",
+  "jsxBracketSameLine": false,
+  "_comment.jsxBracketSameLine": "Put > on the last line instead of at a new line",
+  "jsxSingleQuote": false,
+  "_comment.jsxSingleQuote": "Use single quotes instead of double quotes in JSX",
+  "endOfLine": "lf",
+  "_comment.endOfLine": "Line ending sequence to use",
+  "plugins": [],
+  "_comment.plugins": "Array of plugins to use",
+  "overrides": [
+    {
+      "files": "*.json",
+      "_comment.files": "Apply only to JSON files",
+      "options": {
+        "parser": "json"
+      }
+    },
+    {
+      "files": "*.md",
+      "_comment.files": "Apply only to Markdown files",
+      "options": {
+        "parser": "markdown"
+      }
+    }
+  ]
+}

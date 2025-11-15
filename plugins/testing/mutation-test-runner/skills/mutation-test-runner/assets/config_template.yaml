@@ -1,0 +1,76 @@
+# Configuration template for the mutation-test-runner plugin
+
+# General settings
+general:
+  # Name of the project
+  project_name: REPLACE_ME # e.g., 'my-awesome-project'
+
+  # Path to the project's source code
+  source_path: src # Default source directory
+
+  # Path to the project's test suite
+  test_path: tests # Default test directory
+
+  # Number of CPU cores to use for mutation testing.  -1 means use all available cores.
+  workers: -1
+
+  # Time limit (in seconds) for each test execution during mutation testing.  Increase if your tests are slow.
+  timeout: 60
+
+# Mutation framework configuration
+framework:
+  # Name of the mutation testing framework to use.  Supported: stryker, pitest, mutmut, mutant
+  name: stryker # Default framework
+
+  # Version of the mutation testing framework.  Leave blank to use the latest.
+  version: "" # Optional: Specify a version e.g., "3.0.0"
+
+  # Framework-specific configuration options.  Consult the framework's documentation for available options.
+  # Example for Stryker:
+  options:
+    mutate: # files or globs to mutate
+      - 'src/**/*.js'
+      - '!src/**/*.test.js'
+    packageManager: 'npm' # npm, yarn, pnpm
+    reporters: # reporters to use
+      - 'html'
+      - 'clear-text'
+
+# Mutation operators to apply.  Leave empty to use the framework's defaults.
+# Consult the framework's documentation for supported mutation operators.
+mutators:
+  # List of mutators to apply.  Examples: 'ArithmeticOperator', 'LogicalOperator', 'ConditionalExpression'
+  # Example for PITest:
+  - org.pitest.mutationtest.engine.gregor.mutators.ReturnValsMutator
+  - org.pitest.mutationtest.engine.gregor.mutators.VoidMethodCallMutator
+
+# Reporting configuration
+reporting:
+  # Output format for the mutation testing results.  Supported: html, json, csv, console
+  format: html # Default output format
+
+  # Path to the output directory for the reports.
+  output_path: reports # Default output directory
+
+  # Whether to generate a detailed report for each mutation.  Can significantly increase the report size.
+  detailed_report: false
+
+# Advanced settings (optional)
+advanced:
+  # List of files or directories to exclude from mutation testing.
+  exclude:
+    - node_modules
+    - vendor
+
+  # Custom command to run the test suite.  Overrides the default test command.
+  test_command: npm test # Default test command
+
+  # Environment variables to set during test execution.
+  environment:
+    NODE_ENV: test # Example environment variable
+    YOUR_VARIABLE: YOUR_VALUE_HERE
+
+# Thresholds for mutation score
+thresholds:
+  high: 80 # Percentage - High quality score
+  low: 60 # Percentage - Low quality score, needs improvement

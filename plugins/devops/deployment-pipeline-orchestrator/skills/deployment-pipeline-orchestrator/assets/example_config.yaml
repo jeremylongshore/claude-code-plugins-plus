@@ -1,0 +1,84 @@
+# example_config.yaml
+# Configuration file for the Deployment Pipeline Orchestrator plugin.
+
+# General pipeline settings
+pipeline_name: "Example Application Deployment" # Name of this deployment pipeline
+application_name: "ExampleApp" # Name of the application being deployed
+environment: "production" # Target environment (e.g., staging, production, development)
+
+# Source code repository settings
+repository:
+  type: "git" # Type of repository (e.g., git, svn)
+  url: "https://github.com/YOUR_GITHUB_USERNAME/ExampleApp.git" # URL of the repository
+  branch: "main" # Branch to deploy from
+  credentials:
+    username: "YOUR_GITHUB_USERNAME" # Username for accessing the repository (if required)
+    password: "YOUR_GITHUB_PASSWORD" # Password or token for accessing the repository (if required, consider using secrets management)
+
+# Build stage configuration
+build:
+  enabled: true # Whether to enable the build stage
+  builder: "docker" # Build tool to use (e.g., docker, maven, gradle)
+  dockerfile_path: "Dockerfile" # Path to the Dockerfile (if using Docker)
+  context_path: "." # Build context path
+  image_name: "example-app" # Name of the Docker image to build
+  image_tag: "latest" # Tag for the Docker image
+  registry: # Docker registry settings (optional)
+    url: "docker.io" # URL of the Docker registry
+    username: "YOUR_DOCKER_USERNAME" # Username for accessing the registry
+    password: "YOUR_DOCKER_PASSWORD" # Password or token for accessing the registry (if required, consider using secrets management)
+  build_args: # Additional build arguments (optional)
+    - "VERSION=1.0.0"
+
+# Test stage configuration
+test:
+  enabled: true # Whether to enable the test stage
+  test_runner: "pytest" # Testing framework (e.g., pytest, unittest)
+  test_command: "pytest tests/" # Command to run the tests
+  dependencies: # Dependencies required for testing (optional)
+    - "pytest"
+    - "requests"
+
+# Deploy stage configuration
+deploy:
+  enabled: true # Whether to enable the deploy stage
+  deployment_platform: "kubernetes" # Platform to deploy to (e.g., kubernetes, aws, azure)
+  kubernetes: # Kubernetes deployment settings (required if deployment_platform is kubernetes)
+    namespace: "example-app-ns" # Kubernetes namespace
+    deployment_file: "k8s/deployment.yaml" # Path to the Kubernetes deployment file
+    service_file: "k8s/service.yaml" # Path to the Kubernetes service file
+    ingress_file: "k8s/ingress.yaml" # Path to the Kubernetes ingress file (optional)
+    image_pull_secret: "docker-registry-secret" # Name of the image pull secret (optional)
+  aws: # AWS deployment settings (required if deployment_platform is aws)
+    region: "us-east-1" # AWS region
+    ecr_repository: "YOUR_ECR_REPOSITORY_NAME" # Name of the ECR repository
+    ecs_cluster: "YOUR_ECS_CLUSTER_NAME" # Name of the ECS cluster
+  azure: # Azure deployment settings (required if deployment_platform is azure)
+    resource_group: "YOUR_RESOURCE_GROUP_NAME" # Name of the Azure resource group
+    container_registry: "YOUR_CONTAINER_REGISTRY_NAME" # Name of the Azure container registry
+
+# Monitoring stage configuration
+monitor:
+  enabled: true # Whether to enable the monitor stage
+  monitoring_tool: "prometheus" # Monitoring tool to use (e.g., prometheus, datadog)
+  endpoints: # Endpoints to monitor
+    - "http://localhost:8080/health"
+  alerts: # Alerting configuration
+    cpu_usage: # Example alert for CPU usage
+      threshold: 80 # Percentage threshold
+      severity: "critical" # Severity of the alert
+    memory_usage: # Example alert for memory usage
+      threshold: 90 # Percentage threshold
+      severity: "warning" # Severity of the alert
+
+# Notification settings
+notifications:
+  enabled: true # Whether to enable notifications
+  type: "slack" # Notification type (e.g., slack, email)
+  slack: # Slack notification settings (required if type is slack)
+    webhook_url: "REPLACE_ME" # Slack webhook URL
+  email: # Email notification settings (required if type is email)
+    sender: "deployments@example.com" # Sender email address
+    recipients: # List of recipient email addresses
+      - "admin@example.com"
+      - "devops@example.com"

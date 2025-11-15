@@ -1,0 +1,58 @@
+# deployment_template.yaml
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: REPLACE_ME-deployment
+  labels:
+    app: REPLACE_ME
+spec:
+  replicas: 3 # Number of desired pods
+  selector:
+    matchLabels:
+      app: REPLACE_ME
+  strategy:
+    type: RollingUpdate # Use rolling updates for zero-downtime deployments
+    rollingUpdate:
+      maxSurge: 25%   # Allow up to 25% more pods than desired during update
+      maxUnavailable: 25% # Ensure at least 75% of pods are available during update
+  template:
+    metadata:
+      labels:
+        app: REPLACE_ME
+    spec:
+      containers:
+      - name: REPLACE_ME-container
+        image: YOUR_VALUE_HERE # Replace with your container image
+        imagePullPolicy: IfNotPresent # Only pull the image if it's not present
+        ports:
+        - containerPort: 80 # The port your application listens on
+          name: http
+          protocol: TCP
+        resources: # Define resource requests and limits
+          requests:
+            cpu: 100m # Minimum CPU required (100 millicores)
+            memory: 256Mi # Minimum memory required (256 mebibytes)
+          limits:
+            cpu: 500m # Maximum CPU allowed (500 millicores)
+            memory: 512Mi # Maximum memory allowed (512 mebibytes)
+        livenessProbe: # Check if the container is running
+          httpGet:
+            path: /healthz  # Replace with your health check endpoint
+            port: 80
+          initialDelaySeconds: 30 # Wait 30 seconds after container starts
+          periodSeconds: 10 # Check every 10 seconds
+          timeoutSeconds: 5 # Timeout after 5 seconds
+          failureThreshold: 3 # Retry 3 times before considering the container unhealthy
+        readinessProbe: # Check if the container is ready to serve traffic
+          httpGet:
+            path: /readyz # Replace with your readiness check endpoint
+            port: 80
+          initialDelaySeconds: 15 # Wait 15 seconds after container starts
+          periodSeconds: 10 # Check every 10 seconds
+          timeoutSeconds: 5 # Timeout after 5 seconds
+          failureThreshold: 3 # Retry 3 times before considering the container not ready
+        # Add environment variables here if needed
+        # env:
+        # - name: MY_ENV_VAR
+        #   value: "YOUR_VALUE_HERE"

@@ -1,0 +1,63 @@
+# This is an example MLflow workflow configuration file for the model-versioning-tracker plugin.
+# It defines the stages of the MLflow workflow, the models to be tracked, and the metrics to be monitored.
+
+# General configuration
+workflow_name: "Example MLflow Workflow" # Name of the workflow
+description: "An example workflow for tracking model versions and performance using MLflow." # Description of the workflow
+environment: "production" # Environment (e.g., development, staging, production)
+mlflow_tracking_uri: "http://localhost:5000" # MLflow tracking server URI (REPLACE_ME if using a different server)
+artifact_location: "s3://your-s3-bucket/mlflow" # Location to store artifacts (models, data, etc.) - REPLACE_ME with your S3 bucket
+
+# Model configuration
+model:
+  name: "MyAwesomeModel" # Name of the model to track
+  model_uri: "models:/MyAwesomeModel/Production" # URI of the model in MLflow (can be a placeholder initially)
+  flavor: "sklearn" # Model flavor (e.g., sklearn, tensorflow, pytorch) - important for loading the model correctly
+
+# Data configuration
+data:
+  dataset_name: "iris" # Name of the dataset used for training
+  dataset_location: "data/iris.csv" # Location of the dataset (can be a local path or a cloud storage URI) - ADJUST PATH IF NEEDED
+  target_variable: "species" # Name of the target variable
+  features: ["sepal_length", "sepal_width", "petal_length", "petal_width"] # List of feature variables
+
+# Training configuration
+training:
+  experiment_name: "MyAwesomeModelTraining" # Name of the MLflow experiment
+  entrypoint: "train.py" # Python script to run for training (relative to the plugin directory)
+  parameters: # Training parameters
+    learning_rate: 0.01
+    epochs: 100
+    random_state: 42
+  environment: "conda.yaml" # Conda environment file for training (optional)
+
+# Evaluation configuration
+evaluation:
+  entrypoint: "evaluate.py" # Python script to run for evaluation (relative to the plugin directory)
+  metrics: # Metrics to track during evaluation
+    accuracy:
+      threshold: 0.8 # Minimum acceptable accuracy (optional)
+    f1_score:
+      threshold: 0.7 # Minimum acceptable F1 score (optional)
+  validation_dataset: "data/validation.csv" # Location of the validation dataset (optional) - ADJUST PATH IF NEEDED
+
+# Deployment configuration
+deployment:
+  target_platform: "AWS SageMaker" # Target platform for deployment (e.g., AWS SageMaker, Azure ML, GCP Vertex AI)
+  deployment_script: "deploy.py" # Python script to run for deployment (relative to the plugin directory)
+  model_endpoint: "YOUR_VALUE_HERE" # Endpoint where the model will be deployed (REPLACE_ME with the actual endpoint)
+  instance_type: "ml.m5.large" # Instance type for deployment (e.g., ml.m5.large)
+
+# Versioning configuration
+versioning:
+  model_registry_name: "MyAwesomeModelRegistry" # Name of the model registry in MLflow (optional)
+  transition_stage: "Production" # Stage to transition the model to after successful evaluation (e.g., Staging, Production)
+  description: "Initial model version" # Description for the model version
+
+# Alerting configuration
+alerting:
+  email_notifications: # Email notifications configuration
+    enabled: false # Enable/disable email notifications
+    recipients: ["YOUR_EMAIL_HERE"] # List of email recipients (REPLACE_ME with your email address)
+    on_failure: true # Send email on workflow failure
+    on_success: false # Send email on workflow success

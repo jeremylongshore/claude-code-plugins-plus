@@ -1,0 +1,96 @@
+{
+  "_comment": "Example workflow definition template for the Workflow Orchestrator plugin",
+  "name": "Data Processing Pipeline",
+  "description": "A sample workflow for processing data from various sources, transforming it, and loading it into a data warehouse.",
+  "version": "1.0",
+  "author": "ExampleCorp Data Engineering Team",
+  "dag": {
+    "_comment": "Directed Acyclic Graph definition.  Each key is a task ID.",
+    "extract_data": {
+      "description": "Extracts data from the source database.",
+      "type": "task",
+      "operator": "python",
+      "module": "data_extraction",
+      "function": "extract_from_db",
+      "parameters": {
+        "db_url": "jdbc:postgresql://db.example.com:5432/source_db",
+        "table_name": "raw_data",
+        "query": "SELECT * FROM raw_data WHERE created_at > %s",
+        "query_params": ["{{ workflow_start_date }}"]
+      },
+      "dependencies": []
+    },
+    "transform_data": {
+      "description": "Transforms the extracted data.",
+      "type": "task",
+      "operator": "python",
+      "module": "data_transformation",
+      "function": "transform_data",
+      "parameters": {
+        "transformation_rules": [
+          {"field": "customer_id", "type": "int"},
+          {"field": "order_date", "type": "date", "format": "YYYY-MM-DD"}
+        ]
+      },
+      "dependencies": ["extract_data"]
+    },
+    "validate_data": {
+      "description": "Validates the transformed data.",
+      "type": "task",
+      "operator": "python",
+      "module": "data_validation",
+      "function": "validate_data",
+      "parameters": {
+        "schema": {
+          "customer_id": "int",
+          "order_date": "date",
+          "order_amount": "float"
+        }
+      },
+      "dependencies": ["transform_data"]
+    },
+    "load_data": {
+      "description": "Loads the validated data into the data warehouse.",
+      "type": "task",
+      "operator": "python",
+      "module": "data_loading",
+      "function": "load_into_warehouse",
+      "parameters": {
+        "warehouse_url": "jdbc:postgresql://dw.example.com:5432/data_warehouse",
+        "table_name": "processed_data"
+      },
+      "dependencies": ["validate_data"]
+    },
+    "generate_report": {
+      "description": "Generates a report based on the processed data.",
+      "type": "task",
+      "operator": "python",
+      "module": "reporting",
+      "function": "generate_sales_report",
+      "parameters": {
+        "report_template": "sales_report.html",
+        "output_path": "/reports/sales_report_{{ execution_date }}.pdf"
+      },
+      "dependencies": ["load_data"]
+    }
+  },
+  "variables": {
+    "_comment": "Workflow-level variables that can be used in task parameters",
+    "workflow_start_date": "2024-01-01",
+    "execution_date": "{{ now() }}"
+  },
+  "notifications": {
+    "_comment": "Configure notifications for workflow events",
+    "on_success": {
+      "type": "email",
+      "recipients": ["data_engineering@example.com"],
+      "subject": "Workflow completed successfully",
+      "body": "The Data Processing Pipeline workflow completed successfully."
+    },
+    "on_failure": {
+      "type": "slack",
+      "channel": "#data-engineering-alerts",
+      "message": "The Data Processing Pipeline workflow failed. Check logs for details."
+    }
+  }
+}

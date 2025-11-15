@@ -1,0 +1,51 @@
+{
+  "_comment": "Swagger UI configuration file",
+  "swagger": {
+    "_comment": "Swagger UI configuration options",
+    "url": "/openapi.json",
+    "dom_id": "#swagger-ui",
+    "deepLinking": true,
+    "presets": [
+      "SwaggerUIBundle.presets.apis",
+      "SwaggerUIStandalonePreset"
+    ],
+    "plugins": [
+      "SwaggerUIBundle.plugins.DownloadUrl"
+    ],
+    "layout": "StandaloneLayout",
+    "docExpansion": "none",
+    "filter": true,
+    "showRequestDuration": true,
+    "requestInterceptor": "(req) => { console.log('Request Interceptor:', req); return req; }",
+    "responseInterceptor": "(res) => { console.log('Response Interceptor:', res); return res; }",
+    "displayOperationId": false,
+    "displayRequestDuration": true,
+    "defaultModelsExpandDepth": 1,
+    "defaultModelExpandDepth": 1,
+    "defaultModelRendering": "example",
+    "displayRequestDuration": true,
+    "showExtensions": true,
+    "showCommonExtensions": true,
+    "validatorUrl": null,
+    "oauth2RedirectUrl": null,
+    "syntaxHighlight": {
+      "activate": true,
+      "theme": "monokai"
+    },
+    "tryItOutEnabled": true,
+    "persistAuthorization": true
+  },
+  "customCss": ".swagger-ui .topbar { display: none; }",
+  "customJs": null,
+  "customFavIcon": null,
+  "customSiteTitle": "API Documentation",
+  "oauth2": {
+    "_comment": "OAuth 2.0 configuration (optional)",
+    "clientId": "your-client-id",
+    "clientSecret": "your-client-secret",
+    "realm": "your-realm",
+    "appName": "API Documentation App",
+    "scopeSeparator": " ",
+    "additionalQueryStringParams": {}
+  }
+}

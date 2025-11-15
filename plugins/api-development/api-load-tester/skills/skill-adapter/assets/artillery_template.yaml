@@ -1,0 +1,43 @@
+# Artillery Load Test Configuration
+
+config:
+  target: "REPLACE_ME"  # URL of the API endpoint to test
+  phases:
+    - duration: 60  # Ramp up duration in seconds
+      arrivalRate: 10 # Number of virtual users to start per second
+      name: "Ramp Up"
+    - duration: 300 # Sustain duration in seconds
+      arrivalRate: 10 # Number of virtual users to maintain
+      name: "Sustain Load"
+  defaults:
+    headers:
+      Content-Type: "application/json"
+      #Add any default headers here.  Authorization tokens, etc.
+      #Authorization: "Bearer YOUR_AUTH_TOKEN"
+
+scenarios:
+  - name: "Basic API Request"
+    flow:
+      - get:
+          url: "/YOUR_ENDPOINT_HERE"  # Replace with your API endpoint
+          # Capture response data to variables
+          capture:
+            - json: "$.id"
+              as: "id"
+          # Example of using a custom function
+          # beforeRequest: "myFunction"
+      - think: 1 # Pause for 1 second between requests
+      - log: "Request completed.  ID: {{ id }}" # Log the captured ID
+
+# Define custom functions (optional, define in separate .js file referenced in config)
+# functions: "./my_functions.js"
+
+# Example function (in my_functions.js)
+# module.exports.myFunction = function(requestParams, context, ee, next) {
+#   // Add custom logic here
+#   return next();
+# };
+
+# Variables (can be loaded from CSV or defined inline)
+# variables:
+#   - id: [1, 2, 3, 4, 5]

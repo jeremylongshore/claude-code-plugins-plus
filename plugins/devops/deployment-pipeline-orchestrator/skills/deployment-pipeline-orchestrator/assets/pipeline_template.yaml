@@ -1,0 +1,77 @@
+# pipeline_template.yaml
+# This file is a template for defining deployment pipelines.
+# Use it as a starting point and customize it to your specific needs.
+
+# Metadata about the pipeline
+metadata:
+  name: REPLACE_ME_PIPELINE_NAME # Unique name for your pipeline
+  description: YOUR_VALUE_HERE # A brief description of what this pipeline does
+  version: 1.0 # Pipeline version (e.g., semantic versioning)
+
+# Global configuration settings that apply to the entire pipeline
+global_config:
+  # Environment to deploy to (e.g., development, staging, production)
+  environment: staging
+  # Region where the deployment will take place (e.g., us-east-1, eu-west-1)
+  region: us-east-1
+  # Notification settings (e.g., Slack webhook, email address)
+  notifications:
+    type: slack
+    webhook_url: REPLACE_ME_SLACK_WEBHOOK_URL
+
+# Define the stages of the deployment pipeline
+stages:
+  - name: build
+    description: Build the application artifact
+    type: build
+    # Configuration specific to the build stage
+    config:
+      # Build tool to use (e.g., docker, maven, npm)
+      build_tool: docker
+      # Path to the Dockerfile
+      dockerfile_path: ./Dockerfile
+      # Image name for the built artifact
+      image_name: REPLACE_ME_DOCKER_IMAGE_NAME
+      # Tag for the image
+      image_tag: latest
+
+  - name: test
+    description: Run automated tests against the built artifact
+    type: test
+    # Configuration specific to the test stage
+    config:
+      # Test framework to use (e.g., pytest, jest, junit)
+      test_framework: pytest
+      # Path to the test scripts
+      test_path: ./tests
+      # Command to execute the tests
+      test_command: pytest
+
+  - name: deploy
+    description: Deploy the application to the target environment
+    type: deploy
+    # Configuration specific to the deploy stage
+    config:
+      # Deployment platform (e.g., aws, azure, gcp, kubernetes)
+      platform: kubernetes
+      # Namespace to deploy to
+      namespace: REPLACE_ME_KUBERNETES_NAMESPACE
+      # Path to the Kubernetes deployment manifest
+      manifest_path: ./deployment.yaml
+      # Number of replicas
+      replicas: 3
+
+  - name: post_deploy_test
+    description: Run tests after deployment to confirm success
+    type: test
+    config:
+      test_framework: curl
+      test_path: ./post_deploy_tests.sh #Example script
+      test_command: ./post_deploy_tests.sh #Example script
+      endpoint_url: REPLACE_ME_APPLICATION_ENDPOINT_URL # Example URL to test
+
+# Rollback strategy in case of deployment failure (optional)
+rollback:
+  enabled: true
+  # Strategy for rollback (e.g., redeploy previous version, manual intervention)
+  strategy: redeploy_previous

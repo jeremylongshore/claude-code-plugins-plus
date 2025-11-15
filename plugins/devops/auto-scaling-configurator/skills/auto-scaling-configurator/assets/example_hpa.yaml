@@ -1,0 +1,43 @@
+# example_hpa.yaml
+# This is an example Kubernetes Horizontal Pod Autoscaler (HPA) configuration file.
+# It defines how the number of pods in a deployment or replication controller
+# should be automatically scaled based on observed CPU utilization.
+
+apiVersion: autoscaling/v2 # Use autoscaling/v2 for more features (e.g., resource metrics)
+kind: HorizontalPodAutoscaler
+metadata:
+  name: example-hpa # The name of the HPA resource
+  namespace: default # The namespace where the HPA should be deployed (REPLACE_ME if needed)
+spec:
+  scaleTargetRef: # Defines the target resource to scale
+    apiVersion: apps/v1 # API version of the target resource
+    kind: Deployment # The type of resource to scale (e.g., Deployment, ReplicationController)
+    name: example-deployment # The name of the Deployment to scale (REPLACE_ME)
+  minReplicas: 2 # The minimum number of replicas to maintain
+  maxReplicas: 10 # The maximum number of replicas to scale to
+  metrics: # Defines the metrics used to trigger scaling
+    - type: Resource # Scale based on resource utilization
+      resource:
+        name: cpu # The resource to monitor (CPU in this case)
+        target:
+          type: Utilization # Target utilization percentage
+          averageUtilization: 70 # Target CPU utilization percentage (e.g., 70%)
+    - type: Resource # Scale based on memory utilization
+      resource:
+        name: memory # The resource to monitor (Memory in this case)
+        target:
+          type: Utilization # Target utilization percentage
+          averageUtilization: 80 # Target Memory utilization percentage (e.g., 80%)
+  behavior: # Optional: Define scaling behavior
+    scaleUp: # Define scale up behavior
+      stabilizationWindowSeconds: 300 # Delay for scaling up after a scaling event
+      policies: # Scaling policies (e.g., percentage or fixed number of replicas)
+        - type: Percent # Scale up by a percentage
+          value: 20 # Percentage increase
+          periodSeconds: 60 # Evaluate every 60 seconds
+    scaleDown: # Define scale down behavior
+      stabilizationWindowSeconds: 300 # Delay for scaling down after a scaling event
+      policies: # Scaling policies (e.g., percentage or fixed number of replicas)
+        - type: Percent # Scale down by a percentage
+          value: 10 # Percentage decrease
+          periodSeconds: 60 # Evaluate every 60 seconds

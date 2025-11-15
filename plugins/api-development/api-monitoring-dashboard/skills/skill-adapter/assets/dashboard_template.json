@@ -1,0 +1,90 @@
+{
+  "_comment": "Template for creating an API monitoring dashboard.  This JSON defines the basic structure and sample data for visualizing API health, metrics, and alerts.",
+  "dashboard_name": "API Performance Dashboard",
+  "description": "A comprehensive dashboard for monitoring the health and performance of your APIs.",
+  "data_source": "Prometheus",
+  "refresh_interval": "5m",
+  "panels": [
+    {
+      "panel_id": 1,
+      "title": "API Request Rate",
+      "type": "timeseries",
+      "_comment": "Visualizes the number of API requests over time.",
+      "query": "rate(http_requests_total[5m])",
+      "legend": "{{method}} {{path}}",
+      "unit": "req/s",
+      "axis_format": "short"
+    },
+    {
+      "panel_id": 2,
+      "title": "API Error Rate (5xx)",
+      "type": "timeseries",
+      "_comment": "Displays the error rate of API requests resulting in 5xx errors.",
+      "query": "rate(http_requests_total{status=~'5.*'}[5m])",
+      "legend": "{{method}} {{path}}",
+      "unit": "%",
+      "axis_format": "percent",
+      "transform": "multiply_by_100"
+    },
+    {
+      "panel_id": 3,
+      "title": "Average API Response Time",
+      "type": "timeseries",
+      "_comment": "Tracks the average response time of API requests.",
+      "query": "avg(http_request_duration_seconds_sum) / avg(http_request_duration_seconds_count)",
+      "legend": "{{method}} {{path}}",
+      "unit": "ms",
+      "axis_format": "short",
+      "transform": "multiply_by_1000"
+    },
+    {
+      "panel_id": 4,
+      "title": "API Latency (P95)",
+      "type": "timeseries",
+      "_comment": "Shows the 95th percentile latency of API requests.",
+      "query": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+      "legend": "{{method}} {{path}}",
+      "unit": "ms",
+      "axis_format": "short",
+      "transform": "multiply_by_1000"
+    },
+    {
+      "panel_id": 5,
+      "title": "API Status Codes",
+      "type": "stat",
+      "_comment": "Displays the distribution of API status codes.",
+      "query": "sum(http_requests_total) by (status)",
+      "unit": "total",
+      "color_thresholds": [
+        { "value": 0, "color": "green" },
+        { "value": 1000, "color": "yellow" },
+        { "value": 5000, "color": "red" }
+      ]
+    },
+    {
+      "panel_id": 6,
+      "title": "Alerts",
+      "type": "table",
+      "_comment": "Displays active alerts related to API performance.",
+      "query": "ALERTS{}",
+      "columns": ["alertname", "severity", "description", "value"]
+    }
+  ],
+  "variables": [
+    {
+      "name": "namespace",
+      "label": "Namespace",
+      "query": "label_values(namespace)",
+      "multi": true,
+      "includeAll": true
+    },
+    {
+      "name": "service",
+      "label": "Service",
+      "query": "label_values(service, namespace='$namespace')",
+      "multi": true,
+      "includeAll": true
+    }
+  ],
+  "tags": ["api", "monitoring", "performance", "health"]
+}

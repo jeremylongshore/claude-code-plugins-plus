@@ -1,0 +1,106 @@
+{
+  "_comment": "API Version Configuration Template",
+  "apiName": "MyAwesomeAPI",
+  "versions": [
+    {
+      "version": "v1",
+      "_comment": "Initial version of the API",
+      "status": "active",
+      "releaseDate": "2023-01-15",
+      "deprecationDate": null,
+      "sunsetDate": null,
+      "migrationGuide": null,
+      "backwardCompatible": true,
+      "endpoints": {
+        "/users": {
+          "method": "GET",
+          "description": "Retrieve all users",
+          "fields": ["id", "name", "email"]
+        },
+        "/users/{id}": {
+          "method": "GET",
+          "description": "Retrieve a specific user",
+          "fields": ["id", "name", "email"]
+        }
+      }
+    },
+    {
+      "version": "v2",
+      "_comment": "Second version of the API with enhanced features",
+      "status": "active",
+      "releaseDate": "2023-07-20",
+      "deprecationDate": "2024-01-15",
+      "sunsetDate": "2024-07-20",
+      "migrationGuide": "https://example.com/migration-v1-to-v2",
+      "backwardCompatible": false,
+      "endpoints": {
+        "/users": {
+          "method": "GET",
+          "description": "Retrieve all users with pagination and filtering",
+          "fields": ["id", "name", "email", "createdAt", "updatedAt"],
+          "parameters": ["page", "limit", "filter"]
+        },
+        "/users/{id}": {
+          "method": "GET",
+          "description": "Retrieve a specific user with extended profile information",
+          "fields": ["id", "name", "email", "createdAt", "updatedAt", "profile"]
+        },
+        "/users/{id}/orders": {
+          "method": "GET",
+          "description": "Retrieve orders for a specific user",
+          "fields": ["orderId", "orderDate", "total"]
+        }
+      }
+    },
+    {
+      "version": "v3",
+      "_comment": "Third version of the API - current version",
+      "status": "active",
+      "releaseDate": "2024-02-01",
+      "deprecationDate": null,
+      "sunsetDate": null,
+      "migrationGuide": null,
+      "backwardCompatible": true,
+      "endpoints": {
+        "/users": {
+          "method": "GET",
+          "description": "Retrieve all users with improved pagination and filtering",
+          "fields": ["id", "name", "email", "createdAt", "updatedAt"],
+          "parameters": ["page", "limit", "filter", "sort"]
+        },
+        "/users/{id}": {
+          "method": "GET",
+          "description": "Retrieve a specific user with extended profile information and address",
+          "fields": ["id", "name", "email", "createdAt", "updatedAt", "profile", "address"]
+        },
+        "/users/{id}/orders": {
+          "method": "GET",
+          "description": "Retrieve orders for a specific user with detailed order information",
+          "fields": ["orderId", "orderDate", "total", "items"]
+        }
+      }
+    },
+    {
+      "version": "v0",
+      "_comment": "Deprecated version of the API",
+      "status": "deprecated",
+      "releaseDate": "2022-01-01",
+      "deprecationDate": "2023-01-01",
+      "sunsetDate": "2023-07-01",
+      "migrationGuide": "https://example.com/migration-v0-to-v1",
+      "backwardCompatible": false,
+      "endpoints": {
+        "/users": {
+          "method": "GET",
+          "description": "Retrieve all users (DEPRECATED)",
+          "fields": ["id", "name"]
+        },
+        "/users/{id}": {
+          "method": "GET",
+          "description": "Retrieve a specific user (DEPRECATED)",
+          "fields": ["id", "name"]
+        }
+      }
+    }
+  ]
+}
