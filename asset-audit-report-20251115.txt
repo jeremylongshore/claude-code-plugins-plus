@@ -1,0 +1,1526 @@
+=== COMPREHENSIVE SKILLS ASSET AUDIT ===
+Generated: Sat Nov 15 07:34:51 CST 2025
+
+Plugin: discovery-questionnaire
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] template_questionnaire.docx: A template DOCX file for the discovery questionnaire.
+      - [ ] questionnaire_schema.json: A JSON schema defining the structure and validation rules for the questionnaire.
+      - [ ] example_questionnaire.json: A JSON file containing an example of a completed questionnaire.
+
+Plugin: make-scenario-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] scenario_templates/: A collection of pre-built Make.com scenario templates for common use cases.
+      - [ ] example_scenarios/: JSON examples of complex Make.com scenarios.
+
+Plugin: n8n-workflow-designer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] workflow_templates/: Directory containing example n8n workflow JSON files for common use cases (e.g., email auto-responder, data synchronization).
+      - [ ] prompt_templates/: Directory containing prompt templates for generating n8n workflows from natural language input.
+      - [ ] node_icons/: Directory containing icons for n8n nodes, used for visual representation in the workflow designer.
+
+Plugin: roi-calculator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] roi_template.md: Markdown template for ROI reports.
+      - [ ] example_roi_report.md: Example ROI report for customer support automation.
+      - [ ] industry_logos/: Directory containing logos for different industries.
+
+Plugin: sow-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] sow_template.docx: A basic SOW template in DOCX format.
+      - [ ] example_sow.pdf: An example of a completed SOW.
+      - [ ] section_templates/: Directory containing templates for different SOW sections (e.g., scope, deliverables, timelines).
+
+Plugin: zapier-zap-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] zap_template.json: JSON template for a basic Zap configuration.
+      - [ ] example_zaps/: Directory containing example Zap configurations for various use cases (e.g., email automation, lead qualification, social media posting).
+
+Plugin: ai-ethics-validator
+  ⚠️  Skill 'ai-ethics-validator' has incomplete assets:
+      - [ ] report_template.md: Markdown template for generating ethics validation reports.
+      - [ ] example_model.pkl: Example AI/ML model file for testing purposes.
+      - [ ] example_dataset.csv: Example dataset file for testing purposes.
+
+Plugin: ai-sdk-agents
+  ⚠️  Skill 'ai-sdk-agents' has incomplete assets:
+      - [ ] agent_template.ts: Template for creating new agents with pre-defined structure and interfaces.
+      - [ ] example_coordinator.ts: Example implementation of a coordinator agent with routing logic.
+      - [ ] example_workflow.json: Example workflow definition for a multi-agent system.
+
+Plugin: anomaly-detection-system
+  ⚠️  Skill 'anomaly-detection-system' has incomplete assets:
+      - [ ] visualization_templates/: Contains pre-designed templates for visualizing anomaly detection results.
+      - [ ] report_templates/: Provides templates for generating anomaly detection reports in various formats (e.g., PDF, HTML).
+      - [ ] example_datasets/: Includes sample datasets for testing and demonstrating the anomaly detection system.
+
+Plugin: automl-pipeline-builder
+  ⚠️  Skill 'automl-pipeline-builder' has incomplete assets:
+      - [ ] pipeline_template.yaml: YAML template for defining the structure and configuration of the AutoML pipeline.
+      - [ ] example_dataset.csv: Sample dataset that can be used as input for the AutoML pipeline.
+      - [ ] evaluation_report_template.html: HTML template for generating the model evaluation report.
+
+Plugin: classification-model-builder
+  ⚠️  Skill 'classification-model-builder' has incomplete assets:
+      - [ ] model_config_template.json: A template JSON file for specifying model configurations, including hyperparameters and training parameters.
+      - [ ] example_dataset.csv: A sample CSV dataset that can be used for testing the classification model builder.
+      - [ ] report_template.html: An HTML template for generating the model performance report.
+
+Plugin: clustering-algorithm-runner
+  ⚠️  Skill 'clustering-algorithm-runner' has incomplete assets:
+      - [ ] example_data.csv: Example CSV dataset for testing clustering algorithms.
+      - [ ] clustering_visualization.ipynb: Jupyter notebook demonstrating how to visualize clustering results using matplotlib and seaborn.
+      - [ ] config_template.json: Template JSON file for configuring clustering algorithm parameters.
+
+Plugin: computer-vision-processor
+  ⚠️  Skill 'computer-vision-processor' has incomplete assets:
+      - [ ] example_images/: Directory containing example images for testing and demonstration purposes.
+      - [ ] model_configurations/: Directory containing configuration files for different computer vision models.
+      - [ ] output_templates/: Templates for generating reports or visualizations of the analysis results.
+
+Plugin: data-preprocessing-pipeline
+  ⚠️  Skill 'data-preprocessing-pipeline' has incomplete assets:
+      - [ ] example_data.csv: Example dataset to demonstrate the pipeline's functionality.
+      - [ ] config.yaml: Configuration file for the data preprocessing pipeline.
+      - [ ] data_dictionary.md: A data dictionary describing the fields in the dataset.
+
+Plugin: data-visualization-creator
+  ⚠️  Skill 'data-visualization-creator' has incomplete assets:
+      - [ ] chart_templates/: A directory containing templates for different chart types (e.g., bar chart, line chart, scatter plot) to provide a starting point for visualization.
+      - [ ] example_data/: A directory containing example datasets for different visualization scenarios.
+      - [ ] color_palettes.json: A JSON file containing predefined color palettes for creating visually appealing charts.
+
+Plugin: dataset-splitter
+  ⚠️  Skill 'dataset-splitter' has incomplete assets:
+      - [ ] example_dataset.csv: A small example dataset for demonstration purposes.
+      - [ ] split_data_config.yaml: Example configuration file for specifying dataset splitting parameters.
+      - [ ] dataset_schema.json: Example JSON schema for dataset validation.
+
+Plugin: deep-learning-optimizer
+  ⚠️  Skill 'deep-learning-optimizer' has incomplete assets:
+      - [ ] optimization_config.json: Template for configuring optimization parameters.
+      - [ ] example_models/: Directory containing example deep learning models for testing and demonstration.
+      - [ ] visualization_templates/: Directory containing templates for visualizing model performance and optimization results.
+
+Plugin: experiment-tracking-setup
+  ⚠️  Skill 'experiment-tracking-setup' has incomplete assets:
+      - [ ] mlflow_example_code.py Example code snippets for logging experiments with MLflow.
+      - [ ] wandb_example_code.py Example code snippets for logging experiments with Weights & Biases.
+      - [ ] experiment_tracking_template.md A template for documenting experiment results, including parameters, metrics, and artifacts.
+      - [ ] configuration_template.yaml A template for configuring the experiment tracking setup.
+
+Plugin: feature-engineering-toolkit
+  ⚠️  Skill 'feature-engineering-toolkit' has incomplete assets:
+      - [ ] feature_engineering_template.ipynb: A Jupyter Notebook template for feature engineering, providing a structured framework for Claude to follow.
+      - [ ] example_dataset.csv: A sample dataset that Claude can use to test and demonstrate feature engineering techniques.
+      - [ ] configuration_template.yaml: A YAML template for configuring the feature engineering pipeline, allowing users to customize the process.
+
+Plugin: hyperparameter-tuner
+  ⚠️  Skill 'hyperparameter-tuner' has incomplete assets:
+      - [ ] hyperparameter_space_template.json: Template for defining the hyperparameter search space.
+      - [ ] example_data.csv: Example dataset for training the model.
+      - [ ] visualization_template.html: Template for visualizing the hyperparameter tuning results.
+
+Plugin: ml-model-trainer
+  ⚠️  Skill 'ml-model-trainer' has incomplete assets:
+      - [ ] example_dataset.csv: A sample dataset that can be used to train the model.
+      - [ ] model_config.json: A template for configuring the model training parameters.
+      - [ ] evaluation_report_template.md: A template for generating the evaluation report.
+      - [ ] requirements.txt: Lists the Python dependencies for the scripts.
+
+Plugin: model-deployment-helper
+  ⚠️  Skill 'model-deployment-helper' has incomplete assets:
+      - [ ] model_deployment_template.yaml A YAML template for defining the model deployment configuration, including resource requirements, scaling parameters, and monitoring settings.
+      - [ ] dockerfile_example.txt An example Dockerfile for containerizing the model serving application.
+      - [ ] example_model_config.json An example JSON configuration file for deploying a sample model.
+
+Plugin: model-evaluation-suite
+  ⚠️  Skill 'model-evaluation-suite' has incomplete assets:
+      - [ ] evaluation_template.md: Template for generating evaluation reports with placeholders for metrics and visualizations.
+      - [ ] example_dataset.csv: Example dataset for testing the evaluation process.
+      - [ ] visualization_script.py: Script to generate visualizations of model performance metrics.
+
+Plugin: model-explainability-tool
+  ⚠️  Skill 'model-explainability-tool' has incomplete assets:
+      - [ ] explanation_template.html: HTML template for displaying model explanations in a user-friendly format.
+      - [ ] example_explanation.json: Example JSON output of a model explanation.
+      - [ ] visualization_styles.css: CSS file for styling visualizations of feature importance and model predictions.
+
+Plugin: model-versioning-tracker
+  ⚠️  Skill 'model-versioning-tracker' has incomplete assets:
+      - [ ] model_card_template.md: A template for creating model cards, which document model details, performance, and intended use.
+      - [ ] example_mlflow_workflow.yaml: An example MLflow workflow configuration file.
+      - [ ] versioning_diagram.png: A diagram illustrating the model versioning process.
+
+Plugin: neural-network-builder
+  ⚠️  Skill 'neural-network-builder' has incomplete assets:
+      - [ ] example_configurations/: Directory containing example neural network configurations for different tasks.
+      - [ ] visualization_templates/: Directory containing templates for visualizing neural network architectures and performance metrics.
+      - [ ] sample_datasets/: Directory containing sample datasets for training and evaluating neural networks.
+
+Plugin: nlp-text-analyzer
+  ⚠️  Skill 'nlp-text-analyzer' has incomplete assets:
+      - [ ] example_text_inputs.json: A collection of example text inputs for various NLP tasks, along with expected outputs.
+      - [ ] analysis_report_template.md: Template for generating analysis reports with sections for sentiment, keywords, and topics.
+      - [ ] error_handling_examples.md: Examples of how to handle common errors in NLP tasks, such as API rate limits or invalid input.
+
+Plugin: recommendation-engine
+  ⚠️  Skill 'recommendation-engine' has incomplete assets:
+      - [ ] example_user_data.csv: Example user data for testing the recommendation engine.
+      - [ ] example_item_data.csv: Example item data for testing the recommendation engine.
+      - [ ] recommender_template.py: Template for creating a new recommendation engine.
+      - [ ] configuration_template.yaml: Template for configuring the recommendation engine.
+
+Plugin: regression-analysis-tool
+  ⚠️  Skill 'regression-analysis-tool' has incomplete assets:
+      - [ ] example_dataset.csv: Example CSV dataset for demonstrating regression analysis.
+      - [ ] model_visualization_template.py: Python script template for visualizing the regression model and its performance.
+
+Plugin: sentiment-analysis-tool
+  ⚠️  Skill 'sentiment-analysis-tool' has incomplete assets:
+      - [ ] example_reviews.json: A collection of example customer reviews with their corresponding sentiment labels (positive, negative, neutral).
+      - [ ] sentiment_analysis_report_template.md: A template for generating a sentiment analysis report, including sections for data overview, methodology, results, and conclusions.
+
+Plugin: time-series-forecaster
+  ⚠️  Skill 'time-series-forecaster' has incomplete assets:
+      - [ ] example_data.csv: Example time series data for testing and demonstration purposes.
+      - [ ] visualization_template.py: Python script to generate visualizations of the time series data and forecasts.
+      - [ ] configuration_template.json: Template for configuring the forecasting model parameters.
+
+Plugin: transfer-learning-adapter
+  ⚠️  Skill 'transfer-learning-adapter' has incomplete assets:
+      - [ ] example_config.json: Provides an example configuration file for adapting a pre-trained model to a new dataset.
+      - [ ] model_architecture.png: A diagram illustrating the architecture of a commonly used pre-trained model.
+      - [ ] data_preprocessing_example.py: A code snippet demonstrating how to preprocess the new dataset to be compatible with the pre-trained model.
+
+Plugin: api-authentication-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] jwt_template.json: JSON template for creating JWT claims.
+      - [ ] oauth2_config.yaml: Example configuration file for OAuth2 settings.
+      - [ ] api_key_example.txt: Example API key format.
+      - [ ] rbac_policy_example.json: Example RBAC policy definition.
+
+Plugin: api-batch-processor
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] job_template.json: A JSON template for defining batch processing jobs.
+      - [ ] progress_report_template.md: A Markdown template for generating progress reports for batch processing jobs.
+      - [ ] example_batch_config.json: Example configuration file for setting up a batch processing job.
+
+Plugin: api-cache-manager
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] cache_invalidation_template.json: JSON template for cache invalidation requests.
+      - [ ] example_redis_config.conf: Example Redis configuration file.
+      - [ ] example_http_headers.txt: Example HTTP headers for caching.
+
+Plugin: api-contract-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] contract_template.json: A JSON template for the Pact contract, allowing customization of the contract structure.
+      - [ ] example_contract.json: An example of a generated Pact contract.
+
+Plugin: api-documentation-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] openapi_template.yaml: A template for creating OpenAPI documentation.
+      - [ ] swagger_ui_config.json: A configuration file for customizing the Swagger UI.
+      - [ ] example_api_definition.yaml: Example of a complete API definition in OpenAPI format.
+
+Plugin: api-error-handler
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] error_response_template.json: A JSON template for consistent error responses.
+      - [ ] error_code_prefix_mapping.json: A mapping of error code prefixes to specific API modules or services.
+
+Plugin: api-event-emitter
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] event_schema_template.json: A template for defining event schemas in JSON format.
+      - [ ] docker-compose.yml: A Docker Compose file for setting up a local message queue for development and testing.
+      - [ ] example_events.json: A collection of example events that can be used to test the API.
+
+Plugin: api-gateway-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] api_gateway_template.yaml: YAML template for defining API gateway configurations.
+      - [ ] example_api_definition.json: Example API definition file.
+      - [ ] error_response_templates/: Directory containing templates for different error responses (e.g., 400, 401, 500).
+
+Plugin: api-load-tester
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] k6_template.js: Template for k6 load test scripts.
+      - [ ] gatling_template.scala: Template for Gatling load test scripts.
+      - [ ] artillery_template.yaml: Template for Artillery load test scripts.
+      - [ ] example_api_spec.json: Example API specification for load testing.
+
+Plugin: api-migration-tool
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] migration_template.py: Template for creating API migration scripts.
+      - [ ] config_template.json: Template for API migration configuration files.
+      - [ ] example_api_definition_v1.json: Example API definition for version 1.
+      - [ ] example_api_definition_v2.json: Example API definition for version 2.
+
+Plugin: api-mock-server
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] mock_server_template.yaml: A template YAML file for configuring the mock server, including placeholders for the OpenAPI spec, response configurations, and other settings.
+      - [ ] example_responses/: A directory containing example responses for different API endpoints, including successful responses, error responses, and edge cases.
+      - [ ] openapi_example.yaml: Example OpenAPI spec file to be used as a starting point.
+
+Plugin: api-monitoring-dashboard
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] dashboard_template.json: JSON template for creating a basic API monitoring dashboard.
+      - [ ] example_dashboard_config.yaml: Example configuration file for defining API endpoints, metrics, and alerting rules.
+      - [ ] visualization_examples.md: Examples of different visualizations (e.g., line charts, bar graphs) for displaying API metrics.
+
+Plugin: api-rate-limiter
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] rate_limit_template.conf: Template configuration file for the rate limiting implementation.
+      - [ ] error_message_template.json: Template for the JSON error message returned when rate limits are exceeded.
+
+Plugin: api-request-logger
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] logging_config_template.json: Template for logging configuration files, including settings for formatters, handlers, and log levels.
+      - [ ] example_log_output.json: Example of structured log output in JSON format, demonstrating the use of correlation IDs and other metadata.
+
+Plugin: api-response-validator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] validation_report_template.html: HTML template for generating validation reports.
+      - [ ] error_codes.json: JSON file containing error codes and descriptions.
+
+Plugin: api-schema-validator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_schemas/: A directory containing example schemas in various formats (JSON Schema, Joi, Yup, Zod).
+      - [ ] test_data/: A directory containing example data files to validate against the schemas.
+      - [ ] schema_templates/: Templates for creating new schemas in different formats.
+
+Plugin: api-sdk-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] templates/: Directory containing templates for different languages and frameworks for SDK generation.
+      - [ ] example_openapi_specs/: Directory containing example OpenAPI specifications for various use cases.
+      - [ ] configuration_templates/: Templates for configuration files used during SDK generation.
+
+Plugin: api-security-scanner
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] report_template.md: Markdown template for generating the API security scan report.
+      - [ ] example_api_response.json: Example API response to demonstrate the structure and format of API data.
+      - [ ] owasp_logo.png: OWASP logo for inclusion in the report.
+
+Plugin: api-throttling-manager
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_api_key_config.json: Example configuration file for defining API key permissions and rate limits.
+      - [ ] throttling_policy_template.json: Template for defining throttling policies based on different criteria (e.g., user role, API endpoint).
+      - [ ] error_message_templates.json: JSON file containing templates for various API throttling error messages.
+
+Plugin: api-versioning-manager
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] api_version_template.json: Template for API version configuration files.
+      - [ ] deprecation_notice_template.md: Template for deprecation notices.
+      - [ ] compatibility_test_suite.json: Example compatibility test suite.
+      - [ ] migration_guide_template.md: Template for migration guides.
+
+Plugin: graphql-server-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] schema_templates/: Directory containing example GraphQL schema templates for common use cases (e.g., user management, blog posts).
+      - [ ] resolver_templates/: Directory containing example resolver function templates for different data sources (e.g., databases, REST APIs).
+      - [ ] error_message_templates/: Templates for standardized error messages.
+      - [ ] example_queries/: Example GraphQL queries for various use cases.
+      - [ ] config_templates/: Configuration file templates for different deployment environments.
+
+Plugin: grpc-service-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] templates/service.proto.template: A Jinja2 template for generating .proto files with customizable service and message definitions.
+      - [ ] examples/unary_rpc.proto: Example .proto file demonstrating a simple unary RPC.
+      - [ ] examples/streaming_rpc.proto: Example .proto file demonstrating a server-side streaming RPC.
+      - [ ] examples/client_streaming_rpc.proto: Example .proto file demonstrating a client-side streaming RPC.
+      - [ ] examples/bidirectional_streaming_rpc.proto: Example .proto file demonstrating a bidirectional streaming RPC.
+
+Plugin: rest-api-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] api_template.zip: A zip file containing a basic API project structure with placeholder files for routes, controllers, models, and middleware.
+      - [ ] openapi_template.yaml: A basic OpenAPI specification file that can be used as a starting point for generating API documentation.
+      - [ ] error_response_examples.json: Examples of standardized error responses for different API error scenarios.
+
+Plugin: webhook-handler-creator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] webhook_handler_template.py: A basic Python template for a webhook handler with signature verification and idempotency.
+      - [ ] example_webhook_payload.json: Example JSON payload for a webhook.
+      - [ ] example_event_schema.json: Example JSON schema for a webhook event.
+
+Plugin: websocket-server-builder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] template_socketio.py: Template file for a basic WebSocket server using Socket.IO.
+      - [ ] template_native_ws.py: Template file for a basic WebSocket server using native WebSockets.
+      - [ ] example_client.html: Example HTML client for testing the WebSocket server.
+
+Plugin: fairdb-ops-manager
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] vps_setup_template.sh: Template for VPS setup script
+      - [ ] pg_install_template.sh: Template for PostgreSQL installation script
+      - [ ] backup_setup_template.sh: Template for backup setup script
+      - [ ] monitoring_dashboard.json: Example Grafana dashboard for PostgreSQL monitoring
+      - [ ] example_backup_report.txt: Example backup report output
+
+Plugin: jeremy-firebase
+  ❌ Skill 'firebase-vertex-ai' missing SKILL.md
+
+Plugin: arbitrage-opportunity-finder
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] arbitrage_template.json: Template for structuring arbitrage opportunity data.
+      - [ ] alert_template.md: Template for generating alerts when arbitrage opportunities are detected.
+      - [ ] example_arbitrage_data.json: Example data showing a profitable arbitrage opportunity.
+
+Plugin: blockchain-explorer-cli
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_address_analysis.json: Example JSON output for address analysis.
+      - [ ] example_transaction_analysis.json: Example JSON output for transaction analysis.
+      - [ ] example_contract_analysis.json: Example JSON output for smart contract analysis.
+
+Plugin: cross-chain-bridge-monitor
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_config.json - Example configuration file for the plugin.
+      - [ ] alert_templates/ - Templates for different types of alerts (e.g., large transfer, TVL drop).
+      - [ ] data_schemas/ - JSON schemas for bridge activity data.
+
+Plugin: crypto-derivatives-tracker
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] derivatives_data_template.json: Example JSON template for storing derivatives data.
+      - [ ] funding_rate_chart_template.html: HTML template for visualizing funding rates.
+      - [ ] open_interest_chart_template.html: HTML template for visualizing open interest.
+
+Plugin: crypto-news-aggregator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] sentiment_analysis_model.pkl: Pre-trained sentiment analysis model.
+      - [ ] example_news_articles.json: Example news articles for testing and demonstration.
+      - [ ] configuration_template.json: Template for configuring news sources and API keys.
+
+Plugin: crypto-portfolio-tracker
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] rebalancing_template.xlsx: Excel template for visualizing and implementing rebalancing recommendations.
+      - [ ] portfolio_analysis_dashboard.html: HTML dashboard for displaying portfolio risk metrics and performance.
+      - [ ] example_portfolio.json: Example portfolio data in JSON format for testing and demonstration.
+
+Plugin: crypto-signal-generator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] signal_template.md: Template for formatting the generated trading signals.
+      - [ ] backtest_report_template.html: Template for generating HTML reports of backtesting results.
+      - [ ] example_signals.json: Example JSON file containing sample trading signals.
+
+Plugin: crypto-tax-calculator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] report_template_8949.docx: Template for Form 8949.
+      - [ ] report_template_schedule_d.docx: Template for Schedule D.
+      - [ ] example_transactions.csv: Example transaction data in CSV format.
+      - [ ] configuration_template.yaml: Template for configuring the plugin's settings.
+
+Plugin: defi-yield-optimizer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] yield_optimization_template.json: JSON template for configuring yield optimization parameters.
+      - [ ] portfolio_rebalancing_template.json: JSON template for configuring portfolio rebalancing parameters.
+      - [ ] example_portfolio.json: Example portfolio data for testing and demonstration purposes.
+      - [ ] defi_protocol_list.json: List of supported DeFi protocols with relevant metadata.
+
+Plugin: dex-aggregator-router
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_swap_configurations.json: Example configurations for various token swaps, including input tokens, output tokens, and amounts.
+      - [ ] route_comparison_template.md: Template for presenting the comparison of different routes, including price impact, gas costs, and slippage.
+      - [ ] risk_assessment_template.md: Template for assessing the risks associated with different routes, including liquidity depth and potential MEV attacks.
+
+Plugin: gas-fee-optimizer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] gas_price_chart_template.html: HTML template for displaying gas price charts
+      - [ ] l2_comparison_table_template.html: HTML template for displaying a table comparing gas costs across different Layer 2 solutions
+      - [ ] example_gas_price_data.json: Example JSON file containing gas price data
+
+Plugin: liquidity-pool-analyzer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_pool_analysis.json: Example JSON output of a liquidity pool analysis.
+      - [ ] example_pool_comparison.json: Example JSON output of a comparison of multiple liquidity pools.
+      - [ ] il_calculator_template.xlsx: Excel template for manual impermanent loss calculation.
+      - [ ] apy_calculator_template.xlsx: Excel template for manual APY calculation.
+
+Plugin: market-movers-scanner
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] alert_templates/: Templates for alert notifications, including email, SMS, and push notifications.
+      - [ ] configuration_examples/: Example configuration files for different use cases and market conditions.
+      - [ ] sample_data/: Sample market data for testing and demonstration purposes.
+
+Plugin: market-price-tracker
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] alert_templates.json: JSON templates for different types of price alerts (e.g., price above threshold, percentage change).
+      - [ ] example_data.json: Example data structures for real-time price feeds and technical analysis results.
+      - [ ] config_template.json: Configuration template for setting up data sources, API keys, and alert preferences.
+
+Plugin: market-sentiment-analyzer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] sentiment_report_template.md: Template for generating sentiment analysis reports.
+      - [ ] example_sentiment_data.json: Example JSON data for sentiment analysis results.
+      - [ ] visualization_templates/: Directory containing templates for visualizing sentiment data (e.g., charts, graphs).
+
+Plugin: mempool-analyzer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] config_template.json: Template for the .mempool-config.json file with detailed explanations of each parameter.
+      - [ ] alert_templates/: Directory containing templates for different types of alerts (email, Slack, etc.).
+      - [ ] example_transactions/: Directory containing example transactions for analysis.
+
+Plugin: nft-rarity-analyzer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] valuation_template.xlsx: Spreadsheet template for NFT valuation analysis.
+      - [ ] example_nft_data.json: Example JSON data for various NFTs.
+      - [ ] rarity_report_template.md: Markdown template for generating NFT rarity reports.
+
+Plugin: on-chain-analytics
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_whale_movement_report.json: An example JSON report of whale wallet movements.
+      - [ ] example_exchange_flow_analysis.json: An example JSON report of exchange flow analysis.
+      - [ ] example_holder_distribution_chart.png: An example chart visualizing token holder distribution.
+
+Plugin: options-flow-analyzer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] options_flow_report_template.md: Markdown template for generating options flow analysis reports.
+      - [ ] gamma_exposure_report_template.md: Markdown template for generating gamma exposure analysis reports.
+      - [ ] example_options_flow_data.json: Example JSON data for options flow, used for testing and demonstration.
+      - [ ] example_gamma_exposure_data.json: Example JSON data for gamma exposure, used for testing and demonstration.
+
+Plugin: staking-rewards-optimizer
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] staking_protocols_template.json: JSON template for storing staking protocol information, including name, APY, risk score, and lock-up period.
+      - [ ] allocation_report_template.md: Markdown template for generating staking allocation reports with recommended percentages, risk assessments, and expected ROI.
+      - [ ] example_portfolio.json: Example portfolio data for testing and demonstration purposes.
+
+Plugin: token-launch-tracker
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] risk_assessment_template.md: Template for generating risk assessment reports.
+      - [ ] example_contract.sol: Example Solidity contract for security analysis.
+      - [ ] honeypot_detection_patterns.json: JSON file containing patterns for detecting honeypot functions.
+
+Plugin: trading-strategy-backtester
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] backtest_report_template.html: HTML template for generating backtesting reports with visualizations and performance metrics.
+      - [ ] optimization_report_template.html: HTML template for generating parameter optimization reports.
+      - [ ] example_backtest_config.json: Example JSON configuration file for running backtests with different strategies and parameters.
+      - [ ] example_optimization_config.json: Example JSON configuration file for parameter optimization.
+
+Plugin: wallet-portfolio-tracker
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] portfolio_template.html: HTML template for displaying the wallet portfolio in a user-friendly format.
+      - [ ] alert_config.json: JSON configuration file for setting up portfolio alerts.
+      - [ ] example_portfolio.json: Example JSON output of a wallet portfolio analysis.
+      - [ ] risk_assessment_report_template.md: Markdown template for generating risk assessment reports.
+
+Plugin: whale-alert-monitor
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] transaction_analysis_template.ipynb: Jupyter notebook template for transaction analysis.
+      - [ ] wallet_clustering_visualization.py: Python script for visualizing wallet clusters.
+      - [ ] example_transaction_data.json: Example JSON data of whale transactions.
+
+Plugin: data-seeder-generator
+  ⚠️  Skill 'data-seeder-generator' has incomplete assets:
+      - [ ] example_seed_script.sql: Example SQL script generated by the skill for seeding a database.
+      - [ ] configuration_template.yaml: Template for configuring the data seeding process, including table names, data volumes, and Faker providers.
+      - [ ] data_dictionary.json: Example data dictionary defining the structure and data types for each table to be seeded.
+
+Plugin: data-validation-engine
+  ⚠️  Skill 'data-validation-engine' has incomplete assets:
+      - [ ] validation_report_template.html: HTML template for generating visually appealing and informative data validation reports.
+      - [ ] example_validation_rules.json: Example JSON file demonstrating how to define data validation rules for different data types and scenarios.
+      - [ ] configuration_template.yaml: Template for configuring the data validation engine, including database connection details and logging settings.
+
+Plugin: database-archival-system
+  ⚠️  Skill 'database-archival-system' has incomplete assets:
+      - [ ] archival_template.sql: SQL template for creating archive tables in PostgreSQL and MySQL.
+      - [ ] restore_template.sql: SQL template for restoring archived data from cold storage.
+      - [ ] config_template.yaml: YAML template for configuring the archival process, including database credentials, retention policies, and cold storage settings.
+
+Plugin: database-audit-logger
+  ⚠️  Skill 'database-audit-logger' has incomplete assets:
+      - [ ] audit_log_template.json: JSON template for structuring audit log entries.
+      - [ ] sample_audit_logs/: Directory containing sample audit logs for different database systems and operations.
+      - [ ] audit_dashboard_template.html: HTML template for a basic audit dashboard to visualize audit log data.
+
+Plugin: database-backup-automator
+  ⚠️  Skill 'database-backup-automator' has incomplete assets:
+      - [ ] backup_template.sh: A template shell script for performing backups.
+      - [ ] restore_template.sh: A template shell script for performing restores.
+      - [ ] example_backup_config.json: Example configuration file for defining backup schedules and parameters.
+
+Plugin: database-cache-layer
+  ⚠️  Skill 'database-cache-layer' has incomplete assets:
+      - [ ] cache_config_template.json: Template for Redis configuration files.
+      - [ ] example_api_response.json: Example API response to demonstrate caching.
+      - [ ] monitoring_dashboard.png: Screenshot of a cache monitoring dashboard.
+
+Plugin: database-deadlock-detector
+  ⚠️  Skill 'database-deadlock-detector' has incomplete assets:
+      - [ ] deadlock_visualization.html: HTML template to visualize the deadlock graph using JavaScript libraries (e.g., vis.js).
+      - [ ] example_deadlock_report.json: Example JSON output of the deadlock analysis script.
+      - [ ] deadlock_prevention_checklist.md: A checklist of best practices to prevent deadlocks in database applications.
+
+Plugin: database-diff-tool
+  ⚠️  Skill 'database-diff-tool' has incomplete assets:
+      - [ ] migration_template.sql: Template for generating SQL migration scripts.
+      - [ ] rollback_template.sql: Template for generating SQL rollback scripts.
+      - [ ] example_schema_before.sql: Example database schema before changes.
+      - [ ] example_schema_after.sql: Example database schema after changes.
+
+Plugin: database-documentation-gen
+  ⚠️  Skill 'database-documentation-gen' has incomplete assets:
+      - [ ] template/documentation_template.md: Template file for generating the database documentation in markdown format.
+      - [ ] examples/sample_database_schema.sql: Example SQL schema for demonstration purposes.
+      - [ ] examples/sample_documentation.md: Example of generated documentation.
+
+Plugin: database-health-monitor
+  ⚠️  Skill 'database-health-monitor' has incomplete assets:
+      - [ ] dashboard_template.json - JSON template for creating a database health monitoring dashboard.
+      - [ ] alert_template.json - JSON template for configuring alerts in a monitoring system.
+      - [ ] example_queries.sql - Example SQL queries for retrieving database health metrics.
+
+Plugin: database-index-advisor
+  ⚠️  Skill 'database-index-advisor' has incomplete assets:
+      - [ ] index_analysis_template.md: Template for generating index analysis reports.
+      - [ ] index_change_log.csv: Example CSV file for logging index changes.
+      - [ ] example_query_patterns.json: Example JSON file containing query patterns for analysis.
+
+Plugin: database-migration-manager
+  ⚠️  Skill 'database-migration-manager' has incomplete assets:
+      - [ ] migration_template.sql A template SQL file for creating new migrations.
+      - [ ] migration_template.js A template JavaScript file for creating new MongoDB migrations.
+      - [ ] example_migration_files/ PostgreSQL, MySQL, SQLite, and MongoDB example migration files.
+
+Plugin: database-partition-manager
+  ⚠️  Skill 'database-partition-manager' has incomplete assets:
+      - [ ] partition_template.sql SQL template for creating partitions.
+      - [ ] monitoring_dashboard.json Sample dashboard configuration for monitoring partition performance (e.g., Grafana).
+      - [ ] example_data.csv Example data set to test partitioning strategies.
+
+Plugin: database-recovery-manager
+  ⚠️  Skill 'database-recovery-manager' has incomplete assets:
+      - [ ] recovery_template.yml: Template file for defining database recovery configurations.
+      - [ ] failover_checklist.md: Checklist for ensuring a smooth database failover process.
+      - [ ] example_recovery_plan.md: Example recovery plan document.
+
+Plugin: database-replication-manager
+  ⚠️  Skill 'database-replication-manager' has incomplete assets:
+      - [ ] replication_template.conf: A template configuration file for database replication.
+      - [ ] monitoring_dashboard.json: A sample dashboard configuration for monitoring replication metrics.
+
+Plugin: database-schema-designer
+  ⚠️  Skill 'database-schema-designer' has incomplete assets:
+      - [ ] schema_template.json: A JSON template for defining database schemas.
+      - [ ] example_schemas/: Directory containing example database schemas for various applications (e.g., e-commerce, social media, CRM).
+      - [ ] erd_examples/: Directory containing example ERD diagrams in Mermaid syntax.
+
+Plugin: database-security-scanner
+  ⚠️  Skill 'database-security-scanner' has incomplete assets:
+      - [ ] report_template.html: An HTML template for generating security reports, allowing for customization and branding.
+      - [ ] example_scan_results.json: Example JSON output from a database security scan, demonstrating the structure and content of the scan results.
+      - [ ] remediation_scripts/: Directory containing sample scripts for automatically remediating common database vulnerabilities.
+
+Plugin: database-sharding-manager
+  ⚠️  Skill 'database-sharding-manager' has incomplete assets:
+      - [ ] sharding_config_template.yaml: Template for the sharding configuration file.
+      - [ ] example_data_distribution.json: Example of data distribution across shards.
+      - [ ] monitoring_dashboard.json: Example dashboard configuration for monitoring sharding performance.
+
+Plugin: database-transaction-monitor
+  ⚠️  Skill 'database-transaction-monitor' has incomplete assets:
+      - [ ] transaction_monitoring_template.json: Template for configuring transaction monitoring parameters.
+      - [ ] lock_contention_report_template.md: Template for generating lock contention reports.
+      - [ ] rollback_rate_analysis_template.md: Template for rollback rate analysis reports.
+
+Plugin: nosql-data-modeler
+  ⚠️  Skill 'nosql-data-modeler' has incomplete assets:
+      - [ ] schema_templates/: Templates for common NoSQL schemas (e.g., user profile, product catalog).
+      - [ ] sample_data/: Sample data files corresponding to the schema templates.
+      - [ ] diagrams/: Visual diagrams illustrating different NoSQL data modeling patterns.
+
+Plugin: orm-code-generator
+  ⚠️  Skill 'orm-code-generator' has incomplete assets:
+      - [ ] templates/typeorm_entity.ts.template: Template for generating TypeORM entity files.
+      - [ ] templates/prisma_schema.prisma.template: Template for generating Prisma schema files.
+      - [ ] templates/sequelize_model.js.template: Template for generating Sequelize model files.
+      - [ ] templates/sqlalchemy_model.py.template: Template for generating SQLAlchemy model files.
+      - [ ] templates/django_model.py.template: Template for generating Django model files.
+      - [ ] templates/entity_framework_entity.cs.template: Template for generating Entity Framework entity files.
+      - [ ] templates/hibernate_entity.java.template: Template for generating Hibernate entity files.
+      - [ ] examples/ecommerce_database_schema.sql: Example SQL schema for an e-commerce database.
+      - [ ] examples/blog_typeorm_model.ts: Example TypeORM model for a blog application.
+
+Plugin: query-performance-analyzer
+  ⚠️  Skill 'query-performance-analyzer' has incomplete assets:
+      - [ ] explain_plan_template.json: A JSON template for structuring EXPLAIN plan data.
+      - [ ] example_explain_plans/: A directory containing example EXPLAIN plans for various databases and query types.
+
+Plugin: sql-query-optimizer
+  ⚠️  Skill 'sql-query-optimizer' has incomplete assets:
+      - [ ] example_queries.sql: A collection of example SQL queries for testing and demonstration.
+      - [ ] query_optimization_report_template.md: A template for generating query optimization reports.
+
+Plugin: stored-procedure-generator
+  ⚠️  Skill 'stored-procedure-generator' has incomplete assets:
+      - [ ] stored_procedure_template.sql: A template for generating stored procedures with placeholders for database-specific syntax.
+      - [ ] example_stored_procedures/: A directory containing example stored procedures for different use cases (e.g., data validation, reporting, user management) for each supported database.
+
+Plugin: ansible-playbook-creator
+  ⚠️  Skill 'ansible-playbook-creator' has incomplete assets:
+      - [ ] playbook_template.yml: A basic template for Ansible playbooks, including common sections and best practice configurations.
+      - [ ] example_playbooks/: A directory containing example playbooks for various use cases, such as installing software, configuring firewalls, and managing users.
+      - [ ] validation_rules.yml: A set of rules for validating the generated playbooks, ensuring they adhere to best practices and security standards.
+
+Plugin: auto-scaling-configurator
+  ⚠️  Skill 'auto-scaling-configurator' has incomplete assets:
+      - [ ] config_template.yaml: YAML template for auto-scaling configuration files, providing a starting point for users.
+      - [ ] example_hpa.yaml: Example Kubernetes Horizontal Pod Autoscaler (HPA) configuration file.
+      - [ ] example_aws_scaling_policy.json: Example AWS auto-scaling policy configuration file.
+
+Plugin: backup-strategy-implementor
+  ⚠️  Skill 'backup-strategy-implementor' has incomplete assets:
+      - [ ] backup_configuration_template.yaml Template for backup configuration files
+      - [ ] restore_configuration_template.yaml Template for restore configuration files
+      - [ ] example_backup_script.sh Example backup script for a specific database system
+      - [ ] example_restore_script.sh Example restore script for a specific database system
+
+Plugin: ci-cd-pipeline-builder
+  ⚠️  Skill 'ci-cd-pipeline-builder' has incomplete assets:
+      - [ ] github_actions_template.yml Template for GitHub Actions pipelines.
+      - [ ] gitlab_ci_template.yml Template for GitLab CI pipelines.
+      - [ ] jenkins_template.groovy Template for Jenkins pipelines.
+      - [ ] example_pipeline_configurations/ Example configurations for various use cases (e.g., web app deployment, microservice deployment).
+
+Plugin: cloud-cost-optimizer
+  ⚠️  Skill 'cloud-cost-optimizer' has incomplete assets:
+      - [ ] cost_report_template.csv: A CSV template for generating cost reports.
+      - [ ] cost_report_template.pdf: A PDF template for generating cost reports.
+      - [ ] optimization_recommendation_template.json: A JSON template for optimization recommendations.
+      - [ ] example_cost_report.csv: An example cost report for demonstration purposes.
+
+Plugin: compliance-checker
+  ⚠️  Skill 'compliance-checker' has incomplete assets:
+      - [ ] compliance_report_template.md: Markdown template for generating compliance reports.
+      - [ ] example_infrastructure_config.yaml: Example infrastructure configuration file for demonstration purposes.
+      - [ ] compliance_rules.json: JSON file containing compliance rules and checks.
+
+Plugin: container-registry-manager
+  ⚠️  Skill 'container-registry-manager' has incomplete assets:
+      - [ ] config_templates/ecr_config.yaml - Template for configuring AWS ECR.
+      - [ ] config_templates/gcr_config.yaml - Template for configuring Google Container Registry.
+      - [ ] config_templates/harbor_config.yaml - Template for configuring Harbor container registry.
+      - [ ] example_policies/ecr_policy.json - Example IAM policy for ECR access.
+      - [ ] example_policies/gcr_policy.json - Example IAM policy for GCR access.
+      - [ ] example_policies/harbor_policy.json - Example policy for Harbor access.
+
+Plugin: container-security-scanner
+  ⚠️  Skill 'container-security-scanner' has incomplete assets:
+      - [ ] scan_results_template.json: A JSON template for structuring the output of security scans.
+      - [ ] example_trivy_output.json: Example output from a Trivy scan to guide Claude's parsing.
+      - [ ] example_snyk_output.json: Example output from a Snyk scan to guide Claude's parsing.
+
+Plugin: deployment-pipeline-orchestrator
+  ⚠️  Skill 'deployment-pipeline-orchestrator' has incomplete assets:
+      - [ ] pipeline_template.yaml: A template for creating new deployment pipelines, providing a starting point for users to customize.
+      - [ ] example_config.yaml: An example deployment pipeline configuration file, demonstrating how to configure the pipeline for a specific application.
+      - [ ] sample_scripts/: A directory containing sample scripts for common deployment tasks, such as database migration and service restart.
+
+Plugin: deployment-rollback-manager
+  ⚠️  Skill 'deployment-rollback-manager' has incomplete assets:
+      - [ ] rollback_template.yml: A YAML template for defining rollback configurations.
+      - [ ] example_rollback_config.yml: An example YAML configuration file for a specific rollback scenario.
+      - [ ] rollback_report_template.md: A markdown template for generating rollback reports.
+
+Plugin: disaster-recovery-planner
+  ⚠️  Skill 'disaster-recovery-planner' has incomplete assets:
+      - [ ] dr_plan_template.md A template for creating a disaster recovery plan document.
+      - [ ] config_example.yaml Example configuration files for different disaster recovery scenarios.
+      - [ ] setup_script_example.sh Example setup scripts for implementing the disaster recovery plan.
+
+Plugin: docker-compose-generator
+  ⚠️  Skill 'docker-compose-generator' has incomplete assets:
+      - [ ] compose_template.yml: A basic Docker Compose template with placeholders for common configurations.
+      - [ ] example_app_architectures.md: Examples of common application architectures and their corresponding Docker Compose configurations.
+
+Plugin: environment-config-manager
+  ⚠️  Skill 'environment-config-manager' has incomplete assets:
+      - [ ] config_templates/: Directory containing templates for various configuration file formats (YAML, JSON, .env) for different environments.
+      - [ ] example_data/: Example data structures for different configuration scenarios.
+      - [ ] validation_schemas/: JSON schemas for validating configuration files.
+
+Plugin: fairdb-operations-kit
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] customer_onboarding_template.md Template for customer onboarding documentation.
+      - [ ] health_check_report_template.json Template for health check reports.
+      - [ ] incident_response_checklist.md Checklist for incident response procedures.
+
+Plugin: git-commit-smart
+  ⚠️  Skill 'git-commit-smart' has incomplete assets:
+      - [ ] commit_template.txt: A template for the generated commit message.
+      - [ ] example_diff.txt: An example of a Git diff that can be used for testing and demonstration purposes.
+
+Plugin: gitops-workflow-builder
+  ⚠️  Skill 'gitops-workflow-builder' has incomplete assets:
+      - [ ] argo_cd_template.yaml Example ArgoCD Application YAML template.
+      - [ ] flux_kustomization_template.yaml Example Flux Kustomization YAML template.
+      - [ ] kustomize_base.yaml Example Kustomize base configuration.
+      - [ ] kustomize_overlays/production.yaml Example Kustomize overlay for production environment.
+
+Plugin: helm-chart-generator
+  ⚠️  Skill 'helm-chart-generator' has incomplete assets:
+      - [ ] chart_template/: A directory containing template files for different types of Kubernetes applications (e.g., web app, database).
+      - [ ] example_charts/: A directory containing example Helm charts for common use cases.
+      - [ ] values_schema.json: A JSON schema defining the structure and validation rules for the values.yaml file.
+
+Plugin: infrastructure-as-code-generator
+  ⚠️  Skill 'infrastructure-as-code-generator' has incomplete assets:
+      - [ ] terraform_templates/: Directory containing Terraform templates for various cloud resources (e.g., EC2 instances, S3 buckets, VPCs).
+      - [ ] cloudformation_templates/: Directory containing CloudFormation templates for various cloud resources.
+      - [ ] pulumi_examples/: Directory containing Pulumi examples for various cloud resources.
+      - [ ] iac_config_schema.json: JSON schema defining the structure of IaC configuration files.
+
+Plugin: kubernetes-deployment-creator
+  ⚠️  Skill 'kubernetes-deployment-creator' has incomplete assets:
+      - [ ] deployment_template.yaml: A template for a basic Kubernetes deployment manifest.
+      - [ ] service_template.yaml: A template for a basic Kubernetes service manifest.
+      - [ ] ingress_template.yaml: A template for a basic Kubernetes ingress manifest.
+      - [ ] hpa_template.yaml: A template for a basic Kubernetes Horizontal Pod Autoscaler manifest.
+      - [ ] configmap_template.yaml: A template for a basic Kubernetes ConfigMap manifest.
+      - [ ] secret_template.yaml: A template for a basic Kubernetes Secret manifest.
+
+Plugin: load-balancer-configurator
+  ⚠️  Skill 'load-balancer-configurator' has incomplete assets:
+      - [ ] nginx_template.conf: Template configuration file for Nginx load balancers.
+      - [ ] haproxy_template.conf: Template configuration file for HAProxy load balancers.
+      - [ ] alb_example.json: Example JSON configuration for AWS Application Load Balancers.
+      - [ ] nlb_example.json: Example JSON configuration for AWS Network Load Balancers.
+
+Plugin: log-aggregation-setup
+  ⚠️  Skill 'log-aggregation-setup' has incomplete assets:
+      - [ ] elk_config_template.conf: Template configuration file for Logstash.
+      - [ ] loki_config_template.yaml: Template configuration file for Loki.
+      - [ ] splunk_config_template.conf: Template configuration file for Splunk.
+      - [ ] example_log_data.json: Example log data in JSON format for testing the log aggregation setup.
+      - [ ] dashboard_elk.json: Example Kibana dashboard configuration.
+      - [ ] dashboard_loki.json: Example Grafana dashboard configuration for Loki.
+      - [ ] dashboard_splunk.json: Example Splunk dashboard configuration.
+
+Plugin: monitoring-stack-deployer
+  ⚠️  Skill 'monitoring-stack-deployer' has incomplete assets:
+      - [ ] prometheus_config_template.yml: Template for Prometheus configuration files.
+      - [ ] grafana_dashboard_template.json: Template for Grafana dashboard configurations.
+      - [ ] datadog_agent_config_template.yml: Template for Datadog agent configuration files.
+      - [ ] example_k8s_manifests/: Example Kubernetes manifests for deploying the monitoring stack.
+      - [ ] example_terraform_configurations/: Example Terraform configurations for deploying the monitoring stack.
+
+Plugin: network-policy-manager
+  ⚠️  Skill 'network-policy-manager' has incomplete assets:
+      - [ ] network_policy_template.yaml: A template YAML file for creating network policies, with placeholders for common configurations.
+      - [ ] example_network_policies/: A directory containing example network policy YAML files for different scenarios.
+
+Plugin: secrets-manager-integrator
+  ⚠️  Skill 'secrets-manager-integrator' has incomplete assets:
+      - [ ] vault_config_template.hcl: A template for Vault configuration files.
+      - [ ] aws_iam_policy_template.json: A template for AWS IAM policies for secrets management.
+      - [ ] example_secrets.yaml: Example secrets file for demonstration purposes.
+
+Plugin: service-mesh-configurator
+  ⚠️  Skill 'service-mesh-configurator' has incomplete assets:
+      - [ ] istio_config_template.yaml: A template for generating Istio service mesh configurations.
+      - [ ] linkerd_config_template.yaml: A template for generating Linkerd service mesh configurations.
+      - [ ] example_microservices_architecture.md: Example microservices architecture to demonstrate service mesh configuration.
+      - [ ] error_handling_strategies.md: Document outlining error handling strategies for service mesh configurations.
+
+Plugin: terraform-module-builder
+  ⚠️  Skill 'terraform-module-builder' has incomplete assets:
+      - [ ] module_template/: A directory containing template files for different types of Terraform modules (e.g., web server, database).
+      - [ ] example_modules/: A directory containing example Terraform modules that users can use as a starting point.
+      - [ ] validation_rules.json: A JSON file containing the rules used by the validation_checks.py script to validate the Terraform module code.
+
+Plugin: formatter
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_config/.prettierrc.json: Example Prettier configuration file.
+      - [ ] example_code/unformatted.js: Example of unformatted JavaScript code.
+      - [ ] example_code/formatted.js: Example of formatted JavaScript code.
+
+Plugin: hello-world
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] greeting_template.txt: A template file containing a customizable greeting message. Demonstrates how skills can use assets to generate dynamic content.
+      - [ ] example_interactions.json: A JSON file containing example interactions with the /hello command. Useful for demonstrating different use cases.
+
+Plugin: pi-pathfinder
+  ⚠️  Skill 'pi-pathfinder' has incomplete assets:
+      - [ ] example_plugin_analysis.json: Example JSON output from the plugin_analyzer.py script, showcasing the structure and content of the plugin analysis.
+      - [ ] skill_adaptation_template.py: Template for adapting skills from one plugin to another, including placeholders for input parameters, output variables, and adaptation logic.
+      - [ ] plugin_selection_rules.yaml: YAML file containing rules for selecting the best plugin for a given task, based on keywords, capabilities, and user preferences.
+
+Plugin: security-agent
+  ⚠️  Skill 'security-agent' has incomplete assets:
+      - [ ] report_template.md: A Markdown template for generating security review reports with placeholders for findings, severity ratings, and remediation advice.
+      - [ ] example_code_vulnerable.py: Example code snippets demonstrating common vulnerabilities.
+      - [ ] example_code_secure.py: Corresponding secure code snippets demonstrating how to remediate the vulnerabilities.
+
+Plugin: skills-powerkit
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] plugin_template/: Template files for creating new plugins.
+      - [ ] validation_rules.json: JSON file containing validation rules for plugins.
+      - [ ] example_plugin/: Example plugin with all the required files and directory structure.
+      - [ ] marketplace_schema.json: JSON schema for the marketplace catalog.
+
+Plugin: openbb-terminal
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating investment reports
+      - [ ] example_report.pdf: Example investment report generated using the plugin
+      - [ ] openbb_logo.png: OpenBB logo for branding purposes
+
+Plugin: ai-experiment-logger
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] dashboard_template.html: HTML template for the web dashboard, providing a starting point for customization.
+      - [ ] example_experiments.json: Example JSON file containing sample experiment data.
+      - [ ] visualization_styles.css: CSS file to style visualizations generated by the analysis scripts.
+      - [ ] experiment_report_template.docx: Word template for generating experiment reports.
+
+Plugin: design-to-code
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] component_templates/: Templates for generating React, Svelte, and Vue components with basic structure and accessibility features.
+      - [ ] example_figma_designs/: Example Figma designs that can be used to test the plugin.
+      - [ ] example_screenshots/: Example screenshots that can be used to test the plugin.
+      - [ ] style_guide_templates/: Templates for different style guides (e.g., Material UI, Ant Design) to ensure consistent code formatting.
+      - [ ] icon_library/: A library of commonly used icons that can be included in the generated components.
+
+Plugin: domain-memory-agent
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] example_document.json: Example JSON document for storing in the knowledge base.
+      - [ ] search_query_examples.json: Example search queries and expected results.
+      - [ ] summary_template.txt: Template for formatting document summaries.
+
+Plugin: project-health-auditor
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] health_report_template.md: Template for generating a comprehensive health report.
+      - [ ] example_health_report.md: Example of a generated health report.
+
+Plugin: workflow-orchestrator
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] workflow_template.json: Example workflow definition template.
+      - [ ] sample_workflows/: Directory containing example workflow definitions for various use cases (e.g., CI/CD, data processing).
+      - [ ] status_icons/: Directory containing icons for different workflow statuses (e.g., running, completed, failed).
+
+Plugin: ai-ml-engineering-pack
+  ⚠️  Skill 'ai-ml-engineering-pack' has incomplete assets:
+      - [ ] prompt_template.json: JSON template for prompt structure.
+      - [ ] example_prompts.md: Collection of example prompts for different use cases.
+      - [ ] optimization_report_template.md: Template for generating prompt optimization reports.
+
+Plugin: creator-studio-pack
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] thumbnail_templates/: A collection of thumbnail templates for different video styles.
+      - [ ] teleprompter_template.txt: A template for creating teleprompter scripts.
+      - [ ] audio_presets/: A collection of audio presets for different audio mixing scenarios.
+      - [ ] subtitle_styles/: A collection of subtitle styles for different video styles.
+      - [ ] example_video_scripts/: Example video scripts for different video types.
+
+Plugin: devops-automation-pack
+  ⚠️  Skill 'devops-automation-pack' has incomplete assets:
+      - [ ] commit_message_template.txt: A template for creating commit messages.
+      - [ ] example_code_diff.txt: An example code diff used for generating commit messages.
+
+Plugin: fullstack-starter-pack
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] react_component_templates/: Templates for various React components, such as forms, tables, and modals.
+      - [ ] express_route_templates/: Templates for various Express routes, such as CRUD operations and authentication endpoints.
+      - [ ] postgresql_model_templates/: Templates for various PostgreSQL models, such as users, products, and orders.
+      - [ ] example_env_config.env: An example .env file with all the necessary environment variables for the full-stack application.
+
+Plugin: security-pro-pack
+  ⚠️  Skill 'security-pro-pack' has incomplete assets:
+      - [ ] security_scan_report_template.md: Template for generating security scan reports.
+      - [ ] compliance_report_template.md: Template for generating compliance reports.
+      - [ ] threat_model_template.md: Template for creating threat models.
+
+Plugin: alerting-rule-creator
+  ⚠️  Skill 'alerting-rule-creator' has incomplete assets:
+      - [ ] alert_template.json: JSON template for creating alerts in a specific monitoring system (e.g., Prometheus).
+      - [ ] runbook_template.md: Markdown template for generating runbooks.
+      - [ ] example_alerts.json: Examples of alerting rules for different categories (latency, error rate, etc.).
+
+Plugin: apm-dashboard-creator
+  ⚠️  Skill 'apm-dashboard-creator' has incomplete assets:
+      - [ ] dashboard_template.json: A JSON template for creating APM dashboards, including common visualizations and metrics.
+      - [ ] example_dashboard_config.yaml: An example YAML configuration file for defining dashboard parameters.
+      - [ ] visualization_library.md: A library of common visualizations and their use cases in APM dashboards.
+
+Plugin: application-profiler
+  ⚠️  Skill 'application-profiler' has incomplete assets:
+      - [ ] report_template.md: Template for generating the performance report.
+      - [ ] example_profiling_data.json: Example of profiling data that the tool can process.
+
+Plugin: bottleneck-detector
+  ⚠️  Skill 'bottleneck-detector' has incomplete assets:
+      - [ ] example_cpu_analysis.txt: Example output of CPU analysis script.
+      - [ ] example_memory_analysis.txt: Example output of memory analysis script.
+      - [ ] example_io_analysis.txt: Example output of I/O analysis script.
+      - [ ] example_db_analysis.txt: Example output of database analysis script.
+
+Plugin: cache-performance-optimizer
+  ⚠️  Skill 'cache-performance-optimizer' has incomplete assets:
+      - [ ] cache_key_template.json - Template for defining cache key structures.
+      - [ ] cache_config_example.json - Example cache configuration file.
+      - [ ] cache_monitoring_dashboard.json - Example dashboard configuration for monitoring cache performance.
+
+Plugin: capacity-planning-analyzer
+  ⚠️  Skill 'capacity-planning-analyzer' has incomplete assets:
+      - [ ] capacity_report_template.md: Template for generating capacity analysis reports.
+      - [ ] scaling_roadmap_template.md: Template for creating capacity scaling roadmaps.
+      - [ ] example_capacity_data.csv: Example CSV file containing capacity data for testing and demonstration.
+
+Plugin: cpu-usage-monitor
+  ⚠️  Skill 'cpu-usage-monitor' has incomplete assets:
+      - [ ] report_template.html: An HTML template for generating visually appealing CPU usage reports.
+      - [ ] example_data.json: Example JSON data for testing and demonstration purposes.
+      - [ ] cpu_usage_chart.png: An example chart showing CPU usage over time.
+
+Plugin: database-query-profiler
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] profiling_template.html: HTML template for displaying query profiling results.
+      - [ ] example_query.sql: Example SQL query for demonstration purposes.
+
+Plugin: distributed-tracing-setup
+  ⚠️  Skill 'distributed-tracing-setup' has incomplete assets:
+      - [ ] docker-compose.yml: A Docker Compose file for quickly deploying Jaeger and related services.
+      - [ ] otel_config_template.yaml: A template for configuring the OpenTelemetry SDK in various programming languages.
+      - [ ] example_trace.json: An example of a trace that can be used for testing and validation.
+
+Plugin: error-rate-monitor
+  ⚠️  Skill 'error-rate-monitor' has incomplete assets:
+      - [ ] error_dashboard_template.json: Template for creating an error rate dashboard in a popular monitoring tool (e.g., Grafana).
+      - [ ] incident_response_template.md: Template for creating an incident response document when error rates exceed thresholds.
+      - [ ] example_error_report.md: Example of a generated error report.
+
+Plugin: infrastructure-metrics-collector
+  ⚠️  Skill 'infrastructure-metrics-collector' has incomplete assets:
+      - [ ] grafana_dashboard_template.json Grafana dashboard template for infrastructure metrics.
+      - [ ] alerting_rules_template.yaml Template for defining alerting rules.
+
+Plugin: load-test-runner
+  ⚠️  Skill 'load-test-runner' has incomplete assets:
+      - [ ] k6_template.js: Template for generating k6 load test scripts.
+      - [ ] jmeter_template.jmx: Template for generating JMeter load test scripts.
+      - [ ] artillery_template.yaml: Template for generating Artillery load test scripts.
+      - [ ] results_template.md: Template for generating load test results reports.
+      - [ ] example_test_scenarios.json: Example load test scenarios in JSON format.
+
+Plugin: log-analysis-tool
+  ⚠️  Skill 'log-analysis-tool' has incomplete assets:
+      - [ ] kpi_dashboard_template.json: A template for creating a performance dashboard in a visualization tool like Grafana or Kibana, pre-configured with key performance indicators extracted from logs.
+      - [ ] alerting_rules_template.yaml: A template for defining alerting rules based on log data, which can be used to trigger notifications when certain performance thresholds are exceeded.
+      - [ ] example_log_file.log: A sample log file that can be used for testing and demonstration purposes.
+
+Plugin: memory-leak-detector
+  ⚠️  Skill 'memory-leak-detector' has incomplete assets:
+      - [ ] report_template.md: Template for generating memory leak analysis reports.
+      - [ ] example_code_with_leaks/: Directory containing example code snippets with memory leaks.
+      - [ ] example_code_fixed/: Directory containing example code snippets with memory leaks fixed.
+
+Plugin: metrics-aggregator
+  ⚠️  Skill 'metrics-aggregator' has incomplete assets:
+      - [ ] grafana_dashboard_template.json: A template for creating Grafana dashboards with pre-configured panels and visualizations for common metrics.
+      - [ ] datadog_dashboard_template.json: A template for creating Datadog dashboards with pre-configured panels and visualizations for common metrics.
+      - [ ] splunk_dashboard_template.xml: A template for creating Splunk dashboards with pre-configured panels and visualizations for common metrics.
+      - [ ] example_metrics_data.json: Example JSON data representing collected metrics from various sources.
+      - [ ] metrics_schema.json: A JSON schema defining the structure and data types of collected metrics.
+
+Plugin: network-latency-analyzer
+  ⚠️  Skill 'network-latency-analyzer' has incomplete assets:
+      - [ ] latency_analysis_template.html: HTML template for visualizing latency analysis results.
+      - [ ] sample_network_trace.json: Example network trace data for testing and demonstration.
+      - [ ] configuration_template.yaml: Template for configuring network latency analysis parameters.
+
+Plugin: performance-budget-validator
+  ⚠️  Skill 'performance-budget-validator' has incomplete assets:
+      - [ ] budget_template.json: A template JSON file for creating a new performance budget configuration.
+      - [ ] example_report.md: An example markdown report showing the output of a performance budget validation run.
+
+Plugin: performance-optimization-advisor
+  ⚠️  Skill 'performance-optimization-advisor' has incomplete assets:
+      - [ ] optimization_report_template.md: A template for generating performance optimization reports.
+      - [ ] example_optimization_reports/: A directory containing example performance optimization reports for different types of applications.
+      - [ ] configuration_templates/: A directory containing configuration templates for different performance monitoring tools.
+
+Plugin: performance-regression-detector
+  ⚠️  Skill 'performance-regression-detector' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating the performance regression report.
+      - [ ] example_metrics_data.json: Example JSON data showing the format of performance metrics data expected by the plugin.
+      - [ ] thresholds.json: Example JSON file showing how to define thresholds for performance metrics.
+
+Plugin: real-user-monitoring
+  ⚠️  Skill 'real-user-monitoring' has incomplete assets:
+      - [ ] rum_dashboard_template.json: A template for creating a RUM dashboard in a popular visualization tool.
+      - [ ] rum_alert_configuration.json: A sample configuration for setting up alerts based on RUM data.
+      - [ ] example_rum_snippet.html: An example HTML file demonstrating how to integrate the RUM tracking snippet.
+
+Plugin: resource-usage-tracker
+  ⚠️  Skill 'resource-usage-tracker' has incomplete assets:
+      - [ ] dashboard_template.html: HTML template for a resource usage dashboard.
+      - [ ] alert_template.json: JSON template for alert configurations.
+      - [ ] example_resource_data.json: Example resource usage data in JSON format.
+      - [ ] right_sizing_recommendation_template.md: Markdown template for right-sizing recommendations.
+      - [ ] cost_optimization_report_template.md: Markdown template for cost optimization reports.
+
+Plugin: response-time-tracker
+  ⚠️  Skill 'response-time-tracker' has incomplete assets:
+      - [ ] dashboard_template.json: A template for creating a dashboard to visualize response time metrics.
+      - [ ] alert_template.json: A template for configuring alerts based on response time thresholds.
+      - [ ] example_report.md: An example report generated by the analyze_response_times.py script.
+
+Plugin: sla-sli-tracker
+  ⚠️  Skill 'sla-sli-tracker' has incomplete assets:
+      - [ ] dashboard_template.json: A JSON template for creating a monitoring dashboard.
+      - [ ] alerting_rules.json: A JSON file containing alerting rules based on SLO violations.
+      - [ ] example_sla.md: An example SLA document showcasing the structure and content.
+
+Plugin: synthetic-monitoring-setup
+  ⚠️  Skill 'synthetic-monitoring-setup' has incomplete assets:
+      - [ ] dashboard_template.json: A JSON template for creating a dashboard to visualize synthetic monitoring data.
+      - [ ] incident_response_playbook.md: A template for creating an incident response playbook for synthetic monitoring alerts.
+      - [ ] example_monitor_config.json: Example configuration for a synthetic monitor.
+
+Plugin: throughput-analyzer
+  ⚠️  Skill 'throughput-analyzer' has incomplete assets:
+      - [ ] throughput_report_template.md: Markdown template for generating throughput analysis reports.
+      - [ ] concurrency_optimization_strategies.json: JSON file containing various concurrency optimization strategies based on system characteristics.
+
+Plugin: ai-commit-gen
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] commit_message_template.txt: A template for generating commit messages.
+      - [ ] example_diff.txt: An example git diff file for testing and demonstration purposes.
+
+Plugin: travel-assistant
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] itinerary_template.md: Template for generating itinerary documents.
+      - [ ] packing_list_template.md: Template for generating packing lists.
+      - [ ] example_itineraries/: Directory containing example itineraries for various destinations and interests.
+      - [ ] example_packing_lists/: Directory containing example packing lists for various destinations and weather conditions.
+
+Plugin: access-control-auditor
+  ⚠️  Skill 'access-control-auditor' has incomplete assets:
+      - [ ] report_template.docx: A template for generating access control audit reports, including sections for findings, recommendations, and severity levels.
+      - [ ] example_iam_policy.json: Example IAM policy demonstrating common misconfigurations and vulnerabilities.
+      - [ ] example_acl.txt: Example ACL configuration file with potential security issues.
+
+Plugin: authentication-validator
+  ⚠️  Skill 'authentication-validator' has incomplete assets:
+      - [ ] report_template.md: Markdown template for generating authentication security reports.
+      - [ ] example_jwt.json: Example JWT token for analysis.
+
+Plugin: compliance-report-generator
+  ⚠️  Skill 'compliance-report-generator' has incomplete assets:
+      - [ ] report_template.docx: Word document template for generating compliance reports.
+      - [ ] config_examples/: Directory containing example configuration files for various compliance standards.
+      - [ ] logo.png: Company logo to be included in the compliance reports.
+
+Plugin: cors-policy-validator
+  ⚠️  Skill 'cors-policy-validator' has incomplete assets:
+      - [ ] cors_policy_template.json: A JSON template for creating CORS policies, with placeholders for key configuration parameters.
+      - [ ] test_report_template.html: An HTML template for displaying the results of CORS policy validation tests in a user-friendly format.
+
+Plugin: csrf-protection-validator
+  ⚠️  Skill 'csrf-protection-validator' has incomplete assets:
+      - [ ] csrf_report_template.md: Template for generating CSRF vulnerability reports.
+      - [ ] example_csrf_form.html: Example HTML form vulnerable to CSRF.
+
+Plugin: data-privacy-scanner
+  ⚠️  Skill 'data-privacy-scanner' has incomplete assets:
+      - [ ] report_template.md: A Markdown template for generating data privacy scan reports.
+      - [ ] example_config.yaml: Example configuration file for the data-privacy-scanner tool.
+      - [ ] sample_code_with_pii.py: A code sample containing PII (Personally Identifiable Information) to demonstrate the scanner's capabilities.
+
+Plugin: dependency-checker
+  ⚠️  Skill 'dependency-checker' has incomplete assets:
+      - [ ] report_template.md: A template for generating dependency check reports.
+      - [ ] example_npm_audit_report.json: An example npm audit report for demonstration purposes.
+      - [ ] example_pip_audit_report.json: An example pip audit report for demonstration purposes.
+
+Plugin: encryption-tool
+  ⚠️  Skill 'encryption-tool' has incomplete assets:
+      - [ ] encryption_template.txt: Template file for encrypting data.
+      - [ ] decryption_template.txt: Template file for decrypting data.
+      - [ ] example_encrypted_file.enc: Example encrypted file for testing purposes.
+
+Plugin: gdpr-compliance-scanner
+  ⚠️  Skill 'gdpr-compliance-scanner' has incomplete assets:
+      - [ ] compliance_report_template.docx: A template for generating GDPR compliance reports in a standardized format.
+      - [ ] consent_form_template.docx: A template for creating GDPR-compliant consent forms.
+      - [ ] privacy_policy_template.docx: A template for generating GDPR-compliant privacy policies.
+
+Plugin: hipaa-compliance-checker
+  ⚠️  Skill 'hipaa-compliance-checker' has incomplete assets:
+      - [ ] report_template.docx: A template for generating HIPAA compliance reports in DOCX format.
+      - [ ] config_template.yaml: A template for configuration files used by the HIPAA compliance checker.
+      - [ ] example_code_compliant.py: Example code demonstrating HIPAA-compliant coding practices.
+      - [ ] example_code_non_compliant.py: Example code demonstrating non-HIPAA-compliant coding practices.
+
+Plugin: input-validation-scanner
+  ⚠️  Skill 'input-validation-scanner' has incomplete assets:
+      - [ ] codeql_ruleset.qls: Example CodeQL ruleset for input validation.
+      - [ ] semgrep_ruleset.yaml: Example Semgrep ruleset for input validation.
+      - [ ] example_code_with_vulnerabilities.zip: A zip file containing example code snippets with common input validation vulnerabilities.
+
+Plugin: owasp-compliance-checker
+  ⚠️  Skill 'owasp-compliance-checker' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating visually appealing compliance reports.
+      - [ ] example_scan_results.json: Example JSON output from a compliance scan.
+      - [ ] owasp_logo.png: OWASP logo for branding compliance reports.
+
+Plugin: pci-dss-validator
+  ⚠️  Skill 'pci-dss-validator' has incomplete assets:
+      - [ ] report_template.html: An HTML template for generating PCI DSS compliance reports. This allows for consistent and professional-looking reports.
+      - [ ] example_scan_output.json: Example JSON output from the pci_dss_scan.py script. This helps Claude understand the structure of the scan results.
+      - [ ] remediation_template.md: A template for generating remediation suggestions. This helps to ensure that the suggestions are clear, concise, and actionable.
+
+Plugin: penetration-tester
+  ⚠️  Skill 'penetration-tester' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating penetration testing reports.
+      - [ ] vulnerability_database.json: JSON file containing a database of known vulnerabilities and exploits.
+      - [ ] example_report.pdf: Example penetration testing report.
+
+Plugin: secret-scanner
+  ⚠️  Skill 'secret-scanner' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating the secret scan report.
+      - [ ] example_report.html: Example of a generated secret scan report.
+      - [ ] ignore_patterns.txt: Default ignore patterns for files and directories to exclude from the scan.
+
+Plugin: security-audit-reporter
+  ⚠️  Skill 'security-audit-reporter' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating security audit reports.
+      - [ ] report_template.pdf: PDF template for generating security audit reports.
+      - [ ] example_report.json: Example security audit report in JSON format.
+      - [ ] example_report.md: Example security audit report in Markdown format.
+
+Plugin: security-headers-analyzer
+  ⚠️  Skill 'security-headers-analyzer' has incomplete assets:
+      - [ ] report_template.md: Markdown template for generating the security header analysis report.
+      - [ ] example_report.md: Example of a generated security header analysis report.
+
+Plugin: security-incident-responder
+  ⚠️  Skill 'security-incident-responder' has incomplete assets:
+      - [ ] incident_report_template.docx: Template for creating post-incident reports.
+      - [ ] communication_templates.txt: Pre-written email and message templates for communicating with stakeholders during an incident.
+      - [ ] severity_matrix.csv: Matrix for assessing the severity of security incidents.
+
+Plugin: security-misconfiguration-finder
+  ⚠️  Skill 'security-misconfiguration-finder' has incomplete assets:
+      - [ ] report_template.html: A template for generating HTML-based security reports.
+      - [ ] example_scan_results.json: Example JSON output from a security scan, demonstrating the data structure and content.
+
+Plugin: session-security-checker
+  ⚠️  Skill 'session-security-checker' has incomplete assets:
+      - [ ] report_template.html: An HTML template for generating the session security analysis report.
+      - [ ] vulnerability_descriptions.json: A JSON file containing detailed descriptions of common session security vulnerabilities.
+
+Plugin: soc2-audit-helper
+  ⚠️  Skill 'soc2-audit-helper' has incomplete assets:
+      - [ ] report_template.docx: A template for generating SOC2 compliance reports.
+      - [ ] compliance_gap_analysis_template.xlsx: A template for analyzing compliance gaps.
+      - [ ] remediation_steps_template.docx: A template for documenting remediation steps.
+
+Plugin: sql-injection-detector
+  ⚠️  Skill 'sql-injection-detector' has incomplete assets:
+      - [ ] sqli_payloads.json: JSON file containing a list of SQL injection payloads for different attack vectors.
+      - [ ] remediation_templates/: Directory containing code templates for parameterized queries in various languages (Python, JavaScript, etc.).
+      - [ ] example_code/: Directory containing vulnerable and secure code examples for SQL injection.
+
+Plugin: ssl-certificate-manager
+  ⚠️  Skill 'ssl-certificate-manager' has incomplete assets:
+      - [ ] certificate_expiry_template.txt - Template for generating email notifications about expiring SSL certificates.
+      - [ ] example_openssl_config.txt - Example OpenSSL configuration file for generating certificate signing requests (CSRs).
+
+Plugin: vulnerability-scanner
+  ⚠️  Skill 'vulnerability-scanner' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating visually appealing vulnerability reports.
+      - [ ] example_report.md: Example of a complete vulnerability scan report.
+      - [ ] logo.png: Company logo to include in the report.
+
+Plugin: xss-vulnerability-scanner
+  ⚠️  Skill 'xss-vulnerability-scanner' has incomplete assets:
+      - [ ] payload_templates/: Directory containing various XSS payload templates for different contexts (HTML, JavaScript, CSS, URL).
+      - [ ] report_template.html: HTML template for generating XSS vulnerability reports.
+      - [ ] waf_signatures.json: JSON file containing signatures of common Web Application Firewalls (WAFs) for bypass testing.
+
+Plugin: calendar-to-workflow
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] meeting_prep_template.md: Template for generating meeting preparation documents.
+      - [ ] standup_notes_template.md: Template for generating standup notes.
+      - [ ] weekly_summary_template.md: Template for generating weekly summary reports.
+
+Plugin: file-to-code
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] templates/express_api_template.js: Template for generating Express.js API endpoints.
+      - [ ] templates/fastapi_api_template.py: Template for generating FastAPI API endpoints.
+      - [ ] templates/django_api_template.py: Template for generating Django API endpoints.
+      - [ ] examples/requirements.pdf: Example PDF requirements document.
+      - [ ] examples/requirements.md: Example Markdown requirements document.
+      - [ ] examples/figma_specs.json: Example Figma specs document.
+      - [ ] examples/openapi.yaml: Example OpenAPI specification.
+
+Plugin: research-to-deploy
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] terraform_template.tf: A basic Terraform template that can be customized.
+      - [ ] monitoring_dashboard_template.json: A template for creating monitoring dashboards in cloud providers.
+      - [ ] example_deployment_configs/: Example deployment configurations for various cloud providers and scenarios.
+
+Plugin: search-to-slack
+  ❌ Skill 'skill-adapter' missing SKILL.md
+  ⚠️  Skill 'skill-adapter' has incomplete assets:
+      - [ ] slack_message_template.json: A JSON template for the Slack message, defining the structure and elements of the message.
+      - [ ] example_search_results.json: Example web search results used for testing and demonstration purposes.
+      - [ ] error_message_templates.json: Templates for error messages to provide informative feedback to the user in case of failures.
+
+Plugin: web-to-github-issue
+  ⚠️  Skill 'web-to-github-issue' has incomplete assets:
+      - [ ] issue_template.md: Markdown template for generating GitHub issues with predefined sections and formatting.
+      - [ ] example_search_results.json: Example JSON data representing web search results, used for testing and demonstration purposes.
+      - [ ] config_template.json: Template for the configuration file, including placeholders for API keys and other settings.
+
+Plugin: accessibility-test-scanner
+  ⚠️  Skill 'accessibility-test-scanner' has incomplete assets:
+      - [ ] report_template.md: Markdown template for generating accessibility reports.
+      - [ ] example_scan_results.json: Example JSON output of an accessibility scan for demonstration purposes.
+
+Plugin: api-fuzzer
+  ⚠️  Skill 'api-fuzzer' has incomplete assets:
+      - [ ] payload_templates/: Directory containing templates for different types of payloads (JSON, XML, etc.).
+      - [ ] report_template.md: Template for generating the fuzzing report.
+
+Plugin: api-test-automation
+  ⚠️  Skill 'api-test-automation' has incomplete assets:
+      - [ ] test_suite_template.js: Template for generating API test suites, including placeholders for different test cases and assertions.
+      - [ ] example_openapi.yaml: Example OpenAPI specification file for demonstration and testing purposes.
+      - [ ] example_graphql_schema.graphql: Example GraphQL schema file for testing GraphQL APIs.
+
+Plugin: browser-compatibility-tester
+  ⚠️  Skill 'browser-compatibility-tester' has incomplete assets:
+      - [ ] test_templates/basic_test.py A basic test template for different browsers.
+      - [ ] report_templates/compatibility_report.html An HTML template for generating compatibility reports.
+      - [ ] example_configurations/browserstack.yml Example BrowserStack configuration file.
+
+Plugin: chaos-engineering-toolkit
+  ⚠️  Skill 'chaos-engineering-toolkit' has incomplete assets:
+      - [ ] experiment_template.md A template for documenting chaos engineering experiments, including hypothesis, methodology, and results.
+      - [ ] report_template.md A template for generating reports summarizing the results of chaos engineering experiments.
+      - [ ] failure_injection_checklist.md A checklist to ensure all aspects of failure injection are considered.
+
+Plugin: contract-test-validator
+  ⚠️  Skill 'contract-test-validator' has incomplete assets:
+      - [ ] pact_contract_template.json: A template for creating Pact consumer contracts.
+      - [ ] openapi_example.yaml: An example OpenAPI specification file.
+      - [ ] report_template.html: A template for generating HTML reports of contract validation results.
+      - [ ] config_template.yaml: A configuration template for setting up the contract testing environment.
+
+Plugin: database-test-manager
+  ⚠️  Skill 'database-test-manager' has incomplete assets:
+      - [ ] test_data_schema_template.json: Template for defining test data schemas.
+      - [ ] database_schema_definition.json: Example database schema definition for validation.
+      - [ ] example_migration_script.sql: Example SQL migration script for testing.
+      - [ ] docker-compose.yml: Docker Compose file for setting up test databases.
+
+Plugin: e2e-test-framework
+  ⚠️  Skill 'e2e-test-framework' has incomplete assets:
+      - [ ] test_template.py A template for generating individual test cases.
+      - [ ] page_object_template.py A template for creating page object models.
+      - [ ] example_test_suite.py A complete example of a generated test suite.
+
+Plugin: integration-test-runner
+  ⚠️  Skill 'integration-test-runner' has incomplete assets:
+      - [ ] test_data.sql Example SQL script for seeding the test database.
+      - [ ] test_configuration.yaml Example configuration file for the test environment.
+      - [ ] report_template.html HTML template for generating test reports.
+
+Plugin: load-balancer-tester
+  ⚠️  Skill 'load-balancer-tester' has incomplete assets:
+      - [ ] test_template.json: JSON template for defining load balancer test configurations.
+      - [ ] report_template.html: HTML template for generating load balancer test reports.
+      - [ ] example_config.conf: Example load balancer configuration file.
+
+Plugin: mobile-app-tester
+  ⚠️  Skill 'mobile-app-tester' has incomplete assets:
+      - [ ] test_template.py Template for creating new test cases.
+      - [ ] page_object_template.py Template for creating page object models.
+      - [ ] sample_app_ios.ipa Sample iOS app for testing.
+      - [ ] sample_app_android.apk Sample Android app for testing.
+
+Plugin: mutation-test-runner
+  ⚠️  Skill 'mutation-test-runner' has incomplete assets:
+      - [ ] mutation_report_template.md: Template for generating a detailed mutation test report with key metrics and findings.
+      - [ ] example_mutation_results.json: Example JSON output from a mutation testing framework for demonstration purposes.
+      - [ ] config_template.yaml: Template for configuring the mutation testing framework.
+
+Plugin: performance-test-suite
+  ⚠️  Skill 'performance-test-suite' has incomplete assets:
+      - [ ] test_template.js: Template file for creating k6 performance tests.
+      - [ ] report_template.html: HTML template for generating performance test reports.
+      - [ ] example_test_configurations.json: Example configurations for different types of performance tests.
+
+Plugin: regression-test-tracker
+  ⚠️  Skill 'regression-test-tracker' has incomplete assets:
+      - [ ] test_report_template.md: Markdown template for generating regression test reports.
+      - [ ] example_test_history.json: Example JSON file showing the format of test history data.
+      - [ ] config_template.yaml: Template for configuring the regression test tracker.
+
+Plugin: security-test-scanner
+  ⚠️  Skill 'security-test-scanner' has incomplete assets:
+      - [ ] nmap_scan_template.sh: Template script for running Nmap scans with various options.
+      - [ ] nessus_scan_policy.xml: Example Nessus scan policy for comprehensive vulnerability assessment.
+      - [ ] report_template.md: Markdown template for generating security test reports.
+
+Plugin: smoke-test-runner
+  ⚠️  Skill 'smoke-test-runner' has incomplete assets:
+      - [ ] test_suite_template.json A template for creating new smoke test suites.
+      - [ ] sample_results.json A sample of the test results format.
+      - [ ] config_template.yaml A template for the application configuration.
+
+Plugin: snapshot-test-manager
+  ⚠️  Skill 'snapshot-test-manager' has incomplete assets:
+      - [ ] snapshot_update_prompt_template.txt Template for prompting the user to confirm snapshot updates.
+      - [ ] example_snapshot_diff.txt Example of a snapshot diff to illustrate analysis capabilities.
+
+Plugin: test-coverage-analyzer
+  ⚠️  Skill 'test-coverage-analyzer' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating visually appealing coverage reports.
+      - [ ] example_coverage_report.html: Example HTML coverage report.
+      - [ ] configuration_template.yaml: Template for configuring the coverage analysis.
+
+Plugin: test-data-generator
+  ⚠️  Skill 'test-data-generator' has incomplete assets:
+      - [ ] example_schemas/: A directory containing example JSON schemas for different data types.
+      - [ ] example_data/: A directory containing example generated data for different data types.
+      - [ ] configuration_templates/: Templates for configuring the data generation process (e.g., number of records, data types).
+
+Plugin: test-doubles-generator
+  ⚠️  Skill 'test-doubles-generator' has incomplete assets:
+      - [ ] test_double_templates/: Directory containing templates for generating different types of test doubles (mocks, stubs, spies, fakes) for various frameworks.
+      - [ ] example_tests/: Directory containing example test cases demonstrating the usage of generated test doubles.
+      - [ ] configuration_templates/: Templates for configuring the test double generation process.
+
+Plugin: test-environment-manager
+  ⚠️  Skill 'test-environment-manager' has incomplete assets:
+      - [ ] docker-compose-template.yml: Template for creating Docker Compose files.
+      - [ ] test_environment_diagram.png: Diagram illustrating the architecture of a typical test environment.
+      - [ ] example_test_script.py: Example Python test script that uses the test environment.
+
+Plugin: test-orchestrator
+  ⚠️  Skill 'test-orchestrator' has incomplete assets:
+      - [ ] example_test_graph.json: Example test graph file demonstrating dependencies and test execution order.
+      - [ ] test_report_template.html: HTML template for generating test reports.
+      - [ ] configuration_template.yaml: Template for configuring the test orchestrator.
+
+Plugin: test-report-generator
+  ⚠️  Skill 'test-report-generator' has incomplete assets:
+      - [ ] report_template.html: HTML template for generating test reports.
+      - [ ] example_config.yaml: Example configuration file for the test report generator.
+      - [ ] sample_test_results.json: Sample test results in JSON format.
+
+Plugin: unit-test-generator
+  ⚠️  Skill 'unit-test-generator' has incomplete assets:
+      - [ ] test_template.js A template for generating test files.
+      - [ ] example_code.zip A zip file containing example code snippets and their corresponding unit tests.
+
+Plugin: visual-regression-tester
+  ⚠️  Skill 'visual-regression-tester' has incomplete assets:
+      - [ ] example_percy_config.yml: Example Percy configuration file.
+      - [ ] example_chromatic_config.yml: Example Chromatic configuration file.
+      - [ ] example_backstop_config.js: Example BackstopJS configuration file.
+      - [ ] html_report_template.html: HTML template for generating visual regression test reports.
+
+=== SUMMARY ===
+Total plugins with skills: 252
+Plugins with issues: 231
+
+=== FINAL SUMMARY ===
+
+📊 Total Issues Found:
+  - Plugins missing SKILL.md: 76
+  - Plugins with incomplete assets: 230
+
+🔍 Most Common Missing Files:
+     19 report_template.html
+     12 report_template.md
+      8 example_dataset.csv
+      8 configuration_template.yaml
+      6 config_template.yaml
+      5 example_report.md
+      5 dashboard_template.json
+      5 config_template.json
+      4 visualization_templates/
+      4 report_template.docx
+      4 example_scan_results.json
+      4 example_portfolio.json
+      4 example_data.csv
+      4 configuration_templates/
+      3 schema_templates/
+      3 monitoring_dashboard.json
+      3 example_schemas/
+      3 example_data/
+      3 example_config.yaml
+      3 docker-compose.yml
