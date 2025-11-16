@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json.schemastore.org/prettierrc",
+  "$comment": "Prettier Hook Configuration - rename to .prettierrc-hook.json in $HOME",
+  "excludeOrgs": [
+    "Eon-Labs"
+  ],
+  "excludePaths": [],
+  "logDir": null,
+  "_documentation": {
+    "excludeOrgs": "Array of GitHub organization names to exclude from formatting. Example: ['Eon-Labs', 'client-org']. Default: [] (no exclusions)",
+    "excludePaths": "Array of additional path patterns to exclude (appends to built-in defaults: node_modules, .git, .github, skills, plugins, file-history). Example: ['custom-dir/', '*.backup.md']. Default: [] (defaults only)",
+    "logDir": "Directory for log files. null uses XDG default (~/.local/state/prettier-hook). Example: '~/.local/state/prettier-hook' or '/custom/log/dir'. Default: null (XDG)",
+    "environmentVariables": {
+      "PRETTIER_CONFIG": "Path to this config file. Default: ~/.prettierrc-hook.json",
+      "PRETTIER_ENABLE_AI_COMMITS": "Set to 1 or true to enable AI-generated commit messages. Default: unset (generic messages)",
+      "PRETTIER_LOG_DIR": "Override logDir setting. Default: from config or XDG",
+      "PRETTIER_DEBUG": "Set to 1 or true to enable debug logging. Default: unset (disabled)"
+    },
+    "precedence": "Environment variables > Config file > Built-in defaults",
+    "builtInDefaults": {
+      "excludeOrgs": [],
+      "excludePaths": [],
+      "defaultExcludes": [
+        "node_modules",
+        ".git",
+        ".github",
+        ".claude/skills",
+        "skills",
+        "plugins",
+        "file-history"
+      ],
+      "logDir": "${XDG_STATE_HOME:-$HOME/.local/state}/prettier-hook",
+      "enableAICommits": false
+    },
+    "installation": "cp .prettierrc-hook.json.example ~/.prettierrc-hook.json && edit to customize",
+    "validation": "jq empty ~/.prettierrc-hook.json (should return no output if valid)",
+    "dependencies": "Required: prettier, jq, git. Optional: claude (for AI commits), timeout (for AI timeout)",
+    "adr": "docs/decisions/0002-prettier-marketplace-plugin-refactoring.md",
+    "plan": "docs/plan/0002-prettier-marketplace-plugin-refactoring/plan.yaml"
+  }
+}

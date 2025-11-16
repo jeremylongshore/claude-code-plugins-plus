@@ -4687,6 +4687,28 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io"
       }
+    },
+    {
+      "name": "prettier-markdown-hook",
+      "source": "./plugins/productivity/prettier-markdown-hook",
+      "description": "Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "prettier",
+        "markdown",
+        "formatting",
+        "automation",
+        "hook",
+        "stop",
+        "git",
+        "conventional-commits"
+      ],
+      "author": {
+        "name": "Terry Li",
+        "email": "[email protected]",
+        "url": "https://github.com/terrylica"
+      }
     }
   ]
 }
