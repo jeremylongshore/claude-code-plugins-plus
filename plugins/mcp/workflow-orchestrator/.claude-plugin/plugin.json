@@ -15,8 +15,5 @@
     "automation",
     "parallel",
     "mcp"
-  ],
-  "mcp": {
-    "server": "servers/workflow-engine.ts"
-  }
+  ]
 }

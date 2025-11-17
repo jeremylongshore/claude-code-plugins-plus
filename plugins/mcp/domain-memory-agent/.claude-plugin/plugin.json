@@ -16,8 +16,5 @@
     "memory",
     "summarization",
     "mcp"
-  ],
-  "mcp": {
-    "server": "servers/knowledge-base.ts"
-  }
+  ]
 }

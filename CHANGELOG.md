@@ -1,3 +1,23 @@
+## [1.3.3] - 2025-11-17
+
+### 🐛 Bug Fix
+
+#### MCP Plugin Manifest Errors (CRITICAL)
+- **Fixed**: Invalid `mcp` field in plugin.json causing validation errors
+- **Plugins Affected**:
+  - conversational-api-debugger
+  - domain-memory-agent
+  - workflow-orchestrator
+- **Root Cause**: Unrecognized `mcp` key in plugin.json schema
+- **Solution**: Removed invalid `mcp` field from all three plugin manifests
+- **Impact**: All MCP plugins now load without validation errors
+- **User Report**: `claude doctor` validation errors resolved
+
+**Technical Details:**
+- The `mcp` field is not part of Claude Code's plugin.json schema
+- MCP configuration belongs in `.claude-plugin/mcp/server.json` (if needed)
+- Fixed manifests now match the correct schema used by working MCP plugins
+
 ## [1.3.2] - 2025-11-15
 
 ### 🔧 Maintenance Release
@@ -53,6 +73,12 @@ npx claude-plugin-validator --fix
 ```
 
 **Location:** `packages/plugin-validator/`
+
+**npm Package:**
+- **Published**: November 15, 2025
+- **Registry**: https://www.npmjs.com/package/claude-plugin-validator
+- **Install**: `npx claude-plugin-validator`
+- **Status**: Production-ready
 
 ### 📊 Plugin Metrics
 

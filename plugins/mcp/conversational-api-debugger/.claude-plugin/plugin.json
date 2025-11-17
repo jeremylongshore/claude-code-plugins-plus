@@ -16,8 +16,5 @@
     "rest",
     "troubleshooting",
     "mcp"
-  ],
-  "mcp": {
-    "server": "servers/api-debugger.ts"
-  }
+  ]
 }
