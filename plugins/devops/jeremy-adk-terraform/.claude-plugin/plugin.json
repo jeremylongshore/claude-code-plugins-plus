@@ -1,7 +1,7 @@
 {
   "name": "jeremy-adk-terraform",
   "version": "1.0.0",
-  "description": "Terraform infrastructure specialist for Vertex AI ADK Agent Engine deployment with VPC-SC, Code Execution Sandbox, Memory Bank, IAM, and multi-agent production infrastructure",
+  "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

@@ -1,0 +1,220 @@
+# Vertex AI Engine Deployment Configuration
+# For production deployment of ADK Orchestrator
+
+apiVersion: agents.vertex.ai/v1
+kind: AgentDeployment
+metadata:
+  name: adk-orchestrator
+  labels:
+    app: adk-orchestrator
+    version: "1.0.0"
+    environment: production
+    team: platform
+
+spec:
+  # Agent Configuration
+  agent:
+    source: ./
+    entrypoint: agent.root_agent
+    runtime: python310
+
+  # Resource Configuration
+  resources:
+    cpu: 4
+    memory: 8Gi
+    gpu: 0  # No GPU required for orchestration
+
+  # Scaling Configuration
+  replicas:
+    min: 2
+    max: 10
+    target_cpu_utilization: 70
+
+  # Environment Variables
+  env:
+    - name: PROJECT_ID
+      valueFrom:
+        configMapRef:
+          name: gcp-config
+          key: project_id
+    - name: LOCATION
+      value: us-central1
+    - name: LOG_LEVEL
+      value: INFO
+    - name: ENABLE_TRACING
+      value: "true"
+    - name: ENABLE_METRICS
+      value: "true"
+
+  # Service Configuration
+  service:
+    type: LoadBalancer
+    port: 8080
+    targetPort: 8080
+    annotations:
+      cloud.google.com/neg: '{"ingress": true}'
+      cloud.google.com/backend-config: '{"ports": {"8080":"adk-orchestrator-backend"}}'
+
+  # Health Checks
+  healthCheck:
+    path: /health
+    port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    successThreshold: 1
+    failureThreshold: 3
+
+  # Liveness Probe
+  livenessProbe:
+    httpGet:
+      path: /health/live
+      port: 8080
+    initialDelaySeconds: 45
+    periodSeconds: 10
+
+  # Readiness Probe
+  readinessProbe:
+    httpGet:
+      path: /health/ready
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 5
+
+  # Network Policy
+  networkPolicy:
+    ingress:
+      - from:
+        - namespaceSelector:
+            matchLabels:
+              name: agent-engine
+        ports:
+        - protocol: TCP
+          port: 8080
+
+  # Security Context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+    allowPrivilegeEscalation: false
+
+  # Service Account
+  serviceAccount:
+    name: adk-orchestrator-sa
+    annotations:
+      iam.gke.io/gcp-service-account: adk-orchestrator@PROJECT_ID.iam.gserviceaccount.com
+
+  # Monitoring
+  monitoring:
+    enabled: true
+    prometheus:
+      enabled: true
+      port: 9090
+    stackdriver:
+      enabled: true
+      projectId: ${PROJECT_ID}
+
+  # Logging
+  logging:
+    level: INFO
+    format: json
+    stackdriver:
+      enabled: true
+
+  # Tracing
+  tracing:
+    enabled: true
+    sampling_rate: 0.1
+    exporter: stackdriver
+
+  # Secrets
+  secrets:
+    - name: api-keys
+      mountPath: /etc/secrets/api-keys
+    - name: oauth-config
+      mountPath: /etc/secrets/oauth
+
+  # Config Maps
+  configMaps:
+    - name: agent-config
+      mountPath: /etc/config/agent
+    - name: a2a-registry
+      mountPath: /etc/config/registry
+
+  # Persistent Storage (for session data)
+  storage:
+    - name: session-data
+      size: 10Gi
+      storageClass: standard-rwo
+      mountPath: /data/sessions
+
+  # Memory Bank Configuration
+  memoryBank:
+    enabled: true
+    corpus: adk-orchestrator-memory
+    ttl_days: 14
+    search_index: semantic
+
+  # Session Service Configuration
+  sessionService:
+    type: vertex-ai
+    ttl_days: 30
+    auto_save: true
+
+  # A2A Configuration
+  a2a:
+    enabled: true
+    discovery_endpoint: https://agent-engine.googleapis.com/v1/agents
+    registry_refresh_minutes: 5
+    max_concurrent_invocations: 50
+
+  # Circuit Breaker
+  circuitBreaker:
+    enabled: true
+    threshold: 5
+    timeout: 30s
+    resetTimeout: 60s
+
+  # Rate Limiting
+  rateLimiting:
+    enabled: true
+    requests_per_minute: 1000
+    burst_size: 100
+
+  # Deployment Strategy
+  strategy:
+    type: RollingUpdate
+    maxSurge: 1
+    maxUnavailable: 0
+
+  # PodDisruptionBudget
+  podDisruptionBudget:
+    minAvailable: 1
+
+  # Annotations
+  annotations:
+    deployment.vertex.ai/revision: "1"
+    deployment.vertex.ai/managed-by: "adk-cli"
+
+---
+# Backend Configuration for Cloud Load Balancer
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: adk-orchestrator-backend
+spec:
+  timeoutSec: 300
+  connectionDraining:
+    drainingTimeoutSec: 60
+  healthCheck:
+    checkIntervalSec: 10
+    timeoutSec: 5
+    healthyThreshold: 1
+    unhealthyThreshold: 3
+    type: HTTP
+    requestPath: /health
+    port: 8080
+  sessionAffinity:
+    affinityType: "CLIENT_IP"
+    affinityCookieTtlSec: 3600

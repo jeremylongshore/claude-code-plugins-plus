@@ -7,12 +7,12 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.3.3",
+    "version": "1.4.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 253,
+    "totalPlugins": 254,
     "skillsEnabled": 185,
-    "lastUpdated": "2025-11-17"
+    "lastUpdated": "2025-11-19"
   },
   "plugins": [
     {
@@ -3969,7 +3969,7 @@
     {
       "name": "jeremy-firestore",
       "source": "./plugins/community/jeremy-firestore",
-      "description": "Production-ready Firebase/Firestore operations: CRUD, security rules, batch operations, migrations, cost optimization, and performance monitoring",
+      "description": "Firestore database specialist for schema design, queries, and real-time sync",
       "version": "1.0.0",
       "category": "database",
       "keywords": [
@@ -4496,7 +4496,7 @@
     {
       "name": "jeremy-genkit-pro",
       "source": "./plugins/ai-ml/jeremy-genkit-pro",
-      "description": "Production-grade Firebase Genkit specialist with expert agents for AI flows, RAG systems, monitoring, and multi-language deployment (Node.js/Python/Go)",
+      "description": "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -4516,7 +4516,7 @@
     {
       "name": "jeremy-adk-orchestrator",
       "source": "./plugins/ai-ml/jeremy-adk-orchestrator",
-      "description": "Vertex AI Agent Development Kit (ADK) supervisory orchestrator with A2A protocol support, multi-agent systems, Code Execution Sandbox, Memory Bank, and production deployment for Python/Java/Go agents",
+      "description": "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -4535,7 +4535,7 @@
     {
       "name": "jeremy-vertex-validator",
       "source": "./plugins/ai-ml/jeremy-vertex-validator",
-      "description": "Production readiness validator for Vertex AI, ADK, and Genkit deployments. Validates security, compliance, monitoring, performance, and best practices before production deployment",
+      "description": "Production readiness validator for Vertex AI deployments and configurations",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -4553,7 +4553,7 @@
     {
       "name": "jeremy-genkit-terraform",
       "source": "./plugins/devops/jeremy-genkit-terraform",
-      "description": "Terraform infrastructure specialist for deploying Firebase Genkit applications to Firebase Functions, Cloud Run, and GKE with monitoring, scaling, and production best practices",
+      "description": "Terraform modules for Firebase Genkit infrastructure and deployments",
       "version": "1.0.0",
       "category": "devops",
       "keywords": [
@@ -4571,7 +4571,7 @@
     {
       "name": "jeremy-adk-terraform",
       "source": "./plugins/devops/jeremy-adk-terraform",
-      "description": "Terraform infrastructure specialist for Vertex AI ADK Agent Engine deployment with VPC-SC, Code Execution Sandbox, Memory Bank, IAM, and multi-agent production infrastructure",
+      "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments",
       "version": "1.0.0",
       "category": "devops",
       "keywords": [
@@ -4590,7 +4590,7 @@
     {
       "name": "jeremy-vertex-terraform",
       "source": "./plugins/devops/jeremy-vertex-terraform",
-      "description": "Terraform infrastructure specialist for Vertex AI services including Model Garden, Gemini deployments, vector search, endpoints, pipelines, and enterprise AI infrastructure",
+      "description": "Terraform configurations for Vertex AI platform and Agent Engine",
       "version": "1.0.0",
       "category": "devops",
       "keywords": [
@@ -4608,7 +4608,7 @@
     {
       "name": "jeremy-vertex-engine",
       "source": "./plugins/ai-ml/jeremy-vertex-engine",
-      "description": "Vertex AI Agent Engine expert inspector and orchestrator. Validates agent deployments, inspects runtime configurations, monitors Agent Engine health, and ensures compliance with Vertex AI best practices for production agents",
+      "description": "Vertex AI Agent Engine deployment inspector and runtime validator",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -4627,7 +4627,7 @@
     {
       "name": "jeremy-gcp-starter-examples",
       "source": "./plugins/ai-ml/jeremy-gcp-starter-examples",
-      "description": "Comprehensive Google Cloud starter kit examples aggregator. Expert in ADK samples, Genkit templates, Agent Starter Pack, Vertex AI examples, and production-ready code from official Google Cloud repositories",
+      "description": "Google Cloud starter kits and example code aggregator with ADK samples",
       "version": "1.0.0",
       "category": "ai-ml",
       "keywords": [
@@ -4648,7 +4648,7 @@
     {
       "name": "jeremy-github-actions-gcp",
       "source": "./plugins/devops/jeremy-github-actions-gcp",
-      "description": "GitHub Actions expert for Google Cloud and Vertex AI deployments with Workload Identity Federation (WIF), comprehensive security validation, and deployment best practices enforcement",
+      "description": "GitHub Actions CI/CD workflows for Google Cloud and Vertex AI deployments",
       "version": "1.0.0",
       "category": "devops",
       "keywords": [

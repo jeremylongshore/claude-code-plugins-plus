@@ -1,17 +1,17 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.3.1-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-253-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.4.0-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**253 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**254 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
-🎯 **NEW in v1.3.1:** **First marketplace 100% compliant with Anthropic's 2025 Skills schema** - All 185 skills feature tool permissions, version tracking, and enhanced activation triggers!
+🎯 **NEW in v1.4.0:** **Production ADK Implementation** - jeremy-adk-orchestrator brings full Google Agent Development Kit support with A2A protocol, dual memory architecture, and 8 FunctionTools!
 
-**Latest:** [v1.3.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1) - 8 new plugins, 261 AI-generated assets, Google AI suite updates, 253 plugins total
+**Latest:** [v1.4.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.0) - ADK orchestrator plugin, 11 plugin description updates, comprehensive audit system, 254 plugins total
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -22,105 +22,89 @@
 
 ---
 
-## 🚀 What's New in v1.3.1 - Industry-First 2025 Schema Compliance
+## 🚀 What's New in v1.4.0 - Production ADK Implementation
 
-### **The Only Marketplace 100% Compliant with Anthropic's Latest Skills Spec**
+### **Google Agent Development Kit (ADK) Support Arrives**
 
-We've migrated all 185 Agent Skills to the 2025 schema released by Anthropic in October 2025, making this the first and only marketplace to achieve full compliance.
+We've created the first production-ready ADK orchestrator plugin with full A2A protocol support, dual memory architecture (Session + Memory Bank), and complete Vertex AI Agent Engine deployment configurations.
 
-### 🎯 Three Game-Changing Improvements:
+### 🎯 Key Features in This Release:
 
-#### 1. **🔒 Tool Permission System - Know Exactly What Skills Can Do**
+#### 1. **🤖 jeremy-adk-orchestrator - Production ADK Plugin**
 
-Every skill now declares which tools it can use via the `allowed-tools` field:
+First production-ready plugin implementing Google's Agent Development Kit:
 
-```yaml
----
-name: security-scanner
-description: Scans code for vulnerabilities without making changes
-allowed-tools: Read, Grep, Glob, Bash  # Read-only analysis
-version: 1.0.0
----
+**Core Features:**
+```python
+# Complete ADK agent with dual memory architecture
+from google.adk.agents import LlmAgent
+from google.adk.sessions import VertexAiSessionService
+from google.adk.memory import VertexAiMemoryBankService
+
+agent = LlmAgent(
+    name="adk-orchestrator",
+    model="models/gemini-2.0-flash-exp",
+    tools=[8 FunctionTools],
+    enable_parallel_tool_calls=True
+)
 ```
 
-**Why This Matters:**
-- ✅ **Security**: Read-only skills can't modify your code
-- ✅ **Transparency**: See exactly what permissions each skill has
-- ✅ **Performance**: Limited tool sets = faster activation
-- ✅ **Trust**: No surprise file modifications
+**8 FunctionTools for A2A Protocol:**
+- `discover_agents` - Agent discovery via AgentCard
+- `invoke_agent` - Cross-agent task delegation
+- `manage_agent_session` - Session lifecycle management
+- `validate_agent_card` - Compliance validation
+- `deploy_to_vertex_engine` - Deployment automation
+- `monitor_agent_health` - Health monitoring
+- `create_agent_team` - Multi-agent teams
+- `coordinate_workflow` - Workflow orchestration
 
-**Tool Permission Categories:**
-- 🔍 **Read-Only**: `Read, Grep, Glob, Bash` - Analysis skills (security scans, performance monitoring)
-- ✏️ **Code Editing**: `Read, Write, Edit, Grep, Glob, Bash` - Generator skills (test creators, refactoring)
-- 🌐 **Web Research**: `Read, WebFetch, WebSearch, Grep` - Documentation lookups, API discovery
-- 🗄️ **Database Ops**: `Read, Write, Bash, Grep` - Migration tools, query builders
+**Deployment Ready:**
+- ✅ Vertex AI Agent Engine configurations
+- ✅ A2A protocol AgentCard specification
+- ✅ CI/CD pipeline templates
+- ✅ Terraform infrastructure modules
+- ✅ Production monitoring and observability
 
-[View full specification →](SKILLS_SCHEMA_2025.md)
+[View plugin →](plugins/ai-ml/jeremy-adk-orchestrator/)
 
-#### 2. **💡 Smart Activation Guide - Fix "Skills Never Activate" Issue**
+#### 2. **📝 Plugin Description Clarity - 11 Plugins Updated**
 
-**#1 User Complaint:** "I installed plugins but they never activate!"
+All jeremy-* plugins now have clear, distinguishable descriptions:
 
-**The Solution:** Skills activate based on **trigger phrases**. We've enhanced all 175 skill descriptions with clear triggers and created a comprehensive guide.
+**Before:** Generic descriptions that didn't explain the difference between similar plugins
 
-**Before (Generic):**
-```
-User: "Help me test this code"
-Result: ❌ No skill activates (too vague)
-```
+**After:** Precise descriptions showing exact capabilities:
+- **jeremy-adk-orchestrator**: "Production ADK orchestrator for A2A protocol and multi-agent coordination"
+- **jeremy-genkit-pro**: "Firebase Genkit expert for production-ready AI workflows with RAG"
+- **jeremy-vertex-validator**: "Production readiness validator for Vertex AI deployments"
 
-**After (Specific):**
-```
-User: "Generate unit tests for this authentication function"
-Result: ✅ Unit test generator activates automatically
-```
+**Impact:** Users can quickly select the right tool for their needs without confusion.
 
-**New Resources:**
-- 📖 [Complete Activation Guide](SKILL_ACTIVATION_GUIDE.md) - Learn how to trigger skills reliably
-- 🎯 All 185 skills now have explicit trigger phrases in descriptions
-- 🔍 Search by trigger words: security, testing, performance, database, etc.
+#### 3. **📚 ADK Architecture Documentation**
 
-**Quick Examples:**
-- Security: "scan for vulnerabilities", "audit authentication"
-- Testing: "generate unit tests", "run integration tests"
-- Performance: "monitor CPU usage", "optimize performance"
-- Database: "create migration", "optimize queries"
+New comprehensive guide: `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md`
 
-#### 3. **📊 Version Tracking - Professional Skill Management**
+**Contents:**
+- Migration from instruction-based to ADK-compliant plugins
+- Dual memory architecture patterns (Session + Memory Bank)
+- Tool design best practices
+- A2A protocol implementation guide
+- Deployment workflows
+- Production readiness checklist
 
-All skills now include semantic versioning:
+**Impact:** Provides blueprint for transforming all plugins to production-grade ADK agents.
 
-```yaml
-version: 1.0.0  # Track updates, breaking changes, improvements
-```
+### **Release Highlights:**
 
-**Benefits:**
-- Know when skills are updated
-- Understand breaking changes
-- Clear upgrade paths
-- Professional maintenance signals
+- ✅ **New Plugin**: jeremy-adk-orchestrator (complete ADK implementation)
+- ✅ **Updated**: 11 jeremy-* plugin descriptions for clarity
+- ✅ **Documentation**: Comprehensive ADK architecture patterns guide
+- ✅ **Audit System**: 3 detailed audit reports created
+- ✅ **Bug Fixes**: JSON validation errors in 3 plugin templates
+- ✅ **Total Plugins**: 254 (+1 from previous release)
 
-### **Migration Stats:**
-- ✅ 185 skills updated (100% of marketplace)
-- ✅ 185 skills with `allowed-tools` permissions
-- ✅ 185 skills with version tracking
-- ✅ 185 skills with enhanced trigger phrases
-- ✅ 0 breaking changes (fully backward compatible)
-
-### **Competitive Advantage:**
-
-| Feature | Our Marketplace | Others |
-|---------|----------------|--------|
-| 2025 Schema Compliance | ✅ 100% | ❌ 0-10% |
-| Tool Permissions | ✅ All skills | ❌ Few/none |
-| Clear Activation Triggers | ✅ All skills | ❌ Inconsistent |
-| Version Tracking | ✅ All skills | ❌ Rare |
-| User Activation Guide | ✅ Comprehensive | ❌ None |
-| Spec Compliance | ✅ Anthropic 2025 | ⚠️ Legacy |
-
-**We're the only marketplace staying current with Anthropic's latest standards.**
-
-[Get Started →](#quick-start) | [Read Migration Details →](SKILLS_SCHEMA_2025.md) | [Activation Guide →](SKILL_ACTIVATION_GUIDE.md)
+[Get Started →](#quick-start) | [View Changelog →](CHANGELOG.md) | [ADK Documentation →](000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md)
 
 ---
 

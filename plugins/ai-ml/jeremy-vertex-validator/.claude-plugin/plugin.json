@@ -1,7 +1,7 @@
 {
   "name": "jeremy-vertex-validator",
   "version": "1.0.0",
-  "description": "Production readiness validator for Vertex AI, ADK, and Genkit deployments. Validates security, compliance, monitoring, performance, and best practices before production deployment",
+  "description": "Production readiness validator for Vertex AI deployments and configurations",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

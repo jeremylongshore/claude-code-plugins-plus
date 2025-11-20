@@ -1,7 +1,7 @@
 {
   "name": "jeremy-vertex-engine",
   "version": "1.0.0",
-  "description": "Vertex AI Engine expert inspector and orchestrator. Validates agent deployments, inspects runtime configurations, monitors Agent Engine health, and ensures compliance with Vertex AI best practices for production agents",
+  "description": "Vertex AI Agent Engine deployment inspector and runtime validator",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

@@ -1,0 +1,179 @@
+# Agent Card for A2A Protocol Discovery
+# Compliant with A2A Specification v1.0
+
+name: adk-orchestrator
+description: |
+  Production-grade ADK orchestrator specializing in Agent-to-Agent (A2A) protocol
+  management, multi-agent coordination, and Vertex AI Engine deployment. Provides
+  comprehensive agent discovery, invocation, session management, and workflow
+  orchestration capabilities.
+
+version: 1.0.0
+url: https://agent-engine.googleapis.com/v1/agents/adk-orchestrator
+
+# Agent Provider Information
+provider:
+  name: Jeremy Longshore
+  organization: Claude Code Plugins
+  contact: jeremy@example.com
+
+# Agent Capabilities
+capabilities:
+  # Core Capabilities
+  a2a_protocol: true
+  multi_agent_coordination: true
+  session_management: true
+  memory_bank: true
+  vertex_deployment: true
+
+  # Workflow Patterns
+  sequential_workflows: true
+  parallel_workflows: true
+  loop_workflows: true
+
+  # Advanced Features
+  agent_discovery: true
+  health_monitoring: true
+  auto_recovery: true
+  compliance: ["R5"]
+
+  # Performance
+  max_concurrent_agents: 100
+  max_workflow_depth: 10
+  timeout_seconds: 300
+
+# Agent Skills (What this agent can do)
+skills:
+  - id: discover-agents
+    name: Agent Discovery
+    description: Discovers and validates available agents via A2A protocol
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["discovery", "a2a", "registry"]
+
+  - id: invoke-agent
+    name: Agent Invocation
+    description: Invokes specific agents with proper A2A protocol handling
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["invocation", "a2a", "execution"]
+
+  - id: manage-session
+    name: Session Management
+    description: Creates and manages stateful agent sessions
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["session", "state", "memory"]
+
+  - id: validate-card
+    name: Card Validation
+    description: Validates agent cards against A2A specification
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["validation", "a2a", "compliance"]
+
+  - id: deploy-vertex
+    name: Vertex Deployment
+    description: Deploys agents to Vertex AI Engine
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["deployment", "vertex", "gcp"]
+
+  - id: monitor-health
+    name: Health Monitoring
+    description: Monitors agent health and performance metrics
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["monitoring", "health", "metrics"]
+
+  - id: create-team
+    name: Team Creation
+    description: Creates coordinated agent teams for complex tasks
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["team", "coordination", "multi-agent"]
+
+  - id: coordinate-workflow
+    name: Workflow Coordination
+    description: Orchestrates multi-agent workflows (sequential, parallel, loop)
+    input_modes: ["application/json"]
+    output_modes: ["application/json"]
+    tags: ["workflow", "orchestration", "patterns"]
+
+# Input/Output Configuration
+default_input_modes: ["application/json", "text/plain"]
+default_output_modes: ["application/json", "text/plain"]
+
+# Security Configuration
+security_schemes:
+  bearer:
+    type: http
+    scheme: bearer
+    description: OAuth 2.0 Bearer Token
+
+  api_key:
+    type: apiKey
+    in: header
+    name: X-API-Key
+    description: API Key authentication
+
+# Authentication Support
+supports_authenticated_extended_card: true
+
+# Operational Configuration
+operational:
+  # Endpoints
+  health_endpoint: /health
+  metrics_endpoint: /metrics
+
+  # Rate Limiting
+  rate_limit:
+    requests_per_minute: 1000
+    burst_size: 100
+
+  # Timeouts
+  default_timeout_seconds: 30
+  max_timeout_seconds: 300
+
+  # Resource Limits
+  max_memory_mb: 2048
+  max_cpu_cores: 4
+
+# Compliance & Standards
+compliance:
+  - standard: R5
+    description: "Compliant with R5 data retention and session management"
+  - standard: SOC2
+    description: "Follows SOC2 security and availability principles"
+  - standard: GDPR
+    description: "GDPR-compliant data handling and privacy"
+
+# Dependencies (Other agents this agent may invoke)
+dependencies:
+  - name: "*"
+    description: "Can discover and invoke any A2A-compliant agent"
+    optional: true
+
+# Monitoring & Observability
+observability:
+  tracing: true
+  metrics: true
+  logging: true
+  trace_endpoint: https://trace.googleapis.com
+  metrics_endpoint: https://monitoring.googleapis.com
+  log_endpoint: https://logging.googleapis.com
+
+# Metadata
+metadata:
+  created_at: "2025-11-19T00:00:00Z"
+  updated_at: "2025-11-19T00:00:00Z"
+  documentation: https://github.com/jeremylongshore/claude-code-plugins
+  repository: https://github.com/jeremylongshore/claude-code-plugins
+  license: Apache-2.0
+  tags:
+    - adk
+    - orchestrator
+    - a2a
+    - vertex-ai
+    - multi-agent
+    - production

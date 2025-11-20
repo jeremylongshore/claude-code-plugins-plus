@@ -1,0 +1,12 @@
+{
+  "name": "jeremy-adk-software-engineer",
+  "version": "1.0.0",
+  "description": "ADK software engineer for creating production-ready agents (placeholder - to be implemented)",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+  "license": "MIT",
+  "keywords": ["adk", "software-engineer", "agent-development", "vertex-ai"]
+}

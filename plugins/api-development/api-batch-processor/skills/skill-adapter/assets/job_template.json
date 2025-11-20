@@ -16,13 +16,13 @@
   "request_body_template": null,
   "_comment": "Optional template for the request body. Leave null for GET requests. Can use {item_id} placeholders.",
   "items": [
-    "_comment": "An array of item IDs to process in the batch",
     "user123",
     "user456",
     "user789",
     "user101",
     "user112"
   ],
+  "_comment_items": "An array of item IDs to process in the batch",
   "item_id_key": null,
   "_comment": "If items is a list of objects, this is the key to use for the item ID.  If null, items is treated as a list of IDs.",
   "max_concurrent_requests": 5,

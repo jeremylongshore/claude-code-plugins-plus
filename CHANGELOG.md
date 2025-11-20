@@ -1,3 +1,177 @@
+## [1.4.0] - 2025-11-19
+
+### 🚀 New Features
+
+#### jeremy-adk-orchestrator - Production ADK Implementation
+**New production-ready plugin for Google Agent Development Kit (ADK) orchestration.**
+
+**Features:**
+- **Complete ADK Agent Implementation** (`agent/agent.py`)
+  - Full LlmAgent with Gemini 2.0 Flash model
+  - VertexAiSessionService for session management
+  - VertexAiMemoryBankService for R5 memory compliance
+  - auto_save_session_to_memory callback for production reliability
+
+- **8 FunctionTools** (`agent/tools.py`)
+  - `discover_agents` - A2A protocol agent discovery
+  - `invoke_agent` - Cross-agent task delegation
+  - `manage_agent_session` - Session lifecycle management
+  - `validate_agent_card` - AgentCard compliance validation
+  - `deploy_to_vertex_engine` - Deployment automation
+  - `monitor_agent_health` - Health check monitoring
+  - `create_agent_team` - Multi-agent team formation
+  - `coordinate_workflow` - Workflow orchestration patterns
+
+- **A2A Protocol Support** (`agent/agent_card.yaml`)
+  - Complete AgentCard specification
+  - 8 skills with input/output schemas
+  - Security schemes and capabilities
+  - Service discovery integration
+
+- **Deployment Configurations** (`agent/deploy.yaml`)
+  - Vertex AI Agent Engine deployment
+  - Environment variables and secrets
+  - Service account permissions
+  - Health check endpoints
+
+- **CI/CD Ready**
+  - GitHub Actions workflow templates
+  - Terraform infrastructure modules
+  - Production deployment guides
+
+**Impact:** Establishes ADK as the standard for production agent development in this repository.
+
+### 📝 Plugin Updates
+
+#### Plugin Description Clarity (11 jeremy-* plugins)
+Updated all jeremy plugin descriptions to be clear and distinguishable:
+
+- **jeremy-adk-orchestrator**: "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI"
+- **jeremy-genkit-pro**: "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling"
+- **jeremy-vertex-validator**: "Production readiness validator for Vertex AI deployments and configurations"
+- **jeremy-vertex-engine**: "Vertex AI Agent Engine specialist for deploying production ADK agents"
+- **jeremy-genkit-terraform**: "Terraform modules for Firebase Genkit infrastructure and deployments"
+- **jeremy-adk-terraform**: "Terraform IaC for ADK agent infrastructure on Vertex AI Agent Engine"
+- **jeremy-vertex-terraform**: "Terraform modules for Vertex AI services (Gemini, Vector Search, Pipelines)"
+- **jeremy-firestore**: "Firestore database specialist for schema design, queries, and real-time sync"
+- **jeremy-firebase**: "Firebase platform expert for Authentication, Hosting, Functions, and Storage"
+- **jeremy-gcp-starter-examples**: "GCP starter kits and code examples for ADK, Genkit, and Vertex AI"
+- **jeremy-github-actions-gcp**: "GitHub Actions CI/CD for GCP deployments with Workload Identity Federation"
+
+**Purpose:** Enables users to quickly distinguish between plugins and select the right tool for their needs.
+
+### 📚 Documentation
+
+#### ADK Architecture Patterns
+**New comprehensive documentation**: `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md`
+
+**Contents:**
+- Migration guide from instruction-based to ADK-compliant plugins
+- Dual memory architecture patterns (Session + Memory Bank)
+- Tool design patterns and best practices
+- A2A protocol implementation guide
+- Deployment workflow patterns
+- Production readiness checklist
+
+**Impact:** Provides blueprint for transforming all jeremy plugins to production-grade ADK agents.
+
+#### Plugin Audit System
+**Created comprehensive audit infrastructure:**
+
+1. **087-RA-SUMM-jeremy-plugins-comprehensive-audit.md**
+   - 12 jeremy plugins analyzed
+   - Skills adoption: 83% (10/12)
+   - Hooks adoption: 0% (0/12)
+   - ADK compliance assessment
+
+2. **088-RA-SUMM-jeremy-plugins-audit-detailed-findings.md**
+   - Detailed findings per plugin
+   - Recommendations for ADK migration
+   - Architecture gaps identified
+
+3. **089-RA-SUMM-jeremy-plugins-action-plan.md**
+   - Prioritized action plan
+   - Plugin update roadmap
+   - Migration timeline
+
+**Impact:** Establishes systematic approach to plugin quality and ADK compliance.
+
+### 🐛 Bug Fixes
+
+#### JSON Validation Errors
+**Fixed invalid JSON in plugin config templates:**
+- `plugins/api-development/api-throttling-manager/skills/skill-adapter/assets/throttling_policy_template.json`
+- `plugins/api-development/api-batch-processor/skills/skill-adapter/assets/job_template.json`
+- `plugins/skill-enhancers/web-to-github-issue/skills/web-to-github-issue/assets/config_template.json`
+
+**Issues Resolved:**
+- Missing commas after `error_notification_channel` fields
+- JSON comments within arrays causing parse errors
+
+#### Plugin Placeholder
+**jeremy-adk-software-engineer** - Created valid plugin.json placeholder:
+- Marked as "to be implemented"
+- Prevents validation errors
+- Maintains marketplace integrity
+
+### 📊 Plugin Metrics
+
+**Current Statistics:**
+- Total Plugins: **254** (+1)
+- Agent Skills: **185** (73% adoption)
+- MCP Servers: **6**
+- 2025 Schema Compliance: **100%**
+
+**Version Files Updated:**
+- `VERSION` → 1.4.0
+- `package.json` → 1.4.0
+- `marketplace.extended.json` → 1.4.0
+- Last Updated: 2025-11-19
+
+### 🔗 Files Changed
+
+**New Plugin:**
+- `plugins/ai-ml/jeremy-adk-orchestrator/` - Complete ADK implementation
+
+**Documentation:**
+- `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md` - ADK architecture guide
+- `000-docs/087-RA-SUMM-jeremy-plugins-comprehensive-audit.md` - Audit summary
+- `000-docs/088-RA-SUMM-jeremy-plugins-audit-detailed-findings.md` - Detailed findings
+- `000-docs/089-RA-SUMM-jeremy-plugins-action-plan.md` - Action plan
+
+**Plugin Updates:**
+- `.claude-plugin/marketplace.extended.json` - 11 plugin descriptions updated
+- `.claude-plugin/marketplace.json` - Synced from extended catalog
+
+**Bug Fixes:**
+- `plugins/api-development/api-throttling-manager/skills/skill-adapter/assets/throttling_policy_template.json`
+- `plugins/api-development/api-batch-processor/skills/skill-adapter/assets/job_template.json`
+- `plugins/skill-enhancers/web-to-github-issue/skills/web-to-github-issue/assets/config_template.json`
+- `plugins/ai-ml/jeremy-adk-software-engineer/.claude-plugin/plugin.json`
+
+### 👥 Contributors
+
+Special thanks to:
+- **Jeremy Longshore** - ADK implementation, plugin updates, documentation
+- **Javier Rubio** - Code review and testing
+
+### 💡 For Plugin Developers
+
+**ADK Migration Checklist:**
+1. Review `090-AT-ADEC-adk-plugin-architecture-patterns.md`
+2. Implement `agent/agent.py` with proper memory architecture
+3. Create FunctionTools in `agent/tools.py`
+4. Define AgentCard for A2A protocol
+5. Add deployment configurations
+6. Test on Vertex AI Agent Engine
+
+**Validate Your Plugin:**
+```bash
+npx claude-plugin-validator ./your-plugin
+```
+
+---
+
 ## [1.3.3] - 2025-11-17
 
 ### 🐛 Bug Fix

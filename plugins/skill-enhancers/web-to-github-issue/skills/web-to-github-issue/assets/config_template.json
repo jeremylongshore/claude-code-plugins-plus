@@ -36,7 +36,7 @@
     "_comment": "Settings for handling errors during issue creation.",
     "log_errors": true,
     "_comment": "Whether to log errors to a file or console.",
-    "error_notification_channel": null
+    "error_notification_channel": null,
     "_comment": "Optional Slack channel or email address to send error notifications to."
   },
   "rate_limiting": {
