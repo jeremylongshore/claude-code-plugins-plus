@@ -24,7 +24,7 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.1",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "simple-git": "^3.30.0",
     "zod": "^4.1.12"
   },
