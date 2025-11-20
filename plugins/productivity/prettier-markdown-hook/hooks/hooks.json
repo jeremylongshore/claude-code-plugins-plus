@@ -1,0 +1,32 @@
+{
+  "hooks": [
+    {
+      "event": "Stop",
+      "matcher": ".*",
+      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/format-markdown.sh",
+      "priority": 100,
+      "timeout": 30000,
+      "continueOnError": true,
+      "description": "Automatically format markdown files with prettier after Claude stops responding",
+      "async": true
+    }
+  ],
+  "_metadata": {
+    "version": "1.0.0",
+    "description": "Stop hook configuration for prettier-markdown-hook plugin",
+    "notes": {
+      "event": "Stop hook triggers after Claude finishes responding",
+      "matcher": "Matches all stop events (.*)",
+      "command": "Uses ${CLAUDE_PLUGIN_ROOT} variable for portability across installations",
+      "priority": "100 = early in hook chain (higher priority hooks run first)",
+      "timeout": "30 seconds maximum execution time",
+      "continueOnError": "Other hooks continue even if this hook fails",
+      "async": "Hook runs asynchronously (fire-and-forget pattern)"
+    },
+    "troubleshooting": {
+      "hookNotRunning": "Check that dependencies (prettier, jq, git) are installed",
+      "timeout": "Increase timeout value if formatting large workspaces",
+      "errors": "Check log file at ${XDG_STATE_HOME:-$HOME/.local/state}/prettier-hook/format-markdown.log"
+    }
+  }
+}

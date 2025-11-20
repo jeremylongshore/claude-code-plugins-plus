@@ -4827,6 +4827,32 @@
         "skills": 1,
         "commands": 1
       }
+    },
+    {
+      "name": "prettier-markdown-hook",
+      "source": "./plugins/productivity/prettier-markdown-hook",
+      "description": "Automatically format markdown files with prettier when Claude stops responding, with configurable organization and path exclusions",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "prettier",
+        "markdown",
+        "formatting",
+        "automation",
+        "hook",
+        "stop",
+        "git",
+        "conventional-commits"
+      ],
+      "author": {
+        "name": "Terry Li",
+        "email": "[email protected]",
+        "url": "https://github.com/terrylica"
+      },
+      "components": {
+        "hooks": 1,
+        "total": 1
+      }
     }
   ]
 }

@@ -1,0 +1,116 @@
+{
+  "name": "prettier-markdown-hook",
+  "version": "1.0.0",
+  "description": "Automatically formats markdown files with prettier on Stop hook, with configurable organization and path exclusions",
+  "category": "productivity",
+  "author": "Terry Li",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  },
+  "keywords": [
+    "prettier",
+    "markdown",
+    "formatting",
+    "automation",
+    "hook",
+    "stop-hook",
+    "productivity"
+  ],
+  "dependencies": {
+    "system": [
+      "prettier",
+      "jq",
+      "git"
+    ]
+  },
+  "hooks": [
+    "Stop"
+  ],
+  "claude": {
+    "minimumVersion": "0.1.0"
+  },
+  "features": {
+    "autoFormat": {
+      "enabled": true,
+      "description": "Automatically formats markdown files after Claude stops responding"
+    },
+    "configurable": {
+      "enabled": true,
+      "description": "Supports JSON configuration file for organization and path exclusions"
+    },
+    "aiCommits": {
+      "enabled": true,
+      "description": "Optional AI-generated commit messages (opt-in via environment variable)"
+    }
+  },
+  "configuration": {
+    "files": [
+      {
+        "path": "~/.prettierrc-hook.json",
+        "optional": true,
+        "description": "Configuration file for exclusions and settings",
+        "example": "config/.prettierrc-hook.json.example"
+      }
+    ],
+    "environmentVariables": [
+      {
+        "name": "PRETTIER_CONFIG",
+        "description": "Path to custom configuration file",
+        "default": "~/.prettierrc-hook.json",
+        "required": false
+      },
+      {
+        "name": "PRETTIER_ENABLE_AI_COMMITS",
+        "description": "Enable AI-generated commit messages",
+        "default": "false",
+        "required": false,
+        "values": ["true", "false"]
+      },
+      {
+        "name": "PRETTIER_LOG_DIR",
+        "description": "Directory for log files",
+        "default": "${XDG_STATE_HOME:-$HOME/.local/state}/prettier-hook",
+        "required": false
+      }
+    ]
+  },
+  "installation": {
+    "steps": [
+      "Install dependencies: prettier, jq, git",
+      "Optional: Create ~/.prettierrc-hook.json for custom configuration",
+      "Plugin will run automatically on Stop hook"
+    ],
+    "postInstall": {
+      "message": "prettier-markdown-hook installed successfully. The hook will run automatically after Claude stops. See README.md for configuration options."
+    }
+  },
+  "uninstallation": {
+    "cleanup": [
+      "Optional: Remove ~/.prettierrc-hook.json if no longer needed",
+      "Optional: Remove log directory at ${XDG_STATE_HOME:-$HOME/.local/state}/prettier-hook"
+    ]
+  },
+  "troubleshooting": {
+    "commonIssues": [
+      {
+        "issue": "Hook doesn't run",
+        "solution": "Check that prettier, jq, and git are installed and in PATH"
+      },
+      {
+        "issue": "Files not formatted",
+        "solution": "Check log file at ${XDG_STATE_HOME:-$HOME/.local/state}/prettier-hook/format-markdown.log"
+      },
+      {
+        "issue": "Organization exclusion not working",
+        "solution": "Verify organization name in ~/.prettierrc-hook.json matches GitHub organization exactly (case-sensitive)"
+      }
+    ]
+  },
+  "links": {
+    "documentation": "README.md",
+    "configurationExample": "config/.prettierrc-hook.json.example",
+    "issueTracker": "https://github.com/jeremylongshore/claude-code-plugins/issues"
+  }
+}
