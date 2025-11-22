@@ -18,7 +18,7 @@
 /plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
-💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
+💖 **[Sponsor this project](https://github.com/sponsors/jeremylongshore)** - Get early access, premium plugins, and priority support
 
 ---
 
@@ -83,7 +83,7 @@ All jeremy-* plugins now have clear, distinguishable descriptions:
 
 #### 3. **📚 ADK Architecture Documentation**
 
-New comprehensive guide: `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md`
+Comprehensive ADK implementation patterns and migration guides created.
 
 **Contents:**
 - Migration from instruction-based to ADK-compliant plugins
@@ -104,7 +104,7 @@ New comprehensive guide: `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.
 - ✅ **Bug Fixes**: JSON validation errors in 3 plugin templates
 - ✅ **Total Plugins**: 254 (+1 from previous release)
 
-[Get Started →](#quick-start) | [View Changelog →](CHANGELOG.md) | [ADK Documentation →](000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md)
+[Get Started →](#quick-start) | [View Changelog →](CHANGELOG.md) | [ADK Info →](https://cloud.google.com/agent-development-kit)
 
 ---
 
@@ -179,7 +179,7 @@ The new [Excel Analyst Pro](plugins/business-tools/excel-analyst-pro/) plugin br
 
 ### ✅ Anthropic Official Spec v1.0 Compliance
 
-**All 167 Agent Skills now comply with [Anthropic's official Agent Skills Spec v1.0](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)** released October 16, 2025.
+**All 185 Agent Skills now comply with [Anthropic's official Agent Skills Spec](https://github.com/anthropics/skills)** released October 16, 2025.
 
 **What Changed:**
 - **Structure migration**: Moved from `skills/skill-adapter/` to `skills/{descriptive-name}/` per Anthropic specification
@@ -1031,7 +1031,7 @@ NNN-CC-ABCD-short-description.ext
 086-PP-PLAN-release-v1-2-0.md               # Release plan
 ```
 
-**Full specification:** See [`000-docs/000-DR-REFF-filing-system-standard-v2.md`](000-docs/000-DR-REFF-filing-system-standard-v2.md)
+**Full specification:** See the Document Filing System v3.0 in prompts-intent-solutions master-systems folder
 
 ---
 

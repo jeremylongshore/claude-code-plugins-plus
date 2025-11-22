@@ -565,7 +565,7 @@ This repository uses a structured filing system in `/000-docs/`:
 - **CC** = Category code (AT, PP, LS, RA, OD, etc.)
 - **ABCD** = Document type (ADEC, GUID, PROD, etc.)
 
-See `000-docs/000-DR-REFF-filing-system-standard-v2.md` for full specification.
+See Document Filing System v3.0 in prompts-intent-solutions master-systems folder for full specification.
 
 ## Development Principles
 
