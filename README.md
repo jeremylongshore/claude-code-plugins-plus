@@ -26,11 +26,16 @@
 
 ## 👥 Enterprise Supporters
 
-We're grateful to have **[Max Mergenthaler](https://github.com/mergenthaler)** and **[Nixtla](https://www.nixtla.io/)** as our first Enterprise supporter ($199/month).
+🏢 **Grateful to have [Max Mergenthaler](https://github.com/mergenthaler) and [Nixtla](https://www.nixtla.io/) as our first Enterprise supporter!**
 
-**About Nixtla**: Building production-grade time-series tools—**TimeGPT** (foundation model for forecasting) and the **Nixtlaverse** of open-source libraries. YC S21 alum.
+Max is CEO & Co-Founder at **Nixtla** (YC S21), building production-grade time-series tools:
+- **TimeGPT** - Foundation model for forecasting
+- **Nixtlaverse** - Open-source time-series libraries
+- **Support Level**: $199/month Enterprise tier
 
-*Sponsorship reflects support and prioritization, not a formal SLA or delivery guarantee.*
+His support helps us prioritize features that matter for real-world AI development.
+
+*Sponsorship reflects support and prioritization on a best-effort basis, not a formal SLA or delivery guarantee.*
 
 ---
 
@@ -172,7 +177,9 @@ Skill activates → Generates playbook → Ready to deploy
 
 **Status:** Batch-generating Agent Skills for all 229 plugins using Vertex AI. Progress tracked in audit database with full backups.
 
-[Learn more about Agent Skills →](backups/HOW_AGENT_SKILLS_WORK.md)
+**Resources:**
+- [Internal Guide: How Agent Skills Work →](backups/HOW_AGENT_SKILLS_WORK.md)
+- [External Deep Dive: Claude Skills Technical Analysis →](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) - Comprehensive technical breakdown by Lee-Han Chung
 
 ---
 
