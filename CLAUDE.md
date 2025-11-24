@@ -6,12 +6,15 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is **the comprehensive marketplace and learning hub for Claude Code plugins**. It serves as both a distribution platform for plugins and an educational resource for plugin developers.
 
-**Repository Stats (as of 2025-11-19):**
-- 253 total plugins across 18 categories
+**Repository Stats (as of 2025-11-24):**
+- 254 total plugins across 18 categories
 - 6 MCP server plugins (TypeScript/Node.js with 21+ tools)
 - 185 plugins with Agent Skills (100% v1.2.0 - 2025 schema compliant)
 - Live marketplace at https://claudecodeplugins.io/
 - Monorepo using pnpm workspaces
+- 113 documentation files in `000-docs/`
+- 33 automation scripts in `scripts/`
+- 8 GitHub Actions workflows
 
 ## Quick Reference - Most Common Tasks
 
@@ -86,7 +89,7 @@ This is a pnpm workspace with multiple package ecosystems:
 
 ```
 claude-code-plugins/
-├── plugins/                      # 253 plugins across 18 categories
+├── plugins/                      # 254 plugins across 18 categories
 │   ├── mcp/                     # 6 MCP plugins (TypeScript/Node.js)
 │   │   ├── project-health-auditor/    # 4 MCP tools
 │   │   ├── conversational-api-debugger/ # 4 MCP tools
@@ -107,7 +110,7 @@ claude-code-plugins/
 │   └── dist/                    # Built site → GitHub Pages
 ├── scripts/                      # 33 build/validation/automation scripts
 ├── .github/workflows/            # 8 CI/CD pipelines
-├── 000-docs/                     # 50+ documentation files (flat structure)
+├── 000-docs/                     # 113 documentation files (flat structure)
 └── pnpm-workspace.yaml          # Workspace config
 ```
 
@@ -659,6 +662,6 @@ git push origin main --tags
 
 ---
 
-**Last Updated:** November 19, 2025
-**Repository Version:** 1.3.3 (253 plugins, 185 with Agent Skills)
+**Last Updated:** November 24, 2025
+**Repository Version:** 1.4.1 (254 plugins, 185 with Agent Skills)
 **Status:** Active, accepting community contributions
