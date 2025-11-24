@@ -26,7 +26,7 @@
       "_comment": "Seconds to wait before retrying the request (for Retry-After header)",
       "documentation_url": "https://example.com/api/rate-limiting",
       "_comment": "URL to documentation about rate limiting",
-      "support_email": "support@example.com"
+      "support_email": "support@example.com",
       "_comment": "Support email for questions about rate limits"
     }
   }

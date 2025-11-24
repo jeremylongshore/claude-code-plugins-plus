@@ -36,8 +36,8 @@
       "_comment": "Width of the uncertainty intervals provided for the forecast.",
       "uncertainty_samples": 1000,
       "_comment": "Number of simulated draws used to estimate uncertainty intervals.",
-      "stan_backend": null
-      "_comment": "The Stan backend to use. Valid options are: null (default), 'CMDSTANPB', and 'PYSTAN'.",
+      "stan_backend": null,
+      "_comment": "The Stan backend to use. Valid options are: null (default), 'CMDSTANPB', and 'PYSTAN'."
     },
     "ARIMA": {
       "_comment": "Parameters for the ARIMA model (https://www.statsmodels.org/stable/generated/statsmodels.tsa.arima.model.ARIMA.html).",
@@ -98,13 +98,13 @@
     "_comment": "Number of lags to add if add_lags is true.",
     "add_seasonal_dummies": false,
     "_comment": "Add seasonal dummy variables.",
-    "add_time_trend": false
+    "add_time_trend": false,
     "_comment": "Add a time trend feature."
   },
   "anomaly_detection": {
     "enabled": false,
     "_comment": "Enable or disable anomaly detection.",
-    "threshold": 0.95
+    "threshold": 0.95,
     "_comment": "Threshold for anomaly detection."
   },
   "output_format": "json",

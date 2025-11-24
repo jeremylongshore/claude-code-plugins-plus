@@ -21,7 +21,7 @@
     "_comment": "Number of trees in the random forest (example for RandomForestClassifier).",
     "max_depth": 10,
     "_comment": "Maximum depth of the trees (example for RandomForestClassifier).",
-    "learning_rate": 0.1
+    "learning_rate": 0.1,
     "_comment": "Learning rate for gradient boosting models (example for GradientBoostingClassifier)."
   },
   "training_parameters": {
@@ -30,7 +30,7 @@
     "_comment": "The proportion of the data to use for testing.",
     "random_state": 42,
     "_comment": "A random seed for reproducibility.",
-    "stratify": true
+    "stratify": true,
     "_comment": "Whether to stratify the target variable during train/test split."
   },
   "evaluation_metrics": [
@@ -53,7 +53,7 @@
     "_comment": "Strategy for imputation (e.g., 'mean', 'median', 'most_frequent').",
     "scale_features": true,
     "_comment": "Whether to scale numerical features using StandardScaler or similar.",
-    "feature_scaling_method": "standard"
+    "feature_scaling_method": "standard",
     "_comment": "Method to use for feature scaling ('standard' or 'minmax')."
   }
 }

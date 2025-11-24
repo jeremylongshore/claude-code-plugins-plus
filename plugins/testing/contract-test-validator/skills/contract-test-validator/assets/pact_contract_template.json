@@ -16,7 +16,7 @@
         "headers": {
           "Accept": "application/json"
         },
-        "_comment": "Optional: Query parameters"
+        "_comment": "Optional: Query parameters",
         "query": ""
       },
       "response": {
@@ -30,7 +30,7 @@
           "description": "A sample product for testing purposes",
           "price": 25.99,
           "inStock": true,
-          "_comment": "Optional: Matchers for flexible validation"
+          "_comment": "Optional: Matchers for flexible validation",
           "_matchers": {
             "$.id": {
               "match": "type"
@@ -44,7 +44,7 @@
       "providerStates": [
         {
           "name": "Product 123 exists",
-          "_comment": "Optional: Define state setup for provider"
+          "_comment": "Optional: Define state setup for provider",
           "params": {
             "productId": 123
           }
