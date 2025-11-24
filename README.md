@@ -1,307 +1,41 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.3.1-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-253-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.4.1-brightgreen)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**253 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**254 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
-🎯 **NEW in v1.3.1:** **First marketplace 100% compliant with Anthropic's 2025 Skills schema** - All 185 skills feature tool permissions, version tracking, and enhanced activation triggers!
+🎯 **NEW in v1.4.1:** **Website Accuracy & Enterprise Sponsor** - Corrected plugin counts (now 254), added recognition for Max Mergenthaler @ Nixtla as first Enterprise supporter
 
-**Latest:** [v1.3.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1) - 8 new plugins, 261 AI-generated assets, Google AI suite updates, 253 plugins total
+**Latest:** [v1.4.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1) - Website accuracy improvements, Enterprise sponsor recognition, link fixes
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
-💖 **[Sponsor this project](docs/sponsor/)** - Get early access, premium plugins, and priority support
+⚡🪽 **[Buy me a Red Bull](https://buymeacoffee.com/jeremylongshore)** – Give these plugins wings, support ongoing development, and influence the premium plugin roadmap. See our [sponsor page](https://claudecodeplugins.io/sponsor) for tier details.
+
+*Additional support options (like Patreon) may be added later as the ecosystem grows.*
 
 ---
 
-## 🚀 What's New in v1.3.1 - Industry-First 2025 Schema Compliance
+## 👥 Enterprise Supporters
 
-### **The Only Marketplace 100% Compliant with Anthropic's Latest Skills Spec**
+🏢 **Grateful to have [Max Mergenthaler](https://github.com/mergenthaler) and [Nixtla](https://www.nixtla.io/) as our first Enterprise supporter!**
 
-We've migrated all 185 Agent Skills to the 2025 schema released by Anthropic in October 2025, making this the first and only marketplace to achieve full compliance.
+Max is CEO & Co-Founder at **Nixtla** (YC S21), building production-grade time-series tools:
+- **TimeGPT** - Foundation model for forecasting
+- **Nixtlaverse** - Open-source time-series libraries
+- **Support Level**: $199/month Enterprise tier
 
-### 🎯 Three Game-Changing Improvements:
+His support helps us prioritize features that matter for real-world AI development.
 
-#### 1. **🔒 Tool Permission System - Know Exactly What Skills Can Do**
-
-Every skill now declares which tools it can use via the `allowed-tools` field:
-
-```yaml
----
-name: security-scanner
-description: Scans code for vulnerabilities without making changes
-allowed-tools: Read, Grep, Glob, Bash  # Read-only analysis
-version: 1.0.0
----
-```
-
-**Why This Matters:**
-- ✅ **Security**: Read-only skills can't modify your code
-- ✅ **Transparency**: See exactly what permissions each skill has
-- ✅ **Performance**: Limited tool sets = faster activation
-- ✅ **Trust**: No surprise file modifications
-
-**Tool Permission Categories:**
-- 🔍 **Read-Only**: `Read, Grep, Glob, Bash` - Analysis skills (security scans, performance monitoring)
-- ✏️ **Code Editing**: `Read, Write, Edit, Grep, Glob, Bash` - Generator skills (test creators, refactoring)
-- 🌐 **Web Research**: `Read, WebFetch, WebSearch, Grep` - Documentation lookups, API discovery
-- 🗄️ **Database Ops**: `Read, Write, Bash, Grep` - Migration tools, query builders
-
-[View full specification →](SKILLS_SCHEMA_2025.md)
-
-#### 2. **💡 Smart Activation Guide - Fix "Skills Never Activate" Issue**
-
-**#1 User Complaint:** "I installed plugins but they never activate!"
-
-**The Solution:** Skills activate based on **trigger phrases**. We've enhanced all 175 skill descriptions with clear triggers and created a comprehensive guide.
-
-**Before (Generic):**
-```
-User: "Help me test this code"
-Result: ❌ No skill activates (too vague)
-```
-
-**After (Specific):**
-```
-User: "Generate unit tests for this authentication function"
-Result: ✅ Unit test generator activates automatically
-```
-
-**New Resources:**
-- 📖 [Complete Activation Guide](SKILL_ACTIVATION_GUIDE.md) - Learn how to trigger skills reliably
-- 🎯 All 185 skills now have explicit trigger phrases in descriptions
-- 🔍 Search by trigger words: security, testing, performance, database, etc.
-
-**Quick Examples:**
-- Security: "scan for vulnerabilities", "audit authentication"
-- Testing: "generate unit tests", "run integration tests"
-- Performance: "monitor CPU usage", "optimize performance"
-- Database: "create migration", "optimize queries"
-
-#### 3. **📊 Version Tracking - Professional Skill Management**
-
-All skills now include semantic versioning:
-
-```yaml
-version: 1.0.0  # Track updates, breaking changes, improvements
-```
-
-**Benefits:**
-- Know when skills are updated
-- Understand breaking changes
-- Clear upgrade paths
-- Professional maintenance signals
-
-### **Migration Stats:**
-- ✅ 185 skills updated (100% of marketplace)
-- ✅ 185 skills with `allowed-tools` permissions
-- ✅ 185 skills with version tracking
-- ✅ 185 skills with enhanced trigger phrases
-- ✅ 0 breaking changes (fully backward compatible)
-
-### **Competitive Advantage:**
-
-| Feature | Our Marketplace | Others |
-|---------|----------------|--------|
-| 2025 Schema Compliance | ✅ 100% | ❌ 0-10% |
-| Tool Permissions | ✅ All skills | ❌ Few/none |
-| Clear Activation Triggers | ✅ All skills | ❌ Inconsistent |
-| Version Tracking | ✅ All skills | ❌ Rare |
-| User Activation Guide | ✅ Comprehensive | ❌ None |
-| Spec Compliance | ✅ Anthropic 2025 | ⚠️ Legacy |
-
-**We're the only marketplace staying current with Anthropic's latest standards.**
-
-[Get Started →](#quick-start) | [Read Migration Details →](SKILLS_SCHEMA_2025.md) | [Activation Guide →](SKILL_ACTIVATION_GUIDE.md)
-
----
-
-## 🎯 Featured: Excel Analyst Pro
-
-**Professional Financial Modeling with Auto-Invoked Skills**
-
-The new [Excel Analyst Pro](plugins/business-tools/excel-analyst-pro/) plugin brings investment banking-grade financial modeling to Claude Code with automatic Skills activation and Excel MCP integration.
-
-```bash
-# Install the plugin
-/plugin install excel-analyst-pro@claude-code-plugins-plus
-
-# Build a DCF model with natural language
-"Build a 5-year DCF model for a SaaS company with 30% revenue growth"
-
-# Create an LBO analysis
-/build-lbo
-
-# Analyze budget variance
-/analyze-variance
-```
-
-**Four Auto-Invoked Skills:**
-- **DCF Modeler**: Build discounted cash flow valuation models
-- **LBO Modeler**: Create leveraged buyout analysis with debt schedules
-- **Variance Analyzer**: Generate executive variance reports
-- **Pivot Wizard**: Create pivot tables with natural language
-
-**Why This Matters:**
-- Build complex financial models without remembering formulas
-- Investment banking-grade templates and best practices
-- Local Excel processing - no cloud upload required
-- Perfect timing with Anthropic's Claude for Excel announcement
-- Auto-invoked Skills activate automatically when needed
-- Comprehensive documentation with real-world examples
-
-[Read the full documentation →](plugins/business-tools/excel-analyst-pro/README.md)
-
----
-
-## 🆕 What's New in v1.2.3
-
-### 🎯 Agent Context Manager Plugin
-
-**NEW**: Automatic AGENTS.md detection and loading alongside CLAUDE.md
-
-- **Plugin**: [agent-context-manager](plugins/productivity/agent-context-manager/)
-- **Category**: Productivity
-- **Agent Skills**: 1 (agent-context-loader with 200+ line documentation)
-- **Slash Commands**: 1 (/sync-agent-context)
-- **Hooks**: 2 (onSessionStart, onDirectoryChange)
-
-**Features**:
-- Proactive auto-loading when AGENTS.md is detected
-- Directory change hooks with formatted visual feedback
-- Manual sync command for permanent CLAUDE.md merge
-- Three-layer redundancy system
-- Comprehensive documentation (400+ lines)
-- 100% Anthropic Agent Skills Spec v1.0 compliant
-- Exceeds Anthropic standards for documentation depth
-
-**Updates**:
-- Plugin count: 236 (with 3 new Vertex AI and Google Cloud plugins)
-- Agent Skills count: 168
-
-[Install now →](plugins/productivity/agent-context-manager/)
-
----
-
-## What's New in v1.2.1
-
-### ✅ Anthropic Official Spec v1.0 Compliance
-
-**All 167 Agent Skills now comply with [Anthropic's official Agent Skills Spec v1.0](https://github.com/anthropics/skills/blob/main/agent_skills_spec.md)** released October 16, 2025.
-
-**What Changed:**
-- **Structure migration**: Moved from `skills/skill-adapter/` to `skills/{descriptive-name}/` per Anthropic specification
-- **Name format updated**: Title Case → hyphen-case (e.g., "Database Backup Automator" → "database-backup-automator")
-- **100% spec compliant**: All SKILL.md files follow official format requirements
-- **Forward compatible**: Ensures compatibility with future Claude Code releases
-- **No breaking changes**: Skills continue to work exactly as before
-
-**Quality Assessment:**
-Our comprehensive internal analysis shows our 167 skills **exceed Anthropic's 17 official examples** in documentation depth, trigger phrase specificity, and workflow detail.
-
-**Automated with:**
-- `scripts/migrate-skills.py` - Structure migration tool
-- `scripts/fix-skill-names.py` - Batch conversion tool with validation
-- 167 skills migrated and validated, 100% success rate
-
----
-
-## What's New in v1.2.0
-
-### 🎯 Agent Skills Quality Enhancement
-
-**159 high-quality Agent Skills** generated via production-grade AI batch processing with Vertex AI Gemini 2.0 Flash. Achieved 100% success rate at $0 cost with comprehensive documentation.
-
-**Key Achievements:**
-- 231 plugins enhanced (98% of marketplace)
-- 100% success rate, zero failures
-- $0 processing cost (Vertex AI free tier)
-- 13 documentation files + 2 blog posts
-- Agent Skills 17x larger than Anthropic's examples (3,210 bytes avg vs 500 bytes)
-
-**Technical Deep-Dives:**
-- 📖 [Batch Processing Implementation](https://startaitools.com/posts/scaling-ai-batch-processing-enhancing-235-plugins-with-vertex-ai-gemini-on-the-free-tier/)
-- 💼 [Systems Architecture](https://jeremylongshore.com/posts/scaling-ai-systems-production-batch-processing-with-built-in-disaster-recovery/)
-
-### 🧠 How Agent Skills Work
-
-Agent Skills are **automatic capabilities** that Claude activates based on your conversation context - no commands needed!
-
-**File Structure:**
-```
-your-plugin/
-└── skills/
-    └── skill-adapter/
-        └── SKILL.md       # Agent skill definition
-```
-
-**SKILL.md Format (Spec v1.0 Compliant):**
-```markdown
----
-name: database-backup-automator
-description: |
-  Automatically handles database backup operations when user mentions
-  backup, restore, or data protection needs.
----
-
-## What This Skill Does
-Multi-phase database backup workflow with validation...
-
-## When It Activates
-- "I need to backup my database"
-- "How do I restore from backup?"
-- "Set up automated backups"
-```
-
-**How It Works in Practice:**
-
-1. **You install a plugin:**
-   ```bash
-   /plugin install postgres-backup-pro@claude-code-plugins-plus
-   ```
-
-2. **You mention your need naturally:**
-   > "I need to backup my production PostgreSQL database before the migration"
-
-3. **Claude automatically:**
-   - Detects the backup skill is relevant
-   - Activates `Database Backup Automator` skill
-   - Guides you through: connection → backup → verification → storage
-   - No slash commands needed!
-
-4. **You get expert help:**
-   - Multi-phase workflows (analysis → execution → validation)
-   - Code examples and error handling
-   - Best practices built-in
-   - Context-aware recommendations
-
-**Key Difference from Commands:**
-- **Commands:** You type `/backup-database` explicitly
-- **Skills:** Claude recognizes "I need to backup" and helps automatically
-- **Result:** More natural, conversational development workflow
-
-**Categories with 100% Agent Skills Coverage:**
-- ✅ 27 AI/ML plugins - Model training, data pipelines, MLOps
-- ✅ 25 Database plugins - Migrations, optimization, backups
-- ✅ 27 Security plugins - Compliance, vulnerability scanning, audits
-- ✅ 25 Testing plugins - E2E, integration, load testing
-- ✅ 28 DevOps plugins (96.6%) - Infrastructure, CI/CD, deployments
-- ✅ 24 Performance plugins (96.0%) - Monitoring, profiling, optimization
-
-**Quality Metrics:**
-- Average SKILL.md size: 3,210 bytes (17x larger than Anthropic's 500-byte examples)
-- Includes: Multi-phase workflows, code examples, error handling, progressive disclosure
-- YAML validation: 99.4% pass rate
-
-[**Read full changelog →**](CHANGELOG.md#120---2025-10-20)
+*Sponsorship reflects support and prioritization on a best-effort basis, not a formal SLA or delivery guarantee.*
 
 ---
 
@@ -443,7 +177,9 @@ Skill activates → Generates playbook → Ready to deploy
 
 **Status:** Batch-generating Agent Skills for all 229 plugins using Vertex AI. Progress tracked in audit database with full backups.
 
-[Learn more about Agent Skills →](backups/HOW_AGENT_SKILLS_WORK.md)
+**Resources:**
+- [Internal Guide: How Agent Skills Work →](backups/HOW_AGENT_SKILLS_WORK.md)
+- [External Deep Dive: Claude Skills Technical Analysis →](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) - Comprehensive technical breakdown by Lee-Han Chung
 
 ---
 
@@ -470,13 +206,13 @@ Example: `web-to-github-issue` - Research → GitHub tickets
 
 ## Understanding Plugin Types
 
-This marketplace contains **three types of extensions** that work differently:
+This marketplace contains **two types of plugins** that work differently:
 
-### 1. AI Instruction Plugins (97% of marketplace)
+### 1. AI Instruction Plugins (98% of marketplace)
 - **What they are**: Markdown instructions that guide Claude's behavior
 - **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
 - **Examples**: DevOps pack, Security pack, API development tools
-- **Count**: ~221 plugins
+- **Count**: 249 plugins
 - **No external code execution** - work entirely through Claude's interpretation
 
 ### 2. MCP Server Plugins (2% of marketplace)
@@ -486,316 +222,40 @@ This marketplace contains **three types of extensions** that work differently:
 - **Count**: 5 plugins (21 MCP tools total)
 - **Actual compiled code** - 13-26KB of executable JavaScript per plugin
 
-### 3. Agent Skills 🆕 (< 1% of marketplace)
-- **What they are**: Model-invoked capabilities Claude automatically uses when relevant
-- **How they work**: Claude decides when to activate based on conversation context
-- **Example**: Skills Powerkit (5 skills: plugin creator, validator, manager, auditor, version bumper)
-- **Count**: 1 plugin
-- **Invocation**: Automatic - you say "create a plugin" and Claude uses the skill
-- **NEW**: Launched October 16, 2025 by Anthropic
+---
+
+### 🧠 Agent Skills - A Feature, Not a Type
+
+**185 plugins (73% of marketplace) include Agent Skills** - automatic capabilities that Claude activates based on conversation context.
+
+- **What they are**: SKILL.md files that teach Claude when and how to use the plugin
+- **How they work**: Claude reads trigger phrases and activates skills automatically
+- **Example**: Say "create a plugin" and Claude uses the Skills Powerkit automatically
+- **Invocation**: Automatic - no `/command` needed
+- **Launched**: October 16, 2025 by Anthropic
 
 **Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
 
-All three types are **fully functional** but operate through different mechanisms. Plugins can bundle Skills, Commands, Agents, and MCP servers together.
+**Note:** Plugins can bundle Skills, Commands, Agents, and MCP servers together. Agent Skills are a feature that enhances any plugin type.
 
 ---
 
-## 🎉 v1.0.40 - 227 PLUGINS AVAILABLE!
+## 📚 Featured Resources
 
-**The Claude Code Plugin Hub continues to grow!** Now with **227 production-ready plugins** across 15 categories, including the first Skills-based meta-plugin for automated plugin management.
+### Claude Skills Deep Dive - Essential Reading
 
-### Plugin Packs (62 AI Instruction Templates)
+**[Technical Analysis: How Claude Skills Work →](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)**
 
-> **Note**: These packs contain AI instruction templates, not traditional executable code. They enhance Claude's capabilities through detailed guidance and templates.
+A comprehensive technical breakdown by **Lee-Han Chung** covering:
 
-| Pack | Templates | Description | Type |
-|------|-----------|-------------|------|
-| **devops-automation-pack** | 25 | Git workflows, CI/CD guidance, Docker best practices, Kubernetes patterns | AI Instructions |
-| **security-pro-pack** | 10 | OWASP auditing steps, compliance checklists, threat modeling guides | AI Instructions |
-| **fullstack-starter-pack** | 15 | React patterns, API scaffolding, database schema templates | AI Instructions |
-| **ai-ml-engineering-pack** | 12 | Prompt optimization, LLM integration patterns, RAG architectures | AI Instructions |
+- **How Skills Activate**: Understanding trigger phrases and automatic invocation
+- **Tool Permission System**: Deep dive into `allowed-tools` and security boundaries
+- **Architecture Patterns**: Design principles for effective skill-based plugins
+- **Best Practices**: Real-world examples and common pitfalls to avoid
 
-```bash
-# Install any pack
-/plugin install devops-automation-pack@claude-code-plugins-plus
-/plugin install security-pro-pack@claude-code-plugins-plus
-/plugin install fullstack-starter-pack@claude-code-plugins-plus
-/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
-```
+This article is the definitive external resource for understanding how Agent Skills work under the hood.
 
----
-
-## All Plugins
-
-### MCP Server Plugins (5 plugins with Executable Code)
-
-> **Real Code**: These plugins contain compiled TypeScript/JavaScript that runs as separate Node.js processes.
-
-| Plugin | Description | Tools | Code Size | Install |
-|--------|-------------|-------|-----------|---------|
-| **project-health-auditor** | Code health analysis: complexity + churn + tests | 4 | 13KB TS | `/plugin install project-health-auditor@claude-code-plugins-plus` |
-| **conversational-api-debugger** | Debug REST APIs with OpenAPI specs and HTTP logs | 4 | 26KB JS | `/plugin install conversational-api-debugger@claude-code-plugins-plus` |
-| **domain-memory-agent** | Knowledge base with TF-IDF semantic search | 6 | Compiled | `/plugin install domain-memory-agent@claude-code-plugins-plus` |
-| **design-to-code** | Convert Figma/screenshots to React/Svelte/Vue | 3 | Compiled | `/plugin install design-to-code@claude-code-plugins-plus` |
-| **workflow-orchestrator** | DAG-based workflow automation | 4 | Compiled | `/plugin install workflow-orchestrator@claude-code-plugins-plus` |
-
-[View MCP Server Documentation →](./MCP-SERVERS-STATUS.md)
-
-### AI Agency Toolkit (6 Template Plugins)
-
-> **Templates**: These provide workflow templates and configuration patterns for Claude to interpret.
-
-| Plugin | Description | Type | Install |
-|--------|-------------|------|---------|
-| **n8n-workflow-designer** | n8n workflow JSON templates | Templates | `/plugin install n8n-workflow-designer@claude-code-plugins-plus` |
-| **make-scenario-builder** | Make.com scenario configurations | Templates | `/plugin install make-scenario-builder@claude-code-plugins-plus` |
-| **zapier-zap-builder** | Zapier automation templates | Templates | `/plugin install zapier-zap-builder@claude-code-plugins-plus` |
-| **discovery-questionnaire** | Client discovery question sets | Templates | `/plugin install discovery-questionnaire@claude-code-plugins-plus` |
-| **sow-generator** | Statement of Work templates | Templates | `/plugin install sow-generator@claude-code-plugins-plus` |
-| **roi-calculator** | ROI calculation formulas | Templates | `/plugin install roi-calculator@claude-code-plugins-plus` |
-
-### Production Plugins (2 plugins)
-
-| Plugin | Description | Install |
-|--------|-------------|---------|
-| **git-commit-smart** | AI-powered conventional commit messages | `/plugin install git-commit-smart@claude-code-plugins-plus` |
-| **overnight-dev** | Autonomous overnight development with TDD enforcement | `/plugin install overnight-dev@claude-code-plugins-plus` |
-
-### Example Plugins (3 plugins)
-
-| Plugin | Description | Install |
-|--------|-------------|---------|
-| **hello-world** | Simple greeting command - perfect for learning | `/plugin install hello-world@claude-code-plugins-plus` |
-| **formatter** | Auto-formats code after edits using hooks | `/plugin install formatter@claude-code-plugins-plus` |
-| **security-agent** | Expert security agent for vulnerability detection | `/plugin install security-agent@claude-code-plugins-plus` |
-
----
-
-## What Are Claude Code Plugins?
-
-Claude Code plugins extend Claude's capabilities through two approaches:
-
-### Plugin Components:
-- **Slash Commands** - Custom shortcuts that trigger Claude actions or templates
-- **Subagents** - Specialized AI instruction sets for specific domains
-- **Hooks** - Automation scripts that trigger on events (file edits, tool usage)
-- **MCP Servers** - External Node.js applications that provide tools to Claude
-
-### How They Work:
-- **AI Instruction Plugins**: Work by providing Claude with detailed guidance, templates, and patterns to follow (majority of plugins)
-- **MCP Server Plugins**: Run actual TypeScript/JavaScript code in separate processes that Claude can call (5 plugins)
-
-Both types are valid Claude Code plugins - they just operate through different mechanisms.
-
-**Released**: October 2025 (Public Beta)
-**Official Docs**: https://docs.claude.com/en/docs/claude-code/plugins
-
----
-
-## MCP Plugin Details
-
-### project-health-auditor
-
-**Identify technical debt hot spots with multi-dimensional analysis**
-
-```bash
-/plugin install project-health-auditor@claude-code-plugins-plus
-/analyze /path/to/repo  # Comprehensive analysis workflow
-```
-
-**What it does**:
-- Code Complexity: Cyclomatic complexity analysis with health scores
-- Git Churn: Identifies frequently changing files (hot spots)
-- Test Coverage: Maps source files to tests, finds gaps
-- Hot Spots: Finds files with high complexity + high churn + no tests
-
-**MCP Tools**: `list_repo_files`, `file_metrics`, `git_churn`, `map_tests`
-
----
-
-### conversational-api-debugger
-
-**Debug REST API failures using OpenAPI specs and HTTP logs**
-
-```bash
-/plugin install conversational-api-debugger@claude-code-plugins-plus
-/debug-api  # Guided debugging workflow
-```
-
-**What it does**:
-- OpenAPI Parser: Load and analyze API specs (JSON/YAML)
-- HAR Support: Import browser DevTools HTTP logs
-- Failure Analysis: Root cause identification with severity
-- cURL Generation: Create reproducible test commands
-
-**MCP Tools**: `load_openapi`, `ingest_logs`, `explain_failure`, `make_repro`
-
----
-
-### domain-memory-agent
-
-**Knowledge base with TF-IDF semantic search (no ML dependencies)**
-
-```bash
-/plugin install domain-memory-agent@claude-code-plugins-plus
-```
-
-**What it does**:
-- Document Storage: Store documents with tags and metadata
-- Semantic Search: TF-IDF based relevance ranking
-- Summarization: Extractive summaries with caching
-- Organization: Tag-based filtering and categorization
-
-**MCP Tools**: `store_document`, `semantic_search`, `summarize`, `list_documents`, `get_document`, `delete_document`
-
-**Perfect for**: RAG systems, documentation search, knowledge management
-
----
-
-### design-to-code
-
-**Convert Figma designs and screenshots into production-ready code**
-
-```bash
-/plugin install design-to-code@claude-code-plugins-plus
-```
-
-**What it does**:
-- Figma Parsing: Extract components from Figma JSON exports
-- Screenshot Analysis: Analyze UI layouts from images
-- Multi-Framework: Generate React, Svelte, or Vue components
-- A11y Built-in: ARIA labels, semantic HTML, keyboard navigation
-
-**MCP Tools**: `parse_figma`, `analyze_screenshot`, `generate_component`
-
----
-
-### workflow-orchestrator
-
-**DAG-based workflow automation with parallel execution**
-
-```bash
-/plugin install workflow-orchestrator@claude-code-plugins-plus
-```
-
-**What it does**:
-- DAG Execution: Directed Acyclic Graph task dependencies
-- Parallel Tasks: Execute independent tasks concurrently
-- Run History: Track all workflow executions
-- Status Monitoring: Real-time progress tracking
-
-**MCP Tools**: `create_workflow`, `execute_workflow`, `get_workflow`, `list_workflows`
-
-**Perfect for**: CI/CD pipelines, data ETL, multi-stage deployments
-
----
-
-## Plugin Pack Details
-
-### DevOps Automation Pack (25 plugins)
-
-**Complete DevOps automation suite**
-
-**Component Breakdown**:
-- 01-git-workflow: 5 commands
-- 02-ci-cd: 5 commands, 1 agent
-- 03-docker: 3 commands, 1 agent
-- 04-kubernetes: 3 commands, 1 agent
-- 05-terraform: 3 commands, 1 agent
-- 06-deployment: 1 command, 1 agent
-
-**Total**: 20 commands, 5 agents
-
-**Features**:
-- Git workflow automation and branching strategies
-- CI/CD pipeline design and optimization
-- Docker containerization and optimization
-- Kubernetes cluster management and deployment
-- Terraform infrastructure as code
-- Deployment automation and monitoring
-
-```bash
-/plugin install devops-automation-pack@claude-code-plugins-plus
-```
-
----
-
-### Security Pro Pack (10 plugins)
-
-**Professional security toolkit**
-
-**Component Breakdown**:
-- 01-core-security: 1 command, 2 agents
-- 02-compliance: 1 command, 1 agent
-- 03-cryptography: 1 command, 1 agent
-- 04-infrastructure-security: 2 commands, 1 agent
-
-**Total**: 5 commands, 5 agents
-
-**Features**:
-- OWASP auditing and penetration testing
-- HIPAA, PCI DSS, GDPR, SOC 2 compliance checking
-- Cryptography audit and key management review
-- Threat modeling and container scanning
-- API security and infrastructure hardening
-
-```bash
-/plugin install security-pro-pack@claude-code-plugins-plus
-```
-
----
-
-### Fullstack Starter Pack (15 plugins)
-
-**Complete fullstack development toolkit**
-
-**Component Breakdown**:
-- 01-frontend: 2 commands, 2 agents
-- 02-backend: 2 commands, 2 agents
-- 03-database: 2 commands, 1 agent
-- 04-integration: 3 commands, 1 agent
-
-**Total**: 9 commands, 6 agents
-
-**Features**:
-- React components and UI/UX design
-- Express/FastAPI scaffolding and API patterns
-- PostgreSQL schemas and Prisma ORM
-- Authentication setup and environment config
-- Full project scaffolding and deployment
-
-**Perfect for**: Bootcamp grads, junior developers, rapid prototyping
-
-```bash
-/plugin install fullstack-starter-pack@claude-code-plugins-plus
-```
-
----
-
-### AI/ML Engineering Pack (12 plugins)
-
-**Professional AI/ML engineering toolkit**
-
-**Component Breakdown**:
-- 01-prompt-engineering: 1 command, 2 agents
-- 02-llm-integration: 1 command, 2 agents
-- 03-rag-systems: 1 command, 2 agents
-- 04-ai-safety: 1 command, 2 agents
-
-**Total**: 4 commands, 8 agents
-
-**Features**:
-- Prompt optimization and A/B testing (30-50% cost reduction)
-- Multi-provider LLM integration and model evaluation
-- RAG system design and vector database setup (Pinecone, Weaviate)
-- AI safety guardrails and fine-tuning preparation
-- Production-ready patterns for AI products
-
-**Requirements**: Claude Code CLI, Anthropic or OpenAI API key
-
-```bash
-/plugin install ai-ml-engineering-pack@claude-code-plugins-plus
-```
+*185 plugins in this marketplace (73%) include Agent Skills based on these principles.*
 
 ---
 
@@ -1047,7 +507,7 @@ NNN-CC-ABCD-short-description.ext
 086-PP-PLAN-release-v1-2-0.md               # Release plan
 ```
 
-**Full specification:** See [`000-docs/000-DR-REFF-filing-system-standard-v2.md`](000-docs/000-DR-REFF-filing-system-standard-v2.md)
+**Full specification:** See the Document Filing System v3.0 in prompts-intent-solutions master-systems folder
 
 ---
 

@@ -1,7 +1,7 @@
 {
   "name": "jeremy-genkit-terraform",
   "version": "1.0.0",
-  "description": "Terraform infrastructure specialist for deploying Firebase Genkit applications to Firebase Functions, Cloud Run, and GKE with monitoring, scaling, and production best practices",
+  "description": "Terraform modules for Firebase Genkit infrastructure and deployments",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

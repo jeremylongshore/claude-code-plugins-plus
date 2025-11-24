@@ -1,7 +1,7 @@
 {
   "name": "jeremy-firestore",
   "version": "1.0.0",
-  "description": "Production-ready Firebase/Firestore operations: CRUD, security rules, batch operations, migrations, cost optimization, and performance monitoring",
+  "description": "Firestore database specialist for schema design, queries, and real-time sync",
   "author": {
     "name": "Jeremy Longshore",
     "email": "[email protected]",

@@ -1,7 +1,7 @@
 {
   "name": "jeremy-vertex-terraform",
   "version": "1.0.0",
-  "description": "Terraform infrastructure specialist for Vertex AI services including Model Garden, Gemini deployments, vector search, endpoints, pipelines, and enterprise AI infrastructure",
+  "description": "Terraform configurations for Vertex AI platform and Agent Engine",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

@@ -16,7 +16,7 @@
         "_comment": "Example: Match users with the 'authenticated' role.  Could be 'admin', 'premium', etc.",
         "api_endpoint": ".*",
         "_comment": "Regular expression to match the API endpoint.  '.*' matches all endpoints.",
-        "http_method": ".*"
+        "http_method": ".*",
         "_comment": "Regular expression to match the HTTP method. '.*' matches all methods."
       },
       "limits": {

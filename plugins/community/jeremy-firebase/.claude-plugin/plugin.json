@@ -1,7 +1,7 @@
 {
   "name": "jeremy-firebase",
   "version": "1.0.0",
-  "description": "Production-ready Firebase platform operations with Vertex AI Gemini integration: Auth, Storage, Hosting, Cloud Functions, Analytics, and AI-powered features",
+  "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
   "author": {
     "name": "Jeremy Longshore",
     "email": "[email protected]",

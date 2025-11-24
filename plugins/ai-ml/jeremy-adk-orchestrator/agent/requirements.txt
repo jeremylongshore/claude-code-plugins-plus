@@ -1,0 +1,33 @@
+# ADK Orchestrator Agent Dependencies
+# Python 3.10+ required
+
+# Core ADK SDK
+google-adk>=1.15.1
+
+# Google Cloud dependencies
+google-cloud-aiplatform>=1.73.0
+google-cloud-logging>=3.11.0
+google-cloud-monitoring>=2.15.0
+google-cloud-trace>=1.13.0
+
+# A2A Protocol support
+a2a>=0.1.0  # When available
+
+# Async HTTP client
+httpx>=0.27.0
+
+# Data validation
+pydantic>=2.9.0
+
+# Utilities
+python-dotenv>=1.0.1
+structlog>=24.4.0
+tenacity>=9.0.0  # For retry logic
+
+# Development dependencies
+pytest>=8.3.0
+pytest-asyncio>=0.24.0
+pytest-cov>=6.0.0
+black>=24.10.0
+isort>=5.13.0
+mypy>=1.11.0

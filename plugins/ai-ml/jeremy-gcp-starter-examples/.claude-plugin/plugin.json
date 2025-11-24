@@ -1,7 +1,7 @@
 {
   "name": "jeremy-gcp-starter-examples",
   "version": "1.0.0",
-  "description": "Comprehensive Google Cloud starter kit examples aggregator. Expert in ADK samples, Genkit templates, Agent Starter Pack, Vertex AI examples, and production-ready code from official Google Cloud repositories",
+  "description": "Google Cloud starter kits and example code aggregator with ADK samples",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"
