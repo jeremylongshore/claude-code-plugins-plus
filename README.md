@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.4.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.1-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
@@ -9,9 +9,9 @@
 
 **254 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
-🎯 **NEW in v1.4.0:** **Production ADK Implementation** - jeremy-adk-orchestrator brings full Google Agent Development Kit support with A2A protocol, dual memory architecture, and 8 FunctionTools!
+🎯 **NEW in v1.4.1:** **Website Accuracy & Enterprise Sponsor** - Corrected plugin counts (now 254), added recognition for Max Mergenthaler @ Nixtla as first Enterprise supporter
 
-**Latest:** [v1.4.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.0) - ADK orchestrator plugin, 11 plugin description updates, comprehensive audit system, 254 plugins total
+**Latest:** [v1.4.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1) - Website accuracy improvements, Enterprise sponsor recognition, link fixes
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -19,6 +19,35 @@
 ```
 
 💖 **[Sponsor this project](https://github.com/sponsors/jeremylongshore)** - Get early access, premium plugins, and priority support
+
+---
+
+## 👥 Enterprise Supporters
+
+We're grateful to have **[Max Mergenthaler](https://github.com/mergenthaler)** and **[Nixtla](https://www.nixtla.io/)** as our first Enterprise supporter ($199/month).
+
+**About Nixtla**: Building production-grade time-series tools—**TimeGPT** (foundation model for forecasting) and the **Nixtlaverse** of open-source libraries. YC S21 alum.
+
+*Sponsorship reflects support and prioritization. See our [sponsor page](https://claudecodeplugins.io/sponsor) for details.*
+
+---
+
+## 🚀 What's New in v1.4.1 - Website Accuracy & Enterprise Sponsor
+
+### Website Accuracy Improvements
+- **Corrected plugin counts** on sponsor page (228 → 254 plugins)
+- **Corrected category counts** (15 → 18 categories)
+- **Added data source documentation** for future updates
+- **Added sponsorship disclaimers** for transparency
+
+### Enterprise Supporter Recognition
+- **Added Enterprise Supporter section** to home page
+- **Recognition for Max Mergenthaler @ Nixtla** (CEO & Co-Founder, YC S21)
+- Professional, grateful tone with appropriate disclaimers
+- Links to Nixtla website, GitHub profiles
+
+### Bug Fixes
+- Fixed broken links and outdated references across documentation
 
 ---
 
