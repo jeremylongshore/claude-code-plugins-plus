@@ -1,3 +1,42 @@
+## [1.4.1] - 2025-11-24
+
+### 🎉 Highlights
+Website accuracy improvements and Enterprise sponsor recognition for Max Mergenthaler @ Nixtla.
+
+### 👥 Contributors
+Special thanks to **Max Mergenthaler** ([@mergenthaler](https://github.com/mergenthaler)) and **Nixtla** ([nixtla.io](https://www.nixtla.io/)) for becoming our first Enterprise supporter at $199/month.
+
+### 🌐 Website Improvements
+
+#### Sponsor Page Accuracy (`marketplace/src/pages/sponsor.astro`)
+- **Corrected plugin count**: Updated from 228 to **254 plugins** (verified from marketplace.extended.json)
+- **Corrected category count**: Updated from 15 to **18 categories**
+- **Added data source documentation**: HTML comment noting plugin count source and date
+- **Added sponsorship disclaimer**: Clarified that sponsorship supports development but is not a formal SLA (except Enterprise tier)
+
+#### Home Page Enterprise Recognition (`marketplace/src/pages/index.astro`)
+- **Added Enterprise Supporter section**: Prominently placed after SearchBar
+- **Recognition for Max Mergenthaler @ Nixtla**: CEO & Co-Founder, YC S21
+- **Nixtla description**: TimeGPT (foundation model for forecasting) and Nixtlaverse (open-source time-series libraries)
+- **Links included**:
+  - [Max Mergenthaler GitHub](https://github.com/mergenthaler)
+  - [Nixtla GitHub](https://github.com/nixtla)
+  - [Nixtla website](https://www.nixtla.io/)
+- **Professional tone**: Grateful but not desperate, clear value statement without over-promising
+- **Disclaimer included**: Sponsorship reflects support and prioritization, not formal SLA
+
+### 🐛 Bug Fixes
+- **Fixed broken links and outdated references** across repository documentation
+
+### 📊 Metrics
+- **Total Plugins**: 254 (accurate count verified)
+- **Categories**: 18
+- **Contributors**: Growing community + first Enterprise supporter
+
+### 🔗 Links
+- [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1)
+- [Live Marketplace](https://claudecodeplugins.io)
+
 ## [1.4.0] - 2025-11-19
 
 ### 🚀 New Features
