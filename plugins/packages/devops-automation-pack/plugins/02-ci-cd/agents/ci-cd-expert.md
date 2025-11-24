@@ -226,6 +226,179 @@ Before finalizing any pipeline, verify:
 - [ ] Notifications configured (on failure at minimum)
 - [ ] Rollback mechanism exists
 
+## Dependency Verification Patterns
+
+### Multi-Platform Tool Detection
+
+When verifying dependencies in CI/CD scripts, implement robust detection for tools installed via package managers:
+
+**Problem:** Tools installed via Homebrew (macOS), apt (Linux), or other package managers may not be in the default PATH checked by verification scripts.
+
+**Solution Pattern:**
+
+```javascript
+// Check multiple locations for tools
+const possibleLocations = [
+  '/opt/homebrew/bin/tool',    // Apple Silicon Homebrew
+  '/usr/local/bin/tool',        // Intel Mac Homebrew / Linux
+  '/usr/bin/tool',              // System packages
+];
+
+// Also check via which/where commands
+const toolPath = execSync('which tool', { encoding: 'utf8' }).trim();
+```
+
+**Real-World Example (ast-grep detection):**
+
+```javascript
+// Bad: Only checks if command exists
+const hasAstGrep = commandExists('ast-grep');
+
+// Good: Checks multiple paths and provides informative output
+async function verifyAstGrep() {
+  const locations = [
+    '/opt/homebrew/bin/ast-grep',  // Apple Silicon
+    '/usr/local/bin/ast-grep',      // Intel Mac
+    '/usr/bin/ast-grep',            // Linux
+  ];
+
+  // Try PATH first
+  try {
+    const result = execSync('which ast-grep', { encoding: 'utf8' });
+    console.log(`✅ ast-grep available at: ${result.trim()}`);
+    return true;
+  } catch {
+    // Check known locations
+    for (const location of locations) {
+      if (fs.existsSync(location)) {
+        console.log(`✅ ast-grep available at: ${location}`);
+        return true;
+      }
+    }
+  }
+
+  console.log('❌ ast-grep not found');
+  console.log('   Install: npm install -g @ast-grep/cli or brew install ast-grep');
+  return false;
+}
+```
+
+### Python Virtual Environment Patterns
+
+**Problem:** Projects may use different venv strategies (local, shared, symlinked).
+
+**Detection Pattern:**
+
+```bash
+# Check for venv existence
+if [ -d "venv" ]; then
+  # Verify it's actually a venv (has bin/activate or Scripts/activate)
+  if [ -f "venv/bin/activate" ] || [ -f "venv/Scripts/activate" ]; then
+    echo "✅ Python virtual environment exists"
+
+    # Check if it's a symlink (shared venv pattern)
+    if [ -L "venv" ]; then
+      VENV_TARGET=$(readlink venv)
+      echo "   (symlinked to: $VENV_TARGET)"
+    fi
+  else
+    echo "❌ venv directory exists but is not a valid virtual environment"
+  fi
+else
+  echo "❌ Python virtual environment not found"
+  echo "   Run: python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt"
+fi
+```
+
+**Shared Virtual Environment Pattern:**
+
+For projects using `~/code-env/` for reusable virtual environments:
+
+```bash
+# Check if shared Python env exists
+if [ -d "$HOME/code-env/python312" ]; then
+  # Symlink it to project
+  ln -s "$HOME/code-env/python312" venv
+  echo "✅ Symlinked shared Python 3.12 environment"
+else
+  # Create shared env for reuse across projects
+  python3 -m venv "$HOME/code-env/python312"
+  ln -s "$HOME/code-env/python312" venv
+  echo "✅ Created shared Python 3.12 environment"
+fi
+
+# Install dependencies
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+### Enhanced Verification Script Pattern
+
+**Complete example with informative output:**
+
+```javascript
+async function verifySetup() {
+  const checks = [
+    {
+      name: 'Node.js version',
+      check: () => checkNodeVersion('>=18.0.0'),
+      errorMsg: 'Install Node.js 18 or higher'
+    },
+    {
+      name: 'Python virtual environment',
+      check: () => checkPythonVenv(),
+      errorMsg: 'Run: python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt'
+    },
+    {
+      name: 'ast-grep available',
+      check: () => verifyAstGrep(),
+      errorMsg: 'Install: npm install -g @ast-grep/cli or brew install ast-grep'
+    }
+  ];
+
+  let passed = 0;
+  let failed = 0;
+
+  for (const { name, check, errorMsg } of checks) {
+    try {
+      const result = await check();
+      if (result) {
+        console.log(`✅ ${name}`);
+        passed++;
+      } else {
+        console.log(`❌ ${name}`);
+        console.log(`   ${errorMsg}`);
+        failed++;
+      }
+    } catch (error) {
+      console.log(`❌ ${name}`);
+      console.log(`   ${errorMsg}`);
+      failed++;
+    }
+  }
+
+  console.log('\n' + '='.repeat(50));
+  console.log(`✅ Passed: ${passed}`);
+  console.log(`❌ Failed: ${failed}`);
+
+  if (failed > 0) {
+    console.log('\n⚠️  Some checks failed. Please fix the issues above.');
+    process.exit(1);
+  }
+
+  console.log('\n✅ All checks passed!');
+}
+```
+
+### Key Learnings from Production
+
+1. **Never assume PATH**: Always check multiple locations for installed tools
+2. **Provide context**: Show where tools were found, not just pass/fail
+3. **Support multiple patterns**: Local venvs, shared venvs, symlinks
+4. **Informative errors**: Tell users exactly how to fix issues
+5. **Platform awareness**: Support macOS (Intel + Apple Silicon) and Linux
+6. **Exit codes matter**: Return proper exit codes for CI/CD integration
+
 ## Example Interaction
 
 **User Request:**
