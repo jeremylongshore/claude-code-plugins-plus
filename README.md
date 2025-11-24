@@ -206,13 +206,13 @@ Example: `web-to-github-issue` - Research → GitHub tickets
 
 ## Understanding Plugin Types
 
-This marketplace contains **three types of extensions** that work differently:
+This marketplace contains **two types of plugins** that work differently:
 
-### 1. AI Instruction Plugins (97% of marketplace)
+### 1. AI Instruction Plugins (98% of marketplace)
 - **What they are**: Markdown instructions that guide Claude's behavior
 - **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
 - **Examples**: DevOps pack, Security pack, API development tools
-- **Count**: ~221 plugins
+- **Count**: 249 plugins
 - **No external code execution** - work entirely through Claude's interpretation
 
 ### 2. MCP Server Plugins (2% of marketplace)
@@ -222,17 +222,21 @@ This marketplace contains **three types of extensions** that work differently:
 - **Count**: 5 plugins (21 MCP tools total)
 - **Actual compiled code** - 13-26KB of executable JavaScript per plugin
 
-### 3. Agent Skills 🆕 (< 1% of marketplace)
-- **What they are**: Model-invoked capabilities Claude automatically uses when relevant
-- **How they work**: Claude decides when to activate based on conversation context
-- **Example**: Skills Powerkit (5 skills: plugin creator, validator, manager, auditor, version bumper)
-- **Count**: 1 plugin
-- **Invocation**: Automatic - you say "create a plugin" and Claude uses the skill
-- **NEW**: Launched October 16, 2025 by Anthropic
+---
+
+### 🧠 Agent Skills - A Feature, Not a Type
+
+**185 plugins (73% of marketplace) include Agent Skills** - automatic capabilities that Claude activates based on conversation context.
+
+- **What they are**: SKILL.md files that teach Claude when and how to use the plugin
+- **How they work**: Claude reads trigger phrases and activates skills automatically
+- **Example**: Say "create a plugin" and Claude uses the Skills Powerkit automatically
+- **Invocation**: Automatic - no `/command` needed
+- **Launched**: October 16, 2025 by Anthropic
 
 **Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
 
-All three types are **fully functional** but operate through different mechanisms. Plugins can bundle Skills, Commands, Agents, and MCP servers together.
+**Note:** Plugins can bundle Skills, Commands, Agents, and MCP servers together. Agent Skills are a feature that enhances any plugin type.
 
 ---
 
