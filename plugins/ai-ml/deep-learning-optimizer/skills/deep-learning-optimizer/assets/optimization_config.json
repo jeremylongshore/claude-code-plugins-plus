@@ -33,7 +33,7 @@
     "_comment": "Number of epochs to wait before resuming normal operation after lr has been reduced.",
     "min_lr": 0,
     "_comment": "A scalar or a list of scalars. A lower bound on the learning rate of all param groups or each group respectively.",
-    "verbose": true
+    "verbose": true,
      "_comment": "If True, prints a message to stdout for each update."
   },
   "gradient_clipping": {
