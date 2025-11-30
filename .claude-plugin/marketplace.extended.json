@@ -10,9 +10,9 @@
     "version": "1.4.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 254,
-    "skillsEnabled": 185,
-    "lastUpdated": "2025-11-19"
+    "totalPlugins": 255,
+    "skillsEnabled": 186,
+    "lastUpdated": "2025-11-23"
   },
   "plugins": [
     {
@@ -4826,6 +4826,36 @@
       "components": {
         "skills": 1,
         "commands": 1
+      }
+    },
+    {
+      "name": "neurodivergent-visual-org",
+      "source": "./plugins/productivity/neurodivergent-visual-org",
+      "description": "Create ADHD-friendly visual organizational tools (Mermaid diagrams) optimized for neurodivergent thinking patterns with accessibility modes",
+      "version": "3.1.1",
+      "category": "productivity",
+      "keywords": [
+        "adhd",
+        "neurodivergent",
+        "visual-organization",
+        "mermaid",
+        "accessibility",
+        "task-management",
+        "decision-making",
+        "executive-function",
+        "productivity",
+        "cognitive-accessibility",
+        "time-management",
+        "habit-building",
+        "energy-management",
+        "spoon-theory"
+      ],
+      "author": {
+        "name": "Jack Reis",
+        "email": "hello@jack.digital"
+      },
+      "components": {
+        "skills": 1
       }
     }
   ]
