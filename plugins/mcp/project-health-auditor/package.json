@@ -24,12 +24,12 @@
   "license": "MIT",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.21.1",
-    "glob": "^11.0.0",
+    "glob": "^11.1.0",
     "simple-git": "^3.30.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0",
+    "@types/node": "^20.19.25",
     "eslint": "^9.39.1",
     "tsx": "^4.16.0",
     "typescript": "^5.5.0",
