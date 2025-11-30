@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-[![Version](https://img.shields.io/badge/version-1.4.1-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.2-brightgreen)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
@@ -9,9 +9,9 @@
 
 **254 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
-🎯 **NEW in v1.4.1:** **Website Accuracy & Enterprise Sponsor** - Corrected plugin counts (now 254), added recognition for Max Mergenthaler @ Nixtla as first Enterprise supporter
+🎯 **NEW in v1.4.2:** **Community Contributions & Bug Fixes** - JSON syntax errors fixed, production CI/CD patterns added, comprehensive troubleshooting guide for WSL2 users
 
-**Latest:** [v1.4.1 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.1) - Website accuracy improvements, Enterprise sponsor recognition, link fixes
+**Latest:** [v1.4.2 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2) - Community bug fixes, WSL2 troubleshooting, contributor recognition
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins

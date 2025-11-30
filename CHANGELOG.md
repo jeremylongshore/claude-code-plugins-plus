@@ -1,3 +1,63 @@
+## [1.4.2] - 2025-11-29
+
+### 🎉 Highlights
+Community contributions, bug fixes, and comprehensive troubleshooting documentation for WSL2 users.
+
+### 👥 Contributors
+**Huge thanks to our community contributors:**
+- **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
+- **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly features ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
+- **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with comprehensive documentation ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
+
+### 🐛 Bug Fixes
+- **Fixed 7 JSON syntax errors** in asset template files ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
+  - `api-rate-limiter/assets/error_message_template.json`
+  - `api-request-logger/assets/example_log_output.json`
+  - `contract-test-validator/assets/pact_contract_template.json`
+  - `deep-learning-optimizer/assets/optimization_config.json`
+  - `clustering-algorithm-runner/assets/config_template.json`
+  - `time-series-forecaster/assets/configuration_template.json`
+  - `classification-model-builder/assets/model_config_template.json`
+- Common issue: Missing commas after property values before `_comment` fields
+
+### ✨ Enhancements
+- **Added production CI/CD patterns** to devops-automation-pack ci-cd-expert agent
+  - Multi-platform tool detection (Apple Silicon + Intel Homebrew paths)
+  - Python virtual environment patterns (local, shared, symlinked venvs)
+  - Enhanced verification scripts with pass/fail counters
+  - Real-world examples from AlephAuto bugfix session
+
+### 📚 Documentation
+- **Created [TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Comprehensive troubleshooting guide
+  - WSL2 path length issues and fixes ([#105](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/105))
+  - Plugin installation and permission errors
+  - MCP server build and startup issues
+  - Marketplace update problems
+  - Performance optimization tips
+- **Added Contributors section** to README.md recognizing community contributions
+- All contributors thanked with personal messages and contact information
+
+### 🐛 Issues Resolved
+- Closed [#105](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/105) - WSL2 clone checkout failure with documented workarounds
+- Closed [#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117) - JSON syntax errors fixed
+
+### 🎊 Community Highlights
+- Created [Contributor Spotlight issue #118](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/118) for @aledlie
+- Personal thank-you messages sent to all contributors with apologies for Thanksgiving delay
+- Contact email shared: jeremy@intentsolutions.io
+
+### 📊 Metrics
+- **Total Plugins**: 254
+- **Categories**: 18
+- **New Contributors This Release**: 3
+- **Total Contributors**: Growing community
+
+### 🔗 Links
+- [Full Release Notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2)
+- [Live Marketplace](https://claudecodeplugins.io)
+
+---
+
 ## [1.4.1] - 2025-11-24
 
 ### 🎉 Highlights
