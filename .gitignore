@@ -69,3 +69,13 @@ skill-name-mappings.json
 
 # Temporary migration preservation (do not commit)
 _PRESERVE_MIGRATION/
+
+# External repositories and reference materials (do not commit)
+adk-python/
+adk-samples/
+google-adk-reference/
+marketplace/backup-*/
+
+# NPM configuration files (local overrides)
+.npmrc
+packages/**/.npmrc
