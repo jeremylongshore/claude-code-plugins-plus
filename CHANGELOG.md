@@ -1,3 +1,41 @@
+## [1.4.3] - 2025-11-30
+
+### 🎉 Highlights
+New iOS development plugin, website improvements with Nixtla partnership showcase, and critical mobile bug fix.
+
+### 👥 New Contributors
+**Welcome to our newest contributors:**
+- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created the Axiom iOS development plugin with 13 production-ready skills ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
+- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported horizontal scrolling bug on mobile ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+
+### 🚀 New Plugins
+- **Axiom** - Battle-tested Claude Code skills for iOS, iPadOS, watchOS, tvOS development
+  - 13 production-ready skills covering debugging, concurrency, persistence, UI, and performance
+  - TDD-tested core skills with real-world impact metrics
+  - WWDC 2025 validated for latest Apple features
+  - Reduces debugging time from 30+ min to 2-5 min
+
+### 🐛 Bug Fixes
+- **Fixed horizontal scrolling on mobile website** ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+  - Added `overflow-x: hidden` to prevent unwanted horizontal scroll
+  - Improved mobile user experience on claudecodeplugins.io
+
+### ✨ Website Enhancements
+- **Added Nixtla as featured client** with scrolling logo showcase
+- **Added Intent Solutions branding** - "by intent solutions io" under main title
+- **Added sponsor link** to navigation (Buy Me a Coffee)
+- **Updated footer** with Intent Solutions website link
+
+### 📊 Metrics
+- **Total Plugins**: 255 (+1)
+- **Plugins with AI Skills**: 198 (+13)
+- **New iOS/Swift skills**: 13 from Axiom plugin
+
+### 🙏 Thank You
+Special thanks to Charles Wiltgen for the comprehensive Axiom plugin submission and to all who reported issues to help improve the marketplace!
+
+---
+
 ## [1.4.2] - 2025-11-29
 
 ### 🎉 Highlights
