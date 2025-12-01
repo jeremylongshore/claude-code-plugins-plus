@@ -1,780 +1,1033 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Hero from '../components/Hero.astro';
-import SearchBar from '../components/SearchBar.astro';
-import PluginCard from '../components/PluginCard.astro';
-import { getCollection } from 'astro:content';
-
-const allPlugins = await getCollection('plugins');
-const categories = [...new Set(allPlugins.map(p => p.data.category))].sort();
-
-// Stats - v1.3.1 update
-const totalPlugins = allPlugins.length;
-const totalCategories = categories.length;
-const featuredPlugins = allPlugins.filter(p => p.data.featured);
-const featuredPluginsSorted = featuredPlugins.sort((a, b) => {
-  // Agent Context Manager first (v1.2.3 release highlight)
-  if (a.data.name === 'agent-context-manager') return -1;
-  if (b.data.name === 'agent-context-manager') return 1;
-  // Skills Powerkit second
-  if (a.data.name === 'skills-powerkit') return -1;
-  if (b.data.name === 'skills-powerkit') return 1;
-  // Sugar third
-  if (a.data.name === 'sugar') return -1;
-  if (b.data.name === 'sugar') return 1;
-  // PI Pathfinder fourth
-  if (a.data.name === 'pi-pathfinder') return -1;
-  if (b.data.name === 'pi-pathfinder') return 1;
-  return a.data.name.localeCompare(b.data.name);
-});
-
-// Group plugins by category for category showcase
-const pluginsByCategory = categories.reduce((acc, cat) => {
-  acc[cat] = allPlugins.filter(p => p.data.category === cat);
-  return acc;
-}, {} as Record<string, typeof allPlugins>);
-
-// Category icons
-const categoryIcons: Record<string, string> = {
-  'automation': '⚙️',
-  'business-tools': '💼',
-  'devops': '🚀',
-  'code-analysis': '🔍',
-  'debugging': '🐛',
-  'ai-ml-assistance': '🤖',
-  'frontend-development': '🎨',
-  'security': '🔒',
-  'testing': '✅',
-  'documentation': '📚',
-  'performance': '⚡',
-  'database': '💾',
-  'cloud-infrastructure': '☁️',
-  'accessibility': '♿',
-  'mobile': '📱',
-  'productivity': '📋',
-  'other': '🔧'
-};
+// Claude Code Plugins Marketplace - Homepage
 ---
 
-<Layout
-  title={`Claude Code Plugins Marketplace - ${totalPlugins} Plugins`}
-  description={`Discover professional Claude Code plugins. Browse ${totalPlugins} production-ready tools across ${totalCategories} categories. Install instantly and supercharge your development workflow.`}
->
-  <div class="announcement-bar">
-    <div class="container announcement-inner">
-      <span class="sparkle">🎯</span>
-      <span>
-        <strong>v1.3.1:</strong> First marketplace 100% compliant with Anthropic's 2025 Skills schema — All 185 skills now feature tool permissions, version tracking, and enhanced activation triggers.
-      </span>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1" class="ann-link">Release v1.3.1</a>
-      <a href="https://github.com/jeremylongshore/claude-code-plugins#-whats-new-in-v131---industry-first-2025-schema-compliance" target="_blank" rel="noopener noreferrer" class="ann-link">Learn More</a>
-    </div>
-  </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code Plugins | 255+ AI-Powered Development Tools</title>
+    <meta name="description" content="The comprehensive marketplace for Claude Code plugins. 255+ custom plugins, 185 with AI skills, across 18 categories. Enhance your Claude Code workflow today.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        /* ========================================
+           ANTHROPIC OFFICIAL BRAND COLORS
+           ======================================== */
+        :root {
+            /* Main Colors */
+            --brand-dark: #141413;
+            --brand-light: #faf9f5;
+            --brand-mid-gray: #b0aea5;
+            --brand-light-gray: #e8e6dc;
 
-  <Hero totalPlugins={totalPlugins} totalCategories={totalCategories} />
+            /* Accent Colors */
+            --brand-orange: #d97757;
+            --brand-blue: #6a9bcc;
+            --brand-green: #788c5d;
 
-  <SearchBar />
+            /* Derived Colors */
+            --brand-orange-dark: #c45e3e;
+            --brand-orange-light: #e8937a;
 
-  <!-- Enterprise Supporter Recognition -->
-  <section style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 2.5rem 1rem; border-top: 1px solid #bae6fd; border-bottom: 1px solid #bae6fd;">
-    <div class="container" style="max-width: 56rem; margin: 0 auto;">
-      <div style="text-align: center;">
-        <div style="display: inline-block; padding: 0.5rem 1rem; background: #0284c7; color: white; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">
-          🏢 Enterprise Supporter
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ========================================
+           ANTHROPIC OFFICIAL TYPOGRAPHY
+           Headings: Poppins | Body: Lora
+           ======================================== */
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background-color: var(--brand-light);
+            color: var(--brand-dark);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6,
+        .nav-links, .logo, .btn-primary, .btn-secondary, .btn-white,
+        .hero-badge, .section-label, .step-number, .nav-cta,
+        .stats-number, .install-label {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        /* Animated background grain */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            opacity: 0.025;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--brand-light) 0%, transparent 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            color: var(--brand-dark);
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--brand-mid-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s var(--transition-smooth);
+        }
+
+        .nav-links a:hover {
+            color: var(--brand-orange);
+        }
+
+        .nav-cta {
+            background: var(--brand-dark);
+            color: var(--brand-light) !important;
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            transition: all 0.3s var(--transition-smooth) !important;
+        }
+
+        .nav-cta:hover {
+            background: var(--brand-orange) !important;
+            color: white !important;
+            transform: translateY(-1px);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 8rem 4rem 4rem;
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--brand-light-gray);
+            border: 1px solid rgba(217, 119, 87, 0.25);
+            padding: 0.5rem 1rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--brand-orange-dark);
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
+            opacity: 0;
+        }
+
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: var(--brand-orange);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.08;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.1s forwards;
+            opacity: 0;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-family: 'Lora', Georgia, serif;
+            font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+            color: var(--brand-mid-gray);
+            max-width: 680px;
+            margin-bottom: 3rem;
+            font-style: italic;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.2s forwards;
+            opacity: 0;
+        }
+
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.25s forwards;
+            opacity: 0;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stats-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--brand-orange);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.9rem;
+            color: var(--brand-mid-gray);
+        }
+
+        .hero-cta-group {
+            display: flex;
+            gap: 1rem;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.3s forwards;
+            opacity: 0;
+        }
+
+        .btn-primary {
+            background: var(--brand-orange);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s var(--transition-smooth);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-orange-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(217, 119, 87, 0.35);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--brand-dark);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            border: 2px solid var(--brand-dark);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .btn-secondary:hover {
+            background: var(--brand-dark);
+            color: var(--brand-light);
+        }
+
+        /* Installation box */
+        .install-box {
+            margin-top: 3rem;
+            padding: 1.5rem;
+            background: var(--brand-dark);
+            border-radius: 12px;
+            max-width: fit-content;
+            animation: fadeInUp 0.8s var(--transition-smooth) 0.35s forwards;
+            opacity: 0;
+        }
+
+        .install-label {
+            color: var(--brand-mid-gray);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .install-command {
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            color: var(--brand-light);
+            font-size: 0.95rem;
+            user-select: all;
+            cursor: pointer;
+        }
+
+        /* Floating code block decoration */
+        .hero-decoration {
+            position: absolute;
+            right: 4rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 480px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(-50%); }
+            50% { transform: translateY(calc(-50% - 20px)); }
+        }
+
+        .code-window {
+            background: var(--brand-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(20, 20, 19, 0.2);
+        }
+
+        .code-header {
+            padding: 1rem 1.25rem;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .code-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--brand-orange);
+            opacity: 0.9;
+        }
+
+        .code-dot:nth-child(2) { background: var(--brand-blue); }
+        .code-dot:nth-child(3) { background: var(--brand-green); }
+
+        .code-content {
+            padding: 1.5rem;
+            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            color: var(--brand-light-gray);
+            line-height: 1.8;
+        }
+
+        .code-comment { color: var(--brand-mid-gray); }
+        .code-keyword { color: var(--brand-orange); }
+        .code-string { color: var(--brand-green); }
+        .code-function { color: var(--brand-blue); }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 8rem 4rem;
+            background: white;
+        }
+
+        .section-label {
+            color: var(--brand-orange);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            margin-bottom: 4rem;
+            max-width: 700px;
+            line-height: 1.2;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        .feature-card {
+            padding: 2.5rem;
+            background: var(--brand-light);
+            border-radius: 16px;
+            transition: all 0.4s var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--brand-orange) 0%, var(--brand-blue) 100%);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s var(--transition-smooth);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(217, 119, 87, 0.12);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Alternate icon colors using brand accents */
+        .feature-card:nth-child(2) .feature-icon,
+        .feature-card:nth-child(5) .feature-icon {
+            background: linear-gradient(135deg, var(--brand-blue) 0%, #5587b5 100%);
+        }
+
+        .feature-card:nth-child(3) .feature-icon,
+        .feature-card:nth-child(6) .feature-icon {
+            background: linear-gradient(135deg, var(--brand-green) 0%, #5f7349 100%);
+        }
+
+        .feature-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+        }
+
+        .feature-card p {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        /* Categories Section */
+        .categories {
+            padding: 8rem 4rem;
+            background: var(--brand-dark);
+            color: var(--brand-light);
+        }
+
+        .categories .section-label {
+            color: var(--brand-orange);
+        }
+
+        .categories .section-title {
+            color: white;
+        }
+
+        .categories-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 2.5rem;
+            background: var(--brand-dark);
+            cursor: pointer;
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .category-item:hover {
+            background: rgba(217, 119, 87, 0.1);
+            padding-left: 3rem;
+        }
+
+        .category-item h4 {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+
+        .category-item span {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.9rem;
+        }
+
+        .category-count {
+            background: var(--brand-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Process Section */
+        .process {
+            padding: 8rem 4rem;
+            background: var(--brand-light);
+        }
+
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .process-step {
+            text-align: center;
+            position: relative;
+        }
+
+        .process-step::after {
+            content: '→';
+            position: absolute;
+            right: -1.5rem;
+            top: 2rem;
+            color: var(--brand-mid-gray);
+            font-size: 1.5rem;
+        }
+
+        .process-step:last-child::after {
+            display: none;
+        }
+
+        .step-number {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        /* Alternate step colors */
+        .process-step:nth-child(2) .step-number {
+            background: linear-gradient(135deg, var(--brand-blue) 0%, #5587b5 100%);
+        }
+
+        .process-step:nth-child(3) .step-number {
+            background: linear-gradient(135deg, var(--brand-green) 0%, #5f7349 100%);
+        }
+
+        .process-step:nth-child(4) .step-number {
+            background: linear-gradient(135deg, var(--brand-dark) 0%, #2a2a28 100%);
+        }
+
+        .process-step h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .process-step p {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.9rem;
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 8rem 4rem;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta h2 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+
+        .cta p {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 2.5rem;
+            font-style: italic;
+        }
+
+        .btn-white {
+            background: white;
+            color: var(--brand-orange-dark);
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s var(--transition-smooth);
+            display: inline-block;
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem;
+            background: var(--brand-dark);
+            color: var(--brand-light);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--brand-light);
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--brand-mid-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-family: 'Poppins', Arial, sans-serif;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--brand-orange);
+        }
+
+        .footer-copy {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-decoration {
+                display: none;
+            }
+        }
+
+        @media (max-width: 900px) {
+            nav {
+                padding: 1.5rem 2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero, .features, .categories, .process, .cta {
+                padding: 4rem 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .process-step::after {
+                display: none;
+            }
+
+            .stats-bar {
+                flex-wrap: wrap;
+                gap: 1.5rem;
+            }
+
+            .footer-content {
+                flex-direction: column;
+                gap: 2rem;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/" class="logo">
+            <div class="logo-icon">⌘</div>
+            Claude Code Plugins
+        </a>
+        <ul class="nav-links">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#process">Get Started</a></li>
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">Browse GitHub</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-badge">
+            <span></span>
+            Official Claude Code Plugin Marketplace
         </div>
-        <h2 style="font-size: 1.5rem; font-weight: 700; color: #0c4a6e; margin-bottom: 1rem;">
-          Grateful to have <a href="https://github.com/mergenthaler" target="_blank" rel="noopener noreferrer" style="color: #0284c7; text-decoration: none; border-bottom: 2px solid #0284c7;">Max Mergenthaler</a> and <a href="https://www.nixtla.io/" target="_blank" rel="noopener noreferrer" style="color: #0284c7; text-decoration: none; border-bottom: 2px solid #0284c7;">Nixtla</a> as our first Enterprise supporter
-        </h2>
-        <p style="font-size: 1rem; line-height: 1.6; color: #475569; margin-bottom: 1.5rem;">
-          Max is CEO & Co-Founder at <a href="https://github.com/nixtla" target="_blank" rel="noopener noreferrer" style="color: #0284c7; text-decoration: underline;">Nixtla</a> (YC S21), building production-grade time-series tools—<strong>TimeGPT</strong> (a foundation model for forecasting) and the <strong>Nixtlaverse</strong> of open-source libraries. His $199/month support helps us prioritize features that matter for real-world AI development.
+        <h1>The Ultimate<br><span>Claude Code</span> Plugin Hub</h1>
+        <p class="hero-subtitle">
+            Discover 255+ custom-built plugins that supercharge your Claude Code workflow. From productivity automations to security tools, AI skills to DevOps integrations — all open source and ready to install.
         </p>
-        <div style="display: flex; gap: 1rem; justify-content: center; align-items: center; flex-wrap: wrap; margin-bottom: 1rem;">
-          <a href="https://www.nixtla.io/" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 0.75rem 1.5rem; background: #0284c7; color: white; border-radius: 0.5rem; text-decoration: none; font-weight: 600; transition: all 0.2s ease;">
-            Visit Nixtla →
-          </a>
-          <a href="https://github.com/nixtla" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 0.75rem 1.5rem; background: transparent; color: #0284c7; border: 2px solid #0284c7; border-radius: 0.5rem; text-decoration: none; font-weight: 600; transition: all 0.2s ease;">
-            GitHub →
-          </a>
-        </div>
-        <p style="font-size: 0.75rem; color: #64748b; font-style: italic; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #cbd5e1;">
-          Sponsorship reflects support and prioritization on a best-effort basis. All tiers (including Enterprise) operate without formal contracts or SLA guarantees. See our <a href="/sponsor" style="color: #0284c7; text-decoration: underline;">sponsor page</a> for details.
-        </p>
-      </div>
-    </div>
-  </section>
 
-  <!-- Featured Resources Section -->
-  <section style="background: #1e293b; padding: 3rem 1rem; border-top: 1px solid #334155;">
-    <div class="container" style="max-width: 56rem; margin: 0 auto;">
-      <div style="text-align: center; margin-bottom: 2rem;">
-        <div style="display: inline-block; padding: 0.5rem 1rem; background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); color: white; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1rem;">
-          📚 Featured Resource
-        </div>
-        <h2 style="font-size: 1.875rem; font-weight: 700; color: #f1f5f9; margin-bottom: 1rem;">
-          Deep Dive: Claude Skills Technical Analysis
-        </h2>
-        <p style="font-size: 1.125rem; line-height: 1.6; color: #cbd5e1; margin-bottom: 2rem;">
-          Comprehensive technical breakdown of Claude's Agent Skills system by <strong>Lee-Han Chung</strong>. Essential reading for understanding how skills activate, tool permissions work, and how to design effective skill-based plugins.
-        </p>
-      </div>
-
-      <div style="background: linear-gradient(135deg, #1e3a8a 0%, #581c87 100%); padding: 2rem; border-radius: 1rem; border: 1px solid #3730a3;">
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-          <div>
-            <div style="color: #93c5fd; font-weight: 600; margin-bottom: 0.5rem;">📖 What You'll Learn</div>
-            <ul style="color: #e0e7ff; font-size: 0.875rem; line-height: 1.6; list-style: none; padding: 0;">
-              <li>✓ How Claude activates skills automatically</li>
-              <li>✓ Tool permission system breakdown</li>
-              <li>✓ Skill design best practices</li>
-            </ul>
-          </div>
-          <div>
-            <div style="color: #a78bfa; font-weight: 600; margin-bottom: 0.5rem;">🎯 Perfect For</div>
-            <ul style="color: #ede9fe; font-size: 0.875rem; line-height: 1.6; list-style: none; padding: 0;">
-              <li>✓ Plugin developers</li>
-              <li>✓ Advanced Claude Code users</li>
-              <li>✓ AI automation engineers</li>
-            </ul>
-          </div>
-        </div>
-
-        <div style="text-align: center;">
-          <a href="https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 1rem 2rem; background: white; color: #1e3a8a; border-radius: 0.5rem; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.2s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);">
-            Read the Technical Deep Dive →
-          </a>
-        </div>
-      </div>
-
-      <p style="text-align: center; font-size: 0.75rem; color: #94a3b8; margin-top: 1.5rem; font-style: italic;">
-        External resource by Lee-Han Chung • Independent technical analysis
-      </p>
-    </div>
-  </section>
-
-  <!-- v1.3.1 Release Spotlight -->
-  <section class="spotlight-section">
-    <div class="container">
-      <div class="spotlight">
-        <div class="spotlight-icon">🔒</div>
-        <div class="spotlight-content">
-          <div class="spotlight-kicker">New in v1.3.1 • Industry-First 2025 Schema • 100% Compliant</div>
-          <h2 class="spotlight-title">The Only Marketplace <span class="spotlight-name">100% Compliant with Anthropic's 2025 Skills Schema</span></h2>
-          <p class="spotlight-text">
-            <strong>All 185 Agent Skills upgraded to the latest 2025 schema.</strong> We've migrated every single skill to include tool permissions, version tracking, and enhanced activation triggers.
-            <strong>Know exactly what each skill can do before it runs.</strong>
-          </p>
-          <div class="spotlight-features">
-            <span class="feature-badge">🔒 Tool Permission System</span>
-            <span class="feature-badge">📊 Version Tracking</span>
-            <span class="feature-badge">🎯 Enhanced Triggers</span>
-            <span class="feature-badge">✅ 100% Schema Compliant</span>
-          </div>
-          <p class="spotlight-subtext">
-            <strong>Security • Transparency • Performance • Trust.</strong>
-            Read-only skills can't modify your code. See exactly what permissions each skill has. Limited tool sets mean faster activation. No surprise file modifications.
-          </p>
-          <div class="spotlight-actions">
-            <a class="spotlight-btn" href="https://github.com/jeremylongshore/claude-code-plugins#-whats-new-in-v131---industry-first-2025-schema-compliance" target="_blank" rel="noopener noreferrer">What's New in v1.3.1</a>
-            <a class="spotlight-btn secondary" href="https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.3.1" target="_blank" rel="noopener noreferrer">Release Notes</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Featured Plugins Section -->
-  {featuredPlugins.length > 0 && (
-    <section class="featured-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-            </svg>
-            Featured Plugins
-          </h2>
-          <p class="section-description">
-            Hand-picked plugins that showcase the best of Claude Code functionality
-          </p>
-        </div>
-
-        <div class="plugins-grid">
-          {featuredPluginsSorted.map(plugin => (
-            <PluginCard {...plugin.data} />
-          ))}
-        </div>
-      </div>
-    </section>
-  )}
-
-  <!-- All Plugins Section -->
-  <section class="all-plugins-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h2.25a3 3 0 013 3v2.25a3 3 0 01-3 3H6a3 3 0 01-3-3V6zm9.75 0a3 3 0 013-3H18a3 3 0 013 3v2.25a3 3 0 01-3 3h-2.25a3 3 0 01-3-3V6zM3 15.75a3 3 0 013-3h2.25a3 3 0 013 3V18a3 3 0 01-3 3H6a3 3 0 01-3-3v-2.25zm9.75 0a3 3 0 013-3H18a3 3 0 013 3V18a3 3 0 01-3 3h-2.25a3 3 0 01-3-3v-2.25z" clip-rule="evenodd" />
-          </svg>
-          All Plugins
-        </h2>
-        <p class="section-description">
-          Browse all {totalPlugins} plugins across {totalCategories} categories
-        </p>
-      </div>
-
-      <div class="plugins-grid">
-        {allPlugins.map(plugin => (
-          <PluginCard {...plugin.data} />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Categories Overview -->
-  <section class="categories-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.644 1.59a.75.75 0 01.712 0l9.75 5.25a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.712 0l-9.75-5.25a.75.75 0 010-1.32l9.75-5.25z" />
-            <path d="M3.265 10.602l7.668 4.129a2.25 2.25 0 002.134 0l7.668-4.13 1.37.739a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.71 0l-9.75-5.25a.75.75 0 010-1.32l1.37-.738z" />
-            <path d="M10.933 19.231l-7.668-4.13-1.37.739a.75.75 0 000 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 000-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 01-2.134-.001z" />
-          </svg>
-          Browse by Category
-        </h2>
-        <p class="section-description">
-          Explore plugins organized by functionality
-        </p>
-      </div>
-
-      <div class="categories-grid">
-        {categories.map(category => {
-          const categoryPlugins = pluginsByCategory[category];
-          const displayName = category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
-          const icon = categoryIcons[category] || '🔧';
-
-          return (
-            <div class="category-card" data-category={category}>
-              <div class="category-header">
-                <span class="category-icon">{icon}</span>
-                <h3 class="category-name">{displayName}</h3>
-              </div>
-              <div class="category-count">{categoryPlugins.length} plugins</div>
-              <div class="category-preview">
-                {categoryPlugins.slice(0, 3).map(p => (
-                  <div class="preview-plugin">{p.data.name}</div>
-                ))}
-                {categoryPlugins.length > 3 && (
-                  <div class="preview-more">+{categoryPlugins.length - 3} more</div>
-                )}
-              </div>
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stats-number">255</div>
+                <div class="stat-label">Total Plugins</div>
             </div>
-          );
-        })}
-      </div>
-    </div>
-  </section>
-
-  <!-- Getting Started Section -->
-  <section class="getting-started-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path fill-rule="evenodd" d="M2.25 6a3 3 0 013-3h13.5a3 3 0 013 3v12a3 3 0 01-3 3H5.25a3 3 0 01-3-3V6zm3.97.97a.75.75 0 011.06 0l2.25 2.25a.75.75 0 010 1.06l-2.25 2.25a.75.75 0 01-1.06-1.06l1.72-1.72-1.72-1.72a.75.75 0 010-1.06zm4.28 4.28a.75.75 0 000 1.5h5.25a.75.75 0 000-1.5H10.5z" clip-rule="evenodd" />
-          </svg>
-          Getting Started
-        </h2>
-      </div>
-
-      <div class="steps-grid">
-        <div class="step-card">
-          <div class="step-number">1</div>
-          <h3>Add Marketplace</h3>
-          <p>Connect to the plugin marketplace</p>
-          <pre><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
+            <div class="stat-item">
+                <div class="stats-number">185</div>
+                <div class="stat-label">With AI Skills</div>
+            </div>
+            <div class="stat-item">
+                <div class="stats-number">18</div>
+                <div class="stat-label">Categories</div>
+            </div>
+            <div class="stat-item">
+                <div class="stats-number">6</div>
+                <div class="stat-label">MCP Servers</div>
+            </div>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">2</div>
-          <h3>Browse Plugins</h3>
-          <p>Search and filter to find the perfect plugin</p>
-          <pre><code>/plugin list</code></pre>
+        <div class="hero-cta-group">
+            <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-primary">
+                Browse All Plugins
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+            <a href="#categories" class="btn-secondary">View Categories</a>
         </div>
 
-        <div class="step-card">
-          <div class="step-number">3</div>
-          <h3>Install & Use</h3>
-          <p>Install any plugin with a single command</p>
-          <pre><code>/plugin install plugin-name@claude-code-plugins-plus</code></pre>
+        <div class="install-box">
+            <div class="install-label">Quick Install</div>
+            <div class="install-command">/plugin marketplace add jeremylongshore/claude-code-plugins</div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- Resources Section -->
-  <section class="resources-section">
-    <div class="container">
-      <div class="section-header">
-        <h2 class="section-title">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M11.25 4.533A9.707 9.707 0 006 3a9.735 9.735 0 00-3.25.555.75.75 0 00-.5.707v14.25a.75.75 0 001 .707A8.237 8.237 0 016 18.75c1.995 0 3.823.707 5.25 1.886V4.533zM12.75 20.636A8.214 8.214 0 0118 18.75c.966 0 1.89.166 2.75.47a.75.75 0 001-.708V4.262a.75.75 0 00-.5-.707A9.735 9.735 0 0018 3a9.707 9.707 0 00-5.25 1.533v16.103z" />
-          </svg>
-          Resources
-        </h2>
-      </div>
+        <div class="hero-decoration">
+            <div class="code-window">
+                <div class="code-header">
+                    <div class="code-dot"></div>
+                    <div class="code-dot"></div>
+                    <div class="code-dot"></div>
+                </div>
+                <div class="code-content">
+                    <span class="code-comment">// Install a plugin from the marketplace</span><br>
+                    <span class="code-keyword">/plugin</span> install <span class="code-string">devops-automation-pack</span><br>
+                    <span class="code-keyword">/plugin</span> install <span class="code-string">project-health-auditor</span><br>
+                    <br>
+                    <span class="code-comment">// Use your new AI-powered tools</span><br>
+                    <span class="code-keyword">/audit</span> <span class="code-function">--comprehensive</span><br>
+                    <span class="code-keyword">/deploy</span> <span class="code-function">--production</span><br>
+                    <br>
+                    <span class="code-comment">// 185 plugins with AI Skills activate automatically!</span>
+                </div>
+            </div>
+        </div>
+    </section>
 
-      <div class="resources-grid">
-        <a href="https://github.com/jeremylongshore/claude-code-plugins" class="resource-card" target="_blank" rel="noopener noreferrer">
-          <div class="resource-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-            </svg>
-          </div>
-          <h3>GitHub Repository</h3>
-          <p>View source code, contribute, and report issues</p>
-        </a>
+    <section class="features" id="features">
+        <div class="section-label">Why Choose Our Marketplace</div>
+        <h2 class="section-title">Community-driven, production-ready plugins</h2>
 
-        <a href="https://docs.claude.com/en/docs/claude-code/plugins" class="resource-card" target="_blank" rel="noopener noreferrer">
-          <div class="resource-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm11.378-3.917c-.89-.777-2.366-.777-3.255 0a.75.75 0 01-.988-1.129c1.454-1.272 3.776-1.272 5.23 0 1.513 1.324 1.513 3.518 0 4.842a3.75 3.75 0 01-.837.552c-.676.328-1.028.774-1.028 1.152v.75a.75.75 0 01-1.5 0v-.75c0-1.279 1.06-2.107 1.875-2.502.182-.088.351-.199.503-.331.83-.727.83-1.857 0-2.584zM12 18a.75.75 0 100-1.5.75.75 0 000 1.5z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <h3>Official Documentation</h3>
-          <p>Learn how to create and use Claude Code plugins</p>
-        </a>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚀</div>
+                <h3>255+ Plugins</h3>
+                <p>The largest collection of Claude Code plugins available. From simple utilities to complex AI-powered automations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🤖</div>
+                <h3>185 AI Skills</h3>
+                <p>Plugins with Agent Skills that activate automatically based on your conversation. Smart tools that understand context.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Instant Install</h3>
+                <p>One command to add the marketplace, then install any plugin instantly. No configuration needed.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Full Documentation</h3>
+                <p>Every plugin includes comprehensive docs, examples, and usage guides. Learn as you build.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Regular Updates</h3>
+                <p>Active development with new plugins added weekly. Community contributions welcome.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Open Source</h3>
+                <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
+            </div>
+        </div>
+    </section>
 
-        <a href="https://discord.com/invite/6PPFFzqPDZ" class="resource-card" target="_blank" rel="noopener noreferrer">
-          <div class="resource-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor">
-              <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 00-.041-.106 13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-            </svg>
-          </div>
-          <h3>Discord Community</h3>
-          <p>Join the #claude-code channel for support and discussion</p>
-        </a>
+    <section class="categories" id="categories">
+        <div class="section-label">Plugin Categories</div>
+        <h2 class="section-title">Find the perfect tools for your workflow</h2>
 
-        <a href="https://intentsolutions.io" class="resource-card" target="_blank" rel="noopener noreferrer">
-          <div class="resource-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-              <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-2.625 6c-.54 0-.828.419-.936.634a1.96 1.96 0 00-.189.866c0 .298.059.605.189.866.108.215.395.634.936.634.54 0 .828-.419.936-.634.13-.26.189-.568.189-.866 0-.298-.059-.605-.189-.866-.108-.215-.395-.634-.936-.634zm4.314.634c.108-.215.395-.634.936-.634.54 0 .828.419.936.634.13.26.189.568.189.866 0 .298-.059.605-.189.866-.108.215-.395.634-.936.634-.54 0-.828-.419-.936-.634a1.96 1.96 0 01-.189-.866c0-.298.059-.605.189-.866zm2.023 6.828a.75.75 0 10-1.06-1.06 3.75 3.75 0 01-5.304 0 .75.75 0 00-1.06 1.06 5.25 5.25 0 007.424 0z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <h3>Intent Solutions</h3>
-          <p>Creating Industries That Don't Exist — AI innovation services</p>
-        </a>
-      </div>
-    </div>
-  </section>
-</Layout>
+        <div class="categories-list">
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity" class="category-item">
+                <div>
+                    <h4>Productivity</h4>
+                    <span>Task automation, workflow optimization, and time-saving utilities</span>
+                </div>
+                <div class="category-count">40+</div>
+            </a>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/security" class="category-item">
+                <div>
+                    <h4>Security</h4>
+                    <span>Vulnerability scanning, authentication, and secure coding tools</span>
+                </div>
+                <div class="category-count">25+</div>
+            </a>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/devops" class="category-item">
+                <div>
+                    <h4>DevOps</h4>
+                    <span>CI/CD automation, deployment tools, and infrastructure management</span>
+                </div>
+                <div class="category-count">30+</div>
+            </a>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/testing" class="category-item">
+                <div>
+                    <h4>Testing</h4>
+                    <span>Unit tests, integration testing, and quality assurance tools</span>
+                </div>
+                <div class="category-count">20+</div>
+            </a>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/ai-ml" class="category-item">
+                <div>
+                    <h4>AI & Machine Learning</h4>
+                    <span>LLM integration, model deployment, and AI-powered features</span>
+                </div>
+                <div class="category-count">35+</div>
+            </a>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/mcp" class="category-item">
+                <div>
+                    <h4>MCP Servers</h4>
+                    <span>Model Context Protocol servers with advanced tool capabilities</span>
+                </div>
+                <div class="category-count">6</div>
+            </a>
+        </div>
+    </section>
 
-<style>
-  .announcement-bar {
-    background: linear-gradient(90deg, var(--green-700), var(--blue-700));
-    border-bottom: 1px solid var(--slate-800);
-  }
+    <section class="process" id="process">
+        <div class="section-label">Getting Started</div>
+        <h2 class="section-title">From zero to productive in minutes</h2>
 
-  .announcement-inner {
-    display: flex;
-    gap: .75rem;
-    align-items: center;
-    justify-content: center;
-    padding: .6rem .75rem;
-    color: var(--slate-50);
-    font-weight: 600;
-  }
+        <div class="process-grid">
+            <div class="process-step">
+                <div class="step-number">1</div>
+                <h4>Add Marketplace</h4>
+                <p>Run the quick install command in Claude Code to add our marketplace.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">2</div>
+                <h4>Browse Plugins</h4>
+                <p>Explore 255+ plugins across 18 categories. Find tools that fit your needs.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">3</div>
+                <h4>Install Instantly</h4>
+                <p>One command installs any plugin. No configuration or setup required.</p>
+            </div>
+            <div class="process-step">
+                <div class="step-number">4</div>
+                <h4>Start Building</h4>
+                <p>Use slash commands, AI skills, and tools immediately in your workflow.</p>
+            </div>
+        </div>
+    </section>
 
-  .ann-link {
-    color: var(--slate-50);
-    text-decoration: underline;
-    opacity: .95;
-    white-space: nowrap;
-  }
+    <section class="cta" id="contact">
+        <div class="cta-content">
+            <h2>Join the Claude Code Revolution</h2>
+            <p>Start using the most comprehensive plugin marketplace today</p>
+            <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-white">Explore on GitHub</a>
+        </div>
+    </section>
 
-  .ann-link:hover { opacity: 1; }
-  .sparkle { filter: drop-shadow(0 0 6px rgba(255,255,255,.4)); }
+    <footer>
+        <div class="footer-content">
+            <a href="/" class="footer-logo">
+                <div class="logo-icon">⌘</div>
+                Claude Code Plugins
+            </a>
+            <ul class="footer-links">
+                <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank">GitHub</a></li>
+                <li><a href="https://discord.com/invite/6PPFFzqPDZ" target="_blank">Discord</a></li>
+                <li><a href="https://docs.claude.com/en/docs/claude-code/" target="_blank">Claude Docs</a></li>
+                <li><a href="mailto:jeremy@intentsolutions.io">Contact</a></li>
+            </ul>
+            <div class="footer-copy">
+                © 2025 Claude Code Plugins. Open source marketplace by Jeremy Longshore.
+            </div>
+        </div>
+    </footer>
 
-  /* Mobile responsive announcement banner */
-  @media (max-width: 768px) {
-    .announcement-inner {
-      flex-direction: column;
-      text-align: center;
-      padding: 1rem;
-      gap: 0.75rem;
-    }
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
 
-    .announcement-inner span {
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
+        // Intersection Observer for fade-in animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
 
-    .ann-link {
-      display: inline-block;
-      padding: 0.5rem 1rem;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 0.375rem;
-      font-size: 0.875rem;
-    }
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
 
-    .sparkle {
-      font-size: 1.25rem;
-    }
-  }
-  .spotlight-section {
-    padding: 2.5rem 0 1rem;
-  }
-  .spotlight {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem 1.25rem;
-    align-items: center;
-    background: var(--slate-850);
-    border: 1px solid var(--slate-800);
-    border-radius: 1rem;
-    padding: 1rem 1.25rem;
-  }
-  .spotlight-icon {
-    font-size: 3.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 84px;
-    height: 84px;
-    background: linear-gradient(135deg, var(--green-500), var(--blue-500));
-    border-radius: 1rem;
-    filter: drop-shadow(0 4px 12px rgba(16, 185, 129, 0.4));
-  }
-  .spotlight-content { display: flex; flex-direction: column; gap: 0.4rem; }
-  .spotlight-kicker { font-size: 0.8rem; color: var(--green-400); font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
-  .spotlight-title { font-size: 1.15rem; margin: 0; }
-  .spotlight-name { color: var(--green-400); }
-  .spotlight-text { margin: 0; color: var(--slate-200); }
-  .spotlight-subtext { margin-top: 0.75rem; font-size: 0.875rem; color: var(--slate-300); font-style: italic; }
-  .spotlight-features { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
-  .feature-badge {
-    font-size: 0.75rem;
-    padding: 0.35rem 0.65rem;
-    background: var(--slate-800);
-    border: 1px solid var(--slate-700);
-    border-radius: 0.5rem;
-    color: var(--slate-300);
-    font-weight: 600;
-  }
-  .spotlight-actions { display: flex; gap: 0.75rem; margin-top: 0.75rem; }
-  .spotlight-btn {
-    display: inline-flex;
-    padding: 0.45rem 0.8rem;
-    border-radius: 0.5rem;
-    background: var(--green-600);
-    color: var(--slate-50);
-    border: 1px solid var(--green-500);
-    font-weight: 600;
-  }
-  .spotlight-btn.secondary { background: transparent; border-color: var(--slate-700); color: var(--slate-100); }
+        document.querySelectorAll('.feature-card, .category-item, .process-step').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            observer.observe(el);
+        });
 
-  /* Section Styling */
-  section {
-    padding: 4rem 0;
-  }
-
-  .section-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-
-  .section-title {
-    font-size: clamp(1.75rem, 3vw, 2.5rem);
-    font-weight: 900;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-  }
-
-  .section-title svg {
-    width: 2rem;
-    height: 2rem;
-    color: var(--green-400);
-  }
-
-  .section-description {
-    font-size: 1.125rem;
-    color: var(--slate-400);
-    max-width: 600px;
-    margin: 0 auto;
-  }
-
-  /* Plugins Grid */
-  .plugins-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 1.5rem;
-  }
-
-  @media (max-width: 768px) {
-    .plugins-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* Featured Section */
-  .featured-section {
-    background: linear-gradient(180deg, transparent 0%, rgba(16, 185, 129, 0.05) 50%, transparent 100%);
-    border-top: 1px solid var(--slate-800);
-    border-bottom: 1px solid var(--slate-800);
-  }
-
-  /* Categories Grid */
-  .categories-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .category-card {
-    background: var(--slate-850);
-    border: 1px solid var(--slate-800);
-    border-radius: 1rem;
-    padding: 1.5rem;
-    transition: all var(--transition-base);
-    cursor: pointer;
-  }
-
-  .category-card:hover {
-    border-color: var(--green-500);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  }
-
-  .category-header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .category-icon {
-    font-size: 2rem;
-    line-height: 1;
-  }
-
-  .category-name {
-    font-size: 1.125rem;
-    font-weight: 700;
-    color: var(--slate-100);
-    margin: 0;
-  }
-
-  .category-count {
-    font-size: 0.875rem;
-    color: var(--green-400);
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-
-  .category-preview {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .preview-plugin {
-    font-size: 0.75rem;
-    color: var(--slate-500);
-    font-family: var(--font-mono);
-    padding: 0.25rem 0.5rem;
-    background: var(--slate-800);
-    border-radius: 0.25rem;
-    border: 1px solid var(--slate-700);
-  }
-
-  .preview-more {
-    font-size: 0.75rem;
-    color: var(--slate-600);
-    font-style: italic;
-    padding: 0.25rem 0.5rem;
-  }
-
-  /* Steps Grid */
-  .steps-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
-  }
-
-  .step-card {
-    background: var(--slate-850);
-    border: 1px solid var(--slate-800);
-    border-radius: 1rem;
-    padding: 2rem;
-    position: relative;
-  }
-
-  .step-number {
-    position: absolute;
-    top: -1rem;
-    left: 2rem;
-    width: 3rem;
-    height: 3rem;
-    background: linear-gradient(135deg, var(--green-500), var(--green-400));
-    color: var(--slate-950);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-    font-weight: 900;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
-  }
-
-  .step-card h3 {
-    margin: 1rem 0 0.5rem 0;
-    font-size: 1.25rem;
-    color: var(--slate-100);
-  }
-
-  .step-card p {
-    color: var(--slate-400);
-    margin-bottom: 1rem;
-    font-size: 0.875rem;
-  }
-
-  .step-card pre {
-    margin: 0;
-  }
-
-  /* Resources Grid */
-  .resources-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
-  }
-
-  .resource-card {
-    background: var(--slate-850);
-    border: 1px solid var(--slate-800);
-    border-radius: 1rem;
-    padding: 2rem;
-    transition: all var(--transition-base);
-    text-align: center;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .resource-card:hover {
-    border-color: var(--green-500);
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-  }
-
-  .resource-icon {
-    width: 4rem;
-    height: 4rem;
-    background: linear-gradient(135deg, var(--green-500), var(--blue-500));
-    border-radius: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    color: var(--slate-950);
-  }
-
-  .resource-icon svg {
-    width: 2rem;
-    height: 2rem;
-  }
-
-  .resource-card h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.125rem;
-    color: var(--slate-100);
-  }
-
-  .resource-card p {
-    margin: 0;
-    font-size: 0.875rem;
-    color: var(--slate-400);
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    section {
-      padding: 2rem 0;
-    }
-
-    .section-header {
-      margin-bottom: 2rem;
-    }
-
-    .categories-grid,
-    .steps-grid,
-    .resources-grid {
-      grid-template-columns: 1fr;
-    }
-
-    /* Mobile spotlight section */
-    .spotlight-section {
-      padding: 1.5rem 0;
-    }
-
-    .spotlight {
-      grid-template-columns: 1fr;
-      padding: 1.5rem 1rem;
-      text-align: center;
-    }
-
-    .spotlight-icon {
-      font-size: 2.5rem;
-      width: 64px;
-      height: 64px;
-      margin: 0 auto;
-    }
-
-    .spotlight-kicker {
-      font-size: 0.75rem;
-      line-height: 1.4;
-    }
-
-    .spotlight-title {
-      font-size: 1rem;
-      line-height: 1.3;
-    }
-
-    .spotlight-text {
-      font-size: 0.9rem;
-      line-height: 1.5;
-    }
-
-    .spotlight-subtext {
-      font-size: 0.8rem;
-    }
-
-    .spotlight-features {
-      justify-content: center;
-      gap: 0.4rem;
-    }
-
-    .feature-badge {
-      font-size: 0.7rem;
-      padding: 0.3rem 0.5rem;
-    }
-
-    .spotlight-actions {
-      flex-direction: column;
-      gap: 0.5rem;
-      width: 100%;
-    }
-
-    .spotlight-btn {
-      width: 100%;
-      justify-content: center;
-      padding: 0.6rem 1rem;
-      font-size: 0.875rem;
-    }
-  }
-</style>
+        // Copy install command on click
+        document.querySelector('.install-command').addEventListener('click', function() {
+            const text = this.textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const original = this.textContent;
+                this.textContent = '✓ Copied to clipboard!';
+                this.style.color = 'var(--brand-green)';
+                setTimeout(() => {
+                    this.textContent = original;
+                    this.style.color = '';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
