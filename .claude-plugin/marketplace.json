@@ -10,8 +10,8 @@
     "version": "1.4.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 254,
-    "skillsEnabled": 185,
+    "totalPlugins": 255,
+    "skillsEnabled": 198,
     "lastUpdated": "2025-11-19"
   },
   "plugins": [
@@ -4708,6 +4708,32 @@
         "name": "Terry Li",
         "email": "[email protected]",
         "url": "https://github.com/terrylica"
+      }
+    },
+    {
+      "name": "axiom",
+      "source": "./plugins/skill-enhancers/axiom",
+      "description": "Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) development - 13 production-ready skills covering debugging, concurrency, persistence, UI, and performance",
+      "version": "0.1.6",
+      "category": "skill-enhancers",
+      "keywords": [
+        "ios",
+        "debugging",
+        "swift",
+        "persistence",
+        "testing",
+        "performance",
+        "xcode",
+        "concurrency",
+        "database",
+        "swiftdata",
+        "grdb",
+        "liquid-glass",
+        "swiftui"
+      ],
+      "author": {
+        "name": "Charles Wiltgen",
+        "url": "https://github.com/CharlesWiltgen"
       }
     }
   ]
