@@ -712,6 +712,77 @@
             font-size: 0.85rem;
         }
 
+        /* Client Showcase Section */
+        .client-showcase {
+            background: var(--brand-dark);
+            padding: 2rem 0;
+            overflow: hidden;
+            position: relative;
+            margin-top: 4rem;
+        }
+
+        .client-showcase-label {
+            text-align: center;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--brand-mid-gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .client-marquee {
+            display: flex;
+            animation: scroll 20s linear infinite;
+            width: max-content;
+        }
+
+        .client-marquee:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .client-item {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            padding: 0 3rem;
+            white-space: nowrap;
+        }
+
+        .client-logo {
+            height: 40px;
+            filter: brightness(0) invert(1);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .client-logo:hover {
+            opacity: 1;
+        }
+
+        .client-name {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--brand-light);
+            opacity: 0.7;
+            transition: opacity 0.3s;
+        }
+
+        .client-item:hover .client-name {
+            opacity: 1;
+        }
+
         /* Responsive */
         @media (max-width: 1200px) {
             .hero-decoration {
@@ -767,12 +838,14 @@
             <li><a href="#features">Features</a></li>
             <li><a href="#categories">Categories</a></li>
             <li><a href="#process">Get Started</a></li>
+            <li><a href="https://www.buymeacoffee.com/jeremylongshore" target="_blank">Sponsor</a></li>
             <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">Browse GitHub</a></li>
         </ul>
     </nav>
 
     <section class="hero">
         <h1>The Ultimate<br><span>Claude Code</span> Plugin Hub</h1>
+        <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
         <p class="hero-subtitle">
             Discover 255+ custom-built plugins that supercharge your Claude Code workflow. From productivity automations to security tools, AI skills to DevOps integrations — all open source and ready to install.
         </p>
@@ -829,6 +902,50 @@
                     <br>
                     <span class="code-comment">// 185 plugins with AI Skills activate automatically!</span>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="client-showcase">
+        <div class="client-showcase-label">selected companies using claude code plugins</div>
+        <div class="client-marquee">
+            <!-- First set for seamless loop -->
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
+            </div>
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
+            </div>
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
+            </div>
+            <!-- Duplicate for seamless scrolling -->
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
+            </div>
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
+            </div>
+            <div class="client-item">
+                <svg class="client-logo" viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg">
+                    <text x="0" y="30" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="currentColor">NIXTLA</text>
+                </svg>
+                <span class="client-name">Nixtla</span>
             </div>
         </div>
     </section>
