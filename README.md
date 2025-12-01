@@ -24,18 +24,21 @@
 
 ---
 
-## 👥 Enterprise Supporters
+## 💎 Enterprise Partners & Custom Plugin Sponsors
 
-🏢 **Grateful to have [Max Mergenthaler](https://github.com/mergenthaler) and [Nixtla](https://www.nixtla.io/) as our first Enterprise supporter!**
+**These companies invest in custom plugin development through GitHub Sponsors:**
 
-Max is CEO & Co-Founder at **Nixtla** (YC S21), building production-grade time-series tools:
-- **TimeGPT** - Foundation model for forecasting
-- **Nixtlaverse** - Open-source time-series libraries
-- **Support Level**: $199/month Enterprise tier
+### 🏆 [Nixtla](https://www.nixtla.io/) - Premium Development Partner
+**CEO & Co-Founder:** [Max Mergenthaler](https://github.com/mergenthaler) (YC S21)
+**Partnership Type:** $199/month Enterprise GitHub Sponsor
+**Custom Development:** Commissioned enterprise-grade plugins for time-series AI workflows
+- **TimeGPT Integration** - Production forecasting workflows
+- **MLOps Automation** - Custom deployment patterns
+- **Private Plugins** - Proprietary competitive advantages
 
-His support helps us prioritize features that matter for real-world AI development.
+*Through GitHub Sponsors, Nixtla doesn't just use our plugins—they invest in creating custom solutions tailored to their enterprise needs and help fund ongoing community development.*
 
-*Sponsorship reflects support and prioritization on a best-effort basis, not a formal SLA or delivery guarantee.*
+**Want custom plugins for your team?** [Become a GitHub Sponsor](https://github.com/sponsors/jeremylongshore) or email jeremy@intentsolutions.io
 
 ---
 
