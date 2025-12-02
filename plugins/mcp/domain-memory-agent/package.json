@@ -24,7 +24,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.1",
+    "@modelcontextprotocol/sdk": "^1.24.0",
     "zod": "^4.1.12",
     "zod-to-json-schema": "^3.25.0"
   },

@@ -39,8 +39,8 @@ importers:
   plugins/mcp/ai-experiment-logger:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       express:
         specifier: ^5.1.0
         version: 5.1.0
@@ -61,8 +61,8 @@ importers:
   plugins/mcp/conversational-api-debugger:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       openapi-types:
         specifier: ^12.1.3
         version: 12.1.3
@@ -92,8 +92,8 @@ importers:
   plugins/mcp/design-to-code:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       zod:
         specifier: ^4.1.12
         version: 4.1.13
@@ -114,8 +114,8 @@ importers:
   plugins/mcp/domain-memory-agent:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       zod:
         specifier: ^4.1.12
         version: 4.1.13
@@ -139,8 +139,8 @@ importers:
   plugins/mcp/project-health-auditor:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       glob:
         specifier: ^11.1.0
         version: 11.1.0
@@ -170,8 +170,8 @@ importers:
   plugins/mcp/workflow-orchestrator:
     dependencies:
       '@modelcontextprotocol/sdk':
-        specifier: ^1.21.1
-        version: 1.22.0
+        specifier: ^1.24.0
+        version: 1.24.0(zod@4.1.13)
       zod:
         specifier: ^4.1.12
         version: 4.1.13
@@ -911,11 +911,12 @@ packages:
   '@kwsites/promise-deferred@1.1.1':
     resolution: {integrity: sha512-GaHYm+c0O9MjZRu0ongGBRbinu8gVAMd2UZjji6jVmqKtZluZnptXGWhz1E8j8D2HJ3f/yMxKAUC0b+57wncIw==}
 
-  '@modelcontextprotocol/sdk@1.22.0':
-    resolution: {integrity: sha512-VUpl106XVTCpDmTBil2ehgJZjhyLY2QZikzF8NvTXtLRF1CvO5iEE2UNZdVIUer35vFOwMKYeUGbjJtvPWan3g==}
+  '@modelcontextprotocol/sdk@1.24.0':
+    resolution: {integrity: sha512-D8h5KXY2vHFW8zTuxn2vuZGN0HGrQ5No6LkHwlEA9trVgNdPL3TF1dSqKA7Dny6BbBYKSW/rOBDXdC8KJAjUCg==}
     engines: {node: '>=18'}
     peerDependencies:
       '@cfworker/json-schema': ^4.1.1
+      zod: ^3.25 || ^4.0
     peerDependenciesMeta:
       '@cfworker/json-schema':
         optional: true
@@ -2166,6 +2167,9 @@ packages:
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
+
+  jose@6.1.3:
+    resolution: {integrity: sha512-0TpaTfihd4QMNwrz/ob2Bp7X04yuxJkjRGi4aKmOqwhov54i6u79oCv7T+C7lo70MKH6BesI3vscD1yb/yzKXQ==}
 
   js-tokens@9.0.1:
     resolution: {integrity: sha512-mxa9E9ITFOt0ban3j6L5MpjwegGz6lBQmM1IJkWeBZGcMxto50+eWdjC/52xDbS2vy0k7vIMK0Fe2wfL9OQSpQ==}
@@ -3874,7 +3878,7 @@ snapshots:
 
   '@kwsites/promise-deferred@1.1.1': {}
 
-  '@modelcontextprotocol/sdk@1.22.0':
+  '@modelcontextprotocol/sdk@1.24.0(zod@4.1.13)':
     dependencies:
       ajv: 8.17.1
       ajv-formats: 3.0.1(ajv@8.17.1)
@@ -3885,10 +3889,11 @@ snapshots:
       eventsource-parser: 3.0.6
       express: 5.1.0
       express-rate-limit: 7.5.1(express@5.1.0)
+      jose: 6.1.3
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 3.25.76
-      zod-to-json-schema: 3.25.0(zod@3.25.76)
+      zod: 4.1.13
+      zod-to-json-schema: 3.25.0(zod@4.1.13)
     transitivePeerDependencies:
       - supports-color
 
@@ -5296,6 +5301,8 @@ snapshots:
       '@isaacs/cliui': 8.0.2
 
   jiti@2.6.1: {}
+
+  jose@6.1.3: {}
 
   js-tokens@9.0.1: {}
 
