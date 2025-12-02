@@ -674,15 +674,20 @@
 
         /* Footer */
         footer {
-            padding: 4rem;
+            padding: 4rem 2rem;  /* Reduced horizontal padding for mobile safety */
             background: var(--brand-dark);
             color: var(--brand-light);
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .footer-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .footer-logo {
@@ -692,12 +697,15 @@
             font-weight: 600;
             text-decoration: none;
             color: var(--brand-light);
+            flex-shrink: 0;  /* Prevent logo from shrinking */
         }
 
         .footer-links {
             display: flex;
             gap: 2rem;
             list-style: none;
+            flex-wrap: wrap;  /* Allow wrapping on small screens */
+            justify-content: center;
         }
 
         .footer-links a {
@@ -706,6 +714,7 @@
             font-size: 0.9rem;
             font-family: 'Poppins', Arial, sans-serif;
             transition: color 0.3s;
+            white-space: nowrap;  /* Prevent individual links from breaking */
         }
 
         .footer-links a:hover {
@@ -716,6 +725,9 @@
             font-family: 'Lora', Georgia, serif;
             color: var(--brand-mid-gray);
             font-size: 0.85rem;
+            word-wrap: break-word;  /* Allow long text to wrap */
+            overflow-wrap: anywhere;  /* Modern overflow handling */
+            max-width: 100%;
         }
 
         /* Client Showcase Section */
@@ -813,10 +825,43 @@
                 gap: 1.5rem;
             }
 
+            /* Improved footer mobile layout */
             .footer-content {
                 flex-direction: column;
                 gap: 2rem;
                 text-align: center;
+                align-items: center;
+            }
+
+            .footer-links {
+                width: 100%;
+                justify-content: center;
+                gap: 1rem;
+            }
+
+            footer {
+                padding: 3rem 1.5rem;  /* Further reduced padding on small screens */
+            }
+        }
+
+        /* Extra small mobile devices */
+        @media (max-width: 480px) {
+            footer {
+                padding: 2rem 1rem;  /* Minimal padding for very small screens */
+            }
+
+            .footer-links {
+                gap: 0.75rem;
+                padding: 0;
+            }
+
+            .footer-links li {
+                margin: 0.25rem;
+            }
+
+            .footer-copy {
+                font-size: 0.8rem;
+                line-height: 1.4;
             }
         }
     </style>
