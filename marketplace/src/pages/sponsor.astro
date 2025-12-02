@@ -231,19 +231,47 @@ const seo = {
     <style>
       /* Import global styles */
       @import url('../styles/global.css');
+      @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800;900&family=Lora:wght@400;500;600&display=swap');
 
-      /* Override theme for sponsor page - Intent Solutions minimalist white theme */
+      /* CSS Variables for Anthropic Brand Colors */
+      :root {
+        /* Main Colors */
+        --brand-dark: #141413;
+        --brand-light: #faf9f5;
+        --brand-mid-gray: #b0aea5;
+        --brand-light-gray: #e8e6dc;
+
+        /* Accent Colors */
+        --brand-orange: #d97757;
+        --brand-blue: #6a9bcc;
+        --brand-green: #788c5d;
+
+        /* Derived Colors */
+        --brand-orange-dark: #c45e3e;
+        --brand-orange-light: #e8937a;
+
+        --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      /* Anthropic theme for sponsor page */
       body {
-        background: #FFFFFF;
-        color: #1a1a1a;
+        font-family: 'Lora', Georgia, serif;
+        background: var(--brand-light);
+        color: var(--brand-dark);
+      }
+
+      h1, h2, h3, h4, h5, h6,
+      .cta-primary, .cta-secondary, .pricing-tier, .pricing-name,
+      .stat-number, .roadmap-tier, .faq-question {
+        font-family: 'Poppins', Arial, sans-serif;
       }
 
       /* Hero Section */
       .sponsor-hero {
-        background: #FFFFFF;
+        background: var(--brand-light);
         padding: 4rem 1rem;
         text-align: center;
-        border-bottom: 1px solid #E5E5E5;
+        border-bottom: 1px solid var(--brand-light-gray);
       }
 
       .sponsor-hero-content {
@@ -255,14 +283,14 @@ const seo = {
         font-size: clamp(2.5rem, 5vw, 3rem);
         font-weight: 800;
         line-height: 1.2;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 1.5rem;
       }
 
       .sponsor-hero-description {
         font-size: 1.25rem;
         line-height: 1.6;
-        color: #666666;
+        color: var(--brand-mid-gray);
         max-width: 42rem;
         margin: 0 auto 2rem;
       }
@@ -285,13 +313,13 @@ const seo = {
       .stat-number {
         font-size: 2.5rem;
         font-weight: 900;
-        color: #0066CC;
+        color: var(--brand-orange);
         line-height: 1;
       }
 
       .stat-label {
         font-size: 0.875rem;
-        color: #666666;
+        color: var(--brand-mid-gray);
         margin-top: 0.5rem;
       }
 
@@ -301,17 +329,17 @@ const seo = {
         padding: 1rem 2rem;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #FFFFFF;
-        background: #0066CC;
+        color: var(--brand-light);
+        background: var(--brand-orange);
         border-radius: 0.5rem;
         text-decoration: none;
         transition: all 0.2s ease;
       }
 
       .cta-primary:hover {
-        background: #0052a3;
+        background: var(--brand-orange-dark);
         transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(0, 102, 204, 0.2);
+        box-shadow: 0 10px 20px rgba(217, 119, 87, 0.2);
       }
 
       .cta-secondary {
@@ -319,17 +347,17 @@ const seo = {
         padding: 1rem 2rem;
         font-size: 1.125rem;
         font-weight: 600;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         background: transparent;
-        border: 2px solid #E5E5E5;
+        border: 2px solid var(--brand-light-gray);
         border-radius: 0.5rem;
         text-decoration: none;
         transition: all 0.2s ease;
       }
 
       .cta-secondary:hover {
-        border-color: #0066CC;
-        color: #0066CC;
+        border-color: var(--brand-orange);
+        color: var(--brand-orange);
       }
 
       .hero-ctas {
@@ -349,11 +377,11 @@ const seo = {
       /* Section */
       .section {
         padding: 4rem 1rem;
-        background: #FFFFFF;
+        background: var(--brand-light);
       }
 
       .section-alt {
-        background: #FAFAFA;
+        background: var(--brand-light-gray);
       }
 
       .section-header {
@@ -364,13 +392,13 @@ const seo = {
       .section-title {
         font-size: clamp(2rem, 4vw, 2.5rem);
         font-weight: 800;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 1rem;
       }
 
       .section-description {
         font-size: 1.125rem;
-        color: #666666;
+        color: var(--brand-mid-gray);
         max-width: 42rem;
         margin: 0 auto;
       }
@@ -385,8 +413,8 @@ const seo = {
       }
 
       .pricing-card {
-        background: #FFFFFF;
-        border: 2px solid #E5E5E5;
+        background: var(--brand-light);
+        border: 2px solid var(--brand-light-gray);
         border-radius: 1rem;
         padding: 2rem;
         transition: all 0.3s ease;
@@ -395,15 +423,15 @@ const seo = {
       }
 
       .pricing-card:hover {
-        border-color: #0066CC;
+        border-color: var(--brand-orange);
         transform: translateY(-4px);
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
       }
 
       .pricing-card.featured {
-        border-color: #0066CC;
+        border-color: var(--brand-orange);
         position: relative;
-        background: linear-gradient(180deg, #FFFFFF 0%, #f8f9ff 100%);
+        background: linear-gradient(180deg, var(--brand-light) 0%, #faf5ee 100%);
       }
 
       .pricing-card.featured::before {
@@ -412,8 +440,8 @@ const seo = {
         top: -1rem;
         left: 50%;
         transform: translateX(-50%);
-        background: #0066CC;
-        color: #FFFFFF;
+        background: var(--brand-orange);
+        color: var(--brand-light);
         padding: 0.375rem 1rem;
         border-radius: 2rem;
         font-size: 0.75rem;
@@ -425,7 +453,7 @@ const seo = {
       .pricing-tier {
         font-size: 0.875rem;
         font-weight: 700;
-        color: #0066CC;
+        color: var(--brand-orange);
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 0.5rem;
@@ -434,7 +462,7 @@ const seo = {
       .pricing-name {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 1rem;
       }
 
@@ -448,25 +476,25 @@ const seo = {
       .price-amount {
         font-size: 3rem;
         font-weight: 900;
-        color: #1a1a1a;
+        color: var(--brand-dark);
       }
 
       .price-currency {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #666666;
+        color: var(--brand-mid-gray);
       }
 
       .price-period {
         font-size: 1rem;
-        color: #666666;
+        color: var(--brand-mid-gray);
       }
 
       .pricing-description {
-        color: #666666;
+        color: var(--brand-mid-gray);
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
-        border-bottom: 1px solid #E5E5E5;
+        border-bottom: 1px solid var(--brand-light-gray);
       }
 
       .pricing-features {
@@ -481,14 +509,14 @@ const seo = {
         display: flex;
         align-items: flex-start;
         gap: 0.75rem;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         font-size: 0.875rem;
         line-height: 1.5;
       }
 
       .pricing-features li::before {
         content: "✓";
-        color: #10b981;
+        color: var(--brand-green);
         font-weight: 700;
         font-size: 1.125rem;
         flex-shrink: 0;
@@ -500,8 +528,8 @@ const seo = {
         padding: 0.875rem 1.5rem;
         font-size: 1rem;
         font-weight: 600;
-        color: #FFFFFF;
-        background: #0066CC;
+        color: var(--brand-light);
+        background: var(--brand-orange);
         border: none;
         border-radius: 0.5rem;
         text-align: center;
@@ -510,18 +538,18 @@ const seo = {
       }
 
       .pricing-cta:hover {
-        background: #0052a3;
+        background: var(--brand-orange-dark);
       }
 
       .pricing-card:not(.featured) .pricing-cta {
         background: transparent;
-        color: #0066CC;
-        border: 2px solid #0066CC;
+        color: var(--brand-orange);
+        border: 2px solid var(--brand-orange);
       }
 
       .pricing-card:not(.featured) .pricing-cta:hover {
-        background: #0066CC;
-        color: #FFFFFF;
+        background: var(--brand-orange);
+        color: var(--brand-light);
       }
 
       /* Comparison Table */
@@ -529,8 +557,8 @@ const seo = {
         width: 100%;
         border-collapse: collapse;
         margin-top: 2rem;
-        background: #FFFFFF;
-        border: 1px solid #E5E5E5;
+        background: var(--brand-light);
+        border: 1px solid var(--brand-light-gray);
         border-radius: 1rem;
         overflow: hidden;
       }
@@ -539,20 +567,20 @@ const seo = {
       .comparison-table td {
         padding: 1rem;
         text-align: left;
-        border-bottom: 1px solid #E5E5E5;
+        border-bottom: 1px solid var(--brand-light-gray);
       }
 
       .comparison-table th {
-        background: #FAFAFA;
+        background: var(--brand-light-gray);
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         text-transform: uppercase;
         font-size: 0.875rem;
         letter-spacing: 0.05em;
       }
 
       .comparison-table td {
-        color: #666666;
+        color: var(--brand-mid-gray);
       }
 
       .comparison-table tr:last-child td {
@@ -560,13 +588,13 @@ const seo = {
       }
 
       .check-icon {
-        color: #10b981;
+        color: var(--brand-green);
         font-weight: 700;
         font-size: 1.25rem;
       }
 
       .cross-icon {
-        color: #E5E5E5;
+        color: var(--brand-light-gray);
         font-weight: 700;
         font-size: 1.25rem;
       }
@@ -579,23 +607,23 @@ const seo = {
       }
 
       .roadmap-card {
-        background: #FFFFFF;
-        border: 1px solid #E5E5E5;
+        background: var(--brand-light);
+        border: 1px solid var(--brand-light-gray);
         border-radius: 1rem;
         padding: 2rem;
         transition: all 0.3s ease;
       }
 
       .roadmap-card:hover {
-        border-color: #0066CC;
+        border-color: var(--brand-orange);
         box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
       }
 
       .roadmap-tier {
         display: inline-block;
         padding: 0.375rem 0.875rem;
-        background: #f0f7ff;
-        color: #0066CC;
+        background: rgba(217, 119, 87, 0.1);
+        color: var(--brand-orange);
         font-size: 0.75rem;
         font-weight: 700;
         border-radius: 2rem;
@@ -607,19 +635,19 @@ const seo = {
       .roadmap-plugin {
         font-size: 1.25rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 0.5rem;
       }
 
       .roadmap-description {
-        color: #666666;
+        color: var(--brand-mid-gray);
         font-size: 0.875rem;
         line-height: 1.6;
       }
 
       .roadmap-quarter {
         font-size: 0.75rem;
-        color: #0066CC;
+        color: var(--brand-orange);
         font-weight: 600;
         margin-top: 1rem;
       }
@@ -634,8 +662,8 @@ const seo = {
       }
 
       .faq-item {
-        background: #FFFFFF;
-        border: 1px solid #E5E5E5;
+        background: var(--brand-light);
+        border: 1px solid var(--brand-light-gray);
         border-radius: 1rem;
         padding: 2rem;
       }
@@ -643,12 +671,12 @@ const seo = {
       .faq-question {
         font-size: 1.125rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 0.75rem;
       }
 
       .faq-answer {
-        color: #666666;
+        color: var(--brand-mid-gray);
         line-height: 1.6;
       }
 
@@ -660,8 +688,8 @@ const seo = {
       }
 
       .success-card {
-        background: #FFFFFF;
-        border: 1px solid #E5E5E5;
+        background: var(--brand-light);
+        border: 1px solid var(--brand-light-gray);
         border-radius: 1rem;
         padding: 2rem;
       }
@@ -669,7 +697,7 @@ const seo = {
       .success-industry {
         font-size: 0.75rem;
         font-weight: 700;
-        color: #0066CC;
+        color: var(--brand-orange);
         text-transform: uppercase;
         letter-spacing: 0.05em;
         margin-bottom: 0.5rem;
@@ -678,43 +706,43 @@ const seo = {
       .success-title {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1a1a1a;
+        color: var(--brand-dark);
         margin-bottom: 1rem;
       }
 
       .success-result {
         font-weight: 600;
-        color: #10b981;
+        color: var(--brand-green);
         margin-bottom: 0.5rem;
       }
 
       .success-tech {
         font-size: 0.875rem;
-        color: #666666;
+        color: var(--brand-mid-gray);
         margin-bottom: 1rem;
       }
 
       .success-quote {
         font-style: italic;
-        color: #666666;
-        border-left: 3px solid #0066CC;
+        color: var(--brand-mid-gray);
+        border-left: 3px solid var(--brand-orange);
         padding-left: 1rem;
         margin-top: 1rem;
       }
 
       /* Final CTA */
       .final-cta {
-        background: linear-gradient(135deg, #0066CC 0%, #0052a3 100%);
+        background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
         padding: 4rem 1rem;
         text-align: center;
-        color: #FFFFFF;
+        color: var(--brand-light);
       }
 
       .final-cta h2 {
         font-size: clamp(2rem, 4vw, 2.5rem);
         font-weight: 800;
         margin-bottom: 1rem;
-        color: #FFFFFF;
+        color: var(--brand-light);
       }
 
       .final-cta p {
@@ -724,12 +752,12 @@ const seo = {
       }
 
       .final-cta .cta-primary {
-        background: #FFFFFF;
-        color: #0066CC;
+        background: var(--brand-light);
+        color: var(--brand-orange);
       }
 
       .final-cta .cta-primary:hover {
-        background: #f0f7ff;
+        background: rgba(250, 249, 245, 0.9);
       }
 
       /* Responsive */
@@ -895,9 +923,9 @@ const seo = {
         </div>
 
         <!-- Sponsorship Disclaimer -->
-        <div style="max-width: 50rem; margin: 3rem auto 0; padding: 1.5rem; background: #FFF9E6; border-left: 4px solid #FFC107; border-radius: 0.5rem;">
-          <p style="margin: 0; color: #666666; font-size: 0.875rem; line-height: 1.6;">
-            <strong style="color: #1a1a1a;">Important:</strong> Sponsorship supports ongoing development and helps prioritize features based on your needs. All tiers operate on a best-effort basis. Premium plugins are roadmap items built with sponsor input, not guaranteed monthly deliveries. Support response times are targets, not contractual SLAs.
+        <div style="max-width: 50rem; margin: 3rem auto 0; padding: 1.5rem; background: rgba(217, 119, 87, 0.1); border-left: 4px solid var(--brand-orange); border-radius: 0.5rem;">
+          <p style="margin: 0; color: var(--brand-mid-gray); font-size: 0.875rem; line-height: 1.6;">
+            <strong style="color: var(--brand-dark);">Important:</strong> Sponsorship supports ongoing development and helps prioritize features based on your needs. All tiers operate on a best-effort basis. Premium plugins are roadmap items built with sponsor input, not guaranteed monthly deliveries. Support response times are targets, not contractual SLAs.
           </p>
         </div>
       </div>
@@ -1046,12 +1074,12 @@ const seo = {
           </p>
         </div>
 
-        <div style="max-width: 50rem; margin: 0 auto; padding: 2rem; background: #FFFFFF; border: 2px solid #0066CC; border-radius: 1rem;">
+        <div style="max-width: 50rem; margin: 0 auto; padding: 2rem; background: var(--brand-light); border: 2px solid var(--brand-orange); border-radius: 1rem;">
           <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 1.5rem;">
             <div style="flex-grow: 1;">
-              <h3 style="font-size: 1.75rem; font-weight: 700; color: #1a1a1a; margin-bottom: 0.5rem;">Nixtla</h3>
-              <p style="color: #0066CC; font-weight: 600; margin-bottom: 1rem;">Time Series Forecasting AI • YC S21</p>
-              <p style="color: #666666; line-height: 1.6;">
+              <h3 style="font-size: 1.75rem; font-weight: 700; color: var(--brand-dark); margin-bottom: 0.5rem;">Nixtla</h3>
+              <p style="color: var(--brand-orange); font-weight: 600; margin-bottom: 1rem;">Time Series Forecasting AI • YC S21</p>
+              <p style="color: var(--brand-mid-gray); line-height: 1.6;">
                 <strong>CEO & Co-Founder:</strong> Max Mergenthaler<br>
                 <strong>Investment:</strong> $199/month via GitHub Sponsors<br>
                 <strong>Partnership Since:</strong> November 2024<br>
@@ -1060,20 +1088,20 @@ const seo = {
             </div>
           </div>
 
-          <div style="padding-top: 1.5rem; border-top: 1px solid #E5E5E5;">
-            <p style="color: #666666; line-height: 1.6; margin-bottom: 1rem;">
+          <div style="padding-top: 1.5rem; border-top: 1px solid var(--brand-light-gray);">
+            <p style="color: var(--brand-mid-gray); line-height: 1.6; margin-bottom: 1rem;">
               <strong>Impact:</strong> Through their GitHub sponsorship, Nixtla doesn't just use our plugins—they
               invest in creating custom solutions that integrate seamlessly with TimeGPT and their MLOps pipeline.
               Their investment enables continuous improvement of the 255+ free plugins available to everyone.
             </p>
-            <p style="font-style: italic; color: #666666;">
+            <p style="font-style: italic; color: var(--brand-mid-gray);">
               "The custom plugins have streamlined our workflow, saving our team 10+ hours weekly on routine tasks."
             </p>
           </div>
 
           <div style="margin-top: 1.5rem; text-align: center;">
             <a href="https://github.com/sponsors/jeremylongshore"
-               style="display: inline-block; padding: 0.75rem 1.5rem; background: #0066CC; color: #FFFFFF; border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
+               style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--brand-orange); color: var(--brand-light); border-radius: 0.5rem; text-decoration: none; font-weight: 600;">
               Join Nixtla as an Enterprise Partner
             </a>
           </div>
@@ -1148,7 +1176,7 @@ const seo = {
           <div class="faq-item">
             <h3 class="faq-question">Do you offer annual pricing?</h3>
             <p class="faq-answer">
-              Yes! Contact <a href="mailto:jeremy@intentsolutions.io" style="color: #0066CC; text-decoration: underline;">jeremy@intentsolutions.io</a> for 20% discount on annual commitments.
+              Yes! Contact <a href="mailto:jeremy@intentsolutions.io" style="color: var(--brand-orange); text-decoration: underline;">jeremy@intentsolutions.io</a> for 20% discount on annual commitments.
             </p>
           </div>
 
@@ -1191,15 +1219,15 @@ const seo = {
     </section>
 
     <!-- Minimal Footer with Back to Home -->
-    <footer style="background: #FAFAFA; border-top: 1px solid #E5E5E5; padding: 2rem 1rem; text-align: center;">
+    <footer style="background: var(--brand-light-gray); border-top: 1px solid var(--brand-light-gray); padding: 2rem 1rem; text-align: center;">
       <div class="container">
-        <p style="margin: 0 0 1rem 0; color: #666666;">
-          <a href="/" style="color: #0066CC; text-decoration: none; font-weight: 600;">← Back to Marketplace</a>
+        <p style="margin: 0 0 1rem 0; color: var(--brand-mid-gray);">
+          <a href="/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600;">← Back to Marketplace</a>
         </p>
-        <p style="margin: 0; color: #666666; font-size: 0.875rem;">
+        <p style="margin: 0; color: var(--brand-mid-gray); font-size: 0.875rem;">
           © 2025 Claude Code Plugins. Open Source under MIT License.
         </p>
-        <p style="margin: 0.5rem 0 0 0; color: #999999; font-size: 0.75rem;">
+        <p style="margin: 0.5rem 0 0 0; color: var(--brand-mid-gray); font-size: 0.75rem;">
           Built with Astro 5 + Tailwind CSS v4
         </p>
       </div>
