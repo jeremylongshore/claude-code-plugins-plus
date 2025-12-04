@@ -1,11 +1,18 @@
 ---
+description: This skill uses the test-doubles-generator plugin to automatically create
+  mocks, stubs, spies, and fakes for unit testing. it analyzes dependencies in the
+  code and generates appropriate test doubles based on the chosen testing framework,
+  such as j...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: generating-test-doubles
-description: |
-  This skill uses the test-doubles-generator plugin to automatically create mocks, stubs, spies, and fakes for unit testing. It analyzes dependencies in the code and generates appropriate test doubles based on the chosen testing framework, such as Jest, Sinon, or others. Use this skill when you need to generate test doubles, mocks, stubs, spies, or fakes to isolate units of code during testing. Trigger this skill by requesting test double generation or using the `/gen-doubles` or `/gd` command.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to streamline unit testing by automatically generating test doubles (mocks, stubs, spies, and fakes). It analyzes the code under test, identifies dependencies, and creates the necessary test doubles, significantly reducing the time and effort required to write effective unit tests.

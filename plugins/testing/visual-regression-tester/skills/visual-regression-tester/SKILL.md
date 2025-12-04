@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to execute visual regression tests using tools
+  like percy, chromatic, and backstopjs. it captures screenshots, compares them against
+  baselines, and analyzes visual differences to identify unintended ui changes. use
+  this s...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: performing-visual-regression-testing
-description: |
-  This skill enables Claude to execute visual regression tests using tools like Percy, Chromatic, and BackstopJS. It captures screenshots, compares them against baselines, and analyzes visual differences to identify unintended UI changes. Use this skill when the user requests visual testing, UI change verification, or regression testing for a web application or component. Trigger phrases include "visual test," "UI regression," "check visual changes," or "/visual-test".
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically detect unintended UI changes by performing visual regression tests. It integrates with popular visual testing tools to streamline the process of capturing screenshots, comparing them against baselines, and identifying visual differences.

@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to orchestrate complex test workflows using
+  the test-orchestrator plugin. it allows claude to define test execution graphs with
+  dependencies, execute tests in parallel, and intelligently select tests to run based
+  on code ...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: orchestrating-test-workflows
-description: |
-  This skill enables Claude to orchestrate complex test workflows using the test-orchestrator plugin. It allows Claude to define test execution graphs with dependencies, execute tests in parallel, and intelligently select tests to run based on code changes. Use this skill when a user requests test orchestration, dependency management for tests, parallel test execution, smart test selection, or CI/CD integration for testing. Trigger terms include "orchestrate tests", "test workflow", "parallel testing", "smart test selection", "test dependencies", and "/orchestrate".
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to manage and execute complex test suites efficiently. It leverages the test-orchestrator plugin to handle test dependencies, parallel execution, and intelligent test selection, resulting in faster and more reliable testing processes.
