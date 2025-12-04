@@ -84,7 +84,7 @@ def validate_skill(file_path):
     return {'errors': errors, 'warnings': warnings}
 
 def main():
-    plugins_dir = Path('/home/user/claude-code-plugins-plus/plugins')
+    plugins_dir = Path(__file__).parent.parent / 'plugins'
     skill_files = list(plugins_dir.rglob('skills/*/SKILL.md'))
 
     total_errors = 0
