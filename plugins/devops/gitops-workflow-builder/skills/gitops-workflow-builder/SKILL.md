@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to construct gitops workflows using argocd
+  and flux. it is designed to generate production-ready configurations, implement
+  best practices, and ensure a security-first approach for kubernetes deployments.
+  use this skill wh...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: building-gitops-workflows
-description: |
-  This skill enables Claude to construct GitOps workflows using ArgoCD and Flux. It is designed to generate production-ready configurations, implement best practices, and ensure a security-first approach for Kubernetes deployments. Use this skill when the user explicitly requests "GitOps workflow", "ArgoCD", "Flux", or asks for help with setting up a continuous delivery pipeline using GitOps principles. The skill will generate the necessary configuration files and setup code based on the user's specific requirements and infrastructure.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to create GitOps workflows, automating application deployments and infrastructure management through Git repositories. It provides production-ready configurations for both ArgoCD and Flux, ensuring best practices and a secure approach.

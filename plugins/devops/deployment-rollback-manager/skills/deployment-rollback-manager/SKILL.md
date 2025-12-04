@@ -1,11 +1,16 @@
 ---
+description: This skill manages and executes deployment rollbacks with safety checks.
+  it helps ensure smooth recovery from failed deployments by automating the rollback
+  process. use this skill when a deployment has issues, such as errors, performance
+  degradati...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: managing-deployment-rollbacks
-description: |
-  This skill manages and executes deployment rollbacks with safety checks. It helps ensure smooth recovery from failed deployments by automating the rollback process. Use this skill when a deployment has issues, such as errors, performance degradation, or unexpected behavior. The skill is triggered by requests to "rollback deployment", "revert to previous version", or similar phrases related to deployment recovery. It prioritizes safe rollback procedures and provides options for verification.
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to manage and execute deployment rollbacks, ensuring a stable and reliable system. It automates the process of reverting to a previous, known-good deployment state, minimizing downtime and potential disruptions.
