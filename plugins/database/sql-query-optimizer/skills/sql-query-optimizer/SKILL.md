@@ -1,11 +1,18 @@
 ---
+description: This skill analyzes and optimizes sql queries for improved performance.
+  it identifies potential bottlenecks, suggests optimal indexes, and proposes query
+  rewrites. use this when the user mentions "optimize sql query", "improve sql performance",
+  "s...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: optimizing-sql-queries
-description: |
-  This skill analyzes and optimizes SQL queries for improved performance. It identifies potential bottlenecks, suggests optimal indexes, and proposes query rewrites. Use this when the user mentions "optimize SQL query", "improve SQL performance", "SQL query optimization", "slow SQL query", or asks for help with "SQL indexing". The skill helps enhance database efficiency by analyzing query structure, recommending indexes, and reviewing execution plans.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to analyze SQL queries, identify performance bottlenecks, and suggest optimizations such as index creation or query rewriting. It leverages the sql-query-optimizer plugin to provide actionable recommendations for improving database performance.

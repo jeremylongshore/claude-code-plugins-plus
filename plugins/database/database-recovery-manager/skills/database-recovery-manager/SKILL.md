@@ -1,11 +1,15 @@
 ---
+description: This skill manages database recovery operations using the database-recovery-manager
+  plugin. it enables disaster recovery, point-in-time recovery (pitr), and automated
+  failover strategies for production database systems. use this skill when the use...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: managing-database-recovery
-description: |
-  This skill manages database recovery operations using the database-recovery-manager plugin. It enables disaster recovery, point-in-time recovery (PITR), and automated failover strategies for production database systems. Use this skill when the user requests help with "database recovery", "disaster recovery", "point-in-time recovery", "PITR", "backup validation", "recovery testing", or "multi-region failover" for databases. It automates backup verification and recovery testing.
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to orchestrate comprehensive database recovery strategies, including disaster recovery setup, point-in-time recovery implementation, and automated failover configuration. It leverages the database-recovery-manager plugin to ensure database resilience and minimize downtime.

@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to design and visualize database schemas. it
+  leverages normalization guidance (1nf through bcnf), relationship mapping, and erd
+  generation to create efficient and well-structured databases. use this skill when
+  the user re...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: designing-database-schemas
-description: |
-  This skill enables Claude to design and visualize database schemas. It leverages normalization guidance (1NF through BCNF), relationship mapping, and ERD generation to create efficient and well-structured databases. Use this skill when the user requests to "design a database schema", "create a database model", "generate an ERD", "normalize a database", or needs help with "database design best practices". The skill is triggered by terms like "database schema", "ERD diagram", "database normalization", and "relational database design".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill assists in designing robust and normalized database schemas. It provides guidance on normalization principles, helps map relationships between entities, generates ERD diagrams for visualization, and ultimately produces SQL CREATE statements.
