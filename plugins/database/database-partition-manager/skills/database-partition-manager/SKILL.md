@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to design, implement, and manage table partitioning
+  strategies for large databases. it is triggered when the user needs to optimize
+  query performance, manage time-series data, or reduce maintenance windows for tables
+  exce...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: managing-database-partitions
-description: |
-  This skill enables Claude to design, implement, and manage table partitioning strategies for large databases. It is triggered when the user needs to optimize query performance, manage time-series data, or reduce maintenance windows for tables exceeding 100GB. Use this skill when asked to "create database partitions", "optimize database queries with partitioning", "manage large database tables", or when the user mentions "partitioning strategy", "data archival", or uses the command `/partition`. The skill helps automate partition maintenance and data lifecycle management. It focuses on database best practices and production-ready implementations.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the design, implementation, and management of database table partitioning strategies. It helps optimize query performance, manage time-series data, and reduce maintenance windows for massive datasets.

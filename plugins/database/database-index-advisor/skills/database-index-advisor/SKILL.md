@@ -1,11 +1,18 @@
 ---
+description: This skill uses the database-index-advisor plugin to analyze query patterns
+  and recommend optimal database indexes. it identifies missing indexes to improve
+  query performance and unused indexes that can be removed to save storage and improve
+  write...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: analyzing-database-indexes
-description: |
-  This skill uses the database-index-advisor plugin to analyze query patterns and recommend optimal database indexes. It identifies missing indexes to improve query performance and unused indexes that can be removed to save storage and improve write performance. Use this skill when the user asks to "analyze database indexes", "optimize slow queries", "find missing indexes", "remove unused indexes", or requests help with "database index optimization". The plugin analyzes database workloads, detects potential indexing issues, and provides actionable recommendations for indexing strategies.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to analyze database workloads, identify suboptimal or missing indexes, and suggest improvements to enhance database performance. It leverages the database-index-advisor plugin to provide concrete recommendations for indexing strategies, including identifying unused indexes for removal.

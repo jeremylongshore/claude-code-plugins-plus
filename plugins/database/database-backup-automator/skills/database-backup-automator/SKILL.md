@@ -1,11 +1,18 @@
 ---
+description: This skill automates database backups using the database-backup-automator
+  plugin. it creates scripts for scheduled backups, compression, encryption, and restore
+  procedures across postgresql, mysql, mongodb, and sqlite. use this when the user
+  reque...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: automating-database-backups
-description: |
-  This skill automates database backups using the database-backup-automator plugin. It creates scripts for scheduled backups, compression, encryption, and restore procedures across PostgreSQL, MySQL, MongoDB, and SQLite. Use this when the user requests database backup automation, disaster recovery planning, setting up backup schedules, or creating restore procedures. The skill is triggered by phrases like "create database backup", "automate database backups", "setup backup schedule", or "generate restore procedure".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the creation of database backup solutions. It generates scripts, configures schedules, and provides comprehensive restore procedures, ensuring data safety and efficient recovery.

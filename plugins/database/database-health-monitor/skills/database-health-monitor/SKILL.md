@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to monitor database health using real-time
+  metrics, predictive alerts, and automated remediation. it's designed for production-grade
+  database health monitoring for postgresql and mysql, detecting performance degradation,
+  ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: monitoring-database-health
-description: |
-  This skill enables Claude to monitor database health using real-time metrics, predictive alerts, and automated remediation. It's designed for production-grade database health monitoring for PostgreSQL and MySQL, detecting performance degradation, resource exhaustion, and replication issues. Use this skill when the user requests to monitor database health, check database performance, receive database alerts, or automate database remediation. The skill is triggered by phrases like "check database health", "monitor database performance", "database health check", or "/health-check".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to proactively monitor the health of your databases. It provides real-time metrics, predictive alerts, and automated remediation capabilities to ensure optimal performance and uptime.

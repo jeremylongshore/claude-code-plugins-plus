@@ -1,11 +1,18 @@
 ---
+description: This skill leverages the database-diff-tool plugin to compare database
+  schemas, generate migration scripts, and provide rollback procedures. it is triggered
+  when the user requests database schema comparisons, migration script generation,
+  or databa...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: comparing-database-schemas
-description: |
-  This skill leverages the database-diff-tool plugin to compare database schemas, generate migration scripts, and provide rollback procedures. It is triggered when the user requests database schema comparisons, migration script generation, or database synchronization. Use this skill when asked to identify differences between database schemas (PostgreSQL or MySQL), create safe migration scripts with transaction safety, validate changes before deployment, or generate rollback procedures. The skill is activated by requests involving terms like "database diff", "schema comparison", "generate migration script", "database synchronization", or `/db-diff`.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to perform production-grade database schema comparisons, generate safe migration scripts, and create rollback procedures. It simplifies the process of keeping database schemas synchronized across different environments, ensuring data integrity and minimizing downtime during deployments.
