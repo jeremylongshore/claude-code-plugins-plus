@@ -1,22 +1,16 @@
 ---
+description: Automatic activation for all google cloud agent development kit (adk)
+  and agent starter pack operations - multi-agent systems, containerized deployment,
+  rag agents, and production orchestration. **trigger phrases:** - "adk", "agent development
+  kit...
+allowed-tools:
+- Read
+- WebFetch
+- WebSearch
+- Grep
 name: Google Cloud Agent SDK Master
-description: |
-  Automatic activation for ALL Google Cloud Agent Development Kit (ADK) and Agent Starter Pack operations - multi-agent systems, containerized deployment, RAG agents, and production orchestration.
-  **TRIGGER PHRASES:**
-  - "adk", "agent development kit", "agent starter pack", "multi-agent", "build agent"
-  - "cloud run agent", "gke deployment", "agent engine", "containerized agent"
-  - "rag agent", "react agent", "agent orchestration", "agent templates"
-  **AUTO-INVOKES FOR:**
-  - Agent creation and scaffolding
-  - Multi-agent system design
-  - Containerized agent deployment
-  - RAG (Retrieval-Augmented Generation) implementation
-  - CI/CD pipeline setup for agents
-  - Agent evaluation and monitoring
-allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+license: MIT
 ---
-
 # Google Cloud Agent SDK Master - Production-Ready Agent Systems
 
 This Agent Skill provides comprehensive mastery of Google's Agent Development Kit (ADK) and Agent Starter Pack for building and deploying production-grade containerized agents.

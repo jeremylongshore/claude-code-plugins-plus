@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to validate authentication implementations
+  against security best practices and industry standards. it analyzes various authentication
+  methods, including jwt, oauth, session-based authentication, and api keys. use this
+  ski...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: validating-authentication-implementations
-description: |
-  This skill enables Claude to validate authentication implementations against security best practices and industry standards. It analyzes various authentication methods, including JWT, OAuth, session-based authentication, and API keys. Use this skill when you need to perform an authentication security check, assess password policies, evaluate MFA implementation, or analyze session security. Trigger this skill with phrases like "validate authentication," "authentication check," or "authcheck."
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill allows Claude to assess the security of authentication mechanisms in a system or application. It provides a detailed report highlighting potential vulnerabilities and offering recommendations for improvement based on established security principles.

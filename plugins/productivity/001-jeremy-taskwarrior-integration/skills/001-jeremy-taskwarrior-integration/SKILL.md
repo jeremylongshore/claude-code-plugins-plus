@@ -1,11 +1,16 @@
 ---
+description: Enforces complete taskwarrior integration protocol for all coding tasks.
+  activates automatically when user mentions "taskwarrior", "task warrior", "tw",
+  or discusses task management. decomposes all coding work into properly tracked taskwarrior
+  tas...
+allowed-tools:
+- Read
+- WebFetch
+- WebSearch
+- Grep
 name: 001-jeremy-taskwarrior-integration
-description: |
-  Enforces complete Taskwarrior integration protocol for ALL coding tasks. Activates automatically when user mentions "taskwarrior", "task warrior", "tw", or discusses task management. Decomposes all coding work into properly tracked Taskwarrior tasks with full lifecycle: task add → task start → implementation → task done. Integrates with Timewarrior for automatic time tracking.
-allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## What This Skill Does
 
 This skill **enforces mandatory Taskwarrior integration** for ALL coding activities. It ensures every piece of work is:

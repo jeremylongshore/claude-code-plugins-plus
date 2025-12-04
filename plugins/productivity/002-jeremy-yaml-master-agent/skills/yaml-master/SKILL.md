@@ -1,14 +1,18 @@
 ---
+description: 'Proactive yaml intelligence: automatically activates when working with
+  yaml files, configuration management, ci/cd pipelines, kubernetes manifests, docker
+  compose, or any yaml-based workflows. provides intelligent validation, schema inference,
+  lin...'
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: yaml-master
-description: |
-  PROACTIVE YAML INTELLIGENCE: Automatically activates when working with YAML files, configuration management,
-  CI/CD pipelines, Kubernetes manifests, Docker Compose, or any YAML-based workflows. Provides intelligent
-  validation, schema inference, linting, format conversion (JSON/TOML/XML), and structural transformations
-  with deep understanding of YAML specifications and common anti-patterns.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # YAML Master Agent
 
 **⚡ This skill activates AUTOMATICALLY when you work with YAML files!**

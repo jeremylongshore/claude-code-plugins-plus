@@ -1,11 +1,18 @@
 ---
+description: 'Proactive auto-loading: automatically detects and loads agents.md files
+  from the current working directory when starting a session or changing directories.
+  this skill ensures agent-specific instructions are incorporated into claude code''s
+  context ...'
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: agent-context-loader
-description: |
-  PROACTIVE AUTO-LOADING: Automatically detects and loads AGENTS.md files from the current working directory when starting a session or changing directories. This skill ensures agent-specific instructions are incorporated into Claude Code's context alongside CLAUDE.md, enabling specialized agent behaviors. Triggers automatically when Claude detects it's working in a directory, when starting a new session, or when explicitly requested to "load agent context" or "check for AGENTS.md file".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Agent Context Auto-Loader
 
 **⚡ This skill activates AUTOMATICALLY - no user action required!**

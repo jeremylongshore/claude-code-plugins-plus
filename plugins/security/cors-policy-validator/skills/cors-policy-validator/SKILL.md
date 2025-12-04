@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to validate cross-origin resource sharing (cors)
+  policies. it uses the cors-policy-validator plugin to analyze cors configurations
+  and identify potential security vulnerabilities. use this skill when the user requests
+  to ...
+allowed-tools:
+- Read
+- WebFetch
+- WebSearch
+- Grep
 name: validating-cors-policies
-description: |
-  This skill enables Claude to validate Cross-Origin Resource Sharing (CORS) policies. It uses the cors-policy-validator plugin to analyze CORS configurations and identify potential security vulnerabilities. Use this skill when the user requests to "validate CORS policy", "check CORS configuration", "analyze CORS headers", or asks about "CORS security". It helps ensure that CORS policies are correctly implemented, preventing unauthorized cross-origin requests and protecting sensitive data.
-allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to assess the security and correctness of CORS policies. By leveraging the cors-policy-validator plugin, it identifies misconfigurations and potential vulnerabilities in CORS settings, helping developers build more secure web applications.

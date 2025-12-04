@@ -1,15 +1,18 @@
 ---
+description: Automates software development overnight using git hooks to enforce test-driven
+  development (tdd). this skill activates when you request "overnight development",
+  "autonomous coding", "work while i sleep", or mention tdd workflows and git hooks.
+  it...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: overnight-development
-description: |
-  Automates software development overnight using Git hooks to enforce test-driven development (TDD).
-  This skill activates when you request "overnight development", "autonomous coding", "work while I sleep",
-  or mention TDD workflows and Git hooks. It leverages Git hooks to block commits until all tests pass,
-  enforcing a rigorous TDD process and ensuring high-quality, production-ready code. Perfect for building
-  features autonomously - just define the goal and let Claude work overnight while tests enforce quality.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Overnight Development
 
 ## Overview
