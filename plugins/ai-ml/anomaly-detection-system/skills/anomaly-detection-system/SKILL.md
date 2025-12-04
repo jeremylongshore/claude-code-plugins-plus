@@ -1,9 +1,10 @@
 ---
 name: detecting-data-anomalies
-description: Identify anomalies and outliers in datasets using ML algorithms. Use when analyzing "anomaly detection", "outlier analysis", or "unusual data patterns".
+description: Identify anomalies and outliers in datasets using ML algorithms. Use
+  when analyzing "anomaly detection", "outlier analysis", or "unusual data patterns".
 allowed-tools: Read, Bash, Grep, Glob
+license: MIT
 ---
-
 ## Overview
 
 This skill allows Claude to utilize the anomaly-detection-system plugin to pinpoint unusual data points within a given dataset. It automates the process of anomaly detection, providing insights into potential errors, fraud, or other significant deviations from expected patterns.

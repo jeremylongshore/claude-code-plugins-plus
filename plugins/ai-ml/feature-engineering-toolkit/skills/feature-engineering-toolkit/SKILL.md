@@ -1,9 +1,11 @@
 ---
 name: engineering-features-for-machine-learning
-description: Create, select, and transform features to improve machine learning model performance. Handles feature scaling, encoding, and importance analysis. Use when asked to "engineer features" or "select features".
+description: Create, select, and transform features to improve machine learning model
+  performance. Handles feature scaling, encoding, and importance analysis. Use when
+  asked to "engineer features" or "select features".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to leverage the feature-engineering-toolkit plugin to enhance machine learning models. It automates the process of creating new features, selecting the most relevant ones, and transforming existing features to better suit the model's needs. By using this skill, you can improve the accuracy, efficiency, and interpretability of your machine learning models.

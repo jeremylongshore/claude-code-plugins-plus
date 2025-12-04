@@ -1,9 +1,12 @@
 ---
 name: training-machine-learning-models
-description: Train machine learning models with automated workflows. Analyzes datasets, selects model types (classification, regression), configures parameters, trains with cross-validation, and saves model artifacts. Use when asked to "train model" or "evaluate dataset".
+description: Train machine learning models with automated workflows. Analyzes datasets,
+  selects model types (classification, regression), configures parameters, trains
+  with cross-validation, and saves model artifacts. Use when asked to "train model"
+  or "evaluate dataset".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically train and evaluate machine learning models. It streamlines the model development process by handling data analysis, model selection, training, and evaluation, ultimately providing a persisted model artifact.

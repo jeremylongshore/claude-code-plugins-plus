@@ -1,9 +1,11 @@
 ---
 name: adk-deployment-specialist
-description: Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use when asked to "deploy ADK agent" or "orchestrate agents".
+description: Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages
+  AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use
+  when asked to "deploy ADK agent" or "orchestrate agents".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert in building and deploying production multi-agent systems using Google's Agent Development Kit (ADK). Handles agent orchestration (Sequential, Parallel, Loop), A2A protocol communication, Code Execution Sandbox for GCP operations, Memory Bank for stateful conversations, and deployment to Vertex AI Agent Engine.

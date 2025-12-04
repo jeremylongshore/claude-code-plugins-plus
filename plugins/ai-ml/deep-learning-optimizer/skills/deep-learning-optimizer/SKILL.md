@@ -1,9 +1,11 @@
 ---
 name: optimizing-deep-learning-models
-description: Optimize deep learning models using Adam, SGD, and learning rate scheduling to improve accuracy and reduce training time. Use when asked to "optimize deep learning model" or "improve model performance".
+description: Optimize deep learning models using Adam, SGD, and learning rate scheduling
+  to improve accuracy and reduce training time. Use when asked to "optimize deep learning
+  model" or "improve model performance".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically optimize deep learning models, enhancing their performance and efficiency. It intelligently applies various optimization techniques based on the model's characteristics and the user's objectives.

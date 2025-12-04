@@ -1,9 +1,11 @@
 ---
 name: setting-up-experiment-tracking
-description: Setup machine learning experiment tracking using MLflow or Weights & Biases. Configures environment and provides code for logging parameters, metrics, and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow".
+description: Setup machine learning experiment tracking using MLflow or Weights &
+  Biases. Configures environment and provides code for logging parameters, metrics,
+  and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the process of setting up experiment tracking for machine learning projects. It automates environment configuration, tool initialization, and provides code examples to get you started quickly.

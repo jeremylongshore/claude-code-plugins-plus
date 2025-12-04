@@ -1,9 +1,11 @@
 ---
 name: processing-computer-vision-tasks
-description: Process images using object detection, classification, and segmentation. Use when requesting "analyze image", "object detection", "image classification", or "computer vision".
+description: Process images using object detection, classification, and segmentation.
+  Use when requesting "analyze image", "object detection", "image classification",
+  or "computer vision".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to leverage the computer-vision-processor plugin to analyze images, detect objects, and extract meaningful information. It automates computer vision workflows, optimizes performance, and provides detailed insights based on image content.

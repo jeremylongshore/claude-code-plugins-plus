@@ -1,9 +1,10 @@
 ---
 name: creating-data-visualizations
-description: Generate plots, charts, and graphs from data with automatic visualization type selection. Use when requesting "visualization", "plot", "chart", or "graph".
+description: Generate plots, charts, and graphs from data with automatic visualization
+  type selection. Use when requesting "visualization", "plot", "chart", or "graph".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to transform raw data into compelling visual representations. It leverages intelligent automation to select optimal visualization types and generate informative plots, charts, and graphs. This skill helps users understand complex data more easily.

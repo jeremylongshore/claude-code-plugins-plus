@@ -1,9 +1,11 @@
 ---
 name: orchestrating-multi-agent-systems
-description: Orchestrate multi-agent systems with handoffs, routing, and workflows across AI providers. Use when building "multi-agent system", "agent orchestration", or "coordinate agents".
+description: Orchestrate multi-agent systems with handoffs, routing, and workflows
+  across AI providers. Use when building "multi-agent system", "agent orchestration",
+  or "coordinate agents".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to create and manage sophisticated multi-agent systems. It leverages the AI SDK v5 to facilitate agent collaboration, task delegation, and intelligent routing, enabling the creation of complex AI-powered workflows.

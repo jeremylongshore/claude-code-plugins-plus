@@ -1,9 +1,10 @@
 ---
 name: validating-ai-ethics-and-fairness
-description: Validate AI/ML models and datasets for bias, fairness, and ethical concerns. Use when auditing "ethics validation", "fairness assessment", or "bias detection".
+description: Validate AI/ML models and datasets for bias, fairness, and ethical concerns.
+  Use when auditing "ethics validation", "fairness assessment", or "bias detection".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically assess and improve the ethical considerations and fairness of AI and machine learning projects. It leverages the ai-ethics-validator plugin to identify potential biases, evaluate fairness metrics, and suggest mitigation strategies, promoting responsible AI development.

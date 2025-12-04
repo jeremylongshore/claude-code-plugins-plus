@@ -1,9 +1,11 @@
 ---
 name: building-automl-pipelines
-description: Build automated machine learning pipelines with feature engineering, model selection, and hyperparameter tuning. Use when requesting "build automl pipeline" or "automate ml workflows".
+description: Build automated machine learning pipelines with feature engineering,
+  model selection, and hyperparameter tuning. Use when requesting "build automl pipeline"
+  or "automate ml workflows".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the creation of machine learning pipelines using the automl-pipeline-builder plugin. It simplifies the process of building, training, and evaluating machine learning models by automating feature engineering, model selection, and hyperparameter tuning.

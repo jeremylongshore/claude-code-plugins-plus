@@ -1,9 +1,11 @@
 ---
 name: building-classification-models
-description: Build and evaluate classification models for supervised learning tasks with labeled data. Use when requesting "build a classifier", "create classification model", or "train classifier".
+description: Build and evaluate classification models for supervised learning tasks
+  with labeled data. Use when requesting "build a classifier", "create classification
+  model", or "train classifier".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to efficiently build and deploy classification models. It automates the process of model selection, training, and evaluation, providing users with a robust and reliable classification solution. The skill also provides insights into model performance and suggests potential improvements.

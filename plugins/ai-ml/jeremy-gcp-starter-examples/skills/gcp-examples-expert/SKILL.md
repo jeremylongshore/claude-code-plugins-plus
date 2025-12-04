@@ -1,9 +1,11 @@
 ---
 name: gcp-examples-expert
-description: Provide production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to "show ADK example" or "provide GCP starter kit".
+description: Provide production-ready Google Cloud code examples from official repositories
+  including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns.
+  Use when asked to "show ADK example" or "provide GCP starter kit".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert aggregator of production-ready code examples from official Google Cloud repositories. Provides battle-tested starter kits, templates, and best practices for building AI agents, workflows, and applications on Google Cloud Platform.

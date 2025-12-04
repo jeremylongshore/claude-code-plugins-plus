@@ -1,9 +1,12 @@
 ---
 name: genkit-production-expert
-description: Build production Firebase Genkit applications including RAG systems, multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement RAG".
+description: Build production Firebase Genkit applications including RAG systems,
+  multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions
+  or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement
+  RAG".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## What This Skill Does
 
 This skill provides comprehensive expertise in building production-ready Firebase Genkit applications across Node.js (1.0), Python (Alpha), and Go (1.0). It handles the complete lifecycle from initialization to deployment with AI monitoring.

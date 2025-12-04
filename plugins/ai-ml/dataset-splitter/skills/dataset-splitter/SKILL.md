@@ -1,9 +1,10 @@
 ---
 name: splitting-datasets
-description: Split datasets into training, validation, and testing sets for ML model development. Use when requesting "split dataset", "train-test split", or "data partitioning".
+description: Split datasets into training, validation, and testing sets for ML model
+  development. Use when requesting "split dataset", "train-test split", or "data partitioning".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the process of dividing a dataset into subsets for training, validating, and testing machine learning models. It ensures proper data preparation and facilitates robust model evaluation.

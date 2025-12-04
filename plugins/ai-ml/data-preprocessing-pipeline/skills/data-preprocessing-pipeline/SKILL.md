@@ -1,9 +1,10 @@
 ---
 name: preprocessing-data-with-automated-pipelines
-description: Automate data cleaning, transformation, and validation for ML tasks. Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation".
+description: Automate data cleaning, transformation, and validation for ML tasks.
+  Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to construct and execute automated data preprocessing pipelines, ensuring data quality and readiness for machine learning. It streamlines the data preparation process by automating common tasks such as data cleaning, transformation, and validation.
