@@ -1,11 +1,18 @@
 ---
+description: This skill allows claude to evaluate machine learning models using a
+  comprehensive suite of metrics. it should be used when the user requests model performance
+  analysis, validation, or testing. claude can use this skill to assess model accuracy,
+  p...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: evaluating-machine-learning-models
-description: |
-  This skill allows Claude to evaluate machine learning models using a comprehensive suite of metrics. It should be used when the user requests model performance analysis, validation, or testing. Claude can use this skill to assess model accuracy, precision, recall, F1-score, and other relevant metrics. Trigger this skill when the user mentions "evaluate model", "model performance", "testing metrics", "validation results", or requests a comprehensive "model evaluation".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to perform thorough evaluations of machine learning models, providing detailed performance insights. It leverages the `model-evaluation-suite` plugin to generate a range of metrics, enabling informed decisions about model selection and optimization.

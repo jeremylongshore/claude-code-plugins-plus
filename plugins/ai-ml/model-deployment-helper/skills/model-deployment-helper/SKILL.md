@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to deploy machine learning models to production
+  environments. it automates the deployment workflow, implements best practices for
+  serving models, optimizes performance, and handles potential errors. use this skill
+  when th...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: deploying-machine-learning-models
-description: |
-  This skill enables Claude to deploy machine learning models to production environments. It automates the deployment workflow, implements best practices for serving models, optimizes performance, and handles potential errors. Use this skill when the user requests to deploy a model, serve a model via an API, or put a trained model into a production environment. The skill is triggered by requests containing terms like "deploy model," "productionize model," "serve model," or "model deployment."
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the process of deploying machine learning models to production, ensuring efficient and reliable model serving. It leverages automated workflows and best practices to simplify the deployment process and optimize performance.

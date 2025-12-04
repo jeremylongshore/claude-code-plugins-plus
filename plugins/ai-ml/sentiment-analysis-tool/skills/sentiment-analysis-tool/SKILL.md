@@ -1,11 +1,15 @@
 ---
+description: This skill enables claude to analyze the sentiment of text data. it identifies
+  the emotional tone expressed in text, classifying it as positive, negative, or neutral.
+  use this skill when a user requests sentiment analysis, opinion mining, or emoti...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: analyzing-text-sentiment
-description: |
-  This skill enables Claude to analyze the sentiment of text data. It identifies the emotional tone expressed in text, classifying it as positive, negative, or neutral. Use this skill when a user requests sentiment analysis, opinion mining, or emotion detection on any text, such as customer reviews, social media posts, or survey responses. Trigger words include "sentiment analysis", "analyze sentiment", "opinion mining", "emotion detection", and "polarity".
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to perform sentiment analysis on text, providing insights into the emotional content and polarity of the provided data. By leveraging AI/ML techniques, it helps understand public opinion, customer feedback, and overall emotional tone in written communication.
