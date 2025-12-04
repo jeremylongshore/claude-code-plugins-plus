@@ -1,11 +1,16 @@
 ---
+description: Automatically manages marketplace catalog updates, syncs marketplace.json,
+  and handles plugin distribution when user mentions marketplace update, sync catalog,
+  or add to marketplace. specific to claude-code-plugins two-catalog system.
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Bash
 name: marketplace-manager
-description: |
-  Automatically manages marketplace catalog updates, syncs marketplace.json, and handles plugin distribution when user mentions marketplace update, sync catalog, or add to marketplace. Specific to claude-code-plugins two-catalog system.
-allowed-tools: Read, Write, Edit, Grep, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Marketplace Manager
 
 ## Purpose

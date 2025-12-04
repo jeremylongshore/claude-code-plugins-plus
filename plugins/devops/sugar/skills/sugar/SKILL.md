@@ -1,11 +1,18 @@
 ---
+description: Enables claude to manage sugar's autonomous development workflows. it
+  allows claude to create tasks, view the status of the system, review pending tasks,
+  and start autonomous execution mode. use this skill when the user asks to create
+  a new develo...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: managing-autonomous-development
-description: |
-  Enables Claude to manage Sugar's autonomous development workflows. It allows Claude to create tasks, view the status of the system, review pending tasks, and start autonomous execution mode. Use this skill when the user asks to create a new development task using `/sugar-task`, check the system status with `/sugar-status`, review pending tasks via `/sugar-review`, or initiate autonomous development using `/sugar-run`. It provides a comprehensive interface for interacting with the Sugar autonomous development system.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to orchestrate and monitor autonomous development processes within the Sugar environment. It provides a set of commands to create, manage, and execute tasks, ensuring efficient and automated software development workflows.

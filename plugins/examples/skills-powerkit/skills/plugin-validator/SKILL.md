@@ -1,11 +1,14 @@
 ---
+description: Automatically validates claude code plugin structure, schemas, and compliance
+  when user mentions validate plugin, check plugin, or plugin errors. runs comprehensive
+  validation specific to claude-code-plugins repository standards.
+allowed-tools:
+- Read
+- Grep
+- Bash
 name: plugin-validator
-description: |
-  Automatically validates Claude Code plugin structure, schemas, and compliance when user mentions validate plugin, check plugin, or plugin errors. Runs comprehensive validation specific to claude-code-plugins repository standards.
-allowed-tools: Read, Grep, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Plugin Validator
 
 ## Purpose

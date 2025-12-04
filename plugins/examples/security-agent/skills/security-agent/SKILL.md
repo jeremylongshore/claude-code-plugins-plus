@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to conduct a security-focused code review using
+  the security-agent plugin. it analyzes code for potential vulnerabilities like sql
+  injection, xss, authentication flaws, and insecure dependencies. claude uses this
+  skill wh...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: performing-security-code-review
-description: |
-  This skill enables Claude to conduct a security-focused code review using the security-agent plugin. It analyzes code for potential vulnerabilities like SQL injection, XSS, authentication flaws, and insecure dependencies. Claude uses this skill when the user explicitly requests a security audit, asks for a code review with a focus on security, or mentions security concerns related to code. The security-agent plugin then provides structured security findings with severity ratings, code locations, impact assessments, and remediation guidance.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to act as a security expert, identifying and explaining potential vulnerabilities within code. It leverages the security-agent plugin to provide detailed security analysis, helping developers improve the security posture of their applications.

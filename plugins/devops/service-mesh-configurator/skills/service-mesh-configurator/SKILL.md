@@ -1,11 +1,18 @@
 ---
+description: This skill configures service meshes like istio and linkerd for microservices.
+  it generates production-ready configurations, implements best practices, and ensures
+  a security-first approach. use this skill when the user asks to "configure service
+  ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: configuring-service-meshes
-description: |
-  This skill configures service meshes like Istio and Linkerd for microservices. It generates production-ready configurations, implements best practices, and ensures a security-first approach. Use this skill when the user asks to "configure service mesh", "setup Istio", "setup Linkerd", or requests assistance with "service mesh configuration" for their microservices architecture. The configurations will be tailored to the specified infrastructure requirements.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to generate configurations and setup code for service meshes like Istio and Linkerd. It simplifies the process of deploying and managing microservices by automating the configuration of essential service mesh components.

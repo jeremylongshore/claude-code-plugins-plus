@@ -1,11 +1,15 @@
 ---
+description: Analyzes existing plugins to extract their capabilities, then adapts
+  and applies those skills to the current task. Acts as a universal skill chameleon
+  that learns from other plugins. Activates when you request "skill adapter" functionality.
+allowed-tools:
+- Read
+- Grep
+- Glob
+- Bash
 name: skill-adapter
-description: |
-  Analyzes existing plugins to extract their capabilities, then adapts and applies those skills to the current task. Acts as a universal skill chameleon that learns from other plugins. Activates when you request "skill adapter" functionality.
-allowed-tools: Read, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Skill Adapter - Universal Plugin Capability Extractor
 
 ## Purpose
