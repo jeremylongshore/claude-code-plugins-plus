@@ -1,11 +1,18 @@
 ---
+description: This skill deploys monitoring stacks, including prometheus, grafana,
+  and datadog. it is used when the user needs to set up or configure monitoring infrastructure
+  for applications or systems. the skill generates production-ready configurations,
+  imp...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: deploying-monitoring-stacks
-description: |
-  This skill deploys monitoring stacks, including Prometheus, Grafana, and Datadog. It is used when the user needs to set up or configure monitoring infrastructure for applications or systems. The skill generates production-ready configurations, implements best practices, and supports multi-platform deployments. Use this when the user explicitly requests to deploy a monitoring stack, or mentions Prometheus, Grafana, or Datadog in the context of infrastructure setup.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automate the deployment of comprehensive monitoring solutions. It simplifies the setup of Prometheus, Grafana, and Datadog, ensuring best practices and production-ready configurations.

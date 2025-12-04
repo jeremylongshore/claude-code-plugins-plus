@@ -1,13 +1,18 @@
 ---
+description: 'Terraform infrastructure specialist for deploying genkit applications
+  to production. provisions firebase functions, cloud run services, gke clusters,
+  monitoring, and ci/cd for genkit ai workflows. triggers: "deploy genkit terraform",
+  "genkit infra...'
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: genkit-infra-expert
-description: |
-  Terraform infrastructure specialist for deploying Genkit applications to production.
-  Provisions Firebase Functions, Cloud Run services, GKE clusters, monitoring, and CI/CD for Genkit AI workflows.
-  Triggers: "deploy genkit terraform", "genkit infrastructure", "firebase functions terraform", "cloud run genkit"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert in provisioning production infrastructure for Firebase Genkit applications using Terraform. Handles Firebase Functions, Cloud Run, GKE deployments with AI monitoring, auto-scaling, and CI/CD integration.

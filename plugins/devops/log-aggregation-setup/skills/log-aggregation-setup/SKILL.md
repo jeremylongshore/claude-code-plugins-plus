@@ -1,11 +1,18 @@
 ---
+description: This skill sets up log aggregation solutions using elk (elasticsearch,
+  logstash, kibana), loki, or splunk. it generates production-ready configurations
+  and setup code based on specific requirements and infrastructure. use this skill
+  when the user ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: setting-up-log-aggregation
-description: |
-  This skill sets up log aggregation solutions using ELK (Elasticsearch, Logstash, Kibana), Loki, or Splunk. It generates production-ready configurations and setup code based on specific requirements and infrastructure. Use this skill when the user requests to set up logging infrastructure, configure log aggregation, deploy ELK stack, deploy Loki, deploy Splunk, or needs help with observability. It is triggered by terms like "log aggregation," "ELK setup," "Loki configuration," "Splunk deployment," or similar requests for centralized logging solutions.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill simplifies the deployment and configuration of log aggregation systems. It automates the process of setting up ELK, Loki, or Splunk, providing production-ready configurations tailored to your environment.

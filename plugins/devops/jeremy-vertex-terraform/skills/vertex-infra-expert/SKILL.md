@@ -1,13 +1,18 @@
 ---
+description: 'Terraform infrastructure specialist for vertex ai services and gemini
+  deployments. provisions model garden, endpoints, vector search, pipelines, and enterprise
+  ai infrastructure. triggers: "vertex ai terraform", "gemini deployment terraform",
+  "mod...'
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: vertex-infra-expert
-description: |
-  Terraform infrastructure specialist for Vertex AI services and Gemini deployments.
-  Provisions Model Garden, endpoints, vector search, pipelines, and enterprise AI infrastructure.
-  Triggers: "vertex ai terraform", "gemini deployment terraform", "model garden infrastructure", "vertex ai endpoints"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert in provisioning Vertex AI infrastructure including Model Garden, Gemini endpoints, vector search, ML pipelines, and production AI services.

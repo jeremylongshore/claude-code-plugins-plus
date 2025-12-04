@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to manage kubernetes network policies and firewall
+  rules. it allows claude to generate configurations and setup code based on specific
+  requirements and infrastructure. use this skill when the user requests to create,
+  modi...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: managing-network-policies
-description: |
-  This skill enables Claude to manage Kubernetes network policies and firewall rules. It allows Claude to generate configurations and setup code based on specific requirements and infrastructure. Use this skill when the user requests to create, modify, or analyze network policies for Kubernetes, or when the user mentions "network-policy", "firewall rules", or "Kubernetes security". This skill is useful for implementing best practices and production-ready configurations for network security in a Kubernetes environment.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to assist with Kubernetes network policy management. It simplifies the creation, modification, and analysis of network policies and firewall rules, ensuring secure and compliant network configurations within Kubernetes clusters.

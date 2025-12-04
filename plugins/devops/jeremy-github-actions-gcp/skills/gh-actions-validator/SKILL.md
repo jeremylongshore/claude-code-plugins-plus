@@ -1,13 +1,18 @@
 ---
+description: Automatically validates and enforces github actions best practices for
+  vertex ai and google cloud deployments. expert in workload identity federation (wif),
+  vertex ai agent engine deployment pipelines, security validation, and ci/cd automation.
+  tr...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: gh-actions-validator
-description: |
-  Automatically validates and enforces GitHub Actions best practices for Vertex AI and Google Cloud deployments.
-  Expert in Workload Identity Federation (WIF), Vertex AI Agent Engine deployment pipelines, security validation, and CI/CD automation.
-  Triggers: "create github actions", "deploy vertex ai", "setup wif", "validate github workflow", "gcp deployment pipeline"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert validator and enforcer of GitHub Actions best practices specifically for Vertex AI Agent Engine and Google Cloud deployments. Ensures secure, production-ready CI/CD pipelines using Workload Identity Federation (WIF) instead of service account JSON keys.

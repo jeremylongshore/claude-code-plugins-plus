@@ -1,13 +1,18 @@
 ---
+description: 'Terraform infrastructure specialist for vertex ai adk agent engine production
+  deployments. provisions agent engine runtime, code execution sandbox, memory bank,
+  vpc-sc, iam, and secure multi-agent infrastructure. triggers: "deploy adk terraform",
+  ...'
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: adk-infra-expert
-description: |
-  Terraform infrastructure specialist for Vertex AI ADK Agent Engine production deployments.
-  Provisions Agent Engine runtime, Code Execution Sandbox, Memory Bank, VPC-SC, IAM, and secure multi-agent infrastructure.
-  Triggers: "deploy adk terraform", "agent engine infrastructure", "adk production deployment", "vpc-sc agent engine"
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert in provisioning production Vertex AI ADK infrastructure with Agent Engine, Code Execution Sandbox (14-day state), Memory Bank, VPC Service Controls, and enterprise security.
