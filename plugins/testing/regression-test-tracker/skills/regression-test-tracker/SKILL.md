@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to track and run regression tests, ensuring
+  new changes don't break existing functionality. it is triggered when the user asks
+  to "track regression", "run regression tests", or uses the shortcut "reg". the skill
+  helps in ...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: tracking-regression-tests
-description: |
-  This skill enables Claude to track and run regression tests, ensuring new changes don't break existing functionality. It is triggered when the user asks to "track regression", "run regression tests", or uses the shortcut "reg". The skill helps in maintaining code stability by identifying critical tests, automating their execution, and analyzing the impact of changes. It also provides insights into test history and identifies flaky tests. The skill uses the `regression-test-tracker` plugin.
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill allows Claude to track and execute regression tests, which are crucial for maintaining software quality and preventing unintended consequences from new code changes. By automating the regression testing process, Claude can quickly identify and address potential issues before they impact users.

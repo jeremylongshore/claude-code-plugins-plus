@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to manage and update snapshot tests using intelligent
+  diff analysis and selective updates. it is triggered when the user asks to analyze
+  snapshot failures, update snapshots, or manage snapshot tests in general. it helps
+  d...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: managing-snapshot-tests
-description: |
-  This skill enables Claude to manage and update snapshot tests using intelligent diff analysis and selective updates. It is triggered when the user asks to analyze snapshot failures, update snapshots, or manage snapshot tests in general. It helps distinguish intentional changes from regressions, selectively update snapshots, and validate snapshot integrity. Use this when the user mentions "snapshot tests", "update snapshots", "snapshot failures", or requests to run "/snapshot-manager" or "/sm". It supports Jest, Vitest, Playwright, and Storybook frameworks.
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to efficiently manage snapshot tests by analyzing differences, selectively updating snapshots based on intentional changes, and identifying potential regressions. It provides a streamlined approach to maintain snapshot test suites across various JavaScript testing frameworks.

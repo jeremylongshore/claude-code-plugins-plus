@@ -1,11 +1,16 @@
 ---
+description: This skill runs smoke tests to verify critical application functionality.
+  it executes pre-defined test suites that check system health, authentication, core
+  features, and external integrations. use this skill after deployments, upgrades,
+  or signif...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: running-smoke-tests
-description: |
-  This skill runs smoke tests to verify critical application functionality. It executes pre-defined test suites that check system health, authentication, core features, and external integrations. Use this skill after deployments, upgrades, or significant configuration changes to ensure the application is operational. Trigger this skill using the terms "smoke test" or "st".
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to quickly verify the critical functionality of an application by running a suite of smoke tests. It provides a fast pass/fail assessment, helping to identify potential issues early in the deployment process.

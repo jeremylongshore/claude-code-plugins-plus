@@ -1,11 +1,18 @@
 ---
+description: This skill enables automated testing of mobile applications on ios and
+  android platforms using frameworks like appium, detox, xcuitest, and espresso. it
+  generates end-to-end tests, sets up page object models, and handles platform-specific
+  elements...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: automating-mobile-app-testing
-description: |
-  This skill enables automated testing of mobile applications on iOS and Android platforms using frameworks like Appium, Detox, XCUITest, and Espresso. It generates end-to-end tests, sets up page object models, and handles platform-specific elements. Use this skill when the user requests mobile app testing, test automation for iOS or Android, or needs assistance with setting up device farms and simulators. The skill is triggered by terms like "mobile testing", "appium", "detox", "xcuitest", "espresso", "android test", "ios test".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automate mobile app testing across iOS and Android, leveraging popular frameworks. It handles test generation, device configuration, and platform-specific adjustments, streamlining the mobile testing process.

@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to test load balancing strategies. it validates
+  traffic distribution across backend servers, tests failover scenarios when servers
+  become unavailable, verifies sticky sessions, and assesses health check functionality.
+  use...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: testing-load-balancers
-description: |
-  This skill enables Claude to test load balancing strategies. It validates traffic distribution across backend servers, tests failover scenarios when servers become unavailable, verifies sticky sessions, and assesses health check functionality. Use this skill when the user asks to "test load balancer", "validate traffic distribution", "test failover", "verify sticky sessions", or "test health checks". It is specifically designed for testing load balancing configurations using the `load-balancer-tester` plugin.
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to thoroughly test load balancing configurations, ensuring high availability and optimal performance. It automates the process of validating traffic distribution, simulating server failures, and verifying session persistence.

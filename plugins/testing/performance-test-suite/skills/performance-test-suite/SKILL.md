@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to design, execute, and analyze performance
+  tests using the performance-test-suite plugin. it is activated when the user requests
+  load testing, stress testing, spike testing, or endurance testing, and when discussing
+  perf...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: performance-testing
-description: |
-  This skill enables Claude to design, execute, and analyze performance tests using the performance-test-suite plugin. It is activated when the user requests load testing, stress testing, spike testing, or endurance testing, and when discussing performance metrics such as response time, throughput, and error rates. It identifies performance bottlenecks related to CPU, memory, database, or network issues. The plugin provides comprehensive reporting, including percentiles, graphs, and recommendations.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates performance testing workflows, allowing Claude to create and run various tests to assess system performance under different conditions. It facilitates bottleneck identification and provides actionable recommendations for optimization.
