@@ -1,11 +1,17 @@
 ---
+description: Automate budget vs actual variance analysis in excel with flagging, commentary,
+  and executive summaries for financial reporting and fp&a teams activates when you
+  request "excel variance analyzer" functionality.
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: excel-variance-analyzer
-description: |
-  Automate budget vs actual variance analysis in Excel with flagging, commentary, and executive summaries for financial reporting and FP&A teams Activates when you request "excel variance analyzer" functionality.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Excel Variance Analyzer
 
 Automates variance analysis for monthly/quarterly financial reporting and budget reviews.

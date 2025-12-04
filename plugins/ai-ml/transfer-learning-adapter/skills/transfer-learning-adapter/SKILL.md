@@ -1,11 +1,17 @@
 ---
+description: This skill automates the adaptation of pre-trained machine learning models
+  using transfer learning techniques. it is triggered when the user requests assistance
+  with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: adapting-transfer-learning-models
-description: |
-  This skill automates the adaptation of pre-trained machine learning models using transfer learning techniques. It is triggered when the user requests assistance with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing transfer learning. It analyzes the user's requirements, generates code for adapting the model, includes data validation and error handling, provides performance metrics, and saves artifacts with documentation. Use this skill when you need to leverage existing models for new tasks or datasets, optimizing for performance and efficiency.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the process of adapting pre-trained machine learning models via transfer learning. It enables you to quickly fine-tune models for specific tasks, saving time and resources compared to training from scratch. It handles the complexities of model adaptation, data validation, and performance optimization.

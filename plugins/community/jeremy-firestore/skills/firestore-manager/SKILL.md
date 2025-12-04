@@ -1,13 +1,18 @@
 ---
+description: Manages Firebase/Firestore operations including CRUD, queries, batch
+  processing, A2A agent communication, MCP server integration, and Cloud Run service
+  coordination. Activates when you request "firestore operations", "create firestore
+  document", "...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: firestore-operations-manager
-description: |
-  Manages Firebase/Firestore operations including CRUD, queries, batch processing, A2A agent communication, MCP server integration, and Cloud Run service coordination.
-  Activates when you request "firestore operations", "create firestore document", "query firestore", "A2A agent communication", "MCP server setup", "agent-to-agent messaging", or "Cloud Run firestore integration".
-  Handles both basic database operations for regular users and advanced A2A framework patterns for AI agents.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 # Firestore Operations Manager
 
 ## Overview

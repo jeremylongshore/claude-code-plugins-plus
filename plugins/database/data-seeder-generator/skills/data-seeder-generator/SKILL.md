@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to generate realistic test data and database
+  seed scripts for development and testing environments. it uses faker libraries to
+  create realistic data, maintains relational integrity, and allows configurable data
+  volumes. u...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: generating-database-seed-data
-description: |
-  This skill enables Claude to generate realistic test data and database seed scripts for development and testing environments. It uses Faker libraries to create realistic data, maintains relational integrity, and allows configurable data volumes. Use this skill when you need to quickly populate a database with sample data for development, testing, or demonstration purposes. The skill is triggered by phrases like "seed database", "generate test data", "create seed script", or "populate database with realistic data".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the creation of database seed scripts, populating your database with realistic and consistent test data. It leverages Faker libraries to generate diverse and believable data, ensuring relational integrity and configurable data volumes.
