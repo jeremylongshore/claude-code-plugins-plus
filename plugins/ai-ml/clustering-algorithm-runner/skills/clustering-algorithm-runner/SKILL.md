@@ -1,9 +1,7 @@
 ---
 name: running-clustering-algorithms
-description: |
-  This skill enables Claude to execute clustering algorithms on datasets. It is used when the user requests to perform clustering, identify groups within data, or analyze data structure. The skill supports algorithms like K-means, DBSCAN, and hierarchical clustering. Claude should use this skill when the user explicitly asks to "run clustering," "perform a cluster analysis," or "group data points" and provides a dataset or a way to access one. The skill also handles data validation, error handling, performance metrics, and artifact saving.
+description: Execute clustering algorithms (K-means, DBSCAN, hierarchical) to identify data groups. Use when requesting "run clustering", "cluster analysis", or "group data points".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
 ---
 
 ## Overview

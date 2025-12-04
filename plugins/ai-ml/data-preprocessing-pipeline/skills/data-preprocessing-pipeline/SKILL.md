@@ -1,9 +1,7 @@
 ---
 name: preprocessing-data-with-automated-pipelines
-description: |
-  This skill empowers Claude to preprocess and clean data using automated pipelines. It is designed to streamline data preparation for machine learning tasks, implementing best practices for data validation, transformation, and error handling.  Claude should use this skill when the user requests data preprocessing, data cleaning, ETL tasks, or mentions the need for automated pipelines for data preparation. Trigger terms include "preprocess data", "clean data", "ETL pipeline", "data transformation", and "data validation". The skill ensures data quality and prepares it for effective analysis and model training.
+description: Automate data cleaning, transformation, and validation for ML tasks. Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
 ---
 
 ## Overview
