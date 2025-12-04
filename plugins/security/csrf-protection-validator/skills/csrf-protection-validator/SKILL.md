@@ -1,11 +1,18 @@
 ---
+description: This skill helps to identify cross-site request forgery (csrf) vulnerabilities
+  in web applications. it validates the implementation of csrf protection mechanisms,
+  such as synchronizer tokens, double-submit cookies, samesite attributes, and origin
+  ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: validating-csrf-protection
-description: |
-  This skill helps to identify Cross-Site Request Forgery (CSRF) vulnerabilities in web applications. It validates the implementation of CSRF protection mechanisms, such as synchronizer tokens, double-submit cookies, SameSite attributes, and origin validation. Use this skill when you need to analyze your application's security posture against CSRF attacks or when asked to "validate csrf", "check for csrf vulnerabilities", or "test csrf protection".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to analyze web applications for CSRF vulnerabilities. It assesses the effectiveness of implemented CSRF protection mechanisms, providing insights into potential weaknesses and recommendations for remediation.

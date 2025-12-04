@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to scan applications and data systems for gdpr
+  compliance issues. it identifies potential violations related to data protection,
+  privacy rights, consent management, and other regulatory requirements. use this
+  skill when t...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: scanning-for-gdpr-compliance
-description: |
-  This skill enables Claude to scan applications and data systems for GDPR compliance issues. It identifies potential violations related to data protection, privacy rights, consent management, and other regulatory requirements. Use this skill when the user asks to "scan for GDPR compliance", check "GDPR compliance", or audit for "data privacy". The skill leverages the `gdpr-compliance-scanner` plugin to perform a comprehensive assessment and generate a detailed report.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill allows Claude to automatically assess an application's GDPR compliance posture. It provides a comprehensive scan, identifying potential violations and offering actionable recommendations to improve compliance. The skill simplifies the complex process of GDPR auditing, making it easier to identify and address critical gaps.

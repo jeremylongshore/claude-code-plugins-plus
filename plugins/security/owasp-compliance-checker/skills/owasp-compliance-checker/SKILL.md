@@ -1,11 +1,18 @@
 ---
+description: This skill uses the owasp-compliance-checker plugin to automatically
+  identify potential security vulnerabilities based on the owasp top 10 (2021) list.
+  it helps ensure your application adheres to industry-standard security practices
+  by providing a...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: checking-owasp-compliance
-description: |
-  This skill uses the owasp-compliance-checker plugin to automatically identify potential security vulnerabilities based on the OWASP Top 10 (2021) list. It helps ensure your application adheres to industry-standard security practices by providing a detailed analysis of compliance gaps and offering remediation guidance. Use this skill when you need to audit your code for OWASP compliance, identify and fix vulnerabilities, or generate a compliance report. Trigger this skill by asking to "check OWASP compliance", "scan for OWASP vulnerabilities", or using the `/owasp` shortcut.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to assess your project's adherence to the OWASP Top 10 (2021) security guidelines. It automates the process of identifying potential vulnerabilities related to common web application security risks, providing actionable insights to improve your application's security posture.

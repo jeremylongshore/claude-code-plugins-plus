@@ -1,11 +1,18 @@
 ---
+description: This skill analyzes project dependencies for security vulnerabilities,
+  outdated packages, and license compliance issues. it helps identify potential risks
+  in your project's dependencies using the dependency-checker plugin. use this skill
+  when you ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: analyzing-dependencies
-description: |
-  This skill analyzes project dependencies for security vulnerabilities, outdated packages, and license compliance issues. It helps identify potential risks in your project's dependencies using the dependency-checker plugin. Use this skill when you need to check dependencies for vulnerabilities, identify outdated packages that need updates, or ensure license compatibility. Trigger phrases include "check dependencies", "dependency check", "find vulnerabilities", "scan for outdated packages", "/depcheck", and "license compliance". This skill supports npm, pip, composer, gem, and go modules projects.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically analyze your project's dependencies for security vulnerabilities, outdated packages, and license compliance issues. It uses the dependency-checker plugin to identify potential risks and provides insights for remediation.

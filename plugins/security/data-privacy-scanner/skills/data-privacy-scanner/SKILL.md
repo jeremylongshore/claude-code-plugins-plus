@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to automatically scan code and configuration
+  files for potential data privacy vulnerabilities using the data-privacy-scanner
+  plugin. it identifies sensitive data exposure, compliance violations, and other
+  privacy-related ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: scanning-for-data-privacy-issues
-description: |
-  This skill enables Claude to automatically scan code and configuration files for potential data privacy vulnerabilities using the data-privacy-scanner plugin. It identifies sensitive data exposure, compliance violations, and other privacy-related risks. Use this skill when the user requests to "scan for data privacy issues", "check privacy compliance", "find PII leaks", "identify GDPR violations", or needs a "privacy audit" of their codebase. The skill is most effective when used on projects involving personal data, financial information, or health records.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the process of identifying data privacy risks within a codebase. By leveraging the data-privacy-scanner plugin, Claude can quickly pinpoint potential vulnerabilities, helping developers proactively address compliance requirements and protect sensitive user data.

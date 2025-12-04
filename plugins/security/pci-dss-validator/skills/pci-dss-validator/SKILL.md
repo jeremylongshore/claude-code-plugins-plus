@@ -1,11 +1,18 @@
 ---
+description: This skill uses the pci-dss-validator plugin to assess codebases and
+  infrastructure configurations for compliance with the payment card industry data
+  security standard (pci dss). it identifies potential vulnerabilities and deviations
+  from pci dss ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: validating-pci-dss-compliance
-description: |
-  This skill uses the pci-dss-validator plugin to assess codebases and infrastructure configurations for compliance with the Payment Card Industry Data Security Standard (PCI DSS). It identifies potential vulnerabilities and deviations from PCI DSS requirements. Use this skill when the user requests to "validate PCI compliance", "check PCI DSS", "assess PCI security", or "review PCI standards" for a given project or configuration. It helps ensure that systems handling cardholder data meet the necessary security controls.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines PCI DSS compliance checks by automatically analyzing code and configurations. It flags potential issues, allowing for proactive remediation and improved security posture. It is particularly useful for developers, security engineers, and compliance officers.
