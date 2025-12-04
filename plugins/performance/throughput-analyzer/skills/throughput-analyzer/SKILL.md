@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to analyze and optimize system throughput.
+  it is triggered when the user requests throughput analysis, performance improvements,
+  or bottleneck identification. the skill uses the `throughput-analyzer` plugin to
+  assess requ...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: analyzing-system-throughput
-description: |
-  This skill enables Claude to analyze and optimize system throughput. It is triggered when the user requests throughput analysis, performance improvements, or bottleneck identification. The skill uses the `throughput-analyzer` plugin to assess request throughput, data throughput, concurrency limits, queue processing, and resource saturation. Use this skill when the user mentions "analyze throughput", "optimize performance", "identify bottlenecks", or asks about system capacity. It helps determine limiting factors and evaluate scaling strategies.
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill allows Claude to analyze system performance and identify areas for throughput optimization. It uses the `throughput-analyzer` plugin to provide insights into request handling, data processing, and resource utilization.

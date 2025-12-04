@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to automatically detect performance regressions
+  in a ci/cd pipeline. it analyzes performance metrics, such as response time and
+  throughput, and compares them against baselines or thresholds. use this skill when
+  the user r...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: detecting-performance-regressions
-description: |
-  This skill enables Claude to automatically detect performance regressions in a CI/CD pipeline. It analyzes performance metrics, such as response time and throughput, and compares them against baselines or thresholds. Use this skill when the user requests to "detect performance regressions", "analyze performance metrics for regressions", or "find performance degradation" in a CI/CD environment. The skill is also triggered when the user mentions "baseline comparison", "statistical significance analysis", or "performance budget violations". It helps identify and report performance issues early in the development cycle.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the detection of performance regressions within a CI/CD pipeline. It utilizes various methods, including baseline comparison, statistical analysis, and threshold violation checks, to identify performance degradation. The skill provides insights into potential performance bottlenecks and helps maintain application performance.

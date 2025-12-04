@@ -1,11 +1,18 @@
 ---
+description: This skill assists in implementing real user monitoring (rum) to capture
+  and analyze actual user performance data. it helps set up tracking for key metrics
+  like core web vitals, page load times, and custom performance events. use this skill
+  when t...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: implementing-real-user-monitoring
-description: |
-  This skill assists in implementing Real User Monitoring (RUM) to capture and analyze actual user performance data. It helps set up tracking for key metrics like Core Web Vitals, page load times, and custom performance events. Use this skill when the user asks to "setup RUM", "implement real user monitoring", "track user experience", or needs assistance with "performance monitoring". It guides the user through choosing a RUM platform, designing an instrumentation strategy, and implementing the necessary tracking code.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the process of setting up Real User Monitoring (RUM) for web applications. It guides you through the essential steps of choosing a platform, defining metrics, and implementing the tracking code to capture valuable user experience data.

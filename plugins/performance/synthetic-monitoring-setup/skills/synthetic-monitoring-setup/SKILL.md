@@ -1,11 +1,18 @@
 ---
+description: This skill automates the setup of synthetic monitoring for applications.
+  it allows claude to proactively track performance and availability by configuring
+  uptime, transaction, and api monitoring. use this skill when the user requests to
+  "set up sy...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: setting-up-synthetic-monitoring
-description: |
-  This skill automates the setup of synthetic monitoring for applications. It allows Claude to proactively track performance and availability by configuring uptime, transaction, and API monitoring. Use this skill when the user requests to "set up synthetic monitoring", "configure uptime monitoring", "track application performance", or needs help with "proactive performance tracking". The skill helps to identify critical endpoints and user journeys, design monitoring scenarios, and configure alerts and dashboards.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill streamlines the process of setting up synthetic monitoring, enabling proactive performance tracking for applications. It guides the user through defining key monitoring scenarios and configuring alerts to ensure optimal application performance and availability.

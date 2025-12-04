@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to track and optimize resource usage across
+  an application stack. it is activated when the user requests insights into resource
+  consumption, performance bottlenecks, or cost optimization opportunities. the skill
+  uses the ...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: tracking-resource-usage
-description: |
-  This skill enables Claude to track and optimize resource usage across an application stack. It is activated when the user requests insights into resource consumption, performance bottlenecks, or cost optimization opportunities. The skill uses the resource-usage-tracker plugin to monitor CPU, memory, disk I/O, network I/O, file descriptors, database connections, and thread/process counts. Use this skill when the user mentions "resource usage", "performance optimization", "cost optimization", "track resources", or "right-sizing".
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill provides a comprehensive solution for monitoring and optimizing resource usage within an application. It leverages the resource-usage-tracker plugin to gather real-time metrics, identify performance bottlenecks, and suggest optimization strategies.

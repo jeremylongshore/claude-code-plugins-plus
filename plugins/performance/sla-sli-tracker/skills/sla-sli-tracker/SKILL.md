@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to define and track service level agreements
+  (slas), service level indicators (slis), and service level objectives (slos) for
+  improved service reliability. it is triggered when the user needs to establish,
+  monitor, or ana...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: tracking-service-reliability
-description: |
-  This skill enables Claude to define and track Service Level Agreements (SLAs), Service Level Indicators (SLIs), and Service Level Objectives (SLOs) for improved service reliability. It is triggered when the user needs to establish, monitor, or analyze service performance metrics. Use this skill when the user mentions "SLA", "SLI", "SLO", "error budget", "service reliability", or "track service performance". The skill helps to define key metrics, set targets, and monitor performance against those targets.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill provides a structured approach to defining and tracking SLAs, SLIs, and SLOs, which are essential for ensuring service reliability. It automates the process of setting performance targets and monitoring actual performance, enabling proactive identification and resolution of potential issues.

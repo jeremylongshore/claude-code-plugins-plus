@@ -1,11 +1,16 @@
 ---
+description: Validates messaging consistency across website, GitHub repositories,
+  and local documentation. Generates comprehensive read-only discrepancy reports showing
+  where messaging conflicts or inconsistencies exist. Activates when user mentions
+  "consisten...
+allowed-tools:
+- Read
+- WebFetch
+- WebSearch
+- Grep
 name: 000-jeremy-content-consistency-validator
-description: |
-  Validates messaging consistency across website, GitHub repositories, and local documentation. Generates comprehensive read-only discrepancy reports showing where messaging conflicts or inconsistencies exist. Activates when user mentions "consistency check", "validate documentation", "check for mixed messaging", "audit content consistency", or before updating internal paperwork.
-allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+license: MIT
 ---
-
 **CRITICAL OPERATING PARAMETERS:**
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
 - **Read-only** - Report discrepancies, never suggest creative fixes
