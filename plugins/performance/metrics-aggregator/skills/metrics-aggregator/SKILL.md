@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to aggregate and centralize performance metrics
+  from various sources. it is used when the user needs to consolidate metrics from
+  applications, systems, databases, caches, queues, and external services into a central
+  locat...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: aggregating-performance-metrics
-description: |
-  This skill enables Claude to aggregate and centralize performance metrics from various sources. It is used when the user needs to consolidate metrics from applications, systems, databases, caches, queues, and external services into a central location for monitoring and analysis. The skill is triggered by requests to "aggregate metrics", "centralize performance metrics", or similar phrases related to metrics aggregation and monitoring. It facilitates designing a metrics taxonomy, choosing appropriate aggregation tools, and setting up dashboards and alerts.
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to streamline performance monitoring by aggregating metrics from diverse systems into a unified view. It simplifies the process of collecting, centralizing, and analyzing performance data, leading to improved insights and faster issue resolution.

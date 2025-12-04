@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to analyze logs for performance insights and
+  issue detection. it is triggered when the user requests log analysis, performance
+  troubleshooting, or debugging assistance. the skill identifies slow requests, error
+  patterns, ...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: analyzing-logs
-description: |
-  This skill enables Claude to analyze logs for performance insights and issue detection. It is triggered when the user requests log analysis, performance troubleshooting, or debugging assistance. The skill identifies slow requests, error patterns, resource warnings, and other key performance indicators within log files. Use this skill when the user mentions "analyze logs", "performance issues", "error patterns in logs", "slow requests", or requests help with "log aggregation". It helps identify performance bottlenecks and improve application stability by analyzing log data.
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically analyze application logs, pinpoint performance bottlenecks, and identify recurring errors. It streamlines the debugging process and helps optimize application performance by extracting key insights from log data.

@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to analyze network latency and optimize request
+  patterns within an application. it helps identify bottlenecks and suggest improvements
+  for faster and more efficient network communication. use this skill when the user
+  asks...
+allowed-tools:
+- Read
+- Write
+- Bash
+- Grep
 name: analyzing-network-latency
-description: |
-  This skill enables Claude to analyze network latency and optimize request patterns within an application. It helps identify bottlenecks and suggest improvements for faster and more efficient network communication. Use this skill when the user asks to "analyze network latency", "optimize request patterns", or when facing performance issues related to network requests. It focuses on identifying serial requests that can be parallelized, opportunities for request batching, connection pooling improvements, timeout configuration adjustments, and DNS resolution enhancements. The skill provides concrete suggestions for reducing latency and improving overall network performance.
-allowed-tools: Read, Write, Bash, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to diagnose network latency issues and propose optimizations to improve application performance. It analyzes request patterns, identifies potential bottlenecks, and recommends solutions for faster and more efficient network communication.

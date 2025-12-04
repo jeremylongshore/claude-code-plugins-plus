@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to analyze capacity requirements and plan for
+  future growth. it uses the capacity-planning-analyzer plugin to assess current utilization,
+  forecast growth trends, and recommend scaling strategies. use this skill when the
+  u...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: analyzing-capacity-planning
-description: |
-  This skill enables Claude to analyze capacity requirements and plan for future growth. It uses the capacity-planning-analyzer plugin to assess current utilization, forecast growth trends, and recommend scaling strategies. Use this skill when the user asks to "analyze capacity", "plan for growth", "forecast infrastructure needs", or requests a "capacity roadmap". It is also useful when the user mentions specific capacity metrics like CPU usage, memory, database storage, network bandwidth, or connection pool saturation. This skill is ideal for proactive infrastructure planning and preventing performance bottlenecks.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to analyze current resource utilization, predict future capacity needs, and provide actionable recommendations for scaling infrastructure. It generates insights into growth trends, identifies potential bottlenecks, and estimates costs associated with capacity expansion.
