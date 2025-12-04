@@ -1,11 +1,18 @@
 ---
+description: This skill assists with soc2 audit preparation by automating tasks related
+  to evidence gathering and documentation. it leverages the soc2-audit-helper plugin
+  to generate reports, identify potential compliance gaps, and suggest remediation
+  steps. u...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: assisting-with-soc2-audit-preparation
-description: |
-  This skill assists with SOC2 audit preparation by automating tasks related to evidence gathering and documentation. It leverages the soc2-audit-helper plugin to generate reports, identify potential compliance gaps, and suggest remediation steps. Use this skill when the user requests help with "SOC2 audit", "compliance check", "security controls", "audit preparation", or "evidence gathering" related to SOC2. It streamlines the initial stages of SOC2 compliance, focusing on automated data collection and preliminary analysis.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to assist users in preparing for a SOC2 audit. It automates the process of gathering evidence, analyzing security controls, and identifying potential compliance gaps, significantly reducing the manual effort involved in SOC2 preparation.

@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to identify potential security misconfigurations
+  in various systems and configurations. it leverages the security-misconfiguration-finder
+  plugin to analyze infrastructure-as-code, application configurations, and system
+  se...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: finding-security-misconfigurations
-description: |
-  This skill enables Claude to identify potential security misconfigurations in various systems and configurations. It leverages the security-misconfiguration-finder plugin to analyze infrastructure-as-code, application configurations, and system settings, pinpointing common vulnerabilities and compliance issues. Use this skill when the user asks to "find security misconfigurations", "check for security vulnerabilities in my configuration", "audit security settings", or requests a security assessment of a specific system or file. This skill will assist in identifying and remediating potential security weaknesses.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to proactively detect security misconfigurations before they can be exploited. By utilizing the security-misconfiguration-finder plugin, Claude can analyze various configuration files and system settings to identify potential vulnerabilities and ensure compliance with security best practices. This allows for early detection and remediation of security weaknesses.

@@ -1,11 +1,16 @@
 ---
+description: This skill enables claude to manage and monitor ssl/tls certificates
+  using the ssl-certificate-manager plugin. it is activated when the user requests
+  actions related to ssl certificates, such as checking certificate expiry, renewing
+  certificates, ...
+allowed-tools:
+- Read
+- Bash
+- Grep
+- Glob
 name: managing-ssltls-certificates
-description: |
-  This skill enables Claude to manage and monitor SSL/TLS certificates using the ssl-certificate-manager plugin. It is activated when the user requests actions related to SSL certificates, such as checking certificate expiry, renewing certificates, or listing installed certificates. Use this skill when the user mentions "SSL certificate", "TLS certificate", "certificate expiry", "renew certificate", or similar phrases related to SSL/TLS certificate management. The plugin can list, check, and renew certificates, providing vital information for maintaining secure connections.
-allowed-tools: Read, Bash, Grep, Glob
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to seamlessly interact with the ssl-certificate-manager plugin, facilitating efficient management and monitoring of SSL/TLS certificates. It allows for quick checks of certificate expiry dates, automated renewal processes, and comprehensive listings of installed certificates.

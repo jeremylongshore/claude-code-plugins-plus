@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to detect sql injection vulnerabilities in
+  code. it uses the sql-injection-detector plugin to analyze codebases, identify potential
+  sql injection flaws, and provide remediation guidance. use this skill when the user
+  asks ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: detecting-sql-injection-vulnerabilities
-description: |
-  This skill enables Claude to detect SQL injection vulnerabilities in code. It uses the sql-injection-detector plugin to analyze codebases, identify potential SQL injection flaws, and provide remediation guidance. Use this skill when the user asks to find SQL injection vulnerabilities, scan for SQL injection, or check code for SQL injection risks. The skill is triggered by phrases like "detect SQL injection", "scan for SQLi", or "check for SQL injection vulnerabilities".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to proactively identify and address SQL injection vulnerabilities within a codebase. By leveraging the sql-injection-detector plugin, Claude can perform comprehensive scans, pinpoint potential security flaws, and offer actionable recommendations to mitigate risks. This ensures more secure and robust applications.

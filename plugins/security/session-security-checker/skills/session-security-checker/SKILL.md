@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to check session security implementations within
+  a codebase. it analyzes session management practices to identify potential vulnerabilities.
+  use this skill when a user requests to "check session security", "audit session
+  ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: checking-session-security
-description: |
-  This skill enables Claude to check session security implementations within a codebase. It analyzes session management practices to identify potential vulnerabilities. Use this skill when a user requests to "check session security", "audit session handling", "review session implementation", or asks about "session security best practices" in their code. It helps identify issues like insecure session IDs, lack of proper session expiration, or insufficient protection against session fixation attacks. This skill leverages the session-security-checker plugin. Activates when you request "checking session security" functionality.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the process of reviewing session security within a project. It helps identify potential vulnerabilities related to session management, ensuring compliance with security best practices.
