@@ -1,11 +1,18 @@
 ---
+description: This skill automates api endpoint testing, including request generation,
+  validation, and comprehensive test coverage for rest and graphql apis. it is used
+  when the user requests api testing, contract testing, or validation against openapi
+  specific...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: automating-api-testing
-description: |
-  This skill automates API endpoint testing, including request generation, validation, and comprehensive test coverage for REST and GraphQL APIs. It is used when the user requests API testing, contract testing, or validation against OpenAPI specifications. The skill analyzes API endpoints and generates test suites covering CRUD operations, authentication flows, and security aspects. It also validates response status codes, headers, and body structure. Use this skill when the user mentions "API testing", "REST API tests", "GraphQL API tests", "contract tests", or "OpenAPI validation".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to automatically generate and execute comprehensive API tests for REST and GraphQL endpoints. It ensures thorough validation, covers various authentication methods, and performs contract testing against OpenAPI specifications.

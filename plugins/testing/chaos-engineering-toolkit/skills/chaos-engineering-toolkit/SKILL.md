@@ -1,11 +1,17 @@
 ---
+description: This skill enables claude to design and execute chaos engineering experiments
+  to test system resilience. it is used when the user requests help with failure injection,
+  latency simulation, resource exhaustion testing, or resilience validation. the ...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: conducting-chaos-engineering
-description: |
-  This skill enables Claude to design and execute chaos engineering experiments to test system resilience. It is used when the user requests help with failure injection, latency simulation, resource exhaustion testing, or resilience validation. The skill is triggered by discussions of chaos experiments (GameDays), failure injection strategies, resilience testing, and validation of recovery mechanisms like circuit breakers and retry logic. It leverages tools like Chaos Mesh, Gremlin, Toxiproxy, and AWS FIS to simulate real-world failures and assess system behavior.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to act as a chaos engineering specialist, guiding users through the process of designing and implementing controlled failure scenarios to identify weaknesses and improve the robustness of their systems. It facilitates the creation of chaos experiments to validate system resilience and recovery mechanisms.

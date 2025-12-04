@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to perform comprehensive accessibility audits.
+  it uses the accessibility-test-scanner plugin to identify wcag 2.1/2.2 compliance
+  issues, validate aria attributes, check keyboard navigation, and assess screen reader
+  compat...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: scanning-for-accessibility-issues
-description: |
-  This skill enables Claude to perform comprehensive accessibility audits. It uses the accessibility-test-scanner plugin to identify WCAG 2.1/2.2 compliance issues, validate ARIA attributes, check keyboard navigation, and assess screen reader compatibility. Use this skill when the user requests an accessibility scan, audit, or compliance check, or when terms like "WCAG", "ARIA", "screen reader", "accessibility testing", or "a11y" are mentioned. It provides actionable insights for improving web application accessibility.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to conduct thorough accessibility testing of web applications. It leverages the `accessibility-test-scanner` plugin to pinpoint areas of non-compliance with accessibility standards and offers recommendations for remediation.

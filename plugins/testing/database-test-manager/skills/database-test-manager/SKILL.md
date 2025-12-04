@@ -1,11 +1,18 @@
 ---
+description: This skill manages database testing by generating test data, wrapping
+  tests in transactions, and validating database schemas. it is used to create robust
+  and reliable database interactions. claude uses this skill when the user requests
+  database te...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: managing-database-testing
-description: |
-  This skill manages database testing by generating test data, wrapping tests in transactions, and validating database schemas. It is used to create robust and reliable database interactions. Claude uses this skill when the user requests database testing utilities, including test data generation, transaction management, schema validation, or migration testing. Trigger this skill by mentioning "database testing," "test data factories," "transaction rollback," "schema validation," or using the `/db-test` or `/dbt` commands.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to create and manage comprehensive database testing workflows. It facilitates the generation of realistic test data, ensures transactional integrity with automatic rollbacks, and validates database schema integrity.

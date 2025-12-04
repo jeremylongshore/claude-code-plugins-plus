@@ -1,11 +1,18 @@
 ---
+description: This skill validates api contracts using consumer-driven testing and
+  openapi validation. it leverages pact for consumer-driven contract testing, ensuring
+  that api providers adhere to the expectations of their consumers. it also validates
+  apis agai...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: validating-api-contracts
-description: |
-  This skill validates API contracts using consumer-driven testing and OpenAPI validation. It leverages Pact for consumer-driven contract testing, ensuring that API providers adhere to the expectations of their consumers. It also validates APIs against OpenAPI specifications to guarantee compliance and identify breaking changes. Use this skill when the user asks to generate contract tests, validate API responses, check backward compatibility, or validate requests/responses using the terms "contract-test", "ct", "Pact", "OpenAPI validation", or "consumer-driven contract testing".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill enables Claude to generate and validate API contracts, ensuring compatibility between API providers and consumers. It uses Pact for consumer-driven contract testing and OpenAPI validation for specification compliance.

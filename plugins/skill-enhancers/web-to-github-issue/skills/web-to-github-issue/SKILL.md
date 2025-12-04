@@ -1,11 +1,16 @@
 ---
+description: This skill enhances claude's ability to conduct web research and translate
+  findings into actionable github issues. it automates the process of extracting key
+  information from web search results and formatting it into a well-structured issue,
+  ready...
+allowed-tools:
+- Read
+- WebFetch
+- WebSearch
+- Grep
 name: creating-github-issues-from-web-research
-description: |
-  This skill enhances Claude's ability to conduct web research and translate findings into actionable GitHub issues. It automates the process of extracting key information from web search results and formatting it into a well-structured issue, ready for team action. Use this skill when you need to research a topic and create a corresponding GitHub issue for tracking, collaboration, and task management. Trigger this skill by requesting Claude to "research [topic] and create a ticket" or "find [information] and generate a GitHub issue".
-allowed-tools: Read, WebFetch, WebSearch, Grep
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to streamline the research-to-implementation workflow. By integrating web search with GitHub issue creation, Claude can efficiently convert research findings into trackable tasks for development teams.
