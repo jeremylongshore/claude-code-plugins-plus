@@ -1,11 +1,18 @@
 ---
+description: This skill optimizes prompts for large language models (llms) to reduce
+  token usage, lower costs, and improve performance. it analyzes the prompt, identifies
+  areas for simplification and redundancy removal, and rewrites the prompt to be more
+  conci...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: optimizing-prompts
-description: |
-  This skill optimizes prompts for Large Language Models (LLMs) to reduce token usage, lower costs, and improve performance. It analyzes the prompt, identifies areas for simplification and redundancy removal, and rewrites the prompt to be more concise and effective. It is used when the user wants to reduce LLM costs, improve response speed, or enhance the quality of LLM outputs by optimizing the prompt. Trigger terms include "optimize prompt", "reduce LLM cost", "improve prompt performance", "rewrite prompt", "prompt optimization".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to refine prompts for optimal LLM performance. It streamlines prompts to minimize token count, thereby reducing costs and enhancing response speed, all while maintaining or improving output quality.

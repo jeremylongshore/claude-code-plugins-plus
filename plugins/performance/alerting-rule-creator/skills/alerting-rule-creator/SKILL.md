@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to create intelligent alerting rules for proactive
+  performance monitoring. it is triggered when the user requests to "create alerts",
+  "define monitoring rules", or "set up alerting". the skill helps define thresholds,
+  rou...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: creating-alerting-rules
-description: |
-  This skill enables Claude to create intelligent alerting rules for proactive performance monitoring. It is triggered when the user requests to "create alerts", "define monitoring rules", or "set up alerting". The skill helps define thresholds, routing, and escalation policies, and offers options for multi-category alert creation, including latency, error rate, throughput, resource utilization, availability, and SLO violation alerts. It is useful for Site Reliability Engineers (SREs) and DevOps teams looking to improve system observability.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill automates the creation of comprehensive alerting rules, reducing the manual effort required for performance monitoring. It guides you through defining alert categories, setting intelligent thresholds, and configuring routing and escalation policies. The skill also helps generate runbooks and establish alert testing procedures.

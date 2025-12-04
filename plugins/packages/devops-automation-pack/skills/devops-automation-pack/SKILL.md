@@ -1,11 +1,18 @@
 ---
+description: Generates conventional commit messages using AI. It analyzes code changes
+  and suggests a commit message adhering to the conventional commits specification.
+  Use this skill when you need help writing clear, standardized commit messages, especially
+  a...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: generating-conventional-commits
-description: |
-  Generates conventional commit messages using AI. It analyzes code changes and suggests a commit message adhering to the conventional commits specification. Use this skill when you need help writing clear, standardized commit messages, especially after making code changes and preparing to commit. Trigger with terms like "create commit", "generate commit message", or "write commit".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill helps you create well-formatted, informative commit messages that follow the conventional commits standard, improving collaboration and automation in your Git workflow. It saves you time and ensures consistency across your project.
