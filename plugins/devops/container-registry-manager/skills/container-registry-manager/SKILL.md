@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to manage container registries, including ecr,
+  gcr, and harbor. it should be used when the user needs to create, configure, or
+  manage container image registries. it helps generate production-ready configurations,
+  implemen...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: managing-container-registries
-description: |
-  This skill enables Claude to manage container registries, including ECR, GCR, and Harbor. It should be used when the user needs to create, configure, or manage container image registries. It helps generate production-ready configurations, implement best practices, and ensure a security-first approach. Use this skill when the user mentions terms like "container registry," "ECR," "GCR," "Harbor," "image repository," or requests assistance with managing container images. It's also helpful for generating configuration code for DevOps pipelines related to container registries.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to assist users in managing their container registries across various platforms like AWS ECR, Google GCR, and Harbor. It provides the ability to generate configurations, implement best practices, and ensure secure and scalable architectures for container image storage and management.

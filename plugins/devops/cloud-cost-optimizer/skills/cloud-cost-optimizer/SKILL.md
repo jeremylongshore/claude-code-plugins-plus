@@ -1,11 +1,18 @@
 ---
+description: This skill enables claude to analyze and optimize cloud costs. it identifies
+  areas for potential savings, generates cost reports, and suggests configuration
+  changes to reduce expenses. use this skill when the user asks to "optimize cloud
+  costs", "...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: optimizing-cloud-costs
-description: |
-  This skill enables Claude to analyze and optimize cloud costs. It identifies areas for potential savings, generates cost reports, and suggests configuration changes to reduce expenses. Use this skill when the user asks to "optimize cloud costs", "reduce cloud spending", "generate a cost report", or similar requests related to cloud resource expenses. It is especially useful when the user provides details about their cloud environment (e.g., AWS, Azure, GCP). The skill leverages best practices for cost optimization and provides production-ready configurations.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to be a FinOps expert, helping users identify and implement strategies to minimize their cloud expenditures. By analyzing current resource utilization and suggesting optimized configurations, it ensures efficient cloud spending.

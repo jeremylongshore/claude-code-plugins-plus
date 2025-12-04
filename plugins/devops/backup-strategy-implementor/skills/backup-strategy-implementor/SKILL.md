@@ -1,11 +1,18 @@
 ---
+description: This skill implements backup strategies for databases and applications.
+  it generates configuration files and setup code to ensure data protection and disaster
+  recovery. use this skill when the user requests to "implement backup strategy",
+  "configu...
+allowed-tools:
+- Read
+- Write
+- Edit
+- Grep
+- Glob
+- Bash
 name: implementing-backup-strategies
-description: |
-  This skill implements backup strategies for databases and applications. It generates configuration files and setup code to ensure data protection and disaster recovery. Use this skill when the user requests to "implement backup strategy", "configure backups", "setup data recovery", or needs help with "backup automation". The skill provides production-ready configurations, best practices, and multi-platform support for database and application backups. It focuses on security and scalability.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
+license: MIT
 ---
-
 ## Overview
 
 This skill empowers Claude to generate and implement robust backup strategies for databases and applications. It provides ready-to-use configurations and setup scripts, streamlining the process of data protection and disaster recovery.
