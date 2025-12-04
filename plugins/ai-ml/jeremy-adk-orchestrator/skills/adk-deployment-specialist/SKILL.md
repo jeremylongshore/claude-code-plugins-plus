@@ -1,12 +1,7 @@
 ---
 name: adk-deployment-specialist
-description: |
-  A2A (Agent-to-Agent) protocol manager for Vertex AI ADK agents on Agent Engine.
-  Orchestrates communication between Claude Code and ADK agents via standardized A2A protocol: AgentCard discovery, task submission, status polling, and session management.
-  NEW 2025: Observability dashboard, Cloud Trace integration, BigQuery analytics export.
-  Triggers: "communicate with ADK agent", "A2A protocol", "send task to agent", "orchestrate agents", "discover agent capabilities"
+description: Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use when asked to "deploy ADK agent" or "orchestrate agents".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.1
 ---
 
 ## What This Skill Does

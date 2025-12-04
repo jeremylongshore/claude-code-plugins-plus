@@ -1,11 +1,7 @@
 ---
 name: vertex-engine-inspector
-description: |
-  Vertex AI Agent Engine runtime inspector and health monitor.
-  Validates deployed agents, Code Execution Sandbox settings, Memory Bank configuration, A2A protocol compliance, and production readiness.
-  Triggers: "inspect agent engine", "validate agent deployment", "check code execution sandbox", "monitor agent health"
+description: Inspect and validate Vertex AI Agent Engine deployments including Code Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates production readiness scores. Use when asked to "inspect agent engine" or "validate deployment".
 allowed-tools: Read, Grep, Glob, Bash
-version: 1.0.0
 ---
 
 ## What This Skill Does

@@ -1,11 +1,7 @@
 ---
 name: genkit-production-expert
-description: |
-  Automatically activates when building Firebase Genkit applications for production AI workflows.
-  Expertise in RAG systems, multi-step flows, tool calling, and deployment across Node.js/Python/Go.
-  Triggers: "create genkit flow", "implement RAG", "deploy genkit", "gemini integration", "ai monitoring"
+description: Build production Firebase Genkit applications including RAG systems, multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement RAG".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
 ---
 
 ## What This Skill Does

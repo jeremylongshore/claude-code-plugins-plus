@@ -1,11 +1,7 @@
 ---
 name: gcp-examples-expert
-description: |
-  Automatically activates when developers need Google Cloud starter kit examples and production-ready code samples.
-  Expert in ADK samples, Genkit templates, Agent Starter Pack, Vertex AI notebooks, Gemini examples, and AgentSmithy patterns from official Google Cloud repositories.
-  Triggers: "show adk example", "genkit starter template", "vertex ai code sample", "agent starter pack", "gemini function calling", "google cloud starter kit", "production agent template"
+description: Provide production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to "show ADK example" or "provide GCP starter kit".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-version: 1.0.0
 ---
 
 ## What This Skill Does
