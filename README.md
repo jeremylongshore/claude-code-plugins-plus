@@ -1,20 +1,20 @@
 # Claude Code Plugins
 
 [![Version](https://img.shields.io/badge/version-1.4.2-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/intent-solutions-io/claude-code-plugins-plus)
+[![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
-[![GitHub Stars](https://img.shields.io/github/stars/intent-solutions-io/claude-code-plugins-plus?style=social)](https://github.com/intent-solutions-io/claude-code-plugins-plus)
+[![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
 **254 production-ready Claude Code plugins for automation, development, and AI workflows.**
 
 🎯 **NEW in v1.4.2:** **Community Contributions & Bug Fixes** - JSON syntax errors fixed, production CI/CD patterns added, comprehensive troubleshooting guide for WSL2 users
 
-**Latest:** [v1.4.2 Release](https://github.com/intent-solutions-io/claude-code-plugins-plus/releases/tag/v1.4.2) - Community bug fixes, WSL2 troubleshooting, contributor recognition
+**Latest:** [v1.4.2 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2) - Community bug fixes, WSL2 troubleshooting, contributor recognition
 
 ```bash
-/plugin marketplace add intent-solutions-io/claude-code-plugins-plus
+/plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
@@ -46,11 +46,11 @@
 
 **Huge thanks to our community contributors who make this marketplace better:**
 
-- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created Axiom, battle-tested iOS development plugin with 13 production-ready skills for Swift/Xcode debugging and optimization ([#121](https://github.com/intent-solutions-io/claude-code-plugins-plus/issues/121))
-- **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns from real-world debugging ([#117](https://github.com/intent-solutions-io/claude-code-plugins-plus/pull/117), [spotlight](https://github.com/intent-solutions-io/claude-code-plugins-plus/issues/118))
-- **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams and accessibility features ([#106](https://github.com/intent-solutions-io/claude-code-plugins-plus/pull/106))
-- **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with zero-config markdown formatting and comprehensive documentation ([#101](https://github.com/intent-solutions-io/claude-code-plugins-plus/pull/101))
-- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported mobile horizontal scrolling bug, improving website UX ([#120](https://github.com/intent-solutions-io/claude-code-plugins-plus/issues/120))
+- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created Axiom, battle-tested iOS development plugin with 13 production-ready skills for Swift/Xcode debugging and optimization ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
+- **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns from real-world debugging ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117), [spotlight](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/118))
+- **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams and accessibility features ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
+- **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with zero-config markdown formatting and comprehensive documentation ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
+- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported mobile horizontal scrolling bug, improving website UX ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
 
 **Want to contribute?** See [CONTRIBUTING.md](./CONTRIBUTING.md) or reach out to **jeremy@intentsolutions.io**
 
