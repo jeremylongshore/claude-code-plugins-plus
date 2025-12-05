@@ -30,7 +30,7 @@
 
 ### 🏆 [Nixtla](https://www.nixtla.io/) - Premium Development Partner
 **CEO & Co-Founder:** [Max Mergenthaler](https://github.com/mergenthaler) (YC S21)
-**Partnership Type:** $199/month Enterprise GitHub Sponsor
+**Partnership Type:** Enterprise GitHub Sponsor
 **Custom Development:** Commissioned enterprise-grade plugins for time-series AI workflows
 - **TimeGPT Integration** - Production forecasting workflows
 - **MLOps Automation** - Custom deployment patterns
