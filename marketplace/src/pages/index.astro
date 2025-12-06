@@ -738,6 +738,43 @@
             box-shadow: 0 10px 30px rgba(212,119,87,0.3);
         }
 
+        .skills-install {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 2rem auto;
+            max-width: 700px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .skills-install h4 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin-bottom: 1rem;
+        }
+
+        .skills-steps {
+            text-align: left;
+            margin: 0 auto;
+            max-width: 600px;
+            list-style-position: inside;
+        }
+
+        .skills-steps li {
+            margin-bottom: 0.75rem;
+            color: var(--brand-mid-gray);
+            line-height: 1.6;
+        }
+
+        .skills-steps code {
+            background: var(--brand-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: var(--brand-orange);
+        }
+
         /* CTA Section */
         .cta {
             padding: 8rem 4rem;
@@ -1039,12 +1076,12 @@
 
         <div class="hero-cta-group">
             <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-primary">
-                Browse 185 AI Skills
+                Get Plugins with Skills
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
             </a>
-            <a href="#categories" class="btn-secondary">View All Plugins</a>
+            <a href="#skills" class="btn-secondary">How Skills Work</a>
         </div>
 
         <div class="install-box">
@@ -1317,8 +1354,17 @@
             </div>
         </div>
 
+        <div class="skills-install">
+            <h4>How to Get These Skills:</h4>
+            <ol class="skills-steps">
+                <li>Install Claude Code from claude.ai</li>
+                <li>Add our marketplace: <code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></li>
+                <li>Install any plugin with Skills: <code>/plugin install [plugin-name]</code></li>
+                <li>Skills auto-activate when needed - no commands required!</li>
+            </ol>
+        </div>
         <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins" target="_blank" class="skills-cta">
-            Explore All 185 AI Skills
+            Browse Plugins with Skills
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
             </svg>
