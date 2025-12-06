@@ -1,13 +1,15 @@
 {
   "hooks": {
-    "PreToolUse": {
-      "matchers": [
-        {
-          "tools": ["Write", "Edit"],
-          "filePatterns": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
-        }
-      ],
-      "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-workflow.sh"
-    }
+    "PreToolUse": [
+      {
+        "matchers": [
+          {
+            "tools": ["Write", "Edit"],
+            "filePatterns": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
+          }
+        ],
+        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-workflow.sh"
+      }
+    ]
   }
 }

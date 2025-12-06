@@ -1,9 +1,7 @@
 {
   "name": "002-jeremy-yaml-master-agent",
-  "displayName": "YAML Master Agent",
   "version": "1.0.0",
   "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities",
-  "category": "productivity",
   "author": {
     "name": "Jeremy Longshore",
     "email": "jeremy@intentsolutions.io"

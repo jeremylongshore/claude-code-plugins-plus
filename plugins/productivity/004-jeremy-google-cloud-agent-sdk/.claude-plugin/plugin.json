@@ -21,6 +21,5 @@
     "react-agents",
     "google-cloud",
     "vertex-ai"
-  ],
-  "category": "productivity"
+  ]
 }
