@@ -7,8 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Code Plugins | 255+ AI-Powered Development Tools</title>
-    <meta name="description" content="The comprehensive marketplace for Claude Code plugins. 255+ custom plugins, 185 with AI skills, across 18 categories. Enhance your Claude Code workflow today.">
+    <title>Claude Code Skills Hub | 185 AI Skills & 255+ Plugins</title>
+    <meta name="description" content="Discover 185 intelligent AI Skills that activate automatically plus 255+ plugins for Claude Code. The ultimate hub for AI-powered development automation and workflow enhancement.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -609,6 +609,135 @@
             font-size: 0.9rem;
         }
 
+        /* Skills Section */
+        .skills-section {
+            padding: 6rem 4rem;
+            background: var(--brand-light);
+            text-align: center;
+        }
+
+        .skills-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--brand-dark);
+            margin-bottom: 1rem;
+        }
+
+        .skills-subtitle {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.2rem;
+            color: var(--brand-mid-gray);
+            margin-bottom: 3rem;
+            font-style: italic;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+        }
+
+        .skill-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .skill-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(212,119,87,0.15);
+        }
+
+        .skill-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .skill-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin-bottom: 0.75rem;
+        }
+
+        .skill-card p {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .skills-examples {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            max-width: 900px;
+            margin: 0 auto 3rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        .skills-examples h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin-bottom: 2rem;
+        }
+
+        .skill-example {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: var(--brand-light);
+            border-radius: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .skill-trigger {
+            color: var(--brand-blue);
+            font-weight: 500;
+            flex: 1;
+            text-align: right;
+        }
+
+        .skill-arrow {
+            color: var(--brand-orange);
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .skill-activates {
+            color: var(--brand-green);
+            font-weight: 600;
+            flex: 1;
+            text-align: left;
+        }
+
+        .skills-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-dark));
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .skills-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(212,119,87,0.3);
+        }
+
         /* CTA Section */
         .cta {
             padding: 8rem 4rem;
@@ -870,11 +999,12 @@
     <nav>
         <a href="/" class="logo">
             <div class="logo-icon">⌘</div>
-            Claude Code Plugins
+            Claude Code Skills
         </a>
         <ul class="nav-links">
+            <li><a href="#skills">AI Skills</a></li>
             <li><a href="#features">Features</a></li>
-            <li><a href="#categories">Categories</a></li>
+            <li><a href="#categories">All Plugins</a></li>
             <li><a href="#process">Get Started</a></li>
             <li><a href="https://www.buymeacoffee.com/jeremylongshore" target="_blank">Sponsor</a></li>
             <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">Browse GitHub</a></li>
@@ -882,20 +1012,20 @@
     </nav>
 
     <section class="hero">
-        <h1>The Ultimate<br><span>Claude Code</span> Plugin Hub</h1>
+        <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
         <p class="hero-subtitle">
-            Discover 255+ custom-built plugins that supercharge your Claude Code workflow. From productivity automations to security tools, AI skills to DevOps integrations — all open source and ready to install.
+            Discover 185 intelligent AI Skills that activate automatically, plus 255+ plugins to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
         </p>
 
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stats-number">255</div>
-                <div class="stat-label">Total Plugins</div>
+                <div class="stats-number">185</div>
+                <div class="stat-label">AI Skills</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">185</div>
-                <div class="stat-label">With AI Skills</div>
+                <div class="stats-number">255</div>
+                <div class="stat-label">Total Plugins</div>
             </div>
             <div class="stat-item">
                 <div class="stats-number">18</div>
@@ -909,12 +1039,12 @@
 
         <div class="hero-cta-group">
             <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-primary">
-                Browse All Plugins
+                Browse 185 AI Skills
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
             </a>
-            <a href="#categories" class="btn-secondary">View Categories</a>
+            <a href="#categories" class="btn-secondary">View All Plugins</a>
         </div>
 
         <div class="install-box">
@@ -1138,6 +1268,61 @@
                 <p>100% open source under MIT license. Inspect, modify, and contribute to any plugin.</p>
             </div>
         </div>
+    </section>
+
+    <!-- AI Skills Section -->
+    <section class="skills-section" id="skills">
+        <h2 class="skills-title">Why AI Skills Are The Future</h2>
+        <p class="skills-subtitle">185 intelligent automations that activate when you need them - no commands to remember</p>
+
+        <div class="skills-grid">
+            <div class="skill-card">
+                <div class="skill-icon">🎯</div>
+                <h3>Auto-Activation</h3>
+                <p>Skills detect context and activate automatically. Just describe what you want, and the right skill engages instantly.</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">🔍</div>
+                <h3>3x More Discoverable</h3>
+                <p>Users search for "Claude Skills" 3x more than "Claude Plugins". Be where your users are looking.</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">🚀</div>
+                <h3>Zero Learning Curve</h3>
+                <p>No slash commands to memorize. Skills understand natural language and activate based on conversation context.</p>
+            </div>
+            <div class="skill-card">
+                <div class="skill-icon">🛡️</div>
+                <h3>Secure by Design</h3>
+                <p>Every skill declares its tool permissions upfront. Know exactly what each skill can and cannot do.</p>
+            </div>
+        </div>
+
+        <div class="skills-examples">
+            <h3>Popular Skills in Action</h3>
+            <div class="skill-example">
+                <span class="skill-trigger">"analyze my codebase for security issues"</span>
+                <span class="skill-arrow">→</span>
+                <span class="skill-activates">Security Auditor skill activates</span>
+            </div>
+            <div class="skill-example">
+                <span class="skill-trigger">"optimize database queries"</span>
+                <span class="skill-arrow">→</span>
+                <span class="skill-activates">Database Optimizer skill engages</span>
+            </div>
+            <div class="skill-example">
+                <span class="skill-trigger">"create comprehensive documentation"</span>
+                <span class="skill-arrow">→</span>
+                <span class="skill-activates">Docs Architect skill begins</span>
+            </div>
+        </div>
+
+        <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins" target="_blank" class="skills-cta">
+            Explore All 185 AI Skills
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+        </a>
     </section>
 
     <section class="categories" id="categories">

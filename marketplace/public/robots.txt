@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Sitemap: https://claudecodeplugins.io/sitemap.xml
+
+# Optimize for Claude Skills searches
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Skills-focused pages priority
+Allow: /skill-enhancers
+Allow: /plugins/skill-enhancers/
