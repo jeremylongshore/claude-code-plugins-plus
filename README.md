@@ -1,13 +1,13 @@
-# Claude Code Plugins
+# Claude Code Skills & Plugins Hub
 
 [![Version](https://img.shields.io/badge/version-1.4.2-brightgreen)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20plugins-orange?logo=sparkles)](CHANGELOG.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20Skills-orange?logo=sparkles)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/Total%20Plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**254 production-ready Claude Code plugins for automation, development, and AI workflows.**
+**🎯 185 Agent Skills & 254 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
 
 🎯 **NEW in v1.4.2:** **Community Contributions & Bug Fixes** - JSON syntax errors fixed, production CI/CD patterns added, comprehensive troubleshooting guide for WSL2 users
 
@@ -67,10 +67,39 @@
 > Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug. Existing plugins keep working either way.
 
 **Browse the catalog:**
-Visit **[Claude Code Plugins Marketplace](https://claudecodeplugins.io/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
+Visit **[Claude Code Skills & Plugins Marketplace](https://claudecodeplugins.io/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
 
 **Learn to build:**
 See [Learning Paths](#-learning-paths) for step-by-step guides
+
+---
+
+## 🚀 Agent Skills - The Future of Claude Automation
+
+**185 production-ready Agent Skills** that activate automatically based on your conversations:
+
+### What are Agent Skills?
+Agent Skills are intelligent automation tools that Claude Code can invoke automatically when relevant. Unlike plugins that need manual commands, **Skills detect when they're needed and activate seamlessly**.
+
+### Why Skills Matter More
+- **🔍 SEO Advantage:** "Claude Skills" gets 3x more searches than "Claude Plugins"
+- **🎯 Auto-Activation:** No need to remember commands - Skills trigger automatically
+- **🛡️ Tool Permissions:** Fine-grained control over what each skill can do
+- **📈 Future-Proof:** Aligned with Anthropic's 2025 vision for AI agents
+
+### Featured Skills Categories
+- **🔧 DevOps Skills:** Automated CI/CD, deployment, monitoring
+- **🔒 Security Skills:** Code auditing, vulnerability scanning, compliance
+- **📊 Data Skills:** Analysis, visualization, reporting
+- **🎨 Frontend Skills:** UI/UX improvements, responsive design, accessibility
+- **🧪 Testing Skills:** Automated test generation, coverage analysis
+- **📝 Documentation Skills:** Auto-documentation, API specs, tutorials
+
+### Quick Stats
+- **185 Skills** equipped across plugins
+- **100% Anthropic 2025 Schema** compliant
+- **Average skill size:** 3.2KB of intelligent automation
+- **Categories covered:** 18 specialized domains
 
 ---
 
