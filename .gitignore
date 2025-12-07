@@ -53,6 +53,8 @@ coverage/
 
 # Private documentation and business documents (NEVER commit)
 000-docs/
+# EXCEPT: 6767 canonical standards (cross-repo standards)
+!000-docs/6767*.md
 website/
 
 # Internal planning and research documents (do not commit to public repo)
