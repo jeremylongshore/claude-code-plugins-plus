@@ -4735,6 +4735,25 @@
         "name": "Charles Wiltgen",
         "url": "https://github.com/CharlesWiltgen"
       }
+    },
+    {
+      "name": "claude-never-forgets",
+      "source": "./plugins/community/claude-never-forgets",
+      "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "persistent",
+        "preferences",
+        "sessions",
+        "recall"
+      ],
+      "author": {
+        "name": "yldrmahmet",
+        "url": "https://github.com/yldrmahmet"
+      }
     }
   ]
 }
