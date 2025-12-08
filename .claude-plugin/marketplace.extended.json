@@ -4883,6 +4883,31 @@
         "skills": 13,
         "total": 13
       }
+    },
+    {
+      "name": "claude-never-forgets",
+      "source": "./plugins/community/claude-never-forgets",
+      "description": "Persistent memory plugin for Claude Code - remembers preferences, decisions, and corrections across sessions and context limits",
+      "version": "0.1.0",
+      "category": "productivity",
+      "keywords": [
+        "memory",
+        "context",
+        "persistent",
+        "preferences",
+        "sessions",
+        "recall"
+      ],
+      "author": {
+        "name": "yldrmahmet",
+        "url": "https://github.com/yldrmahmet"
+      },
+      "components": {
+        "hooks": 4,
+        "commands": 3,
+        "skills": 1,
+        "total": 8
+      }
     }
   ]
 }
