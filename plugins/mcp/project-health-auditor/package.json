@@ -23,16 +23,16 @@
   "author": "Intent Solutions IO",
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.1",
-    "glob": "^11.1.0",
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "glob": "^13.0.0",
     "simple-git": "^3.30.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^20.19.25",
+    "@types/node": "^24.10.1",
     "eslint": "^9.39.1",
-    "tsx": "^4.16.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.5.0",
-    "vitest": "^4.0.8"
+    "vitest": "^4.0.15"
   }
 }
