@@ -1,62 +1,196 @@
 ---
-description: This skill enables claude to automatically generate comprehensive documentation
-  for existing database schemas using the database-documentation-gen plugin. it is
-  triggered when the user requests database documentation, erd diagrams, or a data
-  dicti...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: generating-database-documentation
-license: MIT
+name: database-documentation-gen
+description: |
+  Generates comprehensive database documentation including ERD diagrams, data dictionaries,
+  and schema analysis. Creates Mermaid, PlantUML, and DBML diagrams from database schemas.
+  Use when documenting databases, creating ERDs, or generating data dictionaries.
+  Trigger with "document database", "create ERD", "generate data dictionary".
+allowed-tools: Read, Write, Edit, Bash, Glob
+version: 1.0.0
 ---
+
+# Database Documentation Generator
+
+Automatically generates comprehensive documentation for database schemas, including ERD diagrams in multiple formats.
+
 ## Overview
 
-This skill empowers Claude to create detailed database documentation from existing database schemas. It leverages the database-documentation-gen plugin to automate the process, saving time and ensuring consistency. The generated documentation includes ERD diagrams, table relationships, and detailed information about database objects.
+This skill creates detailed database documentation using bundled Python scripts. It initializes documentation projects, validates configurations, and generates ERD diagrams in Mermaid, PlantUML, and DBML formats. Perfect for database architects, developers, and teams needing to document their data models.
 
-## How It Works
+## Prerequisites
 
-1. **Activation**: Claude recognizes the user's request for database documentation, ERD diagrams, or a data dictionary, triggering the database-documentation-gen plugin.
-2. **Schema Analysis**: The plugin connects to the specified database and analyzes its schema, extracting information about tables, columns, relationships, indexes, triggers, and stored procedures.
-3. **Documentation Generation**: The plugin generates comprehensive documentation in various formats, including ERD diagrams, data dictionaries, and interactive HTML documentation.
+**Required**:
+- Python 3.6+: For running documentation scripts
+- Write access: To create documentation directories
 
-## When to Use This Skill
+**Optional**:
+- Database connection details for live schema extraction
+- Mermaid Live Editor or PlantUML viewer for diagram rendering
 
-This skill activates when you need to:
-- Generate documentation for a new or existing database.
-- Create ERD diagrams for architectural reviews.
-- Produce a data dictionary for data governance purposes.
-- Onboard new team members to a database project.
+## Instructions
+
+### Step 1: Initialize Documentation Project
+
+Run the initialization script to create project structure:
+
+```bash
+python {baseDir}/scripts/init_db_docs.py \
+  --project [database_name] \
+  --output [output_directory] \
+  --db-type [postgresql|mysql|sqlite|sqlserver|oracle] \
+  --host [hostname] \
+  --port [port] \
+  --database [database_name] \
+  --user [username]
+```
+
+Example for PostgreSQL:
+```bash
+python {baseDir}/scripts/init_db_docs.py \
+  --project myapp_db \
+  --db-type postgresql \
+  --host localhost \
+  --port 5432 \
+  --database myapp \
+  --user dbuser
+```
+
+This creates:
+- Project directory with organized structure
+- Configuration file (`db_docs_config.json`)
+- README with project overview
+
+### Step 2: Validate Configuration
+
+Ensure configuration is correct before proceeding:
+
+```bash
+python {baseDir}/scripts/validate_config.py \
+  --config ./[project_name]/db_docs_config.json
+```
+
+The validator checks:
+- JSON syntax validity
+- Required configuration sections
+- Database connection parameters
+- Output format specifications
+- Project directory structure
+
+Review any warnings or errors and update the configuration file as needed.
+
+### Step 3: Generate ERD Diagrams
+
+Create Entity Relationship Diagrams in multiple formats:
+
+```bash
+python {baseDir}/scripts/erd_generator.py \
+  --config ./[project_name]/db_docs_config.json \
+  --format [mermaid|plantuml|dbml|all] \
+  --schema [optional_schema.json]
+```
+
+Generate all formats:
+```bash
+python {baseDir}/scripts/erd_generator.py \
+  --config ./myapp_db/db_docs_config.json \
+  --format all
+```
+
+This produces:
+- **Mermaid** (`.md`): For GitHub/GitLab rendering
+- **PlantUML** (`.puml`): For detailed UML diagrams
+- **DBML** (`.dbml`): For dbdiagram.io visualization
+
+### Step 4: View Generated Documentation
+
+The diagrams are saved in the `diagrams/` directory:
+
+1. **Mermaid diagrams**: Copy content to any Markdown file or use [Mermaid Live Editor](https://mermaid.live)
+2. **PlantUML diagrams**: Use PlantUML server or IDE plugins
+3. **DBML diagrams**: Upload to [dbdiagram.io](https://dbdiagram.io) or [dbdocs.io](https://dbdocs.io)
+
+## Output
+
+- **Project Structure**: Organized directories for schemas, tables, views, procedures
+- **Configuration File**: JSON configuration for documentation settings
+- **ERD Diagrams**: Visual database schema in 3 formats
+- **Project README**: Overview and structure documentation
+
+## Error Handling
+
+1. **Error**: `Configuration file not found`
+   **Solution**: Ensure you run init_db_docs.py first or provide correct config path
+
+2. **Error**: `Invalid JSON in configuration file`
+   **Solution**: Check JSON syntax, use validate_config.py to identify issues
+
+3. **Error**: `Missing project directories`
+   **Solution**: Run init_db_docs.py to create proper structure
+
+4. **Error**: `Invalid database type`
+   **Solution**: Use one of: postgresql, mysql, sqlite, sqlserver, oracle
+
+5. **Error**: `Port must be a number`
+   **Solution**: Provide numeric port value (e.g., 5432 for PostgreSQL)
 
 ## Examples
 
-### Example 1: Documenting an Existing Database
+### Example 1: Quick PostgreSQL Documentation
 
-User request: "Generate database documentation for the 'users' database."
+```bash
+# Initialize
+python {baseDir}/scripts/init_db_docs.py --project ecommerce --db-type postgresql
 
-The skill will:
-1. Activate the database-documentation-gen plugin.
-2. Connect to the 'users' database and analyze its schema.
-3. Generate comprehensive documentation, including ERD diagrams and a data dictionary.
+# Validate
+python {baseDir}/scripts/validate_config.py --config ./ecommerce/db_docs_config.json
 
-### Example 2: Creating an ERD Diagram
+# Generate all diagram formats
+python {baseDir}/scripts/erd_generator.py --config ./ecommerce/db_docs_config.json --format all
+```
 
-User request: "Create an ERD diagram for the 'orders' database."
+### Example 2: MySQL with Custom Settings
 
-The skill will:
-1. Activate the database-documentation-gen plugin.
-2. Connect to the 'orders' database and analyze its schema.
-3. Generate an ERD diagram illustrating the relationships between tables in the 'orders' database.
+```bash
+# Initialize with specific connection details
+python {baseDir}/scripts/init_db_docs.py \
+  --project blog_db \
+  --db-type mysql \
+  --host db.example.com \
+  --port 3306 \
+  --database blog \
+  --user admin
 
-## Best Practices
+# Generate only Mermaid diagram
+python {baseDir}/scripts/erd_generator.py \
+  --config ./blog_db/db_docs_config.json \
+  --format mermaid
+```
 
-- **Database Credentials**: Ensure Claude has the necessary database credentials to access the database schema.
-- **Database Selection**: Clearly specify the database for which documentation should be generated.
-- **Output Format**: Consider specifying the desired output format for the documentation (e.g., HTML, Markdown).
+### Example 3: SQLite Local Database
 
-## Integration
+```bash
+# Initialize for SQLite (no host/port needed)
+python {baseDir}/scripts/init_db_docs.py \
+  --project local_app \
+  --db-type sqlite \
+  --database ./data/app.db
 
-This skill can be integrated with other plugins to further enhance the documentation process. For example, it can be combined with a diagramming plugin to customize the ERD diagrams or with a document generation plugin to create more sophisticated documentation formats.
+# Generate DBML for web visualization
+python {baseDir}/scripts/erd_generator.py \
+  --config ./local_app/db_docs_config.json \
+  --format dbml
+```
+
+## Tips
+
+- The scripts work with sample data if no live database is available
+- All scripts use Python standard library only - no pip installs needed
+- Generated diagrams include table relationships based on foreign keys
+- Configuration can be edited manually after initialization
+- Use `--quiet` flag with validate_config.py for CI/CD pipelines
+
+## Resources
+
+- Scripts Documentation: `{baseDir}/scripts/README.md`
+- Sample configurations: `{baseDir}/assets/`
+- Script source code: `{baseDir}/scripts/`
