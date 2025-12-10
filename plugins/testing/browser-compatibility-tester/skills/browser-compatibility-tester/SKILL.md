@@ -1,61 +1,107 @@
 ---
-description: This skill enables cross-browser compatibility testing for web applications
-  using browserstack, selenium grid, or playwright. it tests across chrome, firefox,
-  safari, and edge, identifying browser-specific bugs and ensuring consistent functionalit...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: conducting-browser-compatibility-tests
+name: testing-browser-compatibility
+version: 1.0.0
+description: |
+  Test across multiple browsers and devices for cross-browser compatibility.
+  Use when ensuring cross-browser or device compatibility.
+  Trigger with phrases like "test browser compatibility", "check cross-browser", or "validate on browsers".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:browser-*)
 license: MIT
 ---
-## Overview
 
-This skill automates cross-browser compatibility testing, ensuring that web applications function correctly across various browsers and devices. It leverages BrowserStack, Selenium Grid, and Playwright to execute tests and identify browser-specific issues.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Configuring Browser Matrix**: Defines the target browsers (Chrome, Firefox, Safari, Edge), versions, operating systems, and device configurations for testing.
-2. **Generating Cross-Browser Tests**: Creates and configures tests to run across the defined browser matrix, handling browser-specific quirks and setting up parallel execution for efficiency.
-3. **Executing Tests**: Runs the tests in parallel using BrowserStack, Selenium Grid, or Playwright, capturing screenshots and logs for analysis.
-4. **Generating Compatibility Report**: Compiles a detailed report highlighting any compatibility issues, including screenshots and error logs, for easy identification and resolution.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Ensure a web application functions correctly across different browsers and devices.
-- Identify browser-specific bugs or compatibility issues.
-- Automate cross-browser testing as part of a CI/CD pipeline.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:browser-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Testing a new feature
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Test browser compatibility for the new shopping cart feature."
+## Output
 
-The skill will:
-1. Configure the browser matrix with the latest versions of Chrome, Firefox, Safari, and Edge.
-2. Execute tests specifically targeting the shopping cart functionality across the configured browsers.
-3. Generate a report highlighting any compatibility issues encountered with the shopping cart feature, including screenshots.
+The skill generates comprehensive test results:
 
-### Example 2: Regression testing after an update
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "/bt"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Use the default browser matrix (or a previously defined configuration).
-2. Run all existing tests across the configured browsers and devices.
-3. Provide a comprehensive report detailing any regressions or new compatibility issues introduced by the recent update.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Clearly define the target browser matrix to ensure comprehensive testing.
-- **Test Design**: Write tests that are robust and cover a wide range of user interactions.
-- **Report Analysis**: Carefully analyze the generated reports to identify and address compatibility issues promptly.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated into a CI/CD pipeline using other tools to automate cross-browser testing as part of the deployment process. It can also work with issue tracking systems to automatically create tickets for identified compatibility bugs.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

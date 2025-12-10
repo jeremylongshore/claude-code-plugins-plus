@@ -407,7 +407,7 @@ describe('Knowledge Base MCP Server', () => {
       const StoreDocumentSchema = z.object({
         title: z.string(),
         content: z.string(),
-        metadata: z.record(z.any()).optional().default({}),
+        metadata: z.record(z.string(), z.any()).optional().default({}),
         tags: z.array(z.string()).optional().default([]),
         id: z.string().optional()
       });

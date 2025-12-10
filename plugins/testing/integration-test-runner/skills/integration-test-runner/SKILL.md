@@ -1,63 +1,107 @@
 ---
-description: This skill enables claude to run and manage integration test suites.
-  it automates environment setup, database seeding, service orchestration, and cleanup.
-  use this skill when the user asks to "run integration tests", "execute integration
-  tests", o...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: running-integration-tests
+version: 1.0.0
+description: |
+  Execute integration tests validating component interactions and system integration.
+  Use when performing specialized testing.
+  Trigger with phrases like "run integration tests", "test integration", or "validate component interactions".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:integration-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to execute comprehensive integration tests, ensuring seamless interactions between various system components. It automates the often complex setup and teardown processes, providing reliable and repeatable test runs.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Environment Preparation**: The plugin sets up the test environment, including creating/resetting databases, running migrations, and seeding test data.
-2. **Test Execution**: The plugin executes the integration test suites, capturing detailed logs and reporting progress.
-3. **Cleanup**: After the tests, the plugin cleans up the environment, dropping the test database, stopping services, and removing temporary files to prevent test pollution.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Run all integration tests for a project.
-- Run a specific integration test suite (e.g., "API tests").
-- Run integration tests with code coverage analysis.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:integration-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Running All Integration Tests
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "/run-integration"
+## Output
 
-The skill will:
-1. Prepare the test environment (database, services).
-2. Execute all integration test suites defined in the project.
-3. Generate a report with pass/fail counts and coverage metrics.
-4. Clean up the test environment.
+The skill generates comprehensive test results:
 
-### Example 2: Running a Specific Test Suite
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "/run-integration api"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Prepare the test environment.
-2. Execute only the "api" integration test suite.
-3. Generate a report specific to the "api" suite.
-4. Clean up the test environment.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Ensure test configurations are properly set up in `test/integration/config.json`, `.env.test`, or related files.
-- **Dependencies**: Define all necessary services and dependencies in the test environment configuration.
-- **Test Design**: Write focused integration tests that verify specific interactions between components.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill works seamlessly with other plugins by ensuring a clean and isolated test environment. It avoids conflicts with other processes and provides reliable results.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

@@ -1,60 +1,107 @@
 ---
-description: This skill analyzes code coverage metrics to identify untested code and
-  generate comprehensive coverage reports. it is triggered when the user requests
-  analysis of code coverage, identification of coverage gaps, or generation of coverage
-  reports. ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: analyzing-test-coverage
+version: 1.0.0
+description: |
+  Analyze code coverage metrics and identify untested code paths.
+  Use when analyzing untested code or coverage gaps.
+  Trigger with phrases like "analyze coverage", "check test coverage", or "find untested code".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:coverage-*)
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to analyze code coverage metrics, pinpoint areas of untested code, and generate detailed reports. It helps you identify gaps in your test suite and ensure comprehensive code coverage.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Coverage Data Collection**: Claude executes the project's test suite with coverage tracking enabled (e.g., using `nyc`, `coverage.py`, or JaCoCo).
-2. **Report Generation**: The plugin parses the coverage data and generates a detailed report, including metrics for line, branch, function, and statement coverage.
-3. **Uncovered Code Identification**: Claude highlights specific lines or blocks of code that are not covered by any tests.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Analyze the overall code coverage of your project.
-- Identify specific areas of code that lack test coverage.
-- Generate a detailed report of code coverage metrics.
-- Enforce minimum code coverage thresholds.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:coverage-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Analyzing Project Coverage
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Analyze code coverage for the entire project"
+## Output
 
-The skill will:
-1. Execute the project's test suite with coverage tracking.
-2. Generate a comprehensive coverage report, showing line, branch, and function coverage.
+The skill generates comprehensive test results:
 
-### Example 2: Identifying Untested Code
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Show me the untested code in the `src/utils.js` file"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Analyze the coverage data for `src/utils.js`.
-2. Highlight the lines of code in `src/utils.js` that are not covered by any tests.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Ensure your project has a properly configured coverage tool (e.g., `nyc` in package.json).
-- **Thresholds**: Define minimum coverage thresholds to enforce code quality standards.
-- **Report Review**: Regularly review coverage reports to identify and address coverage gaps.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated with other testing and CI/CD tools to automate coverage analysis and reporting. For example, it can be used in conjunction with a linting plugin to identify both code style issues and coverage gaps.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

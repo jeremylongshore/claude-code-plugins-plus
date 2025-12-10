@@ -1,59 +1,107 @@
 ---
-description: This skill manages database testing by generating test data, wrapping
-  tests in transactions, and validating database schemas. it is used to create robust
-  and reliable database interactions. claude uses this skill when the user requests
-  database te...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: managing-database-testing
+name: managing-database-tests
+version: 1.0.0
+description: |
+  Database testing including fixtures, transactions, and rollback management.
+  Use when performing specialized testing.
+  Trigger with phrases like "test the database", "run database tests", or "validate data integrity".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:db-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to create and manage comprehensive database testing workflows. It facilitates the generation of realistic test data, ensures transactional integrity with automatic rollbacks, and validates database schema integrity.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Test Data Generation**: Generates realistic test data using factories and fixtures, populating the database with relevant information for testing.
-2. **Transaction Wrapping**: Wraps database tests within transactions, ensuring that any changes made during the test are automatically rolled back, maintaining a clean testing environment.
-3. **Schema Validation**: Validates the database schema against expected structures and constraints, identifying potential issues with migrations or data integrity.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Generate test data for database interactions.
-- Implement transaction management for database tests.
-- Validate database schema and migrations.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:db-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Generating Test Data
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Generate test data factories for my PostgreSQL database using Faker to populate users and products tables."
+## Output
 
-The skill will:
-1. Create Python code utilizing Faker and a database library (e.g., SQLAlchemy) to generate realistic user and product data.
-2. Provide instructions on how to execute the generated code to seed the database.
+The skill generates comprehensive test results:
 
-### Example 2: Implementing Transaction Rollback
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Wrap my database integration tests in transactions with automatic rollback to ensure a clean state after each test."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Generate code that utilizes database transaction management features to wrap test functions.
-2. Implement automatic rollback mechanisms to revert any changes made during the test execution.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Data Realism**: Utilize Faker or similar libraries to generate realistic test data that accurately reflects production data.
-- **Transaction Isolation**: Ensure proper transaction isolation levels to prevent interference between concurrent tests.
-- **Schema Validation**: Regularly validate database schema against expected structures to identify migration issues early.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill seamlessly integrates with other code generation and execution tools within Claude Code. It can be used in conjunction with file management and code editing skills to create, modify, and execute database testing scripts.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

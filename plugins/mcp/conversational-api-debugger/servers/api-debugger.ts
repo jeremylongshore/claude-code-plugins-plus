@@ -76,9 +76,9 @@ const IngestLogsSchema = z.object({
     method: z.string(),
     url: z.string(),
     statusCode: z.number(),
-    requestHeaders: z.record(z.string()).optional(),
+    requestHeaders: z.record(z.string(), z.string()).optional(),
     requestBody: z.any().optional(),
-    responseHeaders: z.record(z.string()).optional(),
+    responseHeaders: z.record(z.string(), z.string()).optional(),
     responseBody: z.any().optional(),
     duration: z.number().optional(),
     error: z.string().optional()
@@ -93,9 +93,9 @@ const ExplainFailureSchema = z.object({
     method: z.string(),
     url: z.string(),
     statusCode: z.number(),
-    requestHeaders: z.record(z.string()).optional(),
+    requestHeaders: z.record(z.string(), z.string()).optional(),
     requestBody: z.any().optional(),
-    responseHeaders: z.record(z.string()).optional(),
+    responseHeaders: z.record(z.string(), z.string()).optional(),
     responseBody: z.any().optional(),
     error: z.string().optional()
   }).optional().describe('Log object to analyze directly'),
@@ -107,7 +107,7 @@ const MakeReproSchema = z.object({
   log: z.object({
     method: z.string(),
     url: z.string(),
-    requestHeaders: z.record(z.string()).optional(),
+    requestHeaders: z.record(z.string(), z.string()).optional(),
     requestBody: z.any().optional()
   }).optional().describe('Log object to convert directly'),
   includeHeaders: z.boolean().optional().default(true),
@@ -691,22 +691,22 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     {
       name: 'load_openapi',
       description: 'Load and parse an OpenAPI specification file (JSON or YAML). Extracts endpoint definitions, parameters, and expected responses for comparison with actual API behavior.',
-      inputSchema: zodToJsonSchema(LoadOpenAPISchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(LoadOpenAPISchema as any) as Tool['inputSchema']
     },
     {
       name: 'ingest_logs',
       description: 'Ingest HTTP request/response logs from file (HAR format) or direct array. Analyzes patterns, identifies errors, and prepares logs for failure analysis.',
-      inputSchema: zodToJsonSchema(IngestLogsSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(IngestLogsSchema as any) as Tool['inputSchema']
     },
     {
       name: 'explain_failure',
       description: 'Analyze why an API call failed. Compares actual behavior with OpenAPI spec (if loaded), identifies root causes, and suggests fixes. Provides severity assessment.',
-      inputSchema: zodToJsonSchema(ExplainFailureSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(ExplainFailureSchema as any) as Tool['inputSchema']
     },
     {
       name: 'make_repro',
       description: 'Generate cURL command (and alternatives: HTTPie, JavaScript fetch) to reproduce an API call. Useful for debugging, documentation, and sharing reproducible test cases.',
-      inputSchema: zodToJsonSchema(MakeReproSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(MakeReproSchema as any) as Tool['inputSchema']
     }
   ];
 

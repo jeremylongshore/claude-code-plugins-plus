@@ -1,57 +1,107 @@
 ---
-description: This skill runs smoke tests to verify critical application functionality.
-  it executes pre-defined test suites that check system health, authentication, core
-  features, and external integrations. use this skill after deployments, upgrades,
-  or signif...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: running-smoke-tests
+version: 1.0.0
+description: |
+  Execute fast smoke tests validating critical functionality after deployment.
+  Use when performing specialized testing.
+  Trigger with phrases like "run smoke tests", "quick validation", or "test critical paths".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:smoke-*)
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to quickly verify the critical functionality of an application by running a suite of smoke tests. It provides a fast pass/fail assessment, helping to identify potential issues early in the deployment process.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Initiate Smoke Test**: The user requests a smoke test using the `/smoke-test` or `/st` command.
-2. **Execute Test Suite**: The skill executes the pre-defined suite of smoke tests, covering system health, authentication, core features, and external integrations.
-3. **Report Results**: The skill provides a summary of the test results, indicating whether the tests passed or failed.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Verify application functionality after a deployment.
-- Confirm system health after an upgrade.
-- Sanity-check critical features after configuration changes.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:smoke-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Post-Deployment Verification
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Run a smoke test after deploying the new version."
+## Output
 
-The skill will:
-1. Execute the smoke test suite.
-2. Report the pass/fail status of each test, highlighting any failures in authentication or core feature validation.
+The skill generates comprehensive test results:
 
-### Example 2: Configuration Change Validation
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "/st to validate the recent database configuration changes."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Execute the smoke test suite.
-2. Report the results, specifically checking the system health and integration tests to ensure the database changes didn't introduce issues.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Focus**: Ensure smoke tests focus on the most critical user flows and system components.
-- **Speed**: Keep the smoke test suite execution time under 5 minutes for rapid feedback.
-- **Integration**: Integrate smoke tests into your CI/CD pipeline for automated post-deployment verification.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be used in conjunction with other deployment and monitoring tools to provide a comprehensive view of application health and stability. It works independently, requiring only the `/smoke-test` or `/st` command to initiate.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

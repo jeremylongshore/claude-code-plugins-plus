@@ -1,60 +1,121 @@
 ---
-description: This skill automates api endpoint testing, including request generation,
-  validation, and comprehensive test coverage for rest and graphql apis. it is used
-  when the user requests api testing, contract testing, or validation against openapi
-  specific...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: automating-api-testing
+version: 1.0.0
+description: |
+  Automate API endpoint testing including request generation, validation, and comprehensive test coverage for REST and GraphQL APIs.
+  Use when testing API contracts, validating OpenAPI specifications, or ensuring endpoint reliability.
+  Trigger with phrases like "test the API", "generate API tests", or "validate API contracts".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:api-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to automatically generate and execute comprehensive API tests for REST and GraphQL endpoints. It ensures thorough validation, covers various authentication methods, and performs contract testing against OpenAPI specifications.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- API definition files (OpenAPI/Swagger, GraphQL schema, or endpoint documentation)
+- Base URL for the API service (development, staging, or test environment)
+- Authentication credentials or API keys if endpoints require authorization
+- Testing framework installed (Jest, Mocha, Supertest, or equivalent)
+- Network connectivity to the target API service
 
-1. **Analyze API Definition**: The skill parses the provided API definition (e.g., OpenAPI/Swagger file, code files) or infers it from usage.
-2. **Generate Test Cases**: Based on the API definition, it creates test cases covering different scenarios, including CRUD operations, authentication, and error handling.
-3. **Execute Tests and Validate Responses**: The skill executes the generated tests and validates the responses against expected status codes, headers, and body structures.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Analyze API Definition
+Examine the API structure and endpoints:
+1. Use Read tool to load OpenAPI/Swagger specifications from {baseDir}/api-specs/
+2. Identify all available endpoints, HTTP methods, and request/response schemas
+3. Document authentication requirements and rate limiting constraints
+4. Note any deprecated endpoints or breaking changes
 
-This skill activates when you need to:
-- Generate comprehensive API tests for REST endpoints.
-- Create GraphQL API tests covering queries, mutations, and subscriptions.
-- Validate API contracts against OpenAPI/Swagger specifications.
-- Test API authentication flows, including login, refresh, and protected endpoints.
+### Step 2: Generate Test Cases
+Create comprehensive test coverage:
+1. Generate CRUD operation tests (Create, Read, Update, Delete)
+2. Add authentication flow tests (login, token refresh, logout)
+3. Include edge case tests (invalid inputs, boundary conditions, malformed requests)
+4. Create contract validation tests against OpenAPI schemas
+5. Add performance tests for critical endpoints
 
-## Examples
+### Step 3: Execute Test Suite
+Run automated API tests:
+1. Use Bash(test:api-*) to execute test framework with generated test files
+2. Validate HTTP status codes match expected responses (200, 201, 400, 401, 404, 500)
+3. Verify response headers (Content-Type, Cache-Control, CORS headers)
+4. Validate response body structure against schemas using JSON Schema validation
+5. Test authentication token expiration and renewal flows
 
-### Example 1: Generating REST API Tests
+### Step 4: Generate Test Report
+Document results in {baseDir}/test-reports/api/:
+- Test execution summary with pass/fail counts
+- Coverage metrics by endpoint and HTTP method
+- Failed test details with request/response payloads
+- Performance benchmarks (response times, throughput)
+- Contract violation details if schema mismatches detected
 
-User request: "Generate API tests for the user management endpoints in src/routes/users.js"
+## Output
 
-The skill will:
-1. Analyze the user management endpoints in the specified file.
-2. Generate a test suite covering CRUD operations (create, read, update, delete) for user resources.
+The skill generates structured API test artifacts:
 
-### Example 2: Creating GraphQL API Tests
+### Test Suite Files
+Generated test files organized by resource:
+- `{baseDir}/tests/api/users.test.js` - User endpoint tests
+- `{baseDir}/tests/api/products.test.js` - Product endpoint tests
+- `{baseDir}/tests/api/auth.test.js` - Authentication flow tests
 
-User request: "Create GraphQL API tests for the product queries and mutations"
+### Test Coverage Report
+- Endpoint coverage percentage (target: 100% for critical paths)
+- HTTP method coverage per endpoint (GET, POST, PUT, PATCH, DELETE)
+- Authentication scenario coverage (authenticated vs. unauthenticated)
+- Error condition coverage (4xx and 5xx responses)
 
-The skill will:
-1. Analyze the product queries and mutations in the GraphQL schema.
-2. Generate tests to verify the functionality and data integrity of these operations.
+### Contract Validation Results
+- OpenAPI schema compliance status for each endpoint
+- Breaking changes detected between specification versions
+- Undocumented endpoints or parameters found in implementation
+- Response schema violations with diff details
 
-## Best Practices
+### Performance Metrics
+- Average response time per endpoint
+- 95th and 99th percentile latencies
+- Requests per second throughput measurements
+- Timeout occurrences and slow endpoint identification
 
-- **API Definition**: Provide a clear and accurate API definition (e.g., OpenAPI/Swagger file) for optimal test generation.
-- **Authentication Details**: Specify the authentication method and credentials required to access the API endpoints.
-- **Contextual Information**: Provide context about the API's purpose and usage to guide the test generation process.
+## Error Handling
 
-## Integration
+Common issues and solutions:
 
-This skill can integrate with other plugins to retrieve API definitions from various sources, such as code repositories or API gateways. It can also be combined with reporting tools to generate detailed test reports and dashboards.
+**Connection Refused**
+- Error: Cannot connect to API service at specified base URL
+- Solution: Verify service is running using Bash(test:api-healthcheck); check network connectivity and firewall rules
+
+**Authentication Failures**
+- Error: 401 Unauthorized or 403 Forbidden on protected endpoints
+- Solution: Verify API keys are valid and not expired; ensure bearer token format is correct; check scope permissions
+
+**Schema Validation Errors**
+- Error: Response does not match OpenAPI schema definition
+- Solution: Update OpenAPI specification to match actual API behavior; file bug if API implementation is incorrect
+
+**Timeout Errors**
+- Error: Request exceeded configured timeout threshold
+- Solution: Increase timeout for slow endpoints; investigate performance issues on API server; add retry logic for transient failures
+
+## Resources
+
+### API Testing Frameworks
+- Supertest for Node.js HTTP assertion testing
+- REST-assured for Java API testing
+- Postman/Newman for collection-based API testing
+- Pact for contract testing and consumer-driven contracts
+
+### Validation Libraries
+- Ajv for JSON Schema validation
+- OpenAPI Schema Validator for spec compliance
+- Joi for Node.js schema validation
+- GraphQL Schema validation tools
+
+### Best Practices
+- Test against non-production environments to avoid data corruption
+- Use test data factories to create consistent test fixtures
+- Implement proper test isolation with database cleanup between tests
+- Version control test suites alongside API specifications
+- Run tests in CI/CD pipeline for continuous validation

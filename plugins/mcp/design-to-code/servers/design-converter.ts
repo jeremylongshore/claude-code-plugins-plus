@@ -24,7 +24,7 @@ const GenerateComponentSchema = z.object({
   layout: z.object({
     type: z.string(),
     children: z.array(z.any()).optional(),
-    styles: z.record(z.string()).optional()
+    styles: z.record(z.string(), z.string()).optional()
   }),
   framework: z.enum(['react', 'svelte', 'vue']).default('react'),
   includeA11y: z.boolean().default(true)
@@ -128,13 +128,23 @@ function generateVueComponent(layout: any, includeA11y: boolean): string {
 `.trim();
 }
 
-const server = new Server({ name: 'design-converter', version: '1.0.0' }, { capabilities: { tools: {} } });
+const server = new Server(
+  {
+    name: 'design-converter',
+    version: '1.0.0'
+  },
+  {
+    capabilities: {
+      tools: {}
+    }
+  }
+);
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
-    { name: 'parse_figma', description: 'Parse Figma JSON export', inputSchema: zodToJsonSchema(ParseFigmaSchema) as Tool['inputSchema'] },
-    { name: 'analyze_screenshot', description: 'Analyze screenshot layout', inputSchema: zodToJsonSchema(AnalyzeScreenshotSchema) as Tool['inputSchema'] },
-    { name: 'generate_component', description: 'Generate code component', inputSchema: zodToJsonSchema(GenerateComponentSchema) as Tool['inputSchema'] }
+    { name: 'parse_figma', description: 'Parse Figma JSON export', inputSchema: zodToJsonSchema(ParseFigmaSchema as any) as Tool['inputSchema'] },
+    { name: 'analyze_screenshot', description: 'Analyze screenshot layout', inputSchema: zodToJsonSchema(AnalyzeScreenshotSchema as any) as Tool['inputSchema'] },
+    { name: 'generate_component', description: 'Generate code component', inputSchema: zodToJsonSchema(GenerateComponentSchema as any) as Tool['inputSchema'] }
   ]
 }));
 

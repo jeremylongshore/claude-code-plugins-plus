@@ -1,57 +1,107 @@
 ---
-description: This skill enables claude to track and run regression tests, ensuring
-  new changes don't break existing functionality. it is triggered when the user asks
-  to "track regression", "run regression tests", or uses the shortcut "reg". the skill
-  helps in ...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: tracking-regression-tests
+version: 1.0.0
+description: |
+  Track and manage regression test suites across releases.
+  Use when performing specialized testing.
+  Trigger with phrases like "track regressions", "manage regression suite", or "validate against baseline".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:regression-*)
 license: MIT
 ---
-## Overview
 
-This skill allows Claude to track and execute regression tests, which are crucial for maintaining software quality and preventing unintended consequences from new code changes. By automating the regression testing process, Claude can quickly identify and address potential issues before they impact users.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Identify Regression Tests**: The user marks specific tests as part of the regression suite using the `--mark` flag.
-2. **Execute Regression Suite**: The skill runs the designated regression tests.
-3. **Analyze Results**: The skill analyzes the test results, highlighting failures and potential flaky tests.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Run the regression test suite before deploying new code.
-- Mark a specific test as part of the regression suite.
-- Investigate potential regressions after making code changes.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:regression-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Running the Regression Suite
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "run regression tests"
+## Output
 
-The skill will:
-1. Execute all tests marked as part of the regression suite.
-2. Report the results, including any failures or flaky tests.
+The skill generates comprehensive test results:
 
-### Example 2: Marking a Test for Regression
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "track regression --mark test_example"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Mark the test `test_example` as part of the regression suite.
-2. Confirm that the test has been added to the suite.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Test Selection**: Choose tests that cover critical functionality and are likely to be affected by changes.
-- **Frequency**: Run the regression suite frequently, especially before deployments.
-- **Analysis**: Carefully analyze test failures to identify the root cause of regressions.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated with other testing and CI/CD tools to automate the regression testing process as part of a larger development workflow.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

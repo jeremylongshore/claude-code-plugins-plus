@@ -1,59 +1,107 @@
 ---
-description: This skill enables claude to generate end-to-end (e2e) tests for web
-  applications. it leverages playwright, cypress, or selenium to automate browser
-  interactions and validate user workflows. use this skill when the user requests
-  to "create e2e tes...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: generating-end-to-end-tests
+name: running-e2e-tests
+version: 1.0.0
+description: |
+  Execute end-to-end tests covering full user workflows across frontend and backend.
+  Use when performing specialized testing.
+  Trigger with phrases like "run end-to-end tests", "test user flows", or "execute E2E suite".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:e2e-*)
 license: MIT
 ---
-## Overview
 
-This skill automates the creation of end-to-end tests, which simulate real user interactions with a web application. By generating tests using Playwright, Cypress, or Selenium, Claude ensures comprehensive coverage of critical user workflows.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Identify User Workflow**: Claude analyzes the user's request to determine the specific user workflow to be tested (e.g., user registration, product checkout).
-2. **Generate Test Script**: Based on the identified workflow, Claude generates a test script using Playwright, Cypress, or Selenium. The script includes steps to navigate the web application, interact with elements, and assert expected outcomes.
-3. **Configure Test Environment**: Claude configures the test environment, including browser selection (Chrome, Firefox, Safari, Edge) and any necessary dependencies.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Create end-to-end tests for a specific user flow (e.g., "create e2e tests for user login").
-- Generate browser-based tests for a web application.
-- Automate testing of multi-step processes in a web application (e.g., "generate end-to-end tests for adding an item to a shopping cart and completing the checkout process").
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:e2e-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Testing User Registration
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Create E2E tests for the user registration workflow on my website."
+## Output
 
-The skill will:
-1. Generate a Playwright script that automates the user registration process, including filling out the registration form, submitting it, and verifying the successful registration message.
-2. Configure the test to run in Chrome and Firefox.
+The skill generates comprehensive test results:
 
-### Example 2: Testing Shopping Cart Functionality
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Generate end-to-end tests for adding an item to a shopping cart and completing the checkout process."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Create a Cypress script that simulates adding a product to the shopping cart, navigating to the checkout page, entering shipping and payment information, and submitting the order.
-2. Include assertions to verify that the correct product is added to the cart, the order total is accurate, and the order confirmation page is displayed.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Specificity**: Provide clear and specific instructions regarding the user workflow to be tested.
-- **Framework Choice**: If you have a preference for Playwright, Cypress, or Selenium, specify it in your request. Otherwise, Playwright will be used by default.
-- **Environment Details**: Specify any relevant environment details, such as the target browser and the URL of the web application.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be used in conjunction with other plugins to set up the web application, deploy it to a testing environment, and report test results.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

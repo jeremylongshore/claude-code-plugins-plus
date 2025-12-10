@@ -1,61 +1,107 @@
 ---
-description: This skill generates comprehensive test reports with coverage metrics,
-  trends, and stakeholder-friendly formats (html, pdf, json). it aggregates test results
-  from various frameworks, calculates key metrics (coverage, pass rate, duration),
-  and perf...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-test-reports
+version: 1.0.0
+description: |
+  Generate comprehensive test reports with metrics, coverage, and visualizations.
+  Use when performing specialized testing.
+  Trigger with phrases like "generate test report", "create test documentation", or "show test metrics".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:report-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to create detailed test reports, providing insights into code coverage, test performance trends, and failure analysis. It supports multiple output formats for easy sharing and analysis.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Aggregating Results**: Collects test results from various test frameworks used in the project.
-2. **Calculating Metrics**: Computes coverage metrics, pass rates, test duration, and identifies trends.
-3. **Generating Report**: Produces comprehensive reports in HTML, PDF, or JSON format based on the user's preference.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Generate a test report after a test run.
-- Analyze code coverage to identify areas needing more testing.
-- Identify trends in test performance over time.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:report-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Generating an HTML Test Report
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Generate an HTML test report showing code coverage and failure analysis."
+## Output
 
-The skill will:
-1. Aggregate test results from all available frameworks.
-2. Calculate code coverage and identify failing tests.
-3. Generate an HTML report summarizing the findings.
+The skill generates comprehensive test results:
 
-### Example 2: Comparing Test Results Over Time
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Create a report comparing the test results from the last two CI/CD runs."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Retrieve test results from the two most recent CI/CD runs.
-2. Compare key metrics like pass rate and duration.
-3. Generate a report highlighting any regressions or improvements.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Clarity**: Specify the desired output format (HTML, PDF, JSON) for the report.
-- **Scope**: Define the scope of the report (e.g., specific test suite, time period).
-- **Context**: Provide context about the project and testing environment to improve accuracy.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can integrate with CI/CD pipelines to automatically generate and share test reports after each build. It also works well with other analysis plugins to provide more comprehensive insights.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

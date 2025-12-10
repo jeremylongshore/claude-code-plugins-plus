@@ -1,57 +1,107 @@
 ---
-description: This skill enables claude to orchestrate complex test workflows using
-  the test-orchestrator plugin. it allows claude to define test execution graphs with
-  dependencies, execute tests in parallel, and intelligently select tests to run based
-  on code ...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
-name: orchestrating-test-workflows
+name: orchestrating-test-execution
+version: 1.0.0
+description: |
+  Coordinate parallel test execution across multiple environments and frameworks.
+  Use when performing specialized testing.
+  Trigger with phrases like "orchestrate tests", "run parallel tests", or "coordinate test execution".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:orchestrate-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to manage and execute complex test suites efficiently. It leverages the test-orchestrator plugin to handle test dependencies, parallel execution, and intelligent test selection, resulting in faster and more reliable testing processes.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Workflow Definition**: Claude uses the plugin to define the test workflow, specifying dependencies between tests.
-2. **Parallelization**: The plugin identifies independent tests and executes them in parallel to reduce overall execution time.
-3. **Smart Selection**: Based on code changes, the plugin selects only the affected tests to run, minimizing unnecessary execution.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Optimize test execution time.
-- Manage dependencies between tests.
-- Run only relevant tests after code changes.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:orchestrate-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Optimizing Regression Testing
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Orchestrate the regression tests for the user authentication module after the recent code changes."
+## Output
 
-The skill will:
-1. Use the test-orchestrator plugin to identify the tests affected by the changes in the user authentication module.
-2. Execute those tests in parallel, respecting any dependencies.
+The skill generates comprehensive test results:
 
-### Example 2: Setting up a CI/CD Pipeline
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Set up a test workflow for the CI/CD pipeline that runs unit tests, integration tests, and end-to-end tests with appropriate dependencies."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Define a test workflow using the test-orchestrator plugin, specifying the order and dependencies between the different test suites (unit, integration, end-to-end).
-2. Configure the pipeline to trigger the orchestrated test execution upon code commits.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Dependency Mapping**: Clearly define dependencies between tests to ensure correct execution order.
-- **Granularity**: Break down large test suites into smaller, more manageable units for better parallelization.
-- **Change Tracking**: Integrate the test-orchestrator with version control to accurately identify affected tests.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill integrates with the test-orchestrator plugin and can be incorporated into CI/CD pipelines. It can also be used in conjunction with other code analysis tools to further refine test selection.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

@@ -1,63 +1,107 @@
 ---
-description: This skill enables claude to generate realistic test data for software
-  development. it uses the test-data-generator plugin to create users, products, orders,
-  and custom schemas for comprehensive testing. use this skill when you need to populate
-  da...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-test-data
+version: 1.0.0
+description: |
+  Generate realistic test data including edge cases and boundary conditions.
+  Use when creating realistic fixtures or edge case test data.
+  Trigger with phrases like "generate test data", "create fixtures", or "setup test database".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:data-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to generate realistic and diverse test data, streamlining software testing and development workflows. It leverages the test-data-generator plugin to produce data sets tailored to your specific needs, from user profiles to complex business transactions.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Identify Data Requirements**: Claude analyzes your request to determine the type and volume of test data required (e.g., users, products, orders, custom schemas).
-2. **Generate Data**: Claude uses the test-data-generator plugin to create realistic test data based on your specifications.
-3. **Present Data**: Claude presents the generated data in a suitable format, such as JSON or a data file, ready for use in your testing environment.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Generate a large number of realistic user profiles for testing authentication and authorization.
-- Create a dataset of products with varying attributes for testing e-commerce functionality.
-- Simulate order placements and transactions for performance testing and load testing.
-- Populate a database with realistic data for demonstration or training purposes.
-- Generate data that adheres to a specific schema or data model.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:data-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Generating User Data
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Generate 500 test users with realistic names, emails, and addresses."
+## Output
 
-The skill will:
-1. Invoke the test-data-generator plugin to create 500 user records.
-2. Populate each record with realistic names, email addresses, and physical addresses.
-3. Provide the generated data in JSON format.
+The skill generates comprehensive test results:
 
-### Example 2: Creating Product Data
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Create product test data including name, description, price, and category for 100 different products."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Utilize the test-data-generator plugin to generate 100 product records.
-2. Populate each product with relevant details like name, description, price, and category.
-3. Deliver the data in a structured format suitable for database insertion.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Schema Definition**: Provide a clear schema or data model when generating custom data to ensure accuracy and consistency.
-- **Locale Considerations**: Specify the desired locale when generating data that is sensitive to regional variations (e.g., names, addresses, phone numbers).
-- **Seed Values**: Use seed values for reproducible test data generation, ensuring consistency across multiple runs.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated with other plugins, such as database management tools, to directly populate databases with the generated test data. It can also be used in conjunction with API testing tools to generate realistic request payloads.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

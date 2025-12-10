@@ -1,61 +1,107 @@
 ---
-description: This skill enables claude to perform automated fuzz testing on apis to
-  discover vulnerabilities, crashes, and unexpected behavior. it leverages malformed
-  inputs, boundary values, and random payloads to generate comprehensive fuzz test
-  suites. use ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: fuzzing-apis
+version: 1.0.0
+description: |
+  Perform API fuzzing to discover edge cases, crashes, and security vulnerabilities.
+  Use when performing specialized testing.
+  Trigger with phrases like "fuzz the API", "run fuzzing tests", or "discover edge cases".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:fuzz-*)
 license: MIT
 ---
-## Overview
 
-This skill allows Claude to conduct automated fuzz testing on REST APIs. It identifies potential security flaws and robustness issues by injecting various malformed inputs, boundary values, and random data.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Input Generation**: The skill generates a diverse set of test inputs, including malformed data, boundary values, and random payloads.
-2. **API Interaction**: It sends these inputs to the specified API endpoints.
-3. **Result Analysis**: It analyzes the API's responses and behavior to identify vulnerabilities, crashes, and unexpected results, such as SQL injection errors or XSS vulnerabilities.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Identify potential security vulnerabilities in an API.
-- Test the robustness of an API against unexpected inputs.
-- Ensure proper input validation is implemented in an API.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:fuzz-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Discovering SQL Injection Vulnerability
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Fuzz test the /users endpoint for SQL injection vulnerabilities."
+## Output
 
-The skill will:
-1. Generate SQL injection payloads.
-2. Send these payloads to the /users endpoint.
-3. Analyze the API's responses for SQL errors or unexpected behavior indicating a SQL injection vulnerability.
+The skill generates comprehensive test results:
 
-### Example 2: Testing Input Validation
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Fuzz test the /products endpoint to check for input validation issues with price and quantity parameters."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Generate malformed inputs for price and quantity (e.g., negative values, extremely large numbers, non-numeric characters).
-2. Send these inputs to the /products endpoint.
-3. Analyze the API's responses for errors or unexpected behavior, indicating input validation failures.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Specificity**: Be specific about the API endpoint or parameters you want to fuzz.
-- **Context**: Provide context about the expected behavior of the API.
-- **Iteration**: Run multiple fuzzing sessions with different input sets for thorough testing.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be used in conjunction with other security analysis tools to provide a more comprehensive assessment of an API's security posture. It can also be integrated into a CI/CD pipeline to automate security testing.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

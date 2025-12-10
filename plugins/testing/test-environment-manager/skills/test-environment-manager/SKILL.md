@@ -1,59 +1,107 @@
 ---
-description: This skill enables claude to manage isolated test environments using
-  docker compose, testcontainers, and environment variables. it is used to create
-  consistent, reproducible testing environments for software projects. claude should
-  use this skill ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: managing-test-environments
+version: 1.0.0
+description: |
+  Provision and manage isolated test environments with configuration and data.
+  Use when performing specialized testing.
+  Trigger with phrases like "manage test environment", "provision test env", or "setup test infrastructure".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:env-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to orchestrate and manage isolated test environments, ensuring consistent and reproducible testing processes. It simplifies the setup and teardown of complex testing infrastructures by leveraging Docker Compose, Testcontainers, and environment variable management.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Environment Creation**: Generates isolated test environments with databases, caches, message queues, and other dependencies.
-2. **Docker Compose Management**: Creates and configures `docker-compose.yml` files to define the test infrastructure.
-3. **Testcontainers Integration**: Sets up programmatic container management using Testcontainers for dynamic environment configuration.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Create an isolated test environment for a software project.
-- Manage Docker Compose files for test infrastructure.
-- Set up programmatic container management using Testcontainers.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:env-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Setting up a Database Test Environment
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Set up a test environment with a PostgreSQL database and a Redis cache using Docker Compose."
+## Output
 
-The skill will:
-1. Generate a `docker-compose.yml` file defining PostgreSQL and Redis services.
-2. Configure environment variables for database connection and cache access.
+The skill generates comprehensive test results:
 
-### Example 2: Creating a Test Environment with Message Queue
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Create a test environment with RabbitMQ using Testcontainers."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Programmatically create a RabbitMQ container using Testcontainers.
-2. Configure environment variables for message queue connection.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Ensure that all necessary environment variables are properly configured for the test environment.
-- **Cleanup**: Implement cleanup routines to remove test environments after use.
-- **Isolation**: Verify that the test environment is properly isolated from other environments.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill integrates with other Claude Code plugins to manage the deployment and execution of tests within the created environments. It can work with CI/CD tools to automate testing workflows.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

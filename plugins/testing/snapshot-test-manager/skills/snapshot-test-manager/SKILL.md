@@ -1,57 +1,107 @@
 ---
-description: This skill enables claude to manage and update snapshot tests using intelligent
-  diff analysis and selective updates. it is triggered when the user asks to analyze
-  snapshot failures, update snapshots, or manage snapshot tests in general. it helps
-  d...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: managing-snapshot-tests
+version: 1.0.0
+description: |
+  Create and validate component snapshots for UI regression testing.
+  Use when performing specialized testing.
+  Trigger with phrases like "update snapshots", "test UI snapshots", or "validate component snapshots".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:snapshot-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to efficiently manage snapshot tests by analyzing differences, selectively updating snapshots based on intentional changes, and identifying potential regressions. It provides a streamlined approach to maintain snapshot test suites across various JavaScript testing frameworks.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Analyzing Failures**: Reviews failed snapshot diffs, highlighting intentional and unintentional changes with side-by-side comparisons.
-2. **Selective Updating**: Updates specific snapshots that reflect intentional UI or code changes, while preserving snapshots that have caught regressions.
-3. **Batch Processing**: Allows for batch updating of related snapshots to streamline the update process.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Analyze snapshot test failures after code changes.
-- Update snapshot tests to reflect intentional UI changes.
-- Identify and preserve snapshots that are catching regressions.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:snapshot-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Updating Snapshots After UI Changes
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "I've made some UI changes and now my snapshot tests are failing. Can you update the snapshots?"
+## Output
 
-The skill will:
-1. Analyze the snapshot failures, identifying the diffs caused by the UI changes.
-2. Update the relevant snapshot files to reflect the new UI.
+The skill generates comprehensive test results:
 
-### Example 2: Investigating Unexpected Snapshot Changes
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "My snapshot tests are failing, but I don't expect any UI changes. Can you help me figure out what's going on?"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Analyze the snapshot failures, highlighting the unexpected diffs.
-2. Present the diffs to the user for review, indicating potential regressions.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Clear Communication**: Clearly state the intention behind updating or analyzing snapshots.
-- **Framework Awareness**: Specify the testing framework (Jest, Vitest, etc.) if known for more accurate analysis.
-- **Selective Updates**: Avoid blindly updating all snapshots. Focus on intentional changes and investigate unexpected diffs.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill works independently but can be used in conjunction with other code analysis and testing tools to provide a comprehensive testing workflow.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

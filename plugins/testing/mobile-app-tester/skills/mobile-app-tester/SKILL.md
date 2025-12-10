@@ -1,60 +1,107 @@
 ---
-description: This skill enables automated testing of mobile applications on ios and
-  android platforms using frameworks like appium, detox, xcuitest, and espresso. it
-  generates end-to-end tests, sets up page object models, and handles platform-specific
-  elements...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: automating-mobile-app-testing
+name: testing-mobile-apps
+version: 1.0.0
+description: |
+  Execute mobile app testing on iOS and Android devices/simulators.
+  Use when performing specialized testing.
+  Trigger with phrases like "test mobile app", "run iOS tests", or "validate Android functionality".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mobile-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to automate mobile app testing across iOS and Android, leveraging popular frameworks. It handles test generation, device configuration, and platform-specific adjustments, streamlining the mobile testing process.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Test Generation**: Claude creates end-to-end tests based on user-defined flows and requirements.
-2. **Page Object Modeling**: The skill sets up page object models to represent mobile screens and their elements.
-3. **Device Configuration**: It configures simulators, emulators, or device farms (e.g., AWS Device Farm, BrowserStack) for testing.
-4. **Platform Adaptation**: The skill handles platform-specific differences between iOS and Android for robust cross-platform testing.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Automate mobile app testing for iOS and/or Android.
-- Generate end-to-end tests for mobile applications.
-- Configure testing environments, including simulators, emulators, and device farms.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:mobile-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Automating iOS App Testing
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Create Appium tests for my iOS app."
+## Output
 
-The skill will:
-1. Generate Appium tests tailored for the iOS app.
-2. Configure an iOS simulator for test execution.
+The skill generates comprehensive test results:
 
-### Example 2: Generating Detox Tests for a React Native App
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Generate Detox tests for my React Native app's login flow."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Create Detox tests specifically targeting the login flow of the React Native app.
-2. Set up the necessary environment for Detox testing.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Specificity**: Provide detailed information about the app's functionality and desired test coverage.
-- **Framework Selection**: Specify the preferred testing framework (Appium, Detox, XCUITest, Espresso) if you have a preference.
-- **Platform Targeting**: Clearly indicate the target platforms (iOS, Android, or both).
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be used in conjunction with other skills related to code generation and deployment to create a comprehensive mobile app development workflow.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

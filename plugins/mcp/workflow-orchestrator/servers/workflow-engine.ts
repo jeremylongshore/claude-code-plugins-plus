@@ -155,10 +155,10 @@ const server = new Server({ name: 'workflow-engine', version: '1.0.0' }, { capab
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
   tools: [
-    { name: 'create_workflow', description: 'Create DAG workflow', inputSchema: zodToJsonSchema(CreateWorkflowSchema) as Tool['inputSchema'] },
-    { name: 'execute_workflow', description: 'Execute workflow', inputSchema: zodToJsonSchema(ExecuteWorkflowSchema) as Tool['inputSchema'] },
-    { name: 'get_workflow', description: 'Get workflow status', inputSchema: zodToJsonSchema(GetWorkflowSchema) as Tool['inputSchema'] },
-    { name: 'list_workflows', description: 'List workflows', inputSchema: zodToJsonSchema(ListWorkflowsSchema) as Tool['inputSchema'] }
+    { name: 'create_workflow', description: 'Create DAG workflow', inputSchema: zodToJsonSchema(CreateWorkflowSchema as any) as Tool['inputSchema'] },
+    { name: 'execute_workflow', description: 'Execute workflow', inputSchema: zodToJsonSchema(ExecuteWorkflowSchema as any) as Tool['inputSchema'] },
+    { name: 'get_workflow', description: 'Get workflow status', inputSchema: zodToJsonSchema(GetWorkflowSchema as any) as Tool['inputSchema'] },
+    { name: 'list_workflows', description: 'List workflows', inputSchema: zodToJsonSchema(ListWorkflowsSchema as any) as Tool['inputSchema'] }
   ]
 }));
 

@@ -1,63 +1,107 @@
 ---
-description: This skill enables claude to validate test suite quality by performing
-  mutation testing. it is triggered when the user asks to run mutation tests, analyze
-  test effectiveness, or improve test coverage. the skill introduces code mutations,
-  runs test...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: running-mutation-tests
+version: 1.0.0
+description: |
+  Execute mutation testing to evaluate test suite effectiveness.
+  Use when performing specialized testing.
+  Trigger with phrases like "run mutation tests", "test the tests", or "validate test effectiveness".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mutation-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to execute mutation testing, providing insights into the effectiveness of a test suite. By introducing small changes (mutations) into the code and running the tests, it determines if the tests are capable of detecting these changes. This helps identify weaknesses in the test suite and improve overall code quality.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Mutation Generation**: The plugin automatically introduces mutations (e.g., changing `+` to `-`) into the code.
-2. **Test Execution**: The test suite is run against the mutated code.
-3. **Result Analysis**: The plugin analyzes which mutations were "killed" (detected by tests) and which "survived" (were not detected).
-4. **Reporting**:  A mutation score is calculated, and surviving mutants are identified for further investigation.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Validate the effectiveness of a test suite.
-- Identify gaps in test coverage.
-- Improve the mutation score of a project.
-- Analyze surviving mutants to strengthen tests.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:mutation-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Improving Test Coverage
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Run mutation testing on the validator module and suggest improvements to the tests."
+## Output
 
-The skill will:
-1. Execute mutation tests on the validator module.
-2. Analyze the results and identify surviving mutants, indicating areas where tests are weak.
-3. Suggest specific improvements to the tests based on the surviving mutants, such as adding new test cases or modifying existing ones.
+The skill generates comprehensive test results:
 
-### Example 2: Assessing Test Quality
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "What is the mutation score for the user authentication service?"
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Execute mutation tests on the user authentication service.
-2. Calculate the mutation score based on the number of killed mutants.
-3. Report the mutation score to the user, providing a metric for test quality.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Targeted Mutation**: Focus mutation testing on critical modules or areas with high complexity.
-- **Analyze Survivors**: Prioritize the analysis of surviving mutants to identify the most impactful improvements to test coverage.
-- **Iterative Improvement**: Use mutation testing as part of an iterative process to continuously improve test suite quality.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill integrates well with other testing and code analysis tools. For example, it can be used in conjunction with code coverage tools to provide a more comprehensive view of test effectiveness.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

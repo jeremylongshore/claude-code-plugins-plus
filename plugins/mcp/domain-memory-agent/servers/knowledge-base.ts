@@ -66,7 +66,7 @@ const tfidfIndex: TFIDFIndex = {
 const StoreDocumentSchema = z.object({
   title: z.string().describe('Document title'),
   content: z.string().describe('Document content'),
-  metadata: z.record(z.any()).optional().default({}).describe('Additional metadata'),
+  metadata: z.record(z.string(), z.any()).optional().default({}).describe('Additional metadata'),
   tags: z.array(z.string()).optional().default([]).describe('Tags for categorization'),
   id: z.string().optional().describe('Optional custom ID (auto-generated if not provided)')
 });
@@ -561,32 +561,32 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     {
       name: 'store_document',
       description: 'Store a document in the knowledge base with optional tags and metadata. Content is automatically indexed for semantic search.',
-      inputSchema: zodToJsonSchema(StoreDocumentSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(StoreDocumentSchema as any) as Tool['inputSchema']
     },
     {
       name: 'semantic_search',
       description: 'Search documents using TF-IDF semantic search. Returns relevant documents with excerpts and relevance scores.',
-      inputSchema: zodToJsonSchema(SemanticSearchSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(SemanticSearchSchema as any) as Tool['inputSchema']
     },
     {
       name: 'summarize',
       description: 'Generate extractive summary of a document or content. Summaries are cached for documents.',
-      inputSchema: zodToJsonSchema(SummarizeSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(SummarizeSchema as any) as Tool['inputSchema']
     },
     {
       name: 'list_documents',
       description: 'List all documents in knowledge base with filtering, sorting, and pagination.',
-      inputSchema: zodToJsonSchema(ListDocumentsSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(ListDocumentsSchema as any) as Tool['inputSchema']
     },
     {
       name: 'get_document',
       description: 'Retrieve a specific document by ID including full content.',
-      inputSchema: zodToJsonSchema(GetDocumentSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(GetDocumentSchema as any) as Tool['inputSchema']
     },
     {
       name: 'delete_document',
       description: 'Delete a document from the knowledge base and remove from search index.',
-      inputSchema: zodToJsonSchema(DeleteDocumentSchema) as Tool['inputSchema']
+      inputSchema: zodToJsonSchema(DeleteDocumentSchema as any) as Tool['inputSchema']
     }
   ];
 

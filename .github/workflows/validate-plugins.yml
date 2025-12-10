@@ -207,3 +207,159 @@ jobs:
             fi
           done
           echo "✅ Dependency scan complete"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: validate
+    strategy:
+      fail-fast: false
+      matrix:
+        test-type: [mcp-plugins, python-tests, validation-scripts]
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        if: matrix.test-type == 'mcp-plugins'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm
+        if: matrix.test-type == 'mcp-plugins'
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+
+      - name: Install dependencies
+        if: matrix.test-type == 'mcp-plugins'
+        run: pnpm install --frozen-lockfile
+
+      - name: Build MCP plugins
+        if: matrix.test-type == 'mcp-plugins'
+        run: |
+          echo "Building MCP plugins..."
+          pnpm build
+          echo "✅ Build complete"
+
+      - name: Run MCP plugin tests
+        if: matrix.test-type == 'mcp-plugins'
+        run: |
+          echo "Running MCP plugin tests..."
+
+          # Run tests for each MCP plugin that has a test script
+          for package in plugins/mcp/*/package.json; do
+            if [ -f "$package" ]; then
+              dir=$(dirname "$package")
+              plugin_name=$(basename "$dir")
+
+              echo "Testing $plugin_name..."
+              cd "$dir"
+
+              # Check if test script exists
+              if grep -q '"test":' package.json || grep -q '"test:ci":' package.json; then
+                # Prefer test:ci if available, otherwise use test
+                if grep -q '"test:ci":' package.json; then
+                  pnpm test:ci || exit 1
+                else
+                  pnpm test -- --run || exit 1
+                fi
+                echo "✅ Tests passed for $plugin_name"
+              else
+                echo "⚠️  No test script found for $plugin_name"
+              fi
+
+              cd - > /dev/null
+            fi
+          done
+
+          echo "✅ All MCP plugin tests passed"
+
+      - name: Type checking
+        if: matrix.test-type == 'mcp-plugins'
+        run: |
+          echo "Running TypeScript type checking..."
+          pnpm typecheck || exit 1
+          echo "✅ Type checking passed"
+
+      - name: Linting
+        if: matrix.test-type == 'mcp-plugins'
+        run: |
+          echo "Running linters..."
+          pnpm lint || exit 1
+          echo "✅ Linting passed"
+
+      - name: Setup Python
+        if: matrix.test-type == 'python-tests'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python test dependencies
+        if: matrix.test-type == 'python-tests'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov pytest-asyncio
+
+          # Install dependencies if requirements.txt exists
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+
+          # Install additional testing tools
+          pip install pyyaml jsonschema
+
+      - name: Run Python tests
+        if: matrix.test-type == 'python-tests'
+        run: |
+          echo "Running Python tests..."
+
+          # Find all Python test files
+          TEST_FILES=$(find . -name "test_*.py" -o -name "*_test.py" | grep -v "__pycache__" | grep -v "backups/" || true)
+
+          if [ -n "$TEST_FILES" ]; then
+            echo "Found Python test files:"
+            echo "$TEST_FILES"
+
+            # Run pytest with coverage
+            pytest -v --cov=. --cov-report=term-missing --cov-report=xml || exit 1
+            echo "✅ Python tests passed"
+          else
+            echo "⚠️  No Python test files found"
+          fi
+
+      - name: Run validation script tests
+        if: matrix.test-type == 'validation-scripts'
+        run: |
+          echo "Testing validation scripts..."
+
+          # Test validate-all-plugins.sh on sample plugins
+          if [ -f "./scripts/validate-all-plugins.sh" ]; then
+            echo "Running validate-all-plugins.sh on MCP plugins..."
+            ./scripts/validate-all-plugins.sh plugins/mcp/project-health-auditor/ || exit 1
+            echo "✅ Validation script test passed"
+          fi
+
+          # Test Python validation scripts
+          if [ -f "scripts/validate-skills-schema.py" ]; then
+            echo "Running skills schema validation..."
+            python3 scripts/validate-skills-schema.py || exit 1
+            echo "✅ Skills schema validation passed"
+          fi
+
+          # Test frontmatter validation
+          if [ -f "scripts/validate-frontmatter.py" ]; then
+            echo "Running frontmatter validation..."
+            python3 scripts/validate-frontmatter.py || exit 1
+            echo "✅ Frontmatter validation passed"
+          fi
+
+          echo "✅ All validation script tests passed"
+
+      - name: Upload test coverage
+        if: matrix.test-type == 'python-tests' && always()
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          flags: python
+          fail_ci_if_error: false

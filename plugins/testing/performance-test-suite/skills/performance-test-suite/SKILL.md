@@ -1,63 +1,107 @@
 ---
-description: This skill enables claude to design, execute, and analyze performance
-  tests using the performance-test-suite plugin. it is activated when the user requests
-  load testing, stress testing, spike testing, or endurance testing, and when discussing
-  perf...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: performance-testing
+name: running-performance-tests
+version: 1.0.0
+description: |
+  Execute load testing, stress testing, and performance benchmarking.
+  Use when performing specialized testing.
+  Trigger with phrases like "run load tests", "test performance", or "benchmark the system".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:perf-*)
 license: MIT
 ---
-## Overview
 
-This skill automates performance testing workflows, allowing Claude to create and run various tests to assess system performance under different conditions. It facilitates bottleneck identification and provides actionable recommendations for optimization.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Test Design**: Claude analyzes the user's request to determine the appropriate test type (load, stress, spike, or endurance) and configures test parameters such as target users, duration, and ramp-up time.
-2. **Test Execution**: The performance-test-suite plugin executes the designed test, collecting performance metrics like response times, throughput, and error rates.
-3. **Metrics Analysis**: Claude analyzes the collected metrics to identify performance bottlenecks and potential issues.
-4. **Report Generation**: Claude generates a comprehensive report summarizing the test results, highlighting key performance indicators, and providing recommendations for improvement.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Create a load test for an API.
-- Design a stress test to determine the breaking point of a system.
-- Simulate a spike test to evaluate system behavior during sudden traffic surges.
-- Develop an endurance test to detect memory leaks or stability issues.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:perf-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Load Testing an API
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Create a load test for the /users API, ramping up to 200 concurrent users over 10 minutes."
+## Output
 
-The skill will:
-1. Design a load test configuration with a ramp-up stage to 200 users over 10 minutes.
-2. Execute the load test using the performance-test-suite plugin.
-3. Generate a report showing response times, throughput, and error rates for the /users API.
+The skill generates comprehensive test results:
 
-### Example 2: Stress Testing a Checkout Process
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Design a stress test to find the breaking point of the checkout process."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Design a stress test configuration with gradually increasing load on the checkout process.
-2. Execute the stress test, monitoring response times and error rates.
-3. Identify the point at which the checkout process fails and generate a report detailing the system's breaking point.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Realistic Scenarios**: Design tests that accurately reflect real-world usage patterns.
-- **Comprehensive Metrics**: Monitor a wide range of performance metrics to gain a holistic view of system performance.
-- **Iterative Testing**: Run multiple tests with different configurations to fine-tune performance and identify optimal settings.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill integrates with other monitoring and alerting plugins to provide real-time feedback on system performance during testing. It can also be used in conjunction with deployment plugins to automatically validate performance after code changes.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

@@ -1,61 +1,107 @@
 ---
-description: This skill enables claude to test load balancing strategies. it validates
-  traffic distribution across backend servers, tests failover scenarios when servers
-  become unavailable, verifies sticky sessions, and assesses health check functionality.
-  use...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: testing-load-balancers
+version: 1.0.0
+description: |
+  Validate load balancer behavior, failover, and traffic distribution.
+  Use when performing specialized testing.
+  Trigger with phrases like "test load balancer", "validate failover", or "check traffic distribution".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:loadbalancer-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to thoroughly test load balancing configurations, ensuring high availability and optimal performance. It automates the process of validating traffic distribution, simulating server failures, and verifying session persistence.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Initiating the Test**: Claude receives a request to test the load balancer.
-2. **Executing the Test Suite**: Claude uses the `load-balancer-tester` plugin to run a series of tests, including traffic distribution validation, failover testing, sticky session verification, and health check testing.
-3. **Presenting the Results**: Claude provides a summary of the test results, highlighting any issues or areas for improvement.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Validate traffic distribution across backend servers.
-- Test the load balancer's ability to handle server failures.
-- Verify that sticky sessions are functioning correctly.
-- Ensure that health checks are effectively removing unhealthy servers from the pool.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:loadbalancer-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Validating Traffic Distribution
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Test load balancer traffic distribution for even distribution across servers."
+## Output
 
-The skill will:
-1. Execute the `lb-test` command.
-2. Analyze the traffic distribution across the backend servers.
-3. Report whether the traffic is evenly distributed.
+The skill generates comprehensive test results:
 
-### Example 2: Simulating a Failover Scenario
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Test failover when one of the backend servers becomes unavailable."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Execute the `lb-test` command.
-2. Simulate a server failure.
-3. Verify that traffic is redirected to the remaining healthy servers.
-4. Report on the success of the failover process.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Ensure the load balancer is properly configured before testing.
-- **Realistic Scenarios**: Test with realistic traffic patterns and failure scenarios.
-- **Comprehensive Testing**: Test all aspects of the load balancer, including traffic distribution, failover, sticky sessions, and health checks.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill works independently using the `load-balancer-tester` plugin. It can be used in conjunction with other skills to configure and manage the load balancer before testing.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

@@ -1,59 +1,107 @@
 ---
-description: This skill validates api contracts using consumer-driven testing and
-  openapi validation. it leverages pact for consumer-driven contract testing, ensuring
-  that api providers adhere to the expectations of their consumers. it also validates
-  apis agai...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: validating-api-contracts
+version: 1.0.0
+description: |
+  Validate API contracts using consumer-driven contract testing (Pact, Spring Cloud Contract).
+  Use when performing specialized testing.
+  Trigger with phrases like "validate API contract", "run contract tests", or "check consumer contracts".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:contract-*)
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to generate and validate API contracts, ensuring compatibility between API providers and consumers. It uses Pact for consumer-driven contract testing and OpenAPI validation for specification compliance.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Generating Contract Tests**: Claude creates Pact consumer tests based on API usage, generating provider verification tests and building OpenAPI contract validators.
-2. **Validating Contracts**: The skill verifies if API responses match the defined contracts.
-3. **Checking Compatibility**: It checks for backward compatibility to identify breaking changes in the API.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Generate contract tests for an API.
-- Validate API responses against existing contracts.
-- Identify breaking changes in an API.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:contract-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Generating Pact Contracts
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Generate contract tests for my API using Pact."
+## Output
 
-The skill will:
-1. Analyze the API and generate Pact consumer contracts.
-2. Create provider verification tests based on the contracts.
+The skill generates comprehensive test results:
 
-### Example 2: Validating an OpenAPI Specification
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Validate my API against the OpenAPI specification."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Validate the API against the provided OpenAPI specification.
-2. Report any discrepancies or violations of the specification.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Clarity**: Be specific when requesting contract generation or validation, providing relevant API details.
-- **Completeness**: Ensure that your OpenAPI specifications are up-to-date for accurate validation.
-- **Context**: Provide context about the consumer and provider roles when using Pact.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated with other testing and deployment tools in the Claude Code ecosystem to automate contract verification as part of a CI/CD pipeline.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

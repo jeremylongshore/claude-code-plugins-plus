@@ -1,62 +1,123 @@
 ---
-description: This skill automates security vulnerability testing. it is triggered
-  when the user requests security assessments, penetration tests, or vulnerability
-  scans. the skill covers owasp top 10 vulnerabilities, sql injection, xss, csrf,
-  authentication is...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: performing-security-testing
+version: 1.0.0
+description: |
+  Automate security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues.
+  Use when performing security assessments, penetration tests, or vulnerability scans.
+  Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration test".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to automatically perform security vulnerability testing on applications and APIs. It leverages the security-test-scanner plugin to identify potential weaknesses and generate comprehensive reports.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Target application or API endpoint URLs accessible for testing
+- Authentication credentials if testing protected resources
+- Appropriate authorization to perform security testing on the target system
+- Test environment configured (avoid production without explicit approval)
+- Security testing tools installed (OWASP ZAP, sqlmap, or equivalent)
 
-1. **Initiate Scan**: The plugin is activated when security testing is requested.
-2. **Execute Tests**: The plugin automatically runs a suite of security tests covering OWASP Top 10, injection flaws, XSS, CSRF, and authentication/authorization issues.
-3. **Generate Report**: The plugin compiles the test results into a detailed report, highlighting vulnerabilities, severity ratings, and remediation steps.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Define Test Scope
+Identify the security testing parameters:
+- Target URLs and endpoints to scan
+- Authentication requirements and test credentials
+- Specific vulnerability types to focus on (OWASP Top 10, injection, XSS, etc.)
+- Testing depth level (passive scan vs. active exploitation)
 
-This skill activates when you need to:
-- Perform a security vulnerability scan of an application.
-- Test for OWASP Top 10 vulnerabilities.
-- Identify SQL injection or XSS vulnerabilities.
-- Assess authentication and authorization security.
+### Step 2: Execute Security Scan
+Run automated vulnerability detection:
+1. Use Read tool to analyze application structure and identify entry points
+2. Execute security testing tools via Bash(test:security-*) with proper scope
+3. Monitor scan progress and capture all findings
+4. Document identified vulnerabilities with severity ratings
 
-## Examples
+### Step 3: Analyze Vulnerabilities
+Process scan results to identify:
+- SQL injection vulnerabilities in database queries
+- Cross-Site Scripting (XSS) in user input fields
+- Cross-Site Request Forgery (CSRF) token weaknesses
+- Authentication and authorization bypass opportunities
+- Security misconfigurations and exposed sensitive data
 
-### Example 1: OWASP Top 10 Vulnerability Scan
+### Step 4: Generate Security Report
+Create comprehensive documentation in {baseDir}/security-reports/:
+- Executive summary with risk overview
+- Detailed vulnerability findings with CVSS scores
+- Proof-of-concept exploit examples where applicable
+- Prioritized remediation recommendations
+- Compliance assessment against security standards
 
-User request: "Perform a security test focusing on OWASP Top 10 vulnerabilities for the /api/ endpoint."
+## Output
 
-The skill will:
-1. Activate the security-test-scanner plugin.
-2. Execute OWASP Top 10 tests against the specified endpoint.
-3. Generate a report detailing any identified vulnerabilities and their severity.
+The skill generates structured security assessment reports:
 
-### Example 2: SQL Injection Testing
+### Vulnerability Summary
+- Total vulnerabilities discovered by severity (Critical, High, Medium, Low)
+- OWASP Top 10 category mapping for each finding
+- Attack surface analysis showing exposed endpoints
 
-User request: "Test the API for SQL injection vulnerabilities."
+### Detailed Findings
+Each vulnerability includes:
+- Unique identifier and CVSS score
+- Affected URLs, parameters, and HTTP methods
+- Technical description of the security weakness
+- Proof-of-concept demonstration or reproduction steps
+- Potential impact on confidentiality, integrity, and availability
 
-The skill will:
-1. Activate the security-test-scanner plugin.
-2. Run SQL injection tests against the API.
-3. Report any successful injection attempts.
+### Remediation Guidance
+- Specific code fixes or configuration changes required
+- Secure coding best practices to prevent recurrence
+- Priority recommendations based on risk and effort
+- Verification testing procedures after remediation
 
-## Best Practices
+### Compliance Assessment
+- Alignment with OWASP Application Security Verification Standard (ASVS)
+- PCI DSS requirements if applicable to payment processing
+- General Data Protection Regulation (GDPR) security considerations
 
-- **Scope Definition**: Clearly define the scope of the security test (e.g., specific endpoints, modules).
-- **Authentication**: Provide necessary authentication credentials for testing protected resources.
-- **Regular Testing**: Schedule regular security tests to identify newly introduced vulnerabilities.
+## Error Handling
 
-## Integration
+Common issues and solutions:
 
-This skill can be integrated with other plugins to automatically trigger security tests as part of a CI/CD pipeline or after code changes. It also integrates with reporting tools for centralized vulnerability management.
+**Access Denied**
+- Error: HTTP 403 or authentication failures during scan
+- Solution: Verify credentials are valid and have sufficient permissions; use provided test accounts
+
+**Rate Limiting**
+- Error: Too many requests blocked by WAF or rate limiter
+- Solution: Configure scan throttling to reduce request rate; use authenticated sessions to increase limits
+
+**False Positives**
+- Error: Reported vulnerabilities that cannot be exploited
+- Solution: Manually verify each finding; adjust scanner sensitivity; whitelist known safe patterns
+
+**Tool Installation Missing**
+- Error: Security testing tools not found on system
+- Solution: Install required tools using Bash(test:security-install) with package manager
+
+## Resources
+
+### Security Testing Tools
+- OWASP ZAP for automated vulnerability scanning
+- Burp Suite for manual penetration testing
+- sqlmap for SQL injection detection and exploitation
+- Nikto for web server vulnerability scanning
+
+### Vulnerability Databases
+- Common Vulnerabilities and Exposures (CVE) database
+- National Vulnerability Database (NVD) for CVSS scoring
+- OWASP Top 10 documentation and remediation guides
+
+### Secure Coding Guidelines
+- OWASP Secure Coding Practices checklist
+- CWE (Common Weakness Enumeration) catalog
+- SANS Top 25 Most Dangerous Software Errors
+
+### Best Practices
+- Always test in non-production environments first
+- Obtain written authorization before security testing
+- Document all testing activities for audit trails
+- Validate remediation effectiveness with regression testing

@@ -1,59 +1,107 @@
 ---
-description: This skill uses the test-doubles-generator plugin to automatically create
-  mocks, stubs, spies, and fakes for unit testing. it analyzes dependencies in the
-  code and generates appropriate test doubles based on the chosen testing framework,
-  such as j...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-test-doubles
+version: 1.0.0
+description: |
+  Generate mocks, stubs, spies, and fakes for dependency isolation.
+  Use when creating mocks, stubs, or test isolation fixtures.
+  Trigger with phrases like "generate mocks", "create test doubles", or "setup stubs".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:doubles-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to streamline unit testing by automatically generating test doubles (mocks, stubs, spies, and fakes). It analyzes the code under test, identifies dependencies, and creates the necessary test doubles, significantly reducing the time and effort required to write effective unit tests.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Dependency Analysis**: Claude analyzes the code to identify dependencies that need to be replaced with test doubles.
-2. **Test Double Generation**: Based on the dependencies and specified testing framework, Claude generates appropriate test doubles (mocks, stubs, spies, or fakes).
-3. **Code Insertion**: Claude provides the generated test double code, ready for integration into your unit tests.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Create mocks for external API calls in a unit test.
-- Generate stubs for service dependencies to control their behavior.
-- Implement spies to track interactions with real objects during testing.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:doubles-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Generating Mocks for API Calls
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Generate mocks for the `fetchData` function in `dataService.js` using Jest."
+## Output
 
-The skill will:
-1. Analyze the `dataService.js` file to identify the `fetchData` function and its dependencies.
-2. Generate a Jest mock for `fetchData`, allowing you to simulate API responses.
+The skill generates comprehensive test results:
 
-### Example 2: Creating Stubs for Service Dependencies
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Create stubs for the `NotificationService` in `userService.js` using Sinon."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Analyze `userService.js` and identify the `NotificationService` dependency.
-2. Generate a Sinon stub for `NotificationService`, enabling you to control its behavior during testing of `userService.js`.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Framework Selection**: Specify the testing framework you are using (e.g., Jest, Sinon) for optimal test double generation.
-- **Code Context**: Provide the relevant code snippets or file paths to ensure accurate dependency analysis.
-- **Test Double Type**: Consider the purpose of the test double. Use mocks for behavior verification, stubs for controlled responses, and spies for interaction tracking.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill integrates directly with your codebase by providing generated test double code snippets that can be easily copied and pasted into your unit tests. It supports popular testing frameworks and enhances the overall testing workflow.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

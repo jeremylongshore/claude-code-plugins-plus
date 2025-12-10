@@ -1,59 +1,107 @@
 ---
-description: This skill enables claude to perform comprehensive accessibility audits.
-  it uses the accessibility-test-scanner plugin to identify wcag 2.1/2.2 compliance
-  issues, validate aria attributes, check keyboard navigation, and assess screen reader
-  compat...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
-name: scanning-for-accessibility-issues
+name: scanning-accessibility
+version: 1.0.0
+description: |
+  Validate WCAG compliance and accessibility standards (ARIA, keyboard navigation).
+  Use when auditing WCAG compliance or screen reader compatibility.
+  Trigger with phrases like "scan accessibility", "check WCAG compliance", or "validate screen readers".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:a11y-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to conduct thorough accessibility testing of web applications. It leverages the `accessibility-test-scanner` plugin to pinpoint areas of non-compliance with accessibility standards and offers recommendations for remediation.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Initiating the Scan**: Claude invokes the `a11y-scan` command, triggering the accessibility-test-scanner plugin.
-2. **Performing the Audit**: The plugin conducts a comprehensive audit, checking for WCAG 2.1/2.2 compliance, ARIA validation, keyboard navigation, and screen reader compatibility.
-3. **Generating a Report**: The plugin generates a detailed report outlining accessibility issues found, along with recommendations for fixing them.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Evaluate a web application's compliance with WCAG 2.1 or WCAG 2.2 guidelines.
-- Identify ARIA antipatterns and ensure proper ARIA usage.
-- Test keyboard navigation and focus management.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:a11y-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Checking WCAG Compliance
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Run an accessibility scan on this webpage and tell me if it meets WCAG 2.1 AA standards."
+## Output
 
-The skill will:
-1. Execute the `a11y-scan` command.
-2. Provide a report detailing WCAG 2.1 AA compliance issues and recommendations.
+The skill generates comprehensive test results:
 
-### Example 2: Validating ARIA Attributes
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Check the ARIA attributes on this component for any errors or antipatterns."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Execute the `a11y-scan` command.
-2. Provide a report highlighting ARIA validation issues and recommended fixes.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Specificity**: Be specific in your requests (e.g., "WCAG 2.2 Level AA compliance" instead of just "accessibility").
-- **Context**: Provide the specific webpage or component to be scanned for accurate results.
-- **Iteration**: Use the scan results to iteratively improve accessibility and re-scan to verify fixes.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be used in conjunction with other tools for code editing and testing. For example, after identifying accessibility issues, Claude can use its coding skills to implement the recommended fixes.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines

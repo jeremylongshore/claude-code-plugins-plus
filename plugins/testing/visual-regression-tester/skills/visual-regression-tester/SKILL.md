@@ -1,59 +1,107 @@
 ---
-description: This skill enables claude to execute visual regression tests using tools
-  like percy, chromatic, and backstopjs. it captures screenshots, compares them against
-  baselines, and analyzes visual differences to identify unintended ui changes. use
-  this s...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
-name: performing-visual-regression-testing
+name: testing-visual-regression
+version: 1.0.0
+description: |
+  Detect visual changes in UI components using screenshot comparison.
+  Use when detecting unintended UI changes or pixel differences.
+  Trigger with phrases like "test visual changes", "compare screenshots", or "detect UI regressions".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:visual-*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to automatically detect unintended UI changes by performing visual regression tests. It integrates with popular visual testing tools to streamline the process of capturing screenshots, comparing them against baselines, and identifying visual differences.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Test environment configured and accessible
+- Required testing tools and frameworks installed
+- Test data and fixtures prepared
+- Appropriate permissions for test execution
+- Network connectivity if testing external services
 
-1. **Capture Screenshots**: Captures screenshots of specified components or pages using the configured visual testing tool.
-2. **Compare Against Baselines**: Compares the captured screenshots against established baseline images.
-3. **Analyze Visual Diffs**: Identifies and analyzes visual differences between the current screenshots and the baselines.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Prepare Test Environment
+Set up the testing context:
+1. Use Read tool to examine configuration from {baseDir}/config/
+2. Validate test prerequisites are met
+3. Initialize test framework and load dependencies
+4. Configure test parameters and thresholds
 
-This skill activates when you need to:
-- Detect unintended UI changes introduced by recent code modifications.
-- Verify the visual consistency of a web application across different browsers or environments.
-- Automate visual regression testing as part of a CI/CD pipeline.
+### Step 2: Execute Tests
+Run the test suite:
+1. Use Bash(test:visual-*) to invoke test framework
+2. Monitor test execution progress
+3. Capture test outputs and metrics
+4. Handle test failures and error conditions
 
-## Examples
+### Step 3: Analyze Results
+Process test outcomes:
+- Identify passed and failed tests
+- Calculate success rate and performance metrics
+- Detect patterns in failures
+- Generate insights for improvement
 
-### Example 1: Verifying UI Changes After a Feature Update
+### Step 4: Generate Report
+Document findings in {baseDir}/test-reports/:
+- Test execution summary
+- Detailed failure analysis
+- Performance benchmarks
+- Recommendations for fixes
 
-User request: "Run a visual test on the homepage to check for any UI regressions after the latest feature update."
+## Output
 
-The skill will:
-1. Capture a screenshot of the homepage.
-2. Compare the screenshot against the baseline image of the homepage.
-3. Report any visual differences detected, highlighting potential UI regressions.
+The skill generates comprehensive test results:
 
-### Example 2: Checking Visual Consistency Across Browsers
+### Test Summary
+- Total tests executed
+- Pass/fail counts and percentage
+- Execution time metrics
+- Resource utilization stats
 
-User request: "Perform a visual regression test on the product details page to ensure it renders correctly in Chrome and Firefox."
+### Detailed Results
+Each test includes:
+- Test name and identifier
+- Execution status (pass/fail/skip)
+- Actual vs. expected outcomes
+- Error messages and stack traces
 
-The skill will:
-1. Capture screenshots of the product details page in both Chrome and Firefox.
-2. Compare the screenshots against the respective baseline images for each browser.
-3. Identify and report any visual inconsistencies detected between the browsers.
+### Metrics and Analysis
+- Code coverage percentages
+- Performance benchmarks
+- Trend analysis across runs
+- Quality gate compliance status
 
-## Best Practices
+## Error Handling
 
-- **Configuration**: Ensure the visual testing tool is properly configured with the correct API keys and project settings.
-- **Baselines**: Maintain accurate and up-to-date baseline images to avoid false positives.
-- **Viewport Sizes**: Define appropriate viewport sizes to cover different screen resolutions and devices.
+Common issues and solutions:
 
-## Integration
+**Environment Setup Failures**
+- Error: Test environment not properly configured
+- Solution: Verify configuration files; check environment variables; ensure dependencies are installed
 
-This skill can be integrated with other Claude Code plugins to automate end-to-end testing workflows. For example, it can be combined with a testing plugin to run visual tests after functional tests have passed.
+**Test Execution Timeouts**
+- Error: Tests exceeded maximum execution time
+- Solution: Increase timeout thresholds; optimize slow tests; parallelize test execution
+
+**Resource Exhaustion**
+- Error: Insufficient memory or disk space during testing
+- Solution: Clean up temporary files; reduce concurrent test workers; increase resource allocation
+
+**Dependency Issues**
+- Error: Required services or databases unavailable
+- Solution: Verify service health; check network connectivity; use mocks if services are down
+
+## Resources
+
+### Testing Tools
+- Industry-standard testing frameworks for your language/platform
+- CI/CD integration guides and plugins
+- Test automation best practices documentation
+
+### Best Practices
+- Maintain test isolation and independence
+- Use meaningful test names and descriptions
+- Keep tests fast and focused
+- Implement proper setup and teardown
+- Version control test artifacts
+- Run tests in CI/CD pipelines
