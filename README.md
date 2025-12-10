@@ -18,27 +18,7 @@
 /plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
-⚡🪽 **[Buy me a Red Bull](https://buymeacoffee.com/jeremylongshore)** – Give these plugins wings, support ongoing development, and influence the premium plugin roadmap. See our [sponsor page](https://claudecodeplugins.io/sponsor) for tier details.
-
-*Additional support options (like Patreon) may be added later as the ecosystem grows.*
-
----
-
-## 💎 Enterprise Partners & Custom Plugin Sponsors
-
-**These companies invest in custom plugin development through GitHub Sponsors:**
-
-### 🏆 [Nixtla](https://www.nixtla.io/) - Premium Development Partner
-**CEO & Co-Founder:** [Max Mergenthaler](https://github.com/mergenthaler) (YC S21)
-**Partnership Type:** Enterprise GitHub Sponsor
-**Custom Development:** Commissioned enterprise-grade plugins for time-series AI workflows
-- **TimeGPT Integration** - Production forecasting workflows
-- **MLOps Automation** - Custom deployment patterns
-- **Private Plugins** - Proprietary competitive advantages
-
-*Through GitHub Sponsors, Nixtla doesn't just use our plugins—they invest in creating custom solutions tailored to their enterprise needs and help fund ongoing community development.*
-
-**Want custom plugins for your team?** [Become a GitHub Sponsor](https://github.com/sponsors/jeremylongshore) or email jeremy@intentsolutions.io
+⚡🪽 **[Buy me a Red Bull](https://buymeacoffee.com/jeremylongshore)** – Give these plugins wings and support ongoing development.
 
 ---
 
