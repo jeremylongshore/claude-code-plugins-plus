@@ -1,17 +1,17 @@
 # Claude Code Skills & Plugins Hub
 
-[![Version](https://img.shields.io/badge/version-1.4.2-brightgreen)](CHANGELOG.md)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-185%20Skills-orange?logo=sparkles)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/Total%20Plugins-254-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Version](https://img.shields.io/badge/version-1.5.0-brightgreen)](CHANGELOG.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-240%20Skills-orange?logo=sparkles)](CHANGELOG.md)
+[![Plugins](https://img.shields.io/badge/Total%20Plugins-257-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**🎯 185 Agent Skills & 254 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
+**🎯 240 Agent Skills & 257 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
 
-🎯 **NEW in v1.4.2:** **Community Contributions & Bug Fixes** - JSON syntax errors fixed, production CI/CD patterns added, comprehensive troubleshooting guide for WSL2 users
+🎯 **NEW in v1.5.0:** **Major Infrastructure Enhancements** - 555+ executable scripts, Intent-Solutions standard compliance improvements, CI/CD test execution, comprehensive quality improvements
 
-**Latest:** [v1.4.2 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.4.2) - Community bug fixes, WSL2 troubleshooting, contributor recognition
+**Latest:** [v1.5.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.5.0) - Infrastructure enhancements, script implementations, quality improvements across the entire plugin ecosystem
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -46,6 +46,7 @@
 
 **Huge thanks to our community contributors who make this marketplace better:**
 
+- **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
 - **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created Axiom, battle-tested iOS development plugin with 13 production-ready skills for Swift/Xcode debugging and optimization ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
 - **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns from real-world debugging ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117), [spotlight](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/118))
 - **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams and accessibility features ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))

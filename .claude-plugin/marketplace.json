@@ -7,12 +7,12 @@
   },
   "metadata": {
     "description": "A comprehensive marketplace and educational hub for Claude Code plugins",
-    "version": "1.4.0",
+    "version": "1.5.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 255,
-    "skillsEnabled": 198,
-    "lastUpdated": "2025-11-19"
+    "totalPlugins": 257,
+    "skillsEnabled": 240,
+    "lastUpdated": "2025-12-10"
   },
   "plugins": [
     {
