@@ -1,15 +1,17 @@
 ---
-description: This skill enables claude to create and execute load tests for performance
-  validation. it is designed to generate load test scripts using tools like k6, jmeter,
-  and artillery, based on specified test scenarios. use this skill when the user request...
+name: running-load-tests
+description: Create and execute load tests for performance validation using k6, JMeter, and Artillery. Use when validating application performance under load conditions or identifying bottlenecks. Trigger with phrases like "run load test", "create stress test", or "validate performance under load".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: running-load-tests
+- Bash(k6:*)
+- Bash(jmeter:*)
+- Bash(artillery:*)
+- Bash(performance:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +59,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with CI/CD pipelines to automate performance testing as part of the deployment process. It can also be used in conjunction with monitoring tools to correlate performance metrics with application behavior.
+
+## Prerequisites
+
+- Load testing tools installed (k6, JMeter, or Artillery)
+- Access to target application endpoints
+- Test scenario definitions and expected load patterns
+- Results storage location at {baseDir}/load-tests/
+
+## Instructions
+
+1. Analyze application architecture and identify critical endpoints
+2. Define test scenarios (baseline, stress, spike, soak, scalability)
+3. Generate appropriate load test scripts using selected tool
+4. Configure performance thresholds and acceptance criteria
+5. Execute load tests and capture metrics
+6. Analyze results and identify performance bottlenecks
+
+## Output
+
+- Load test scripts (k6, JMeter, or Artillery format)
+- Test execution logs and metrics
+- Performance reports with response times and throughput
+- Threshold violation alerts
+- Recommendations for performance improvements
+
+## Error Handling
+
+If load test execution fails:
+- Verify tool installation and configuration
+- Check network connectivity to target endpoints
+- Validate authentication and authorization
+- Review test script syntax and parameters
+- Ensure sufficient system resources for test execution
+
+## Resources
+
+- k6 documentation and examples
+- JMeter user manual and best practices
+- Artillery load testing guides
+- Performance testing methodology references

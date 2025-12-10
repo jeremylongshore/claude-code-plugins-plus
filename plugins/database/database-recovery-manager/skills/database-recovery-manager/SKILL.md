@@ -1,56 +1,122 @@
 ---
-description: This skill manages database recovery operations using the database-recovery-manager
-  plugin. it enables disaster recovery, point-in-time recovery (pitr), and automated
-  failover strategies for production database systems. use this skill when the use...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: managing-database-recovery
+description: |
+  Use when you need to work with database operations.
+  This skill provides database management and optimization with comprehensive guidance and automation.
+  Trigger with phrases like "manage database", "optimize database",
+  or "configure database".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(tar:*, rsync:*, aws:s3:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to orchestrate comprehensive database recovery strategies, including disaster recovery setup, point-in-time recovery implementation, and automated failover configuration. It leverages the database-recovery-manager plugin to ensure database resilience and minimize downtime.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Initiate Recovery Manager**: The skill invokes the `/recovery` command to start the database-recovery-manager plugin.
-2. **Analyze User Request**: The plugin analyzes the user's request to determine the specific recovery task (e.g., disaster recovery setup, PITR configuration).
-3. **Execute Recovery Steps**: The plugin executes the necessary steps to implement the requested recovery strategy, including configuring backups, setting up replication, and automating failover procedures.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Implement a disaster recovery plan for a production database.
-- Configure point-in-time recovery (PITR) for a database.
-- Automate backup validation and recovery testing.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Setting up Disaster Recovery
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Set up disaster recovery for my production PostgreSQL database."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Invoke the `/recovery` command.
-2. Configure a disaster recovery plan, including setting up replication to a secondary region and automating failover procedures.
+## Output
 
-### Example 2: Implementing Point-in-Time Recovery
+This skill produces:
 
-User request: "Implement point-in-time recovery for my MySQL database."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Invoke the `/recovery` command.
-2. Configure point-in-time recovery, including setting up regular backups and enabling transaction log archiving.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Backup Frequency**: Ensure backups are performed frequently enough to meet your recovery point objective (RPO).
-- **Recovery Testing**: Regularly test your recovery procedures to ensure they are effective and efficient.
-- **Documentation**: Document your recovery procedures thoroughly to ensure they can be followed by anyone on your team.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other plugins for database management, monitoring, and alerting to provide a comprehensive database operations solution. For example, it could work with a monitoring plugin to automatically trigger failover in the event of a database outage.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-recovery-manager/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-recovery-manager/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-recovery-manager/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-recovery-manager-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-recovery-manager-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-recovery-manager-dashboard.json`

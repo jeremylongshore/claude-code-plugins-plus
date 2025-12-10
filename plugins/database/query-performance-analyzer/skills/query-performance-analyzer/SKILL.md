@@ -1,58 +1,122 @@
 ---
-description: This skill enables claude to analyze and optimize database query performance.
-  it activates when the user discusses query performance issues, provides an explain
-  plan, or asks for optimization recommendations. the skill leverages the query-performa...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: analyzing-query-performance
+description: |
+  Use when you need to work with query optimization.
+  This skill provides query performance analysis with comprehensive guidance and automation.
+  Trigger with phrases like "optimize queries", "analyze performance",
+  or "improve query speed".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to act as a database performance expert. By analyzing EXPLAIN plans and query metrics, Claude can pinpoint inefficiencies and recommend targeted improvements to database queries.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receive Input**: The user provides an EXPLAIN plan, a slow query, or a description of a performance problem.
-2. **Analyze Performance**: The query-performance-analyzer plugin analyzes the provided information, identifying potential bottlenecks, such as full table scans, missing indexes, or inefficient join operations.
-3. **Provide Recommendations**: The plugin generates specific optimization recommendations, including suggesting new indexes, rewriting queries, or adjusting database configuration parameters.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Analyze the EXPLAIN plan of a slow-running query.
-- Identify performance bottlenecks in a database query.
-- Obtain recommendations for optimizing database query performance.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Analyzing a Slow Query
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Here's the EXPLAIN plan for my slow query. Can you help me optimize it? ```EXPLAIN SELECT * FROM orders WHERE customer_id = 123 AND order_date > '2023-01-01';```"
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the provided EXPLAIN plan using the query-performance-analyzer plugin.
-2. Identify potential issues, such as a missing index on `customer_id` or `order_date`, and suggest creating appropriate indexes.
+## Output
 
-### Example 2: Identifying a Bottleneck
+This skill produces:
 
-User request: "My query is taking a long time. It's a simple SELECT statement, but it's still slow. What could be the problem?"
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Prompt the user to provide the EXPLAIN plan for the query.
-2. Analyze the EXPLAIN plan and identify potential bottlenecks, such as a full table scan or an inefficient join. It might suggest creating an index or rewriting the query to use a more efficient join algorithm.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Provide Complete Information**: Include the full EXPLAIN plan and the query itself for the most accurate analysis.
-- **Describe the Problem**: Clearly articulate the performance issue you're experiencing (e.g., slow query, high CPU usage).
-- **Test Recommendations**: After implementing the suggested optimizations, re-run the EXPLAIN plan to verify the improvements.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill integrates well with other database tools and plugins within the Claude Code ecosystem. For example, it can be used in conjunction with a database schema explorer to identify potential indexing opportunities or with a query builder to rewrite inefficient queries.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/query-performance-analyzer/`
+
+**Documentation and Guides**: `{baseDir}/docs/query-performance-analyzer/`
+
+**Example Scripts and Code**: `{baseDir}/examples/query-performance-analyzer/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/query-performance-analyzer-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/query-performance-analyzer-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/query-performance-analyzer-dashboard.json`

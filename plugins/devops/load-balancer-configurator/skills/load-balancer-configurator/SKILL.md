@@ -1,59 +1,140 @@
 ---
-description: This skill configures load balancers, including alb, nlb, nginx, and
-  haproxy. it generates production-ready configurations based on specified requirements
-  and infrastructure. use this skill when the user asks to "configure load balancer",
-  "create ...
+description: Use when configuring load balancers including ALB, NLB, Nginx, and HAProxy. Trigger with phrases like "configure load balancer", "create ALB", "setup nginx load balancing", or "haproxy configuration". Generates production-ready configurations with health checks, SSL termination, sticky sessions, and traffic distribution rules.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(aws:*)
+- Bash(gcloud:*)
+- Bash(nginx:*)
 name: configuring-load-balancers
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill enables Claude to generate complete and production-ready configurations for various load balancers. It supports ALB, NLB, Nginx, and HAProxy, providing a streamlined approach to infrastructure automation and DevOps tasks.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Backend servers are identified with IPs or DNS names
+- Load balancer type is determined (ALB, NLB, Nginx, HAProxy)
+- SSL certificates are available if using HTTPS
+- Health check endpoints are defined
+- Understanding of traffic distribution requirements (round-robin, least-connections)
+- Cloud provider CLI installed (if using cloud load balancers)
 
-1. **Receiving Requirements**: The skill receives user specifications for the load balancer configuration, including type, ports, protocols, and other relevant details.
-2. **Generating Configuration**: Based on the user's requirements, the skill generates a complete configuration file tailored to the specified load balancer type.
-3. **Presenting Configuration**: The generated configuration is presented to the user, ready for deployment.
+## Instructions
 
-## When to Use This Skill
+1. **Select Load Balancer Type**: Choose based on requirements (L4 vs L7, cloud vs on-prem)
+2. **Define Backend Pool**: List backend servers with ports and weights
+3. **Configure Health Checks**: Set check interval, timeout, and healthy threshold
+4. **Set Up SSL/TLS**: Configure certificates and cipher suites
+5. **Define Routing Rules**: Create path-based or host-based routing
+6. **Enable Session Persistence**: Configure sticky sessions if needed
+7. **Add Monitoring**: Set up logging and metrics collection
+8. **Test Configuration**: Validate syntax and test traffic distribution
 
-This skill activates when you need to:
-- Generate a load balancer configuration for a new application deployment.
-- Modify an existing load balancer configuration to accommodate changes in traffic patterns or application requirements.
-- Automate the creation of load balancer configurations as part of an infrastructure-as-code workflow.
+## Output
 
-## Examples
+**Nginx Configuration:**
+```nginx
+# {baseDir}/nginx/load-balancer.conf
+upstream backend_servers {
+    least_conn;
+    server 10.0.1.10:8080 weight=3;
+    server 10.0.1.11:8080 weight=2;
+    server 10.0.1.12:8080 backup;
+}
 
-### Example 1: Setting up an Nginx Load Balancer
+server {
+    listen 80;
+    server_name app.example.com;
 
-User request: "Configure an Nginx load balancer to distribute traffic between two backend servers on ports 8080 and 8081."
+    location / {
+        proxy_pass http://backend_servers;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
 
-The skill will:
-1. Generate an Nginx configuration file that includes upstream definitions for the two backend servers.
-2. Present the complete Nginx configuration file to the user.
+        proxy_connect_timeout 5s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+    }
 
-### Example 2: Creating an ALB Configuration
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+    }
+}
+```
 
-User request: "Create an ALB configuration for a web application running on port 80, with health checks on /health."
+**AWS ALB (Terraform):**
+```hcl
+# {baseDir}/terraform/alb.tf
+resource "aws_lb" "app_alb" {
+  name               = "app-load-balancer"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.alb_sg.id]
+  subnets            = aws_subnet.public[*].id
+}
 
-The skill will:
-1. Generate an ALB configuration that includes listener rules, target groups, and health check settings.
-2. Present the complete ALB configuration to the user, ready for deployment via AWS CloudFormation or Terraform.
+resource "aws_lb_target_group" "app_tg" {
+  name     = "app-target-group"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.main.id
 
-## Best Practices
+  health_check {
+    path                = "/health"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
 
-- **Security**: Always review generated configurations for security vulnerabilities before deploying them to production.
-- **Testing**: Thoroughly test load balancer configurations in a staging environment before deploying them to production.
-- **Documentation**: Document the purpose and configuration details of each load balancer for future reference.
+resource "aws_lb_listener" "app_listener" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-TLS-1-2-2017-01"
+  certificate_arn   = aws_acm_certificate.cert.arn
 
-## Integration
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
+}
+```
 
-This skill can be integrated with other tools and plugins in the Claude Code ecosystem, such as infrastructure-as-code tools like Terraform and CloudFormation, to automate the deployment and management of load balancer configurations. It can also be used in conjunction with monitoring and logging tools to track the performance and health of load balancers.
+## Error Handling
+
+**Backend Server Unreachable**
+- Error: "502 Bad Gateway" or connection refused
+- Solution: Verify backend server IPs, ports, and firewall rules
+
+**SSL Certificate Error**
+- Error: "certificate verify failed"
+- Solution: Check certificate validity, chain, and private key match
+
+**Health Check Failures**
+- Error: "Target is unhealthy"
+- Solution: Verify health check path returns 200 status and backends are running
+
+**Configuration Syntax Error**
+- Error: "nginx: configuration file test failed"
+- Solution: Run `nginx -t` to validate syntax and fix errors
+
+**Session Persistence Not Working**
+- Issue: Users losing session on subsequent requests
+- Solution: Enable sticky sessions using cookie-based or IP-based persistence
+
+## Resources
+
+- Nginx documentation: https://nginx.org/en/docs/
+- HAProxy configuration guide: https://www.haproxy.org/
+- AWS ALB documentation: https://docs.aws.amazon.com/elasticloadbalancing/
+- GCP Load Balancing: https://cloud.google.com/load-balancing/docs
+- Example configurations in {baseDir}/lb-examples/

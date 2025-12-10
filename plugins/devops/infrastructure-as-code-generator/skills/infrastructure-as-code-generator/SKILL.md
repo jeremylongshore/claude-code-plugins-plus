@@ -1,59 +1,131 @@
 ---
-description: This skill enables claude to generate infrastructure as code (iac) configurations.
-  it uses the infrastructure-as-code-generator plugin to create production-ready iac
-  for terraform, cloudformation, pulumi, arm templates, and cdk. use this skill whe...
+description: Use when generating infrastructure as code configurations. Trigger with phrases like "create Terraform config", "generate CloudFormation template", "write Pulumi code", or "IaC for AWS/GCP/Azure". Produces production-ready code for Terraform, CloudFormation, Pulumi, ARM templates, and CDK across multiple cloud providers.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(terraform:*)
+- Bash(aws:*)
+- Bash(gcloud:*)
+- Bash(az:*)
 name: generating-infrastructure-as-code
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to automate the creation of infrastructure code, streamlining the deployment and management of cloud resources. It supports multiple IaC platforms and cloud providers, ensuring flexibility and best practices.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Target cloud provider CLI is installed (aws-cli, gcloud, az)
+- IaC tool is installed (Terraform, Pulumi, AWS CDK)
+- Cloud credentials are configured locally
+- Understanding of target infrastructure architecture
+- Version control system for IaC storage
 
-1. **Receiving Request**: Claude receives a request for IaC generation, identifying the desired platform and cloud provider.
-2. **Invoking Plugin**: Claude invokes the infrastructure-as-code-generator plugin with the user's specifications.
-3. **Generating Code**: The plugin generates the requested IaC configuration based on the user's requirements.
-4. **Presenting Code**: Claude presents the generated IaC code to the user for review and deployment.
+## Instructions
 
-## When to Use This Skill
+1. **Identify Platform**: Determine IaC tool (Terraform, CloudFormation, Pulumi, ARM, CDK)
+2. **Define Resources**: Specify cloud resources needed (compute, network, storage, database)
+3. **Establish Structure**: Create modular file structure for maintainability
+4. **Generate Code**: Write IaC configurations with proper syntax and formatting
+5. **Add Variables**: Define input variables for environment-specific values
+6. **Configure Outputs**: Specify outputs for resource references and integrations
+7. **Implement State**: Set up remote state storage for team collaboration
+8. **Document Usage**: Add README with deployment instructions and prerequisites
 
-This skill activates when you need to:
-- Generate Terraform configurations for AWS, GCP, or Azure.
-- Create CloudFormation templates for AWS infrastructure.
-- Develop Pulumi programs for multi-cloud deployments.
+## Output
 
-## Examples
+Generates infrastructure as code files:
 
-### Example 1: AWS ECS Fargate Infrastructure
+**Terraform Example:**
+```hcl
+# {baseDir}/terraform/main.tf
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+}
 
-User request: "Generate Terraform configuration for an AWS ECS Fargate cluster."
+resource "aws_vpc" "main" {
+  cidr_block = var.vpc_cidr
+  enable_dns_hostnames = true
 
-The skill will:
-1. Invoke the infrastructure-as-code-generator plugin, specifying Terraform and AWS ECS Fargate.
-2. Generate a Terraform configuration file defining the ECS cluster, task definition, and related resources.
+  tags = {
+    Name = "${var.project}-vpc"
+    Environment = var.environment
+  }
+}
+```
 
-### Example 2: Azure Resource Group Deployment
+**CloudFormation Example:**
+```yaml
+# {baseDir}/cloudformation/template.yaml
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Production VPC infrastructure
 
-User request: "Create an ARM template for deploying an Azure Resource Group with a virtual network."
+Parameters:
+  VpcCidr:
+    Type: String
+    Default: 10.0.0.0/16
 
-The skill will:
-1. Invoke the infrastructure-as-code-generator plugin, specifying ARM template and Azure Resource Group.
-2. Generate an ARM template defining the resource group and virtual network resources.
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCidr
+      EnableDnsHostnames: true
+```
 
-## Best Practices
+**Pulumi Example:**
+```typescript
+// {baseDir}/pulumi/index.ts
+import * as aws from "@pulumi/aws";
 
-- **Specificity**: Provide clear and specific requirements for the desired infrastructure.
-- **Platform Selection**: Choose the appropriate IaC platform based on your cloud provider and organizational standards.
-- **Review & Validation**: Always review and validate the generated IaC code before deploying it to production.
+const vpc = new aws.ec2.Vpc("main", {
+    cidrBlock: "10.0.0.0/16",
+    enableDnsHostnames: true,
+    tags: {
+        Name: "production-vpc"
+    }
+});
 
-## Integration
+export const vpcId = vpc.id;
+```
 
-This skill can be integrated with other Claude Code plugins for deployment automation, security scanning, and cost estimation, providing a comprehensive DevOps workflow. For example, it can be used with a deployment plugin to automatically deploy the generated infrastructure.
+## Error Handling
+
+Common issues and solutions:
+
+**Syntax Errors**
+- Error: "Invalid resource syntax in configuration"
+- Solution: Validate syntax with `terraform validate` or respective tool linter
+
+**Provider Authentication**
+- Error: "Unable to authenticate with cloud provider"
+- Solution: Configure credentials via environment variables or CLI login
+
+**Resource Conflicts**
+- Error: "Resource already exists"
+- Solution: Import existing resources or use data sources instead of creating new ones
+
+**State Lock Issues**
+- Error: "Error acquiring state lock"
+- Solution: Ensure no other process is running, or force unlock if safe
+
+**Dependency Errors**
+- Error: "Resource depends on resource that does not exist"
+- Solution: Check resource references and ensure proper dependency ordering
+
+## Resources
+
+- Terraform documentation: https://www.terraform.io/docs/
+- AWS CloudFormation guide: https://docs.aws.amazon.com/cloudformation/
+- Pulumi documentation: https://www.pulumi.com/docs/
+- Azure ARM templates: https://docs.microsoft.com/azure/azure-resource-manager/
+- IaC best practices guide in {baseDir}/docs/iac-standards.md

@@ -1,16 +1,15 @@
 ---
-description: 'Proactive auto-loading: automatically detects and loads agents.md files
-  from the current working directory when starting a session or changing directories.
-  this skill ensures agent-specific instructions are incorporated into claude code''s
-  context ...'
+name: agent-context-loader
+description: 'Proactive auto-loading: automatically detects and loads agents.md files Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: agent-context-loader
+- Bash(general:*)
+- Bash(util:*)
 license: MIT
 ---
 # Agent Context Auto-Loader
@@ -167,3 +166,43 @@ This skill runs **before** other agent skills to ensure agent context is loaded 
 **Status**: Proactive Auto-Loading Enabled
 **Requires User Action**: No (automatic)
 **Fallback**: Manual invocation if auto-loading fails
+
+## Prerequisites
+
+- Access to project files in {baseDir}/
+- Required tools and dependencies installed
+- Understanding of skill functionality
+- Permissions for file operations
+
+## Instructions
+
+1. Identify skill activation trigger and context
+2. Gather required inputs and parameters
+3. Execute skill workflow systematically
+4. Validate outputs meet requirements
+5. Handle errors and edge cases appropriately
+6. Provide clear results and next steps
+
+## Output
+
+- Primary deliverables based on skill purpose
+- Status indicators and success metrics
+- Generated files or configurations
+- Reports and summaries as applicable
+- Recommendations for follow-up actions
+
+## Error Handling
+
+If execution fails:
+- Verify prerequisites are met
+- Check input parameters and formats
+- Validate file paths and permissions
+- Review error messages for root cause
+- Consult documentation for troubleshooting
+
+## Resources
+
+- Official documentation for related tools
+- Best practices guides
+- Example use cases and templates
+- Community forums and support channels

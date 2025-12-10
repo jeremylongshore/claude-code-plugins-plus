@@ -1,59 +1,122 @@
 ---
-description: This skill allows claude to check infrastructure compliance against industry
-  standards such as soc2, hipaa, and pci-dss. it analyzes existing infrastructure
-  configurations and reports on potential compliance violations. use this skill when
-  the use...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: checking-infrastructure-compliance
+description: |
+  Use when you need to work with compliance checking.
+  This skill provides compliance monitoring and validation with comprehensive guidance and automation.
+  Trigger with phrases like "check compliance", "validate policies",
+  or "audit compliance".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to evaluate infrastructure configurations against common compliance frameworks. It helps identify potential vulnerabilities and gaps in compliance, providing valuable insights for remediation.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receiving Request**: Claude receives a user request to check infrastructure compliance.
-2. **Analyzing Configuration**: Claude analyzes the infrastructure configuration based on the requested compliance standard (SOC2, HIPAA, PCI-DSS).
-3. **Generating Report**: Claude generates a report highlighting potential compliance violations and areas for improvement.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Assess infrastructure compliance against SOC2, HIPAA, or PCI-DSS standards.
-- Identify potential security risks related to compliance violations.
-- Generate reports on the compliance status of your infrastructure.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Assessing SOC2 Compliance
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Run a SOC2 compliance check on our AWS infrastructure."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the AWS infrastructure configuration against SOC2 requirements.
-2. Generate a report identifying any non-compliant configurations and recommended remediations.
+## Output
 
-### Example 2: Identifying HIPAA Compliance Issues
+This skill produces:
 
-User request: "Check our cloud environment for HIPAA compliance violations."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the cloud environment's security settings and configurations against HIPAA regulations.
-2. Provide a report outlining potential HIPAA violations and suggested corrective actions.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Specify Standard**: Always specify the compliance standard (SOC2, HIPAA, PCI-DSS) you want to check against.
-- **Provide Context**: Provide as much context as possible about your infrastructure to ensure accurate analysis.
-- **Review Results**: Carefully review the generated report and implement the recommended remediations.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other DevOps tools and plugins to automate compliance checks and integrate compliance into the development lifecycle. For example, it can be used in conjunction with infrastructure-as-code tools to ensure compliance from the start.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/compliance-checker/`
+
+**Documentation and Guides**: `{baseDir}/docs/compliance-checker/`
+
+**Example Scripts and Code**: `{baseDir}/examples/compliance-checker/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/compliance-checker-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/compliance-checker-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/compliance-checker-dashboard.json`

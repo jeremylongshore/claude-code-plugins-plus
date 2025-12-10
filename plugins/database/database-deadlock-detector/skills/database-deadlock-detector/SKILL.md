@@ -1,59 +1,122 @@
 ---
-description: This skill uses the database-deadlock-detector plugin to detect, analyze,
-  and prevent database deadlocks. it monitors database lock contention, analyzes transaction
-  patterns, and suggests resolution strategies. use this skill when the user asks
-  to...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: detecting-database-deadlocks
+description: |
+  Use when you need to work with deadlock detection.
+  This skill provides deadlock detection and resolution with comprehensive guidance and automation.
+  Trigger with phrases like "detect deadlocks", "resolve deadlocks",
+  or "prevent deadlocks".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to automatically detect, analyze, and prevent database deadlocks in database systems. It provides insights into transaction patterns, lock contention, and suggests optimization strategies to minimize deadlock occurrences.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Initiate Deadlock Detection**: Claude recognizes the user's request related to database deadlocks and activates the database-deadlock-detector plugin.
-2. **Execute Deadlock Analysis**: The plugin executes the `/deadlock` command to analyze the database for current and potential deadlocks.
-3. **Report Findings**: The plugin generates a report summarizing detected deadlocks, their causes, and potential resolution strategies.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Investigate recurring deadlock issues in production.
-- Implement proactive deadlock detection and alerting.
-- Analyze transaction patterns causing deadlocks.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Investigating Production Deadlocks
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Investigate recent deadlocks in the production database."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Activate the database-deadlock-detector plugin and run the `/deadlock` command.
-2. Generate a report detailing recent deadlock events, involved transactions, and potential root causes.
+## Output
 
-### Example 2: Implementing Proactive Deadlock Monitoring
+This skill produces:
 
-User request: "Set up deadlock monitoring for the database."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Activate the database-deadlock-detector plugin and run the `/deadlock` command with monitoring configurations.
-2. Configure alerts to notify when deadlocks are detected, including details on the involved transactions.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Database Access**: Ensure the plugin has the necessary database access and permissions to perform deadlock detection.
-- **Configuration**: Properly configure the plugin with the correct database connection details.
-- **Regular Monitoring**: Schedule regular deadlock detection runs to proactively identify and address potential issues.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other monitoring and alerting tools to provide a comprehensive view of database performance and stability. It can also be used in conjunction with database optimization tools to implement recommended resolution strategies.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-deadlock-detector/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-deadlock-detector/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-deadlock-detector/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-deadlock-detector-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-deadlock-detector-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-deadlock-detector-dashboard.json`

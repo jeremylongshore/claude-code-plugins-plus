@@ -1,62 +1,122 @@
 ---
-description: This skill leverages the database-diff-tool plugin to compare database
-  schemas, generate migration scripts, and provide rollback procedures. it is triggered
-  when the user requests database schema comparisons, migration script generation,
-  or databa...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: comparing-database-schemas
+description: |
+  Use when you need to work with schema comparison.
+  This skill provides database schema diff and sync with comprehensive guidance and automation.
+  Trigger with phrases like "compare schemas", "diff databases",
+  or "sync database schemas".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to perform production-grade database schema comparisons, generate safe migration scripts, and create rollback procedures. It simplifies the process of keeping database schemas synchronized across different environments, ensuring data integrity and minimizing downtime during deployments.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Schema Comparison**: The plugin compares the schemas of two specified databases (PostgreSQL or MySQL), identifying differences in tables, columns, indexes, constraints, and triggers.
-2. **Migration Script Generation**: Based on the schema differences, the plugin generates a safe migration script that can be used to update the target database schema. The script includes transaction safety to prevent data corruption.
-3. **Rollback Procedure Generation**: The plugin also generates a rollback procedure that can be used to revert the changes made by the migration script in case of errors.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Compare database schemas between different environments (e.g., development, staging, production).
-- Generate migration scripts to update a database schema to the latest version.
-- Create rollback procedures to revert database schema changes.
-- Synchronize database schemas across multiple environments to ensure consistency.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Generating a Migration Script
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Generate a migration script to update the staging database schema to match production."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Connect to both the staging and production databases.
-2. Compare the schemas of the two databases using the database-diff-tool plugin.
-3. Generate a migration script that updates the staging database schema to match the production schema, including transaction safety and rollback procedures.
+## Output
 
-### Example 2: Comparing Database Schemas
+This skill produces:
 
-User request: "Compare the database schemas of the development and testing environments."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Connect to both the development and testing databases.
-2. Compare the schemas of the two databases using the database-diff-tool plugin.
-3. Report the differences between the two schemas, including any missing tables, columns, indexes, or constraints.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Database Credentials**: Ensure that Claude has access to the necessary database credentials to connect to the databases being compared.
-- **Backup**: Always back up the database before running any migration scripts.
-- **Validation**: Validate the generated migration script in a test environment before deploying it to production.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other CI/CD tools to automate the database migration process. It can also be used in conjunction with other database management tools to monitor database schema changes and ensure data integrity.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-diff-tool/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-diff-tool/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-diff-tool/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-diff-tool-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-diff-tool-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-diff-tool-dashboard.json`

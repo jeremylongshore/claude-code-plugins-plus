@@ -1,61 +1,122 @@
 ---
-description: This skill enables claude to analyze and optimize cloud costs. it identifies
-  areas for potential savings, generates cost reports, and suggests configuration
-  changes to reduce expenses. use this skill when the user asks to "optimize cloud
-  costs", "...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: optimizing-cloud-costs
+description: |
+  Use when you need to work with cloud cost optimization.
+  This skill provides cost analysis and optimization with comprehensive guidance and automation.
+  Trigger with phrases like "optimize costs", "analyze spending",
+  or "reduce costs".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(aws:*, gcloud:*, az:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to be a FinOps expert, helping users identify and implement strategies to minimize their cloud expenditures. By analyzing current resource utilization and suggesting optimized configurations, it ensures efficient cloud spending.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Analyzing Cost Data**: Claude analyzes the user's request to identify the scope and cloud provider (if specified).
-2. **Generating Optimization Recommendations**: Claude formulates specific recommendations to reduce costs, such as rightsizing instances, identifying unused resources, or leveraging reserved instances.
-3. **Creating Cost Report**: Claude generates a detailed cost report summarizing current spending and potential savings.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Reduce your AWS, Azure, or GCP cloud spending.
-- Generate a report detailing current cloud costs.
-- Identify underutilized or unused cloud resources.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Reducing AWS EC2 Costs
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Optimize my AWS EC2 costs. I'm running several t3.medium instances."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the usage patterns of the t3.medium instances.
-2. Suggest rightsizing to t3.small or using reserved instances if utilization is consistently high.
-3. Generate a cost report showing potential savings from the recommended changes.
+## Output
 
-### Example 2: Identifying Idle Azure Resources
+This skill produces:
 
-User request: "Generate a report of idle resources in my Azure subscription."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Identify any virtual machines, storage accounts, or other resources that have been idle for a specified period.
-2. Recommend terminating or deallocating the idle resources.
-3. Provide a cost report detailing the savings achieved by removing the idle resources.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Resource Utilization**: Regularly review resource utilization metrics to identify opportunities for rightsizing.
-- **Reserved Instances**: Leverage reserved instances or committed use discounts for consistently used resources.
-- **Cost Monitoring**: Implement continuous cost monitoring and alerting to track spending trends and identify anomalies.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other DevOps plugins to automate the implementation of cost optimization recommendations. For example, it can integrate with infrastructure-as-code tools to automatically resize instances or terminate unused resources.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/cloud-cost-optimizer/`
+
+**Documentation and Guides**: `{baseDir}/docs/cloud-cost-optimizer/`
+
+**Example Scripts and Code**: `{baseDir}/examples/cloud-cost-optimizer/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/cloud-cost-optimizer-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/cloud-cost-optimizer-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/cloud-cost-optimizer-dashboard.json`

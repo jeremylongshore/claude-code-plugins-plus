@@ -1,16 +1,16 @@
 ---
-description: This skill enables claude to audit access control implementations in
-  various systems. it uses the access-control-auditor plugin to identify potential
-  vulnerabilities and misconfigurations related to access control. use this skill
-  when the user ask...
+name: auditing-access-control
+description: Audit access control implementations for security vulnerabilities and misconfigurations. Use when reviewing authentication and authorization. Trigger with 'audit access control', 'check permissions', or 'validate authorization'.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: auditing-access-control
+- Bash(security:*)
+- Bash(scan:*)
+- Bash(audit:*)
 license: MIT
 ---
 ## Overview
@@ -60,3 +60,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other security plugins to provide a more comprehensive security assessment. For example, it can be combined with a vulnerability scanner to identify vulnerabilities that could be exploited due to access control misconfigurations. It can also be integrated with compliance tools to ensure adherence to regulatory requirements.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

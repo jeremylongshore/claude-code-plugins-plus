@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to manage container registries, including ecr,
-  gcr, and harbor. it should be used when the user needs to create, configure, or
-  manage container image registries. it helps generate production-ready configurations,
-  implemen...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: managing-container-registries
+description: |
+  Use when you need to work with containerization.
+  This skill provides container management and orchestration with comprehensive guidance and automation.
+  Trigger with phrases like "containerize app", "manage containers",
+  or "orchestrate deployment".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(docker:*, kubectl:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to assist users in managing their container registries across various platforms like AWS ECR, Google GCR, and Harbor. It provides the ability to generate configurations, implement best practices, and ensure secure and scalable architectures for container image storage and management.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receiving User Request**: Claude receives a request related to container registry management.
-2. **Identifying Registry Type**: Claude identifies the specific container registry (ECR, GCR, Harbor, etc.) based on the user's input.
-3. **Generating Configuration**: Claude generates the necessary configuration code and setup instructions based on the user's requirements and the identified registry.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Create a new container registry on ECR, GCR, or Harbor.
-- Configure access permissions for a container registry.
-- Generate deployment configurations for container images.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Creating an ECR Repository
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Create an ECR repository named 'my-app-images' in the 'us-west-2' region."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate the necessary AWS CLI commands or Terraform configuration to create the ECR repository.
-2. Provide instructions on how to push container images to the newly created repository.
+## Output
 
-### Example 2: Configuring GCR Access
+This skill produces:
 
-User request: "Grant read-only access to the 'my-gcp-project' GCR repository to the 'dev-team' Google Cloud group."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Generate the appropriate `gcloud` commands or IAM policy configuration to grant the requested access.
-2. Provide instructions on how to verify the access permissions.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Security**: Always use the principle of least privilege when granting access to container registries.
-- **Versioning**: Implement a robust image tagging and versioning strategy.
-- **Automation**: Automate the creation and configuration of container registries using infrastructure-as-code tools like Terraform.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill integrates with other DevOps-related plugins to provide a seamless experience for managing containerized applications. It can be used in conjunction with plugins for CI/CD pipelines, infrastructure provisioning, and security scanning to build a complete DevOps workflow.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/container-registry-manager/`
+
+**Documentation and Guides**: `{baseDir}/docs/container-registry-manager/`
+
+**Example Scripts and Code**: `{baseDir}/examples/container-registry-manager/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/container-registry-manager-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/container-registry-manager-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/container-registry-manager-dashboard.json`

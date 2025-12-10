@@ -1,14 +1,13 @@
 ---
-description: This skill enables claude to analyze and optimize system throughput.
-  it is triggered when the user requests throughput analysis, performance improvements,
-  or bottleneck identification. the skill uses the `throughput-analyzer` plugin to
-  assess requ...
+name: analyzing-system-throughput
+description: Analyze and optimize system throughput including request handling, data processing, and resource utilization. Use when identifying capacity limits or evaluating scaling strategies. Trigger with phrases like "analyze throughput", "optimize capacity", or "identify bottlenecks".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
-- Bash
+- Bash(performance:*)
+- Bash(monitoring:*)
 - Grep
-name: analyzing-system-throughput
 license: MIT
 ---
 ## Overview
@@ -58,3 +57,43 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other monitoring and performance analysis tools to gain a more comprehensive understanding of system behavior. It provides a starting point for further investigation and optimization efforts.
+
+## Prerequisites
+
+- Access to throughput metrics in {baseDir}/metrics/throughput/
+- System performance monitoring tools
+- Historical throughput baselines
+- Current capacity and scaling limits
+
+## Instructions
+
+1. Identify critical system components for throughput analysis
+2. Collect request and data throughput metrics
+3. Analyze resource saturation and queue depths
+4. Identify bottlenecks and limiting factors
+5. Evaluate horizontal and vertical scaling strategies
+6. Generate capacity planning recommendations
+
+## Output
+
+- Throughput analysis reports with current capacity
+- Bottleneck identification and root cause analysis
+- Resource saturation metrics
+- Scaling strategy recommendations
+- Capacity planning projections
+
+## Error Handling
+
+If throughput analysis fails:
+- Verify metrics collection infrastructure
+- Check system monitoring tool access
+- Validate historical baseline data
+- Ensure performance testing environment
+- Review component identification logic
+
+## Resources
+
+- Throughput optimization best practices
+- Capacity planning methodologies
+- Scaling strategy comparison guides
+- Performance bottleneck detection techniques

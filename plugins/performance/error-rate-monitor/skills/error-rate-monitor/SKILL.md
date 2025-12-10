@@ -1,14 +1,14 @@
 ---
-description: This skill enables claude to monitor and analyze application error rates
-  to improve reliability. it is used when the user needs to track and understand errors
-  occurring in their application, including http errors, application exceptions, database
-  ...
+name: monitoring-error-rates
+description: Monitor and analyze application error rates to improve reliability. Use when tracking errors in applications including HTTP errors, exceptions, and database issues. Trigger with phrases like "monitor error rates", "track application errors", or "analyze error patterns".
+version: 1.0.0
 allowed-tools:
 - Read
-- Bash
+- Bash(monitoring:*)
+- Bash(metrics:*)
+- Bash(logs:*)
 - Grep
 - Glob
-name: monitoring-error-rates
 license: MIT
 ---
 ## Overview
@@ -56,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other monitoring and alerting tools, such as Prometheus, Grafana, and PagerDuty, to provide a comprehensive view of application health and performance. It can also be used in conjunction with incident management tools to streamline incident response workflows.
+
+## Prerequisites
+
+- Access to application logs and metrics
+- Monitoring infrastructure (Prometheus, Grafana, or similar)
+- Read permissions for log files in {baseDir}/logs/
+- Network access to monitoring endpoints
+
+## Instructions
+
+1. Identify error sources by analyzing application architecture
+2. Define error types and monitoring thresholds
+3. Configure alerting rules with appropriate severity levels
+4. Set up dashboards for error rate visualization
+5. Establish notification channels for critical errors
+6. Document error baselines and SLO targets
+
+## Output
+
+- Error rate metrics and trends
+- Alert configurations for critical thresholds
+- Dashboard definitions for error monitoring
+- Reports on error patterns and root causes
+- Recommendations for error reduction strategies
+
+## Error Handling
+
+If monitoring setup fails:
+- Verify log file permissions and paths
+- Check monitoring service connectivity
+- Validate metric export configurations
+- Review alert rule syntax
+- Ensure notification channels are configured
+
+## Resources
+
+- Monitoring platform documentation (Prometheus, Grafana)
+- Application log format specifications
+- Error taxonomy and classification guides
+- SLO/SLI definition best practices

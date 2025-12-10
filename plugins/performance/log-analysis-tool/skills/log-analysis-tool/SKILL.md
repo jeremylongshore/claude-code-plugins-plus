@@ -1,14 +1,14 @@
 ---
-description: This skill enables claude to analyze logs for performance insights and
-  issue detection. it is triggered when the user requests log analysis, performance
-  troubleshooting, or debugging assistance. the skill identifies slow requests, error
-  patterns, ...
+name: analyzing-logs
+description: Analyze application logs for performance insights and issue detection including slow requests, error patterns, and resource usage. Use when troubleshooting performance issues or debugging errors. Trigger with phrases like "analyze logs", "find slow requests", or "detect error patterns".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
-- Bash
+- Bash(logs:*)
+- Bash(grep:*)
+- Bash(awk:*)
 - Grep
-name: analyzing-logs
 license: MIT
 ---
 ## Overview
@@ -59,3 +59,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other tools for monitoring and alerting. For example, it can be used in conjunction with a monitoring plugin to automatically trigger alerts based on log analysis results. It can also work with deployment tools to rollback deployments when critical errors are detected in the logs.
+
+## Prerequisites
+
+- Access to application log files in {baseDir}/logs/
+- Log parsing tools (grep, awk, sed)
+- Understanding of application log format and structure
+- Read permissions for log directories
+
+## Instructions
+
+1. Identify log files to analyze based on timeframe and application
+2. Extract relevant data (timestamps, durations, error messages)
+3. Apply pattern matching to identify slow requests and errors
+4. Aggregate and group similar issues
+5. Generate analysis report with findings and recommendations
+6. Suggest optimization opportunities based on patterns
+
+## Output
+
+- Summary of slow requests with response times
+- Error frequency reports grouped by type
+- Resource usage patterns and anomalies
+- Performance bottleneck identification
+- Recommendations for log improvements and optimizations
+
+## Error Handling
+
+If log analysis fails:
+- Verify log file paths and permissions
+- Check log format compatibility
+- Validate timestamp parsing
+- Ensure sufficient disk space for analysis
+- Review log rotation configuration
+
+## Resources
+
+- Application logging best practices
+- Structured logging format guides
+- Log aggregation tools documentation
+- Performance analysis methodologies

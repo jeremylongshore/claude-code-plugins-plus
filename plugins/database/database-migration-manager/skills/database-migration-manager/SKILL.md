@@ -1,61 +1,122 @@
 ---
-description: This skill enables claude to manage database schema changes through version-controlled
-  migrations. it is activated when the user requests to create, apply, or rollback
-  database migrations. the skill supports generating timestamped migration files ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: managing-database-migrations
+description: |
+  Use when you need to work with database migrations.
+  This skill provides schema migration management with comprehensive guidance and automation.
+  Trigger with phrases like "create migration", "run migrations",
+  or "manage schema versions".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to handle database migrations, including creating new migrations, applying changes, and rolling back previous modifications. It ensures that database schema changes are managed safely and efficiently.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Migration Request**: The user requests a database migration task (e.g., "create a migration").
-2. **Migration File Generation**: Claude generates a timestamped migration file, including both "up" (apply changes) and "down" (rollback changes) migrations.
-3. **Database Support**: The generated migration file is compatible with PostgreSQL, MySQL, SQLite, or MongoDB.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Create a new database migration file.
-- Add a column to an existing database table.
-- Rollback a previous database migration.
-- Manage database schema changes.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Adding a Column
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Create a migration to add an 'email' column to the 'users' table."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate a new migration file with timestamped name.
-2. Populate the 'up' migration with SQL to add the 'email' column to the 'users' table.
-3. Populate the 'down' migration with SQL to remove the 'email' column from the 'users' table.
+## Output
 
-### Example 2: Rolling Back a Migration
+This skill produces:
 
-User request: "Rollback the last database migration."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Identify the most recently applied migration.
-2. Execute the 'down' migration script associated with that migration.
-3. Confirm the successful rollback.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Idempotency**: Ensure your migrations are idempotent, meaning they can be applied multiple times without unintended side effects.
-- **Transactions**: Wrap migration steps within transactions to ensure atomicity; either all changes succeed, or none do.
-- **Naming Conventions**: Use clear and descriptive names for your migration files (e.g., `YYYYMMDDHHMMSS_add_email_to_users`).
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used independently or in conjunction with other plugins for database management, ORM integration, and deployment automation.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-migration-manager/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-migration-manager/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-migration-manager/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-migration-manager-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-migration-manager-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-migration-manager-dashboard.json`

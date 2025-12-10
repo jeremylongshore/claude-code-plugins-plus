@@ -1,65 +1,122 @@
 ---
-description: This skill enables claude to design and visualize database schemas. it
-  leverages normalization guidance (1nf through bcnf), relationship mapping, and erd
-  generation to create efficient and well-structured databases. use this skill when
-  the user re...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: designing-database-schemas
+description: |
+  Use when you need to work with database schema design.
+  This skill provides schema design and migrations with comprehensive guidance and automation.
+  Trigger with phrases like "design schema", "create migration",
+  or "model database".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill assists in designing robust and normalized database schemas. It provides guidance on normalization principles, helps map relationships between entities, generates ERD diagrams for visualization, and ultimately produces SQL CREATE statements.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Schema Definition**: Claude analyzes the user's request to understand the application's data requirements.
-2. **Normalization & Relationship Mapping**: Claude applies normalization principles (1NF to BCNF) and defines relationships between entities (one-to-one, one-to-many, many-to-many).
-3. **ERD Generation**: Claude generates a Mermaid diagram representing the Entity-Relationship Diagram.
-4. **SQL Generation**: Claude creates SQL CREATE statements for the tables, columns, indexes, and constraints.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Design a new database schema from scratch.
-- Normalize an existing database schema.
-- Generate an ERD diagram for a database.
-- Create SQL CREATE statements for a database.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Designing a Social Media Database
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Design a database schema for a social media application with users, posts, and comments."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Design tables for users, posts, and comments, including relevant attributes (e.g., user_id, username, post_id, content, timestamp).
-2. Define relationships between the tables (e.g., one user can have many posts, one post can have many comments).
-3. Generate an ERD diagram visualizing the relationships.
-4. Create SQL CREATE TABLE statements for the tables, including primary keys, foreign keys, and indexes.
+## Output
 
-### Example 2: Normalizing an E-commerce Database
+This skill produces:
 
-User request: "Normalize a database schema for an e-commerce application with customers, orders, and products."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the existing schema for normalization violations.
-2. Decompose tables to eliminate redundancy and improve data integrity.
-3. Create new tables and relationships to achieve a normalized schema (e.g., separating product details into a separate table).
-4. Generate SQL CREATE TABLE statements for the new tables and ALTER TABLE statements to modify existing tables.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Normalization**: Always aim for at least 3NF to minimize data redundancy and improve data integrity. Consider BCNF for more complex scenarios.
-- **Indexing**: Add indexes to frequently queried columns to improve query performance.
-- **Relationship Integrity**: Use foreign keys to enforce referential integrity and prevent orphaned records.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other Claude Code plugins, such as a SQL execution plugin, to automatically create the database schema in a database server. It can also work with a documentation plugin to generate documentation for the database schema.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-schema-designer/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-schema-designer/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-schema-designer/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-schema-designer-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-schema-designer-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-schema-designer-dashboard.json`

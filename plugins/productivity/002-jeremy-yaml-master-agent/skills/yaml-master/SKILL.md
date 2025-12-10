@@ -1,16 +1,15 @@
 ---
-description: 'Proactive yaml intelligence: automatically activates when working with
-  yaml files, configuration management, ci/cd pipelines, kubernetes manifests, docker
-  compose, or any yaml-based workflows. provides intelligent validation, schema inference,
-  lin...'
+name: yaml-master
+description: 'Proactive yaml intelligence: automatically activates when working with Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: yaml-master
+- Bash(general:*)
+- Bash(util:*)
 license: MIT
 ---
 # YAML Master Agent
@@ -722,3 +721,43 @@ MIT License - See LICENSE file
 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
+
+## Prerequisites
+
+- Access to project files in {baseDir}/
+- Required tools and dependencies installed
+- Understanding of skill functionality
+- Permissions for file operations
+
+## Instructions
+
+1. Identify skill activation trigger and context
+2. Gather required inputs and parameters
+3. Execute skill workflow systematically
+4. Validate outputs meet requirements
+5. Handle errors and edge cases appropriately
+6. Provide clear results and next steps
+
+## Output
+
+- Primary deliverables based on skill purpose
+- Status indicators and success metrics
+- Generated files or configurations
+- Reports and summaries as applicable
+- Recommendations for follow-up actions
+
+## Error Handling
+
+If execution fails:
+- Verify prerequisites are met
+- Check input parameters and formats
+- Validate file paths and permissions
+- Review error messages for root cause
+- Consult documentation for troubleshooting
+
+## Resources
+
+- Official documentation for related tools
+- Best practices guides
+- Example use cases and templates
+- Community forums and support channels

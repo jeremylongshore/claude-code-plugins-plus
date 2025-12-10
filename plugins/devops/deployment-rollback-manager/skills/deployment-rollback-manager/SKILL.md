@@ -1,57 +1,122 @@
 ---
-description: This skill manages and executes deployment rollbacks with safety checks.
-  it helps ensure smooth recovery from failed deployments by automating the rollback
-  process. use this skill when a deployment has issues, such as errors, performance
-  degradati...
-allowed-tools:
-- Read
-- Write
-- Bash
-- Grep
 name: managing-deployment-rollbacks
+description: |
+  Use when you need to work with deployment and CI/CD.
+  This skill provides deployment automation and orchestration with comprehensive guidance and automation.
+  Trigger with phrases like "deploy application", "create pipeline",
+  or "automate deployment".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(git:*, docker:*, kubectl:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill enables Claude to manage and execute deployment rollbacks, ensuring a stable and reliable system. It automates the process of reverting to a previous, known-good deployment state, minimizing downtime and potential disruptions.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Identifying the Issue**: Claude analyzes the user's request to confirm the need for a rollback due to a failed deployment.
-2. **Executing Rollback**: Claude executes the rollback command, reverting the deployment to the previously known stable version.
-3. **Verification**: Claude verifies the success of the rollback by checking the application's status, health checks, and logs.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Recover from a failed deployment.
-- Revert to a previous version of an application.
-- Address issues caused by a recent deployment.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Rolling back a faulty deployment
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Rollback deployment to the previous stable version due to errors."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Execute the `rollback-deploy` command.
-2. Confirm the successful rollback to the previous version.
+## Output
 
-### Example 2: Reverting after performance degradation
+This skill produces:
 
-User request: "Revert to the last known good deployment. Performance has degraded significantly since the last update."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Execute the `rollback-deploy` command.
-2. Verify the application's performance returns to normal levels.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Verification**: Always verify the success of the rollback by checking application health and performance.
-- **Monitoring**: Implement continuous monitoring to detect deployment issues early.
-- **Documentation**: Maintain clear documentation of deployment versions and rollback procedures.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other monitoring and alerting tools to automatically trigger rollbacks when issues are detected. It also integrates with deployment pipelines for automated rollback execution.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/deployment-rollback-manager/`
+
+**Documentation and Guides**: `{baseDir}/docs/deployment-rollback-manager/`
+
+**Example Scripts and Code**: `{baseDir}/examples/deployment-rollback-manager/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/deployment-rollback-manager-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/deployment-rollback-manager-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/deployment-rollback-manager-dashboard.json`

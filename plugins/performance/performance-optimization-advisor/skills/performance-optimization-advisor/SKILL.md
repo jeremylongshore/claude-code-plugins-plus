@@ -1,16 +1,15 @@
 ---
-description: This skill enables claude to provide comprehensive, prioritized performance
-  optimization recommendations for software projects. it is triggered when the user
-  requests performance improvements, optimization suggestions, or asks for a performance
-  re...
+name: providing-performance-optimization-advice
+description: Provide comprehensive prioritized performance optimization recommendations for frontend, backend, and infrastructure. Use when analyzing bottlenecks or seeking improvement strategies. Trigger with phrases like "optimize performance", "improve speed", or "performance recommendations".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: providing-performance-optimization-advice
+- Bash(profiling:*)
+- Bash(analysis:*)
 license: MIT
 ---
 ## Overview
@@ -62,3 +61,43 @@ The skill will:
 ## Integration
 
 This skill integrates well with other plugins that provide code analysis, infrastructure management, and deployment automation capabilities. For example, it can be used in conjunction with a code linting plugin to identify code-level performance issues or with an infrastructure-as-code plugin to automate infrastructure optimization tasks.
+
+## Prerequisites
+
+- Access to application codebase in {baseDir}/
+- Infrastructure configuration files
+- Performance profiling tools
+- Current performance metrics and baselines
+
+## Instructions
+
+1. Analyze frontend code for rendering and asset optimization
+2. Review backend code for query and processing efficiency
+3. Examine infrastructure for scaling and resource usage
+4. Identify high-impact optimization opportunities
+5. Prioritize recommendations by effort vs impact
+6. Generate phased implementation roadmap
+
+## Output
+
+- Comprehensive optimization report by layer (frontend/backend/infra)
+- Prioritized recommendations with impact estimates
+- Code examples for suggested improvements
+- Performance gain projections
+- Implementation effort estimates and timeline
+
+## Error Handling
+
+If optimization analysis fails:
+- Verify codebase access permissions
+- Check profiling tool installation
+- Validate configuration file formats
+- Ensure sufficient analysis resources
+- Review project structure completeness
+
+## Resources
+
+- Web performance optimization guides
+- Database query optimization best practices
+- Infrastructure scaling patterns
+- Caching strategies and CDN usage

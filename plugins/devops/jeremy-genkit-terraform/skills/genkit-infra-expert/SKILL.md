@@ -1,31 +1,44 @@
 ---
-description: 'Terraform infrastructure specialist for deploying genkit applications
-  to production. provisions firebase functions, cloud run services, gke clusters,
-  monitoring, and ci/cd for genkit ai workflows. triggers: "deploy genkit terraform",
-  "genkit infra...'
+description: Use when deploying Genkit applications to production with Terraform. Trigger with phrases like "deploy genkit terraform", "provision genkit infrastructure", "firebase functions terraform", "cloud run deployment", or "genkit production infrastructure". Provisions Firebase Functions, Cloud Run services, GKE clusters, monitoring dashboards, and CI/CD for AI workflows.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(terraform:*)
+- Bash(gcloud:*)
 name: genkit-infra-expert
 license: MIT
+version: 1.0.0
 ---
-## What This Skill Does
 
-Expert in provisioning production infrastructure for Firebase Genkit applications using Terraform. Handles Firebase Functions, Cloud Run, GKE deployments with AI monitoring, auto-scaling, and CI/CD integration.
+## Prerequisites
 
-## When This Skill Activates
+Before using this skill, ensure:
+- Google Cloud project with Firebase enabled
+- Terraform 1.0+ installed
+- gcloud and firebase CLI authenticated
+- Genkit application built and containerized
+- API keys for Gemini or other AI models
+- Understanding of Genkit flows and deployment options
 
-Triggers: "deploy genkit with terraform", "provision genkit infrastructure", "firebase functions terraform", "cloud run deployment terraform", "genkit production infrastructure"
+## Instructions
 
-## Core Terraform Modules
+1. **Choose Deployment Target**: Firebase Functions, Cloud Run, or GKE
+2. **Configure Terraform Backend**: Set up remote state in GCS
+3. **Define Variables**: Project ID, region, Genkit app configuration
+4. **Provision Compute**: Deploy functions or containers
+5. **Configure Secrets**: Store API keys in Secret Manager
+6. **Set Up Monitoring**: Create dashboards for token usage and latency
+7. **Enable Auto-scaling**: Configure min/max instances
+8. **Validate Deployment**: Test Genkit flows via HTTP endpoints
 
-### Firebase Functions Deployment
+## Output
 
+**Firebase Functions:**
 ```hcl
+# {baseDir}/terraform/functions.tf
 resource "google_cloudfunctions2_function" "genkit_function" {
   name     = "genkit-ai-flow"
   location = var.region
@@ -33,28 +46,17 @@ resource "google_cloudfunctions2_function" "genkit_function" {
   build_config {
     runtime     = "nodejs20"
     entry_point = "genkitFlow"
-    source {
-      storage_source {
-        bucket = google_storage_bucket.genkit_source.name
-        object = google_storage_bucket_object.genkit_code.name
-      }
-    }
   }
 
   service_config {
     max_instance_count = 100
     available_memory   = "512Mi"
     timeout_seconds    = 300
-    environment_variables = {
-      GOOGLE_API_KEY      = var.gemini_api_key
-      ENABLE_AI_MONITORING = "true"
-    }
   }
 }
 ```
 
-### Cloud Run for Genkit
-
+**Cloud Run Service:**
 ```hcl
 resource "google_cloud_run_v2_service" "genkit_service" {
   name     = "genkit-api"
@@ -65,88 +67,39 @@ resource "google_cloud_run_v2_service" "genkit_service" {
       min_instance_count = 1
       max_instance_count = 10
     }
-
     containers {
       image = "gcr.io/${var.project_id}/genkit-app:latest"
-
       resources {
         limits = {
-          cpu    = "2"
+          cpu = "2"
           memory = "1Gi"
         }
       }
-
-      env {
-        name  = "GOOGLE_API_KEY"
-        value_source {
-          secret_key_ref {
-            secret  = google_secret_manager_secret.gemini_key.id
-            version = "latest"
-          }
-        }
-      }
     }
-  }
-
-  traffic {
-    type    = "TRAFFIC_TARGET_ALLOCATION_TYPE_LATEST"
-    percent = 100
   }
 }
 ```
 
-### AI Monitoring Integration
+## Error Handling
 
-```hcl
-resource "google_monitoring_dashboard" "genkit_dashboard" {
-  dashboard_json = jsonencode({
-    displayName = "Genkit AI Monitoring"
-    mosaicLayout = {
-      columns = 12
-      tiles = [
-        {
-          width  = 6
-          height = 4
-          widget = {
-            title = "Token Consumption"
-            xyChart = {
-              dataSets = [{
-                timeSeriesQuery = {
-                  timeSeriesFilter = {
-                    filter = "resource.type=\"cloud_function\" AND metric.type=\"genkit.ai/token_usage\""
-                  }
-                }
-              }]
-            }
-          }
-        },
-        {
-          width  = 6
-          height = 4
-          widget = {
-            title = "Latency"
-            xyChart = {
-              dataSets = [{
-                timeSeriesQuery = {
-                  timeSeriesFilter = {
-                    filter = "resource.type=\"cloud_function\" AND metric.type=\"genkit.ai/latency\""
-                  }
-                }
-              }]
-            }
-          }
-        }
-      ]
-    }
-  })
-}
-```
+**Build Failures**
+- Error: "Cloud Function build failed"
+- Solution: Check package.json dependencies and Node.js runtime version
 
-## Tool Permissions
+**Cold Start Latency**
+- Warning: "High latency on first request"
+- Solution: Set min_instance_count >= 1 to keep warm instances
 
-Read, Write, Edit, Grep, Glob, Bash - Full infrastructure provisioning
+**Secret Access Denied**
+- Error: "Permission denied accessing secret"
+- Solution: Grant secretAccessor role to Cloud Run/Functions service account
 
-## References
+**Memory Exceeded**
+- Error: "Container killed: out of memory"
+- Solution: Increase available_memory or optimize Genkit flow memory usage
+
+## Resources
 
 - Genkit Deployment: https://genkit.dev/docs/deployment
-- Firebase Terraform: https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/cloudfunctions2_function
+- Firebase Terraform: https://registry.terraform.io/providers/hashicorp/google/latest
+- Genkit examples in {baseDir}/genkit-examples/

@@ -1,60 +1,114 @@
 ---
-description: This skill enables claude to detect infrastructure drift from a desired
-  state. it uses the `drift-detect` command to identify discrepancies between the
-  current infrastructure configuration and the intended configuration, as defined
-  in infrastructu...
+description: Use when detecting infrastructure drift from desired state. Trigger with phrases like "check for drift", "infrastructure drift detection", "compare actual vs desired state", or "detect configuration changes". Identifies discrepancies between current infrastructure and IaC definitions using terraform plan, cloudformation drift detection, or manual comparison.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(terraform:*)
+- Bash(aws:*)
+- Bash(gcloud:*)
 name: detecting-infrastructure-drift
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to identify and report on deviations between the current state of your infrastructure and its defined desired state. By leveraging the `drift-detect` command, it provides insights into configuration inconsistencies, helping maintain infrastructure integrity and prevent unexpected issues.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Infrastructure as Code (IaC) files are up to date in {baseDir}
+- Cloud provider CLI is installed and authenticated
+- IaC tool (Terraform/CloudFormation/Pulumi) is installed
+- Remote state storage is configured and accessible
+- Appropriate read permissions for infrastructure resources
 
-1. **Invocation**: The user requests drift detection.
-2. **Drift Analysis**: Claude executes the `drift-detect` command.
-3. **Report Generation**: The command analyzes the infrastructure and identifies any deviations from the defined configuration.
-4. **Result Presentation**: Claude presents a report detailing the detected drift, including affected resources and configuration differences.
+## Instructions
 
-## When to Use This Skill
+1. **Identify IaC Tool**: Determine if using Terraform, CloudFormation, Pulumi, or ARM
+2. **Fetch Current State**: Retrieve actual infrastructure state from cloud provider
+3. **Load Desired State**: Read IaC configuration from {baseDir}/terraform or equivalent
+4. **Compare States**: Execute drift detection command for the IaC platform
+5. **Analyze Differences**: Identify added, modified, or removed resources
+6. **Generate Report**: Create detailed report of drift with affected resources
+7. **Suggest Remediation**: Provide commands to resolve drift (apply or import)
+8. **Document Findings**: Save drift report to {baseDir}/drift-reports/
 
-This skill activates when you need to:
-- Identify infrastructure drift in your environment.
-- Ensure that your infrastructure configuration matches the desired state.
-- Generate a report detailing discrepancies between the current and desired infrastructure configurations.
+## Output
 
-## Examples
+Generates drift detection reports:
 
-### Example 1: Checking for Infrastructure Drift
+**Terraform Drift Report:**
+```
+Drift Detection Report - 2025-12-10 10:30:00
+==============================================
 
-User request: "Check for infrastructure drift in my production environment."
+Resources with Drift: 3
 
-The skill will:
-1. Execute the `drift-detect` command.
-2. Present a report detailing any detected drift, including resource changes and configuration differences.
+1. aws_instance.web_server
+   Status: Modified
+   Drift: instance_type changed from "t3.micro" to "t3.small"
+   Action: Update IaC to match or revert instance type
 
-### Example 2: Identifying Configuration Changes
+2. aws_s3_bucket.assets
+   Status: Modified
+   Drift: versioning_enabled changed from true to false
+   Action: Re-enable versioning or update IaC
 
-User request: "Are there any configuration changes that haven't been applied to my infrastructure?"
+3. aws_iam_role.lambda_exec
+   Status: Deleted
+   Drift: Role no longer exists in AWS
+   Action: terraform apply to recreate
 
-The skill will:
-1. Execute the `drift-detect` command.
-2. Provide a summary of configuration changes that are present in the desired state but not reflected in the current infrastructure.
+Remediation Command:
+terraform plan -out=drift-fix.tfplan
+terraform apply drift-fix.tfplan
+```
 
-## Best Practices
+**CloudFormation Drift:**
+```yaml
+StackName: production-vpc
+DriftStatus: DRIFTED
+Resources:
+  - LogicalResourceId: VPC
+    ResourceType: AWS::EC2::VPC
+    DriftStatus: IN_SYNC
+  - LogicalResourceId: PublicSubnet
+    ResourceType: AWS::EC2::Subnet
+    DriftStatus: MODIFIED
+    PropertyDifferences:
+      - PropertyPath: /Tags
+        ExpectedValue: [{Key: Env, Value: prod}]
+        ActualValue: [{Key: Env, Value: production}]
+```
 
-- **Regular Monitoring**: Schedule regular drift detection checks to proactively identify and address configuration inconsistencies.
-- **Version Control**: Ensure your infrastructure-as-code configurations are version-controlled to track changes and facilitate rollbacks.
-- **Automated Remediation**: Implement automated remediation workflows to automatically correct detected drift and maintain infrastructure consistency.
+## Error Handling
 
-## Integration
+Common issues and solutions:
 
-This skill can be integrated with other DevOps tools and plugins to automate infrastructure management workflows. For example, it can be used in conjunction with configuration management tools like Ansible or Puppet to automatically remediate detected drift. It also complements infrastructure-as-code tools like Terraform by providing a mechanism for verifying that the deployed infrastructure matches the defined configuration.
+**State Lock Error**
+- Error: "Error acquiring state lock"
+- Solution: Ensure no other terraform process is running, or force-unlock if safe
+
+**Authentication Failure**
+- Error: "Unable to authenticate to cloud provider"
+- Solution: Refresh credentials with `aws configure` or `gcloud auth login`
+
+**Missing State File**
+- Error: "No state file found"
+- Solution: Initialize terraform with `terraform init` or specify remote backend
+
+**Permission Denied**
+- Error: "Access denied reading resource"
+- Solution: Grant read-only IAM permissions to service account
+
+**State Version Mismatch**
+- Error: "State file version too new"
+- Solution: Upgrade Terraform version or use compatible state version
+
+## Resources
+
+- Terraform drift documentation: https://www.terraform.io/docs/cli/state/
+- AWS CloudFormation drift detection: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html
+- Drift remediation best practices in {baseDir}/docs/drift-remediation.md
+- Automated drift detection scripts in {baseDir}/scripts/drift-check.sh

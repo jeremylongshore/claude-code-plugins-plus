@@ -1,14 +1,14 @@
 ---
-description: This skill enables claude to aggregate and centralize performance metrics
-  from various sources. it is used when the user needs to consolidate metrics from
-  applications, systems, databases, caches, queues, and external services into a central
-  locat...
+name: aggregating-performance-metrics
+description: Aggregate and centralize performance metrics from applications, systems, databases, caches, and services. Use when consolidating monitoring data from multiple sources. Trigger with phrases like "aggregate metrics", "centralize monitoring", or "collect performance data".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
-- Bash
+- Bash(prometheus:*)
+- Bash(metrics:*)
+- Bash(monitoring:*)
 - Grep
-name: aggregating-performance-metrics
 license: MIT
 ---
 ## Overview
@@ -57,4 +57,44 @@ The skill will:
 
 ## Integration
 
-This skill integrates with other Claude Code plugins that manage infrastructure, deploy applications, and monitor system health. For example, it can be used in conjunction with a deployment plugin to automatically configure metrics collection after a new application deployment.
+This skill integrates with other plugins that manage infrastructure, deploy applications, and monitor system health. For example, it can be used in conjunction with a deployment plugin to automatically configure metrics collection after a new application deployment.
+
+## Prerequisites
+
+- Access to metrics collection tools (Prometheus, StatsD, CloudWatch)
+- Network connectivity to metric sources
+- Metrics storage configuration in {baseDir}/metrics/
+- Understanding of metrics taxonomy
+
+## Instructions
+
+1. Design consistent metrics naming convention
+2. Select appropriate aggregation tool for environment
+3. Configure metric collection from all sources
+4. Set up centralized storage and retention policies
+5. Create dashboards for visualization
+6. Define alerts for critical metrics
+
+## Output
+
+- Metrics aggregation configuration files
+- Unified naming convention documentation
+- Dashboard definitions for key metrics
+- Alert rules for performance thresholds
+- Integration guides for metric sources
+
+## Error Handling
+
+If metrics aggregation fails:
+- Verify network connectivity to sources
+- Check authentication credentials
+- Validate metrics format compatibility
+- Review storage capacity and retention
+- Ensure aggregation tool configuration
+
+## Resources
+
+- Prometheus aggregation documentation
+- StatsD protocol specifications
+- CloudWatch metrics API reference
+- Metrics naming best practices

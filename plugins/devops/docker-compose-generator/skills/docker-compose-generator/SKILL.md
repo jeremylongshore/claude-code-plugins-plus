@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to generate docker compose configurations for
-  multi-container applications. it leverages best practices for production-ready deployments,
-  including defining services, networks, volumes, health checks, and resource limits....
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-docker-compose-files
+description: |
+  Use when you need to work with Docker Compose.
+  This skill provides Docker Compose file generation with comprehensive guidance and automation.
+  Trigger with phrases like "generate docker-compose", "create compose file",
+  or "configure multi-container app".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(docker:*, kubectl:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to create fully functional Docker Compose files, streamlining the deployment of complex applications. It automatically incorporates recommended configurations for service dependencies, data persistence, and resource optimization.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receiving User Input**: Claude interprets the user's request, identifying the application's architecture and dependencies.
-2. **Generating Compose Configuration**: Based on the interpreted request, Claude generates a `docker-compose.yml` file defining services, networks, volumes, and other configurations.
-3. **Presenting the Configuration**: Claude provides the generated `docker-compose.yml` file to the user.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Generate a Docker Compose file for a multi-container application.
-- Define service dependencies and network configurations for a Docker environment.
-- Manage persistent data using Docker volumes.
-- Configure health checks and resource limits for Docker containers.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Deploying a Full-Stack Application
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Generate a docker-compose file for a full-stack application with a Node.js frontend, a Python backend, and a PostgreSQL database."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate a `docker-compose.yml` file defining three services: `frontend`, `backend`, and `database`.
-2. Configure network connections between the services and define volumes for persistent database storage.
+## Output
 
-### Example 2: Adding Health Checks
+This skill produces:
 
-User request: "Create a docker-compose file for a Redis server with a health check."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Generate a `docker-compose.yml` file defining a Redis service.
-2. Add a health check configuration to the Redis service, ensuring the container restarts if it becomes unhealthy.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Service Dependencies**: Explicitly define dependencies between services using the `depends_on` directive.
-- **Environment Variables**: Utilize `.env` files to manage environment variables and sensitive information.
-- **Volume Naming**: Use named volumes for data persistence and avoid relying on host paths.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill integrates with other development tools by providing a standardized Docker Compose configuration that can be used with Docker CLI, Docker Desktop, and other container management platforms.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/docker-compose-generator/`
+
+**Documentation and Guides**: `{baseDir}/docs/docker-compose-generator/`
+
+**Example Scripts and Code**: `{baseDir}/examples/docker-compose-generator/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/docker-compose-generator-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/docker-compose-generator-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/docker-compose-generator-dashboard.json`

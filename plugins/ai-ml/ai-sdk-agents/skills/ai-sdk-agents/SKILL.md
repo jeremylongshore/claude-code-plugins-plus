@@ -1,56 +1,150 @@
 ---
 name: orchestrating-multi-agent-systems
-description: Orchestrate multi-agent systems with handoffs, routing, and workflows
-  across AI providers. Use when building "multi-agent system", "agent orchestration",
-  or "coordinate agents".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+version: 1.0.0
+description: |
+  Orchestrate multi-agent systems with handoffs, routing, and workflows across AI providers.
+  Use when building complex AI systems requiring agent collaboration, task delegation, or workflow coordination.
+  Trigger with phrases like "create multi-agent system", "orchestrate agents", or "coordinate agent workflows".
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*, node:*)
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to create and manage sophisticated multi-agent systems. It leverages the AI SDK v5 to facilitate agent collaboration, task delegation, and intelligent routing, enabling the creation of complex AI-powered workflows.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure you have:
+- Node.js 18+ installed for TypeScript agent development
+- AI SDK v5 package installed (`npm install ai`)
+- API keys for AI providers (OpenAI, Anthropic, Google, etc.)
+- Understanding of agent-based architecture patterns
+- TypeScript knowledge for agent implementation
+- Project directory structure for multi-agent systems
 
-1. **Project Initialization**: The skill sets up a basic multi-agent project structure, including agent files and orchestration configurations.
-2. **Agent Creation**: It facilitates the creation of specialized agents with custom system prompts, tool definitions, and handoff rules.
-3. **Orchestration Configuration**: It configures the agent orchestration workflow, defining how agents interact and pass tasks to each other.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Initialize Project Structure
+Set up the foundation for your multi-agent system:
+1. Create project directory with necessary subdirectories
+2. Initialize npm project with TypeScript configuration
+3. Install AI SDK v5 and provider-specific packages
+4. Set up configuration files for agent orchestration
 
-This skill activates when you need to:
-- Create a new multi-agent system from scratch.
-- Orchestrate existing agents to perform a complex task.
-- Define handoff rules between agents.
-- Route tasks intelligently to the most appropriate agent.
-- Coordinate a workflow involving multiple LLMs.
+### Step 2: Define Agent Roles
+Identify and specify specialized agents needed:
+- Determine agent responsibilities and capabilities
+- Define agent system prompts with clear instructions
+- Specify tools each agent can access
+- Establish agent communication protocols
 
-## Examples
+### Step 3: Implement Agents
+Create individual agent files with proper configuration:
+1. Write agent initialization code with AI SDK
+2. Configure system prompts for agent behavior
+3. Define tool functions for agent capabilities
+4. Implement handoff rules for inter-agent delegation
 
-### Example 1: Building a Code Generation Pipeline
+### Step 4: Configure Orchestration
+Set up coordination between agents:
+- Define workflow sequences for task processing
+- Implement routing logic for task distribution
+- Configure handoff mechanisms between agents
+- Set up state management for multi-step workflows
 
-User request: "Set up a multi-agent system for code generation with an architect, coder, tester, reviewer, and documenter."
+### Step 5: Test and Refine
+Validate the multi-agent system functionality:
+- Test individual agent responses and behaviors
+- Verify handoff execution between agents
+- Validate routing logic with different input scenarios
+- Monitor coordination and identify bottlenecks
 
-The skill will:
-1. Initialize a multi-agent project with the specified agents.
-2. Create individual agent files (architect.ts, coder.ts, etc.) with relevant system prompts and tool access.
-3. Configure an orchestration workflow to pass tasks between the agents in the order: Architect -> Coder -> Tester -> Reviewer -> Documenter.
+## Output
 
-### Example 2: Intelligent Routing for Customer Support
+The skill generates a complete multi-agent system including:
 
-User request: "Create a multi-agent system for customer support that routes inquiries to the appropriate agent based on the topic."
+### Project Structure
+```
+{baseDir}/
+├── agents/
+│   ├── coordinator.ts       # Main orchestration agent
+│   ├── specialist-1.ts      # Domain-specific agent
+│   ├── specialist-2.ts      # Domain-specific agent
+│   └── [additional agents]
+├── orchestration/
+│   ├── workflow.ts          # Workflow definitions
+│   ├── routing.ts           # Routing logic
+│   └── handoffs.ts          # Handoff configurations
+├── tools/
+│   └── [agent tools]        # Shared tool implementations
+├── config/
+│   └── agents.config.ts     # Agent configurations
+└── package.json             # Dependencies
+```
 
-The skill will:
-1. Initialize a multi-agent project with a coordinator agent and specialized support agents (e.g., billing, technical support, sales).
-2. Configure the coordinator agent with routing rules based on topic classification.
-3. Implement handoff mechanisms for agents to transfer inquiries if needed.
+### Agent Implementation Files
+- TypeScript files with AI SDK v5 integration
+- System prompts tailored to each agent role
+- Tool definitions and implementations
+- Handoff rules and coordination logic
 
-## Best Practices
+### Orchestration Configuration
+- Workflow definitions for task sequences
+- Routing rules for intelligent task distribution
+- State management for multi-step processes
+- Error handling and fallback mechanisms
 
-- **Agent Specialization**: Design agents with specific expertise and limited scope for better performance.
-- **Clear Handoff Rules**: Define clear and unambiguous handoff rules to avoid confusion and circular dependencies.
-- **Comprehensive Testing**: Thoroughly test the multi-agent system to ensure proper coordination and task completion.
+### Documentation
+- Agent role descriptions and capabilities
+- Workflow diagrams showing agent interactions
+- API documentation for agent endpoints
+- Usage examples for common scenarios
 
-## Integration
+## Error Handling
 
-This skill integrates seamlessly with other Claude Code plugins, allowing you to combine multi-agent orchestration with other functionalities like code generation, data analysis, and external API integrations. It leverages the AI SDK v5 for robust and flexible agent management.
+Common issues and solutions:
+
+**Agent Initialization Failures**
+- Error: AI SDK provider configuration invalid
+- Solution: Verify API keys in environment variables, check provider-specific setup requirements
+
+**Handoff Execution Errors**
+- Error: Agent handoff fails or creates circular dependencies
+- Solution: Review handoff rules for clarity, implement handoff depth limits, add fallback agents
+
+**Routing Logic Failures**
+- Error: Tasks routed to incorrect agent or no agent
+- Solution: Refine routing criteria, add default routing rules, implement topic classification improvement
+
+**Tool Access Violations**
+- Error: Agent attempts to use unauthorized tools
+- Solution: Review tool permissions per agent, implement proper access control, validate tool configurations
+
+**Workflow Deadlocks**
+- Error: Multi-agent workflow stalls without completion
+- Solution: Implement timeout mechanisms, add workflow monitoring, design escape conditions for stuck states
+
+## Resources
+
+### AI SDK Documentation
+- AI SDK v5 official documentation for agent creation
+- Provider-specific integration guides (OpenAI, Anthropic, Google)
+- Tool definition and implementation examples
+- Handoff and routing pattern references
+
+### Multi-Agent Architecture Patterns
+- Coordinator-worker pattern for task distribution
+- Pipeline pattern for sequential processing
+- Hub-and-spoke pattern for centralized coordination
+- Peer-to-peer pattern for collaborative agents
+
+### Agent Design Best Practices
+- Single responsibility principle for agent specialization
+- Clear handoff criteria and routing rules
+- Comprehensive error handling and fallbacks
+- State management for complex workflows
+- Testing strategies for multi-agent systems
+
+### Example Use Cases
+- Code generation pipelines with specialized agents
+- Customer support routing systems
+- Research and analysis workflows
+- Content creation and review pipelines
+- Data processing and validation systems

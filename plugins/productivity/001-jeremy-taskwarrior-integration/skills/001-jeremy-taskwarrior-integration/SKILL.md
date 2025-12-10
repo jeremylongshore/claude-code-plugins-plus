@@ -1,14 +1,14 @@
 ---
-description: Enforces complete taskwarrior integration protocol for all coding tasks.
-  activates automatically when user mentions "taskwarrior", "task warrior", "tw",
-  or discusses task management. decomposes all coding work into properly tracked taskwarrior
-  tas...
+name: 001-jeremy-taskwarrior-integration
+description: Enforce complete Taskwarrior integration for all coding tasks with automatic decomposition, time tracking, and dependency management. Use when managing tasks or tracking work. Trigger with phrases like "taskwarrior", "task warrior", "tw", "create a task", or "track this work".
+version: 1.0.0
 allowed-tools:
 - Read
 - WebFetch
 - WebSearch
 - Grep
-name: 001-jeremy-taskwarrior-integration
+- Bash(task:*)
+- Bash(timew:*)
 license: MIT
 ---
 ## What This Skill Does
@@ -592,3 +592,44 @@ This skill enforces a **mandatory, comprehensive Taskwarrior integration** for A
 ✅ Full lifecycle from creation → activation → implementation → completion
 
 **NO CODE GETS WRITTEN without following the complete Taskwarrior protocol.**
+
+## Prerequisites
+
+- Taskwarrior installed and configured (task command available)
+- Timewarrior installed for automatic time tracking
+- Task data directory properly initialized
+- Understanding of task priorities and due dates
+
+## Instructions
+
+1. Decompose user request into Taskwarrior tasks BEFORE writing code
+2. Assign proper attributes (project, priority, due, tags) to each task
+3. Create dependency chains for multi-step work
+4. Start task with `task <ID> start` to begin time tracking
+5. Implement solution while task is active
+6. Annotate task with key decisions or blockers
+7. Complete task with `task <ID> done` after delivery
+
+## Output
+
+- Properly structured Taskwarrior tasks with full attributes
+- Active time tracking via Timewarrior integration
+- Task completion confirmations with time summaries
+- Dependency chain visualizations for complex work
+- Project progress reports showing completed and pending tasks
+
+## Error Handling
+
+If Taskwarrior integration fails:
+- Verify Taskwarrior and Timewarrior installation
+- Check task data directory permissions
+- Validate task command availability
+- Review task configuration file
+- Ensure time tracking hooks are configured
+
+## Resources
+
+- Taskwarrior official documentation
+- Timewarrior integration guide
+- Task dependency management best practices
+- Project and tag taxonomy guidelines

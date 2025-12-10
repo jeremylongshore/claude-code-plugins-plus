@@ -1,16 +1,15 @@
 ---
-description: This skill enables claude to detect potential memory leaks and analyze
-  memory usage patterns in code. it is triggered when the user requests "detect memory
-  leaks", "analyze memory usage", or similar phrases related to memory leak detection
-  and per...
+name: detecting-memory-leaks
+description: Detect potential memory leaks and analyze memory usage patterns in code. Use when troubleshooting performance issues related to memory growth or identifying leak sources. Trigger with phrases like "detect memory leaks", "analyze memory usage", or "find memory issues".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: detecting-memory-leaks
+- Bash(profiling:*)
+- Bash(memory:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other performance analysis tools to provide a comprehensive view of application performance.
+
+## Prerequisites
+
+- Access to application source code in {baseDir}/
+- Memory profiling tools (valgrind, heapdump, etc.)
+- Understanding of application memory architecture
+- Runtime environment for testing
+
+## Instructions
+
+1. Analyze code for common memory leak patterns
+2. Identify unremoved event listeners and callbacks
+3. Check for unbounded cache growth
+4. Review closure usage and retained references
+5. Generate report with leak locations and severity
+6. Provide remediation recommendations
+
+## Output
+
+- Memory leak detection report with file locations
+- Pattern analysis for event listeners and caches
+- Memory usage trends and growth patterns
+- Code snippets highlighting potential leaks
+- Recommended fixes with code examples
+
+## Error Handling
+
+If memory leak detection fails:
+- Verify code file access permissions
+- Check profiling tool installation
+- Validate code syntax and structure
+- Ensure sufficient memory for analysis
+- Review runtime environment configuration
+
+## Resources
+
+- Memory profiling tool documentation
+- Memory leak detection best practices
+- JavaScript/Node.js memory management guides
+- Performance optimization resources

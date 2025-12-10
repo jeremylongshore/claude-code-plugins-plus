@@ -1,59 +1,122 @@
 ---
-description: This skill analyzes and optimizes sql queries for improved performance.
-  it identifies potential bottlenecks, suggests optimal indexes, and proposes query
-  rewrites. use this when the user mentions "optimize sql query", "improve sql performance",
-  "s...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: optimizing-sql-queries
+description: |
+  Use when you need to work with query optimization.
+  This skill provides query performance analysis with comprehensive guidance and automation.
+  Trigger with phrases like "optimize queries", "analyze performance",
+  or "improve query speed".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to analyze SQL queries, identify performance bottlenecks, and suggest optimizations such as index creation or query rewriting. It leverages the sql-query-optimizer plugin to provide actionable recommendations for improving database performance.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Query Input**: The user provides an SQL query to be optimized.
-2. **Analysis**: The plugin analyzes the query structure, potential indexing issues, and execution plan (if available).
-3. **Recommendations**: The plugin generates optimization suggestions, including index recommendations and query rewrites.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Optimize a slow-running SQL query.
-- Identify missing or unused indexes in a database.
-- Improve the performance of a database application.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Optimizing a Slow Query
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Optimize this SQL query: SELECT * FROM orders WHERE customer_id = 123 AND order_date < '2023-01-01';"
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the provided SQL query.
-2. Suggest creating an index on customer_id and order_date columns to improve query performance.
+## Output
 
-### Example 2: Finding Indexing Opportunities
+This skill produces:
 
-User request: "I need help optimizing a query that filters on product_category and price.  Can you suggest any indexes?"
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze a hypothetical query based on the user's description.
-2. Recommend a composite index on (product_category, price) to speed up filtering.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Provide Full Queries**: Include the complete SQL query for accurate analysis.
-- **Include EXPLAIN Output**: Providing the output of `EXPLAIN` can help the optimizer identify bottlenecks more effectively.
-- **Test Recommendations**: Always test the suggested optimizations in a staging environment before applying them to production.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other database management plugins to automate index creation and query rewriting based on the optimizer's suggestions.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/sql-query-optimizer/`
+
+**Documentation and Guides**: `{baseDir}/docs/sql-query-optimizer/`
+
+**Example Scripts and Code**: `{baseDir}/examples/sql-query-optimizer/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/sql-query-optimizer-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/sql-query-optimizer-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/sql-query-optimizer-dashboard.json`

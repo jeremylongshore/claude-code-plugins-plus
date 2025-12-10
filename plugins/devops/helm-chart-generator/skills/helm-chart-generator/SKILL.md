@@ -1,58 +1,111 @@
 ---
-description: This skill enables claude to generate helm charts for kubernetes applications.
-  it should be used when the user requests the creation of a new helm chart, the modification
-  of an existing chart, or assistance with packaging and deploying kubernetes ...
+description: Use when generating Helm charts for Kubernetes applications. Trigger with phrases like "create Helm chart", "generate chart for app", "package Kubernetes deployment", or "helm template". Produces production-ready charts with Chart.yaml, values.yaml, templates, and best practices for multi-environment deployments.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(helm:*)
+- Bash(kubectl:*)
 name: generating-helm-charts
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to create and manage Helm charts, simplifying Kubernetes application deployments. It provides production-ready configurations, implements best practices, and supports multi-platform environments.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Helm 3+ is installed on the system
+- Kubernetes cluster access is configured
+- Application container images are available
+- Understanding of application resource requirements
+- Chart repository access (if publishing)
 
-1. **Receiving Requirements**: Claude receives the user's requirements for the Helm chart, including application details, dependencies, and desired configurations.
-2. **Generating Chart**: Claude utilizes the helm-chart-generator plugin to generate a complete Helm chart based on the provided requirements.
-3. **Providing Chart**: Claude presents the generated Helm chart to the user, ready for deployment.
+## Instructions
 
-## When to Use This Skill
+1. **Gather Requirements**: Identify application type, dependencies, configuration needs
+2. **Create Chart Structure**: Generate Chart.yaml with metadata and version info
+3. **Define Values**: Create values.yaml with configurable parameters and defaults
+4. **Build Templates**: Generate deployment, service, ingress, and configmap templates
+5. **Add Helpers**: Create _helpers.tpl for reusable template functions
+6. **Configure Resources**: Set resource limits, security contexts, and health checks
+7. **Test Chart**: Validate with `helm lint` and `helm template` commands
+8. **Document Usage**: Add README with installation instructions and configuration options
 
-This skill activates when you need to:
-- Create a new Helm chart for a Kubernetes application.
-- Modify an existing Helm chart to update application configurations.
-- Package and deploy an application to Kubernetes using Helm.
+## Output
 
-## Examples
+Generates complete Helm chart structure:
 
-### Example 1: Creating a Basic Web App Chart
+```
+{baseDir}/helm-charts/app-name/
+├── Chart.yaml          # Chart metadata
+├── values.yaml         # Default configuration
+├── templates/
+│   ├── deployment.yaml
+│   ├── service.yaml
+│   ├── ingress.yaml
+│   ├── configmap.yaml
+│   ├── _helpers.tpl    # Template helpers
+│   └── NOTES.txt       # Post-install notes
+├── charts/             # Dependencies
+└── README.md
+```
 
-User request: "Create a Helm chart for a simple web application with a single deployment and service."
+**Example Chart.yaml:**
+```yaml
+apiVersion: v2
+name: my-app
+description: Production-ready application chart
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+```
 
-The skill will:
-1. Generate a basic Helm chart including a `Chart.yaml`, `values.yaml`, a deployment, and a service.
-2. Provide the generated chart files for review and customization.
+**Example values.yaml:**
+```yaml
+replicaCount: 3
+image:
+  repository: registry/app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+```
 
-### Example 2: Adding Ingress to an Existing Chart
+## Error Handling
 
-User request: "Modify the existing Helm chart for my web application to include an ingress resource."
+Common issues and solutions:
 
-The skill will:
-1. Update the existing Helm chart to include an ingress resource, configured based on best practices.
-2. Provide the updated chart files with the new ingress configuration.
+**Chart Validation Errors**
+- Error: "Chart.yaml: version is required"
+- Solution: Ensure Chart.yaml contains valid apiVersion, name, and version fields
 
-## Best Practices
+**Template Rendering Failures**
+- Error: "parse error in deployment.yaml"
+- Solution: Validate template syntax with `helm template` and check Go template formatting
 
-- **Configuration Management**: Utilize `values.yaml` to manage configurable parameters within the Helm chart.
-- **Resource Limits**: Define resource requests and limits for deployments to ensure efficient resource utilization.
-- **Security Contexts**: Implement security contexts to enhance the security posture of the deployed application.
+**Missing Dependencies**
+- Error: "dependency not found"
+- Solution: Run `helm dependency update` in chart directory
 
-## Integration
+**Values Override Issues**
+- Error: "failed to render values"
+- Solution: Check values.yaml syntax and ensure proper YAML indentation
 
-This skill integrates with other Claude Code skills by providing a standardized way to package and deploy applications to Kubernetes. It can be combined with skills that generate application code, manage infrastructure, or automate deployment pipelines.
+**Installation Failures**
+- Error: "release failed: timed out waiting for condition"
+- Solution: Increase timeout or check pod logs for application startup issues
+
+## Resources
+
+- Helm documentation: https://helm.sh/docs/
+- Chart best practices guide: https://helm.sh/docs/chart_best_practices/
+- Template function reference: https://helm.sh/docs/chart_template_guide/
+- Example charts repository: https://github.com/helm/charts
+- Chart testing guide in {baseDir}/docs/helm-testing.md

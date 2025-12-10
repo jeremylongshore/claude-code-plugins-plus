@@ -1,14 +1,12 @@
 ---
-description: This skill enables claude to validate cross-origin resource sharing (cors)
-  policies. it uses the cors-policy-validator plugin to analyze cors configurations
-  and identify potential security vulnerabilities. use this skill when the user requests
-  to ...
+name: validating-cors-policies
+description: Validate CORS policies for security issues and misconfigurations. Use when reviewing cross-origin resource sharing. Trigger with 'validate CORS', 'check CORS policy', or 'review cross-origin'.
+version: 1.0.0
 allowed-tools:
 - Read
 - WebFetch
 - WebSearch
 - Grep
-name: validating-cors-policies
 license: MIT
 ---
 ## Overview
@@ -57,3 +55,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other security-related plugins to provide a more comprehensive security assessment. For example, it can be used in conjunction with vulnerability scanning tools to identify potential cross-site scripting (XSS) vulnerabilities related to CORS misconfigurations.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

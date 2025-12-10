@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to generate orm models and database schemas.
-  it is triggered when the user requests the creation of orm models, database schemas,
-  or wishes to generate code for interacting with databases. the skill supports various
-  orms ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-orm-code
+description: |
+  Use when you need to work with ORM code generation.
+  This skill provides ORM model and code generation with comprehensive guidance and automation.
+  Trigger with phrases like "generate ORM models", "create entity classes",
+  or "scaffold database models".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to automate the creation of Object-Relational Mapping (ORM) models and database schemas, significantly accelerating backend development. It handles generating code for various ORM frameworks, simplifying database interactions.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Identify ORM and Language**: The skill parses the user's request to determine the target ORM framework (e.g., TypeORM, SQLAlchemy) and programming language (e.g., TypeScript, Python).
-2. **Schema/Model Definition**: Based on the request, the skill either interprets an existing database schema or defines a new schema based on provided model specifications.
-3. **Code Generation**: The skill generates the corresponding ORM model code, including entities, relationships, and any necessary configuration files, tailored to the chosen ORM framework.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Create ORM models from a database schema.
-- Generate a database schema from existing ORM models.
-- Generate model code for a specific ORM framework (e.g., TypeORM, Prisma).
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Generating TypeORM entities
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Generate TypeORM entities for a blog with users, posts, and comments, including relationships and validation rules."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate TypeScript code defining TypeORM entities for `User`, `Post`, and `Comment`, including properties, relationships (e.g., one-to-many), and validation decorators.
-2. Output the generated code, ready to be integrated into a TypeORM project.
+## Output
 
-### Example 2: Creating a SQLAlchemy schema
+This skill produces:
 
-User request: "Create a SQLAlchemy schema for an e-commerce application with products, categories, and orders."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Generate Python code defining SQLAlchemy models for `Product`, `Category`, and `Order`, including relationships (e.g., many-to-one), data types, and primary/foreign key constraints.
-2. Output the generated code, ready to be used with SQLAlchemy.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Specificity**: Be as specific as possible about the desired ORM framework and data model.
-- **Relationships**: Clearly define relationships between entities (e.g., one-to-many, many-to-many).
-- **Validation**: Specify validation rules to ensure data integrity.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill integrates with other code generation tools and plugins within Claude Code, allowing for seamless integration into existing projects and workflows. It can be used in conjunction with database migration tools to create and manage database schemas.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/orm-code-generator/`
+
+**Documentation and Guides**: `{baseDir}/docs/orm-code-generator/`
+
+**Example Scripts and Code**: `{baseDir}/examples/orm-code-generator/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/orm-code-generator-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/orm-code-generator-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/orm-code-generator-dashboard.json`

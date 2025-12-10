@@ -1,60 +1,179 @@
 ---
-description: This skill analyzes http security headers of a given domain to identify
-  potential vulnerabilities and misconfigurations. it provides a detailed report with
-  a grade, score, and recommendations for improvement. use this skill when the user
-  asks to "...
+name: analyzing-security-headers
+description: |
+  Analyze HTTP security headers of web domains to identify vulnerabilities and misconfigurations.
+  Use when you need to audit website security headers, assess header compliance, or get security recommendations for web applications.
+  Trigger with phrases like "analyze security headers", "check HTTP headers", "audit website security headers", or "evaluate CSP and HSTS configuration".
 allowed-tools:
 - Read
 - WebFetch
 - WebSearch
 - Grep
-name: analyzing-security-headers
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill allows Claude to automatically analyze a website's HTTP security headers and provide a comprehensive report. It identifies missing or misconfigured headers and offers actionable recommendations to improve security posture.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Target URL or domain name is accessible
+- Network connectivity for HTTP requests
+- Permission to scan the target domain
+- Optional: Save results to {baseDir}/security-reports/
 
-1. **Receives URL**: Claude receives a URL or domain name from the user.
-2. **Analyzes Headers**: The plugin fetches the HTTP headers from the specified URL and analyzes them against security best practices.
-3. **Generates Report**: The plugin generates a detailed report, including a security grade, score, and specific recommendations for missing or misconfigured headers.
+## Instructions
 
-## When to Use This Skill
+### 1. Domain Input Phase
 
-This skill activates when you need to:
-- Analyze the security posture of a website.
-- Identify missing or misconfigured HTTP security headers.
-- Get recommendations for improving website security.
-- Audit a website for compliance with security best practices.
+Accept domain specification:
+- Full URL with protocol (https://example.com)
+- Domain name only (example.com - will test HTTPS first)
+- Multiple domains for batch analysis
+- Specific paths for header variation testing
 
-## Examples
+### 2. Header Fetching Phase
 
-### Example 1: Security Audit
+Retrieve HTTP response headers:
+- Make HEAD or GET request to target
+- Capture all security-relevant headers
+- Test both HTTP and HTTPS responses
+- Record redirect chains and final destination
 
-User request: "Analyze the security headers for example.com"
+### 3. Analysis Phase
 
-The skill will:
-1. Fetch the HTTP headers from example.com.
-2. Analyze the headers for common security vulnerabilities.
-3. Generate a report outlining the security grade, score, and any identified issues with recommendations.
+Evaluate each security header against best practices:
 
-### Example 2: Quick Security Check
+**Critical Headers**:
+- Strict-Transport-Security (HSTS)
+- Content-Security-Policy (CSP)
+- X-Frame-Options
+- X-Content-Type-Options
+- Permissions-Policy
 
-User request: "Check HTTP security for mywebsite.net"
+**Important Headers**:
+- Referrer-Policy
+- Cross-Origin-Embedder-Policy (COEP)
+- Cross-Origin-Opener-Policy (COOP)
+- Cross-Origin-Resource-Policy (CORP)
 
-The skill will:
-1. Fetch the HTTP headers from mywebsite.net.
-2. Analyze the headers for common security vulnerabilities.
-3. Generate a report outlining the security grade, score, and any identified issues with recommendations.
+**Additional Checks**:
+- Server header information disclosure
+- X-Powered-By header exposure
+- Cookie security attributes (Secure, HttpOnly, SameSite)
 
-## Best Practices
+### 4. Grading Phase
 
-- **Prioritize HSTS**: Ensure HSTS is properly configured to prevent downgrade attacks.
-- **Implement CSP**: Start with a strict Content Security Policy to mitigate XSS vulnerabilities.
-- **Regularly Scan**: Schedule regular scans to identify new vulnerabilities and misconfigurations.
+Calculate security score:
+- A+ (95-100): All critical headers properly configured
+- A (85-94): Critical headers present, minor issues
+- B (75-84): Most headers present, some weaknesses
+- C (65-74): Missing critical headers
+- D (50-64): Significant security gaps
+- F (<50): Multiple critical vulnerabilities
 
-## Integration
+### 5. Report Generation Phase
 
-This skill can be used in conjunction with other security plugins to provide a more comprehensive security assessment. For example, it can be paired with a vulnerability scanner to identify both header-related and code-level vulnerabilities.
+Create comprehensive report with:
+- Overall security grade and numeric score
+- Missing headers with impact assessment
+- Misconfigured headers with specific issues
+- Remediation recommendations with examples
+- Priority ranking for fixes
+
+## Output
+
+The skill produces:
+
+**Primary Output**: Security headers analysis report
+
+**Report Structure**:
+```
+# Security Headers Analysis - example.com
+## Overall Grade: B (82/100)
+
+## Critical Headers Status
+✅ Strict-Transport-Security: Present (max-age=31536000; includeSubDomains)
+❌ Content-Security-Policy: Missing
+✅ X-Frame-Options: Present (DENY)
+✅ X-Content-Type-Options: Present (nosniff)
+⚠️  Permissions-Policy: Misconfigured
+
+## Detailed Findings
+
+### Missing Headers (High Priority)
+1. Content-Security-Policy
+   - Risk: XSS vulnerability exposure
+   - Recommendation: Implement strict CSP
+   - Example: Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'
+
+### Misconfigured Headers
+1. Permissions-Policy
+   - Current: geolocation=*
+   - Issue: Allows all origins
+   - Fix: geolocation=(self)
+
+## Priority Actions
+1. Add Content-Security-Policy (Critical)
+2. Fix Permissions-Policy wildcard (High)
+3. Add Referrer-Policy (Medium)
+```
+
+**Optional Outputs**:
+- JSON format for automation: {baseDir}/security-reports/headers-DOMAIN-YYYYMMDD.json
+- CSV for spreadsheet analysis
+- Comparison report for multiple domains
+
+## Error Handling
+
+**Common Issues and Resolutions**:
+
+1. **Domain Unreachable**
+   - Error: "Failed to connect to example.com"
+   - Resolution: Check domain spelling, network connectivity, firewall rules
+   - Fallback: Test alternate protocols (HTTP vs HTTPS)
+
+2. **SSL/TLS Errors**
+   - Error: "SSL certificate verification failed"
+   - Resolution: Note in report, test with certificate validation disabled
+   - Impact: Indicates HSTS not properly enforced
+
+3. **Redirect Loops**
+   - Error: "Too many redirects"
+   - Resolution: Report redirect chain, analyze headers at each hop
+   - Note: Headers may differ across redirect chain
+
+4. **Rate Limiting**
+   - Error: "HTTP 429 Too Many Requests"
+   - Resolution: Implement exponential backoff, reduce request frequency
+   - Fallback: Queue domain for later analysis
+
+5. **Mixed Content Issues**
+   - Error: "Headers differ between HTTP and HTTPS"
+   - Resolution: Report both sets, highlight critical differences
+   - Recommendation: Ensure HSTS enforces HTTPS-only
+
+## Resources
+
+**Security Header References**:
+- OWASP Secure Headers Project: https://owasp.org/www-project-secure-headers/
+- MDN Security Headers Guide: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#security
+- Security Headers Scanner: https://securityheaders.com/
+
+**Header-Specific Documentation**:
+- CSP Reference: https://content-security-policy.com/
+- HSTS Preload: https://hstspreload.org/
+- Permissions Policy: https://www.w3.org/TR/permissions-policy/
+
+**Best Practice Guides**:
+- NIST Web Security Guidelines: https://pages.nist.gov/800-63-3/
+- Mozilla Observatory: https://observatory.mozilla.org/
+
+**Testing Tools**:
+- Online header checker: https://securityheaders.com/
+- Browser DevTools Network tab for manual inspection
+- curl command for command-line testing: `curl -I https://example.com`
+
+**Integration Examples**:
+- Automated header checks in CI/CD pipelines
+- Periodic scanning with alerting on grade degradation
+- Compliance reporting for security audits

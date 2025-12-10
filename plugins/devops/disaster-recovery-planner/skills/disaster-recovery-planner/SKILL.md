@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to plan and implement disaster recovery (dr)
-  procedures. it generates configurations and setup code based on specific requirements
-  and infrastructure. use this skill when the user requests assistance with disaster
-  recover...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: planning-disaster-recovery
+description: |
+  Use when you need to work with backup and recovery.
+  This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
+  Trigger with phrases like "create backups", "automate backups",
+  or "implement disaster recovery".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(tar:*, rsync:*, aws:s3:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to generate disaster recovery plans tailored to specific infrastructure and business needs. It automates the creation of configurations and setup code, significantly reducing the manual effort required for DR implementation.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Requirement Gathering**: Claude identifies the user's specific disaster recovery requirements, including platform, recovery time objective (RTO), and recovery point objective (RPO).
-2. **Configuration Generation**: Based on the requirements, Claude generates production-ready configurations for the disaster recovery plan.
-3. **Code Generation**: Claude generates the necessary setup code to implement the disaster recovery plan.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Create a disaster recovery plan for a specific environment.
-- Generate configurations for disaster recovery infrastructure.
-- Automate the setup of disaster recovery procedures.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Creating a DR Plan for AWS
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Create a disaster recovery plan for my AWS environment with an RTO of 1 hour and an RPO of 15 minutes."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Gather the AWS environment details, RTO, and RPO requirements.
-2. Generate a disaster recovery plan configuration using AWS services like S3 replication, EC2 snapshots, and Route 53 failover.
+## Output
 
-### Example 2: Setting Up a Business Continuity Strategy
+This skill produces:
 
-User request: "Help me set up a business continuity strategy using a multi-region deployment."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the existing infrastructure and application architecture.
-2. Generate configurations for deploying the application across multiple regions, including database replication and load balancing.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Security**: Always prioritize security when designing disaster recovery plans. Ensure that all data is encrypted and access is properly controlled.
-- **Testing**: Regularly test the disaster recovery plan to ensure it functions as expected and meets the required RTO and RPO.
-- **Documentation**: Maintain comprehensive documentation of the disaster recovery plan, including configuration details, procedures, and contact information.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other DevOps tools and plugins to automate the entire disaster recovery process, including infrastructure provisioning, configuration management, and monitoring.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/disaster-recovery-planner/`
+
+**Documentation and Guides**: `{baseDir}/docs/disaster-recovery-planner/`
+
+**Example Scripts and Code**: `{baseDir}/examples/disaster-recovery-planner/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/disaster-recovery-planner-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/disaster-recovery-planner-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/disaster-recovery-planner-dashboard.json`

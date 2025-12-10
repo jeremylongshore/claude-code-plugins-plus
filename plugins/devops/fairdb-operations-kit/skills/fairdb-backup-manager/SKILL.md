@@ -1,197 +1,122 @@
 ---
-description: Automatically manages postgresql backups with pgbackrest and wasabi s3
-  storage when working with fairdb databases activates when you request "fairdb backup
-  manager" functionality.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: fairdb-backup-manager
+description: |
+  Use when you need to work with backup and recovery.
+  This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
+  Trigger with phrases like "create backups", "automate backups",
+  or "implement disaster recovery".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(tar:*, rsync:*, aws:s3:*)
+version: 1.0.0
 license: MIT
 ---
-# FairDB Backup Manager
 
-## Purpose
-I automatically handle all backup-related operations for FairDB PostgreSQL databases, including scheduling, verification, restoration, and monitoring of pgBackRest backups with Wasabi S3 storage.
+## Prerequisites
 
-## Activation Triggers
-I activate when you:
-- Mention "backup", "restore", "pgbackrest", or "recovery" in context of FairDB
-- Work with PostgreSQL backup configurations
-- Need to verify backup integrity
-- Discuss disaster recovery or data protection
-- Experience data loss or corruption issues
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-## Core Capabilities
+## Instructions
 
-### Backup Operations
-- Configure pgBackRest with Wasabi S3
-- Execute full, differential, and incremental backups
-- Manage backup schedules and retention policies
-- Compress and encrypt backup data
-- Monitor backup health and success rates
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-### Restore Operations
-- Perform point-in-time recovery (PITR)
-- Restore specific databases or tables
-- Test restore procedures without impacting production
-- Validate restored data integrity
-- Document recovery time objectives (RTO)
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-### Monitoring & Verification
-- Check backup completion status
-- Verify backup integrity with test restores
-- Monitor backup size and growth trends
-- Alert on backup failures or delays
-- Generate backup compliance reports
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-## Automated Workflows
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-When activated, I will:
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-1. **Assess Current State**
-   - Check existing backup configuration
-   - Review backup history and success rate
-   - Identify any failed or missing backups
-   - Analyze storage usage and costs
+## Output
 
-2. **Optimize Configuration**
-   - Adjust retention policies based on requirements
-   - Configure optimal compression settings
-   - Set up parallel backup processes
-   - Implement incremental backup strategies
+This skill produces:
 
-3. **Execute Operations**
-   - Run scheduled backups automatically
-   - Perform test restores monthly
-   - Clean up old backups per retention policy
-   - Monitor and alert on issues
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-4. **Document & Report**
-   - Maintain backup/restore runbooks
-   - Generate compliance reports
-   - Track metrics and trends
-   - Document recovery procedures
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Integration with FairDB Commands
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-I work seamlessly with these FairDB commands:
-- `/fairdb-setup-backup` - Initial configuration
-- `/fairdb-onboard-customer` - Customer-specific backups
-- `/fairdb-emergency-response` - Disaster recovery
-- `/fairdb-health-check` - Backup health monitoring
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Best Practices I Enforce
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-### Backup Strategy
-- Full backups weekly (Sunday 2 AM)
-- Differential backups daily
-- Incremental backups hourly during business hours
-- WAL archiving for point-in-time recovery
-- Geographical redundancy with Wasabi regions
+## Error Handling
 
-### Security
-- AES-256 encryption for all backups
-- Secure key management
-- Access control and audit logging
-- Encrypted transport to S3
-- Immutable backup storage
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
 
-### Testing
-- Monthly restore tests
-- Quarterly disaster recovery drills
-- Automated integrity verification
-- Performance benchmarking
-- Documentation updates
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
 
-## Proactive Monitoring
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
 
-I continuously monitor for:
-- Backup failures or delays
-- Storage capacity issues
-- Unusual backup sizes
-- Performance degradation
-- Compliance violations
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
 
-## Emergency Response
+## Resources
 
-During data loss incidents, I:
-1. Assess the extent of data loss
-2. Identify the best recovery point
-3. Execute restore procedures
-4. Verify data integrity
-5. Document incident and recovery
+**Configuration Templates**: `{baseDir}/templates/fairdb-backup-manager/`
 
-## Reporting
+**Documentation and Guides**: `{baseDir}/docs/fairdb-backup-manager/`
 
-I generate these reports automatically:
-- Daily backup status summary
-- Weekly storage utilization report
-- Monthly compliance audit
-- Quarterly DR test results
-- Annual backup strategy review
+**Example Scripts and Code**: `{baseDir}/examples/fairdb-backup-manager/`
 
-## Cost Optimization
+**Troubleshooting Guide**: `{baseDir}/docs/fairdb-backup-manager-troubleshooting.md`
 
-I help reduce backup costs by:
-- Implementing intelligent retention policies
-- Using compression effectively
-- Cleaning up unnecessary backups
-- Optimizing transfer methods
-- Selecting appropriate storage tiers
+**Best Practices**: `{baseDir}/docs/fairdb-backup-manager-best-practices.md`
 
-## Example Scenarios
-
-### Scenario: New Customer Onboarding
-```
-User: "Setting up database for new customer Acme Corp"
-Me: I'll configure automated backups for Acme Corp:
-- Creating dedicated pgBackRest stanza
-- Setting up daily full backups with 30-day retention
-- Configuring WAL archiving for PITR
-- Scheduling test restores monthly
-- Adding monitoring for backup success
-```
-
-### Scenario: Backup Failure Alert
-```
-System: "Backup failed for customer_db"
-Me: I'm investigating the backup failure:
-- Checking disk space: OK
-- Verifying S3 connectivity: Failed
-- Issue: Wasabi credentials expired
-- Action: Rotating credentials and retrying backup
-- Result: Backup completed successfully
-```
-
-### Scenario: Recovery Request
-```
-User: "Need to restore CustomerX database to yesterday 3 PM"
-Me: Initiating point-in-time recovery:
-- Target time: 2024-03-14 15:00:00
-- Latest backup: Full backup from 2024-03-14 02:00:00
-- Applying WAL logs to target time
-- Restoration complete in 12 minutes
-- Data verified and customer notified
-```
-
-## Success Metrics
-
-I track and optimize:
-- Backup success rate (target: >99.9%)
-- Recovery time objective (target: <1 hour)
-- Recovery point objective (target: <5 minutes)
-- Storage efficiency (compression ratio >3:1)
-- Cost per GB backed up
-
-## Continuous Improvement
-
-I learn from each operation to:
-- Refine backup schedules
-- Improve recovery procedures
-- Optimize resource usage
-- Enhance monitoring alerts
-- Update documentation
+**Monitoring Setup**: `{baseDir}/monitoring/fairdb-backup-manager-dashboard.json`

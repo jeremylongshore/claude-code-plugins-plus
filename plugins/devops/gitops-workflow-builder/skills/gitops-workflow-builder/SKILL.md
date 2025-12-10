@@ -1,59 +1,107 @@
 ---
-description: This skill enables claude to construct gitops workflows using argocd
-  and flux. it is designed to generate production-ready configurations, implement
-  best practices, and ensure a security-first approach for kubernetes deployments.
-  use this skill wh...
+description: Use when constructing GitOps workflows using ArgoCD or Flux. Trigger with phrases like "create GitOps workflow", "setup ArgoCD", "configure Flux", or "automate Kubernetes deployments". Generates production-ready configurations, implements best practices, and ensures security-first approach for continuous deployment.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(kubectl:*)
+- Bash(git:*)
 name: building-gitops-workflows
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to create GitOps workflows, automating application deployments and infrastructure management through Git repositories. It provides production-ready configurations for both ArgoCD and Flux, ensuring best practices and a secure approach.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Kubernetes cluster is accessible and kubectl is configured
+- Git repository is available for GitOps source
+- ArgoCD or Flux is installed on the cluster (or ready to install)
+- Appropriate RBAC permissions for GitOps operator
+- Network connectivity between cluster and Git repository
 
-1. **Requirement Gathering**: Claude analyzes the user's request to understand the desired GitOps setup, including the choice of ArgoCD or Flux, target Kubernetes cluster, and application requirements.
-2. **Configuration Generation**: Based on the gathered requirements, Claude generates the necessary configuration files, such as ArgoCD Application manifests or Flux Kustomization files.
-3. **Code Snippet Creation**: Claude creates code snippets for setting up the GitOps repository structure and deploying the initial configurations to the Kubernetes cluster.
+## Instructions
 
-## When to Use This Skill
+1. **Select GitOps Tool**: Determine whether to use ArgoCD or Flux based on requirements
+2. **Define Application Structure**: Establish repository layout with environment separation (dev/staging/prod)
+3. **Generate Manifests**: Create Application/Kustomization files pointing to Git sources
+4. **Configure Sync Policy**: Set automated or manual sync with self-heal and prune options
+5. **Implement RBAC**: Define service accounts and role bindings for GitOps operator
+6. **Set Up Monitoring**: Configure notifications and health checks for deployments
+7. **Validate Configuration**: Test sync behavior and verify reconciliation loops
 
-This skill activates when you need to:
-- Create a new GitOps workflow using ArgoCD or Flux.
-- Automate application deployments to a Kubernetes cluster using GitOps principles.
-- Generate production-ready configurations for GitOps deployments.
+## Output
 
-## Examples
+Generates GitOps workflow configurations including:
 
-### Example 1: Setting up ArgoCD for a new application
+**ArgoCD Application Manifest:**
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-name
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/org/repo
+    path: manifests/prod
+    targetRevision: main
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: production
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+```
 
-User request: "Create an ArgoCD workflow to deploy a new application from a Git repository to my Kubernetes cluster."
+**Flux Kustomization:**
+```yaml
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: app-name
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./manifests/prod
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: app-repo
+```
 
-The skill will:
-1. Generate an ArgoCD Application manifest that points to the application's Git repository.
-2. Provide instructions on how to deploy the ArgoCD Application to the Kubernetes cluster.
+## Error Handling
 
-### Example 2: Configuring FluxCD for infrastructure management
+Common issues and solutions:
 
-User request: "Set up FluxCD to manage my Kubernetes infrastructure configurations stored in a Git repository."
+**Sync Failures**
+- Error: "ComparisonError: Failed to load target state"
+- Solution: Verify Git repository URL, credentials, and target path exist
 
-The skill will:
-1. Generate Flux Kustomization files that define the desired state of the Kubernetes infrastructure.
-2. Provide instructions on how to install FluxCD and configure it to synchronize with the Git repository.
+**RBAC Permissions**
+- Error: "User cannot create resource in API group"
+- Solution: Grant GitOps service account appropriate cluster roles
 
-## Best Practices
+**Out of Sync State**
+- Warning: "Application is OutOfSync"
+- Solution: Enable automated sync or manually sync via UI/CLI
 
-- **Repository Structure**: Organize your GitOps repository with clear separation of concerns, such as environments (dev, staging, prod) and application components.
-- **Declarative Configuration**: Define all application and infrastructure configurations declaratively in Git, using tools like Kustomize or Helm.
-- **Automated Reconciliation**: Ensure that your GitOps tool continuously reconciles the desired state in Git with the actual state in the Kubernetes cluster.
+**Git Authentication**
+- Error: "Authentication failed for repository"
+- Solution: Configure SSH keys or access tokens in {baseDir}/.git/config
 
-## Integration
+**Resource Conflicts**
+- Error: "Resource already exists and is not managed by GitOps"
+- Solution: Import existing resources or remove conflicting manual deployments
 
-This skill can be used in conjunction with other skills that manage Kubernetes resources, such as creating deployments, services, and ingress controllers. It also integrates with version control systems like Git to store and manage the GitOps configurations.
+## Resources
+
+- ArgoCD documentation: https://argo-cd.readthedocs.io/
+- Flux documentation: https://fluxcd.io/docs/
+- GitOps principles and patterns guide
+- Kubernetes manifest best practices
+- Repository structure templates in {baseDir}/gitops-examples/

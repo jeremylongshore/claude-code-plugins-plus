@@ -1,16 +1,15 @@
 ---
-description: This skill enables claude to define and track service level agreements
-  (slas), service level indicators (slis), and service level objectives (slos) for
-  improved service reliability. it is triggered when the user needs to establish,
-  monitor, or ana...
+name: tracking-service-reliability
+description: Define and track SLAs, SLIs, and SLOs for service reliability including availability, latency, and error rates. Use when establishing reliability targets or monitoring service health. Trigger with phrases like "define SLOs", "track SLI metrics", or "calculate error budget".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: tracking-service-reliability
+- Bash(monitoring:*)
+- Bash(metrics:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with monitoring tools to automatically collect SLI data and track performance against SLOs. It can also be used in conjunction with alerting systems to trigger notifications when SLO violations occur.
+
+## Prerequisites
+
+- SLI definitions stored in {baseDir}/slos/sli-definitions.yaml
+- Access to monitoring and metrics systems
+- Historical performance data for baseline
+- Business requirements for service reliability
+
+## Instructions
+
+1. Define Service Level Indicators (availability, latency, error rate, throughput)
+2. Set Service Level Objectives with target values (e.g., 99.9% availability)
+3. Formalize Service Level Agreements with customer commitments
+4. Configure automated SLI data collection
+5. Calculate error budgets based on SLOs
+6. Track performance and alert on SLO violations
+
+## Output
+
+- SLI/SLO/SLA definition documents
+- Real-time SLI metric dashboards
+- Error budget calculations and burn rate
+- SLO compliance reports
+- Alerting configurations for violations
+
+## Error Handling
+
+If SLI/SLO tracking fails:
+- Verify SLI definition completeness
+- Check metric collection infrastructure
+- Validate data accuracy and granularity
+- Ensure alerting system connectivity
+- Review error budget calculation logic
+
+## Resources
+
+- Google SRE book on SLIs and SLOs
+- Error budget implementation guides
+- Service reliability engineering practices
+- SLO definition templates and examples

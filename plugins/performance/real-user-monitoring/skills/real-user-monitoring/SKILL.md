@@ -1,16 +1,15 @@
 ---
-description: This skill assists in implementing real user monitoring (rum) to capture
-  and analyze actual user performance data. it helps set up tracking for key metrics
-  like core web vitals, page load times, and custom performance events. use this skill
-  when t...
+name: implementing-real-user-monitoring
+description: Implement Real User Monitoring (RUM) to capture actual user performance data including Core Web Vitals and page load times. Use when setting up user experience monitoring or tracking custom performance events. Trigger with phrases like "setup RUM", "track Core Web Vitals", or "monitor real user performance".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: implementing-real-user-monitoring
+- Bash(npm:*)
+- Bash(rum:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other monitoring and analytics tools to provide a comprehensive view of application performance.
+
+## Prerequisites
+
+- Access to web application frontend code in {baseDir}/
+- RUM platform account (Google Analytics, Datadog, New Relic)
+- Understanding of Core Web Vitals metrics
+- Privacy compliance documentation (GDPR, CCPA)
+
+## Instructions
+
+1. Select appropriate RUM platform for requirements
+2. Define key metrics to track (Core Web Vitals, custom events)
+3. Implement tracking code in application frontend
+4. Configure data sampling and privacy settings
+5. Set up dashboards for metric visualization
+6. Define alerts for performance degradation
+
+## Output
+
+- RUM implementation code snippets
+- Platform configuration documentation
+- Custom event tracking examples
+- Dashboard definitions for key metrics
+- Privacy compliance checklist
+
+## Error Handling
+
+If RUM implementation fails:
+- Verify platform API credentials
+- Check JavaScript bundle integration
+- Validate metric collection permissions
+- Review privacy consent configuration
+- Ensure network connectivity for data transmission
+
+## Resources
+
+- Core Web Vitals measurement guide
+- RUM platform documentation
+- Privacy compliance best practices
+- Performance monitoring strategies

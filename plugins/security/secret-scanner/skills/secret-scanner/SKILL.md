@@ -1,15 +1,16 @@
 ---
-description: This skill helps you scan your codebase for exposed secrets and credentials.
-  it uses pattern matching and entropy analysis to identify potential security vulnerabilities
-  such as api keys, passwords, and private keys. use this skill when you want t...
+name: scanning-for-secrets
+description: Scan for exposed secrets, API keys, and credentials in code. Use when auditing for secret leaks. Trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: scanning-for-secrets
+- Bash(security:*)
+- Bash(scan:*)
+- Bash(audit:*)
 license: MIT
 ---
 ## Overview
@@ -59,3 +60,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other security tools, such as vulnerability scanners, to provide a comprehensive security assessment of your codebase. It can also be combined with notification plugins to alert you when new secrets are detected.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

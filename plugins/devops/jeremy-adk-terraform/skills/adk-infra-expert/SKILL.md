@@ -1,62 +1,63 @@
 ---
-description: 'Terraform infrastructure specialist for vertex ai adk agent engine production
-  deployments. provisions agent engine runtime, code execution sandbox, memory bank,
-  vpc-sc, iam, and secure multi-agent infrastructure. triggers: "deploy adk terraform",
-  ...'
+description: Use when provisioning Vertex AI ADK infrastructure with Terraform. Trigger with phrases like "deploy ADK terraform", "agent engine infrastructure", "provision ADK agent", "vertex AI agent terraform", or "code execution sandbox terraform". Provisions Agent Engine runtime, 14-day code execution sandbox, Memory Bank, VPC Service Controls, IAM roles, and secure multi-agent infrastructure.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(terraform:*)
+- Bash(gcloud:*)
 name: adk-infra-expert
 license: MIT
+version: 1.0.0
 ---
-## What This Skill Does
 
-Expert in provisioning production Vertex AI ADK infrastructure with Agent Engine, Code Execution Sandbox (14-day state), Memory Bank, VPC Service Controls, and enterprise security.
+## Prerequisites
 
-## When This Skill Activates
+Before using this skill, ensure:
+- Google Cloud project with billing enabled
+- Terraform 1.0+ installed
+- gcloud CLI authenticated with appropriate permissions
+- Vertex AI API enabled in target project
+- VPC Service Controls access policy created (for enterprise)
+- Understanding of Agent Engine architecture and requirements
 
-Triggers: "adk terraform deployment", "agent engine infrastructure", "provision adk agent", "vertex ai agent terraform", "code execution sandbox terraform"
+## Instructions
 
-## Core Terraform Modules
+1. **Initialize Terraform**: Set up backend for remote state storage
+2. **Configure Variables**: Define project_id, region, agent configuration
+3. **Provision VPC**: Create network infrastructure with Private Service Connect
+4. **Set Up IAM**: Create service accounts with least privilege roles
+5. **Deploy Agent Engine**: Configure runtime with code execution and memory bank
+6. **Enable VPC-SC**: Apply service perimeter for data exfiltration protection
+7. **Configure Monitoring**: Set up Cloud Monitoring dashboards and alerts
+8. **Validate Deployment**: Test agent endpoint and verify all components
 
-### Agent Engine Deployment
+## Output
 
+**Agent Engine Deployment:**
 ```hcl
+# {baseDir}/terraform/main.tf
 resource "google_vertex_ai_agent_runtime" "adk_agent" {
   project  = var.project_id
   location = var.region
-
   display_name = "adk-production-agent"
 
   agent_config {
-    model         = "gemini-2.5-flash"
-
+    model = "gemini-2.5-flash"
     code_execution {
-      enabled           = true
-      state_ttl_days    = 14
-      sandbox_type      = "SECURE_ISOLATED"
+      enabled = true
+      state_ttl_days = 14
+      sandbox_type = "SECURE_ISOLATED"
     }
-
     memory_bank {
       enabled = true
     }
-
-    tools = [
-      {
-        code_execution = {}
-      },
-      {
-        memory_bank = {}
-      }
-    ]
   }
 
   vpc_config {
-    vpc_network    = google_compute_network.agent_vpc.id
+    vpc_network = google_compute_network.agent_vpc.id
     private_service_connect {
       enabled = true
     }
@@ -64,12 +65,10 @@ resource "google_vertex_ai_agent_runtime" "adk_agent" {
 }
 ```
 
-### VPC Service Controls
-
+**VPC Service Controls:**
 ```hcl
 resource "google_access_context_manager_service_perimeter" "adk_perimeter" {
   parent = "accessPolicies/${var.access_policy_id}"
-  name   = "accessPolicies/${var.access_policy_id}/servicePerimeters/adk_perimeter"
   title  = "ADK Agent Engine Perimeter"
 
   status {
@@ -77,50 +76,49 @@ resource "google_access_context_manager_service_perimeter" "adk_perimeter" {
       "aiplatform.googleapis.com",
       "run.googleapis.com"
     ]
-
-    vpc_accessible_services {
-      enable_restriction = true
-      allowed_services   = [
-        "aiplatform.googleapis.com"
-      ]
-    }
   }
 }
 ```
 
-### IAM for Native Agent Identity
-
+**IAM Configuration:**
 ```hcl
-resource "google_project_iam_member" "agent_identity" {
-  project = var.project_id
-  role    = "roles/aiplatform.agentUser"
-  member  = "serviceAccount:${google_service_account.adk_agent.email}"
-}
-
 resource "google_service_account" "adk_agent" {
   account_id   = "adk-agent-sa"
   display_name = "ADK Agent Service Account"
 }
 
-# Least privilege for Code Execution
-resource "google_project_iam_member" "code_exec_permissions" {
-  for_each = toset([
-    "roles/compute.viewer",
-    "roles/container.viewer",
-    "roles/run.viewer"
-  ])
-
+resource "google_project_iam_member" "agent_identity" {
   project = var.project_id
-  role    = each.key
+  role    = "roles/aiplatform.agentUser"
   member  = "serviceAccount:${google_service_account.adk_agent.email}"
 }
 ```
 
-## Tool Permissions
+## Error Handling
 
-Read, Write, Edit, Grep, Glob, Bash - Enterprise infrastructure provisioning
+**Terraform State Lock**
+- Error: "Error acquiring the state lock"
+- Solution: Use `terraform force-unlock <lock-id>` or wait for lock expiry
 
-## References
+**API Not Enabled**
+- Error: "Vertex AI API has not been used"
+- Solution: Enable with `gcloud services enable aiplatform.googleapis.com`
+
+**VPC-SC Configuration**
+- Error: "Access denied by VPC Service Controls"
+- Solution: Add project to service perimeter or adjust ingress/egress policies
+
+**IAM Permission Denied**
+- Error: "does not have required permission"
+- Solution: Grant roles/owner temporarily to service account running Terraform
+
+**Resource Already Exists**
+- Error: "Resource already exists"
+- Solution: Import existing resource or use data source instead
+
+## Resources
 
 - Agent Engine: https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview
 - VPC-SC: https://cloud.google.com/vpc-service-controls/docs
+- Terraform Google Provider: https://registry.terraform.io/providers/hashicorp/google/latest
+- ADK Terraform examples in {baseDir}/examples/

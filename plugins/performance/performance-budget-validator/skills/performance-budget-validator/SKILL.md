@@ -1,16 +1,16 @@
 ---
-description: This skill enables claude to validate application performance against
-  defined budgets. it's useful for identifying performance regressions early in the
-  development lifecycle. the skill is triggered when the user mentions "performance
-  budget", "val...
+name: validating-performance-budgets
+description: Validate application performance against defined budgets to identify regressions early. Use when checking page load times, bundle sizes, or API response times against thresholds. Trigger with phrases like "validate performance budget", "check performance metrics", or "detect performance regression".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: validating-performance-budgets
+- Bash(lighthouse:*)
+- Bash(webpack:*)
+- Bash(performance:*)
 license: MIT
 ---
 ## Overview
@@ -59,3 +59,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other plugins that provide performance metrics, such as website speed test tools or API monitoring services. It can also be used in conjunction with alerting plugins to notify developers of performance budget violations.
+
+## Prerequisites
+
+- Performance budget definitions in {baseDir}/performance-budgets.json
+- Access to performance testing tools (Lighthouse, WebPageTest)
+- Build output directory for bundle analysis
+- Historical performance metrics for comparison
+
+## Instructions
+
+1. Load performance budget configuration
+2. Collect current performance metrics (load time, bundle size, API latency)
+3. Compare metrics against defined budget thresholds
+4. Identify budget violations and severity
+5. Generate detailed violation report
+6. Provide remediation recommendations
+
+## Output
+
+- Performance budget validation report
+- List of metrics exceeding budget thresholds
+- Comparison with previous measurements
+- Detailed breakdown by metric category
+- Actionable recommendations for fixes
+
+## Error Handling
+
+If budget validation fails:
+- Verify budget configuration file exists
+- Check performance testing tool availability
+- Validate metric collection permissions
+- Ensure network access to test endpoints
+- Review budget threshold definitions
+
+## Resources
+
+- Performance budget best practices
+- Lighthouse performance scoring guide
+- Bundle size optimization techniques
+- CI/CD integration patterns for performance testing

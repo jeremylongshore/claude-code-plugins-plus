@@ -1,59 +1,118 @@
 ---
-description: This skill deploys monitoring stacks, including prometheus, grafana,
-  and datadog. it is used when the user needs to set up or configure monitoring infrastructure
-  for applications or systems. the skill generates production-ready configurations,
-  imp...
+description: Use when deploying monitoring stacks including Prometheus, Grafana, and Datadog. Trigger with phrases like "deploy monitoring stack", "setup prometheus", "configure grafana", or "install datadog agent". Generates production-ready configurations with metric collection, visualization dashboards, and alerting rules.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(docker:*)
+- Bash(kubectl:*)
 name: deploying-monitoring-stacks
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to automate the deployment of comprehensive monitoring solutions. It simplifies the setup of Prometheus, Grafana, and Datadog, ensuring best practices and production-ready configurations.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Target infrastructure is identified (Kubernetes, Docker, bare metal)
+- Metric endpoints are accessible from monitoring platform
+- Storage backend is configured for time-series data
+- Alert notification channels are defined (email, Slack, PagerDuty)
+- Resource requirements are calculated based on scale
 
-1. **Configuration Gathering**: Claude gathers the specific requirements for the monitoring stack, including the desired platform and tools.
-2. **Stack Generation**: Based on the requirements, Claude generates the necessary configuration files and deployment scripts for the selected monitoring stack.
-3. **Deployment Instructions**: Claude provides clear, step-by-step instructions for deploying the generated configuration to the target environment.
+## Instructions
 
-## When to Use This Skill
+1. **Select Platform**: Choose Prometheus/Grafana, Datadog, or hybrid approach
+2. **Deploy Collectors**: Install exporters and agents on monitored systems
+3. **Configure Scraping**: Define metric collection endpoints and intervals
+4. **Set Up Storage**: Configure retention policies and data compaction
+5. **Create Dashboards**: Build visualization panels for key metrics
+6. **Define Alerts**: Create alerting rules with appropriate thresholds
+7. **Test Monitoring**: Verify metrics flow and alert triggering
 
-This skill activates when you need to:
-- Deploy a new monitoring stack (Prometheus, Grafana, Datadog).
-- Configure an existing monitoring stack.
-- Generate production-ready monitoring configurations.
+## Output
 
-## Examples
+**Prometheus + Grafana (Kubernetes):**
+```yaml
+# {baseDir}/monitoring/prometheus.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+    scrape_configs:
+      - job_name: 'kubernetes-pods'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: prometheus
+        image: prom/prometheus:latest
+        args:
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.retention.time=30d'
+        ports:
+        - containerPort: 9090
+```
 
-### Example 1: Setting up Prometheus and Grafana on Kubernetes
+**Grafana Dashboard Configuration:**
+```json
+{
+  "dashboard": {
+    "title": "Application Metrics",
+    "panels": [
+      {
+        "title": "CPU Usage",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(container_cpu_usage_seconds_total[5m])"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
 
-User request: "I need to set up Prometheus and Grafana on my Kubernetes cluster to monitor my application."
+## Error Handling
 
-The skill will:
-1. Generate Kubernetes manifests for deploying Prometheus and Grafana.
-2. Provide instructions for configuring Prometheus to scrape application metrics and Grafana to visualize them.
+**Metrics Not Appearing**
+- Error: "No data points"
+- Solution: Verify scrape targets are accessible and returning metrics
 
-### Example 2: Deploying Datadog Agent
+**High Cardinality**
+- Error: "Too many time series"
+- Solution: Reduce label combinations or increase Prometheus resources
 
-User request: "Deploy Datadog agent to monitor our servers."
+**Alert Not Firing**
+- Error: "Alert condition met but no notification"
+- Solution: Check Alertmanager configuration and notification channels
 
-The skill will:
-1. Generate configuration files for the Datadog agent based on the target environment.
-2. Provide instructions for installing and configuring the Datadog agent on the specified servers.
+**Dashboard Load Failure**
+- Error: "Failed to load dashboard"
+- Solution: Verify Grafana datasource configuration and permissions
 
-## Best Practices
+## Resources
 
-- **Security**: Always follow security best practices when deploying monitoring stacks, including using secure credentials and limiting access to sensitive data.
-- **Scalability**: Design your monitoring stack to be scalable to handle increasing data volumes and traffic.
-- **Documentation**: Thoroughly document your monitoring setup, including configuration details and deployment procedures.
-
-## Integration
-
-This skill works seamlessly with other Claude Code skills for infrastructure provisioning and application deployment. It can be integrated into automated CI/CD pipelines for continuous monitoring.
+- Prometheus documentation: https://prometheus.io/docs/
+- Grafana documentation: https://grafana.com/docs/
+- Example dashboards in {baseDir}/monitoring-examples/

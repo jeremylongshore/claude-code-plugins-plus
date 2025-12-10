@@ -1,61 +1,122 @@
 ---
-description: This skill uses the stored-procedure-generator plugin to create production-ready
-  stored procedures, functions, triggers, and custom database logic. it supports postgresql,
-  mysql, and sql server. use this skill when the user asks to "generate store...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-stored-procedures
+description: |
+  Use when you need to work with stored procedure generation.
+  This skill provides stored procedure code generation with comprehensive guidance and automation.
+  Trigger with phrases like "generate stored procedures", "create database functions",
+  or "write SQL procedures".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to generate efficient, production-ready stored procedures, functions, and triggers for various database systems. It helps implement complex business logic, enforce data integrity, and optimize database performance directly within the database.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Identify Requirements**: Claude analyzes the user's request to understand the desired functionality, database system, and any specific constraints.
-2. **Generate Code**: Claude uses the stored-procedure-generator plugin to create the appropriate SQL code for the stored procedure, function, or trigger.
-3. **Present Code**: Claude presents the generated SQL code to the user for review and deployment.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Implement complex business rules within a database.
-- Enforce data integrity constraints beyond simple foreign keys.
-- Optimize database performance by minimizing network round trips.
-- Implement atomic transactions for data consistency.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Generating a Stored Procedure for Order Processing
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "generate stored procedure to process orders in PostgreSQL"
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the request and determine the need for a PostgreSQL stored procedure for order processing.
-2. Generate the SQL code for a stored procedure that handles order creation, validation, and updates.
-3. Present the generated SQL code to the user.
+## Output
 
-### Example 2: Creating a Trigger for Auditing Data Changes
+This skill produces:
 
-User request: "create a trigger in MySQL to audit changes to the 'products' table"
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the request and determine the need for a MySQL trigger on the 'products' table.
-2. Generate the SQL code for a trigger that logs changes (inserts, updates, deletes) to a separate audit table.
-3. Present the generated SQL code to the user.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Database Choice**: Specify the target database (PostgreSQL, MySQL, SQL Server) for optimal code generation.
-- **Detailed Requirements**: Provide clear and detailed requirements for the stored procedure, function, or trigger to ensure accurate code generation.
-- **Security Considerations**: Review the generated code for potential security vulnerabilities, such as SQL injection, before deployment.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other plugins for tasks such as database schema analysis or deployment automation, allowing for a complete end-to-end database development workflow.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/stored-procedure-generator/`
+
+**Documentation and Guides**: `{baseDir}/docs/stored-procedure-generator/`
+
+**Example Scripts and Code**: `{baseDir}/examples/stored-procedure-generator/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/stored-procedure-generator-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/stored-procedure-generator-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/stored-procedure-generator-dashboard.json`

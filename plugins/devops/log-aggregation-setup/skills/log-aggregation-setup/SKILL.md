@@ -1,59 +1,117 @@
 ---
-description: This skill sets up log aggregation solutions using elk (elasticsearch,
-  logstash, kibana), loki, or splunk. it generates production-ready configurations
-  and setup code based on specific requirements and infrastructure. use this skill
-  when the user ...
+description: Use when setting up log aggregation solutions using ELK, Loki, or Splunk. Trigger with phrases like "setup log aggregation", "deploy ELK stack", "configure Loki", or "install Splunk". Generates production-ready configurations for data ingestion, processing, storage, and visualization with proper security and scalability.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(docker:*)
+- Bash(kubectl:*)
 name: setting-up-log-aggregation
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill simplifies the deployment and configuration of log aggregation systems. It automates the process of setting up ELK, Loki, or Splunk, providing production-ready configurations tailored to your environment.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Target infrastructure is identified (Kubernetes, Docker, VMs)
+- Storage requirements are calculated based on log volume
+- Network connectivity between log sources and aggregation platform
+- Authentication mechanism is defined (LDAP, OAuth, basic auth)
+- Resource allocation planned (CPU, memory, disk)
 
-1. **Requirement Gathering**: The skill identifies the user's specific requirements, including the desired log aggregation platform (ELK, Loki, or Splunk), infrastructure details, and security considerations.
-2. **Configuration Generation**: Based on the gathered requirements, the skill generates the necessary configuration files for the chosen platform. This includes configurations for data ingestion, processing, storage, and visualization.
-3. **Setup Code Generation**: The skill provides the setup code needed to deploy and configure the log aggregation solution on the target infrastructure. This might include scripts, Docker Compose files, or other deployment artifacts.
+## Instructions
 
-## When to Use This Skill
+1. **Select Platform**: Choose ELK, Loki, Grafana Loki, or Splunk
+2. **Configure Ingestion**: Set up log shippers (Filebeat, Promtail, Fluentd)
+3. **Define Storage**: Configure retention policies and index lifecycle
+4. **Set Up Processing**: Create parsing rules and field extractions
+5. **Deploy Visualization**: Configure Kibana/Grafana dashboards
+6. **Implement Security**: Enable authentication, encryption, and RBAC
+7. **Test Pipeline**: Verify logs flow from sources to visualization
 
-This skill activates when you need to:
-- Deploy a new log aggregation system.
-- Configure an existing log aggregation system.
-- Migrate from one log aggregation system to another.
+## Output
 
-## Examples
+**ELK Stack (Docker Compose):**
+```yaml
+# {baseDir}/elk/docker-compose.yml
+version: '3.8'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=true
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
 
-### Example 1: Deploying an ELK Stack
+  logstash:
+    image: docker.elastic.co/logstash/logstash:8.11.0
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
+    depends_on:
+      - elasticsearch
 
-User request: "Set up an ELK stack for my Kubernetes cluster to aggregate application logs."
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.11.0
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+```
 
-The skill will:
-1. Generate Elasticsearch, Logstash, and Kibana configuration files optimized for Kubernetes.
-2. Provide a Docker Compose file or Kubernetes manifests for deploying the ELK stack.
+**Loki Configuration:**
+```yaml
+# {baseDir}/loki/loki-config.yaml
+auth_enabled: false
 
-### Example 2: Configuring Loki for a Docker Swarm
+server:
+  http_listen_port: 3100
 
-User request: "Configure Loki to aggregate logs from my Docker Swarm environment."
+ingester:
+  lifecycler:
+    ring:
+      kvstore:
+        store: inmemory
+      replication_factor: 1
+  chunk_idle_period: 5m
+  chunk_retain_period: 30s
 
-The skill will:
-1. Generate a Loki configuration file optimized for Docker Swarm.
-2. Provide instructions for deploying Loki as a service within the Swarm.
+schema_config:
+  configs:
+    - from: 2024-01-01
+      store: boltdb-shipper
+      object_store: filesystem
+      schema: v11
+      index:
+        prefix: index_
+        period: 24h
+```
 
-## Best Practices
+## Error Handling
 
-- **Security**: Ensure that all generated configurations adhere to security best practices, including proper authentication and authorization mechanisms.
-- **Scalability**: Design the log aggregation system to be scalable, allowing it to handle increasing log volumes over time.
-- **Monitoring**: Implement monitoring for the log aggregation system itself to ensure its health and performance.
+**Out of Memory**
+- Error: "Elasticsearch heap space exhausted"
+- Solution: Increase heap size in elasticsearch.yml or add more nodes
 
-## Integration
+**Connection Refused**
+- Error: "Cannot connect to Elasticsearch"
+- Solution: Verify network connectivity and firewall rules
 
-This skill can integrate with other deployment and infrastructure management tools in the Claude Code ecosystem to automate the entire deployment process. It can also work with security analysis tools to ensure log data is securely handled.
+**Index Creation Failed**
+- Error: "Failed to create index"
+- Solution: Check disk space and index template configuration
+
+**Log Parsing Errors**
+- Error: "Failed to parse log line"
+- Solution: Review grok patterns or JSON parsing configuration
+
+## Resources
+
+- ELK Stack guide: https://www.elastic.co/guide/
+- Loki documentation: https://grafana.com/docs/loki/
+- Example configurations in {baseDir}/log-aggregation-examples/

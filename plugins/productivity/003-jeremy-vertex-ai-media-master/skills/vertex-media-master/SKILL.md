@@ -1,16 +1,15 @@
 ---
-description: Automatic activation for all google vertex ai multimodal operations -
-  video processing, audio generation, image creation, and marketing campaigns. **trigger
-  phrases:** - "vertex ai", "gemini multimodal", "process video", "generate audio",
-  "create ...
+name: Vertex AI Media Master
+description: Automatic activation for all google vertex ai multimodal operations - Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: Vertex AI Media Master
+- Bash(general:*)
+- Bash(util:*)
 license: MIT
 ---
 # Vertex AI Media Master - Comprehensive Multimodal AI Operations
@@ -275,3 +274,43 @@ This skill automatically activates when you mention:
 ---
 
 **This skill makes Jeremy a Vertex AI multimodal expert with instant access to video processing, audio generation, image creation, and marketing automation capabilities.**
+
+## Prerequisites
+
+- Access to project files in {baseDir}/
+- Required tools and dependencies installed
+- Understanding of skill functionality
+- Permissions for file operations
+
+## Instructions
+
+1. Identify skill activation trigger and context
+2. Gather required inputs and parameters
+3. Execute skill workflow systematically
+4. Validate outputs meet requirements
+5. Handle errors and edge cases appropriately
+6. Provide clear results and next steps
+
+## Output
+
+- Primary deliverables based on skill purpose
+- Status indicators and success metrics
+- Generated files or configurations
+- Reports and summaries as applicable
+- Recommendations for follow-up actions
+
+## Error Handling
+
+If execution fails:
+- Verify prerequisites are met
+- Check input parameters and formats
+- Validate file paths and permissions
+- Review error messages for root cause
+- Consult documentation for troubleshooting
+
+## Resources
+
+- Official documentation for related tools
+- Best practices guides
+- Example use cases and templates
+- Community forums and support channels

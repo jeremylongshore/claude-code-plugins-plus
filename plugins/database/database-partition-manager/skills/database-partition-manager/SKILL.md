@@ -1,63 +1,122 @@
 ---
-description: This skill enables claude to design, implement, and manage table partitioning
-  strategies for large databases. it is triggered when the user needs to optimize
-  query performance, manage time-series data, or reduce maintenance windows for tables
-  exce...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: managing-database-partitions
+description: |
+  Use when you need to work with database partitioning.
+  This skill provides table partitioning strategies with comprehensive guidance and automation.
+  Trigger with phrases like "partition tables", "implement partitioning",
+  or "optimize large tables".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill automates the design, implementation, and management of database table partitioning strategies. It helps optimize query performance, manage time-series data, and reduce maintenance windows for massive datasets.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Analyze Requirements**: Claude analyzes the user's request to understand the specific partitioning needs, including data size, query patterns, and maintenance requirements.
-2. **Design Partitioning Strategy**: Based on the analysis, Claude designs an appropriate partitioning strategy (e.g., range, list, hash) and determines the optimal partition key.
-3. **Implement Partitioning**: Claude generates the necessary SQL scripts or configuration files to implement the partitioning strategy on the target database.
-4. **Optimize Queries**: Claude provides guidance on optimizing queries to take advantage of the partitioning scheme, including suggestions for partition pruning and index creation.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Manage tables exceeding 100GB with slow query performance.
-- Implement time-series data archival strategies (IoT, logs, metrics).
-- Optimize queries that filter by date ranges or specific values.
-- Reduce database maintenance windows.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Optimizing Time-Series Data
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Create database partitions for my IoT sensor data to improve query performance."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the data schema and query patterns for the IoT sensor data.
-2. Design a range-based partitioning strategy using the timestamp column as the partition key.
-3. Generate SQL scripts to create partitioned tables and indexes.
+## Output
 
-### Example 2: Managing Large Order History Table
+This skill produces:
 
-User request: "Implement table partitioning for my order history table to reduce maintenance window."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the size and growth rate of the order history table.
-2. Design a list-based partitioning strategy based on order status or region.
-3. Generate SQL scripts to create partitioned tables and migrate existing data.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Partition Key Selection**: Choose a partition key that is frequently used in queries and evenly distributes data across partitions.
-- **Partition Size**: Determine the optimal partition size based on query patterns and storage capacity.
-- **Maintenance**: Implement automated partition maintenance tasks, such as creating new partitions and archiving old partitions.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other database management tools for monitoring partition performance and managing data lifecycle. It can also work with data migration tools to efficiently move data between partitions.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-partition-manager/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-partition-manager/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-partition-manager/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-partition-manager-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-partition-manager-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-partition-manager-dashboard.json`

@@ -1,58 +1,122 @@
 ---
-description: This skill configures auto-scaling policies for applications and infrastructure.
-  it generates production-ready configurations based on user requirements, implementing
-  best practices for scalability and security. use this skill when the user reques...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: configuring-auto-scaling-policies
+description: |
+  Use when you need to work with auto-scaling.
+  This skill provides auto-scaling configuration with comprehensive guidance and automation.
+  Trigger with phrases like "configure auto-scaling", "set up elastic scaling",
+  or "implement scaling".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to create and configure auto-scaling policies tailored to specific application and infrastructure needs. It streamlines the process of setting up dynamic resource allocation, ensuring optimal performance and resilience.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Requirement Gathering**: Claude analyzes the user's request to understand the specific auto-scaling requirements, including target metrics (CPU, memory, etc.), scaling thresholds, and desired platform.
-2. **Configuration Generation**: Based on the gathered requirements, Claude generates a production-ready auto-scaling configuration, incorporating best practices for security and scalability. This includes HPA configurations, scaling policies, and necessary infrastructure setup code.
-3. **Code Presentation**: Claude presents the generated configuration code to the user, ready for deployment.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Configure auto-scaling for a Kubernetes deployment.
-- Set up dynamic scaling policies based on CPU or memory utilization.
-- Implement high availability and fault tolerance through auto-scaling.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Scaling a Web Application
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "I need to configure auto-scaling for my web application in Kubernetes based on CPU utilization. Scale up when CPU usage exceeds 70%."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the request and identify the need for a Kubernetes HPA configuration.
-2. Generate an HPA configuration file that scales the web application based on CPU utilization, with a target threshold of 70%.
+## Output
 
-### Example 2: Scaling Infrastructure Based on Load
+This skill produces:
 
-User request: "Configure auto-scaling for my infrastructure to handle peak loads during business hours. Scale up based on the number of incoming requests."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the request and determine the need for infrastructure-level auto-scaling policies.
-2. Generate configuration code for scaling the infrastructure based on the number of incoming requests, considering peak load times.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Monitoring**: Ensure proper monitoring is in place to track the performance metrics used for auto-scaling decisions.
-- **Threshold Setting**: Carefully choose scaling thresholds to avoid excessive scaling or under-provisioning.
-- **Testing**: Thoroughly test the auto-scaling configuration to ensure it behaves as expected under various load conditions.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other DevOps plugins to automate the entire deployment pipeline, from code generation to infrastructure provisioning.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/auto-scaling-configurator/`
+
+**Documentation and Guides**: `{baseDir}/docs/auto-scaling-configurator/`
+
+**Example Scripts and Code**: `{baseDir}/examples/auto-scaling-configurator/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/auto-scaling-configurator-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/auto-scaling-configurator-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/auto-scaling-configurator-dashboard.json`

@@ -1,59 +1,152 @@
 ---
-description: This skill enables claude to generate comprehensive security audit reports.
-  it is designed to provide insights into an application or system's security posture,
-  compliance status, and recommended remediation steps. use this skill when the user
-  req...
+name: generating-security-audit-reports
+description: |
+  Generate comprehensive security audit reports for applications and systems.
+  Use when you need to assess security posture, identify vulnerabilities, evaluate compliance status, or create formal security documentation.
+  Trigger with phrases like "create security audit report", "generate security assessment", "audit security posture", or "PCI-DSS compliance report".
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: generating-security-audit-reports
+- Bash(security-scan:*, report-gen:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill allows Claude to create detailed security audit reports. It analyzes existing security data, identifies vulnerabilities, assesses compliance with industry standards, and suggests remediation steps. The generated reports can be used to improve an organization's security posture and meet compliance requirements.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Security scan data or logs are available in {baseDir}/security/
+- Access to application configuration files
+- Security tool outputs (e.g., vulnerability scanners, SAST/DAST results)
+- Compliance framework documentation (if applicable)
+- Write permissions for generating report files
 
-1. **Data Collection**: Claude gathers data from various security tools and sources.
-2. **Analysis**: The plugin analyzes the collected data to identify vulnerabilities and compliance issues.
-3. **Report Generation**: Claude compiles the findings into a comprehensive security audit report, including an executive summary, vulnerability details, compliance status, and remediation recommendations.
+## Instructions
 
-## When to Use This Skill
+### 1. Data Collection Phase
 
-This skill activates when you need to:
-- Generate a comprehensive security audit report.
-- Assess the security posture of an application or system.
-- Identify vulnerabilities and compliance issues.
+Gather security information from available sources:
+- Read vulnerability scan results
+- Analyze security configurations
+- Review access control policies
+- Check encryption implementations
+- Examine authentication mechanisms
 
-## Examples
+### 2. Analysis Phase
 
-### Example 1: Security Posture Assessment
+Process collected data to identify:
+- Critical vulnerabilities (CVSS scores, exploitability)
+- Security misconfigurations
+- Compliance gaps against standards (PCI-DSS, GDPR, HIPAA, SOC 2)
+- Access control weaknesses
+- Data protection issues
 
-User request: "Create a security audit report for our web application."
+### 3. Report Generation Phase
 
-The skill will:
-1. Analyze the web application's security data.
-2. Generate a report outlining vulnerabilities, compliance status, and remediation recommendations.
+Create structured audit report with:
+- Executive summary with risk overview
+- Detailed vulnerability findings with severity ratings
+- Compliance status matrix
+- Risk assessment and prioritization
+- Remediation recommendations with timelines
+- Technical appendices with evidence
 
-### Example 2: Compliance Audit
+### 4. Output Formatting
 
-User request: "/auditreport for PCI-DSS compliance"
+Generate report in requested format:
+- Markdown for version control
+- HTML for stakeholder review
+- JSON for integration with ticketing systems
+- PDF-ready structure for formal documentation
 
-The skill will:
-1. Analyze the current system configurations and security measures.
-2. Generate a report focused on PCI-DSS compliance, highlighting areas of non-compliance and recommended actions.
+## Output
 
-## Best Practices
+The skill produces:
 
-- **Clarity**: Provide specific details about the system or application you want to audit.
-- **Context**: Mention any relevant compliance standards (e.g., PCI-DSS, GDPR, HIPAA) to focus the audit.
-- **Review**: Always review the generated report for accuracy and completeness.
+**Primary Output**: Comprehensive security audit report saved to {baseDir}/reports/security-audit-YYYYMMDD.md
 
-## Integration
+**Report Structure**:
+```
+# Security Audit Report - [System Name]
+## Executive Summary
+- Overall risk rating
+- Critical findings count
+- Compliance status
 
-This skill can be integrated with other security tools and plugins to enhance data collection and analysis. It provides a central point for generating security audit reports from various sources.
+## Vulnerability Findings
+### Critical (CVSS 9.0+)
+- [CVE-XXXX-XXXX] Description
+- Impact assessment
+- Remediation steps
+
+### High (CVSS 7.0-8.9)
+[Similar structure]
+
+## Compliance Assessment
+- PCI-DSS: 85% compliant (gaps identified)
+- GDPR: 92% compliant
+- SOC 2: In progress
+
+## Remediation Plan
+Priority matrix with timelines
+
+## Technical Appendices
+Evidence and scan outputs
+```
+
+**Secondary Outputs**:
+- Vulnerability tracking JSON for issue systems
+- Executive summary slide deck outline
+- Remediation tracking checklist
+
+## Error Handling
+
+**Common Issues and Resolutions**:
+
+1. **Missing Scan Data**
+   - Error: "No security scan results found"
+   - Resolution: Specify alternate data sources or run preliminary scans
+   - Fallback: Generate report from configuration analysis only
+
+2. **Incomplete Compliance Framework**
+   - Error: "Cannot assess [STANDARD] compliance - requirements unavailable"
+   - Resolution: Request framework checklist or use general best practices
+   - Fallback: Note limitation in report with partial assessment
+
+3. **Access Denied to Configuration Files**
+   - Error: "Permission denied reading {baseDir}/config/"
+   - Resolution: Request elevated permissions or provide configuration exports
+   - Fallback: Generate report with available data, note gaps
+
+4. **Large Dataset Processing**
+   - Error: "Scan results exceed processing capacity"
+   - Resolution: Process in batches by severity or component
+   - Fallback: Focus on critical/high findings first
+
+## Resources
+
+**Security Standards References**:
+- OWASP Top 10: https://owasp.org/www-project-top-ten/
+- CWE Top 25: https://cwe.mitre.org/top25/
+- NIST Cybersecurity Framework: https://www.nist.gov/cyberframework
+
+**Compliance Frameworks**:
+- PCI-DSS Requirements: https://www.pcisecuritystandards.org/
+- GDPR Compliance Checklist: https://gdpr.eu/checklist/
+- HIPAA Security Rule: https://www.hhs.gov/hipaa/for-professionals/security/
+
+**Vulnerability Databases**:
+- National Vulnerability Database: https://nvd.nist.gov/
+- CVE Details: https://www.cvedetails.com/
+
+**Report Templates**:
+- Use {baseDir}/templates/security-audit-template.md if available
+- Default structure follows NIST SP 800-115 guidelines
+
+**Integration Points**:
+- Export findings to JIRA/GitHub Issues for tracking
+- Generate compliance evidence for SOC 2 audits
+- Link to SIEM/logging systems for evidence validation

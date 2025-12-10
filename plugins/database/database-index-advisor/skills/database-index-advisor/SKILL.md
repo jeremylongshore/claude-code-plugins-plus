@@ -1,61 +1,122 @@
 ---
-description: This skill uses the database-index-advisor plugin to analyze query patterns
-  and recommend optimal database indexes. it identifies missing indexes to improve
-  query performance and unused indexes that can be removed to save storage and improve
-  write...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: analyzing-database-indexes
+description: |
+  Use when you need to work with database indexing.
+  This skill provides index design and optimization with comprehensive guidance and automation.
+  Trigger with phrases like "create indexes", "optimize indexes",
+  or "improve query performance".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to analyze database workloads, identify suboptimal or missing indexes, and suggest improvements to enhance database performance. It leverages the database-index-advisor plugin to provide concrete recommendations for indexing strategies, including identifying unused indexes for removal.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Initiate Analysis**: The skill activates the database-index-advisor plugin.
-2. **Workload Analysis**: The plugin analyzes the database's query workload and existing index configurations.
-3. **Recommendation Generation**: The plugin identifies missing index opportunities and unused indexes, generating a report with suggested actions.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Optimize slow-running database queries.
-- Identify potential performance bottlenecks related to missing indexes.
-- Reclaim storage space by identifying and removing unused indexes.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Optimizing a Slow Query
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "My orders table query is running slowly. Can you help optimize it?"
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Activate the database-index-advisor plugin.
-2. Analyze the query patterns against the orders table.
-3. Recommend creating a specific index on the orders table to improve query performance.
+## Output
 
-### Example 2: Identifying Unused Indexes
+This skill produces:
 
-User request: "Can you help me identify and remove any unused indexes in my database?"
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Activate the database-index-advisor plugin.
-2. Analyze the existing indexes and their usage patterns.
-3. Generate a report listing unused indexes that can be safely removed.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Database Connection**: Ensure the database connection is properly configured for the plugin to access the database.
-- **Permissions**: Grant the plugin the necessary permissions to analyze query patterns and retrieve index information.
-- **Impact Assessment**: Review the recommended index changes and assess their potential impact on other queries before applying them.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other database management plugins to automate index creation and removal based on the advisor's recommendations. It also integrates with monitoring tools to track the performance impact of the applied index changes.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-index-advisor/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-index-advisor/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-index-advisor/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-index-advisor-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-index-advisor-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-index-advisor-dashboard.json`

@@ -1,16 +1,16 @@
 ---
-description: This skill enables claude to encrypt and decrypt data using various algorithms
-  provided by the encryption-tool plugin. it should be used when the user requests
-  to "encrypt data", "decrypt a file", "generate an encrypted file", or needs to secure
-  s...
+name: encrypting-and-decrypting-data
+description: Validate encryption implementations and cryptographic practices. Use when reviewing data security measures. Trigger with 'check encryption', 'validate crypto', or 'review security keys'.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: encrypting-and-decrypting-data
+- Bash(security:*)
+- Bash(scan:*)
+- Bash(audit:*)
 license: MIT
 ---
 ## Overview
@@ -60,3 +60,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other Claude Code plugins, such as file management tools, to automate the encryption and decryption of files during data processing workflows. It can also be combined with security auditing tools to ensure compliance with security policies.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

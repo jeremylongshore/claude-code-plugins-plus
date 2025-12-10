@@ -1,59 +1,115 @@
 ---
-description: This skill enables claude to manage kubernetes network policies and firewall
-  rules. it allows claude to generate configurations and setup code based on specific
-  requirements and infrastructure. use this skill when the user requests to create,
-  modi...
+description: Use when managing Kubernetes network policies and firewall rules. Trigger with phrases like "create network policy", "configure firewall rules", "restrict pod communication", or "setup ingress/egress rules". Generates Kubernetes NetworkPolicy manifests following least privilege and zero-trust principles.
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
+- Bash(kubectl:*)
 name: managing-network-policies
 license: MIT
+version: 1.0.0
 ---
-## Overview
 
-This skill empowers Claude to assist with Kubernetes network policy management. It simplifies the creation, modification, and analysis of network policies and firewall rules, ensuring secure and compliant network configurations within Kubernetes clusters.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Kubernetes cluster has network policy support enabled
+- Network plugin supports policies (Calico, Cilium, Weave)
+- Pod labels are properly defined for policy selectors
+- Understanding of application communication patterns
+- Namespace isolation strategy is defined
 
-1. **Receiving User Request**: Claude receives a user request related to Kubernetes network policies or firewall rules.
-2. **Invoking network-policy-manager**: Claude invokes the `network-policy-manager` plugin.
-3. **Generating Configuration**: The plugin generates the necessary configuration files based on the user's requirements and infrastructure details.
+## Instructions
 
-## When to Use This Skill
+1. **Identify Requirements**: Determine which pods need to communicate
+2. **Define Selectors**: Use pod/namespace labels for policy targeting
+3. **Configure Ingress**: Specify allowed incoming traffic sources and ports
+4. **Configure Egress**: Define allowed outgoing traffic destinations
+5. **Test Policies**: Verify connectivity works as expected
+6. **Monitor Denials**: Check for blocked traffic in network plugin logs
+7. **Iterate**: Refine policies based on application behavior
 
-This skill activates when you need to:
-- Create new Kubernetes network policies.
-- Modify existing network policies.
-- Analyze the impact of network policies on Kubernetes cluster security.
+## Output
 
-## Examples
+**Network Policy Examples:**
+```yaml
+# {baseDir}/network-policies/allow-frontend-to-backend.yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-frontend-to-backend
+  namespace: production
+spec:
+  podSelector:
+    matchLabels:
+      app: backend
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+      - podSelector:
+          matchLabels:
+            app: frontend
+      ports:
+      - protocol: TCP
+        port: 8080
+---
+# Deny all ingress by default
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-ingress
+  namespace: production
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+```
 
-### Example 1: Creating a New Network Policy
+**Egress Policy:**
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-api
+spec:
+  podSelector:
+    matchLabels:
+      app: api-client
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+      - namespaceSelector:
+          matchLabels:
+            name: external-services
+      ports:
+      - protocol: TCP
+        port: 443
+```
 
-User request: "Create a network policy that allows pods with the label app=frontend to access pods with the label app=backend on port 8080."
+## Error Handling
 
-The skill will:
-1. Invoke the `network-policy-manager` plugin.
-2. Generate a Kubernetes network policy YAML file that implements the requested access control.
+**Policy Not Applied**
+- Error: Traffic still blocked/allowed contrary to policy
+- Solution: Verify network plugin supports policies and policy is applied to correct namespace
 
-### Example 2: Modifying an Existing Network Policy
+**DNS Resolution Fails**
+- Error: Pods cannot resolve DNS after applying policy
+- Solution: Add egress rule allowing DNS traffic to kube-dns/coredns
 
-User request: "Modify the existing network policy 'allow-frontend-to-backend' to also allow access on port 8081."
+**No Communication After Policy**
+- Error: All traffic blocked unexpectedly
+- Solution: Check for default-deny policies and ensure explicit allow rules exist
 
-The skill will:
-1. Invoke the `network-policy-manager` plugin.
-2. Generate a modified Kubernetes network policy YAML file with the updated port configuration.
+**Label Mismatch**
+- Error: Policy not targeting intended pods
+- Solution: Verify pod labels match policy selectors using `kubectl get pods --show-labels`
 
-## Best Practices
+## Resources
 
-- **Security First**: Always prioritize the principle of least privilege when defining network policies.
-- **Regular Audits**: Regularly review and update network policies to adapt to evolving security needs.
-- **Testing**: Thoroughly test network policies in a non-production environment before deploying them to production.
-
-## Integration
-
-This skill integrates with other DevOps tools and plugins by generating standard Kubernetes YAML files, which can be applied using `kubectl` or integrated into CI/CD pipelines.
+- Kubernetes NetworkPolicy: https://kubernetes.io/docs/concepts/services-networking/network-policies/
+- Calico documentation: https://docs.projectcalico.org/
+- Example policies in {baseDir}/network-policy-examples/

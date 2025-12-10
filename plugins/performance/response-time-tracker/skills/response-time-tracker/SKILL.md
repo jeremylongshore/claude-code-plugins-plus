@@ -1,16 +1,15 @@
 ---
-description: This skill enables claude to track and optimize application response
-  times. it uses the response-time-tracker plugin to monitor api endpoints, database
-  queries, external service calls, frontend rendering, and background job execution.
-  the plugin c...
+name: tracking-application-response-times
+description: Track and optimize application response times across API endpoints, database queries, and service calls. Use when monitoring performance or identifying bottlenecks. Trigger with phrases like "track response times", "monitor API performance", or "analyze latency".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: tracking-application-response-times
+- Bash(monitoring:*)
+- Bash(metrics:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other monitoring and alerting tools to provide a comprehensive view of application performance. It can also be used in conjunction with optimization tools to automatically address identified bottlenecks.
+
+## Prerequisites
+
+- Access to application monitoring infrastructure
+- Response time data collection in {baseDir}/metrics/response-times/
+- APM tools or custom instrumentation
+- Performance SLO definitions
+
+## Instructions
+
+1. Configure monitoring for API endpoints and database queries
+2. Collect response time metrics (P50, P95, P99 percentiles)
+3. Analyze trends and identify performance degradation
+4. Compare against performance baselines and SLOs
+5. Identify bottlenecks and root causes
+6. Generate optimization recommendations
+
+## Output
+
+- Response time reports with percentile metrics
+- Performance trend visualizations
+- Bottleneck identification analysis
+- SLO compliance status
+- Optimization recommendations with priorities
+
+## Error Handling
+
+If response time tracking fails:
+- Verify monitoring agent installation
+- Check instrumentation configuration
+- Validate metric export endpoints
+- Ensure data storage availability
+- Review sampling configuration
+
+## Resources
+
+- APM tool documentation
+- Response time monitoring best practices
+- Percentile-based SLO definitions
+- Performance optimization guides

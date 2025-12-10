@@ -1,62 +1,122 @@
 ---
-description: This skill enables claude to design nosql data models. it activates when
-  the user requests assistance with nosql database design, including schema creation,
-  data modeling for mongodb or dynamodb, or defining document structures. use this
-  skill whe...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: modeling-nosql-data
+description: |
+  Use when you need to work with NoSQL data modeling.
+  This skill provides NoSQL database design with comprehensive guidance and automation.
+  Trigger with phrases like "model NoSQL data", "design document structure",
+  or "optimize NoSQL schema".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill facilitates the design of efficient NoSQL data models, providing guidance on schema creation, denormalization strategies, and query optimization for document and key-value databases. It helps users translate their data requirements into production-ready NoSQL implementations.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Identify Database Type**: Determines the target NoSQL database (e.g., MongoDB, DynamoDB).
-2. **Analyze Data Requirements**: Understands the data entities, attributes, and relationships.
-3. **Design Data Model**: Creates a NoSQL data model based on the identified database type and data requirements, considering embedding vs. referencing and access patterns.
-4. **Suggest Schema Definition**: Provides a schema definition or table structure based on the designed data model.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Design a new NoSQL database schema.
-- Optimize an existing NoSQL data model for performance.
-- Translate relational data models to NoSQL.
-- Choose appropriate sharding keys for a NoSQL database.
-- Generate MongoDB or DynamoDB schema definitions.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Designing a MongoDB Schema for an E-commerce Application
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Design a MongoDB schema for an e-commerce application, focusing on products and customers."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Analyze the data requirements for products and customers, considering attributes like product name, price, description, customer ID, name, and address.
-2. Design a MongoDB schema with embedded product reviews and customer order history, optimizing for common query patterns.
+## Output
 
-### Example 2: Creating a DynamoDB Table for a Social Media Platform
+This skill produces:
 
-User request: "Create a DynamoDB table for storing social media posts, considering high read and write throughput."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Analyze the data requirements for social media posts, considering attributes like user ID, timestamp, content, and likes.
-2. Design a DynamoDB table with appropriate primary and secondary indexes for efficient querying based on user ID and timestamp.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Denormalization**: Embed related data when reads are more frequent than writes.
-- **Access Patterns**: Optimize the data model for the most common query patterns.
-- **Sharding**: Choose sharding keys that distribute data evenly across shards.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other plugins for generating code based on the designed data model, such as generating MongoDB queries or DynamoDB API calls.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/nosql-data-modeler/`
+
+**Documentation and Guides**: `{baseDir}/docs/nosql-data-modeler/`
+
+**Example Scripts and Code**: `{baseDir}/examples/nosql-data-modeler/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/nosql-data-modeler-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/nosql-data-modeler-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/nosql-data-modeler-dashboard.json`

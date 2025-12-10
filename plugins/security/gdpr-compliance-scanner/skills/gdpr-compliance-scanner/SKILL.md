@@ -1,16 +1,16 @@
 ---
-description: This skill enables claude to scan applications and data systems for gdpr
-  compliance issues. it identifies potential violations related to data protection,
-  privacy rights, consent management, and other regulatory requirements. use this
-  skill when t...
+name: scanning-for-gdpr-compliance
+description: Scan for GDPR compliance issues in data handling and privacy practices. Use when ensuring EU data protection compliance. Trigger with 'scan GDPR compliance', 'check data privacy', or 'validate GDPR'.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: scanning-for-gdpr-compliance
+- Bash(security:*)
+- Bash(scan:*)
+- Bash(audit:*)
 license: MIT
 ---
 ## Overview
@@ -61,3 +61,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other security and compliance tools to provide a holistic view of an application's security posture. It can also be used in conjunction with code generation tools to automatically implement recommended changes and improve GDPR compliance.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

@@ -1,60 +1,122 @@
 ---
-description: This skill implements backup strategies for databases and applications.
-  it generates configuration files and setup code to ensure data protection and disaster
-  recovery. use this skill when the user requests to "implement backup strategy",
-  "configu...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: implementing-backup-strategies
+description: |
+  Use when you need to work with backup and recovery.
+  This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
+  Trigger with phrases like "create backups", "automate backups",
+  or "implement disaster recovery".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(tar:*, rsync:*, aws:s3:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to generate and implement robust backup strategies for databases and applications. It provides ready-to-use configurations and setup scripts, streamlining the process of data protection and disaster recovery.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Analyzing Requirements**: The skill analyzes the user's specific requirements, including database type, application architecture, and desired backup frequency.
-2. **Generating Configuration**: Based on the requirements, the skill generates optimized configuration files for the chosen backup solution.
-3. **Creating Setup Code**: The skill creates setup code (e.g., scripts, commands) to automate the backup process and ensure its consistency.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Implement a new backup strategy for a database or application.
-- Automate existing backup processes.
-- Configure backups for disaster recovery purposes.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Setting up daily backups for a PostgreSQL database.
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Implement daily backups for my PostgreSQL database named 'users_db' to an AWS S3 bucket."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate a `pg_dump` script configured to backup the 'users_db' database and upload it to the specified S3 bucket.
-2. Provide instructions for scheduling the script to run daily using `cron`.
+## Output
 
-### Example 2: Configuring application-level backups for a Dockerized application.
+This skill produces:
 
-User request: "Configure application-level backups for my Dockerized application. I want to backup the application's data directory every hour."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Generate a Docker Compose configuration that includes a volume for the application's data directory.
-2. Create a backup script to copy the volume's contents to a backup location.
-3. Provide instructions for scheduling the backup script using a Docker container and `cron`.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Security**: Always encrypt backup data, both in transit and at rest.
-- **Retention**: Implement a well-defined backup retention policy to manage storage costs and meet compliance requirements.
-- **Testing**: Regularly test backup and restore procedures to ensure their effectiveness.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other tools and plugins, such as infrastructure-as-code tools (e.g., Terraform, CloudFormation) to automate the deployment and configuration of backup infrastructure. It can also work with monitoring tools to provide alerts on backup failures.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/backup-strategy-implementor/`
+
+**Documentation and Guides**: `{baseDir}/docs/backup-strategy-implementor/`
+
+**Example Scripts and Code**: `{baseDir}/examples/backup-strategy-implementor/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/backup-strategy-implementor-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/backup-strategy-implementor-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/backup-strategy-implementor-dashboard.json`

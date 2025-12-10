@@ -1,16 +1,15 @@
 ---
-description: This skill automates the setup of synthetic monitoring for applications.
-  it allows claude to proactively track performance and availability by configuring
-  uptime, transaction, and api monitoring. use this skill when the user requests to
-  "set up sy...
+name: setting-up-synthetic-monitoring
+description: Setup synthetic monitoring for proactive performance tracking including uptime checks, transaction monitoring, and API health. Use when implementing availability monitoring or tracking critical user journeys. Trigger with phrases like "setup synthetic monitoring", "monitor uptime", or "configure health checks".
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: setting-up-synthetic-monitoring
+- Bash(curl:*)
+- Bash(monitoring:*)
 license: MIT
 ---
 ## Overview
@@ -57,3 +56,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other plugins for incident management and alerting, such as those that handle notifications via Slack or PagerDuty, allowing for automated incident response workflows based on synthetic monitoring results.
+
+## Prerequisites
+
+- Access to synthetic monitoring platform (Pingdom, Datadog, New Relic)
+- List of critical endpoints and user journeys in {baseDir}/monitoring/endpoints.yaml
+- Alerting infrastructure configuration
+- Geographic monitoring location requirements
+
+## Instructions
+
+1. Identify critical endpoints and user journeys to monitor
+2. Design monitoring scenarios (uptime, transactions, API checks)
+3. Configure monitoring frequency and locations
+4. Set up performance and availability thresholds
+5. Configure alerting for failures and degradation
+6. Create dashboards for monitoring visualization
+
+## Output
+
+- Synthetic monitoring configuration files
+- Uptime check definitions for endpoints
+- Transaction monitoring scripts
+- Alert rule configurations
+- Dashboard definitions for monitoring status
+
+## Error Handling
+
+If synthetic monitoring setup fails:
+- Verify monitoring platform credentials
+- Check endpoint accessibility from monitoring locations
+- Validate transaction script syntax
+- Ensure alert channel configuration
+- Review threshold definitions
+
+## Resources
+
+- Synthetic monitoring best practices
+- Uptime monitoring service documentation
+- Transaction monitoring script examples
+- Alert threshold tuning guides

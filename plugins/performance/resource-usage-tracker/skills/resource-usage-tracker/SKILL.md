@@ -1,14 +1,15 @@
 ---
-description: This skill enables claude to track and optimize resource usage across
-  an application stack. it is activated when the user requests insights into resource
-  consumption, performance bottlenecks, or cost optimization opportunities. the skill
-  uses the ...
+name: tracking-resource-usage
+description: Track and optimize resource usage across application stack including CPU, memory, disk, and network I/O. Use when identifying bottlenecks or optimizing costs. Trigger with phrases like "track resource usage", "monitor CPU and memory", or "optimize resource allocation".
+version: 1.0.0
 allowed-tools:
 - Read
-- Bash
+- Bash(top:*)
+- Bash(ps:*)
+- Bash(vmstat:*)
+- Bash(iostat:*)
 - Grep
 - Glob
-name: tracking-resource-usage
 license: MIT
 ---
 ## Overview
@@ -60,3 +61,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other monitoring and alerting tools to provide a comprehensive view of application performance. It can also be used in conjunction with deployment automation tools to automatically right-size instances based on resource usage patterns.
+
+## Prerequisites
+
+- Access to system monitoring tools (top, ps, vmstat, iostat)
+- Resource metrics collection infrastructure
+- Historical usage data in {baseDir}/metrics/resources/
+- Performance baseline definitions
+
+## Instructions
+
+1. Identify resources to track (CPU, memory, disk, network)
+2. Collect real-time metrics using system tools
+3. Analyze data for bottlenecks and patterns
+4. Compare against historical baselines
+5. Generate optimization recommendations
+6. Provide right-sizing and cost reduction strategies
+
+## Output
+
+- Resource usage reports with trends
+- Bottleneck identification and analysis
+- Right-sizing recommendations for instances
+- Cost optimization suggestions
+- Alert configurations for thresholds
+
+## Error Handling
+
+If resource tracking fails:
+- Verify system monitoring tool permissions
+- Check metrics collection daemon status
+- Validate data storage availability
+- Ensure network access to monitoring endpoints
+- Review baseline data completeness
+
+## Resources
+
+- System performance monitoring guides
+- Cloud resource optimization best practices
+- CPU and memory profiling techniques
+- Infrastructure cost optimization strategies

@@ -1,16 +1,16 @@
 ---
-description: This skill uses the pci-dss-validator plugin to assess codebases and
-  infrastructure configurations for compliance with the payment card industry data
-  security standard (pci dss). it identifies potential vulnerabilities and deviations
-  from pci dss ...
+name: validating-pci-dss-compliance
+description: Validate PCI-DSS compliance for payment card data security. Use when auditing payment systems. Trigger with 'validate PCI-DSS', 'check payment security', or 'audit card data'.
+version: 1.0.0
 allowed-tools:
 - Read
 - Write
 - Edit
 - Grep
 - Glob
-- Bash
-name: validating-pci-dss-compliance
+- Bash(security:*)
+- Bash(scan:*)
+- Bash(audit:*)
 license: MIT
 ---
 ## Overview
@@ -59,3 +59,43 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other security tools and plugins to provide a comprehensive security assessment. For example, it can be used in conjunction with static analysis tools to identify vulnerabilities in code before it is deployed. It can also be integrated with infrastructure-as-code tools to ensure that infrastructure is compliant with PCI DSS from the start.
+
+## Prerequisites
+
+- Access to codebase and configuration files in {baseDir}/
+- Security scanning tools installed as needed
+- Understanding of security standards and best practices
+- Permissions for security analysis operations
+
+## Instructions
+
+1. Identify security scan scope and targets
+2. Configure scanning parameters and thresholds
+3. Execute security analysis systematically
+4. Analyze findings for vulnerabilities and compliance gaps
+5. Prioritize issues by severity and impact
+6. Generate detailed security report with remediation steps
+
+## Output
+
+- Security scan results with vulnerability details
+- Compliance status reports by standard
+- Prioritized list of security issues by severity
+- Remediation recommendations with code examples
+- Executive summary for stakeholders
+
+## Error Handling
+
+If security scanning fails:
+- Verify tool installation and configuration
+- Check file and directory permissions
+- Validate scan target paths
+- Review tool-specific error messages
+- Ensure network access for dependency checks
+
+## Resources
+
+- Security standard documentation (OWASP, CWE, CVE)
+- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
+- Security scanning tool documentation
+- Vulnerability remediation best practices

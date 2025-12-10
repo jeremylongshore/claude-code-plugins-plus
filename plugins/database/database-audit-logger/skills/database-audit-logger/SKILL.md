@@ -1,62 +1,137 @@
 ---
-description: This skill helps implement database audit logging for tracking changes
-  and ensuring compliance. it is triggered when the user requests to "implement database
-  audit logging", "add audit trails", "track database changes", or mentions "audit_log"
-  in ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: implementing-database-audit-logging
+description: |
+  Use when you need to track database changes for compliance and security monitoring.
+  This skill implements audit logging using triggers, application-level logging, CDC, or native logs.
+  Trigger with phrases like "implement database audit logging", "add audit trails",
+  "track database changes", or "monitor database activity for compliance".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill automates the process of setting up database audit logging. It helps users choose an appropriate auditing strategy and provides a basic audit table schema. It simplifies the implementation of robust audit trails for compliance and debugging purposes.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Database credentials with CREATE TABLE and CREATE TRIGGER permissions
+- Understanding of compliance requirements (GDPR, HIPAA, SOX, PCI-DSS)
+- Sufficient storage for audit logs (estimate 10-30% of data size)
+- Decision on audit log retention period
+- Access to database documentation for table schemas
+- Monitoring tools configured for audit log analysis
 
-1. **Identify Request**: Detects user intent to implement database audit logging.
-2. **Present Audit Strategies**: Offers a selection of auditing strategies: Trigger-Based, Application-Level, CDC, and Database Logs.
-3. **Generate Audit Table Schema**: Provides a basic SQL schema for an audit log table.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Define Audit Requirements
+1. Identify tables requiring audit logging based on compliance needs
+2. Determine events to audit (INSERT, UPDATE, DELETE, SELECT for sensitive data)
+3. Define which columns contain sensitive data requiring audit
+4. Document retention requirements for audit logs
+5. Identify users/roles whose actions need auditing
 
-This skill activates when you need to:
-- Implement database audit logging for compliance requirements.
-- Track changes to specific database tables.
-- Debug data inconsistencies by reviewing historical changes.
-- Securely monitor database activity.
+### Step 2: Choose Audit Strategy
+1. **Trigger-Based Auditing**: Best for comprehensive row-level tracking
+   - Pros: Automatic, no application changes, captures all changes
+   - Cons: Performance overhead, complex trigger maintenance
+2. **Application-Level Auditing**: Best for selective auditing
+   - Pros: Flexible, lower database overhead, easier debugging
+   - Cons: Requires application changes, can miss direct database changes
+3. **Change Data Capture (CDC)**: Best for real-time streaming
+   - Pros: Minimal performance impact, real-time analysis, external processing
+   - Cons: Complex setup, requires CDC infrastructure
+4. **Native Database Logs**: Best for general monitoring
+   - Pros: No setup, captures everything, built-in
+   - Cons: High volume, limited retention, difficult to query
 
-## Examples
+### Step 3: Design Audit Table Schema
+1. Create audit log table with these core columns:
+   - audit_id (primary key), table_name, action (INSERT/UPDATE/DELETE)
+   - record_id (reference to audited record), old_values (JSON), new_values (JSON)
+   - changed_by (user), changed_at (timestamp), client_ip, application_context
+2. Add indexes on table_name, changed_at, changed_by for query performance
+3. Partition audit table by date for efficient archival
+4. Configure tablespace for audit logs separate from primary data
 
-### Example 1: Implementing Audit Logging for a Specific Table
+### Step 4: Implement Audit Mechanism
+1. For trigger-based: Create AFTER INSERT/UPDATE/DELETE triggers on each table
+2. Capture old and new row values as JSON in trigger body
+3. Record user context (CURRENT_USER, application user, IP address)
+4. Handle trigger failures gracefully (log but don't block operations)
+5. Test triggers with sample data modifications
 
-User request: "Implement database audit logging for the users table."
+### Step 5: Configure Audit Log Management
+1. Set up automated archival of old audit logs to cold storage
+2. Implement audit log analysis queries for common compliance reports
+3. Create alerts for suspicious activities (bulk deletes, off-hours changes)
+4. Document audit log query procedures for compliance auditors
+5. Schedule periodic audit log reviews with security team
 
-The skill will:
-1. Present the available audit logging strategies (Trigger-Based, Application-Level, CDC, Database Logs).
-2. Provide the basic audit table schema.
-3. Guide the user to choose an appropriate method and tailor the schema to the "users" table.
+### Step 6: Validate Audit Implementation
+1. Perform test operations on audited tables
+2. Verify audit log entries are created with complete data
+3. Test audit log queries for performance
+4. Confirm audit logs cannot be modified by regular users
+5. Document audit implementation for compliance documentation
 
-### Example 2: Adding Audit Trails for Compliance
+## Output
 
-User request: "Add audit trails to my database to meet compliance regulations."
+This skill produces:
 
-The skill will:
-1. Present the available audit logging strategies.
-2. Provide the basic audit table schema.
-3. Assist in selecting a strategy that aligns with compliance requirements (e.g., CDC for real-time monitoring).
+**Audit Table Schema**: SQL DDL for audit log table with proper indexes and partitioning
 
-## Best Practices
+**Audit Triggers**: Database triggers for automatic audit log population on data changes
 
-- **Strategy Selection**: Choose the audit logging strategy that best suits your application's needs and performance requirements. Trigger-based auditing can impact performance, while CDC might require more complex infrastructure.
-- **Data Sensitivity**: Consider the sensitivity of the data being audited and implement appropriate security measures to protect the audit logs.
-- **Retention Policy**: Define a clear retention policy for audit logs to manage storage and comply with regulatory requirements.
+**Audit Log Queries**: Pre-built SQL queries for compliance reports and change tracking
 
-## Integration
+**Implementation Documentation**: Configuration details, trigger logic, and maintenance procedures
 
-This skill can be used in conjunction with other database management plugins to automate the creation of triggers or configure CDC pipelines. It also integrates with logging and monitoring tools to provide a centralized view of database activity.
+**Compliance Report Templates**: SQL queries for GDPR access logs, SOX change reports, etc.
+
+## Error Handling
+
+**Trigger Performance Issues**:
+- Audit only critical tables, not all tables
+- Use asynchronous audit logging with queue systems
+- Batch audit log inserts instead of individual inserts
+- Monitor trigger execution time and optimize trigger logic
+
+**Audit Table Growth**:
+- Implement automated archival of audit logs older than retention period
+- Partition audit table by month or quarter
+- Compress old audit log partitions
+- Move historical audit logs to cheaper storage tiers
+
+**Missing Audit Context**:
+- Set application context in database session before operations
+- Use database session variables to pass user identity
+- Implement connection pooling with session initialization
+- Log application user separately from database user
+
+**Permission Issues**:
+- Ensure audit log table is writable by trigger execution context
+- Grant INSERT on audit table to all database users
+- Protect audit table from modifications (no UPDATE/DELETE grants)
+- Use separate schema for audit tables with restricted access
+
+## Resources
+
+**Audit Table Templates**:
+- PostgreSQL audit trigger: `{baseDir}/templates/postgresql-audit-trigger.sql`
+- MySQL audit trigger: `{baseDir}/templates/mysql-audit-trigger.sql`
+- Audit table schema: `{baseDir}/templates/audit-table-schema.sql`
+
+**Compliance Report Queries**: `{baseDir}/queries/compliance-reports/`
+- GDPR data access report
+- SOX change audit report
+- User activity summary
+- Suspicious activity detection
+
+**Audit Strategy Guide**: `{baseDir}/docs/audit-strategy-selection.md`
+**Performance Tuning**: `{baseDir}/docs/audit-performance-optimization.md`
+**Archival Procedures**: `{baseDir}/scripts/audit-archival.sh`

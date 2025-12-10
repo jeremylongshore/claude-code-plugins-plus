@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to generate ci/cd pipeline configurations for
-  various platforms, including github actions, gitlab ci, and jenkins. it is used
-  when a user requests the creation of a ci/cd pipeline, specifies a platform (e.g.,
-  "github acti...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: building-cicd-pipelines
+description: |
+  Use when you need to work with deployment and CI/CD.
+  This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation.
+  Trigger with phrases like "deploy application", "create pipeline",
+  or "automate deployment".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(git:*, docker:*, kubectl:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to build production-ready CI/CD pipelines, automating software development workflows. It supports multiple platforms and incorporates best practices for testing, building, security, and deployment.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receiving User Request**: Claude receives a request for a CI/CD pipeline, including the target platform and desired stages.
-2. **Generating Configuration**: Claude generates the CI/CD pipeline configuration file (e.g., YAML for GitHub Actions or GitLab CI, Groovy for Jenkins).
-3. **Presenting Configuration**: Claude presents the generated configuration to the user for review and deployment.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Create a CI/CD pipeline for a software project.
-- Generate a CI/CD configuration file for GitHub Actions, GitLab CI, or Jenkins.
-- Automate testing, building, security scanning, and deployment processes.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Creating a GitHub Actions Pipeline
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Create a GitHub Actions pipeline with test, build, and deploy stages."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Generate a `github-actions.yml` file with defined test, build, and deploy stages.
-2. Present the generated YAML configuration to the user.
+## Output
 
-### Example 2: Generating a GitLab CI Configuration
+This skill produces:
 
-User request: "Generate a GitLab CI configuration that includes security scanning."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Generate a `.gitlab-ci.yml` file with test, build, security, and deploy stages, including vulnerability scanning.
-2. Present the generated YAML configuration to the user.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Security**: Integrate static and dynamic analysis tools into the pipeline to identify vulnerabilities early.
-- **Testing**: Include unit, integration, and end-to-end tests to ensure code quality.
-- **Deployment**: Use infrastructure-as-code tools to automate infrastructure provisioning and deployment.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other plugins to automate infrastructure provisioning, security scanning, and deployment processes. For example, it can work with a cloud deployment plugin to automatically deploy applications to AWS, Azure, or GCP after the CI/CD pipeline successfully builds and tests the code.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/ci-cd-pipeline-builder/`
+
+**Documentation and Guides**: `{baseDir}/docs/ci-cd-pipeline-builder/`
+
+**Example Scripts and Code**: `{baseDir}/examples/ci-cd-pipeline-builder/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/ci-cd-pipeline-builder-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/ci-cd-pipeline-builder-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/ci-cd-pipeline-builder-dashboard.json`

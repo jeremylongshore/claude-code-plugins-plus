@@ -1,59 +1,122 @@
 ---
-description: This skill enables claude to scan container images and running containers
-  for vulnerabilities using tools like trivy and snyk. it identifies potential security
-  risks in container environments. use this skill when the user requests a security
-  asses...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: scanning-container-security
+description: |
+  Use when you need to work with security and compliance.
+  This skill provides security scanning and vulnerability detection with comprehensive guidance and automation.
+  Trigger with phrases like "scan for vulnerabilities", "implement security controls",
+  or "audit security".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(docker:*, kubectl:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to perform comprehensive security scans of container images and running containers. By leveraging industry-standard tools, it identifies vulnerabilities and provides insights for remediation, enhancing the overall security of containerized applications.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Receiving Request**: Claude receives a user request to scan a container for vulnerabilities.
-2. **Executing Scan**: Claude utilizes tools like Trivy or Snyk to perform the security scan on the specified container image or running container.
-3. **Reporting Results**: Claude presents a detailed report of identified vulnerabilities, including severity levels and potential remediation steps.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Assess the security of a container image before deployment.
-- Identify vulnerabilities in a running container within a production environment.
-- Generate a security report for compliance purposes.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Pre-Deployment Security Check
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Scan this Docker image for vulnerabilities before I deploy it: myapp:latest"
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Initiate a Trivy scan on the `myapp:latest` Docker image.
-2. Return a report listing all identified vulnerabilities, their severity, and suggested fixes.
+## Output
 
-### Example 2: Runtime Container Security Assessment
+This skill produces:
 
-User request: "Scan the running container with ID abc123xyz for security vulnerabilities."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Execute a Snyk scan on the container with ID `abc123xyz`.
-2. Provide a report detailing any vulnerabilities found in the running container, along with remediation advice.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Specify Image Name**: Always provide the full image name (including tag) for accurate scanning.
-- **Review Severity Levels**: Pay close attention to high and critical severity vulnerabilities and address them promptly.
-- **Regular Scanning**: Schedule regular container security scans to detect new vulnerabilities as they are discovered.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be integrated with other CI/CD pipeline tools to automate security checks as part of the deployment process. It also provides data that can be used with reporting and dashboarding tools to visualize security posture over time.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/container-security-scanner/`
+
+**Documentation and Guides**: `{baseDir}/docs/container-security-scanner/`
+
+**Example Scripts and Code**: `{baseDir}/examples/container-security-scanner/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/container-security-scanner-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/container-security-scanner-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/container-security-scanner-dashboard.json`

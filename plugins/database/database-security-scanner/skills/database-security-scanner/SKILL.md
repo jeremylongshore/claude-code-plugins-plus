@@ -1,62 +1,122 @@
 ---
-description: This skill enables claude to perform comprehensive database security
-  scans using the database-security-scanner plugin. it is triggered when the user
-  requests a security assessment of a database, including identifying vulnerabilities
-  like weak pass...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: scanning-database-security
+description: |
+  Use when you need to work with security and compliance.
+  This skill provides security scanning and vulnerability detection with comprehensive guidance and automation.
+  Trigger with phrases like "scan for vulnerabilities", "implement security controls",
+  or "audit security".
+allowed-tools:
+  - Read
+  - Write
+  - Edit
+  - Grep
+  - Glob
+  - Bash(psql:*, mysql:*, mongosh:*)
+version: 1.0.0
 license: MIT
 ---
-## Overview
 
-This skill empowers Claude to automatically assess the security of databases by utilizing the database-security-scanner plugin. It identifies vulnerabilities, provides OWASP compliance reports, and suggests remediation steps to improve the database's security posture.
+## Prerequisites
 
-## How It Works
+Before using this skill, ensure:
+- Required credentials and permissions for the operations
+- Understanding of the system architecture and dependencies
+- Backup of critical data before making structural changes
+- Access to relevant documentation and configuration files
+- Monitoring tools configured for observability
+- Development or staging environment available for testing
 
-1. **Initiate Scan**: The user's request triggers the database-security-scanner plugin.
-2. **Vulnerability Assessment**: The plugin scans the specified database for common vulnerabilities, including weak passwords, SQL injection risks, and insecure configurations.
-3. **Report Generation**: The plugin generates a detailed report outlining identified vulnerabilities and OWASP compliance status.
-4. **Remediation Suggestions**: The plugin provides actionable recommendations and, where possible, automated remediation scripts to address identified vulnerabilities.
+## Instructions
 
-## When to Use This Skill
+### Step 1: Assess Current State
+1. Review current configuration, setup, and baseline metrics
+2. Identify specific requirements, goals, and constraints
+3. Document existing patterns, issues, and pain points
+4. Analyze dependencies and integration points
+5. Validate all prerequisites are met before proceeding
 
-This skill activates when you need to:
-- Assess the security posture of a database.
-- Identify potential vulnerabilities in a database configuration.
-- Ensure a database complies with OWASP security guidelines.
+### Step 2: Design Solution
+1. Define optimal approach based on best practices
+2. Create detailed implementation plan with clear steps
+3. Identify potential risks and mitigation strategies
+4. Document expected outcomes and success criteria
+5. Review plan with team or stakeholders if needed
 
-## Examples
+### Step 3: Implement Changes
+1. Execute implementation in non-production environment first
+2. Verify changes work as expected with thorough testing
+3. Monitor for any issues, errors, or performance impacts
+4. Document all changes, decisions, and configurations
+5. Prepare rollback plan and recovery procedures
 
-### Example 1: Assessing PostgreSQL Security
+### Step 4: Validate Implementation
+1. Run comprehensive tests to verify all functionality
+2. Compare performance metrics against baseline
+3. Confirm no unintended side effects or regressions
+4. Update all relevant documentation
+5. Obtain approval before production deployment
 
-User request: "Scan the PostgreSQL database for security vulnerabilities and generate a report."
+### Step 5: Deploy to Production
+1. Schedule deployment during appropriate maintenance window
+2. Execute implementation with real-time monitoring
+3. Watch closely for any issues or anomalies
+4. Verify successful deployment and functionality
+5. Document completion, metrics, and lessons learned
 
-The skill will:
-1. Activate the database-security-scanner plugin.
-2. Scan the PostgreSQL database for vulnerabilities.
-3. Generate a report detailing the findings and remediation recommendations.
+## Output
 
-### Example 2: Checking MySQL for OWASP Compliance
+This skill produces:
 
-User request: "Perform an OWASP compliance check on the MySQL database."
+**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
 
-The skill will:
-1. Activate the database-security-scanner plugin.
-2. Scan the MySQL database for OWASP compliance.
-3. Generate a report outlining any compliance violations and suggested fixes.
+**Documentation**: Comprehensive documentation of changes, procedures, and architecture
 
-## Best Practices
+**Test Results**: Validation reports, test coverage, and quality metrics
 
-- **Database Access**: Ensure Claude has the necessary credentials and permissions to access the database being scanned.
-- **Regular Scans**: Schedule regular security scans to continuously monitor the database for new vulnerabilities.
-- **Remediation**: Implement the suggested remediation steps to address identified vulnerabilities promptly.
+**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
 
-## Integration
+**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
 
-This skill can be used in conjunction with other database management and security plugins to create a comprehensive database security workflow. For instance, it can be integrated with a plugin that automatically applies security patches based on the scanner's recommendations.
+## Error Handling
+
+**Permission and Access Issues**:
+- Verify credentials and permissions for all operations
+- Request elevated access if required for specific tasks
+- Document all permission requirements for automation
+- Use separate service accounts for privileged operations
+- Implement least-privilege access principles
+
+**Connection and Network Failures**:
+- Check network connectivity, firewalls, and security groups
+- Verify service endpoints, DNS resolution, and routing
+- Test connections using diagnostic and troubleshooting tools
+- Review network policies, ACLs, and security configurations
+- Implement retry logic with exponential backoff
+
+**Resource Constraints**:
+- Monitor resource usage (CPU, memory, disk, network)
+- Implement throttling, rate limiting, or queue mechanisms
+- Schedule resource-intensive tasks during low-traffic periods
+- Scale infrastructure resources if consistently hitting limits
+- Optimize queries, code, or configurations for efficiency
+
+**Configuration and Syntax Errors**:
+- Validate all configuration syntax before applying changes
+- Test configurations thoroughly in non-production first
+- Implement automated configuration validation checks
+- Maintain version control for all configuration files
+- Keep previous working configuration for quick rollback
+
+## Resources
+
+**Configuration Templates**: `{baseDir}/templates/database-security-scanner/`
+
+**Documentation and Guides**: `{baseDir}/docs/database-security-scanner/`
+
+**Example Scripts and Code**: `{baseDir}/examples/database-security-scanner/`
+
+**Troubleshooting Guide**: `{baseDir}/docs/database-security-scanner-troubleshooting.md`
+
+**Best Practices**: `{baseDir}/docs/database-security-scanner-best-practices.md`
+
+**Monitoring Setup**: `{baseDir}/monitoring/database-security-scanner-dashboard.json`

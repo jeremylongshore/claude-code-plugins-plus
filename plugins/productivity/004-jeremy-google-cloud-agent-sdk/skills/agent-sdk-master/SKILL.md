@@ -1,14 +1,12 @@
 ---
-description: Automatic activation for all google cloud agent development kit (adk)
-  and agent starter pack operations - multi-agent systems, containerized deployment,
-  rag agents, and production orchestration. **trigger phrases:** - "adk", "agent development
-  kit...
+name: Google Cloud Agent SDK Master
+description: Automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+version: 1.0.0
 allowed-tools:
 - Read
 - WebFetch
 - WebSearch
 - Grep
-name: Google Cloud Agent SDK Master
 license: MIT
 ---
 # Google Cloud Agent SDK Master - Production-Ready Agent Systems
@@ -503,3 +501,43 @@ This skill automatically activates when you mention:
 ---
 
 **This skill makes Jeremy a Google Cloud agent architecture expert with instant access to ADK, Agent Starter Pack, and production deployment patterns.**
+
+## Prerequisites
+
+- Access to project files in {baseDir}/
+- Required tools and dependencies installed
+- Understanding of skill functionality
+- Permissions for file operations
+
+## Instructions
+
+1. Identify skill activation trigger and context
+2. Gather required inputs and parameters
+3. Execute skill workflow systematically
+4. Validate outputs meet requirements
+5. Handle errors and edge cases appropriately
+6. Provide clear results and next steps
+
+## Output
+
+- Primary deliverables based on skill purpose
+- Status indicators and success metrics
+- Generated files or configurations
+- Reports and summaries as applicable
+- Recommendations for follow-up actions
+
+## Error Handling
+
+If execution fails:
+- Verify prerequisites are met
+- Check input parameters and formats
+- Validate file paths and permissions
+- Review error messages for root cause
+- Consult documentation for troubleshooting
+
+## Resources
+
+- Official documentation for related tools
+- Best practices guides
+- Example use cases and templates
+- Community forums and support channels
