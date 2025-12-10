@@ -531,7 +531,7 @@ class PluginValidator {
     this.checkSecrets();
 
     // Generate report
-    this.generateReport();
+    return this.generateReport();
   }
 
   generateReport() {
