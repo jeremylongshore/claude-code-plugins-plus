@@ -1,43 +1,275 @@
-# Formatter Plugin
+# Code Formatter Plugin v2.0.0
 
-Automatically formats code files after editing using hooks.
+A comprehensive code formatting plugin for Claude Code that automatically formats your code using Prettier and other formatting tools. Includes automatic formatting hooks, validation commands, and Agent Skills for intelligent formatting assistance.
 
-## Installation
+## ✨ Features
+
+- **Automatic Formatting** - Format code automatically after edits using PostToolUse hooks
+- **Format Validation** - Check if files are properly formatted without changes
+- **Agent Skills** - Intelligent formatting assistance that activates on keywords
+- **Multiple File Types** - Supports JS, TS, JSON, CSS, MD, YAML, HTML, Vue, Svelte
+- **Custom Commands** - `/format` and `/format-check` for manual control
+- **CI/CD Ready** - Integration scripts for GitHub Actions and other pipelines
+- **Configurable** - Use your own Prettier config or defaults
+
+## 🚀 Installation
 
 ```bash
+# Add the marketplace
+/plugin marketplace add jeremylongshore/claude-code-plugins
+
+# Install the formatter plugin
 /plugin install formatter@claude-code-plugins-plus
 ```
 
-## Requirements
+## 📋 Prerequisites
 
-- Node.js and npm installed
-- Prettier (will be used via npx if available)
+The plugin requires Node.js and npm/npx to be installed:
 
-## What It Does
+```bash
+# Check if Node.js is installed
+node --version
 
-Automatically runs Prettier on JavaScript, TypeScript, JSON, CSS, and Markdown files after Claude edits them.
+# Install Prettier globally (optional)
+npm install -g prettier
 
-## How It Works
+# Or use npx (no installation needed)
+npx prettier --version
+```
 
-Uses a PostToolUse hook that:
-1. Detects Write or Edit tool usage
-2. Runs a formatting script
-3. Applies Prettier to supported file types
+## 🎯 Usage
 
-## Learning Objectives
+### Automatic Formatting (Hooks)
 
-This plugin demonstrates:
-- Hook configuration
-- Event-driven automation
-- Script integration
-- Using ${CLAUDE_PLUGIN_ROOT} variable
+The plugin automatically formats files after you edit them:
 
-## Files
+1. When Claude uses the `Write` or `Edit` tool
+2. The PostToolUse hook triggers
+3. Files are automatically formatted with Prettier
+4. You see the formatting applied immediately
 
-- `.claude-plugin/plugin.json` - Plugin manifest
-- `hooks/hooks.json` - Hook configuration
-- `scripts/format.sh` - Formatting script
+### Manual Commands
 
-## License
+**Format files:**
+```bash
+# Format all files in project
+/format
 
-MIT
+# Format specific directory
+/format src/
+
+# Format specific file
+/format src/app.js
+
+# Format with custom config
+/format --config .prettierrc.strict src/
+```
+
+**Check formatting:**
+```bash
+# Check all files
+/format-check
+
+# Check specific files
+/format-check **/*.js
+
+# Use in CI/CD (exits with error if unformatted)
+/format-check || exit 1
+```
+
+### Agent Skills
+
+The plugin's Agent Skill activates when you mention:
+- "format my code"
+- "fix formatting"
+- "apply code style"
+- "check formatting"
+- "make code consistent"
+- "clean up code"
+
+Example:
+```
+User: "Please format my JavaScript files"
+Claude: [Activates code-formatter skill and formats all JS files]
+```
+
+## ⚙️ Configuration
+
+### Prettier Configuration
+
+Create a `.prettierrc` file in your project:
+
+```json
+{
+  "semi": true,
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "printWidth": 100,
+  "bracketSpacing": true,
+  "arrowParens": "avoid"
+}
+```
+
+### Ignore Files
+
+Create `.prettierignore` to skip files:
+
+```
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+*.min.js
+*.min.css
+
+# Generated files
+coverage/
+*.lock
+```
+
+### Hook Configuration
+
+The plugin's hooks are configured in `hooks/hooks.json`:
+
+- **PostToolUse** - Runs after Write/Edit operations
+- **PreToolUse** - Optional validation before editing (disabled by default)
+
+To disable automatic formatting, edit the hooks.json and set `"enabled": false`.
+
+## 🔧 Scripts
+
+The plugin includes two main scripts:
+
+### format.sh
+- Main formatting script
+- Handles file detection and Prettier execution
+- Supports multiple file types
+- Includes error handling and logging
+
+### validate-format.sh (NEW)
+- Validates formatting without changes
+- Perfect for pre-commit checks
+- Returns exit codes for CI/CD
+- Detailed logging and debugging
+
+Both scripts are executable and support debug mode:
+
+```bash
+# Enable debug mode
+export FORMATTER_DEBUG=true
+
+# Check logs
+tail -f plugins/examples/formatter/logs/formatter.log
+```
+
+## 🧪 Testing
+
+To test the plugin installation:
+
+```bash
+# 1. Check if plugin is installed
+/plugin list
+
+# 2. Test format checking
+echo 'const x={a:1,b:2}' > test.js
+/format-check test.js
+
+# 3. Test formatting
+/format test.js
+cat test.js  # Should show formatted code
+
+# 4. Test Agent Skill
+# Just say: "format my code"
+```
+
+## 📊 Supported File Types
+
+| Extension | Language | Support Level |
+|-----------|----------|--------------|
+| .js, .jsx | JavaScript | ✅ Full |
+| .ts, .tsx | TypeScript | ✅ Full |
+| .json | JSON | ✅ Full |
+| .css, .scss | CSS/SASS | ✅ Full |
+| .md, .mdx | Markdown | ✅ Full |
+| .yaml, .yml | YAML | ✅ Full |
+| .html | HTML | ✅ Full |
+| .vue | Vue | ✅ Full |
+| .svelte | Svelte | ✅ Full |
+| .graphql | GraphQL | ✅ Full |
+| .xml | XML | ⚠️ Limited |
+
+## 🚨 Troubleshooting
+
+### Plugin Not Loading
+
+```bash
+# Reinstall the plugin
+/plugin uninstall formatter@claude-code-plugins-plus
+/plugin install formatter@claude-code-plugins-plus
+
+# Check plugin status
+/plugin list
+```
+
+### Prettier Not Found
+
+```bash
+# Install Prettier globally
+npm install -g prettier
+
+# Or ensure npx is available
+which npx
+```
+
+### Formatting Not Working
+
+1. Check if Node.js is installed: `node --version`
+2. Verify script permissions: `ls -la scripts/`
+3. Check for syntax errors in target files
+4. Enable debug mode and check logs
+5. Ensure files aren't in .prettierignore
+
+### Hook Not Triggering
+
+1. Check if hooks are enabled in hooks.json
+2. Verify the matcher pattern matches your operation
+3. Check the plugin is properly installed
+4. Look for errors in Claude Code output
+
+## 🔄 Updates
+
+### v2.0.0 (2025-12-12)
+- ✅ Fixed missing validate-format.sh script (Issue #147)
+- ✨ Added comprehensive Agent Skills
+- 📝 Enhanced plugin description with trigger phrases
+- 🎯 Added format and format-check commands
+- 📚 Complete documentation rewrite
+- 🔧 Improved error handling and logging
+
+### v1.0.0 (2025-10-11)
+- Initial release with basic formatting hooks
+
+## 👨‍💻 Contributing
+
+Found a bug or have a suggestion? Please open an issue at:
+https://github.com/jeremylongshore/claude-code-plugins/issues
+
+## 📜 License
+
+MIT License - See LICENSE file for details
+
+## 🙏 Acknowledgments
+
+- Thanks to @beepsoft for reporting Issue #147
+- Prettier team for the excellent formatting tool
+- Claude Code community for feedback and suggestions
+
+---
+
+**Author**: Jeremy Longshore
+**Email**: jeremy@intentsolutions.io
+**Repository**: https://github.com/jeremylongshore/claude-code-plugins
