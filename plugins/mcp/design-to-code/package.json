@@ -12,12 +12,12 @@
   "author": { "name": "Intent Solutions", "url": "https://intentsolutions.io" },
   "license": "MIT",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.21.1",
-    "zod": "^4.1.12",
+    "@modelcontextprotocol/sdk": "^1.24.3",
+    "zod": "^4.2.0",
     "zod-to-json-schema": "^3.25.0"
   },
   "devDependencies": {
-    "@types/node": "^20.19.25",
+    "@types/node": "^20.19.27",
     "typescript": "^5.6.0",
     "vitest": "^4.0.8"
   }
