@@ -12,7 +12,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Sync CLI marketplace catalog
         run: |
@@ -217,17 +217,17 @@ jobs:
         test-type: [mcp-plugins, python-tests, validation-scripts]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
         if: matrix.test-type == 'mcp-plugins'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
           version: 8
 
@@ -291,7 +291,7 @@ jobs:
 
       - name: Setup Python
         if: matrix.test-type == 'python-tests'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -358,7 +358,7 @@ jobs:
 
       - name: Upload test coverage
         if: matrix.test-type == 'python-tests' && always()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
           flags: python
