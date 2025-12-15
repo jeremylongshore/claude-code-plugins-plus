@@ -1,4 +1,4 @@
-# Code Formatter Plugin v2.0.0
+# Code Formatter Plugin v2.0.1
 
 A comprehensive code formatting plugin for Claude Code that automatically formats your code using Prettier and other formatting tools. Includes automatic formatting hooks, validation commands, and Agent Skills for intelligent formatting assistance.
 
@@ -241,6 +241,11 @@ which npx
 4. Look for errors in Claude Code output
 
 ## 🔄 Updates
+
+### v2.0.1 (2025-12-13)
+- 🐛 Fixed duplicate hooks loading error (Issue #149)
+- 🔧 Removed redundant hooks reference from plugin.json
+- ✅ Claude Code now auto-discovers hooks/hooks.json
 
 ### v2.0.0 (2025-12-12)
 - ✅ Fixed missing validate-format.sh script (Issue #147)

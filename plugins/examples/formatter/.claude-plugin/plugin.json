@@ -1,6 +1,6 @@
 {
   "name": "formatter",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Comprehensive code formatting plugin with Prettier integration. Use when you need to format code, validate formatting, or maintain consistent code style. Activates with phrases like 'format my code', 'check formatting', or 'apply code style'. Supports JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types with automatic formatting on file operations.",
   "author": {
     "name": "Jeremy Longshore",
@@ -8,6 +8,5 @@
   },
   "license": "MIT",
   "keywords": ["formatting", "prettier", "code-style", "linting", "automation", "hooks", "validation"],
-  "hooks": "./hooks/hooks.json",
   "repository": "https://github.com/jeremylongshore/claude-code-plugins"
 }
