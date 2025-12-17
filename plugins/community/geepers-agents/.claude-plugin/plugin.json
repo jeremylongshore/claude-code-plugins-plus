@@ -83,59 +83,6 @@
       "description": "Product development: business plan, PRD, fullstack dev, code checker"
     }
   ],
-  "agents": [
-    {"id": "conductor_geepers", "source": "./master/conductor_geepers.md"},
-    {"id": "geepers_orchestrator_product", "source": "./product/geepers_orchestrator_product.md"},
-    {"id": "geepers_business_plan", "source": "./product/geepers_business_plan.md"},
-    {"id": "geepers_prd", "source": "./product/geepers_prd.md"},
-    {"id": "geepers_fullstack_dev", "source": "./product/geepers_fullstack_dev.md"},
-    {"id": "geepers_intern_pool", "source": "./product/geepers_intern_pool.md"},
-    {"id": "geepers_code_checker", "source": "./product/geepers_code_checker.md"},
-    {"id": "geepers_docs", "source": "./product/geepers_docs.md"},
-    {"id": "geepers_orchestrator_checkpoint", "source": "./checkpoint/geepers_orchestrator_checkpoint.md"},
-    {"id": "geepers_scout", "source": "./checkpoint/geepers_scout.md"},
-    {"id": "geepers_repo", "source": "./checkpoint/geepers_repo.md"},
-    {"id": "geepers_status", "source": "./checkpoint/geepers_status.md"},
-    {"id": "geepers_snippets", "source": "./checkpoint/geepers_snippets.md"},
-    {"id": "geepers_orchestrator_deploy", "source": "./deploy/geepers_orchestrator_deploy.md"},
-    {"id": "geepers_validator", "source": "./deploy/geepers_validator.md"},
-    {"id": "geepers_caddy", "source": "./deploy/geepers_caddy.md"},
-    {"id": "geepers_services", "source": "./deploy/geepers_services.md"},
-    {"id": "geepers_orchestrator_quality", "source": "./quality/geepers_orchestrator_quality.md"},
-    {"id": "geepers_a11y", "source": "./quality/geepers_a11y.md"},
-    {"id": "geepers_perf", "source": "./quality/geepers_perf.md"},
-    {"id": "geepers_deps", "source": "./quality/geepers_deps.md"},
-    {"id": "geepers_critic", "source": "./quality/geepers_critic.md"},
-    {"id": "geepers_orchestrator_research", "source": "./research/geepers_orchestrator_research.md"},
-    {"id": "geepers_swarm_research", "source": "./research/geepers_swarm_research.md"},
-    {"id": "geepers_data", "source": "./research/geepers_data.md"},
-    {"id": "geepers_links", "source": "./research/geepers_links.md"},
-    {"id": "geepers_diag", "source": "./research/geepers_diag.md"},
-    {"id": "geepers_citations", "source": "./research/geepers_citations.md"},
-    {"id": "geepers_orchestrator_fullstack", "source": "./fullstack/geepers_orchestrator_fullstack.md"},
-    {"id": "geepers_db", "source": "./fullstack/geepers_db.md"},
-    {"id": "geepers_design", "source": "./fullstack/geepers_design.md"},
-    {"id": "geepers_react", "source": "./fullstack/geepers_react.md"},
-    {"id": "geepers_orchestrator_web", "source": "./web/geepers_orchestrator_web.md"},
-    {"id": "geepers_flask", "source": "./web/geepers_flask.md"},
-    {"id": "geepers_orchestrator_python", "source": "./python/geepers_orchestrator_python.md"},
-    {"id": "geepers_pycli", "source": "./python/geepers_pycli.md"},
-    {"id": "geepers_orchestrator_games", "source": "./games/geepers_orchestrator_games.md"},
-    {"id": "geepers_gamedev", "source": "./games/geepers_gamedev.md"},
-    {"id": "geepers_game", "source": "./games/geepers_game.md"},
-    {"id": "geepers_godot", "source": "./games/geepers_godot.md"},
-    {"id": "geepers_orchestrator_corpus", "source": "./corpus/geepers_orchestrator_corpus.md"},
-    {"id": "geepers_corpus", "source": "./corpus/geepers_corpus.md"},
-    {"id": "geepers_corpus_ux", "source": "./corpus/geepers_corpus_ux.md"},
-    {"id": "geepers_system_help", "source": "./system/geepers_system_help.md"},
-    {"id": "geepers_system_onboard", "source": "./system/geepers_system_onboard.md"},
-    {"id": "geepers_system_diag", "source": "./system/geepers_system_diag.md"},
-    {"id": "geepers_api", "source": "./standalone/geepers_api.md"},
-    {"id": "geepers_scalpel", "source": "./standalone/geepers_scalpel.md"},
-    {"id": "geepers_janitor", "source": "./standalone/geepers_janitor.md"},
-    {"id": "geepers_canary", "source": "./standalone/geepers_canary.md"},
-    {"id": "geepers_dashboard", "source": "./standalone/geepers_dashboard.md"}
-  ],
   "requirements": {
     "python": ">=3.8",
     "packages": [
@@ -164,7 +111,11 @@
         "type": "string",
         "description": "Default model tier",
         "default": "sonnet",
-        "enum": ["haiku", "sonnet", "opus"]
+        "enum": [
+          "haiku",
+          "sonnet",
+          "opus"
+        ]
       },
       "hub_enabled": {
         "type": "boolean",
@@ -180,8 +131,14 @@
         "type": "string",
         "description": "Logging level",
         "default": "INFO",
-        "enum": ["DEBUG", "INFO", "WARNING", "ERROR"]
+        "enum": [
+          "DEBUG",
+          "INFO",
+          "WARNING",
+          "ERROR"
+        ]
       }
     }
-  }
+  },
+  "agents": "./agents"
 }
