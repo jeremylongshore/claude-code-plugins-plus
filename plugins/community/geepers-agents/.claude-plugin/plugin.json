@@ -1,9 +1,10 @@
 {
   "name": "geepers",
   "version": "1.0.0",
-  "displayName": "Geepers",
   "description": "Multi-agent orchestration system with MCP tools and Claude Code plugin agents. 51 specialized agents for development workflows, code quality, deployment, research, and more.",
-  "author": "Luke Steuber",
+  "author": {
+    "name": "Luke Steuber"
+  },
   "license": "MIT",
   "homepage": "https://dr.eamer.dev/geepers/",
   "repository": {
@@ -19,126 +20,5 @@
     "deployment",
     "geepers",
     "claude-code"
-  ],
-  "categories": [
-    "ai-tools",
-    "orchestration",
-    "development"
-  ],
-  "icon": "robot",
-  "mcpServers": [
-    {
-      "id": "checkpoint",
-      "name": "Checkpoint Orchestrator",
-      "description": "Session maintenance: scout, repo, status, snippets coordination"
-    },
-    {
-      "id": "deploy",
-      "name": "Deploy Orchestrator",
-      "description": "Infrastructure deployment: validator, caddy, services coordination"
-    },
-    {
-      "id": "quality",
-      "name": "Quality Orchestrator",
-      "description": "Code quality audits: a11y, perf, api, deps coordination"
-    },
-    {
-      "id": "fullstack",
-      "name": "Fullstack Orchestrator",
-      "description": "End-to-end features: backend/frontend team coordination"
-    },
-    {
-      "id": "research",
-      "name": "Research Orchestrator",
-      "description": "Data gathering: swarm-style parallel information retrieval"
-    },
-    {
-      "id": "games",
-      "name": "Games Orchestrator",
-      "description": "Game development: gamedev, game, react, godot coordination"
-    },
-    {
-      "id": "corpus",
-      "name": "Corpus Orchestrator",
-      "description": "Linguistics: corpus, corpus_ux, db coordination"
-    },
-    {
-      "id": "web",
-      "name": "Web Orchestrator",
-      "description": "Web apps: flask, react, design, a11y coordination"
-    },
-    {
-      "id": "python",
-      "name": "Python Orchestrator",
-      "description": "Python projects: flask, pycli, api, deps coordination"
-    },
-    {
-      "id": "unified",
-      "name": "Unified Orchestrator",
-      "description": "All orchestrators in a single server with intelligent routing"
-    },
-    {
-      "id": "product",
-      "name": "Product Orchestrator",
-      "description": "Product development: business plan, PRD, fullstack dev, code checker"
-    }
-  ],
-  "requirements": {
-    "python": ">=3.8",
-    "packages": [
-      "python-dotenv>=1.0.0",
-      "pyyaml>=6.0.0",
-      "aiohttp>=3.9.0"
-    ]
-  },
-  "optionalDependencies": {
-    "anthropic": "anthropic>=0.18.0"
-  },
-  "configurationSchema": {
-    "type": "object",
-    "properties": {
-      "output_dir": {
-        "type": "string",
-        "description": "Base directory for geepers output",
-        "default": "~/geepers"
-      },
-      "anthropic_api_key": {
-        "type": "string",
-        "description": "Anthropic API key for model calls",
-        "secret": true
-      },
-      "default_model": {
-        "type": "string",
-        "description": "Default model tier",
-        "default": "sonnet",
-        "enum": [
-          "haiku",
-          "sonnet",
-          "opus"
-        ]
-      },
-      "hub_enabled": {
-        "type": "boolean",
-        "description": "Connect to shared/mcp hub for extended capabilities",
-        "default": false
-      },
-      "hub_url": {
-        "type": "string",
-        "description": "Hub URL when enabled",
-        "default": "http://localhost:5060"
-      },
-      "log_level": {
-        "type": "string",
-        "description": "Logging level",
-        "default": "INFO",
-        "enum": [
-          "DEBUG",
-          "INFO",
-          "WARNING",
-          "ERROR"
-        ]
-      }
-    }
-  },
-  "agents": "./agents"
+  ]
 }
