@@ -1,3 +1,65 @@
+## [3.2.0] - 2025-12-16
+
+### 🎉 Highlights
+**Largest single plugin contribution to date!** @lukeslp (Lucas Steuber) contributes **geepers-agents** with **51 specialized agents** for development workflows, deployment automation, quality audits, research, and game development. Plus critical formatter plugin fixes.
+
+### 👥 Community Recognition
+**Massive thanks to our community contributors:**
+- **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🏆 **EPIC CONTRIBUTION:** Created geepers-agents with **51 specialized development agents** across 10 categories - the largest single plugin contribution in repository history! Includes orchestration system for checkpoint management, deployment validation, quality audits, fullstack development, research workflows, game development, and more. ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
+- **[@beepsoft](https://github.com/beepsoft)** - Reported missing validate-format.sh script in formatter plugin, leading to comprehensive plugin enhancements ([#147](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/147), [#149](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/149))
+
+### 🆕 New Plugins (1)
+- **[geepers-agents](plugins/community/geepers-agents/)** - Multi-agent orchestration system with 51 specialized agents organized into 10 categories:
+  - **Master**: conductor_geepers (intelligent routing)
+  - **Checkpoint**: 5 agents for session maintenance (scout, repo, status, snippets)
+  - **Deploy**: 4 agents for infrastructure (validator, caddy, services)
+  - **Quality**: 5 agents for code audits (a11y, perf, api, deps, critic)
+  - **Fullstack**: 4 agents for end-to-end features (db, design, react)
+  - **Research**: 6 agents for data gathering (citations, links, diagnostics)
+  - **Games**: 4 agents for game development (Godot, Unity workflows)
+  - **Corpus**: 3 agents for linguistics/NLP
+  - **Web**: 2 agents for web applications (Flask)
+  - **Python**: 2 agents for Python projects
+  - **Product**: 7 agents for business planning (PRD, business plans)
+  - **Standalone**: 5 specialized tools (API, scalpel, janitor, canary, dashboard)
+  - **System**: 3 infrastructure agents (help, onboard, diagnostics)
+
+### ⬆️ Updated Plugins (1)
+- **formatter** (v2.0.0 → v2.0.1)
+  - Fixed duplicate hooks loading error by removing redundant hooks reference from plugin.json
+  - Added missing validate-format.sh script (155 lines) with comprehensive validation logic
+  - Enhanced with Agent Skills following Anthropic guidelines
+  - Added /format and /format-check commands
+  - Improved documentation with usage examples and CI/CD integration guides
+
+### 🐛 Plugin Fixes
+- **Fixed #149**: Resolved duplicate hooks loading error in formatter plugin - Claude Code auto-discovers hooks/hooks.json, explicit reference caused duplicate loading
+- **Fixed #147**: Added missing validate-format.sh script to formatter plugin with full validation capabilities
+- **Structural fix**: Reorganized geepers-agents from inline agent definitions to proper `agents/` directory structure for validator compatibility
+
+### 🌐 Hub Improvements
+- Featured @lukeslp prominently in README Contributors section
+- Updated plugin count to 258 (from 257)
+- Enhanced community contribution documentation
+- Improved PR review and structural fix workflow
+
+### 📚 Documentation
+- Created comprehensive audit system for PR validation
+- Enhanced contributor recognition in README
+- Updated formatter plugin README with v2.0.1 changes
+- Added geepers-agents comprehensive documentation with 51 agent descriptions
+
+### 📊 Metrics
+- **Total Plugins:** 258 (+1)
+- **New This Release:** 1 (geepers-agents with 51 agents!)
+- **Updated This Release:** 1 (formatter)
+- **Contributors:** 8 total (1 new: @lukeslp)
+- **Issues Closed:** 2 (#147, #149)
+
+[Link to full release notes](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v3.2.0)
+
+---
+
 ## [1.5.0] - 2025-12-10
 
 ### 🎉 Highlights

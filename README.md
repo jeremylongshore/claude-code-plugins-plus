@@ -1,17 +1,17 @@
 # Claude Code Skills & Plugins Hub
 
-[![Version](https://img.shields.io/badge/version-1.5.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-3.2.0-brightgreen)](CHANGELOG.md)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-240%20Skills-orange?logo=sparkles)](CHANGELOG.md)
-[![Plugins](https://img.shields.io/badge/Total%20Plugins-257-blue)](https://github.com/jeremylongshore/claude-code-plugins)
+[![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-**🎯 240 Agent Skills & 257 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
+**🎯 240 Agent Skills & 258 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
 
-🎯 **NEW in v1.5.0:** **Major Infrastructure Enhancements** - 555+ executable scripts, Intent-Solutions standard compliance improvements, CI/CD test execution, comprehensive quality improvements
+🎉 **NEW in v3.2.0:** **Largest Plugin Contribution Ever!** - @lukeslp contributes **geepers-agents** with **51 specialized development agents** across 10 categories, plus formatter plugin enhancements
 
-**Latest:** [v1.5.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v1.5.0) - Infrastructure enhancements, script implementations, quality improvements across the entire plugin ecosystem
+**Latest:** [v3.2.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v3.2.0) - Massive geepers-agents contribution with orchestration system for development workflows, deployment, quality audits, research, and game development
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
