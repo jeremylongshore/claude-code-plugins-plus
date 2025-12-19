@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "track my portfolio", "check holdings", or "analyze positions".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:portfolio-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

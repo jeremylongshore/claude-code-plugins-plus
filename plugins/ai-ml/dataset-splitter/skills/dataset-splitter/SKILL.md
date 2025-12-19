@@ -4,6 +4,8 @@ description: Split datasets into training, validation, and testing sets for ML m
   development. Use when requesting "split dataset", "train-test split", or "data partitioning".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

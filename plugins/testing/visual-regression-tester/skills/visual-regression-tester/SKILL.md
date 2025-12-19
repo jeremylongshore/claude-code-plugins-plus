@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test visual changes", "compare screenshots", or "detect UI regressions".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:visual-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

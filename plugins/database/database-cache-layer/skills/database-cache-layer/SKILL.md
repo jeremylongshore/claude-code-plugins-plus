@@ -11,9 +11,10 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-  - Bash(redis-cli:*, docker:redis:*)
+  - Bash(redis-cli:*), docker:redis:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

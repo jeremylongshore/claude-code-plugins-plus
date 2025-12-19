@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "validate responses", "check API responses", or "verify response format".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:validate-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

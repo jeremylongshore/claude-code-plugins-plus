@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration test".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

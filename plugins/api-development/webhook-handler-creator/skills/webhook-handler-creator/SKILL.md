@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "create webhook", "handle webhook events", or "setup webhook handler".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:webhook-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "load test the API", "stress test API", or "benchmark API performance".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:load-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

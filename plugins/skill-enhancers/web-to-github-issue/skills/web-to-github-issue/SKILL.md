@@ -10,6 +10,8 @@ allowed-tools:
 - Grep
 name: creating-github-issues-from-web-research
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

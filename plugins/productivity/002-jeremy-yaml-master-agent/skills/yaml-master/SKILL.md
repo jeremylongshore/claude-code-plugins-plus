@@ -1,6 +1,8 @@
 ---
 name: yaml-master
-description: 'Proactive yaml intelligence: automatically activates when working with Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: |
+  Proactive YAML intelligence: automatically activates when working with YAML files.
+  Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
 version: 1.0.0
 allowed-tools:
 - Read
@@ -11,6 +13,7 @@ allowed-tools:
 - Bash(general:*)
 - Bash(util:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 # YAML Master Agent
 

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test the database", "run database tests", or "validate data integrity".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:db-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

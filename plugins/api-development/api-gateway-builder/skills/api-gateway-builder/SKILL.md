@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "build API gateway", "create API router", or "setup API gateway".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:gateway-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

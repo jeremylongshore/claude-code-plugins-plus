@@ -5,8 +5,9 @@ description: |
   Orchestrate multi-agent systems with handoffs, routing, and workflows across AI providers.
   Use when building complex AI systems requiring agent collaboration, task delegation, or workflow coordination.
   Trigger with phrases like "create multi-agent system", "orchestrate agents", or "coordinate agent workflows".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*, node:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

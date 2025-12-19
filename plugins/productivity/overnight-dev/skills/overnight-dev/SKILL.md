@@ -11,6 +11,7 @@ allowed-tools:
 - Bash(general:*)
 - Bash(util:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 # Overnight Development
 

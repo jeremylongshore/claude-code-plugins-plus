@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "check price", "track prices", or "get price alert".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:price-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

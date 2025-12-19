@@ -6,6 +6,8 @@ description: Inspect and validate Vertex AI Agent Engine deployments including C
   depl...
 allowed-tools: Read, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## What This Skill Does
 

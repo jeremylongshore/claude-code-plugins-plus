@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "scan accessibility", "check WCAG compliance", or "validate screen readers".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:a11y-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

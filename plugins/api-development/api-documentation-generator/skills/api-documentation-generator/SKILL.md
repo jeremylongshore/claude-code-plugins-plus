@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate API docs", "create API documentation", or "document the API".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:docs-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

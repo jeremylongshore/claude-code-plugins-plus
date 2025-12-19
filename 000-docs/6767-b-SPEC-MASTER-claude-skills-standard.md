@@ -109,7 +109,9 @@ skill-name/
 
 ### Naming Conventions
 
-**Folder names must match the `name` field exactly.**
+**Best Practice**: Folder names SHOULD match the `name` field for clarity and maintainability.
+
+> **Note**: Anthropic's official spec does NOT enforce folder/name matching at runtime. Claude Code will load skills regardless of folder name. However, matching names is strongly recommended for discoverability and team collaboration.
 
 **Recommended**: Use **gerund form** (verb + -ing) for clarity:
 - `processing-pdfs`
@@ -357,6 +359,58 @@ disable-model-invocation: false   # Auto-discovery enabled (default)
 **Behavior**: Appends to `description` with hyphen separator.
 
 **Recommendation**: Do NOT use. Rely on detailed `description` field instead. This field may change or be removed without notice.
+
+---
+
+## 4.5 Enterprise Extension Fields (Intent Solutions Standard)
+
+These fields are NOT part of Anthropic's official spec but are required for skills published to the Claude Code Plugins marketplace (jeremylongshore/claude-code-plugins).
+
+#### `author`
+
+**Type**: string
+**Required**: YES (for marketplace submission)
+**Format**: `Name <email>` or `Name`
+
+**Purpose**: Attribution for skill creator. Required for proper credit and contact.
+
+**Examples**:
+```yaml
+author: "Jeremy Longshore <jeremy@intentsolutions.io>"
+author: "Jane Smith"
+author: "Intent Solutions Team"
+```
+
+#### `tags`
+
+**Type**: array of strings
+**Required**: NO (recommended for discoverability)
+
+**Purpose**: Categorization keywords for marketplace filtering.
+
+**Examples**:
+```yaml
+tags:
+  - devops
+  - kubernetes
+  - deployment
+
+tags: ["security", "audit", "compliance"]
+```
+
+#### Enterprise Required Fields Summary
+
+For marketplace submission, skills MUST include:
+
+| Field | Anthropic Spec | Enterprise Required |
+|-------|---------------|---------------------|
+| `name` | Required | Required |
+| `description` | Required | Required |
+| `allowed-tools` | Optional | **Required** |
+| `version` | Optional | **Required** |
+| `author` | Not in spec | **Required** |
+| `license` | Optional | **Required** |
+| `tags` | Not in spec | Recommended |
 
 ---
 
@@ -977,12 +1031,20 @@ Run through this checklist every time you create or update a skill:
 - [ ] Confirmed no existing skill handles this
 - [ ] Gathered all necessary reference materials
 
-### Frontmatter
+### Frontmatter (Anthropic Spec)
 
-- [ ] `name`: lowercase, hyphens, under 64 chars, matches folder
+- [ ] `name`: lowercase, hyphens, under 64 chars
 - [ ] `description`: third person, under 1024 chars, includes what + when + triggers
-- [ ] `allowed-tools`: minimal necessary tools only
-- [ ] `version`: semver format
+- [ ] `allowed-tools`: minimal necessary tools only (optional per spec)
+- [ ] `version`: semver format (optional per spec)
+
+### Enterprise Fields (Marketplace Submission)
+
+- [ ] `allowed-tools`: Required - list only necessary tools
+- [ ] `version`: Required - semver format (e.g., 1.0.0)
+- [ ] `author`: Required - format: `Name <email>`
+- [ ] `license`: Required - MIT recommended
+- [ ] `tags`: Recommended - array of category keywords
 
 ### Content
 

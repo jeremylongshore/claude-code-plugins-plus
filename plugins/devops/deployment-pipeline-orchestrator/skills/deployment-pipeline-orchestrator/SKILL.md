@@ -11,9 +11,10 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-  - Bash(git:*, docker:*, kubectl:*)
+  - Bash(git:*, docker:*), kubectl:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

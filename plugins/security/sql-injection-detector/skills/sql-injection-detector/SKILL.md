@@ -10,9 +10,10 @@ allowed-tools:
 - Edit
 - Grep
 - Glob
-- Bash(code-scan:*, security-test:*)
+- Bash(code-scan:*), security-test:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Prerequisites
 

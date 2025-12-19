@@ -10,6 +10,8 @@ allowed-tools:
 - Bash
 name: marketplace-manager
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Marketplace Manager
 

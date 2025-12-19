@@ -12,6 +12,7 @@ allowed-tools:
 name: configuring-load-balancers
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

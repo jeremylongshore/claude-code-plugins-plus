@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "track launches", "find new tokens", or "monitor IDOs".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:launch-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

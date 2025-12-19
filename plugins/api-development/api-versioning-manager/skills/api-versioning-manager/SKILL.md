@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "version the API", "manage API versions", or "handle API versioning".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:version-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

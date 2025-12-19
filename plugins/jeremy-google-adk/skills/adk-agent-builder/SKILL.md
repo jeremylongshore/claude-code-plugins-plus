@@ -10,6 +10,8 @@ allowed-tools:
 - Grep
 - Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # ADK Agent Builder Skill
 
@@ -647,11 +649,11 @@ FROM python:3.11-slim
 RUN useradd -m -u 1000 agent
 
 WORKDIR /app
-COPY --from=builder /root/.local /home/agent/.local
+COPY --from=builder /root/.local {baseDir}
 COPY --chown=agent:agent . .
 
 USER agent
-ENV PATH=/home/agent/.local/bin:$PATH
+ENV PATH={baseDir}
 
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s \

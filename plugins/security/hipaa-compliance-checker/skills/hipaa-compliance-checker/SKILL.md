@@ -12,6 +12,7 @@ allowed-tools:
 - Bash(scan:*)
 - Bash(audit:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

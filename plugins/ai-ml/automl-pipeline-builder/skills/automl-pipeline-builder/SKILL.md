@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "build automl pipeline", "automate ml workflow", or "create automated training pipeline".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

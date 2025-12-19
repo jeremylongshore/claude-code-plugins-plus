@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test the API", "generate API tests", or "validate API contracts".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:api-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

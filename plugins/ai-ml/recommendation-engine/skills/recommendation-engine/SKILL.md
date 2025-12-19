@@ -11,6 +11,8 @@ allowed-tools:
 - Bash
 name: building-recommendation-systems
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

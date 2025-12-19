@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run smoke tests", "quick validation", or "test critical paths".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:smoke-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

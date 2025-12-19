@@ -10,6 +10,8 @@ allowed-tools:
 - Glob
 name: detecting-performance-bottlenecks
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "orchestrate tests", "run parallel tests", or "coordinate test execution".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:orchestrate-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

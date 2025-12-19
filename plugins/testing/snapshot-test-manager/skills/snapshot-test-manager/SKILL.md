@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "update snapshots", "test UI snapshots", or "validate component snapshots".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:snapshot-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

@@ -13,6 +13,7 @@ allowed-tools:
 - Bash(artillery:*)
 - Bash(performance:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

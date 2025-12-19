@@ -5,6 +5,8 @@ description: Process images using object detection, classification, and segmenta
   or "computer vision".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

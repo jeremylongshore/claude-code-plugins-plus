@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "track whales", "monitor large transfers", or "check whale activity".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:whale-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

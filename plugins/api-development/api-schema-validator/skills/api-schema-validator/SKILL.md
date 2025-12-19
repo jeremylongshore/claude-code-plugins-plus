@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "validate API schema", "check OpenAPI spec", or "verify schema".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:schema-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

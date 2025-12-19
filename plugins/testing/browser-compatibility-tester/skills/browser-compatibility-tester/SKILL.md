@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test browser compatibility", "check cross-browser", or "validate on browsers".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:browser-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

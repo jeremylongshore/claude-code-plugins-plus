@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate gRPC service", "create gRPC API", or "build gRPC server".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:grpc-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

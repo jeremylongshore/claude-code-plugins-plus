@@ -10,6 +10,8 @@ allowed-tools:
 - Bash
 name: version-bumper
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Version Bumper
 

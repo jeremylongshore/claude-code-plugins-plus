@@ -5,6 +5,8 @@ description: Optimize deep learning models using Adam, SGD, and learning rate sc
   model" or "improve model performance".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

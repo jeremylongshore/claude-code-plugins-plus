@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "backtest strategy", "test trading signals", or "validate approach".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:backtest-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

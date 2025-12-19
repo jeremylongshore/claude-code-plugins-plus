@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "build WebSocket server", "add real-time API", or "implement WebSocket".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:websocket-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

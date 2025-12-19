@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test mobile app", "run iOS tests", or "validate Android functionality".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mobile-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

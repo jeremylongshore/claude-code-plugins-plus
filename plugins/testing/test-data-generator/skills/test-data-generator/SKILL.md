@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate test data", "create fixtures", or "setup test database".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:data-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

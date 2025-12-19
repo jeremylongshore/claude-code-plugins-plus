@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "evaluate model fairness", "check for bias", or "validate AI ethics".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

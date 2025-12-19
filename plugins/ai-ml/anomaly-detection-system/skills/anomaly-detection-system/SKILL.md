@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "detect anomalies", "find outliers", or "identify unusual patterns".
 allowed-tools: Read, Bash(python:*), Grep, Glob
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

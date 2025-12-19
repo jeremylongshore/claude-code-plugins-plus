@@ -10,6 +10,7 @@ allowed-tools:
 name: creating-kubernetes-deployments
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

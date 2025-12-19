@@ -11,9 +11,10 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-  - Bash(ansible:*, terraform:*)
+  - Bash(ansible:*), terraform:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

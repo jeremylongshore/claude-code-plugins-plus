@@ -5,6 +5,8 @@ description: Setup machine learning experiment tracking using MLflow or Weights 
   and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

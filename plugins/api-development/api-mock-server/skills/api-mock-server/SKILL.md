@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "create mock API", "generate API mock", or "setup mock server".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:mock-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

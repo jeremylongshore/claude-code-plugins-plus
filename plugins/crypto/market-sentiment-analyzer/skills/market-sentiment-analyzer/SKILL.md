@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "analyze sentiment", "check market mood", or "gauge social trends".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:sentiment-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

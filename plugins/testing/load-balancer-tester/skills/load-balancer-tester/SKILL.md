@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "test load balancer", "validate failover", or "check traffic distribution".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:loadbalancer-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

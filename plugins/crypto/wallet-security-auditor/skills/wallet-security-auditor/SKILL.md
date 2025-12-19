@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "audit wallet", "check security", or "verify signatures".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:wallet-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

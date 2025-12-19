@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run integration tests", "test integration", or "validate component interactions".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:integration-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

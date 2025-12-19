@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run end-to-end tests", "test user flows", or "execute E2E suite".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:e2e-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

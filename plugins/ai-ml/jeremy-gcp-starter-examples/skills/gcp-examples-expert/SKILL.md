@@ -5,6 +5,8 @@ description: Provide production-ready Google Cloud code examples from official r
   Use when asked to "show ADK example" or "provide GCP starter kit".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## What This Skill Does
 

@@ -9,6 +9,8 @@ allowed-tools:
 - Bash
 name: plugin-auditor
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Plugin Auditor
 
@@ -50,7 +52,7 @@ grep -r "AKIA[0-9A-Z]{16}" --exclude=README.md
 grep -r "BEGIN.*PRIVATE KEY" --exclude=README.md
 
 # Check for dangerous patterns
-grep -r "rm -rf /" | grep -v "/var/" | grep -v "/tmp/"
+grep -r "rm -rf /" | grep -v "/var/" | grep -v "{baseDir}/tmp/"
 grep -r "eval\s*\(" --exclude=README.md
 ```
 

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "remember when", "like before", or "what was our decision about".
 allowed-tools: Read, Write
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

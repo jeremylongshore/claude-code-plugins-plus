@@ -10,6 +10,8 @@ allowed-tools:
 - Grep
 - Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Vertex AI Agent Builder Skill
 

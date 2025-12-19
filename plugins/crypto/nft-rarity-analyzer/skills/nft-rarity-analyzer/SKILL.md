@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "check NFT rarity", "analyze collection", or "calculate floor price".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:nft-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

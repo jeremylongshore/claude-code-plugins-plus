@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "build GraphQL API", "create GraphQL server", or "setup GraphQL".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:graphql-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

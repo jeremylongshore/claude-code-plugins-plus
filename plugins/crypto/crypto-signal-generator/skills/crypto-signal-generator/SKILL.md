@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "get trading signals", "check indicators", or "analyze signals".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:signals-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

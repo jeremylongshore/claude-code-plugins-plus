@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate mocks", "create test doubles", or "setup stubs".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:doubles-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

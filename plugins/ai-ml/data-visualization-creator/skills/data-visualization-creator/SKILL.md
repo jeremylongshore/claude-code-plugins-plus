@@ -4,6 +4,8 @@ description: Generate plots, charts, and graphs from data with automatic visuali
   type selection. Use when requesting "visualization", "plot", "chart", or "graph".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

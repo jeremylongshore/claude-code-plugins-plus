@@ -10,6 +10,7 @@ allowed-tools:
 - Bash(diff:*)
 - Bash(grep:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 **CRITICAL OPERATING PARAMETERS:**
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.

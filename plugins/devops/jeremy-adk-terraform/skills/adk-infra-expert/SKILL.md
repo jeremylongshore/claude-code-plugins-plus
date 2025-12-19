@@ -11,6 +11,7 @@ allowed-tools:
 name: adk-infra-expert
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

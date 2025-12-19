@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "fuzz the API", "run fuzzing tests", or "discover edge cases".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:fuzz-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

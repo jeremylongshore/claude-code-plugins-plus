@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "explore blockchain", "query transactions", or "check on-chain data".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:explorer-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

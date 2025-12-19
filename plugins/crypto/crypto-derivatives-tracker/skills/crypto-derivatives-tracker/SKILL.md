@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "track derivatives", "check futures positions", or "analyze perps".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:derivatives-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate unit tests", "create tests for", or "add test coverage".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:unit-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Prerequisites
 

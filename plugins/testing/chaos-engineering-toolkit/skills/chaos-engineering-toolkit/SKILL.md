@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run chaos tests", "test resilience", or "inject failures".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:chaos-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

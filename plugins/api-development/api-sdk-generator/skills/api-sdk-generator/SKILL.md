@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate SDK", "create client library", or "build API SDK".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:sdk-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

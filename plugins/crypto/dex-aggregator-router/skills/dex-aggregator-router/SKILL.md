@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "find best price", "route trade", or "check DEX prices".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

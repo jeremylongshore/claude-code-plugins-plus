@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "track options flow", "analyze derivatives", or "check institutional".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:options-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

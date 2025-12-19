@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "analyze crypto", "check blockchain", or "monitor market".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:flashloan-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

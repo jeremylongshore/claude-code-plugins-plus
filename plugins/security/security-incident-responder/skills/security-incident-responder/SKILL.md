@@ -10,9 +10,10 @@ allowed-tools:
 - Edit
 - Grep
 - Glob
-- Bash(log-analysis:*, forensics:*, network-trace:*)
+- Bash(log-analysis:*, forensics:*), network-trace:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

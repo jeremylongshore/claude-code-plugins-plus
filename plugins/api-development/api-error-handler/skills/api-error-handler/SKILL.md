@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "add error handling", "standardize errors", or "implement error responses".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:error-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

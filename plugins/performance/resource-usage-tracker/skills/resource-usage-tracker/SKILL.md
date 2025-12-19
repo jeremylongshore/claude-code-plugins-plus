@@ -11,6 +11,7 @@ allowed-tools:
 - Grep
 - Glob
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

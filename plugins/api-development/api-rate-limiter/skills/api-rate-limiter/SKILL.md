@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "add rate limiting", "limit API requests", or "implement rate limits".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:ratelimit-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

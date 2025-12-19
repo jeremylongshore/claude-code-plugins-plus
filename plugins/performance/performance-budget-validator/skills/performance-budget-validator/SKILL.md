@@ -12,6 +12,7 @@ allowed-tools:
 - Bash(webpack:*)
 - Bash(performance:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

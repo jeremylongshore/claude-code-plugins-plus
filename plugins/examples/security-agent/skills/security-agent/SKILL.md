@@ -12,6 +12,8 @@ allowed-tools:
 - Bash
 name: performing-security-code-review
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "analyze coverage", "check test coverage", or "find untested code".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:coverage-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

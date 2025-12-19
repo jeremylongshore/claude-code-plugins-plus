@@ -7,8 +7,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Code Skills Hub | 185 AI Skills & 255+ Plugins</title>
-    <meta name="description" content="Discover 185 intelligent AI Skills that activate automatically plus 255+ plugins for Claude Code. The ultimate hub for AI-powered development automation and workflow enhancement.">
+    <title>Claude Code Skills Hub | 241 AI Skills & 258 Plugins</title>
+    <meta name="description" content="Discover 258 plugins with 241 embedded AI Skills that activate automatically for Claude Code. The ultimate hub for AI-powered development automation and workflow enhancement.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -1029,6 +1029,93 @@
                 font-size: 0.8rem;
                 line-height: 1.4;
             }
+
+            /* Skills section mobile fixes */
+            .skills-section {
+                padding: 3rem 1rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .skill-card {
+                padding: 1.5rem;
+            }
+
+            .skills-examples {
+                padding: 1.5rem;
+                margin: 0 0 2rem;
+            }
+
+            .skill-example {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem;
+                text-align: center;
+            }
+
+            .skill-trigger,
+            .skill-activates {
+                text-align: center;
+                flex: none;
+            }
+
+            .skill-arrow {
+                transform: rotate(90deg);
+            }
+
+            .skills-install {
+                padding: 1.5rem;
+                margin: 1.5rem 0;
+            }
+
+            .skills-steps {
+                padding-left: 1.25rem;
+            }
+
+            /* Install box mobile fix */
+            .install-box {
+                margin-top: 2rem;
+                padding: 1rem;
+                max-width: 100%;
+            }
+
+            .install-command {
+                font-size: 0.75rem;
+                word-break: break-all;
+            }
+
+            /* Stats bar mobile fix */
+            .stats-bar {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                min-width: 70px;
+            }
+
+            .stats-number {
+                font-size: 1.5rem;
+            }
+
+            /* Categories mobile fix */
+            .category-item {
+                padding: 1.25rem 1rem;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+
+            .category-item:hover {
+                padding-left: 1rem;
+            }
+
+            /* Process grid mobile fix */
+            .process-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -1052,16 +1139,16 @@
         <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
         <p class="hero-subtitle">
-            Discover 185 intelligent AI Skills that activate automatically, plus 255+ plugins to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
+            Discover 258 plugins with 241 embedded AI Skills that activate automatically to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
         </p>
 
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stats-number">185</div>
+                <div class="stats-number">241</div>
                 <div class="stat-label">AI Skills</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">255</div>
+                <div class="stats-number">258</div>
                 <div class="stat-label">Total Plugins</div>
             </div>
             <div class="stat-item">
@@ -1105,7 +1192,7 @@
                     <span class="code-keyword">/audit</span> <span class="code-function">--comprehensive</span><br>
                     <span class="code-keyword">/deploy</span> <span class="code-function">--production</span><br>
                     <br>
-                    <span class="code-comment">// 185 plugins with AI Skills activate automatically!</span>
+                    <span class="code-comment">// 241 AI Skills (embedded in plugins) activate automatically!</span>
                 </div>
             </div>
         </div>
@@ -1276,13 +1363,13 @@
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🚀</div>
-                <h3>255+ Plugins</h3>
+                <h3>258 Plugins</h3>
                 <p>The largest collection of Claude Code plugins available. From simple utilities to complex AI-powered automations.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
-                <h3>185 AI Skills</h3>
-                <p>Plugins with Agent Skills that activate automatically based on your conversation. Smart tools that understand context.</p>
+                <h3>241 AI Skills</h3>
+                <p>Agent Skills embedded in plugins that activate automatically based on your conversation. Smart automations that understand context.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
@@ -1310,7 +1397,7 @@
     <!-- AI Skills Section -->
     <section class="skills-section" id="skills">
         <h2 class="skills-title">Why AI Skills Are The Future</h2>
-        <p class="skills-subtitle">185 intelligent automations that activate when you need them - no commands to remember</p>
+        <p class="skills-subtitle">241 Agent Skills embedded in plugins that activate when you need them - no commands to remember</p>
 
         <div class="skills-grid">
             <div class="skill-card">
@@ -1434,7 +1521,7 @@
             <div class="process-step">
                 <div class="step-number">2</div>
                 <h4>Browse Plugins</h4>
-                <p>Explore 255+ plugins across 18 categories. Find tools that fit your needs.</p>
+                <p>Explore 258 plugins across 18 categories. Find tools that fit your needs.</p>
             </div>
             <div class="process-step">
                 <div class="step-number">3</div>
@@ -1472,7 +1559,7 @@
                 <li><a href="mailto:jeremy@intentsolutions.io">Contact</a></li>
             </ul>
             <div class="footer-copy">
-                © 2025 Claude Code Plugins · 255 plugins · <a href="https://github.com/sponsors/jeremylongshore" target="_blank" style="color: var(--brand-orange); text-decoration: none;">Join Nixtla as an Enterprise Partner</a> · Built by <a href="https://intentsolutions.io" target="_blank" style="color: var(--brand-orange); text-decoration: none;">intent solutions io</a>
+                © 2025 Claude Code Plugins · 258 plugins · <a href="https://github.com/sponsors/jeremylongshore" target="_blank" style="color: var(--brand-orange); text-decoration: none;">Join Nixtla as an Enterprise Partner</a> · Built by <a href="https://intentsolutions.io" target="_blank" style="color: var(--brand-orange); text-decoration: none;">intent solutions io</a>
             </div>
         </div>
     </footer>

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run load tests", "test performance", or "benchmark the system".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:perf-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

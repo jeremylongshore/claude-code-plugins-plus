@@ -10,6 +10,7 @@ allowed-tools:
 - Bash(task:*)
 - Bash(timew:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## What This Skill Does
 

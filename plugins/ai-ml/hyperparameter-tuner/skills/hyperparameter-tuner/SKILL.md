@@ -5,6 +5,8 @@ description: Optimize machine learning model hyperparameters using grid search, 
   performance. Use when asked to "tune hyperparameters" or "optimize model".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

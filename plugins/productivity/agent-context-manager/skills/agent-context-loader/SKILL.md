@@ -1,6 +1,8 @@
 ---
 name: agent-context-loader
-description: 'Proactive auto-loading: automatically detects and loads agents.md files Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: |
+  Proactive auto-loading: automatically detects and loads agents.md files.
+  Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
 version: 1.0.0
 allowed-tools:
 - Read
@@ -11,6 +13,7 @@ allowed-tools:
 - Bash(general:*)
 - Bash(util:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 # Agent Context Auto-Loader
 

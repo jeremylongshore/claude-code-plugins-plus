@@ -8,6 +8,7 @@ allowed-tools:
 - WebSearch
 - Grep
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

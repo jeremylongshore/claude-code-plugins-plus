@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate REST API", "create RESTful API", or "build REST endpoints".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:rest-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

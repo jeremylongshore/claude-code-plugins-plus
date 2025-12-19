@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "check mempool", "scan pending txs", or "find MEV".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:mempool-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

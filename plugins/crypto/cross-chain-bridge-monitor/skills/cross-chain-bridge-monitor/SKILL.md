@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "monitor bridges", "check cross-chain", or "track bridge transfers".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:bridge-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

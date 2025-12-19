@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate API contract", "create OpenAPI spec", or "document API contract".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:contract-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

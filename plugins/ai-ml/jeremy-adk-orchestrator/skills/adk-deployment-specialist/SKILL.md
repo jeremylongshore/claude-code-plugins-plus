@@ -5,6 +5,8 @@ description: Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Man
   when asked to "deploy ADK agent" or "orchestrate agents".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## What This Skill Does
 

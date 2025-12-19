@@ -12,6 +12,7 @@ allowed-tools:
 - Bash(metrics:*)
 - Bash(testing:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

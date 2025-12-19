@@ -10,9 +10,10 @@ allowed-tools:
 - Edit
 - Grep
 - Glob
-- Bash(config-scan:*, iac-check:*)
+- Bash(config-scan:*), iac-check:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

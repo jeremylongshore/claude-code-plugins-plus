@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "throttle API", "control request rate", or "add throttling".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

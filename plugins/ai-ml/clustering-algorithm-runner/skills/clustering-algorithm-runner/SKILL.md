@@ -5,6 +5,8 @@ description: Execute clustering algorithms (K-means, DBSCAN, hierarchical) to id
   data points".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

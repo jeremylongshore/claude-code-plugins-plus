@@ -10,6 +10,7 @@ allowed-tools:
 name: managing-network-policies
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

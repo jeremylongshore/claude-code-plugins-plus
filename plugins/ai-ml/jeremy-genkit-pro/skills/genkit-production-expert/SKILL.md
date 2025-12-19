@@ -6,6 +6,8 @@ description: Build production Firebase Genkit applications including RAG systems
   RAG".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## What This Skill Does
 

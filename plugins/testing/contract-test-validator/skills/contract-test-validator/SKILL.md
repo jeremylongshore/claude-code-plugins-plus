@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "validate API contract", "run contract tests", or "check consumer contracts".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:contract-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

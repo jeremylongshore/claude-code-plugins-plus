@@ -9,6 +9,8 @@ allowed-tools:
 - Bash
 name: skill-adapter
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Skill Adapter - Universal Plugin Capability Extractor
 

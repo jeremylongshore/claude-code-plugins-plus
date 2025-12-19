@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "generate test report", "create test documentation", or "show test metrics".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:report-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

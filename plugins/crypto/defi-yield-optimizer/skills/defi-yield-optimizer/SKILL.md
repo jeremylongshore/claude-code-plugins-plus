@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "find yield", "optimize returns", or "compare APY".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:yield-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

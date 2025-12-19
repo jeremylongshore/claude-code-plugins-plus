@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "log API requests", "add API logging", or "track API calls".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:log-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "calculate crypto taxes", "compute tax liability", or "generate tax report".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:tax-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

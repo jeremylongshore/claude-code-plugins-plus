@@ -9,6 +9,8 @@ allowed-tools:
 - Bash
 name: plugin-creator
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 # Plugin Creator
 

@@ -12,6 +12,8 @@ allowed-tools:
 - Bash
 name: setting-up-distributed-tracing
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

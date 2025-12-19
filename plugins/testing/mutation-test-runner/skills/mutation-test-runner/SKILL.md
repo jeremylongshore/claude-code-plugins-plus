@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "run mutation tests", "test the tests", or "validate test effectiveness".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mutation-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

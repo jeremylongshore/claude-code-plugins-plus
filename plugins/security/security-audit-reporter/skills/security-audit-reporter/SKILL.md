@@ -10,9 +10,10 @@ allowed-tools:
 - Edit
 - Grep
 - Glob
-- Bash(security-scan:*, report-gen:*)
+- Bash(security-scan:*), report-gen:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

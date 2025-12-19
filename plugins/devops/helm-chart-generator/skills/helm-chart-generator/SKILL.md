@@ -11,6 +11,7 @@ allowed-tools:
 name: generating-helm-charts
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

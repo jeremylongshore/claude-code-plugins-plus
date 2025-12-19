@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "add webhooks", "implement events", or "create event-driven API".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:events-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

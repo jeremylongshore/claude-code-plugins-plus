@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "migrate the API", "upgrade API version", or "migrate to new API".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:migrate-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

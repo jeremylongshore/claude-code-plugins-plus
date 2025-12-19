@@ -11,6 +11,7 @@ allowed-tools:
 - Bash(npm:*)
 - Bash(rum:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

@@ -10,6 +10,7 @@ allowed-tools:
 - Bash(traceroute:*)
 - Grep
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

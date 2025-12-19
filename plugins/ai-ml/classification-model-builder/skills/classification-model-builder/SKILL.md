@@ -5,6 +5,8 @@ description: Build and evaluate classification models for supervised learning ta
   model", or "train classifier".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

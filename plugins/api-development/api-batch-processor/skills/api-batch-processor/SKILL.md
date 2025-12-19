@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "process bulk requests", "batch API calls", or "handle batch operations".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:batch-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

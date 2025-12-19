@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "get crypto news", "check latest announcements", or "scan for updates".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:news-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

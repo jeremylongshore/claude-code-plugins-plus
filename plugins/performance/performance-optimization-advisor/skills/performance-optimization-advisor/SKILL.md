@@ -11,6 +11,7 @@ allowed-tools:
 - Bash(profiling:*)
 - Bash(analysis:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

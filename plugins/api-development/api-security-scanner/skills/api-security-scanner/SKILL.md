@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "scan API security", "check for vulnerabilities", or "audit API security".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:security-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

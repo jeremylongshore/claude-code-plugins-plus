@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "build authentication", "add API auth", or "secure the API".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:auth-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

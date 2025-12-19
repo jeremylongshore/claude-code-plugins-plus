@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "analyze pool", "check TVL", or "calculate impermanent loss".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:liquidity-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

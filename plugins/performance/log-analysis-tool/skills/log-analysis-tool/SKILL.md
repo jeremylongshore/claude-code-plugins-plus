@@ -10,6 +10,7 @@ allowed-tools:
 - Bash(awk:*)
 - Grep
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

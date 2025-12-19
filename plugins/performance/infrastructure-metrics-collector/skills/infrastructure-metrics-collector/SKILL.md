@@ -12,6 +12,7 @@ allowed-tools:
 - Bash(monitoring:*)
 - Bash(system:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

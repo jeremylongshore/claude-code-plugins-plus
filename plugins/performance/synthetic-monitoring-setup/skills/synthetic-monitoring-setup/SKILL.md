@@ -11,6 +11,7 @@ allowed-tools:
 - Bash(curl:*)
 - Bash(monitoring:*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 ## Overview
 

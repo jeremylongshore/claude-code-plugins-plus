@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "manage test environment", "provision test env", or "setup test infrastructure".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:env-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

@@ -5,6 +5,8 @@ description: Validate production readiness of Vertex AI Agent Engine deployments
   scores (0-100%) with actionable recommendations. Use when asked to "validate deploymen...
 allowed-tools: Read, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## What This Skill Does
 

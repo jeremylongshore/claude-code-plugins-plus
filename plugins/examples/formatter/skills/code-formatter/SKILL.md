@@ -7,6 +7,8 @@ description: |
   Handles JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 
 # Code Formatter Skill

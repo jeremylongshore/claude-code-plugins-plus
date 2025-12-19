@@ -11,9 +11,10 @@ allowed-tools:
   - Edit
   - Grep
   - Glob
-  - Bash(pg_dump:*, mysqldump:*, mongodump:*, cron:*)
+  - Bash(pg_dump:*, mysqldump:*, mongodump:*), cron:*)
 version: 1.0.0
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

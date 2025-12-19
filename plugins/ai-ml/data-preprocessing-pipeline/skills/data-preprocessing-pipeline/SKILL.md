@@ -4,6 +4,8 @@ description: Automate data cleaning, transformation, and validation for ML tasks
   Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+version: 1.0.0
 ---
 ## Overview
 

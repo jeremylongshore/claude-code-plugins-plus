@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "monitor the API", "add API metrics", or "setup API monitoring".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:monitor-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

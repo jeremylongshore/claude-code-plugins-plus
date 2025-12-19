@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "add caching", "optimize API performance", or "implement cache layer".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:cache-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites

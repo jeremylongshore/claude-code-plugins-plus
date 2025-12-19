@@ -4,6 +4,7 @@ description: Software engineer specializing in creating production-ready ADK age
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 license: MIT
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## What This Skill Does

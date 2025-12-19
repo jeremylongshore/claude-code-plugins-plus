@@ -7,6 +7,7 @@ description: |
   Trigger with phrases like "scan market movers", "check biggest gainers", or "find pumps".
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:movers-*)
 license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
 ## Prerequisites
