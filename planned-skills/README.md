@@ -1,285 +1,214 @@
-# Planned Skills - 500 Standalone Skills Initiative
+# 500 Standalone Skills Initiative
 
-**Purpose**: Planning directory for creating 500 standalone Claude Code skills.
+**Purpose**: Generate 500 standalone Claude Code Agent Skills organized into 20 categories.
 
-**Location**: `planned-skills/`
-
----
-
-## Contents
-
-### SKILLS-STANDARD-COMPLETE.md (65KB)
-
-**The ONLY document you need** for writing/auditing Claude Skills.
-
-This comprehensive reference combines:
-1. **Master Skills Standard** (Anthropic official spec)
-2. **Appendix A**: Frontmatter Schema Quick Reference
-3. **Appendix B**: Authoring Guide & Patterns
-4. **Appendix C**: Strategy Guide
-
-**Use this for**:
-- Complete SKILL.md structure specification
-- YAML frontmatter fields (name, description, allowed-tools, version, author, license)
-- Instruction-body best practices
-- Security & safety guidance
-- Production-readiness checklist (18-point checklist)
-- Canonical SKILL.md template
-- Description formula & patterns
-- Validation rules with examples
+**Structure**: 20 categories × 25 skills = 500 total skills
 
 ---
 
-## 500 Skills Initiative
+## Quick Stats
 
-### Current State
-- **241 skills** exist (embedded in plugins)
-- **259 more skills** needed to reach 500
-- All existing skills now enterprise-compliant
-
-### Enterprise Standard Fields (Required)
-
-| Field | Type | Required | Example |
-|-------|------|----------|---------|
-| `name` | string | Yes (Anthropic) | `kubernetes-pod-debugger` |
-| `description` | string | Yes (Anthropic) | Clear, with trigger phrases |
-| `allowed-tools` | CSV/list | Yes (Enterprise) | `Read, Write, Bash` |
-| `version` | semver | Yes (Enterprise) | `1.0.0` |
-| `author` | string | Yes (Enterprise) | `Jeremy Longshore <jeremy@intentsolutions.io>` |
-| `license` | string | Yes (Enterprise) | `MIT` |
-| `tags` | array | Recommended | `["devops", "kubernetes"]` |
-
-### Skill Categories to Create
-
-| Category | Count | Examples |
-|----------|-------|----------|
-| DevOps Automation | 40 | CI/CD, deployment, infrastructure |
-| Security & Compliance | 35 | Auditing, scanning, hardening |
-| Database Operations | 30 | Query optimization, migrations |
-| API Development | 25 | Design, testing, documentation |
-| Code Quality | 25 | Review, refactoring, standards |
-| Testing & QA | 25 | Unit, integration, e2e |
-| Documentation | 20 | Technical writing, API docs |
-| Performance | 20 | Profiling, optimization, caching |
-| AI/ML Ops | 20 | Model training, serving |
-| Cloud Architecture | 19 | AWS, GCP, Azure patterns |
-| **TOTAL** | **259** | |
+| Metric | Value |
+|--------|-------|
+| Total Skills | 500 |
+| Categories | 20 |
+| Skills per Category | 25 |
+| Batches | 20 |
+| Status | **Planning** |
 
 ---
 
-## Directory Structure (Planned)
+## Key Decision: Standalone Skills
+
+These 500 skills will be **standalone** in `/skills/`, separate from the 241 plugin-embedded skills.
+
+| Type | Location | Count |
+|------|----------|-------|
+| **Standalone Skills (NEW)** | `/skills/[category]/[skill]/SKILL.md` | 500 planned |
+| Plugin-Embedded Skills | `/plugins/*/skills/*/SKILL.md` | 241 existing |
+| **Total After Completion** | | **741 skills** |
+
+---
+
+## Directory Structure
 
 ```
 planned-skills/
 ├── README.md                          # This file
-├── SKILLS-STANDARD-COMPLETE.md        # Master specification
-├── skill-definitions/                 # Skill definition files
-│   ├── devops-skills.yaml            # DevOps skill definitions
-│   ├── security-skills.yaml          # Security skill definitions
-│   ├── database-skills.yaml          # Database skill definitions
-│   └── ...                           # Other categories
-├── templates/                         # Skill templates
-│   ├── basic-skill.md                # Basic skill template
-│   ├── advanced-skill.md             # Advanced with scripts
-│   └── read-only-skill.md            # Read-only analysis skill
-└── generated/                         # Generated skills (staging)
-    └── batch-001/                    # First batch of generated skills
+├── generation-config.json             # Generation settings
+│
+├── categories/                        # 20 category definitions
+│   ├── 01-devops-basics/
+│   │   ├── category-config.json      # 25 skill definitions
+│   │   └── skills/                   # Generated skills staging
+│   ├── 02-devops-advanced/
+│   ├── 03-security-fundamentals/
+│   ├── 04-security-advanced/
+│   ├── 05-frontend-dev/
+│   ├── 06-backend-dev/
+│   ├── 07-ml-training/
+│   ├── 08-ml-deployment/
+│   ├── 09-test-automation/
+│   ├── 10-performance-testing/
+│   ├── 11-data-pipelines/
+│   ├── 12-data-analytics/
+│   ├── 13-aws-skills/
+│   ├── 14-gcp-skills/
+│   ├── 15-api-development/
+│   ├── 16-api-integration/
+│   ├── 17-technical-docs/
+│   ├── 18-visual-content/
+│   ├── 19-business-automation/
+│   └── 20-enterprise-workflows/
+│
+├── templates/
+│   ├── skill-template.md             # SKILL.md template
+│   ├── category-readme-template.md   # Category README template
+│   └── gemini-prompt-template.md     # Vertex AI prompt
+│
+├── scripts/
+│   ├── generate-batch.js             # Generate skills via Vertex AI
+│   ├── validate-skill.js             # Validate against spec
+│   └── deploy-skills.js              # Deploy to /skills/
+│
+├── batches/
+│   ├── batch-001/ → batch-020/
+│   │   ├── input/                    # Generation prompts
+│   │   ├── output/                   # Raw generated skills
+│   │   ├── validated/                # Validated skills
+│   │   └── metadata.json             # Batch status
+│
+└── logs/
+    ├── generation.log
+    └── validation.log
 ```
 
 ---
 
-## Validation Scripts
+## 20 Categories (500 Skills)
 
-Located in `scripts/`:
+| # | Category | Skills | Priority | Description |
+|---|----------|--------|----------|-------------|
+| 01 | DevOps Basics | 25 | High | Git, Docker, basic CI/CD |
+| 02 | DevOps Advanced | 25 | High | K8s, Terraform, Helm |
+| 03 | Security Fundamentals | 25 | High | Auth, validation, OWASP |
+| 04 | Security Advanced | 25 | High | Pentesting, compliance |
+| 05 | Frontend Dev | 25 | Medium | React, Vue, CSS, a11y |
+| 06 | Backend Dev | 25 | High | Node, Python, Go, APIs |
+| 07 | ML Training | 25 | Medium | PyTorch, TensorFlow, sklearn |
+| 08 | ML Deployment | 25 | Medium | MLOps, serving, monitoring |
+| 09 | Test Automation | 25 | High | Jest, pytest, mocking |
+| 10 | Performance Testing | 25 | Medium | k6, JMeter, profiling |
+| 11 | Data Pipelines | 25 | Medium | Airflow, Spark, ETL |
+| 12 | Data Analytics | 25 | Medium | SQL, visualization, BI |
+| 13 | AWS Skills | 25 | High | Lambda, S3, CloudFormation |
+| 14 | GCP Skills | 25 | High | Cloud Run, BigQuery, Vertex AI |
+| 15 | API Development | 25 | High | REST, GraphQL, OpenAPI |
+| 16 | API Integration | 25 | Medium | Webhooks, OAuth, SDKs |
+| 17 | Technical Docs | 25 | Medium | README, API docs, tutorials |
+| 18 | Visual Content | 25 | Low | Mermaid, diagrams, charts |
+| 19 | Business Automation | 25 | Medium | Workflows, spreadsheets |
+| 20 | Enterprise Workflows | 25 | Low | Jira, governance, PM |
+| | **TOTAL** | **500** | | |
 
-- `validate-skills-schema.py` - Validates against Anthropic + Enterprise spec
-- `fix-skills-enterprise.py` - Batch fixes missing enterprise fields
-- `audit-skills-quality.py` - Quality scoring and analysis
+---
 
-### Run Validation
+## Generation Workflow
+
+### Phase 1: Define (Complete)
+- [x] Create directory structure
+- [x] Define 20 categories
+- [x] Define 25 skills per category (in category-config.json)
+- [x] Create templates and scripts
+
+### Phase 2: Generate
+- [ ] Batch 001: DevOps Basics (25 skills)
+- [ ] Batch 002: DevOps Advanced (25 skills)
+- [ ] ... (batches 003-020)
+
+### Phase 3: Validate
+- [ ] Run validation on each batch
+- [ ] Fix any issues
+- [ ] Move to validated/
+
+### Phase 4: Deploy
+- [ ] Deploy to /skills/ directory
+- [ ] Update marketplace
+- [ ] Release
+
+---
+
+## Commands
 
 ```bash
-# Full validation
-python3 scripts/validate-skills-schema.py
+# Generate a batch
+node scripts/generate-batch.js --category 01-devops-basics --batch 001
 
-# Fix missing enterprise fields
-python3 scripts/fix-skills-enterprise.py
+# Validate a batch
+node scripts/validate-skill.js --batch 001
 
-# Quality audit
-python3 scripts/audit-skills-quality.py
+# Deploy validated skills
+node scripts/deploy-skills.js --batch 001
+
+# Dry run (show what would be deployed)
+node scripts/deploy-skills.js --batch 001 --dry-run
 ```
 
 ---
 
-## Description Writing Guide (Critical for Discovery)
+## Enterprise Standard
 
-The `description` field is **the most important field** for skill activation. Claude uses it to decide when to invoke your skill from potentially 100+ available skills.
-
-### The Description Formula
-
-```
-[Action Verbs] + [Specific Capabilities] + [Use When] + [Trigger Phrases]
-```
-
-**Max Length**: 1024 characters
-
-### Action Verbs (Use These)
-
-| Category | Action Verbs |
-|----------|-------------|
-| Data | Extract, analyze, parse, transform, convert, merge, split, validate |
-| Creation | Generate, create, build, produce, synthesize, compose |
-| Modification | Edit, update, refactor, optimize, fix, enhance, migrate |
-| Analysis | Review, audit, scan, inspect, diagnose, profile, assess |
-| Operations | Deploy, execute, run, configure, install, setup, provision |
-| Documentation | Document, explain, summarize, annotate, describe |
-
-### Description Structure
-
-**Pattern 1: Action-focused (Recommended)**
-```yaml
-description: |
-  Extract text and tables from PDFs, fill forms, merge documents.
-  Use when working with PDF files or when user mentions PDFs, forms, or document extraction.
-```
-
-**Pattern 2: Capability + Trigger**
-```yaml
-description: |
-  Kubernetes pod debugging and troubleshooting toolkit.
-  Use when pods crash, fail to start, or exhibit unexpected behavior.
-  Trigger with "debug pod", "pod failing", "container crash".
-```
-
-**Pattern 3: Domain-specific**
-```yaml
-description: |
-  Analyze SQL query performance and suggest optimizations.
-  Use for slow queries, missing indexes, N+1 problems, and query plan analysis.
-  Trigger with "optimize query", "slow SQL", "query performance".
-```
-
-### Good vs Bad Examples
-
-**BAD: Too Vague**
-```yaml
-description: Helps with documents
-description: Processes data
-description: Does stuff with files
-```
-
-**GOOD: Specific with Triggers**
-```yaml
-description: |
-  Extract text and tables from PDF files, fill forms, merge documents.
-  Use when working with PDF files or when the user mentions PDFs, forms, or document extraction.
-```
-
-**BAD: No Activation Context**
-```yaml
-description: For data analysis
-```
-
-**GOOD: Clear When to Activate**
-```yaml
-description: |
-  Analyze Excel spreadsheets, create pivot tables, generate charts.
-  Use when working with Excel files, spreadsheets, or .xlsx files.
-  Trigger with "analyze spreadsheet", "excel report", "pivot table".
-```
-
-### Enterprise Description Template
-
-```yaml
-description: |
-  [Primary capability as action verb]. [Secondary capabilities].
-  Use when [2-3 specific scenarios].
-  Trigger with "[phrase1]", "[phrase2]", "[phrase3]".
-```
-
-### Key Rules
-
-1. **Always write in third person** (not "I can help" or "You can use")
-2. **Include specific file types** (.pdf, .xlsx, .yaml)
-3. **Include domain keywords** (Kubernetes, SQL, Docker)
-4. **Define boundaries** (what it can NOT do)
-5. **Keep under 1024 characters**
-
----
-
-## Quick Reference: SKILL.md Template
+All skills follow the enterprise standard:
 
 ```yaml
 ---
-name: skill-name-kebab-case
-description: |
-  Primary capabilities as action verbs. Secondary features.
-  Use when [3-4 trigger scenarios].
-  Trigger with "phrase 1", "phrase 2", "phrase 3".
-allowed-tools:
+name: skill-name-kebab-case          # Required, max 64 chars
+description: |                        # Required, max 1024 chars
+  [Action verb] [capability].
+  Use when [scenarios].
+  Trigger with "[phrases]".
+allowed-tools:                        # Enterprise required
   - Read
   - Write
   - Bash
-version: 1.0.0
+version: 1.0.0                        # Enterprise required
 author: Jeremy Longshore <jeremy@intentsolutions.io>
-license: MIT
-tags:
-  - category1
-  - category2
+license: MIT                          # Enterprise required
+tags:                                 # Recommended
+  - category
+  - domain
 ---
-
-# Skill Name
-
-Brief purpose statement.
-
-## Overview
-
-What this skill does, when to use it, key capabilities.
-
-## Prerequisites
-
-Required tools, APIs, environment variables.
-
-## Instructions
-
-### Step 1: Action Verb
-
-Clear, imperative instructions.
-
-### Step 2: Action Verb
-
-More instructions.
-
-## Output
-
-What artifacts this skill produces.
-
-## Error Handling
-
-Common failures and solutions.
-
-## Examples
-
-### Example 1: Basic Scenario
-
-Input and expected output.
-
-## Resources
-
-Links to bundled files using `{baseDir}`.
 ```
 
 ---
 
-## External References
+## Reference Documents
 
-- [Anthropic Agent Skills Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
-- [Claude Code Skills](https://code.claude.com/docs/en/skills)
-- [Lee Han Chung Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)
-- [Anthropic Engineering Blog](https://www.anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+- `SKILLS-STANDARD-COMPLETE.md` - Master specification (65KB)
+- `SKILLS-REFERENCE-MANUAL.md` - Quick reference (15KB)
+- `STATUS-2025-12-19.md` - Progress tracking
+
+---
+
+## Production Directory
+
+After deployment, skills will be in:
+
+```
+skills/
+├── devops-basics/
+│   ├── git-workflow-manager/SKILL.md
+│   ├── docker-container-basics/SKILL.md
+│   └── ... (25 total)
+├── devops-advanced/
+│   └── ... (25 total)
+├── security-fundamentals/
+│   └── ... (25 total)
+└── ... (20 categories total)
+```
 
 ---
 
 **Last Updated**: 2025-12-19
 **Maintained By**: Intent Solutions (Jeremy Longshore)
-**Goal**: 500 enterprise-grade standalone skills
+**Target**: 500 standalone skills + 241 embedded = 741 total
