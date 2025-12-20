@@ -13,6 +13,7 @@
   "dependencies": {
     "@tailwindcss/vite": "^4.1.17",
     "astro": "^5.16.0",
+    "fuse.js": "^7.1.0",
     "tailwindcss": "^4.1.17"
   }
 }

@@ -1,0 +1,640 @@
+---
+/**
+ * Plugin Catalog Page
+ *
+ * Full catalog with fuzzy search, filtering, sorting, and keyboard shortcuts
+ * Bead ID: claude-code-plugins-np1
+ */
+
+import Layout from '../layouts/Layout.astro';
+import catalogData from '../data/catalog.json';
+
+const { stats, plugins } = catalogData;
+
+// Extract unique categories for filter
+const categories = [...new Set(plugins.map((p: any) => p.category))].sort();
+
+// Format date helper (server-side)
+function formatDate(epoch: number): string {
+    if (!epoch) return '';
+    const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+}
+---
+
+<Layout title="Plugin Catalog - Claude Code Plugins">
+    <div class="catalog-container">
+        <!-- Header -->
+        <header class="catalog-header">
+            <h1>Plugin Catalog</h1>
+            <p class="subtitle">{stats.totalPlugins} plugins • {stats.totalSkills} AI skills • {stats.pluginsWithSkills} skill-enabled</p>
+        </header>
+
+        <!-- Search & Filters -->
+        <div class="search-controls">
+            <div class="search-box">
+                <input
+                    type="search"
+                    id="plugin-search"
+                    placeholder="Search plugins... (Press / to focus)"
+                    aria-label="Search plugins"
+                />
+                <span class="search-hint">
+                    <kbd>/</kbd> to search
+                    <kbd>esc</kbd> to clear
+                    <kbd>↑↓</kbd> navigate
+                </span>
+            </div>
+
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label>Category:</label>
+                    <select id="category-filter">
+                        <option value="all">All Categories</option>
+                        {categories.map((cat: string) => (
+                            <option value={cat}>{cat}</option>
+                        ))}
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Type:</label>
+                    <select id="type-filter">
+                        <option value="all">All Types</option>
+                        <option value="with-skills">With Skills</option>
+                        <option value="no-skills">No Skills</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Status:</label>
+                    <select id="status-filter">
+                        <option value="all">All Status</option>
+                        <option value="active">Active (&lt;30d)</option>
+                        <option value="maintained">Maintained (&lt;90d)</option>
+                        <option value="stale">Stale (≥90d)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Sort:</label>
+                    <select id="sort-select">
+                        <option value="relevance">Relevance</option>
+                        <option value="updated">Recently Updated</option>
+                        <option value="skills">Most Skills</option>
+                        <option value="alphabetical">Alphabetical</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results count -->
+        <div class="results-info">
+            <span id="results-count">Showing {plugins.length} plugins</span>
+        </div>
+
+        <!-- Plugin Grid -->
+        <div id="plugin-grid" class="plugin-grid">
+            {plugins.map((plugin: any) => (
+                <div
+                    class="plugin-card"
+                    data-slug={plugin.slug}
+                    data-category={plugin.category}
+                    data-skills={plugin.hasSkills}
+                    data-status={plugin.status}
+                    data-skill-count={plugin.skillCount}
+                    data-updated={plugin.lastUpdatedEpoch}
+                >
+                    <div class="card-header">
+                        <h3>{plugin.displayName}</h3>
+                        <div class="badges">
+                            {plugin.isFeatured && <span class="badge featured">Featured</span>}
+                            {plugin.isNew && <span class="badge new">New</span>}
+                            <span class={`status-dot ${plugin.status}`} title={plugin.status}></span>
+                        </div>
+                    </div>
+
+                    <p class="description">{plugin.description}</p>
+
+                    <div class="card-meta">
+                        <span class="category">{plugin.category}</span>
+                        {plugin.hasSkills && (
+                            <span class="skills-badge">{plugin.skillCount} skill{plugin.skillCount !== 1 ? 's' : ''}</span>
+                        )}
+                        {plugin.lastUpdatedDate && (
+                            <span class="updated">{formatDate(plugin.lastUpdatedEpoch)}</span>
+                        )}
+                    </div>
+
+                    <div class="card-actions">
+                        <button
+                            class="btn-copy-install"
+                            data-command={plugin.installCommand}
+                        >
+                            Copy Install Command
+                        </button>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <!-- No results -->
+        <div id="no-results" class="no-results" style="display: none;">
+            <p>No plugins found matching your criteria.</p>
+            <button id="clear-filters" class="btn-secondary">Clear Filters</button>
+        </div>
+    </div>
+</Layout>
+
+<script>
+    import Fuse from 'fuse.js';
+
+    // Get DOM elements
+    const searchInput = document.getElementById('plugin-search') as HTMLInputElement;
+    const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
+    const typeFilter = document.getElementById('type-filter') as HTMLSelectElement;
+    const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement;
+    const pluginGrid = document.getElementById('plugin-grid') as HTMLElement;
+    const resultsCount = document.getElementById('results-count') as HTMLElement;
+    const noResults = document.getElementById('no-results') as HTMLElement;
+    const clearFiltersBtn = document.getElementById('clear-filters') as HTMLButtonElement;
+
+    // Get all plugin cards
+    const allCards = Array.from(document.querySelectorAll('.plugin-card'));
+
+    // Setup Fuse.js for fuzzy search
+    const plugins = allCards.map(card => ({
+        element: card as HTMLElement,
+        name: (card as HTMLElement).dataset.slug || '',
+        description: card.querySelector('.description')?.textContent || '',
+        category: (card as HTMLElement).dataset.category || ''
+    }));
+
+    const fuse = new Fuse(plugins, {
+        keys: ['name', 'description', 'category'],
+        threshold: 0.3,
+        includeScore: true
+    });
+
+    // Relevance scoring function
+    function calculateRelevance(card: HTMLElement): number {
+        let score = 0;
+        const skillCount = parseInt(card.dataset.skillCount || '0', 10);
+        const status = card.dataset.status || '';
+
+        // Skills are valuable
+        score += skillCount * 5;
+
+        // Active status bonus
+        if (status === 'active') score += 10;
+        else if (status === 'maintained') score += 5;
+
+        return score;
+    }
+
+    // Format date helper (client-side)
+    function formatDate(epoch: number): string {
+        const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        if (days < 7) return `${days} days ago`;
+        if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+        if (days < 365) return `${Math.floor(days / 30)} months ago`;
+        return `${Math.floor(days / 365)} years ago`;
+    }
+
+    // Filter and sort function
+    function filterAndSort() {
+        const searchQuery = searchInput.value.trim().toLowerCase();
+        const category = categoryFilter.value;
+        const type = typeFilter.value;
+        const status = statusFilter.value;
+        const sortBy = sortSelect.value;
+
+        let visibleCards: HTMLElement[] = [];
+
+        // Apply search (fuzzy if query exists)
+        if (searchQuery) {
+            const results = fuse.search(searchQuery);
+            visibleCards = results.map(r => r.item.element);
+        } else {
+            visibleCards = allCards as HTMLElement[];
+        }
+
+        // Apply filters
+        visibleCards = visibleCards.filter(card => {
+            // Category filter
+            if (category !== 'all' && card.dataset.category !== category) return false;
+
+            // Type filter (skills)
+            if (type === 'with-skills' && card.dataset.skills !== 'true') return false;
+            if (type === 'no-skills' && card.dataset.skills === 'true') return false;
+
+            // Status filter
+            if (status !== 'all' && card.dataset.status !== status) return false;
+
+            return true;
+        });
+
+        // Apply sorting
+        visibleCards.sort((a, b) => {
+            switch (sortBy) {
+                case 'relevance':
+                    return calculateRelevance(b) - calculateRelevance(a);
+
+                case 'updated':
+                    const aUpdated = parseInt(a.dataset.updated || '0', 10);
+                    const bUpdated = parseInt(b.dataset.updated || '0', 10);
+                    return bUpdated - aUpdated;
+
+                case 'skills':
+                    const aSkills = parseInt(a.dataset.skillCount || '0', 10);
+                    const bSkills = parseInt(b.dataset.skillCount || '0', 10);
+                    return bSkills - aSkills;
+
+                case 'alphabetical':
+                    const aSlug = a.dataset.slug || '';
+                    const bSlug = b.dataset.slug || '';
+                    return aSlug.localeCompare(bSlug);
+
+                default:
+                    return 0;
+            }
+        });
+
+        // Update display
+        allCards.forEach(card => (card as HTMLElement).style.display = 'none');
+        visibleCards.forEach(card => card.style.display = 'flex');
+
+        // Update results count
+        resultsCount.textContent = `Showing ${visibleCards.length} plugin${visibleCards.length !== 1 ? 's' : ''}`;
+
+        // Show/hide no results message
+        if (visibleCards.length === 0) {
+            noResults.style.display = 'block';
+            pluginGrid.style.display = 'none';
+        } else {
+            noResults.style.display = 'none';
+            pluginGrid.style.display = 'grid';
+        }
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', filterAndSort);
+    categoryFilter.addEventListener('change', filterAndSort);
+    typeFilter.addEventListener('change', filterAndSort);
+    statusFilter.addEventListener('change', filterAndSort);
+    sortSelect.addEventListener('change', filterAndSort);
+
+    // Clear filters
+    clearFiltersBtn.addEventListener('click', () => {
+        searchInput.value = '';
+        categoryFilter.value = 'all';
+        typeFilter.value = 'all';
+        statusFilter.value = 'all';
+        sortSelect.value = 'relevance';
+        filterAndSort();
+    });
+
+    // Copy install command
+    document.querySelectorAll('.btn-copy-install').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const command = (e.target as HTMLElement).dataset.command;
+            if (command) {
+                await navigator.clipboard.writeText(command);
+                const originalText = (e.target as HTMLElement).textContent;
+                (e.target as HTMLElement).textContent = 'Copied!';
+                setTimeout(() => {
+                    (e.target as HTMLElement).textContent = originalText;
+                }, 2000);
+            }
+        });
+    });
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        // Focus search with /
+        if (e.key === '/' && document.activeElement !== searchInput) {
+            e.preventDefault();
+            searchInput.focus();
+        }
+
+        // Clear search with Escape
+        if (e.key === 'Escape') {
+            if (document.activeElement === searchInput) {
+                searchInput.value = '';
+                searchInput.blur();
+                filterAndSort();
+            }
+        }
+    });
+
+    // Initial sort by relevance
+    filterAndSort();
+</script>
+
+<script is:inline define:vars={{ plugins }}>
+    // Helper function available globally
+    function formatDate(epoch) {
+        const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
+        if (days === 0) return 'Today';
+        if (days === 1) return 'Yesterday';
+        if (days < 7) return `${days} days ago`;
+        if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+        if (days < 365) return `${Math.floor(days / 30)} months ago`;
+        return `${Math.floor(days / 365)} years ago`;
+    }
+
+    // Update all date displays
+    document.querySelectorAll('.updated').forEach(el => {
+        const card = el.closest('.plugin-card');
+        const epoch = parseInt(card?.dataset.updated || '0', 10);
+        if (epoch) {
+            el.textContent = formatDate(epoch);
+        }
+    });
+</script>
+
+<style>
+    .catalog-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .catalog-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .catalog-header h1 {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+        color: var(--brand-mid-gray);
+        font-size: 1.1rem;
+    }
+
+    /* Search Controls */
+    .search-controls {
+        margin-bottom: 2rem;
+    }
+
+    .search-box {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    #plugin-search {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        border: 2px solid var(--brand-light-gray);
+        border-radius: 8px;
+        background: var(--brand-light);
+    }
+
+    #plugin-search:focus {
+        outline: none;
+        border-color: var(--brand-orange);
+    }
+
+    .search-hint {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.85rem;
+        color: var(--brand-mid-gray);
+        pointer-events: none;
+    }
+
+    .search-hint kbd {
+        background: var(--brand-light-gray);
+        padding: 0.2rem 0.5rem;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.8rem;
+        margin: 0 0.2rem;
+    }
+
+    .filter-controls {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .filter-group select {
+        padding: 0.5rem 1rem;
+        border: 2px solid var(--brand-light-gray);
+        border-radius: 6px;
+        background: var(--brand-light);
+        font-size: 0.95rem;
+    }
+
+    /* Results */
+    .results-info {
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+        color: var(--brand-mid-gray);
+    }
+
+    /* Plugin Grid */
+    .plugin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .plugin-card {
+        display: flex;
+        flex-direction: column;
+        padding: 1.5rem;
+        background: var(--brand-light);
+        border: 2px solid var(--brand-light-gray);
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+
+    .plugin-card:hover {
+        border-color: var(--brand-orange);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: start;
+        margin-bottom: 1rem;
+    }
+
+    .card-header h3 {
+        font-size: 1.3rem;
+        margin: 0;
+        color: var(--brand-dark);
+        text-transform: capitalize;
+    }
+
+    .badges {
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+    }
+
+    .badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge.featured {
+        background: var(--brand-orange);
+        color: white;
+    }
+
+    .badge.new {
+        background: var(--brand-green);
+        color: white;
+    }
+
+    .status-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+    }
+
+    .status-dot.active {
+        background: var(--brand-green);
+    }
+
+    .status-dot.maintained {
+        background: var(--brand-orange);
+    }
+
+    .status-dot.stale {
+        background: var(--brand-mid-gray);
+    }
+
+    .description {
+        flex: 1;
+        margin: 0 0 1rem 0;
+        color: var(--brand-dark);
+        line-height: 1.5;
+        font-size: 0.95rem;
+    }
+
+    .card-meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+        font-size: 0.85rem;
+    }
+
+    .category {
+        padding: 0.25rem 0.75rem;
+        background: var(--brand-light-gray);
+        border-radius: 12px;
+        color: var(--brand-dark);
+        font-weight: 600;
+    }
+
+    .skills-badge {
+        padding: 0.25rem 0.75rem;
+        background: var(--brand-blue);
+        color: white;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+
+    .updated {
+        color: var(--brand-mid-gray);
+    }
+
+    .card-actions {
+        margin-top: auto;
+    }
+
+    .btn-copy-install {
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        background: var(--brand-orange);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-copy-install:hover {
+        background: var(--brand-orange-dark);
+    }
+
+    /* No results */
+    .no-results {
+        text-align: center;
+        padding: 4rem 2rem;
+    }
+
+    .no-results p {
+        font-size: 1.2rem;
+        color: var(--brand-mid-gray);
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-secondary {
+        padding: 0.75rem 1.5rem;
+        background: transparent;
+        color: var(--brand-dark);
+        border: 2px solid var(--brand-dark);
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+        background: var(--brand-dark);
+        color: var(--brand-light);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .plugin-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .filter-controls {
+            flex-direction: column;
+        }
+
+        .search-hint {
+            display: none;
+        }
+    }
+</style>
