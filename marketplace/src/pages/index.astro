@@ -1,5 +1,53 @@
 ---
 // Claude Code Plugins Marketplace - Homepage
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load catalog data for featured plugins
+const catalogPath = path.join(process.cwd(), 'src/data/catalog.json');
+const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+
+// Get featured plugins (up to 6) - prioritize: featured > hasSkills > active > new
+const featuredPlugins = catalog.plugins
+    .filter((p: any) => p.isFeatured || p.hasSkills)
+    .sort((a: any, b: any) => {
+        // Featured first
+        if (a.isFeatured && !b.isFeatured) return -1;
+        if (!a.isFeatured && b.isFeatured) return 1;
+
+        // Skills plugins next
+        if (a.hasSkills && !b.hasSkills) return -1;
+        if (!a.hasSkills && b.hasSkills) return 1;
+
+        // Active status preferred
+        if (a.status === 'active' && b.status !== 'active') return -1;
+        if (a.status !== 'active' && b.status === 'active') return 1;
+
+        // Most recent
+        return (b.lastUpdatedEpoch || 0) - (a.lastUpdatedEpoch || 0);
+    })
+    .slice(0, 6);
+
+// Helper functions
+function formatDate(epoch: number): string {
+    if (!epoch) return '';
+    const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+}
+
+function getStatusColor(status: string): string {
+    switch (status) {
+        case 'active': return '#22c55e';
+        case 'maintained': return '#eab308';
+        case 'stale': return '#94a3b8';
+        default: return '#94a3b8';
+    }
+}
 ---
 
 <!DOCTYPE html>
@@ -378,6 +426,175 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        /* Featured Plugins Section */
+        .featured-plugins {
+            padding: 8rem 4rem;
+            background: var(--brand-light);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .featured-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            border: 2px solid transparent;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(217, 119, 87, 0.15);
+            border-color: var(--brand-orange);
+        }
+
+        .featured-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+
+        .featured-card-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .featured-card-title h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        .skill-count-badge {
+            background: var(--brand-orange);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .featured-card-badges {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .featured-badge {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            font-size: 0.9rem;
+        }
+
+        .badge-featured {
+            background: rgba(217, 119, 87, 0.1);
+        }
+
+        .badge-new {
+            background: rgba(120, 140, 93, 0.1);
+        }
+
+        .featured-card-description {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .featured-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid var(--brand-light-gray);
+            margin-top: auto;
+        }
+
+        .featured-card-meta {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .category-pill {
+            background: var(--brand-light-gray);
+            color: var(--brand-mid-gray);
+            padding: 0.25rem 0.75rem;
+            border-radius: 100px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--brand-mid-gray);
+            text-transform: capitalize;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .last-updated {
+            font-size: 0.8rem;
+            color: var(--brand-mid-gray);
+            font-style: italic;
+        }
+
+        .featured-cta {
+            text-align: center;
+        }
+
+        .btn-browse-all {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2rem;
+            background: var(--brand-orange);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .btn-browse-all:hover {
+            background: var(--brand-orange-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(217, 119, 87, 0.3);
         }
 
         /* Features Section */
@@ -970,8 +1187,12 @@
                 display: none;
             }
 
-            .hero, .features, .categories, .process, .cta {
+            .hero, .features, .categories, .process, .cta, .featured-plugins {
                 padding: 4rem 2rem;
+            }
+
+            .featured-grid {
+                grid-template-columns: 1fr;
             }
 
             .features-grid {
@@ -1028,6 +1249,25 @@
             .footer-copy {
                 font-size: 0.8rem;
                 line-height: 1.4;
+            }
+
+            /* Featured plugins mobile fix */
+            .featured-plugins {
+                padding: 3rem 1rem;
+            }
+
+            .featured-grid {
+                gap: 1rem;
+            }
+
+            .featured-card {
+                padding: 1.5rem;
+            }
+
+            .featured-card-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
             }
 
             /* Skills section mobile fixes */
@@ -1353,6 +1593,56 @@
                     </defs>
                 </svg>
             </div>
+        </div>
+    </section>
+
+    <!-- Featured Plugins Section -->
+    <section class="featured-plugins">
+        <div class="section-label">Top Picks</div>
+        <h2 class="section-title">Featured Plugins with Agent Skills</h2>
+
+        <div class="featured-grid">
+            {featuredPlugins.map((plugin: any) => (
+                <a href={`/plugins/${plugin.slug}`} class="featured-card">
+                    <div class="featured-card-header">
+                        <div class="featured-card-title">
+                            <h3>{plugin.displayName}</h3>
+                            {plugin.hasSkills && (
+                                <span class="skill-count-badge">{plugin.skillCount} skill{plugin.skillCount > 1 ? 's' : ''}</span>
+                            )}
+                        </div>
+                        <div class="featured-card-badges">
+                            {plugin.badges.map((badge: string) => (
+                                <span class={`featured-badge badge-${badge}`}>
+                                    {badge === 'featured' ? '⭐' : '🆕'}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+
+                    <p class="featured-card-description">{plugin.description}</p>
+
+                    <div class="featured-card-footer">
+                        <div class="featured-card-meta">
+                            <span class="category-pill">{plugin.category}</span>
+                            <span class="status-indicator">
+                                <span class="status-dot" style={`background-color: ${getStatusColor(plugin.status)}`}></span>
+                                {plugin.status}
+                            </span>
+                        </div>
+                        <span class="last-updated">{formatDate(plugin.lastUpdatedEpoch)}</span>
+                    </div>
+                </a>
+            ))}
+        </div>
+
+        <div class="featured-cta">
+            <a href="/plugins" class="btn-browse-all">
+                Browse All 258 Plugins
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
         </div>
     </section>
 
