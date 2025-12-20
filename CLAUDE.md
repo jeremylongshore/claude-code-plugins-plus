@@ -11,6 +11,10 @@
 
 # CLAUDE.md
 
+
+### Beads upgrades
+- After upgrading `bd`, run: `bd info --whats-new`
+- If `bd info` warns about hooks, run: `bd hooks install`
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Repository Overview
