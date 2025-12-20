@@ -1356,6 +1356,141 @@ function getStatusColor(status: string): string {
             .process-grid {
                 grid-template-columns: 1fr;
             }
+
+            /* Search container mobile */
+            .search-container {
+                margin: 2rem 0;
+            }
+        }
+
+        /* ========================================
+           SEARCH BAR STYLES
+           ======================================== */
+        .search-container {
+            max-width: 800px;
+            margin: 3rem auto 2rem;
+            position: relative;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            color: var(--brand-mid-gray);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 3.5rem 1rem 3.5rem;
+            font-size: 1rem;
+            border: 2px solid var(--brand-light-gray);
+            border-radius: 100px;
+            background: white;
+            color: var(--brand-dark);
+            font-family: 'Poppins', Arial, sans-serif;
+            transition: all 0.3s var(--transition-smooth);
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 4px rgba(217, 119, 87, 0.1);
+        }
+
+        .search-input::placeholder {
+            color: var(--brand-mid-gray);
+        }
+
+        .clear-search-btn {
+            position: absolute;
+            right: 1.25rem;
+            background: none;
+            border: none;
+            font-size: 1.75rem;
+            color: var(--brand-mid-gray);
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            line-height: 1;
+            transition: color 0.2s;
+            z-index: 2;
+        }
+
+        .clear-search-btn:hover {
+            color: var(--brand-dark);
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-result-item {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--brand-light-gray);
+            cursor: pointer;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--brand-light-gray);
+        }
+
+        .search-result-title {
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin-bottom: 0.25rem;
+            text-transform: capitalize;
+        }
+
+        .search-result-desc {
+            font-size: 0.875rem;
+            color: var(--brand-mid-gray);
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .search-result-meta {
+            font-size: 0.75rem;
+            color: var(--brand-mid-gray);
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .search-no-results {
+            padding: 2rem;
+            text-align: center;
+            color: var(--brand-mid-gray);
         }
     </style>
 </head>
@@ -1381,6 +1516,25 @@ function getStatusColor(status: string): string {
         <p class="hero-subtitle">
             Discover 258 plugins with 241 embedded AI Skills that activate automatically to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
         </p>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input
+                    type="text"
+                    id="plugin-search"
+                    class="search-input"
+                    placeholder="Search 258 plugins by name, description, category, or skills..."
+                    autocomplete="off"
+                />
+                <button id="clear-search" class="clear-search-btn" style="display: none;">×</button>
+            </div>
+            <div id="search-results" class="search-results"></div>
+        </div>
 
         <div class="stats-bar">
             <div class="stat-item">
@@ -1861,7 +2015,7 @@ function getStatusColor(status: string): string {
         </div>
     </footer>
 
-    <script>
+    <script is:inline define:vars={{ pluginsData: catalog.plugins }}>
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1909,6 +2063,98 @@ function getStatusColor(status: string): string {
                     this.style.color = '';
                 }, 2000);
             });
+        });
+
+        // ========================================
+        // SEARCH FUNCTIONALITY
+        // ========================================
+        const searchInput = document.getElementById('plugin-search');
+        const clearBtn = document.getElementById('clear-search');
+        const searchResults = document.getElementById('search-results');
+
+        // Catalog data embedded for search
+        const plugins = pluginsData;
+
+        let searchTimeout;
+
+        function performSearch(query) {
+            const q = query.toLowerCase().trim();
+
+            if (!q) {
+                searchResults.classList.remove('show');
+                clearBtn.style.display = 'none';
+                return;
+            }
+
+            clearBtn.style.display = 'block';
+
+            // Filter plugins
+            const results = plugins.filter(plugin => {
+                return (
+                    plugin.displayName?.toLowerCase().includes(q) ||
+                    plugin.description?.toLowerCase().includes(q) ||
+                    plugin.category?.toLowerCase().includes(q) ||
+                    plugin.tags?.some(tag => tag.toLowerCase().includes(q)) ||
+                    plugin.slug?.toLowerCase().includes(q)
+                );
+            }).slice(0, 10); // Limit to top 10 results
+
+            // Display results
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div class="search-no-results">No plugins found matching "' + query + '"</div>';
+                searchResults.classList.add('show');
+            } else {
+                searchResults.innerHTML = results.map(plugin => `
+                    <a href="/plugins/${plugin.slug}" class="search-result-item">
+                        <div class="search-result-title">${plugin.displayName || plugin.slug}</div>
+                        <div class="search-result-desc">${plugin.description || 'No description available'}</div>
+                        <div class="search-result-meta">
+                            <span>${plugin.category || 'uncategorized'}</span>
+                            ${plugin.hasSkills ? '<span>🎯 ' + (plugin.skillCount || 0) + ' skill' + (plugin.skillCount > 1 ? 's' : '') + '</span>' : ''}
+                        </div>
+                    </a>
+                `).join('');
+                searchResults.classList.add('show');
+            }
+        }
+
+        // Search on input
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value);
+            }, 300);
+        });
+
+        // Clear search
+        clearBtn.addEventListener('click', () => {
+            searchInput.value = '';
+            searchResults.classList.remove('show');
+            clearBtn.style.display = 'none';
+            searchInput.focus();
+        });
+
+        // Close results when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !searchResults.contains(e.target) && !clearBtn.contains(e.target)) {
+                searchResults.classList.remove('show');
+            }
+        });
+
+        // Keep results open when clicking inside
+        searchResults.addEventListener('click', (e) => {
+            if (e.target.classList.contains('search-result-item') || e.target.closest('.search-result-item')) {
+                // Let the link work normally
+            } else {
+                e.stopPropagation();
+            }
+        });
+
+        // ESC key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchResults.classList.remove('show');
+            }
         });
     </script>
 </body>
