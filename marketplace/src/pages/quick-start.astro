@@ -1,0 +1,576 @@
+---
+/**
+ * Quick-Start Templates Page
+ *
+ * Pre-configured plugin stacks for common workflows:
+ * - Security Hardening
+ * - Full Stack Development
+ * - Testing Excellence
+ * - DevOps Automation
+ * - Python Mastery
+ * - API Development
+ *
+ * Users can copy install scripts to get started instantly.
+ *
+ * Bead ID: claude-code-plugins-1y9
+ */
+
+import Layout from '../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load conflicts data for recommendations
+const conflictsPath = path.join(process.cwd(), 'src/data/conflicts.json');
+const conflicts = JSON.parse(fs.readFileSync(conflictsPath, 'utf8'));
+
+// Load catalog to get plugin details
+const catalogPath = path.join(process.cwd(), 'src/data/catalog.json');
+const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+
+// Template definitions with descriptions and icons
+const templates = [
+    {
+        id: 'security-hardening',
+        name: 'Security Hardening Stack',
+        icon: '🛡️',
+        description: 'Comprehensive security coverage for your codebase with general auditing, backend security, and frontend protection.',
+        useCase: 'Perfect for applications handling sensitive data, HIPAA/PCI compliance, or security-critical systems.',
+        plugins: conflicts.recommendations['security-hardening'],
+        tags: ['Security', 'Compliance', 'Auditing']
+    },
+    {
+        id: 'full-stack-dev',
+        name: 'Full Stack Development',
+        icon: '🚀',
+        description: 'Complete full-stack development toolkit covering frontend, backend, and database optimization.',
+        useCase: 'Ideal for building modern web applications from scratch or enhancing existing full-stack projects.',
+        plugins: conflicts.recommendations['full-stack-dev'],
+        tags: ['Web Development', 'Full Stack', 'Architecture']
+    },
+    {
+        id: 'testing-excellence',
+        name: 'Testing Excellence',
+        icon: '✅',
+        description: 'Comprehensive testing suite combining functional tests, performance analysis, and security validation.',
+        useCase: 'Essential for teams focused on code quality, CI/CD pipelines, and production readiness.',
+        plugins: conflicts.recommendations['testing-excellence'],
+        tags: ['Testing', 'QA', 'Performance']
+    },
+    {
+        id: 'devops-automation',
+        name: 'DevOps Automation',
+        icon: '⚙️',
+        description: 'Complete DevOps toolkit for container orchestration, Kubernetes, and deployment automation.',
+        useCase: 'Perfect for teams managing cloud infrastructure, Kubernetes clusters, or complex deployment pipelines.',
+        plugins: conflicts.recommendations['devops-automation'],
+        tags: ['DevOps', 'Kubernetes', 'Deployment']
+    },
+    {
+        id: 'python-mastery',
+        name: 'Python Mastery',
+        icon: '🐍',
+        description: 'Advanced Python development with modern best practices, comprehensive testing, and performance optimization.',
+        useCase: 'Ideal for Python developers building data science, web, or automation projects.',
+        plugins: conflicts.recommendations['python-mastery'],
+        tags: ['Python', 'Development', 'Testing']
+    },
+    {
+        id: 'api-development',
+        name: 'API Development',
+        icon: '🌐',
+        description: 'Complete API development workflow with architecture design, documentation generation, and security auditing.',
+        useCase: 'Perfect for building RESTful APIs, GraphQL servers, or microservices architectures.',
+        plugins: conflicts.recommendations['api-development'],
+        tags: ['API', 'Backend', 'Documentation']
+    }
+];
+
+// Enhance templates with plugin details
+const enhancedTemplates = templates.map(template => {
+    const pluginDetails = template.plugins.map(slug => {
+        return catalog.plugins.find((p: any) => p.slug === slug);
+    }).filter(Boolean);
+
+    return {
+        ...template,
+        pluginDetails,
+        installScript: generateInstallScript(template.plugins)
+    };
+});
+
+// Generate install script for a stack
+function generateInstallScript(pluginSlugs: string[]): string {
+    let script = '#!/bin/bash\n\n';
+    script += '# Add marketplace (run once)\n';
+    script += '/plugin marketplace add jeremylongshore/claude-code-plugins\n\n';
+    script += '# Install plugins\n';
+    pluginSlugs.forEach(slug => {
+        script += `/plugin install ${slug}\n`;
+    });
+    return script;
+}
+---
+
+<Layout title="Quick-Start Templates - Claude Code Plugins">
+    <div class="quick-start-page">
+        <!-- Header -->
+        <header class="page-header">
+            <div class="breadcrumb">
+                <a href="/">← Home</a>
+            </div>
+
+            <h1>🚀 Quick-Start Templates</h1>
+            <p class="page-subtitle">
+                Pre-configured plugin stacks for common workflows. Copy the install script and get started in seconds.
+            </p>
+        </header>
+
+        <!-- Templates Grid -->
+        <div class="templates-grid">
+            {enhancedTemplates.map((template) => (
+                <div class="template-card">
+                    <div class="template-header">
+                        <span class="template-icon">{template.icon}</span>
+                        <div class="template-title-section">
+                            <h2>{template.name}</h2>
+                            <div class="template-tags">
+                                {template.tags.map((tag: string) => (
+                                    <span class="tag">{tag}</span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    <p class="template-description">{template.description}</p>
+
+                    <div class="use-case">
+                        <strong>Use Case:</strong> {template.useCase}
+                    </div>
+
+                    <!-- Included Plugins -->
+                    <div class="included-plugins">
+                        <h3>Included Plugins ({template.pluginDetails.length})</h3>
+                        <ul>
+                            {template.pluginDetails.map((plugin: any) => (
+                                <li>
+                                    <a href={`/plugins/${plugin.slug}`}>
+                                        {plugin.displayName}
+                                    </a>
+                                    {plugin.hasSkills && (
+                                        <span class="skill-badge">{plugin.skillCount} skill{plugin.skillCount > 1 ? 's' : ''}</span>
+                                    )}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <!-- Install Script -->
+                    <div class="install-section">
+                        <div class="install-header">
+                            <h3>Installation Script</h3>
+                            <button
+                                class="copy-script-btn"
+                                data-script={template.installScript}
+                                data-template={template.name}
+                            >
+                                Copy Script
+                            </button>
+                        </div>
+                        <pre class="install-script"><code>{template.installScript}</code></pre>
+                    </div>
+                </div>
+            ))}
+        </div>
+
+        <!-- Usage Instructions -->
+        <section class="usage-instructions">
+            <h2>📖 How to Use These Templates</h2>
+            <div class="instructions-grid">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <h3>Choose a Template</h3>
+                    <p>Select the template that best fits your workflow above.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <h3>Copy Install Script</h3>
+                    <p>Click "Copy Script" to copy the installation commands to your clipboard.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <h3>Run in Claude Code</h3>
+                    <p>Paste the commands into Claude Code CLI. Each plugin will install automatically.</p>
+                </div>
+                <div class="instruction-step">
+                    <div class="step-number">4</div>
+                    <h3>Start Building</h3>
+                    <p>All plugins and skills are ready to use immediately. No configuration needed!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2>Need a Custom Stack?</h2>
+            <p>Use the Stack Builder to create your own plugin combination with compatibility warnings and export options.</p>
+            <a href="/plugins" class="btn-cta">Build Custom Stack →</a>
+        </section>
+    </div>
+</Layout>
+
+<style>
+    .quick-start-page {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Header */
+    .page-header {
+        margin-bottom: 4rem;
+        text-align: center;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1.5rem;
+        text-align: left;
+    }
+
+    .breadcrumb a {
+        color: var(--brand-blue);
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .page-header h1 {
+        font-size: clamp(2.5rem, 5vw, 3.5rem);
+        margin-bottom: 1rem;
+        color: var(--brand-dark);
+    }
+
+    .page-subtitle {
+        font-size: 1.25rem;
+        color: var(--brand-mid-gray);
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+    }
+
+    /* Templates Grid */
+    .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+        gap: 3rem;
+        margin-bottom: 5rem;
+    }
+
+    .template-card {
+        background: white;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s, box-shadow 0.3s;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .template-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(217, 119, 87, 0.15);
+    }
+
+    /* Template Header */
+    .template-header {
+        display: flex;
+        gap: 1.5rem;
+        align-items: flex-start;
+    }
+
+    .template-icon {
+        font-size: 3rem;
+        line-height: 1;
+    }
+
+    .template-title-section h2 {
+        margin: 0 0 0.75rem 0;
+        font-size: 1.75rem;
+        color: var(--brand-dark);
+    }
+
+    .template-tags {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .tag {
+        background: var(--brand-light-gray);
+        color: var(--brand-mid-gray);
+        padding: 0.25rem 0.75rem;
+        border-radius: 100px;
+        font-size: 0.75rem;
+        font-weight: 500;
+    }
+
+    /* Template Content */
+    .template-description {
+        font-size: 1rem;
+        line-height: 1.7;
+        color: var(--brand-mid-gray);
+    }
+
+    .use-case {
+        padding: 1rem;
+        background: var(--brand-light-gray);
+        border-radius: 8px;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .use-case strong {
+        color: var(--brand-dark);
+    }
+
+    /* Included Plugins */
+    .included-plugins {
+        padding: 1.5rem;
+        background: var(--brand-light-gray);
+        border-radius: 12px;
+    }
+
+    .included-plugins h3 {
+        margin: 0 0 1rem 0;
+        font-size: 1.1rem;
+        color: var(--brand-dark);
+    }
+
+    .included-plugins ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .included-plugins li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+
+    .included-plugins a {
+        color: var(--brand-blue);
+        text-decoration: none;
+        font-weight: 500;
+        text-transform: capitalize;
+    }
+
+    .included-plugins a:hover {
+        text-decoration: underline;
+    }
+
+    .skill-badge {
+        background: var(--brand-orange);
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 100px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    /* Install Section */
+    .install-section {
+        padding: 1.5rem;
+        background: var(--brand-dark);
+        border-radius: 12px;
+        color: white;
+    }
+
+    .install-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+
+    .install-header h3 {
+        margin: 0;
+        font-size: 1rem;
+        color: white;
+    }
+
+    .copy-script-btn {
+        background: var(--brand-orange);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: background 0.2s;
+    }
+
+    .copy-script-btn:hover {
+        background: var(--brand-orange-dark);
+    }
+
+    .install-script {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 0;
+    }
+
+    .install-script code {
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+        line-height: 1.6;
+        color: var(--brand-light);
+    }
+
+    /* Usage Instructions */
+    .usage-instructions {
+        margin-bottom: 5rem;
+        text-align: center;
+    }
+
+    .usage-instructions h2 {
+        font-size: 2rem;
+        margin-bottom: 3rem;
+        color: var(--brand-dark);
+    }
+
+    .instructions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .instruction-step {
+        text-align: center;
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-dark));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 0 auto 1rem;
+    }
+
+    .instruction-step h3 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--brand-dark);
+    }
+
+    .instruction-step p {
+        color: var(--brand-mid-gray);
+        line-height: 1.6;
+    }
+
+    /* CTA Section */
+    .cta-section {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: var(--brand-light-gray);
+        border-radius: 16px;
+    }
+
+    .cta-section h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        color: var(--brand-dark);
+    }
+
+    .cta-section p {
+        font-size: 1.1rem;
+        color: var(--brand-mid-gray);
+        margin-bottom: 2rem;
+    }
+
+    .btn-cta {
+        display: inline-block;
+        background: var(--brand-orange);
+        color: white;
+        padding: 1rem 2.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .btn-cta:hover {
+        background: var(--brand-orange-dark);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 30px rgba(217, 119, 87, 0.3);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .quick-start-page {
+            padding: 1rem;
+        }
+
+        .templates-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .template-card {
+            padding: 1.5rem;
+        }
+
+        .template-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .instructions-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .install-script code {
+            font-size: 0.75rem;
+        }
+    }
+</style>
+
+<script>
+    // Copy install script to clipboard
+    document.querySelectorAll('.copy-script-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const script = btn.getAttribute('data-script');
+            const templateName = btn.getAttribute('data-template');
+
+            if (!script) return;
+
+            try {
+                await navigator.clipboard.writeText(script);
+                const originalText = btn.textContent;
+                btn.textContent = '✓ Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to copy script:', error);
+                alert(`Failed to copy. Please manually copy the script for ${templateName}.`);
+            }
+        });
+    });
+</script>
