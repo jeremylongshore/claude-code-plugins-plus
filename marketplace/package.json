@@ -4,6 +4,8 @@
   "version": "3.0.0",
   "scripts": {
     "dev": "astro dev",
+    "catalog:build": "node ../scripts/generate-catalog.js",
+    "prebuild": "npm run catalog:build",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
