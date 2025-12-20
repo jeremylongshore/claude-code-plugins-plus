@@ -1,0 +1,772 @@
+---
+/**
+ * Plugin Detail Page
+ *
+ * Displays comprehensive plugin information including:
+ * - Metadata (description, version, category, keywords)
+ * - Installation instructions
+ * - Skills with trigger phrases (if applicable)
+ * - "Works well with" recommendations
+ * - Status, badges, last updated
+ *
+ * Bead ID: claude-code-plugins-ida
+ */
+
+import Layout from '../../layouts/Layout.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+// Load catalog and conflicts data
+const catalogPath = path.join(process.cwd(), '../marketplace/src/data/catalog.json');
+const conflictsPath = path.join(process.cwd(), '../marketplace/src/data/conflicts.json');
+
+const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+const conflicts = JSON.parse(fs.readFileSync(conflictsPath, 'utf8'));
+
+// Generate static paths for all plugins
+export async function getStaticPaths() {
+    const catalogPath = path.join(process.cwd(), '../marketplace/src/data/catalog.json');
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+
+    return catalog.plugins.map((plugin: any) => ({
+        params: { slug: plugin.slug },
+        props: { plugin }
+    }));
+}
+
+const { plugin } = Astro.props;
+
+// Read skill details if plugin has skills
+let skills: any[] = [];
+if (plugin.hasSkills) {
+    try {
+        const rootPath = path.join(process.cwd(), '..');
+        const pluginPath = path.join(rootPath, plugin.sourcePath);
+        const skillsDir = path.join(pluginPath, 'skills');
+
+        if (fs.existsSync(skillsDir)) {
+            const skillFolders = fs.readdirSync(skillsDir);
+
+            for (const folder of skillFolders) {
+                const skillMdPath = path.join(skillsDir, folder, 'SKILL.md');
+                if (fs.existsSync(skillMdPath)) {
+                    const content = fs.readFileSync(skillMdPath, 'utf8');
+
+                    // Parse frontmatter
+                    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+                    let frontmatter: any = {};
+                    let body = content;
+
+                    if (frontmatterMatch) {
+                        const yaml = frontmatterMatch[1];
+                        body = content.slice(frontmatterMatch[0].length);
+
+                        // Simple YAML parser for our needs
+                        const lines = yaml.split('\n');
+                        let currentKey = '';
+                        let currentValue = '';
+
+                        for (const line of lines) {
+                            if (line.match(/^[a-z-]+:/)) {
+                                if (currentKey) {
+                                    frontmatter[currentKey] = currentValue.trim();
+                                }
+                                const [key, ...valueParts] = line.split(':');
+                                currentKey = key.trim();
+                                currentValue = valueParts.join(':').trim();
+                            } else if (line.startsWith('- ')) {
+                                if (!frontmatter[currentKey]) {
+                                    frontmatter[currentKey] = [];
+                                }
+                                if (Array.isArray(frontmatter[currentKey])) {
+                                    frontmatter[currentKey].push(line.slice(2).trim());
+                                }
+                            } else if (currentKey && line.trim()) {
+                                currentValue += ' ' + line.trim();
+                            }
+                        }
+
+                        if (currentKey) {
+                            frontmatter[currentKey] = currentValue.trim();
+                        }
+                    }
+
+                    // Extract trigger phrases from "When to Use This Skill" section
+                    const triggerPhrases: string[] = [];
+                    const whenToUseMatch = body.match(/## When to Use This Skill\s+([\s\S]*?)(?=\n##|$)/);
+                    if (whenToUseMatch) {
+                        const section = whenToUseMatch[1];
+                        const bullets = section.match(/^[-*]\s+(.+)$/gm);
+                        if (bullets) {
+                            bullets.forEach((bullet: string) => {
+                                const phrase = bullet.replace(/^[-*]\s+/, '').trim();
+                                triggerPhrases.push(phrase);
+                            });
+                        }
+                    }
+
+                    // Extract examples
+                    const examples: string[] = [];
+                    const examplesMatch = body.match(/### Example \d+: (.+)/g);
+                    if (examplesMatch) {
+                        examples.push(...examplesMatch.map((ex: string) => ex.replace(/### Example \d+: /, '')));
+                    }
+
+                    skills.push({
+                        name: frontmatter.name || folder,
+                        description: frontmatter.description || '',
+                        allowedTools: Array.isArray(frontmatter['allowed-tools'])
+                            ? frontmatter['allowed-tools']
+                            : [],
+                        version: frontmatter.version || '1.0.0',
+                        triggerPhrases,
+                        examples,
+                        body: body.trim()
+                    });
+                }
+            }
+        }
+    } catch (error) {
+        console.warn(`Warning: Could not read skills for ${plugin.slug}:`, error);
+    }
+}
+
+// Find "Works well with" recommendations
+const worksWellWith: string[] = [];
+const recommendationCategories = Object.entries(conflicts.recommendations || {});
+
+for (const [category, pluginList] of recommendationCategories) {
+    if (Array.isArray(pluginList) && pluginList.includes(plugin.slug)) {
+        // Add other plugins from this recommendation category
+        pluginList.forEach((slug: string) => {
+            if (slug !== plugin.slug && !worksWellWith.includes(slug)) {
+                worksWellWith.push(slug);
+            }
+        });
+    }
+}
+
+// Find complementary plugins from conflicts (positive severity)
+conflicts.conflicts.forEach((conflict: any) => {
+    if (conflict.severity === 'positive' && conflict.plugins.includes(plugin.slug)) {
+        conflict.plugins.forEach((slug: string) => {
+            if (slug !== plugin.slug && !worksWellWith.includes(slug)) {
+                worksWellWith.push(slug);
+            }
+        });
+    }
+});
+
+// Load plugin data for "works well with" section
+const recommendedPlugins = catalog.plugins.filter((p: any) =>
+    worksWellWith.includes(p.slug)
+);
+
+// Helper functions
+function formatDate(epoch: number): string {
+    if (!epoch) return '';
+    const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
+    if (days === 0) return 'Today';
+    if (days === 1) return 'Yesterday';
+    if (days < 7) return `${days} days ago`;
+    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
+    if (days < 365) return `${Math.floor(days / 30)} months ago`;
+    return `${Math.floor(days / 365)} years ago`;
+}
+
+function getStatusColor(status: string): string {
+    switch (status) {
+        case 'active': return '#22c55e';
+        case 'maintained': return '#eab308';
+        case 'stale': return '#94a3b8';
+        default: return '#94a3b8';
+    }
+}
+
+function getStatusLabel(status: string): string {
+    switch (status) {
+        case 'active': return 'Active (updated <30 days)';
+        case 'maintained': return 'Maintained (updated <90 days)';
+        case 'stale': return 'Stale (updated ≥90 days)';
+        default: return 'Unknown';
+    }
+}
+---
+
+<Layout title={`${plugin.displayName} - Claude Code Plugins`}>
+    <div class="plugin-detail">
+        <!-- Header -->
+        <header class="plugin-header">
+            <div class="breadcrumb">
+                <a href="/plugins">← All Plugins</a>
+            </div>
+
+            <div class="header-content">
+                <div class="title-section">
+                    <h1>{plugin.displayName}</h1>
+                    <div class="meta">
+                        <span class="version">v{plugin.version}</span>
+                        <span class="category">{plugin.category}</span>
+                        <span class="status-badge" style={`background-color: ${getStatusColor(plugin.status)}`}>
+                            {plugin.status}
+                        </span>
+                    </div>
+                </div>
+
+                {plugin.badges.length > 0 && (
+                    <div class="badges">
+                        {plugin.badges.map((badge: string) => (
+                            <span class={`badge badge-${badge}`}>
+                                {badge === 'featured' ? '⭐ Featured' : '🆕 New'}
+                            </span>
+                        ))}
+                    </div>
+                )}
+            </div>
+
+            <p class="description">{plugin.description}</p>
+
+            <!-- Installation -->
+            <div class="install-section">
+                <h3>Quick Install</h3>
+                <div class="install-steps">
+                    <div class="install-step">
+                        <span class="step-number">1</span>
+                        <code class="install-code">/plugin marketplace add jeremylongshore/claude-code-plugins</code>
+                        <button class="copy-btn" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins">
+                            Copy
+                        </button>
+                    </div>
+                    <div class="install-step">
+                        <span class="step-number">2</span>
+                        <code class="install-code">{plugin.installCommand}</code>
+                        <button class="copy-btn" data-copy={plugin.installCommand}>
+                            Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="plugin-content">
+            <!-- Skills Section -->
+            {skills.length > 0 && (
+                <section class="skills-section">
+                    <h2>🎯 Agent Skills ({skills.length})</h2>
+                    {skills.map((skill) => (
+                        <div class="skill-card">
+                            <h3>{skill.name}</h3>
+                            <p class="skill-description">{skill.description}</p>
+
+                            {skill.triggerPhrases.length > 0 && (
+                                <div class="trigger-phrases">
+                                    <h4>When to use:</h4>
+                                    <ul>
+                                        {skill.triggerPhrases.map((phrase: string) => (
+                                            <li>{phrase}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {skill.examples.length > 0 && (
+                                <div class="examples">
+                                    <h4>Examples:</h4>
+                                    <ul>
+                                        {skill.examples.map((example: string) => (
+                                            <li>{example}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {skill.allowedTools.length > 0 && (
+                                <div class="allowed-tools">
+                                    <strong>Allowed Tools:</strong>
+                                    <span class="tools-list">
+                                        {skill.allowedTools.join(', ')}
+                                    </span>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </section>
+            )}
+
+            <!-- Works Well With Section -->
+            {recommendedPlugins.length > 0 && (
+                <section class="works-well-with">
+                    <h2>🔗 Works Well With</h2>
+                    <div class="plugin-grid">
+                        {recommendedPlugins.map((rec: any) => (
+                            <a href={`/plugins/${rec.slug}`} class="plugin-card-mini">
+                                <div class="card-header">
+                                    <h3>{rec.displayName}</h3>
+                                    {rec.hasSkills && (
+                                        <span class="skill-badge">{rec.skillCount} skill{rec.skillCount > 1 ? 's' : ''}</span>
+                                    )}
+                                </div>
+                                <p class="card-description">{rec.description}</p>
+                                <span class="category-tag">{rec.category}</span>
+                            </a>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <!-- Keywords Section -->
+            {plugin.keywords.length > 0 && (
+                <section class="keywords-section">
+                    <h2>🏷️ Keywords</h2>
+                    <div class="keywords">
+                        {plugin.keywords.map((keyword: string) => (
+                            <span class="keyword">{keyword}</span>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <!-- Metadata Section -->
+            <section class="metadata-section">
+                <h2>ℹ️ Plugin Information</h2>
+                <dl class="metadata">
+                    <dt>Status:</dt>
+                    <dd>
+                        <span style={`color: ${getStatusColor(plugin.status)}`}>●</span>
+                        {getStatusLabel(plugin.status)}
+                    </dd>
+
+                    <dt>Last Updated:</dt>
+                    <dd>{formatDate(plugin.lastUpdatedEpoch)}</dd>
+
+                    <dt>Version:</dt>
+                    <dd>{plugin.version}</dd>
+
+                    <dt>Type:</dt>
+                    <dd>{plugin.type === 'mcp-server' ? 'MCP Server Plugin' : 'Instruction Plugin'}</dd>
+
+                    {plugin.author && (
+                        <>
+                            <dt>Author:</dt>
+                            <dd>{plugin.author.name}</dd>
+                        </>
+                    )}
+
+                    {plugin.hasSkills && (
+                        <>
+                            <dt>Skills:</dt>
+                            <dd>{plugin.skillCount} agent skill{plugin.skillCount > 1 ? 's' : ''}</dd>
+                        </>
+                    )}
+
+                    {plugin.commandCount > 0 && (
+                        <>
+                            <dt>Commands:</dt>
+                            <dd>{plugin.commandCount} slash command{plugin.commandCount > 1 ? 's' : ''}</dd>
+                        </>
+                    )}
+                </dl>
+            </section>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .plugin-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    /* Header */
+    .plugin-header {
+        margin-bottom: 3rem;
+    }
+
+    .breadcrumb {
+        margin-bottom: 1rem;
+    }
+
+    .breadcrumb a {
+        color: var(--brand-blue);
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+
+    .breadcrumb a:hover {
+        text-decoration: underline;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+    }
+
+    .title-section h1 {
+        font-size: 2.5rem;
+        margin: 0 0 0.5rem 0;
+        color: var(--brand-dark);
+        text-transform: capitalize;
+    }
+
+    .meta {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .version,
+    .category,
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .version {
+        background-color: var(--brand-light-gray);
+        color: var(--brand-dark);
+    }
+
+    .category {
+        background-color: var(--brand-blue);
+        color: white;
+    }
+
+    .status-badge {
+        color: white;
+        text-transform: capitalize;
+    }
+
+    .badges {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .badge {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+    }
+
+    .badge-featured {
+        background-color: var(--brand-orange);
+        color: white;
+    }
+
+    .badge-new {
+        background-color: var(--brand-green);
+        color: white;
+    }
+
+    .description {
+        font-size: 1.125rem;
+        line-height: 1.7;
+        color: var(--brand-mid-gray);
+        margin: 1.5rem 0;
+    }
+
+    /* Installation */
+    .install-section {
+        background-color: var(--brand-light-gray);
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-top: 2rem;
+    }
+
+    .install-section h3 {
+        margin: 0 0 1rem 0;
+        color: var(--brand-dark);
+    }
+
+    .install-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .install-step {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        background-color: white;
+        padding: 1rem;
+        border-radius: 0.375rem;
+    }
+
+    .step-number {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        background-color: var(--brand-blue);
+        color: white;
+        border-radius: 50%;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+
+    .install-code {
+        flex: 1;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+        color: var(--brand-dark);
+        background-color: transparent;
+        padding: 0;
+    }
+
+    .copy-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--brand-blue);
+        color: white;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .copy-btn:hover {
+        background-color: var(--brand-orange);
+    }
+
+    /* Content Sections */
+    .plugin-content {
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+    }
+
+    .plugin-content h2 {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+        color: var(--brand-dark);
+    }
+
+    /* Skills Section */
+    .skills-section {
+        background-color: var(--brand-light-gray);
+        padding: 2rem;
+        border-radius: 0.5rem;
+    }
+
+    .skill-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .skill-card:last-child {
+        margin-bottom: 0;
+    }
+
+    .skill-card h3 {
+        margin: 0 0 0.75rem 0;
+        color: var(--brand-dark);
+        font-size: 1.25rem;
+    }
+
+    .skill-description {
+        color: var(--brand-mid-gray);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+    }
+
+    .trigger-phrases,
+    .examples {
+        margin-bottom: 1.5rem;
+    }
+
+    .trigger-phrases h4,
+    .examples h4 {
+        margin: 0 0 0.75rem 0;
+        color: var(--brand-dark);
+        font-size: 1rem;
+    }
+
+    .trigger-phrases ul,
+    .examples ul {
+        margin: 0;
+        padding-left: 1.5rem;
+        color: var(--brand-mid-gray);
+    }
+
+    .trigger-phrases li,
+    .examples li {
+        margin-bottom: 0.5rem;
+        line-height: 1.6;
+    }
+
+    .allowed-tools {
+        padding-top: 1rem;
+        border-top: 1px solid var(--brand-light-gray);
+        font-size: 0.9rem;
+    }
+
+    .tools-list {
+        color: var(--brand-mid-gray);
+        margin-left: 0.5rem;
+    }
+
+    /* Works Well With */
+    .works-well-with {
+        padding: 2rem;
+        background-color: var(--brand-light-gray);
+        border-radius: 0.5rem;
+    }
+
+    .plugin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .plugin-card-mini {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.2s, box-shadow 0.2s;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .plugin-card-mini:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .card-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+        color: var(--brand-dark);
+        text-transform: capitalize;
+    }
+
+    .skill-badge {
+        background-color: var(--brand-orange);
+        color: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .card-description {
+        font-size: 0.9rem;
+        line-height: 1.5;
+        color: var(--brand-mid-gray);
+        margin: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .category-tag {
+        font-size: 0.8rem;
+        color: var(--brand-blue);
+        font-weight: 500;
+    }
+
+    /* Keywords */
+    .keywords {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .keyword {
+        background-color: var(--brand-light-gray);
+        color: var(--brand-dark);
+        padding: 0.5rem 1rem;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+    }
+
+    /* Metadata */
+    .metadata {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 1rem 2rem;
+        max-width: 600px;
+    }
+
+    .metadata dt {
+        font-weight: 600;
+        color: var(--brand-dark);
+    }
+
+    .metadata dd {
+        margin: 0;
+        color: var(--brand-mid-gray);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .plugin-detail {
+            padding: 1rem;
+        }
+
+        .title-section h1 {
+            font-size: 2rem;
+        }
+
+        .header-content {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .plugin-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .install-step {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .install-code {
+            word-break: break-all;
+        }
+    }
+</style>
+
+<script>
+    // Copy to clipboard functionality
+    document.querySelectorAll('.copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const text = btn.getAttribute('data-copy');
+            if (!text) return;
+
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to copy:', error);
+            }
+        });
+    });
+</script>
