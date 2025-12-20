@@ -153,6 +153,12 @@ function formatDate(epoch: number): string {
 
 <script>
     import Fuse from 'fuse.js';
+    import { trackView, trackInstall, getInstallCount } from '../utils/analytics';
+
+    // Track page view
+    if (typeof window !== 'undefined') {
+        trackView('catalog-page');
+    }
 
     // Get DOM elements
     const searchInput = document.getElementById('plugin-search') as HTMLInputElement;
@@ -305,13 +311,23 @@ function formatDate(epoch: number): string {
     // Copy install command
     document.querySelectorAll('.btn-copy-install').forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            const command = (e.target as HTMLElement).dataset.command;
+            const target = e.target as HTMLElement;
+            const command = target.dataset.command;
+            const card = target.closest('.plugin-card') as HTMLElement;
+            const slug = card?.dataset.slug;
+
             if (command) {
                 await navigator.clipboard.writeText(command);
-                const originalText = (e.target as HTMLElement).textContent;
-                (e.target as HTMLElement).textContent = 'Copied!';
+
+                // Track install
+                if (slug) {
+                    trackInstall(slug);
+                }
+
+                const originalText = target.textContent;
+                target.textContent = 'Copied!';
                 setTimeout(() => {
-                    (e.target as HTMLElement).textContent = originalText;
+                    target.textContent = originalText;
                 }, 2000);
             }
         });
