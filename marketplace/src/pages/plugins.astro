@@ -3,13 +3,15 @@
  * Plugin Catalog Page
  *
  * Full catalog with fuzzy search, filtering, sorting, and keyboard shortcuts
- * Bead ID: claude-code-plugins-np1
+ * Bead IDs: claude-code-plugins-np1, claude-code-plugins-pq9
  */
 
 import Layout from '../layouts/Layout.astro';
 import catalogData from '../data/catalog.json';
+import conflictsData from '../data/conflicts.json';
 
 const { stats, plugins } = catalogData;
+const { conflicts, recommendations } = conflictsData;
 
 // Extract unique categories for filter
 const categories = [...new Set(plugins.map((p: any) => p.category))].sort();
@@ -93,9 +95,54 @@ function formatDate(epoch: number): string {
             </div>
         </div>
 
+        <!-- Stack Builder -->
+        <div id="stack-builder" class="stack-builder" style="display: none;">
+            <div class="stack-header">
+                <h2>Your Plugin Stack</h2>
+                <button id="close-stack" class="btn-icon">×</button>
+            </div>
+
+            <div class="stack-stats">
+                <span id="stack-count">0 plugins selected</span>
+                <span id="stack-categories">0 categories</span>
+            </div>
+
+            <div id="stack-warnings" class="stack-warnings"></div>
+
+            <div class="stack-actions">
+                <button id="generate-install" class="btn-primary">Generate Install Script</button>
+                <button id="share-stack" class="btn-secondary">Share Stack</button>
+                <div class="export-dropdown">
+                    <button id="export-btn" class="btn-secondary">Export As...</button>
+                    <div id="export-menu" class="dropdown-menu">
+                        <button data-format="shell">Shell Script</button>
+                        <button data-format="markdown">Markdown</button>
+                        <button data-format="json">JSON</button>
+                    </div>
+                </div>
+                <button id="clear-stack" class="btn-icon">Clear All</button>
+            </div>
+
+            <div id="install-output" class="install-output" style="display: none;">
+                <div class="output-header">
+                    <h3>Install Commands</h3>
+                    <button class="btn-copy" data-copy-target="install-script">Copy</button>
+                </div>
+                <pre id="install-script"></pre>
+            </div>
+
+            <div id="selected-plugins" class="selected-plugins"></div>
+        </div>
+
+        <button id="toggle-stack" class="btn-floating" style="display: none;">
+            <span id="stack-badge">0</span>
+            View Stack
+        </button>
+
         <!-- Results count -->
         <div class="results-info">
             <span id="results-count">Showing {plugins.length} plugins</span>
+            <button id="select-mode-toggle" class="btn-secondary-small">Select Mode</button>
         </div>
 
         <!-- Plugin Grid -->
@@ -111,6 +158,7 @@ function formatDate(epoch: number): string {
                     data-updated={plugin.lastUpdatedEpoch}
                 >
                     <div class="card-header">
+                        <input type="checkbox" class="plugin-checkbox" style="display: none;" />
                         <h3>{plugin.displayName}</h3>
                         <div class="badges">
                             {plugin.isFeatured && <span class="badge featured">Featured</span>}
@@ -353,6 +401,341 @@ function formatDate(epoch: number): string {
 
     // Initial sort by relevance
     filterAndSort();
+
+    // ========================================
+    // STACK BUILDER (claude-code-plugins-pq9)
+    // ========================================
+
+    const conflicts = JSON.parse(`${JSON.stringify(conflictsData.conflicts)}`);
+    const recommendations = JSON.parse(`${JSON.stringify(conflictsData.recommendations)}`);
+
+    let selectedPlugins: Set<string> = new Set();
+    let selectMode = false;
+
+    const stackBuilder = document.getElementById('stack-builder') as HTMLElement;
+    const toggleStackBtn = document.getElementById('toggle-stack') as HTMLElement;
+    const closeStackBtn = document.getElementById('close-stack') as HTMLElement;
+    const selectModeToggle = document.getElementById('select-mode-toggle') as HTMLElement;
+    const stackCount = document.getElementById('stack-count') as HTMLElement;
+    const stackCategories = document.getElementById('stack-categories') as HTMLElement;
+    const stackWarnings = document.getElementById('stack-warnings') as HTMLElement;
+    const stackBadge = document.getElementById('stack-badge') as HTMLElement;
+    const selectedPluginsContainer = document.getElementById('selected-plugins') as HTMLElement;
+    const generateInstallBtn = document.getElementById('generate-install') as HTMLElement;
+    const shareStackBtn = document.getElementById('share-stack') as HTMLElement;
+    const clearStackBtn = document.getElementById('clear-stack') as HTMLElement;
+    const exportBtn = document.getElementById('export-btn') as HTMLElement;
+    const exportMenu = document.getElementById('export-menu') as HTMLElement;
+    const installOutput = document.getElementById('install-output') as HTMLElement;
+    const installScript = document.getElementById('install-script') as HTMLElement;
+
+    // Load stack from localStorage
+    function loadStack() {
+        try {
+            const saved = localStorage.getItem('plugin_stack');
+            if (saved) {
+                selectedPlugins = new Set(JSON.parse(saved));
+                updateStack();
+            }
+        } catch (error) {
+            console.warn('Failed to load stack:', error);
+        }
+    }
+
+    // Save stack to localStorage
+    function saveStack() {
+        try {
+            localStorage.setItem('plugin_stack', JSON.stringify(Array.from(selectedPlugins)));
+        } catch (error) {
+            console.warn('Failed to save stack:', error);
+        }
+    }
+
+    // Load stack from URL
+    function loadStackFromURL() {
+        const params = new URLSearchParams(window.location.search);
+        const stackParam = params.get('stack');
+        if (stackParam) {
+            selectedPlugins = new Set(stackParam.split(','));
+            updateStack();
+            saveStack();
+        }
+    }
+
+    // Toggle select mode
+    selectModeToggle.addEventListener('click', () => {
+        selectMode = !selectMode;
+        document.querySelectorAll('.plugin-checkbox').forEach(cb => {
+            (cb as HTMLElement).style.display = selectMode ? 'inline-block' : 'none';
+        });
+        selectModeToggle.textContent = selectMode ? 'Exit Select Mode' : 'Select Mode';
+    });
+
+    // Handle checkbox changes
+    document.addEventListener('change', (e) => {
+        if ((e.target as HTMLElement).classList.contains('plugin-checkbox')) {
+            const card = (e.target as HTMLElement).closest('.plugin-card') as HTMLElement;
+            const slug = card?.dataset.slug;
+            if (slug) {
+                if ((e.target as HTMLInputElement).checked) {
+                    selectedPlugins.add(slug);
+                } else {
+                    selectedPlugins.delete(slug);
+                }
+                updateStack();
+                saveStack();
+            }
+        }
+    });
+
+    // Update stack display
+    function updateStack() {
+        const count = selectedPlugins.size;
+        stackCount.textContent = `${count} plugin${count !== 1 ? 's' : ''} selected`;
+        stackBadge.textContent = count.toString();
+
+        // Update categories
+        const cats = new Set();
+        selectedPlugins.forEach(slug => {
+            const card = document.querySelector(`[data-slug="${slug}"]`) as HTMLElement;
+            if (card) cats.add(card.dataset.category);
+        });
+        stackCategories.textContent = `${cats.size} categor${cats.size !== 1 ? 'ies' : 'y'}`;
+
+        // Show/hide toggle button
+        toggleStackBtn.style.display = count > 0 ? 'flex' : 'none';
+
+        // Update checkboxes
+        document.querySelectorAll('.plugin-checkbox').forEach(cb => {
+            const card = (cb as HTMLElement).closest('.plugin-card') as HTMLElement;
+            const slug = card?.dataset.slug;
+            if (slug) {
+                (cb as HTMLInputElement).checked = selectedPlugins.has(slug);
+            }
+        });
+
+        // Check for conflicts
+        checkConflicts();
+
+        // Update selected plugins list
+        updateSelectedPluginsList();
+    }
+
+    // Check for conflicts and warnings
+    function checkConflicts() {
+        stackWarnings.innerHTML = '';
+        const selected = Array.from(selectedPlugins);
+
+        conflicts.forEach((conflict: any) => {
+            const matchingPlugins = conflict.plugins.filter((p: string) => selected.includes(p));
+            if (matchingPlugins.length >= 2) {
+                const severity = conflict.severity || 'warning';
+                const icon = severity === 'positive' ? '✅' : severity === 'warning' ? '⚠️' : 'ℹ️';
+                const warningEl = document.createElement('div');
+                warningEl.className = `stack-warning ${severity}`;
+                warningEl.innerHTML = `
+                    <span class="warning-icon">${icon}</span>
+                    <div>
+                        <strong>${matchingPlugins.join(', ')}</strong>
+                        <p>${conflict.reason}</p>
+                        <p class="recommendation">${conflict.recommendation}</p>
+                    </div>
+                `;
+                stackWarnings.appendChild(warningEl);
+            }
+        });
+    }
+
+    // Update selected plugins list
+    function updateSelectedPluginsList() {
+        selectedPluginsContainer.innerHTML = '';
+        selectedPlugins.forEach(slug => {
+            const card = document.querySelector(`[data-slug="${slug}"]`) as HTMLElement;
+            if (card) {
+                const name = card.querySelector('h3')?.textContent || slug;
+                const category = card.dataset.category;
+                const itemEl = document.createElement('div');
+                itemEl.className = 'selected-plugin-item';
+                itemEl.innerHTML = `
+                    <span>${name}</span>
+                    <span class="category-badge">${category}</span>
+                    <button class="btn-remove" data-slug="${slug}">×</button>
+                `;
+                selectedPluginsContainer.appendChild(itemEl);
+            }
+        });
+
+        // Add remove handlers
+        document.querySelectorAll('.btn-remove').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const slug = (e.target as HTMLElement).dataset.slug;
+                if (slug) {
+                    selectedPlugins.delete(slug);
+                    updateStack();
+                    saveStack();
+                }
+            });
+        });
+    }
+
+    // Generate install script
+    generateInstallBtn.addEventListener('click', () => {
+        const selected = Array.from(selectedPlugins);
+        let script = '#!/bin/bash\n\n';
+        script += '# Claude Code Plugin Stack Installation\n';
+        script += `# Generated: ${new Date().toISOString()}\n`;
+        script += `# Plugins: ${selected.length}\n\n`;
+        script += '# Add marketplace\n';
+        script += '/plugin marketplace add jeremylongshore/claude-code-plugins\n\n';
+        script += '# Install plugins\n';
+        selected.forEach(slug => {
+            const card = document.querySelector(`[data-slug="${slug}"]`) as HTMLElement;
+            const name = card?.querySelector('h3')?.textContent || slug;
+            script += `# ${name}\n`;
+            script += `/plugin install ${slug}\n`;
+        });
+
+        installScript.textContent = script;
+        installOutput.style.display = 'block';
+    });
+
+    // Share stack
+    shareStackBtn.addEventListener('click', async () => {
+        const selected = Array.from(selectedPlugins);
+        const url = `${window.location.origin}${window.location.pathname}?stack=${selected.join(',')}`;
+
+        try {
+            await navigator.clipboard.writeText(url);
+            shareStackBtn.textContent = 'Link Copied!';
+            setTimeout(() => {
+                shareStackBtn.textContent = 'Share Stack';
+            }, 2000);
+        } catch (error) {
+            alert(`Share URL: ${url}`);
+        }
+    });
+
+    // Export stack
+    exportBtn.addEventListener('click', () => {
+        exportMenu.style.display = exportMenu.style.display === 'block' ? 'none' : 'block';
+    });
+
+    exportMenu.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const format = btn.dataset.format;
+            const selected = Array.from(selectedPlugins);
+            let content = '';
+            let filename = '';
+
+            switch (format) {
+                case 'shell':
+                    content = generateShellScript(selected);
+                    filename = 'install-plugins.sh';
+                    break;
+                case 'markdown':
+                    content = generateMarkdown(selected);
+                    filename = 'plugin-stack.md';
+                    break;
+                case 'json':
+                    content = generateJSON(selected);
+                    filename = 'plugin-stack.json';
+                    break;
+            }
+
+            downloadFile(content, filename);
+            exportMenu.style.display = 'none';
+        });
+    });
+
+    function generateShellScript(slugs: string[]): string {
+        let script = '#!/bin/bash\n\n';
+        script += '/plugin marketplace add jeremylongshore/claude-code-plugins\n';
+        slugs.forEach(slug => {
+            script += `/plugin install ${slug}\n`;
+        });
+        return script;
+    }
+
+    function generateMarkdown(slugs: string[]): string {
+        let md = '# Claude Code Plugin Stack\n\n';
+        md += `Generated: ${new Date().toLocaleDateString()}\n\n`;
+        md += `## Plugins (${slugs.length})\n\n`;
+        slugs.forEach(slug => {
+            const card = document.querySelector(`[data-slug="${slug}"]`) as HTMLElement;
+            const name = card?.querySelector('h3')?.textContent || slug;
+            const desc = card?.querySelector('.description')?.textContent || '';
+            const category = card?.dataset.category || '';
+            md += `### ${name}\n`;
+            md += `- **Category:** ${category}\n`;
+            md += `- **Description:** ${desc}\n`;
+            md += `- **Install:** \`/plugin install ${slug}\`\n\n`;
+        });
+        return md;
+    }
+
+    function generateJSON(slugs: string[]): string {
+        const data = {
+            marketplace: 'jeremylongshore/claude-code-plugins',
+            generated: new Date().toISOString(),
+            plugins: slugs.map(slug => {
+                const card = document.querySelector(`[data-slug="${slug}"]`) as HTMLElement;
+                return {
+                    slug,
+                    name: card?.querySelector('h3')?.textContent || slug,
+                    category: card?.dataset.category || '',
+                    installCommand: `/plugin install ${slug}`
+                };
+            })
+        };
+        return JSON.stringify(data, null, 2);
+    }
+
+    function downloadFile(content: string, filename: string) {
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Clear stack
+    clearStackBtn.addEventListener('click', () => {
+        if (confirm('Clear all selected plugins?')) {
+            selectedPlugins.clear();
+            updateStack();
+            saveStack();
+        }
+    });
+
+    // Toggle stack builder
+    toggleStackBtn.addEventListener('click', () => {
+        stackBuilder.style.display = 'block';
+    });
+
+    closeStackBtn.addEventListener('click', () => {
+        stackBuilder.style.display = 'none';
+    });
+
+    // Copy install script
+    document.querySelectorAll('.btn-copy').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const target = (e.target as HTMLElement).dataset.copyTarget;
+            if (target) {
+                const el = document.getElementById(target) as HTMLElement;
+                await navigator.clipboard.writeText(el.textContent || '');
+                (e.target as HTMLElement).textContent = 'Copied!';
+                setTimeout(() => {
+                    (e.target as HTMLElement).textContent = 'Copy';
+                }, 2000);
+            }
+        });
+    });
+
+    // Initialize
+    loadStack();
+    loadStackFromURL();
 </script>
 
 <script is:inline define:vars={{ plugins }}>
@@ -652,5 +1035,274 @@ function formatDate(epoch: number): string {
         .search-hint {
             display: none;
         }
+
+        .stack-builder {
+            padding: 1rem;
+        }
+
+        .btn-floating {
+            bottom: 2rem;
+            right: 2rem;
+        }
+    }
+
+    /* Stack Builder Styles */
+    .stack-builder {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        max-width: 800px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        background: var(--brand-light);
+        border: 2px solid var(--brand-orange);
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+
+    .stack-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stack-header h2 {
+        margin: 0;
+        color: var(--brand-dark);
+    }
+
+    .btn-icon {
+        background: none;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+        color: var(--brand-mid-gray);
+        padding: 0;
+        line-height: 1;
+    }
+
+    .btn-icon:hover {
+        color: var(--brand-orange);
+    }
+
+    .stack-stats {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        color: var(--brand-mid-gray);
+    }
+
+    .stack-warnings {
+        margin-bottom: 1.5rem;
+    }
+
+    .stack-warning {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        border-radius: 8px;
+        margin-bottom: 0.75rem;
+    }
+
+    .stack-warning.warning {
+        background: #fff3cd;
+        border-left: 4px solid var(--brand-orange);
+    }
+
+    .stack-warning.info {
+        background: #d1ecf1;
+        border-left: 4px solid var(--brand-blue);
+    }
+
+    .stack-warning.positive {
+        background: #d4edda;
+        border-left: 4px solid var(--brand-green);
+    }
+
+    .warning-icon {
+        font-size: 1.5rem;
+    }
+
+    .recommendation {
+        font-size: 0.9rem;
+        color: var(--brand-mid-gray);
+        margin-top: 0.5rem;
+    }
+
+    .stack-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-secondary-small {
+        padding: 0.5rem 1rem;
+        background: transparent;
+        color: var(--brand-dark);
+        border: 2px solid var(--brand-dark);
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.9rem;
+    }
+
+    .btn-secondary-small:hover {
+        background: var(--brand-dark);
+        color: var(--brand-light);
+    }
+
+    .export-dropdown {
+        position: relative;
+    }
+
+    .dropdown-menu {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--brand-light);
+        border: 2px solid var(--brand-light-gray);
+        border-radius: 6px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        z-index: 10;
+        display: none;
+    }
+
+    .dropdown-menu button {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1.5rem;
+        background: none;
+        border: none;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .dropdown-menu button:hover {
+        background: var(--brand-light-gray);
+    }
+
+    .install-output {
+        margin-bottom: 1.5rem;
+    }
+
+    .output-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .output-header h3 {
+        margin: 0;
+        font-size: 1.1rem;
+    }
+
+    .btn-copy {
+        padding: 0.5rem 1rem;
+        background: var(--brand-orange);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+    }
+
+    .btn-copy:hover {
+        background: var(--brand-orange-dark);
+    }
+
+    #install-script {
+        background: var(--brand-dark);
+        color: var(--brand-light);
+        padding: 1rem;
+        border-radius: 6px;
+        overflow-x: auto;
+        font-family: monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .selected-plugins {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .selected-plugin-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        background: var(--brand-light-gray);
+        border-radius: 6px;
+    }
+
+    .category-badge {
+        padding: 0.25rem 0.75rem;
+        background: var(--brand-orange);
+        color: white;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .btn-remove {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: var(--brand-mid-gray);
+        padding: 0;
+        line-height: 1;
+    }
+
+    .btn-remove:hover {
+        color: var(--brand-orange);
+    }
+
+    .btn-floating {
+        position: fixed;
+        bottom: 3rem;
+        right: 3rem;
+        padding: 1rem 2rem;
+        background: var(--brand-orange);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 999;
+    }
+
+    .btn-floating:hover {
+        background: var(--brand-orange-dark);
+    }
+
+    #stack-badge {
+        background: white;
+        color: var(--brand-orange);
+        padding: 0.25rem 0.5rem;
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-weight: 700;
+    }
+
+    .plugin-checkbox {
+        margin-right: 0.75rem;
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
     }
 </style>
