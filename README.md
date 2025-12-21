@@ -103,18 +103,55 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
 ---
 
 <details>
-  <summary><strong>🎓 Learning Paths</strong> (click to expand)</summary>
+  <summary><strong>🎓 Learning Resources</strong> (click to expand)</summary>
 
-  
-  **New to Claude Code plugins?** Follow structured paths:
 
-  | Path | Duration | Best For |
-  |------|----------|----------|
-  | 🚀 [Quick Start](./docs/learning-paths/01-quick-start/) | 15 min | Install and use your first plugin |
-  | 🛠️ [Plugin Creator](./docs/learning-paths/02-plugin-creator/) | 3 hours | Build your first plugin from scratch |
-  | ⚡ [Advanced Developer](./docs/learning-paths/03-advanced-developer/) | 1 day | Create production MCP servers |
+  ### 📚 Interactive Learning Lab
 
-  **By Use Case**: [DevOps](./docs/learning-paths/use-cases/devops-engineer.md) • [Security](./docs/learning-paths/use-cases/security-specialist.md) • [AI/ML](./docs/learning-paths/use-cases/ai-ml-developer.md) • [Crypto](./docs/learning-paths/use-cases/crypto-trader.md)
+  **[Complete Tutorial System](./tutorials/)** - 11 hands-on Jupyter notebooks with 154 interactive code cells
+
+  | Learning Path | Duration | What You'll Build |
+  |--------------|----------|-------------------|
+  | 🎯 [**Plugin Creator Path**](./tutorials/README.md#path-1-plugin-creator-beginner--intermediate) | 3 hours | Complete production-ready plugin with skills & commands |
+  | ⚡ [**Advanced Developer Path**](./tutorials/README.md#path-2-advanced-developer-intermediate--advanced) | 3.5 hours | TypeScript MCP server + multi-agent orchestration |
+  | 🔍 [**Quick Reference**](./tutorials/README.md#path-3-quick-reference-just-in-time-learning) | On-demand | Find specific answers fast |
+
+  ### 📖 Tutorial Catalog
+
+  **Skills Tutorials** (5 notebooks, 2h 45m)
+  - [01: What is SKILL.md?](./tutorials/skills/01-what-is-skill.ipynb) - SKILL.md format & discovery (20 min)
+  - [02: Skill Anatomy](./tutorials/skills/02-skill-anatomy.ipynb) - Frontmatter, structure, standards (25 min)
+  - [03: Build Your First Skill](./tutorials/skills/03-build-your-first-skill.ipynb) - Hands-on creation (45 min)
+  - [04: Advanced Patterns](./tutorials/skills/04-advanced-patterns.ipynb) - Multi-phase, orchestration (45 min)
+  - [05: Skill Validation](./tutorials/skills/05-skill-validation.ipynb) - Enterprise standards (30 min)
+
+  **Plugins Tutorials** (4 notebooks, 2h 40m)
+  - [01: What is a Plugin?](./tutorials/plugins/01-what-is-plugin.ipynb) - Plugin types & marketplace (25 min)
+  - [02: Plugin Structure](./tutorials/plugins/02-plugin-structure.ipynb) - Directory anatomy, validation (30 min)
+  - [03: Build Your First Plugin](./tutorials/plugins/03-build-your-first-plugin.ipynb) - Complete plugin creation (45 min)
+  - [04: MCP Server Plugins](./tutorials/plugins/04-mcp-server-plugins.ipynb) - TypeScript MCP server (60 min)
+
+  **Orchestration Tutorials** (2 notebooks, 1h 15m)
+  - [01: Mental Model](./tutorials/orchestration/01-mental-model.ipynb) - Orchestration concepts (30 min)
+  - [02: Orchestration Pattern](./tutorials/orchestration/02-orchestration-pattern.ipynb) - Multi-agent coordination (45 min)
+
+  ### 🧪 Advanced Learning Lab
+
+  **[Test Harness Pattern Lab](./workspace/lab/)** - Production orchestration patterns with validation
+
+  - [GUIDE-00: Start Here](./workspace/lab/GUIDE-00-START-HERE.md) - Introduction & mental model (5 min)
+  - [GUIDE-01: Pattern Explained](./workspace/lab/GUIDE-01-PATTERN-EXPLAINED.md) - Why this pattern works (15 min)
+  - [GUIDE-02: Building Your Own](./workspace/lab/GUIDE-02-BUILDING-YOUR-OWN.md) - Step-by-step adaptation (30 min)
+  - [GUIDE-03: Debugging Tips](./workspace/lab/GUIDE-03-DEBUGGING-TIPS.md) - Troubleshooting (15 min)
+  - [⭐ Orchestration Pattern](./workspace/lab/ORCHESTRATION-PATTERN.md) - Complete reference guide (60 min)
+  - [Reference Implementation](./workspace/lab/schema-optimization/) - Production-ready 5-phase workflow
+
+  ### 📋 By Role
+
+  - **Developer?** Start with [Build Your First Plugin](./tutorials/plugins/03-build-your-first-plugin.ipynb)
+  - **Power User?** Start with [What is SKILL.md?](./tutorials/skills/01-what-is-skill.ipynb)
+  - **Enterprise Architect?** Start with [Skill Validation](./tutorials/skills/05-skill-validation.ipynb)
+  - **TypeScript Developer?** Start with [MCP Server Plugins](./tutorials/plugins/04-mcp-server-plugins.ipynb)
 
 </details>
 
