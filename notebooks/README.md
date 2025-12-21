@@ -8,8 +8,8 @@
 
 Click "Open in Colab" badges below to run in your browser:
 
-- **[01-mental-model.ipynb](01-mental-model.ipynb)** - 5-minute introduction to the test harness pattern
-- **[02-orchestration-pattern.ipynb](02-orchestration-pattern.ipynb)** *(Coming soon)* - Complete reference guide
+- **[01-mental-model.ipynb](01-mental-model.ipynb)** ✅ - 5-minute introduction to the test harness pattern
+- **[02-orchestration-pattern.ipynb](02-orchestration-pattern.ipynb)** ✅ - Complete 60-min reference guide
 - **[03-architecture-deep-dive.ipynb](03-architecture-deep-dive.ipynb)** *(Coming soon)* - Architecture breakdown
 - **[04-build-your-own.ipynb](04-build-your-own.ipynb)** *(Coming soon)* - Build custom workflows
 - **[05-debugging-tips.ipynb](05-debugging-tips.ipynb)** *(Coming soon)* - Troubleshooting guide
@@ -47,14 +47,14 @@ jupyter notebook
 
 **Time:** 15-20 minutes (including exercises)
 
-### 02-orchestration-pattern.ipynb *(Coming soon)*
-**What you'll learn:** Complete deep-dive into subagent orchestration
+### 02-orchestration-pattern.ipynb ✅
+**What you'll learn:** Complete deep-dive into subagent orchestration (915 lines, 6 parts)
 
 **Interactive elements:**
-- ✨ Phase contract builder
-- ✨ Orchestrator logic simulator
-- ✨ Verification pattern explorer
-- ✨ Real-world use case examples
+- ✨ Context budget calculator (monolithic vs orchestrated)
+- ✨ Phase contract builder & validator
+- ✨ Verification pattern simulator with reconciliation
+- ✨ Complete production orchestrator
 
 **Time:** 60+ minutes
 
