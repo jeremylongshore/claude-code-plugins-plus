@@ -1,0 +1,23 @@
+flowchart TD
+    A[Raw Session / Input Data] --> B{Redact Secrets/PII}:::critical
+
+    B --> C[Local Index Metadata<br/>Search-optimized]:::local
+
+    B --> D{Encrypt Client-Side<br/>AES-256-GCM}:::critical
+
+    D --> E[Persist to Durable Storage<br/>Cascade/External Store]:::durable
+
+    C -.-> F[Query by Tags/Timestamps<br/>Fast Local Lookup]:::query
+
+    F -.-> G[Retrieve Encrypted Blob<br/>Using Pointer]:::retrieve
+
+    G --> H{Decrypt Client-Side<br/>Verify Integrity}:::critical
+
+    H --> I[Restored Session Data]:::output
+
+    classDef critical fill:#ffe8e8,stroke:#b00020,stroke-width:3px
+    classDef local fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef durable fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef query fill:#fff4e6,stroke:#e65100,stroke-width:2px
+    classDef retrieve fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef output fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px

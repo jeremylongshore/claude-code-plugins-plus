@@ -1,0 +1,12 @@
+flowchart LR
+    A[skills/<skill-name>/]:::req --> B[SKILL.md]:::req
+
+    A --> C[scripts/]:::opt
+    A --> D[references/]:::opt
+    A --> E[assets/]:::opt
+
+    B --> F[YAML Frontmatter<br/>name, description, allowed-tools,<br/>version, author, license, tags]:::req
+    B --> G[Markdown Body<br/>Purpose, Instructions, Output,<br/>Error Handling 4+, Examples 2+, Resources]:::req
+
+    classDef req fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px
+    classDef opt fill:#f3f4ff,stroke:#4c5bd4,stroke-width:1px
