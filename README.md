@@ -48,11 +48,11 @@
 
 ---
 
-**🎯 240 Agent Skills & 258 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
+**240 Agent Skills & 258 Plugins for Claude Code**
 
-🎓 **NEW in v4.0.0:** **Complete Learning Lab** - Build production agent workflows with empirical verification. 90+ pages of guides including definitive orchestration pattern reference, complete 5-phase implementation, working verification scripts, hands-on exercises, and visual architecture diagrams.
+**v4.0.0:** Learning Lab with 11 interactive tutorials, 90+ pages of guides, and production workflow patterns.
 
-**Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0) - Test Harness Pattern learning system teaches you to turn "LLM analyzed" into "LLM + script verified with evidence"
+**Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0)
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
