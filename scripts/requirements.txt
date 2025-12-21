@@ -1,8 +1,0 @@
-# Requirements for claude-code-plugins scripts
-#
-# Install: pip install -r requirements.txt
-
-# DOCX Generation (build_standards_docx.py)
-python-docx==1.2.0
-
-# Future script dependencies can be added here

@@ -11,7 +11,7 @@ export default defineConfig({
     inlineStylesheets: 'auto'
   },
   output: 'static',
-  compressHTML: false,  // Disabled: iOS Safari can't handle extremely long lines from aggressive minification
+  compressHTML: true,
   vite: {
     plugins: [tailwindcss()],
     build: {

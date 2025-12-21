@@ -1,51 +1,17 @@
 # Claude Code Skills & Plugins Hub
 
-[![Version](https://img.shields.io/badge/version-4.0.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-3.2.0-brightgreen)](CHANGELOG.md)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-240%20Skills-orange?logo=sparkles)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](SKILLS_SCHEMA_2025.md)
 [![NEW](https://img.shields.io/badge/NEW-Tool%20Permissions-blueviolet?logo=shield)](SKILL_ACTIVATION_GUIDE.md)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins?style=social)](https://github.com/jeremylongshore/claude-code-plugins)
 
-## 📖 Learning Lab
-
-**Build production agent workflows with empirical verification** - Complete teaching system with guides, diagrams, and working examples.
-
-**[→ Start Here: 5-Minute Introduction](workspace/lab/README.md)** | **[→ Visual Architecture Map](workspace/lab/VISUAL-MAP.md)** | **[→ System Summary](workspace/lab/BUILT-SYSTEM-SUMMARY.md)**
-
-<table>
-<tr>
-<td width="50%">
-
-**Guides** (90+ pages)
-- [Mental Model (5 min)](workspace/lab/GUIDE-00-START-HERE.md)
-- [Architecture Deep Dive (15 min)](workspace/lab/GUIDE-01-PATTERN-EXPLAINED.md)
-- [Build Your Own (30 min)](workspace/lab/GUIDE-02-BUILDING-YOUR-OWN.md)
-- [Debugging Tips (15 min)](workspace/lab/GUIDE-03-DEBUGGING-TIPS.md)
-- [**Orchestration Pattern** (60 min)](workspace/lab/ORCHESTRATION-PATTERN.md) ⭐
-
-</td>
-<td width="50%">
-
-**Reference Implementation**
-- [Complete 5-Phase Workflow](workspace/lab/schema-optimization/SKILL.md)
-- [Phase Contracts & Agents](workspace/lab/schema-optimization/agents/)
-- [Verification Scripts](workspace/lab/schema-optimization/scripts/)
-- [Hands-On Exercise](workspace/lab/exercises/exercise-1-run-workflow.md)
-
-</td>
-</tr>
-</table>
-
-**What you'll learn:** Turn "LLM analyzed my code" into "LLM + script verified with evidence" - The pattern for production-ready agent systems.
-
----
-
 **🎯 240 Agent Skills & 258 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
 
-🎓 **NEW in v4.0.0:** **Complete Learning Lab** - Build production agent workflows with empirical verification. 90+ pages of guides including definitive orchestration pattern reference, complete 5-phase implementation, working verification scripts, hands-on exercises, and visual architecture diagrams.
+🎉 **NEW in v3.2.0:** **Largest Plugin Contribution Ever!** - @lukeslp contributes **geepers-agents** with **51 specialized development agents** across 10 categories, plus formatter plugin enhancements
 
-**Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0) - Test Harness Pattern learning system teaches you to turn "LLM analyzed" into "LLM + script verified with evidence"
+**Latest:** [v3.2.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v3.2.0) - Massive geepers-agents contribution with orchestration system for development workflows, deployment, quality audits, research, and game development
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -60,7 +26,6 @@
 
 **Huge thanks to our community contributors who make this marketplace better:**
 
-- **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the complete Learning Lab system (v4.0.0). His insights on empirical verification transformed how we teach agent development.
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🎉 **MASSIVE CONTRIBUTION:** Created geepers-agents with **51 specialized agents** for development workflows, deployment, quality audits, research, and game development - the largest single plugin contribution to date! ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
 - **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
 - **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created Axiom, battle-tested iOS development plugin with 13 production-ready skills for Swift/Xcode debugging and optimization ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))

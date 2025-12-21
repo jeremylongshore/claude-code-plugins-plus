@@ -38,35 +38,6 @@ jobs:
       - name: Build with Astro
         run: npm run build
 
-      - name: Smoke Test - Verify Build Output
-        run: |
-          # Check that index.html exists and has proper content
-          if [ ! -f "dist/index.html" ]; then
-            echo "ERROR: dist/index.html not found"
-            exit 1
-          fi
-
-          # Check max line length (should be < 5000 chars to prevent iOS Safari issues)
-          MAX_LINE=$(wc -L dist/index.html | awk '{print $1}')
-          if [ "$MAX_LINE" -gt 5000 ]; then
-            echo "ERROR: HTML line too long ($MAX_LINE chars). iOS Safari may fail to render."
-            echo "Disable compressHTML in astro.config.mjs"
-            exit 1
-          fi
-
-          # Check that it contains expected HTML markers
-          if ! grep -q "<!DOCTYPE html>" dist/index.html; then
-            echo "ERROR: Missing DOCTYPE in index.html"
-            exit 1
-          fi
-
-          if ! grep -q "Claude Code" dist/index.html; then
-            echo "ERROR: Missing expected content in index.html"
-            exit 1
-          fi
-
-          echo "✓ Smoke test passed: index.html is valid (max line: $MAX_LINE chars)"
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v4
         with:

@@ -1,53 +1,5 @@
 ---
 // Claude Code Plugins Marketplace - Homepage
-import fs from 'node:fs';
-import path from 'node:path';
-
-// Load catalog data for featured plugins
-const catalogPath = path.join(process.cwd(), 'src/data/catalog.json');
-const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
-
-// Get featured plugins (up to 6) - prioritize: featured > hasSkills > active > new
-const featuredPlugins = catalog.plugins
-    .filter((p: any) => p.isFeatured || p.hasSkills)
-    .sort((a: any, b: any) => {
-        // Featured first
-        if (a.isFeatured && !b.isFeatured) return -1;
-        if (!a.isFeatured && b.isFeatured) return 1;
-
-        // Skills plugins next
-        if (a.hasSkills && !b.hasSkills) return -1;
-        if (!a.hasSkills && b.hasSkills) return 1;
-
-        // Active status preferred
-        if (a.status === 'active' && b.status !== 'active') return -1;
-        if (a.status !== 'active' && b.status === 'active') return 1;
-
-        // Most recent
-        return (b.lastUpdatedEpoch || 0) - (a.lastUpdatedEpoch || 0);
-    })
-    .slice(0, 6);
-
-// Helper functions
-function formatDate(epoch: number): string {
-    if (!epoch) return '';
-    const days = Math.floor((Date.now() / 1000 - epoch) / (60 * 60 * 24));
-    if (days === 0) return 'Today';
-    if (days === 1) return 'Yesterday';
-    if (days < 7) return `${days} days ago`;
-    if (days < 30) return `${Math.floor(days / 7)} weeks ago`;
-    if (days < 365) return `${Math.floor(days / 30)} months ago`;
-    return `${Math.floor(days / 365)} years ago`;
-}
-
-function getStatusColor(status: string): string {
-    switch (status) {
-        case 'active': return '#22c55e';
-        case 'maintained': return '#eab308';
-        case 'stale': return '#94a3b8';
-        default: return '#94a3b8';
-    }
-}
 ---
 
 <!DOCTYPE html>
@@ -426,175 +378,6 @@ function getStatusColor(status: string): string {
                 opacity: 1;
                 transform: translateY(0);
             }
-        }
-
-        /* Featured Plugins Section */
-        .featured-plugins {
-            padding: 8rem 4rem;
-            background: var(--brand-light);
-        }
-
-        .featured-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .featured-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.3s var(--transition-smooth);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            border: 2px solid transparent;
-        }
-
-        .featured-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 40px rgba(217, 119, 87, 0.15);
-            border-color: var(--brand-orange);
-        }
-
-        .featured-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            gap: 1rem;
-        }
-
-        .featured-card-title {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            flex-wrap: wrap;
-        }
-
-        .featured-card-title h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--brand-dark);
-            margin: 0;
-            text-transform: capitalize;
-        }
-
-        .skill-count-badge {
-            background: var(--brand-orange);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-
-        .featured-card-badges {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .featured-badge {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            font-size: 0.9rem;
-        }
-
-        .badge-featured {
-            background: rgba(217, 119, 87, 0.1);
-        }
-
-        .badge-new {
-            background: rgba(120, 140, 93, 0.1);
-        }
-
-        .featured-card-description {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin: 0;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .featured-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-top: 1rem;
-            border-top: 1px solid var(--brand-light-gray);
-            margin-top: auto;
-        }
-
-        .featured-card-meta {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .category-pill {
-            background: var(--brand-light-gray);
-            color: var(--brand-mid-gray);
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-            color: var(--brand-mid-gray);
-            text-transform: capitalize;
-        }
-
-        .status-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .last-updated {
-            font-size: 0.8rem;
-            color: var(--brand-mid-gray);
-            font-style: italic;
-        }
-
-        .featured-cta {
-            text-align: center;
-        }
-
-        .btn-browse-all {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: var(--brand-orange);
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .btn-browse-all:hover {
-            background: var(--brand-orange-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(217, 119, 87, 0.3);
         }
 
         /* Features Section */
@@ -1187,12 +970,8 @@ function getStatusColor(status: string): string {
                 display: none;
             }
 
-            .hero, .features, .categories, .process, .cta, .featured-plugins {
+            .hero, .features, .categories, .process, .cta {
                 padding: 4rem 2rem;
-            }
-
-            .featured-grid {
-                grid-template-columns: 1fr;
             }
 
             .features-grid {
@@ -1249,25 +1028,6 @@ function getStatusColor(status: string): string {
             .footer-copy {
                 font-size: 0.8rem;
                 line-height: 1.4;
-            }
-
-            /* Featured plugins mobile fix */
-            .featured-plugins {
-                padding: 3rem 1rem;
-            }
-
-            .featured-grid {
-                gap: 1rem;
-            }
-
-            .featured-card {
-                padding: 1.5rem;
-            }
-
-            .featured-card-title {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
             }
 
             /* Skills section mobile fixes */
@@ -1356,141 +1116,6 @@ function getStatusColor(status: string): string {
             .process-grid {
                 grid-template-columns: 1fr;
             }
-
-            /* Search container mobile */
-            .search-container {
-                margin: 2rem 0;
-            }
-        }
-
-        /* ========================================
-           SEARCH BAR STYLES
-           ======================================== */
-        .search-container {
-            max-width: 800px;
-            margin: 3rem auto 2rem;
-            position: relative;
-        }
-
-        .search-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1.25rem;
-            color: var(--brand-mid-gray);
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 1rem 3.5rem 1rem 3.5rem;
-            font-size: 1rem;
-            border: 2px solid var(--brand-light-gray);
-            border-radius: 100px;
-            background: white;
-            color: var(--brand-dark);
-            font-family: 'Poppins', Arial, sans-serif;
-            transition: all 0.3s var(--transition-smooth);
-            outline: none;
-        }
-
-        .search-input:focus {
-            border-color: var(--brand-orange);
-            box-shadow: 0 0 0 4px rgba(217, 119, 87, 0.1);
-        }
-
-        .search-input::placeholder {
-            color: var(--brand-mid-gray);
-        }
-
-        .clear-search-btn {
-            position: absolute;
-            right: 1.25rem;
-            background: none;
-            border: none;
-            font-size: 1.75rem;
-            color: var(--brand-mid-gray);
-            cursor: pointer;
-            padding: 0.25rem 0.5rem;
-            line-height: 1;
-            transition: color 0.2s;
-            z-index: 2;
-        }
-
-        .clear-search-btn:hover {
-            color: var(--brand-dark);
-        }
-
-        .search-results {
-            position: absolute;
-            top: calc(100% + 0.5rem);
-            left: 0;
-            right: 0;
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            max-height: 400px;
-            overflow-y: auto;
-            z-index: 100;
-            display: none;
-        }
-
-        .search-results.show {
-            display: block;
-        }
-
-        .search-result-item {
-            padding: 1rem 1.5rem;
-            border-bottom: 1px solid var(--brand-light-gray);
-            cursor: pointer;
-            transition: background 0.2s;
-            text-decoration: none;
-            display: block;
-            color: inherit;
-        }
-
-        .search-result-item:last-child {
-            border-bottom: none;
-        }
-
-        .search-result-item:hover {
-            background: var(--brand-light-gray);
-        }
-
-        .search-result-title {
-            font-weight: 600;
-            color: var(--brand-dark);
-            margin-bottom: 0.25rem;
-            text-transform: capitalize;
-        }
-
-        .search-result-desc {
-            font-size: 0.875rem;
-            color: var(--brand-mid-gray);
-            line-height: 1.5;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .search-result-meta {
-            font-size: 0.75rem;
-            color: var(--brand-mid-gray);
-            margin-top: 0.5rem;
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        .search-no-results {
-            padding: 2rem;
-            text-align: center;
-            color: var(--brand-mid-gray);
         }
     </style>
 </head>
@@ -1516,25 +1141,6 @@ function getStatusColor(status: string): string {
         <p class="hero-subtitle">
             Discover 258 plugins with 241 embedded AI Skills that activate automatically to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
         </p>
-
-        <!-- Search Bar -->
-        <div class="search-container">
-            <div class="search-wrapper">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input
-                    type="text"
-                    id="plugin-search"
-                    class="search-input"
-                    placeholder="Search 258 plugins by name, description, category, or skills..."
-                    autocomplete="off"
-                />
-                <button id="clear-search" class="clear-search-btn" style="display: none;">×</button>
-            </div>
-            <div id="search-results" class="search-results"></div>
-        </div>
 
         <div class="stats-bar">
             <div class="stat-item">
@@ -1597,35 +1203,32 @@ function getStatusColor(status: string): string {
         <div class="client-marquee">
             <!-- First set for seamless loop -->
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g clip-path="url(#clip0_nixtla)">
-                        <g clip-path="url(#clip1_nixtla)">
-                        <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
-                        <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
-                        <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
-                        <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
-                        <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
-                        <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
-                        <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
-                        <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
-                        <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
-                        </g>
-                        </g>
-                        <defs>
-                        <clipPath id="clip0_nixtla">
-                        <rect width="115" height="20" fill="white"/>
-                        </clipPath>
-                        <clipPath id="clip1_nixtla">
-                        <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
-                        </clipPath>
-                        </defs>
-                    </svg>
-                </a>
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g clip-path="url(#clip0_nixtla)">
+                    <g clip-path="url(#clip1_nixtla)">
+                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
+                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
+                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
+                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
+                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
+                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
+                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
+                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
+                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
+                    </g>
+                    </g>
+                    <defs>
+                    <clipPath id="clip0_nixtla">
+                    <rect width="115" height="20" fill="white"/>
+                    </clipPath>
+                    <clipPath id="clip1_nixtla">
+                    <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
+                    </clipPath>
+                    </defs>
+                </svg>
             </div>
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla2)">
                     <g clip-path="url(#clip1_nixtla2)">
                     <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
@@ -1650,8 +1253,7 @@ function getStatusColor(status: string): string {
                 </svg>
             </div>
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla3)">
                     <g clip-path="url(#clip1_nixtla3)">
                     <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
@@ -1677,8 +1279,7 @@ function getStatusColor(status: string): string {
             </div>
             <!-- Duplicate for seamless scrolling -->
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla4)">
                     <g clip-path="url(#clip1_nixtla4)">
                     <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
@@ -1703,8 +1304,7 @@ function getStatusColor(status: string): string {
                 </svg>
             </div>
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla5)">
                     <g clip-path="url(#clip1_nixtla5)">
                     <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
@@ -1729,8 +1329,7 @@ function getStatusColor(status: string): string {
                 </svg>
             </div>
             <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" aria-label="Visit Nixtla">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla6)">
                     <g clip-path="url(#clip1_nixtla6)">
                     <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
@@ -1754,56 +1353,6 @@ function getStatusColor(status: string): string {
                     </defs>
                 </svg>
             </div>
-        </div>
-    </section>
-
-    <!-- Featured Plugins Section -->
-    <section class="featured-plugins">
-        <div class="section-label">Top Picks</div>
-        <h2 class="section-title">Featured Plugins with Agent Skills</h2>
-
-        <div class="featured-grid">
-            {featuredPlugins.map((plugin: any) => (
-                <a href={`/plugins/${plugin.slug}`} class="featured-card">
-                    <div class="featured-card-header">
-                        <div class="featured-card-title">
-                            <h3>{plugin.displayName}</h3>
-                            {plugin.hasSkills && (
-                                <span class="skill-count-badge">{plugin.skillCount} skill{plugin.skillCount > 1 ? 's' : ''}</span>
-                            )}
-                        </div>
-                        <div class="featured-card-badges">
-                            {plugin.badges.map((badge: string) => (
-                                <span class={`featured-badge badge-${badge}`}>
-                                    {badge === 'featured' ? '⭐' : '🆕'}
-                                </span>
-                            ))}
-                        </div>
-                    </div>
-
-                    <p class="featured-card-description">{plugin.description}</p>
-
-                    <div class="featured-card-footer">
-                        <div class="featured-card-meta">
-                            <span class="category-pill">{plugin.category}</span>
-                            <span class="status-indicator">
-                                <span class="status-dot" style={`background-color: ${getStatusColor(plugin.status)}`}></span>
-                                {plugin.status}
-                            </span>
-                        </div>
-                        <span class="last-updated">{formatDate(plugin.lastUpdatedEpoch)}</span>
-                    </div>
-                </a>
-            ))}
-        </div>
-
-        <div class="featured-cta">
-            <a href="/plugins" class="btn-browse-all">
-                Browse All 258 Plugins
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-            </a>
         </div>
     </section>
 
@@ -2015,7 +1564,7 @@ function getStatusColor(status: string): string {
         </div>
     </footer>
 
-    <script is:inline define:vars={{ pluginsData: catalog.plugins }}>
+    <script>
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -2063,98 +1612,6 @@ function getStatusColor(status: string): string {
                     this.style.color = '';
                 }, 2000);
             });
-        });
-
-        // ========================================
-        // SEARCH FUNCTIONALITY
-        // ========================================
-        const searchInput = document.getElementById('plugin-search');
-        const clearBtn = document.getElementById('clear-search');
-        const searchResults = document.getElementById('search-results');
-
-        // Catalog data embedded for search
-        const plugins = pluginsData;
-
-        let searchTimeout;
-
-        function performSearch(query) {
-            const q = query.toLowerCase().trim();
-
-            if (!q) {
-                searchResults.classList.remove('show');
-                clearBtn.style.display = 'none';
-                return;
-            }
-
-            clearBtn.style.display = 'block';
-
-            // Filter plugins
-            const results = plugins.filter(plugin => {
-                return (
-                    plugin.displayName?.toLowerCase().includes(q) ||
-                    plugin.description?.toLowerCase().includes(q) ||
-                    plugin.category?.toLowerCase().includes(q) ||
-                    plugin.tags?.some(tag => tag.toLowerCase().includes(q)) ||
-                    plugin.slug?.toLowerCase().includes(q)
-                );
-            }).slice(0, 10); // Limit to top 10 results
-
-            // Display results
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div class="search-no-results">No plugins found matching "' + query + '"</div>';
-                searchResults.classList.add('show');
-            } else {
-                searchResults.innerHTML = results.map(plugin => `
-                    <a href="/plugins/${plugin.slug}" class="search-result-item">
-                        <div class="search-result-title">${plugin.displayName || plugin.slug}</div>
-                        <div class="search-result-desc">${plugin.description || 'No description available'}</div>
-                        <div class="search-result-meta">
-                            <span>${plugin.category || 'uncategorized'}</span>
-                            ${plugin.hasSkills ? '<span>🎯 ' + (plugin.skillCount || 0) + ' skill' + (plugin.skillCount > 1 ? 's' : '') + '</span>' : ''}
-                        </div>
-                    </a>
-                `).join('');
-                searchResults.classList.add('show');
-            }
-        }
-
-        // Search on input
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                performSearch(e.target.value);
-            }, 300);
-        });
-
-        // Clear search
-        clearBtn.addEventListener('click', () => {
-            searchInput.value = '';
-            searchResults.classList.remove('show');
-            clearBtn.style.display = 'none';
-            searchInput.focus();
-        });
-
-        // Close results when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !searchResults.contains(e.target) && !clearBtn.contains(e.target)) {
-                searchResults.classList.remove('show');
-            }
-        });
-
-        // Keep results open when clicking inside
-        searchResults.addEventListener('click', (e) => {
-            if (e.target.classList.contains('search-result-item') || e.target.closest('.search-result-item')) {
-                // Let the link work normally
-            } else {
-                e.stopPropagation();
-            }
-        });
-
-        // ESC key to close
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                searchResults.classList.remove('show');
-            }
         });
     </script>
 </body>
