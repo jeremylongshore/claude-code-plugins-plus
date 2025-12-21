@@ -24,6 +24,11 @@
 - [Debugging Tips (15 min)](workspace/lab/GUIDE-03-DEBUGGING-TIPS.md)
 - [**Orchestration Pattern** (60 min)](workspace/lab/ORCHESTRATION-PATTERN.md) ⭐
 
+**Interactive Tutorials** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
+- [Skills Tutorials (5 notebooks)](tutorials/README.md#skills-tutorials-5-notebooks)
+- [Plugins Tutorials (4 notebooks)](tutorials/README.md#plugins-tutorials-4-notebooks)
+- [Orchestration Tutorials (2 notebooks)](tutorials/README.md#orchestration-tutorials-2-notebooks)
+
 </td>
 <td width="50%">
 
