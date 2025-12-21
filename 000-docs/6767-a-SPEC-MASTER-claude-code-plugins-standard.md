@@ -2,9 +2,23 @@
 
 **Document ID**: 6767-a-SPEC-MASTER-claude-code-plugins-standard
 **Version**: 1.0.0
-**Status**: CANONICAL - Cross-Repo Standard
+**Status**: DEPRECATED (Superseded by 6767-c, 6767-d, 6767-e, 6767-f, 6767-g)
 **Created**: 2025-12-06
 **Updated**: 2025-12-07
+**Deprecated**: 2025-12-20
+
+---
+**⚠️ DEPRECATION NOTICE**
+
+This specification is DEPRECATED as of 2025-12-20 and has been superseded by the unified enterprise standard pack:
+- **6767-c**: Extensions Standard (comprehensive policy)
+- **6767-d**: Extensions Schema (machine-checkable validation rules)
+- **6767-e**: Validation and CI Gates (enforcement mechanisms)
+- **6767-f**: Plugin Scaffold Diagrams (enforceable architecture)
+- **6767-g**: Skill Scaffold Diagrams (enforceable architecture)
+
+**For all new projects**, use the 6767-c/d/e/f/g standard pack. This document is retained for historical reference only.
+---
 
 **Sources**:
 - [Official Anthropic Plugins Reference](https://code.claude.com/docs/en/plugins-reference)

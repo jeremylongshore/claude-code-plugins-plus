@@ -2,9 +2,23 @@
 
 **Document ID**: 6767-b-SPEC-MASTER-claude-skills-standard.md
 **Version**: 2.0.0
-**Status**: AUTHORITATIVE - Single Source of Truth
+**Status**: DEPRECATED (Superseded by 6767-c, 6767-d, 6767-e, 6767-f, 6767-g)
 **Created**: 2025-12-06
 **Updated**: 2025-12-07
+**Deprecated**: 2025-12-20
+
+---
+**⚠️ DEPRECATION NOTICE**
+
+This specification is DEPRECATED as of 2025-12-20 and has been superseded by the unified enterprise standard pack:
+- **6767-c**: Extensions Standard (comprehensive policy for plugins, skills, agents, commands, hooks, MCP)
+- **6767-d**: Extensions Schema (machine-checkable validation rules)
+- **6767-e**: Validation and CI Gates (enforcement mechanisms)
+- **6767-f**: Plugin Scaffold Diagrams (enforceable architecture)
+- **6767-g**: Skill Scaffold Diagrams (enforceable architecture)
+
+**For all new projects**, use the 6767-c/d/e/f/g standard pack. This document is retained for historical reference only.
+---
 
 **Sources**:
 - [Official Anthropic Agent Skills Overview](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview)
