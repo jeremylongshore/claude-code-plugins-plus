@@ -1,0 +1,22 @@
+{
+  "name": "lumera-agent-memory",
+  "version": "1.0.0",
+  "description": "Durable agent memory with Cascade object storage and local FTS index",
+  "type": "module",
+  "bin": {
+    "lumera-agent-memory": "./src/mcp_server.py"
+  },
+  "scripts": {
+    "test": "pytest tests/ -v",
+    "smoke": "pytest tests/smoke_test_90s.py -v -s"
+  },
+  "keywords": [
+    "mcp",
+    "memory",
+    "cascade",
+    "agent",
+    "storage"
+  ],
+  "author": "Intent Solutions IO",
+  "license": "MIT"
+}
