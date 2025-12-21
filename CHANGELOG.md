@@ -1,3 +1,66 @@
+## [4.0.0] - 2025-12-21
+
+### 🎓 Highlights
+**Complete Learning Lab System** - The largest educational contribution to the repository. A comprehensive teaching system for building production-ready agent workflows with empirical verification.
+
+### 🆕 New Learning Resources
+- **[workspace/lab/](workspace/lab/)** - Complete test harness pattern learning lab (320KB+, 20 files)
+  - **5 Comprehensive Guides** (90+ pages):
+    - [GUIDE-00: Mental Model](workspace/lab/GUIDE-00-START-HERE.md) - 5-minute introduction to the pattern
+    - [GUIDE-01: Architecture Deep Dive](workspace/lab/GUIDE-01-PATTERN-EXPLAINED.md) - 15-minute technical breakdown
+    - [GUIDE-02: Build Your Own](workspace/lab/GUIDE-02-BUILDING-YOUR-OWN.md) - 30-minute adaptation guide
+    - [GUIDE-03: Debugging Tips](workspace/lab/GUIDE-03-DEBUGGING-TIPS.md) - 15-minute troubleshooting reference
+    - [**ORCHESTRATION-PATTERN**](workspace/lab/ORCHESTRATION-PATTERN.md) ⭐ - 60-minute complete reference - The definitive guide to subagent orchestration with contracts, verification patterns, and advanced techniques
+  - **Reference Implementation**: Complete 5-phase schema-optimization workflow
+    - Orchestrator with session management and validation gates
+    - 5 phase agents with strict JSON contracts
+    - Step-by-step reference procedures (Phase 1 and Phase 4)
+    - Working verification script (bash) demonstrating empirical validation
+  - **Hands-On Exercise**: Run workflow end-to-end with real data
+  - **Visual Documentation**: Architecture maps, flow diagrams, system summary
+  - **Teaching Tools**: README, quick start guide, built system summary
+
+### 📚 What You'll Learn
+- **Multi-Phase Pattern**: Decompose workflows into validated phases with strict contracts
+- **Phase 4 Critical Pattern**: Run deterministic scripts to verify LLM conclusions against ground truth
+- **Evidence-Based Development**: Turn "LLM analyzed" into "LLM + script verified with evidence"
+- **Production Deployment**: From lab prototype to production skill in 003-skills/
+
+### 🎯 Key Files
+- [workspace/lab/README.md](workspace/lab/README.md) - Landing page and orientation
+- [workspace/lab/VISUAL-MAP.md](workspace/lab/VISUAL-MAP.md) - ASCII architecture diagrams
+- [workspace/lab/BUILT-SYSTEM-SUMMARY.md](workspace/lab/BUILT-SYSTEM-SUMMARY.md) - Complete system overview
+- [workspace/lab/schema-optimization/SKILL.md](workspace/lab/schema-optimization/SKILL.md) - Working orchestrator
+- [workspace/lab/exercises/exercise-1-run-workflow.md](workspace/lab/exercises/exercise-1-run-workflow.md) - Hands-on practice
+
+### 📖 README Updates
+- Added **Learning Lab** section immediately under badges
+- Clean two-column layout with guides and reference implementation
+- Direct links to all teaching resources
+- Time estimates for each guide (5-60 minutes)
+- No hype, just practical learning paths
+
+### 🏗️ System Architecture
+The learning lab demonstrates:
+- Orchestrator pattern for multi-phase workflows
+- JSON contracts for phase inputs/outputs
+- Session directories for evidence preservation
+- Validation gates between phases
+- Empirical verification via deterministic scripts
+- Content-addressed storage for audit trails
+
+### 💡 Use Cases Demonstrated
+- Schema optimization with field utilization analysis
+- Release validation with test suite verification
+- Benchmark regression detection
+- Documentation sync validation
+- Any workflow requiring empirical validation
+
+### 👥 Community Recognition
+- **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the Learning Lab system. His insights on empirical verification and multi-phase workflows transformed how we teach agent development.
+
+---
+
 ## [3.2.0] - 2025-12-16
 
 ### 🎉 Highlights
