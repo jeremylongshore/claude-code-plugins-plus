@@ -1,0 +1,11 @@
+flowchart LR
+    A[❌ DO NOT USE:<br/>/home/jeremy/plugins/my-plugin/scripts/tool.py]:::bad --> B[❌ BREAKS PORTABILITY]:::bad
+
+    C[✅ USE:<br/>$CLAUDE_PLUGIN_ROOT/scripts/tool.py]:::good --> D[✅ PORTABLE + CACHE-SAFE]:::good
+
+    E[❌ DO NOT USE:<br/>../../../data/config.json]:::bad --> F[❌ SECURITY RISK<br/>Path traversal]:::bad
+
+    G[✅ USE:<br/>$CLAUDE_PLUGIN_ROOT/data/config.json]:::good --> H[✅ SAFE + PREDICTABLE]:::good
+
+    classDef bad fill:#ffe8e8,stroke:#b00020,stroke-width:2px
+    classDef good fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px

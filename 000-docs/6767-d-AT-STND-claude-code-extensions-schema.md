@@ -11,6 +11,73 @@
 
 ---
 
+## TRUTH INVARIANTS (ENTERPRISE MODE)
+
+**MODE**: ENTERPRISE MODE ALWAYS ON. No "Anthropic-minimum" fallback. All fields marked "REQUIRED" are REQUIRED.
+
+**CORE RULES**:
+
+1. **allowed-tools Format**:
+   - ✅ CORRECT: CSV string → `allowed-tools: "Read,Write,Grep,Glob"`
+   - ❌ WRONG: YAML array → `allowed-tools: [Read, Write, Grep]`
+   - Violation: CRITICAL ERROR (`SKILL_022`)
+
+2. **Bash Scoping**:
+   - ✅ CORRECT: Scoped → `Bash(git:*)`, `Bash(npm:*)`, `Bash(python:*)`
+   - ❌ WRONG: Unscoped → `Bash`
+   - Violation: CRITICAL ERROR (`SKILL_024`)
+
+3. **Path Portability**:
+   - ✅ CORRECT: `${CLAUDE_PLUGIN_ROOT}/...` or `{baseDir}/...`
+   - ❌ WRONG: `/home/user/...` or `~/...`
+   - Violation: CRITICAL ERROR (`SKILL_103`, `SEC_005`)
+
+4. **Naming Convention**:
+   - Pattern: `^[a-z0-9-]+$` (kebab-case only)
+   - Max length: 64 chars
+   - Reserved words: NO "claude" or "anthropic"
+   - Violation: CRITICAL ERROR (`NAMING_001`, `NAMING_002`, `NAMING_003`)
+
+5. **Versioning**:
+   - Format: SemVer `MAJOR.MINOR.PATCH` (3 parts)
+   - Example: `1.0.0`, `2.3.1`
+   - Violation: CRITICAL ERROR (`PLUGIN_012`, `SKILL_032`)
+
+6. **Directory Structure**:
+   - `.claude-plugin/` contains ONLY `plugin.json`
+   - Component dirs (skills/, agents/, commands/) at plugin root, NOT inside `.claude-plugin/`
+   - Violation: CRITICAL ERROR (`DIR_002`, `DIR_005`)
+
+7. **Security**:
+   - NO hardcoded secrets, API keys, .env files committed
+   - Secrets via environment variables ONLY
+   - Exemptions: ONLY `tests/fixtures/**` + known test patterns (EXAMPLE, DUMMY, test-)
+   - Violation: CRITICAL ERROR (`SEC_001`, `SEC_002`, `SEC_003`, `SEC_004`)
+
+8. **Context Hygiene**:
+   - SKILL.md body ≤ 5,000 words / 500 lines / ~7,500 tokens
+   - Heavy content in `references/` directory (loaded on-demand)
+   - Violation: HIGH ERROR (`SKILL_100`, `SKILL_101`)
+
+9. **Discoverability**:
+   - Description MUST include "Use when..." phrase
+   - Description MUST include 2-6 trigger phrases
+   - Violation: HIGH ERROR (`SKILL_015`, `SKILL_016`)
+
+10. **Required Fields (Enterprise)**:
+    - Plugin: name, version, description, author (name + email), license, keywords
+    - Skill: name, description, allowed-tools (CSV), version, author, license, tags
+    - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
+
+**VALIDATION**:
+- Validator runs in ENTERPRISE MODE ONLY
+- CRITICAL/HIGH errors BLOCK PR merge
+- Deterministic error codes (6767-d schema)
+
+**NO EXCEPTIONS**: These rules apply to ALL plugins/skills, regardless of size or complexity.
+
+---
+
 ## 1. Purpose
 
 This specification defines the **machine-checkable schema** for Claude Code extensions. It provides formal validation rules, data types, constraints, and error codes that validators MUST implement.

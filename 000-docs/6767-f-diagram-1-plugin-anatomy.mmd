@@ -1,0 +1,21 @@
+flowchart TD
+    A[PLUGIN ROOT]:::req --> B[.claude-plugin/]:::req
+    B --> C[plugin.json<br/>ONLY FILE]:::req
+
+    A --> D[skills/]:::opt
+    A --> E[agents/]:::opt
+    A --> F[commands/]:::opt
+    A --> G[hooks/]:::opt
+    A --> H[scripts/]:::opt
+
+    A --> I[README.md]:::req
+    A --> J[.claudeignore]:::req
+    A --> K[.mcp.json]:::opt
+    A --> L[000-docs/]:::opt
+
+    %% Forbidden zone
+    B --> X[❌ NO OTHER FILES<br/>❌ NO COMPONENTS HERE]:::bad
+
+    classDef req fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px
+    classDef opt fill:#f3f4ff,stroke:#4c5bd4,stroke-width:1px
+    classDef bad fill:#ffe8e8,stroke:#b00020,stroke-width:2px,stroke-dasharray: 5 5

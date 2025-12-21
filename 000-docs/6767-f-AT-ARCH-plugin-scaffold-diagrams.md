@@ -12,6 +12,73 @@
 
 ---
 
+## TRUTH INVARIANTS (ENTERPRISE MODE)
+
+**MODE**: ENTERPRISE MODE ALWAYS ON. No "Anthropic-minimum" fallback. All fields marked "REQUIRED" are REQUIRED.
+
+**CORE RULES**:
+
+1. **allowed-tools Format**:
+   - ✅ CORRECT: CSV string → `allowed-tools: "Read,Write,Grep,Glob"`
+   - ❌ WRONG: YAML array → `allowed-tools: [Read, Write, Grep]`
+   - Violation: CRITICAL ERROR (`SKILL_022`)
+
+2. **Bash Scoping**:
+   - ✅ CORRECT: Scoped → `Bash(git:*)`, `Bash(npm:*)`, `Bash(python:*)`
+   - ❌ WRONG: Unscoped → `Bash`
+   - Violation: CRITICAL ERROR (`SKILL_024`)
+
+3. **Path Portability**:
+   - ✅ CORRECT: `${CLAUDE_PLUGIN_ROOT}/...` or `{baseDir}/...`
+   - ❌ WRONG: `/home/user/...` or `~/...`
+   - Violation: CRITICAL ERROR (`SKILL_103`, `SEC_005`)
+
+4. **Naming Convention**:
+   - Pattern: `^[a-z0-9-]+$` (kebab-case only)
+   - Max length: 64 chars
+   - Reserved words: NO "claude" or "anthropic"
+   - Violation: CRITICAL ERROR (`NAMING_001`, `NAMING_002`, `NAMING_003`)
+
+5. **Versioning**:
+   - Format: SemVer `MAJOR.MINOR.PATCH` (3 parts)
+   - Example: `1.0.0`, `2.3.1`
+   - Violation: CRITICAL ERROR (`PLUGIN_012`, `SKILL_032`)
+
+6. **Directory Structure**:
+   - `.claude-plugin/` contains ONLY `plugin.json`
+   - Component dirs (skills/, agents/, commands/) at plugin root, NOT inside `.claude-plugin/`
+   - Violation: CRITICAL ERROR (`DIR_002`, `DIR_005`)
+
+7. **Security**:
+   - NO hardcoded secrets, API keys, .env files committed
+   - Secrets via environment variables ONLY
+   - Exemptions: ONLY `tests/fixtures/**` + known test patterns (EXAMPLE, DUMMY, test-)
+   - Violation: CRITICAL ERROR (`SEC_001`, `SEC_002`, `SEC_003`, `SEC_004`)
+
+8. **Context Hygiene**:
+   - SKILL.md body ≤ 5,000 words / 500 lines / ~7,500 tokens
+   - Heavy content in `references/` directory (loaded on-demand)
+   - Violation: HIGH ERROR (`SKILL_100`, `SKILL_101`)
+
+9. **Discoverability**:
+   - Description MUST include "Use when..." phrase
+   - Description MUST include 2-6 trigger phrases
+   - Violation: HIGH ERROR (`SKILL_015`, `SKILL_016`)
+
+10. **Required Fields (Enterprise)**:
+    - Plugin: name, version, description, author (name + email), license, keywords
+    - Skill: name, description, allowed-tools (CSV), version, author, license, tags
+    - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
+
+**VALIDATION**:
+- Validator runs in ENTERPRISE MODE ONLY
+- CRITICAL/HIGH errors BLOCK PR merge
+- Deterministic error codes (6767-d schema)
+
+**NO EXCEPTIONS**: These rules apply to ALL plugins/skills, regardless of size or complexity.
+
+---
+
 ## 1. Non-Negotiable Constraints (MUST)
 
 ### 1.1 Directory Structure Rules
@@ -119,29 +186,7 @@ my-plugin/                              ← Plugin root
 
 ### 3.1 Plugin Anatomy Tree (Allowed/Forbidden Callouts)
 
-```mermaid
-flowchart TD
-    A[PLUGIN ROOT]:::req --> B[.claude-plugin/]:::req
-    B --> C[plugin.json<br/>ONLY FILE]:::req
-
-    A --> D[skills/]:::opt
-    A --> E[agents/]:::opt
-    A --> F[commands/]:::opt
-    A --> G[hooks/]:::opt
-    A --> H[scripts/]:::opt
-
-    A --> I[README.md]:::req
-    A --> J[.claudeignore]:::req
-    A --> K[.mcp.json]:::opt
-    A --> L[000-docs/]:::opt
-
-    %% Forbidden zone
-    B --> X[❌ NO OTHER FILES<br/>❌ NO COMPONENTS HERE]:::bad
-
-    classDef req fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px
-    classDef opt fill:#f3f4ff,stroke:#4c5bd4,stroke-width:1px
-    classDef bad fill:#ffe8e8,stroke:#b00020,stroke-width:2px,stroke-dasharray: 5 5
-```
+**See diagram**: [6767-f-diagram-1-plugin-anatomy.mmd](6767-f-diagram-1-plugin-anatomy.mmd) ([PNG version](6767-f-diagram-1-plugin-anatomy.png))
 
 **Diagram Node → Validator Mapping**:
 
@@ -163,30 +208,7 @@ flowchart TD
 
 ### 3.2 Router → Skill → Script Control Loop
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant R as Router<br/>(Claude Code)
-    participant SK as Skill
-    participant SH as Shell/Runtime
-    participant FS as Filesystem
-
-    U->>R: User request
-    Note over R: Match request to best skill<br/>(name + description)
-    R->>SK: Activate skill
-
-    Note over SK: Progressive disclosure:<br/>Load SKILL.md body
-    SK->>FS: Read ONLY necessary files<br/>(avoid loading all context)
-    FS-->>SK: File contents
-
-    Note over SK: Parse instructions,<br/>prepare script execution
-    SK->>SH: Execute script via<br/>${CLAUDE_PLUGIN_ROOT}/scripts/tool.py
-    SH-->>SK: stdout/stderr + exit code
-
-    Note over SK: Format output<br/>(JSON/Markdown/structured)
-    SK-->>R: Structured result
-    R-->>U: Response + next action
-```
+**See diagram**: [6767-f-diagram-2-router-skill-script.mmd](6767-f-diagram-2-router-skill-script.mmd) ([PNG version](6767-f-diagram-2-router-skill-script.png))
 
 **Diagram Step → Validator Mapping**:
 
@@ -200,19 +222,7 @@ sequenceDiagram
 
 ### 3.3 Path Resolution Diagram (Portable vs Broken)
 
-```mermaid
-flowchart LR
-    A[❌ DO NOT USE:<br/>/home/jeremy/plugins/my-plugin/scripts/tool.py]:::bad --> B[❌ BREAKS PORTABILITY]:::bad
-
-    C[✅ USE:<br/>$CLAUDE_PLUGIN_ROOT/scripts/tool.py]:::good --> D[✅ PORTABLE + CACHE-SAFE]:::good
-
-    E[❌ DO NOT USE:<br/>../../../data/config.json]:::bad --> F[❌ SECURITY RISK<br/>Path traversal]:::bad
-
-    G[✅ USE:<br/>$CLAUDE_PLUGIN_ROOT/data/config.json]:::good --> H[✅ SAFE + PREDICTABLE]:::good
-
-    classDef bad fill:#ffe8e8,stroke:#b00020,stroke-width:2px
-    classDef good fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px
-```
+**See diagram**: [6767-f-diagram-3-path-resolution.mmd](6767-f-diagram-3-path-resolution.mmd) ([PNG version](6767-f-diagram-3-path-resolution.png))
 
 **Diagram Path → Validator Mapping**:
 

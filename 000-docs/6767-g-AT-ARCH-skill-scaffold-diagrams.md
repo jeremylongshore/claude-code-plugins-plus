@@ -12,6 +12,73 @@
 
 ---
 
+## TRUTH INVARIANTS (ENTERPRISE MODE)
+
+**MODE**: ENTERPRISE MODE ALWAYS ON. No "Anthropic-minimum" fallback. All fields marked "REQUIRED" are REQUIRED.
+
+**CORE RULES**:
+
+1. **allowed-tools Format**:
+   - ✅ CORRECT: CSV string → `allowed-tools: "Read,Write,Grep,Glob"`
+   - ❌ WRONG: YAML array → `allowed-tools: [Read, Write, Grep]`
+   - Violation: CRITICAL ERROR (`SKILL_022`)
+
+2. **Bash Scoping**:
+   - ✅ CORRECT: Scoped → `Bash(git:*)`, `Bash(npm:*)`, `Bash(python:*)`
+   - ❌ WRONG: Unscoped → `Bash`
+   - Violation: CRITICAL ERROR (`SKILL_024`)
+
+3. **Path Portability**:
+   - ✅ CORRECT: `${CLAUDE_PLUGIN_ROOT}/...` or `{baseDir}/...`
+   - ❌ WRONG: `/home/user/...` or `~/...`
+   - Violation: CRITICAL ERROR (`SKILL_103`, `SEC_005`)
+
+4. **Naming Convention**:
+   - Pattern: `^[a-z0-9-]+$` (kebab-case only)
+   - Max length: 64 chars
+   - Reserved words: NO "claude" or "anthropic"
+   - Violation: CRITICAL ERROR (`NAMING_001`, `NAMING_002`, `NAMING_003`)
+
+5. **Versioning**:
+   - Format: SemVer `MAJOR.MINOR.PATCH` (3 parts)
+   - Example: `1.0.0`, `2.3.1`
+   - Violation: CRITICAL ERROR (`PLUGIN_012`, `SKILL_032`)
+
+6. **Directory Structure**:
+   - `.claude-plugin/` contains ONLY `plugin.json`
+   - Component dirs (skills/, agents/, commands/) at plugin root, NOT inside `.claude-plugin/`
+   - Violation: CRITICAL ERROR (`DIR_002`, `DIR_005`)
+
+7. **Security**:
+   - NO hardcoded secrets, API keys, .env files committed
+   - Secrets via environment variables ONLY
+   - Exemptions: ONLY `tests/fixtures/**` + known test patterns (EXAMPLE, DUMMY, test-)
+   - Violation: CRITICAL ERROR (`SEC_001`, `SEC_002`, `SEC_003`, `SEC_004`)
+
+8. **Context Hygiene**:
+   - SKILL.md body ≤ 5,000 words / 500 lines / ~7,500 tokens
+   - Heavy content in `references/` directory (loaded on-demand)
+   - Violation: HIGH ERROR (`SKILL_100`, `SKILL_101`)
+
+9. **Discoverability**:
+   - Description MUST include "Use when..." phrase
+   - Description MUST include 2-6 trigger phrases
+   - Violation: HIGH ERROR (`SKILL_015`, `SKILL_016`)
+
+10. **Required Fields (Enterprise)**:
+    - Plugin: name, version, description, author (name + email), license, keywords
+    - Skill: name, description, allowed-tools (CSV), version, author, license, tags
+    - Violation: CRITICAL ERROR (various `PLUGIN_*`, `SKILL_*` codes)
+
+**VALIDATION**:
+- Validator runs in ENTERPRISE MODE ONLY
+- CRITICAL/HIGH errors BLOCK PR merge
+- Deterministic error codes (6767-d schema)
+
+**NO EXCEPTIONS**: These rules apply to ALL plugins/skills, regardless of size or complexity.
+
+---
+
 ## 1. Enterprise MUSTs (Limits Included)
 
 ### 1.1 File Structure Rules
@@ -191,20 +258,7 @@ skills/my-skill/
 
 ### 3.1 Skill Scaffold Anatomy
 
-```mermaid
-flowchart LR
-    A[skills/<skill-name>/]:::req --> B[SKILL.md]:::req
-
-    A --> C[scripts/]:::opt
-    A --> D[references/]:::opt
-    A --> E[assets/]:::opt
-
-    B --> F[YAML Frontmatter<br/>name, description, allowed-tools,<br/>version, author, license, tags]:::req
-    B --> G[Markdown Body<br/>Purpose, Instructions, Output,<br/>Error Handling 4+, Examples 2+, Resources]:::req
-
-    classDef req fill:#e8ffe8,stroke:#2a8a2a,stroke-width:2px
-    classDef opt fill:#f3f4ff,stroke:#4c5bd4,stroke-width:1px
-```
+**See diagram**: [6767-g-diagram-1-skill-scaffold.mmd](6767-g-diagram-1-skill-scaffold.mmd) ([PNG version](6767-g-diagram-1-skill-scaffold.png))
 
 **Diagram Node → Validator Mapping**:
 
@@ -220,24 +274,7 @@ flowchart LR
 
 ### 3.2 Discovery → Activation State Machine (Progressive Disclosure)
 
-```mermaid
-stateDiagram-v2
-    [*] --> Discovery
-
-    Discovery: Router sees ONLY:<br/>- name<br/>- description<br/>(NO body loaded)
-
-    Discovery --> Activated: Skill selected<br/>(best match)
-
-    Activated --> LoadSkillBody: Load SKILL.md body<br/>into context
-
-    LoadSkillBody --> DeepDive: IF needed:<br/>Read references/*<br/>(on-demand)
-
-    DeepDive --> Execute: Run scripts<br/>deterministically
-
-    Execute --> Observe: Validate output<br/>+ format result
-
-    Observe --> [*]
-```
+**See diagram**: [6767-g-diagram-2-discovery-activation.mmd](6767-g-diagram-2-discovery-activation.mmd) ([PNG version](6767-g-diagram-2-discovery-activation.png))
 
 **Diagram State → Validator Mapping**:
 
@@ -252,28 +289,7 @@ stateDiagram-v2
 
 ### 3.3 Read → Process → Write Workflow Diagram
 
-```mermaid
-flowchart TD
-    A[User Request] --> B{Router<br/>Selects Skill}
-
-    B --> C[Load SKILL.md Body<br/>Progressive Disclosure]:::load
-
-    C --> D[Read Input Files<br/>allowed-tools: Read,Grep]:::read
-
-    D --> E[Process Data<br/>Run scripts via ${CLAUDE_PLUGIN_ROOT}]:::process
-
-    E --> F[Write Output<br/>allowed-tools: Write]:::write
-
-    F --> G[Format Result<br/>JSON/Markdown/Structured]:::output
-
-    G --> H[Return to User]
-
-    classDef load fill:#fff4e6,stroke:#e65100,stroke-width:2px
-    classDef read fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    classDef process fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    classDef write fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef output fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
-```
+**See diagram**: [6767-g-diagram-3-read-process-write.mmd](6767-g-diagram-3-read-process-write.mmd) ([PNG version](6767-g-diagram-3-read-process-write.png))
 
 **Diagram Step → Validator Mapping**:
 
@@ -288,31 +304,7 @@ flowchart TD
 
 ### 3.4 Security Boundary Diagram (Redact/Encrypt Before Durable Store)
 
-```mermaid
-flowchart TD
-    A[Raw Session / Input Data] --> B{Redact Secrets/PII}:::critical
-
-    B --> C[Local Index Metadata<br/>Search-optimized]:::local
-
-    B --> D{Encrypt Client-Side<br/>AES-256-GCM}:::critical
-
-    D --> E[Persist to Durable Storage<br/>Cascade/External Store]:::durable
-
-    C -.-> F[Query by Tags/Timestamps<br/>Fast Local Lookup]:::query
-
-    F -.-> G[Retrieve Encrypted Blob<br/>Using Pointer]:::retrieve
-
-    G --> H{Decrypt Client-Side<br/>Verify Integrity}:::critical
-
-    H --> I[Restored Session Data]:::output
-
-    classDef critical fill:#ffe8e8,stroke:#b00020,stroke-width:3px
-    classDef local fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
-    classDef durable fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
-    classDef query fill:#fff4e6,stroke:#e65100,stroke-width:2px
-    classDef retrieve fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    classDef output fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
-```
+**See diagram**: [6767-g-diagram-4-security-boundary.mmd](6767-g-diagram-4-security-boundary.mmd) ([PNG version](6767-g-diagram-4-security-boundary.png))
 
 **Diagram Step → Validator Mapping (Security Focus)**:
 
