@@ -81,3 +81,7 @@ marketplace/backup-*/
 # NPM configuration files (local overrides)
 .npmrc
 packages/**/.npmrc
+
+# Workspace lab directory (safe sandbox for experiments)
+workspace/
+.venv
