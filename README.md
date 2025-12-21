@@ -48,9 +48,9 @@
 
 ---
 
-**240 Agent Skills & 258 Plugins for Claude Code**
+**Claude Code plugins with embedded agent skills and interactive tutorials**
 
-**v4.0.0:** Learning Lab with 11 interactive tutorials, 90+ pages of guides, and production workflow patterns.
+**v4.0.0:** Learning Lab with interactive tutorials, comprehensive guides, and production workflow patterns.
 
 **Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0)
 
@@ -121,7 +121,7 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
 
 ### Quick Stats
 - **185 Skills** equipped across plugins
-- **100% Anthropic 2025 Schema** compliant
+- **2025 Schema:** Validated against Anthropic standards
 - **Average skill size:** 3.2KB of intelligent automation
 - **Categories covered:** 18 specialized domains
 

@@ -522,7 +522,7 @@ git diff .claude-plugin/marketplace.json  # Should be clean
 - **AI Instruction Plugins**: 252 (98% of marketplace)
 - **Plugin Packs**: 4 major packs (devops, security, api-development, ai-ml)
 - **Categories**: 18 total categories
-- **2025 Schema Compliance**: 100% of skills
+- **2025 Schema**: Validated with scripts/validate-skills-schema.py
 - **Website**: https://claudecodeplugins.io/ (Astro 5.16.0 + Tailwind 4.1.17)
 - **Version**: 1.5.0 (Last updated: 2025-12-19)
 
