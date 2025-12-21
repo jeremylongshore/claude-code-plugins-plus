@@ -3,14 +3,30 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Task Tracking (Beads / bd)
-- Use `bd` for ALL tasks/issues (no markdown TODO lists).
-- Start of session: `bd ready`
-- Create work: `bd create "Title" -p 1 --description "Context + acceptance criteria"`
-- Update status: `bd update <id> --status in_progress`
-- Finish: `bd close <id> --reason "Done"`
-- End of session: `bd sync` (flush/import/export + git sync)
-- Manual testing safety:
-  - Prefer `BEADS_DIR` to isolate a workspace if needed. (`BEADS_DB` exists but is deprecated.)
+
+### Critical Rules
+- Use `bd` for ALL tasks/issues (no markdown TODO lists)
+- **Git hooks MUST be installed**: Run `bd hooks install` (auto-syncs on commit/merge/push/checkout)
+- **Never pollute production DB**: Use `BEADS_DIR` for testing/isolation
+- **Landing the Plane is MANDATORY**: Work isn't done until `git push` succeeds
+
+### Session Workflow
+- **Start**: `bd ready` (shows ready-to-work tasks)
+- **Create**: `bd create "Title" -p 1 --description "Context + criteria"`
+- **Update**: `bd update <id> --status in_progress`
+- **Close**: `bd close <id> --reason "Completed: <summary>"`
+- **End**: `bd sync` (MANDATORY - exports, commits, pulls, pushes)
+
+### Git Hooks (Installed)
+- `pre-commit`: Flushes pending changes before commit
+- `post-merge`: Imports updates after pulls
+- `pre-push`: Exports database before pushing
+- `post-checkout`: Ensures consistency on branch switches
+
+### Testing Safety
+- Use `BEADS_DIR=/tmp/beads-test` to isolate test workspace
+- `BEADS_DB` exists but is deprecated
+- Never create test issues in production (prefix "Test" triggers warning)
 
 ### Beads upgrades
 - After upgrading `bd`, run: `bd info --whats-new`
