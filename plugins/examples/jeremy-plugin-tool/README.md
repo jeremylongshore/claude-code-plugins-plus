@@ -1,9 +1,9 @@
-# Skills Powerkit
+# Jeremy Plugin Tool
 
-**The ultimate plugin management toolkit for the claude-code-plugins marketplace** - Includes 5 Agent Skills that automatically manage plugin development, validation, auditing, and marketplace updates.
+**Production-grade plugin creator with nixtla-validated quality standards** - Includes 4 Agent Skills that automatically create, validate, audit, and version plugins for the claude-code-plugins marketplace.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-brightgreen)](.)
-[![Skills](https://img.shields.io/badge/skills-5-blue)](.)
+[![Version](https://img.shields.io/badge/version-2.0.0-brightgreen)](.)
+[![Skills](https://img.shields.io/badge/skills-4-blue)](.)
 [![Type](https://img.shields.io/badge/type-meta--plugin-purple)](.)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
@@ -11,13 +11,13 @@
 
 ## What Is This?
 
-**Skills Powerkit is a "meta-plugin"** - a plugin specifically designed to help you CREATE, VALIDATE, AUDIT, and MANAGE plugins within the claude-code-plugins repository.
+**Skills Powerkit is a "meta-plugin"** - a plugin specifically designed to help you CREATE, VALIDATE, AUDIT, and VERSION plugins within the claude-code-plugins repository.
 
 **Think of it as your AI assistant FOR building plugins** - it knows the repository structure, standards, and workflows, and automatically handles all the tedious tasks.
 
 ---
 
-## 5 Included Agent Skills
+## 4 Included Agent Skills
 
 ### 1. 🛠️ Plugin Creator
 **Automatically scaffolds new plugins from scratch**
@@ -59,26 +59,7 @@
 
 ---
 
-### 3. 📦 Marketplace Manager
-**Automatically manages marketplace catalog and syncing**
-
-**Activates when you say:**
-- "Add plugin to marketplace"
-- "Sync marketplace catalog"
-- "Update marketplace version"
-
-**What it does:**
-- Updates marketplace.extended.json
-- Runs `npm run sync-marketplace`
-- Validates both catalog files
-- Checks for duplicates
-- Ensures catalog integrity
-
-**Example:** "Add the new security-scanner to marketplace"
-
----
-
-### 4. 🔍 Plugin Auditor
+### 3. 🔍 Plugin Auditor
 **Automatically audits plugins for security and quality**
 
 **Activates when you say:**
@@ -98,7 +79,7 @@
 
 ---
 
-### 5. 🔢 Version Bumper
+### 4. 🔢 Version Bumper
 **Automatically handles semantic version updates**
 
 **Activates when you say:**

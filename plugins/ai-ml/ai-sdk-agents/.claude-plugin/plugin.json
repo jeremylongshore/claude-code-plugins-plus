@@ -23,10 +23,5 @@
     "ai",
     "coordination",
     "agent-skills"
-  ],
-  "dependencies": {
-    "@ai-sdk-tools/agents": "^0.1.0-beta.1",
-    "ai": "latest",
-    "zod": "latest"
-  }
+  ]
 }

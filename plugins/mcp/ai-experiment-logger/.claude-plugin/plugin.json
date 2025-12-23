@@ -8,5 +8,12 @@
   },
   "repository": "https://github.com/jeremylongshore/claude-code-plugins",
   "license": "MIT",
-  "keywords": ["ai", "experiments", "logging", "analytics", "dashboard", "mcp"]
+  "keywords": [
+    "ai",
+    "experiments",
+    "logging",
+    "analytics",
+    "dashboard",
+    "mcp"
+  ]
 }
