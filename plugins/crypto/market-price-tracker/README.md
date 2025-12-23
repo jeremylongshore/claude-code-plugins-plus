@@ -44,6 +44,201 @@ Real-time market price tracking across crypto, stocks, forex, and commodities wi
 /plugin install market-price-tracker@claude-code-plugins-plus
 ```
 
+## FREE Data Sources Configuration
+
+**Track all asset classes using 100% free data sources** - no Polygon.io, Messari, or premium subscriptions required.
+
+### Quick Comparison
+
+| Asset Class | Paid Sources | FREE Sources |
+|-------------|-------------|--------------|
+| **Crypto** | Messari Pro ($99/mo) | CoinGecko + Binance: **$0** |
+| **Stocks** | Polygon.io ($49/mo) | Yahoo Finance + Alpha Vantage: **$0** |
+| **Forex** | OANDA Pro ($25/mo) | Currency Layer free tier: **$0** |
+| **Commodities** | Quandl ($50/mo) | Alpha Vantage: **$0** |
+
+**Annual Savings: $2,676** with free-tier configuration.
+
+### Free Data Source Matrix
+
+| Asset | Free API | Rate Limit | Signup |
+|-------|----------|-----------|--------|
+| **Crypto** | CoinGecko | 50 req/min | No |
+| **Crypto** | Binance | 1200 req/min | No |
+| **Stocks** | Yahoo Finance | Unlimited | No |
+| **Stocks** | Alpha Vantage | 500 req/day | Free key |
+| **Forex** | Currency Layer | 250 req/mo | Free key |
+| **Commodities** | Alpha Vantage | 500 req/day | Free key |
+
+### Free Configuration Template
+
+```json
+{
+  "dataSources": {
+    "crypto": {
+      "primary": "coingecko",      // FREE - 50 req/min
+      "fallback": ["binance", "coinbase"],  // FREE - no limits
+      "useWebSocket": false         // Use REST API (free tier)
+    },
+    "stocks": {
+      "primary": "yfinance",        // FREE - unlimited
+      "fallback": ["alphavantage"],  // FREE - 500 req/day
+      "apiKeys": {
+        "alphavantage": "YOUR_FREE_KEY"  // Get at alphavantage.co
+      }
+    },
+    "forex": {
+      "primary": "currencylayer",   // FREE - 250 req/month
+      "apiKeys": {
+        "currencylayer": "YOUR_FREE_KEY"  // Get at currencylayer.com
+      }
+    },
+    "commodities": {
+      "primary": "alphavantage"     // FREE - covers gold, silver, oil
+    }
+  },
+  "updateIntervals": {
+    "crypto": 300,      // 5 min (well under free limits)
+    "stocks": 60,       // 1 min (Yahoo Finance allows this)
+    "forex": 3600,      // 1 hour (free tier: 250 req/month)
+    "commodities": 3600 // 1 hour (commodities update slowly anyway)
+  }
+}
+```
+
+### Cost Breakdown: Paid vs Free
+
+#### Paid Approach (Premium APIs)
+
+**Monthly Costs:**
+- Polygon.io (stocks): $49/mo
+- Messari Pro (crypto): $99/mo
+- OANDA Pro (forex): $25/mo
+- Quandl Premium (commodities): $50/mo
+- **Total: $223/mo → $2,676/year**
+
+#### Free Approach (This Configuration)
+
+**Monthly Costs:**
+- CoinGecko (crypto): $0
+- Binance API (crypto): $0
+- Yahoo Finance (stocks): $0
+- Alpha Vantage (stocks/commodities): $0
+- Currency Layer free tier (forex): $0
+- **Total: $0/mo → $0/year**
+
+**Savings: $2,676/year**
+
+### Real Use Case Examples
+
+#### Crypto Price Tracking (BTC/ETH)
+
+**Free Configuration:**
+```javascript
+// CoinGecko API - FREE
+const prices = await fetch(
+  'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd'
+);
+
+// Result: { bitcoin: { usd: 45000 }, ethereum: { usd: 3000 } }
+```
+
+**Cost:** $0 (vs Messari Pro $99/mo)
+
+#### Stock Price Tracking (AAPL, TSLA, MSFT)
+
+**Free Configuration:**
+```javascript
+// Yahoo Finance - FREE (via yfinance Python library or direct API)
+import yfinance as yf
+
+tickers = yf.Tickers('AAPL TSLA MSFT')
+prices = tickers.tickers['AAPL'].history(period='1d')
+```
+
+**Cost:** $0 (vs Polygon.io $49/mo)
+
+#### Forex Pair Tracking (EUR/USD)
+
+**Free Configuration:**
+```javascript
+// Currency Layer free tier - 250 req/month
+const response = await fetch(
+  `http://api.currencylayer.com/live?access_key=YOUR_FREE_KEY&currencies=EUR,USD`
+);
+```
+
+**Cost:** $0 for 250 req/month (vs OANDA Pro $25/mo for unlimited)
+
+### Data Quality Comparison
+
+| Metric | Paid APIs | Free APIs |
+|--------|----------|-----------|
+| **Crypto Coverage** | 5,000+ | 10,000+ ✅ (CoinGecko) |
+| **Stock Coverage** | US + International | US + Major International ✅ |
+| **Update Frequency** | Real-time | 1-5 min delay ⚠️ |
+| **Historical Data** | Full history ✅ | Full history ✅ |
+| **Cost** | $2,676/year | $0/year ✅ |
+
+**1-5 minute delay is acceptable for 99% of traders** (not HFT/day trading).
+
+### Free API Key Setup
+
+#### Alpha Vantage (Stocks + Commodities)
+
+1. Visit [alphavantage.co/support/#api-key](https://www.alphavantage.co/support/#api-key)
+2. Enter email (no credit card)
+3. Get API key instantly
+4. Limits: 500 calls/day (sufficient for tracking)
+
+#### Currency Layer (Forex)
+
+1. Visit [currencylayer.com/product](https://currencylayer.com/product)
+2. Sign up for free plan
+3. Get API key (no credit card)
+4. Limits: 250 calls/month (sufficient for hourly updates)
+
+### When Free APIs Are NOT Enough
+
+**Use paid APIs if:**
+- You need <100ms real-time updates (day trading)
+- You require tick-by-tick data streams
+- You need institutional-grade SLA
+- Your trading strategy requires sub-second latency
+
+**For 99% of price tracking:** Free APIs with 1-5 min updates are sufficient.
+
+### Smart Rate Limit Management
+
+```json
+{
+  "rateLimiting": {
+    "crypto": {
+      "maxCallsPerMinute": 40,  // Under CoinGecko's 50/min limit
+      "backoffMultiplier": 2,    // Exponential backoff on errors
+      "fallbackEnabled": true    // Auto-switch to Binance if rate limited
+    },
+    "stocks": {
+      "maxCallsPerDay": 400,    // Under Alpha Vantage's 500/day
+      "prioritySymbols": ["AAPL", "TSLA"],  // Track these first
+      "cacheDuration": 60       // Cache for 1 min to reduce calls
+    }
+  }
+}
+```
+
+### Resources
+
+- **CoinGecko:** [coingecko.com/api](https://www.coingecko.com/api) - FREE crypto data
+- **Yahoo Finance:** [finance.yahoo.com](https://finance.yahoo.com) - FREE stock data
+- **Alpha Vantage:** [alphavantage.co](https://www.alphavantage.co) - FREE key for stocks/commodities
+- **Currency Layer:** [currencylayer.com](https://currencylayer.com) - FREE tier for forex
+- **Binance API:** [binance-docs.github.io](https://binance-docs.github.io/apidocs) - FREE crypto
+
+**Bottom Line:** Configure this plugin to use 100% free data sources and save $2,676/year while tracking all major asset classes.
+
+---
+
 ## Usage
 
 ### Track Real-Time Prices
