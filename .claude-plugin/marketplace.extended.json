@@ -48,7 +48,9 @@
       "components": {
         "skills": 1,
         "commands": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "001-jeremy-taskwarrior-integration",
@@ -75,7 +77,9 @@
       "components": {
         "skills": 1,
         "commands": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "002-jeremy-yaml-master-agent",
@@ -100,7 +104,9 @@
       "components": {
         "skills": 1,
         "agents": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "003-jeremy-vertex-ai-media-master",
@@ -129,7 +135,9 @@
       "components": {
         "skills": 1,
         "commands": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "004-jeremy-google-cloud-agent-sdk",
@@ -158,7 +166,9 @@
       "components": {
         "skills": 1,
         "commands": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "access-control-auditor",
@@ -174,7 +184,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "accessibility-test-scanner",
@@ -194,7 +206,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "agent-context-manager",
@@ -209,7 +223,9 @@
       ],
       "author": {
         "name": "Jeremy Longshore"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ai-commit-gen",
@@ -234,7 +250,9 @@
       "components": {
         "commands": 1,
         "total": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ai-ethics-validator",
@@ -252,7 +270,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ai-experiment-logger",
@@ -268,7 +288,9 @@
       ],
       "author": {
         "name": "Claude Code Plugins"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ai-ml-engineering-pack",
@@ -293,7 +315,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "pluginCount": 12
+      "pluginCount": 12,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ai-sdk-agents",
@@ -325,7 +349,9 @@
         "agents": 1,
         "commands": 3,
         "total": 4
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "alerting-rule-creator",
@@ -342,7 +368,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "anomaly-detection-system",
@@ -360,7 +388,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ansible-playbook-creator",
@@ -378,7 +408,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-authentication-builder",
@@ -395,7 +427,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-batch-processor",
@@ -412,7 +446,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-cache-manager",
@@ -429,7 +465,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-contract-generator",
@@ -446,7 +484,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-documentation-generator",
@@ -464,7 +504,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-error-handler",
@@ -481,7 +523,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-event-emitter",
@@ -499,7 +543,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-fuzzer",
@@ -518,7 +564,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-gateway-builder",
@@ -535,7 +583,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-load-tester",
@@ -552,7 +602,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-migration-tool",
@@ -569,7 +621,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-mock-server",
@@ -586,7 +640,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-monitoring-dashboard",
@@ -603,7 +659,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-rate-limiter",
@@ -620,7 +678,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-request-logger",
@@ -637,7 +697,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-response-validator",
@@ -654,7 +716,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-schema-validator",
@@ -672,7 +736,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-sdk-generator",
@@ -689,7 +755,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-security-scanner",
@@ -706,7 +774,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-test-automation",
@@ -725,7 +795,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-throttling-manager",
@@ -742,7 +814,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "api-versioning-manager",
@@ -759,7 +833,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "apm-dashboard-creator",
@@ -777,7 +853,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "application-profiler",
@@ -794,7 +872,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "arbitrage-opportunity-finder",
@@ -813,7 +893,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "authentication-validator",
@@ -829,7 +911,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "auto-scaling-configurator",
@@ -847,7 +931,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "automl-pipeline-builder",
@@ -865,7 +951,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "backup-strategy-implementor",
@@ -882,7 +970,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "blockchain-explorer-cli",
@@ -901,7 +991,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "bottleneck-detector",
@@ -918,7 +1010,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "browser-compatibility-tester",
@@ -937,7 +1031,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "cache-performance-optimizer",
@@ -954,7 +1050,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "calendar-to-workflow",
@@ -970,7 +1068,9 @@
       ],
       "author": {
         "name": "Claude Code Plugins Team"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "capacity-planning-analyzer",
@@ -987,7 +1087,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "chaos-engineering-toolkit",
@@ -1006,7 +1108,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ci-cd-pipeline-builder",
@@ -1026,7 +1130,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "classification-model-builder",
@@ -1044,7 +1150,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "cloud-cost-optimizer",
@@ -1063,7 +1171,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "clustering-algorithm-runner",
@@ -1081,7 +1191,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "compliance-checker",
@@ -1100,7 +1212,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "compliance-report-generator",
@@ -1116,7 +1230,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "computer-vision-processor",
@@ -1134,7 +1250,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "container-registry-manager",
@@ -1153,7 +1271,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "container-security-scanner",
@@ -1172,7 +1292,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "contract-test-validator",
@@ -1192,7 +1314,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "conversational-api-debugger",
@@ -1215,7 +1339,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "cors-policy-validator",
@@ -1231,7 +1357,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "cpu-usage-monitor",
@@ -1248,7 +1376,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "creator-studio-pack",
@@ -1290,7 +1420,9 @@
         "agents": 10,
         "commands": 10,
         "total": 20
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "cross-chain-bridge-monitor",
@@ -1311,7 +1443,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "crypto-derivatives-tracker",
@@ -1332,7 +1466,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "crypto-news-aggregator",
@@ -1350,7 +1486,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "crypto-portfolio-tracker",
@@ -1371,7 +1509,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "crypto-signal-generator",
@@ -1389,7 +1529,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "crypto-tax-calculator",
@@ -1408,7 +1550,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "csrf-protection-validator",
@@ -1424,7 +1568,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "data-preprocessing-pipeline",
@@ -1442,7 +1588,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "data-privacy-scanner",
@@ -1458,7 +1606,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "data-seeder-generator",
@@ -1476,7 +1626,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "data-validation-engine",
@@ -1492,7 +1644,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "data-visualization-creator",
@@ -1510,7 +1664,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-archival-system",
@@ -1526,7 +1682,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-audit-logger",
@@ -1542,7 +1700,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-backup-automator",
@@ -1560,7 +1720,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-cache-layer",
@@ -1576,7 +1738,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-connection-pooler",
@@ -1594,7 +1758,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-deadlock-detector",
@@ -1610,7 +1776,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-diff-tool",
@@ -1626,7 +1794,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-documentation-gen",
@@ -1642,7 +1812,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-health-monitor",
@@ -1658,7 +1830,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-index-advisor",
@@ -1675,7 +1849,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-migration-manager",
@@ -1693,7 +1869,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-partition-manager",
@@ -1709,7 +1887,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-query-profiler",
@@ -1727,7 +1907,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-recovery-manager",
@@ -1743,7 +1925,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-replication-manager",
@@ -1761,7 +1945,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-schema-designer",
@@ -1779,7 +1965,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-security-scanner",
@@ -1795,7 +1983,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-sharding-manager",
@@ -1811,7 +2001,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-test-manager",
@@ -1831,7 +2023,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "database-transaction-monitor",
@@ -1847,7 +2041,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "dataset-splitter",
@@ -1865,7 +2061,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "deep-learning-optimizer",
@@ -1883,7 +2081,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "defi-yield-optimizer",
@@ -1903,7 +2103,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "dependency-checker",
@@ -1922,7 +2124,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "deployment-pipeline-orchestrator",
@@ -1940,7 +2144,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "deployment-rollback-manager",
@@ -1958,7 +2164,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "design-to-code",
@@ -1981,7 +2189,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 3
+      "mcpTools": 3,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "devops-automation-pack",
@@ -2004,7 +2214,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "dex-aggregator-router",
@@ -2023,7 +2235,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "disaster-recovery-planner",
@@ -2040,7 +2254,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "discovery-questionnaire",
@@ -2058,7 +2274,9 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "distributed-tracing-setup",
@@ -2075,7 +2293,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "docker-compose-generator",
@@ -2094,7 +2314,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "domain-memory-agent",
@@ -2116,7 +2338,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 6
+      "mcpTools": 6,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "e2e-test-framework",
@@ -2135,7 +2359,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "encryption-tool",
@@ -2151,7 +2377,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "environment-config-manager",
@@ -2169,7 +2397,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "error-rate-monitor",
@@ -2186,7 +2416,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "excel-analyst-pro",
@@ -2217,7 +2449,8 @@
       "components": {
         "skills": 4,
         "commands": 3
-      }
+      },
+      "license": "MIT"
     },
     {
       "name": "experiment-tracking-setup",
@@ -2235,7 +2468,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "fairdb-operations-kit",
@@ -2264,7 +2499,8 @@
         "email": "jeremy@intentsolutions.io"
       },
       "featured": false,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "license": "MIT"
     },
     {
       "name": "fairdb-ops-manager",
@@ -2279,7 +2515,9 @@
       ],
       "author": {
         "name": "Community"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "feature-engineering-toolkit",
@@ -2297,7 +2535,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "file-to-code",
@@ -2312,7 +2552,9 @@
       ],
       "author": {
         "name": "Claude Code Plugins Team"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "flash-loan-simulator",
@@ -2333,7 +2575,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "formatter",
@@ -2345,7 +2589,9 @@
         "formatting",
         "hooks",
         "automation"
-      ]
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "fullstack-starter-pack",
@@ -2369,7 +2615,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "pluginCount": 15
+      "pluginCount": 15,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "gas-fee-optimizer",
@@ -2388,7 +2636,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "gdpr-compliance-scanner",
@@ -2404,7 +2654,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "git-commit-smart",
@@ -2424,7 +2676,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "gitops-workflow-builder",
@@ -2443,7 +2697,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "graphql-server-builder",
@@ -2463,7 +2719,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "grpc-service-generator",
@@ -2480,7 +2738,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "hello-world",
@@ -2495,7 +2755,9 @@
       ],
       "author": {
         "name": "Jeremy Longshore"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "helm-chart-generator",
@@ -2513,7 +2775,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "hipaa-compliance-checker",
@@ -2529,7 +2793,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "hyperparameter-tuner",
@@ -2547,7 +2813,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "infrastructure-as-code-generator",
@@ -2567,7 +2835,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "infrastructure-drift-detector",
@@ -2585,7 +2855,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "infrastructure-metrics-collector",
@@ -2602,7 +2874,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "input-validation-scanner",
@@ -2618,7 +2892,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "integration-test-runner",
@@ -2636,7 +2912,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "kubernetes-deployment-creator",
@@ -2655,7 +2933,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "liquidity-pool-analyzer",
@@ -2674,7 +2954,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "load-balancer-configurator",
@@ -2693,7 +2975,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "load-balancer-tester",
@@ -2711,7 +2995,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "load-test-runner",
@@ -2728,7 +3014,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "log-aggregation-setup",
@@ -2747,7 +3035,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "log-analysis-tool",
@@ -2764,7 +3054,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "make-scenario-builder",
@@ -2782,7 +3074,9 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "market-movers-scanner",
@@ -2802,7 +3096,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "market-price-tracker",
@@ -2822,7 +3118,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "market-sentiment-analyzer",
@@ -2842,7 +3140,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "memory-leak-detector",
@@ -2859,7 +3159,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "mempool-analyzer",
@@ -2880,7 +3182,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "metrics-aggregator",
@@ -2897,7 +3201,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ml-model-trainer",
@@ -2915,7 +3221,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "mobile-app-tester",
@@ -2936,7 +3244,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "model-deployment-helper",
@@ -2954,7 +3264,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "model-evaluation-suite",
@@ -2972,7 +3284,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "model-explainability-tool",
@@ -2990,7 +3304,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "model-versioning-tracker",
@@ -3008,7 +3324,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "monitoring-stack-deployer",
@@ -3026,7 +3344,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "mutation-test-runner",
@@ -3044,7 +3364,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "n8n-workflow-designer",
@@ -3064,7 +3386,9 @@
         "name": "Claude Code Plugin Hub",
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "network-latency-analyzer",
@@ -3081,7 +3405,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "network-policy-manager",
@@ -3099,7 +3425,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "neural-network-builder",
@@ -3117,7 +3445,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "nft-rarity-analyzer",
@@ -3136,7 +3466,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "nlp-text-analyzer",
@@ -3154,7 +3486,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ollama-local-ai",
@@ -3181,7 +3515,9 @@
         "skills": 1,
         "commands": 1,
         "total": 2
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "nosql-data-modeler",
@@ -3197,7 +3533,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "on-chain-analytics",
@@ -3216,7 +3554,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "openbb-terminal",
@@ -3250,7 +3590,9 @@
         "commands": 6,
         "agents": 4,
         "total": 10
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "options-flow-analyzer",
@@ -3269,7 +3611,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "orm-code-generator",
@@ -3287,7 +3631,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "overnight-dev",
@@ -3311,7 +3657,9 @@
         "url": "https://intentsolutions.io",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "owasp-compliance-checker",
@@ -3327,7 +3675,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "pci-dss-validator",
@@ -3343,7 +3693,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "penetration-tester",
@@ -3361,7 +3713,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "performance-budget-validator",
@@ -3378,7 +3732,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "performance-optimization-advisor",
@@ -3395,7 +3751,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "performance-regression-detector",
@@ -3412,7 +3770,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "performance-test-suite",
@@ -3430,7 +3790,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "pi-pathfinder",
@@ -3458,7 +3820,8 @@
       "components": {
         "skills": 1
       },
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "license": "MIT"
     },
     {
       "name": "project-health-auditor",
@@ -3480,7 +3843,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "query-performance-analyzer",
@@ -3498,7 +3863,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "real-user-monitoring",
@@ -3515,7 +3882,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "recommendation-engine",
@@ -3533,7 +3902,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "regression-analysis-tool",
@@ -3551,7 +3922,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "regression-test-tracker",
@@ -3569,7 +3942,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "research-to-deploy",
@@ -3584,7 +3959,9 @@
       ],
       "author": {
         "name": "Claude Code Plugins Team"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "resource-usage-tracker",
@@ -3601,7 +3978,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "response-time-tracker",
@@ -3618,7 +3997,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "rest-api-generator",
@@ -3638,7 +4019,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "roi-calculator",
@@ -3656,7 +4039,9 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "search-to-slack",
@@ -3672,7 +4057,9 @@
       ],
       "author": {
         "name": "Claude Code Plugins Team"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "secret-scanner",
@@ -3690,7 +4077,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "secrets-manager-integrator",
@@ -3709,7 +4098,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-agent",
@@ -3721,7 +4112,9 @@
         "security",
         "agent",
         "code-review"
-      ]
+      ],
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-audit-reporter",
@@ -3737,7 +4130,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-headers-analyzer",
@@ -3753,7 +4148,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-incident-responder",
@@ -3769,7 +4166,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-misconfiguration-finder",
@@ -3785,7 +4184,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-pro-pack",
@@ -3810,7 +4211,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "pluginCount": 10
+      "pluginCount": 10,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "security-test-scanner",
@@ -3828,7 +4231,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sentiment-analysis-tool",
@@ -3846,7 +4251,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "service-mesh-configurator",
@@ -3864,7 +4271,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "session-security-checker",
@@ -3880,7 +4289,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-plugin-tool",
@@ -3904,7 +4315,8 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "license": "MIT"
     },
     {
       "name": "sla-sli-tracker",
@@ -3922,7 +4334,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "smoke-test-runner",
@@ -3940,7 +4354,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "snapshot-test-manager",
@@ -3959,7 +4375,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "soc2-audit-helper",
@@ -3975,7 +4393,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sow-generator",
@@ -3993,7 +4413,9 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sql-injection-detector",
@@ -4009,7 +4431,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sql-query-optimizer",
@@ -4027,7 +4451,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "ssl-certificate-manager",
@@ -4043,7 +4469,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "staking-rewards-optimizer",
@@ -4062,7 +4490,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "stored-procedure-generator",
@@ -4078,7 +4508,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-firestore",
@@ -4110,7 +4542,9 @@
         "email": "[email protected]",
         "url": "https://intentsolutions.io"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "sugar",
@@ -4136,7 +4570,8 @@
       },
       "featured": true,
       "mcpTools": 7,
-      "repository": "https://github.com/cdnsteve/sugar"
+      "repository": "https://github.com/cdnsteve/sugar",
+      "license": "MIT"
     },
     {
       "name": "synthetic-monitoring-setup",
@@ -4153,7 +4588,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "terraform-module-builder",
@@ -4171,7 +4608,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-coverage-analyzer",
@@ -4189,7 +4628,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-data-generator",
@@ -4207,7 +4648,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-doubles-generator",
@@ -4228,7 +4671,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-environment-manager",
@@ -4247,7 +4692,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-orchestrator",
@@ -4266,7 +4713,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "test-report-generator",
@@ -4285,7 +4734,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "throughput-analyzer",
@@ -4302,7 +4753,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "time-series-forecaster",
@@ -4320,7 +4773,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "token-launch-tracker",
@@ -4341,7 +4796,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "trading-strategy-backtester",
@@ -4360,7 +4817,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "transfer-learning-adapter",
@@ -4378,7 +4837,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "travel-assistant",
@@ -4411,7 +4872,9 @@
         "hooks": 2,
         "scripts": 3,
         "total": 15
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "unit-test-generator",
@@ -4431,7 +4894,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "visual-regression-tester",
@@ -4451,7 +4916,9 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "vulnerability-scanner",
@@ -4469,7 +4936,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "wallet-portfolio-tracker",
@@ -4488,7 +4957,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "web-to-github-issue",
@@ -4511,7 +4982,8 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "license": "MIT"
     },
     {
       "name": "webhook-handler-creator",
@@ -4528,7 +5000,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "websocket-server-builder",
@@ -4545,7 +5019,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "whale-alert-monitor",
@@ -4564,7 +5040,9 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "workflow-orchestrator",
@@ -4586,7 +5064,9 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "xss-vulnerability-scanner",
@@ -4602,7 +5082,9 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "zapier-zap-builder",
@@ -4620,7 +5102,9 @@
       ],
       "author": {
         "name": "Claude Code Plugin Hub"
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-genkit-pro",
@@ -4645,7 +5129,9 @@
         "agents": 1,
         "commands": 1,
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-adk-orchestrator",
@@ -4668,7 +5154,9 @@
       "components": {
         "agents": 1,
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-vertex-validator",
@@ -4689,7 +5177,9 @@
       },
       "components": {
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-genkit-terraform",
@@ -4710,7 +5200,9 @@
       },
       "components": {
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-adk-terraform",
@@ -4732,7 +5224,9 @@
       },
       "components": {
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-vertex-terraform",
@@ -4753,7 +5247,9 @@
       },
       "components": {
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-vertex-engine",
@@ -4776,7 +5272,9 @@
       "components": {
         "agents": 1,
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-gcp-starter-examples",
@@ -4801,7 +5299,9 @@
       "components": {
         "agents": 1,
         "skills": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "jeremy-github-actions-gcp",
@@ -4831,7 +5331,9 @@
         "agents": 1,
         "skills": 1,
         "hooks": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "agent-context-manager",
@@ -4853,7 +5355,9 @@
       "components": {
         "skills": 1,
         "commands": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "prettier-markdown-hook",
@@ -4879,7 +5383,9 @@
       "components": {
         "hooks": 1,
         "total": 1
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "axiom",
@@ -4909,7 +5415,9 @@
       "components": {
         "skills": 13,
         "total": 13
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "claude-never-forgets",
@@ -4934,7 +5442,9 @@
         "commands": 3,
         "skills": 1,
         "total": 8
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
       "name": "geepers-agents",
@@ -4965,7 +5475,9 @@
       "components": {
         "agents": 51,
         "total": 51
-      }
+      },
+      "license": "MIT",
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     }
   ]
 }

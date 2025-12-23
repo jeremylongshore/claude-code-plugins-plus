@@ -1,0 +1,176 @@
+name: CLI Cross-Platform Testing
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/cli/**'
+      - '.github/workflows/cli-test.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'packages/cli/**'
+      - '.github/workflows/cli-test.yml'
+
+jobs:
+  test-cli:
+    name: Test CLI - ${{ matrix.os }} - ${{ matrix.package-manager }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        package-manager: [npm, bun, pnpm]
+        node-version: [18, 20, 22]
+
+        # Exclude some combinations to reduce CI time
+        exclude:
+          # Only test Node 20 on Windows (faster)
+          - os: windows-latest
+            node-version: 18
+          - os: windows-latest
+            node-version: 22
+
+          # Only test bun on Ubuntu and macOS (not Windows compatible)
+          - os: windows-latest
+            package-manager: bun
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Bun
+        if: matrix.package-manager == 'bun'
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install pnpm
+        if: matrix.package-manager == 'pnpm'
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        working-directory: packages/cli
+        run: npm install
+
+      - name: Build CLI
+        working-directory: packages/cli
+        run: npm run build
+
+      - name: Verify build output
+        shell: bash
+        run: |
+          if [ ! -f packages/cli/dist/index.js ]; then
+            echo "❌ Build failed: dist/index.js not found"
+            exit 1
+          fi
+          echo "✅ Build successful: dist/index.js exists"
+
+      - name: Test CLI version (npm)
+        if: matrix.package-manager == 'npm'
+        working-directory: packages/cli
+        run: node dist/index.js --version
+
+      - name: Test CLI version (bun)
+        if: matrix.package-manager == 'bun'
+        working-directory: packages/cli
+        run: bun run dist/index.js --version
+
+      - name: Test CLI version (pnpm)
+        if: matrix.package-manager == 'pnpm'
+        working-directory: packages/cli
+        run: pnpm exec node dist/index.js --version
+
+      - name: Test CLI help
+        working-directory: packages/cli
+        run: node dist/index.js --help
+
+      - name: Test CLI doctor (dry run)
+        working-directory: packages/cli
+        shell: bash
+        run: |
+          # Doctor command should run without errors even if Claude not installed
+          node dist/index.js doctor --json > doctor-output.json || true
+          echo "✅ Doctor command executed"
+
+          # Verify JSON output is valid
+          if command -v jq &> /dev/null; then
+            jq empty doctor-output.json && echo "✅ Valid JSON output"
+          fi
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cli-test-${{ matrix.os }}-${{ matrix.package-manager }}-node${{ matrix.node-version }}
+          path: |
+            packages/cli/dist/
+            packages/cli/doctor-output.json
+          retention-days: 7
+
+  # Test Deno separately (different runtime)
+  test-deno:
+    name: Test CLI - Deno - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        deno-version: [v1.x]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js (for build)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v1
+        with:
+          deno-version: ${{ matrix.deno-version }}
+
+      - name: Install dependencies and build
+        working-directory: packages/cli
+        run: npm install && npm run build
+
+      - name: Test with Deno
+        working-directory: packages/cli
+        run: deno run --allow-all dist/index.js --version
+
+  # Summary job for status checks
+  test-summary:
+    name: CLI Test Summary
+    runs-on: ubuntu-latest
+    needs: [test-cli, test-deno]
+    if: always()
+
+    steps:
+      - name: Check test results
+        run: |
+          if [ "${{ needs.test-cli.result }}" == "failure" ] || [ "${{ needs.test-deno.result }}" == "failure" ]; then
+            echo "❌ Some CLI tests failed"
+            exit 1
+          else
+            echo "✅ All CLI tests passed"
+          fi
+
+      - name: Report
+        run: |
+          echo "## CLI Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Cross-platform testing complete" >> $GITHUB_STEP_SUMMARY
+          echo "- Node.js testing: ${{ needs.test-cli.result }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Deno testing: ${{ needs.test-deno.result }}" >> $GITHUB_STEP_SUMMARY
