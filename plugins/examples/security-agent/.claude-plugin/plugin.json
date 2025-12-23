@@ -12,6 +12,5 @@
     "code-review",
     "vulnerability",
     "agent-skills"
-  ],
-  "agents": "./agents/"
+  ]
 }

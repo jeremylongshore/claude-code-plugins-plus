@@ -17,22 +17,5 @@
     "automation",
     "agents",
     "enterprise"
-  ],
-  "installation": {
-    "prerequisites": [
-      "Python 3.11 or higher must be installed",
-      "Sugar CLI must be installed: pip install sugarai",
-      "Initialize Sugar in your project: sugar init"
-    ],
-    "verification": [
-      "sugar --version",
-      "sugar status"
-    ]
-  },
-  "configuration": {
-    "auto_detect_sugar": true,
-    "sugar_command": "sugar",
-    "enable_autonomous_mode": false,
-    "auto_task_creation": true
-  }
+  ]
 }

@@ -7,7 +7,6 @@
     "email": "jeremy@intentsolutions.io"
   },
   "license": "MIT",
-  "category": "ai-ml",
   "keywords": [
     "ollama",
     "local-llm",
@@ -18,19 +17,5 @@
     "privacy",
     "zero-cost",
     "openai-alternative"
-  ],
-  "commands": [
-    {
-      "name": "setup-ollama",
-      "shortcut": "/setup-ollama",
-      "description": "Install and configure Ollama for local AI models"
-    }
-  ],
-  "skills": [
-    {
-      "name": "ollama-setup",
-      "path": "skills/ollama-setup/SKILL.md",
-      "description": "Auto-configure Ollama when user needs local LLM deployment"
-    }
   ]
 }

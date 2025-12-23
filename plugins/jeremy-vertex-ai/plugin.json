@@ -23,22 +23,5 @@
     "vector-search",
     "cloud-run",
     "gcp"
-  ],
-  "skills": [
-    "skills/vertex-agent-builder",
-    "skills/gemini-integration",
-    "skills/rag-implementation"
-  ],
-  "commands": [
-    "slash-commands/create-vertex-agent.md",
-    "slash-commands/deploy-to-vertex.md",
-    "slash-commands/setup-rag-pipeline.md"
-  ],
-  "requirements": [
-    "Claude Code 1.0+",
-    "Python 3.11+",
-    "Google Cloud SDK",
-    "google-cloud-aiplatform>=1.38.0",
-    "vertexai>=1.46.0"
   ]
 }

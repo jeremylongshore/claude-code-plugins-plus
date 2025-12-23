@@ -23,28 +23,5 @@
     "framework",
     "scaffolding",
     "starter-kit"
-  ],
-  "skills": [
-    "skills/adk-agent-builder"
-  ],
-  "commands": [
-    "slash-commands/create-adk-agent.md",
-    "slash-commands/scaffold-multi-agent.md",
-    "slash-commands/generate-tools.md"
-  ],
-  "requirements": [
-    "Claude Code 1.0+",
-    "Python 3.11+",
-    "Google Cloud SDK",
-    "anthropic>=0.18.0"
-  ],
-  "mcp_servers": [{
-    "name": "google-adk",
-    "command": "python",
-    "args": ["-m", "google_adk.mcp_server"],
-    "env": {
-      "CLAUDE_API_KEY": "${CLAUDE_API_KEY}",
-      "GOOGLE_PROJECT_ID": "${GOOGLE_PROJECT_ID}"
-    }
-  }]
+  ]
 }
