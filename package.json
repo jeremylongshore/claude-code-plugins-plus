@@ -1,6 +1,6 @@
 {
   "name": "claude-code-plugins-monorepo",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "private": true,
   "description": "Claude Code plugins workspace - simple plugins + MCP servers",
   "scripts": {

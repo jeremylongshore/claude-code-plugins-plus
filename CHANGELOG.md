@@ -1,3 +1,67 @@
+## [4.2.0] - 2025-12-23
+
+### 🎉 Highlights
+**Rate Limits & Transparency Initiative** - Thanks to community feedback from **@TomLucidor**, we're documenting the REAL constraints of "free" services. Because "free" should mean informed, not surprised.
+
+### 🌟 Community Contributor Spotlight: @TomLucidor
+
+**Tom is exactly the kind of user who makes open source better.**
+
+- **173 issues/discussions** filed across **148 repositories** on GitHub
+- Zero code commits - but his feedback drives real improvements
+- On December 12, he opened [Discussion #148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148) asking a simple question: *"Which plugins require paid APIs vs free/self-hosted?"*
+- That question sparked the entire "Make All Plugins Free" initiative (v4.1.0)
+- His follow-up: *"If there are rate limits and registration requirements like Alpha Vantage, please note them. Ideally agents with skills would learn how to be resourceful with a single IP."*
+- This feedback is now driving **Epic claude-code-plugins-1k2**: comprehensive rate limit documentation across 12 plugins
+
+**Tom's Pattern:** He doesn't write code, but he keeps projects honest. He asks the questions users are afraid to ask. He catches the gap between marketing ("free!") and reality ("25 requests/day").
+
+**Thank you, Tom.** Your feedback made this marketplace significantly better. We're lucky to have contributors like you who keep it real.
+
+### 📚 Documentation (Tom's Request)
+- **ollama-local-ai**: Added 220-line "Rate Limits & Resource Constraints" section
+  - Hardware-based limits (RAM/GPU requirements per model)
+  - Memory constraints table (7B-70B models, concurrent agents)
+  - Disk space requirements (5GB-45GB per model)
+  - Inference speed limits by hardware tier
+  - Multi-agent strategies for single machine (10 agents on 32GB)
+  - Code examples: shared model pools, request batching, queue management
+  - Upgrade paths when hardware becomes the bottleneck
+
+### 🔧 Validator Improvements
+- **Fixed critical bug**: `((VAR++))` with `set -e` was causing script to exit early
+  - Replaced with `VAR=$((VAR + 1))` throughout
+  - Validator now completes all 6 stages successfully
+- **Added strict schema validation**: Detects forbidden fields in plugin.json
+  - Only allows: name, version, description, author, repository, homepage, license, keywords
+  - Prevents Issue #179 from recurring (invalid manifest errors)
+- **Optimized frontmatter validation**: Checks for script once, not per-file
+- **Added existence check**: Gracefully handles missing check-frontmatter.py
+
+### 🐛 Bug Fixes
+- **22 plugins fixed** (PRs #180, #181): Removed invalid plugin.json fields
+  - Invalid fields: dependencies, mcp, category, commands, skills, configuration, installation, agents, requirements, mcp_servers, mcpServers, expectedRelease, status, tier
+  - Affected: ai-sdk-agents, design-to-code, workflow-orchestrator, lumera-agent-memory, domain-memory-agent, project-health-auditor, conversational-api-debugger, ai-experiment-logger, dependency-checker, geepers-agents, openbb-terminal, ollama-local-ai, sugar, security-agent, jeremy-genkit, jeremy-google-adk, jeremy-vertex-ai, calendar-to-workflow, file-to-code, research-to-deploy, search-to-slack
+- **Script permissions fixed**: nmap_scan_template.sh, install-jeremy-plugins.sh now executable
+- **Issue #179 resolved**: User @genesiscz can now install plugins without "Unrecognized key" errors
+
+### 📊 Metrics
+- **Plugins Fixed:** 22
+- **Validator Stages:** 6 (all completing)
+- **Documentation Added:** 220+ lines of rate limit docs
+- **Community Contributor Featured:** @TomLucidor
+- **Epic Created:** claude-code-plugins-1k2 (12 tasks planned)
+
+### 🔮 In Progress (Epic: claude-code-plugins-1k2)
+Rate limit documentation for remaining services:
+- Alpha Vantage (25/day, 5/min, email required)
+- Yahoo Finance (~2000/hour, no auth, IP bans)
+- CoinGecko (50/min, optional API key)
+- Public RPCs (Ankr, Infura, QuickNode free tiers)
+- n8n self-hosted requirements
+
+---
+
 ## [4.1.0] - 2025-12-22
 
 ### 🎉 Highlights
