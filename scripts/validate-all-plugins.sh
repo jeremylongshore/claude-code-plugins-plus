@@ -14,6 +14,10 @@ NC='\033[0m' # No Color
 ERRORS=0
 WARNINGS=0
 
+# Note: With 'set -e', we need to handle arithmetic carefully
+# ((VAR++)) returns 0 (false/error) when VAR is 0, which would exit the script
+# Use ERRORS=$((ERRORS + 1)) instead
+
 echo "🔍 Running comprehensive validation..."
 echo ""
 
@@ -31,7 +35,7 @@ while IFS= read -r json_file; do
   # Check if jq can parse it
   if ! jq empty "$json_file" 2>/dev/null; then
     echo -e "${RED}❌ Invalid JSON: $json_file${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
     continue
   fi
 
@@ -40,19 +44,19 @@ while IFS= read -r json_file; do
     # Check for required fields
     if ! jq -e '.name' "$json_file" >/dev/null 2>&1; then
       echo -e "${RED}❌ Missing 'name' field: $json_file${NC}"
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
     if ! jq -e '.version' "$json_file" >/dev/null 2>&1; then
       echo -e "${RED}❌ Missing 'version' field: $json_file${NC}"
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
     if ! jq -e '.description' "$json_file" >/dev/null 2>&1; then
       echo -e "${RED}❌ Missing 'description' field: $json_file${NC}"
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
     if ! jq -e '.author' "$json_file" >/dev/null 2>&1; then
       echo -e "${RED}❌ Missing 'author' field: $json_file${NC}"
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
 
     # NEW: Check for invalid/forbidden fields (Claude Code strict schema)
@@ -64,7 +68,7 @@ while IFS= read -r json_file; do
       echo "$INVALID_FIELDS" | while read -r field; do
         echo -e "   ${YELLOW}Unrecognized key: '$field' (Claude Code doesn't support this field)${NC}"
       done
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
   fi
 
@@ -72,7 +76,7 @@ while IFS= read -r json_file; do
   if [[ "$json_file" == */hooks.json ]]; then
     if ! jq -e '.hooks' "$json_file" >/dev/null 2>&1; then
       echo -e "${YELLOW}⚠️  Warning: hooks.json missing 'hooks' object: $json_file${NC}"
-      ((WARNINGS++))
+      WARNINGS=$((WARNINGS + 1))
     fi
   fi
 
@@ -90,25 +94,39 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "📝 Validating markdown frontmatter..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
+# Check if frontmatter validation script is available
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+HAS_PYTHON3=false
+HAS_FRONTMATTER_SCRIPT=false
+
+if command -v python3 &> /dev/null; then
+  HAS_PYTHON3=true
+  if [[ -f "$SCRIPT_DIR/check-frontmatter.py" ]]; then
+    HAS_FRONTMATTER_SCRIPT=true
+  else
+    echo -e "${YELLOW}⚠️  check-frontmatter.py not found, skipping detailed frontmatter validation${NC}"
+    WARNINGS=$((WARNINGS + 1))
+  fi
+else
+  echo -e "${YELLOW}⚠️  Python3 not found, skipping detailed frontmatter validation${NC}"
+  WARNINGS=$((WARNINGS + 1))
+fi
+
 while IFS= read -r md_file; do
   echo "  Checking: $md_file"
 
   # Check if file has frontmatter
   if ! grep -q "^---" "$md_file"; then
     echo -e "${RED}❌ No frontmatter found: $md_file${NC}"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
     continue
   fi
 
   # Validate with Python script if available
-  if command -v python3 &> /dev/null; then
-    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+  if [[ "$HAS_FRONTMATTER_SCRIPT" == "true" ]]; then
     if ! python3 "$SCRIPT_DIR/check-frontmatter.py" "$md_file" 2>&1; then
-      ((ERRORS++))
+      ERRORS=$((ERRORS + 1))
     fi
-  else
-    echo -e "${YELLOW}⚠️  Python3 not found, skipping detailed frontmatter validation${NC}"
-    ((WARNINGS++))
   fi
 
 done < <(find "$TARGET_DIR" -path "*/commands/*.md" -o -path "*/agents/*.md" 2>/dev/null | head -100)
@@ -130,7 +148,7 @@ if [[ -n "$duplicates" ]]; then
     # Show which files have this shortcut
     grep -r "^shortcut: $dup" "$TARGET_DIR" --include="*.md" | head -3
   done
-  ((ERRORS++))
+  ERRORS=$((ERRORS + 1))
 else
   echo -e "${GREEN}✅ No duplicate shortcuts${NC}"
 fi
@@ -154,7 +172,7 @@ while IFS= read -r plugin_json; do
       full_path="$plugin_dir/$commands_path"
       if [[ ! -d "$full_path" && ! -f "$full_path" ]]; then
         echo -e "${RED}❌ Commands path doesn't exist: $full_path${NC}"
-        ((ERRORS++))
+        ERRORS=$((ERRORS + 1))
       fi
     fi
   fi
@@ -166,7 +184,7 @@ while IFS= read -r plugin_json; do
       full_path="$plugin_dir/$agents_path"
       if [[ ! -d "$full_path" && ! -f "$full_path" ]]; then
         echo -e "${RED}❌ Agents path doesn't exist: $full_path${NC}"
-        ((ERRORS++))
+        ERRORS=$((ERRORS + 1))
       fi
     fi
   fi
@@ -187,7 +205,7 @@ while IFS= read -r script; do
   if [[ ! -x "$script" ]]; then
     echo -e "${RED}❌ Script not executable: $script${NC}"
     echo "   Run: chmod +x $script"
-    ((ERRORS++))
+    ERRORS=$((ERRORS + 1))
   fi
 done < <(find "$TARGET_DIR" -name "*.sh" 2>/dev/null)
 
@@ -217,7 +235,7 @@ for plugin_dir in plugins/*/*/; do
 
   if [[ ! -f "$plugin_dir/README.md" ]]; then
     echo -e "${YELLOW}⚠️  Missing README.md: $plugin_dir${NC}"
-    ((WARNINGS++))
+    WARNINGS=$((WARNINGS + 1))
   fi
 done
 
