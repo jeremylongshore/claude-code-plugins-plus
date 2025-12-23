@@ -39,6 +39,44 @@ Optimize DeFi yield farming strategies across multiple protocols and chains with
 /plugin install defi-yield-optimizer@claude-code-plugins-plus
 ```
 
+## FREE DeFi Data: No Premium APIs Required
+
+**Optimize yields using free blockchain RPCs and DeFi protocol APIs** - all free, no paid aggregator subscriptions.
+
+### Free Data Sources
+
+- **Protocol APYs**: Public blockchain RPC (Ankr - free)
+- **TVL Data**: DefiLlama API (free, unlimited)
+- **Token Prices**: CoinGecko (free, 50 req/min)
+- **Gas Prices**: Blockchain RPC (free)
+
+### Cost Comparison
+
+| Service | Paid | FREE |
+|---------|------|------|
+| **Yield Aggregator** | Zapper Pro ($99/mo) | DefiLlama: **$0** |
+| **DeFi Analytics** | DeFi Pulse Pro ($50/mo) | Public RPCs: **$0** |
+| **Price Feeds** | Chainlink Pro ($149/mo) | CoinGecko: **$0** |
+
+**Annual Savings: $3,576** using free on-chain data.
+
+### Free Configuration
+
+```json
+{
+  "dataSources": {
+    "rpc": "https://rpc.ankr.com/eth",
+    "tvl": "defillama",
+    "prices": "coingecko"
+  },
+  "gasOptimization": true
+}
+```
+
+---
+
+```
+
 ## Usage
 
 ### Basic Yield Optimization

@@ -37,6 +37,44 @@ Real-time scanner for top market movers - gainers, losers, volume spikes, and un
 /plugin install market-movers-scanner@claude-code-plugins-plus
 ```
 
+## FREE Data Sources: No Premium Subscriptions
+
+**Scan all markets using free APIs** - no CryptoCompare Pro, Benzinga, or premium feeds required.
+
+### Free APIs Used
+
+- **Crypto**: CoinGecko (10K+ coins, free, 50 req/min)
+- **Stocks**: Yahoo Finance (free, unlimited)
+- **Volume Data**: Binance API (free, 1200 req/min)
+- **Forex**: Currency Layer free tier (250 req/month)
+
+### Cost Comparison
+
+| Service | Paid | FREE |
+|---------|------|------|
+| **Market Scanner** | Benzinga Pro ($99/mo) | CoinGecko: **$0** |
+| **Stock Movers** | TradingView Pro ($60/mo) | Yahoo Finance: **$0** |
+| **Volume Data** | CryptoCompare ($79/mo) | Binance: **$0** |
+
+**Annual Savings: $2,856** using free data sources.
+
+### Free Configuration
+
+```json
+{
+  "dataSources": {
+    "crypto": "coingecko",
+    "stocks": "yfinance",
+    "volume": "binance"
+  },
+  "refreshInterval": 30
+}
+```
+
+---
+
+```
+
 ## Usage
 
 ### Basic Market Scan
