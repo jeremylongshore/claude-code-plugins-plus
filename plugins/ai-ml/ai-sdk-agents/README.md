@@ -48,6 +48,197 @@ npm install @ai-sdk-tools/agents ai zod
 
 ---
 
+## ⚠️ Rate Limits & LLM Provider Constraints
+
+**Multi-agent systems multiply API costs** - 5 agents × $0.03/request = $0.15 per workflow. Use Ollama (FREE) to eliminate costs entirely.
+
+### Quick Comparison: Paid APIs vs Ollama (FREE)
+
+| Provider | 5-Agent Workflow Cost | Monthly (1K workflows) | Annual |
+|----------|----------------------|----------------------|---------|
+| **OpenAI GPT-4** | $0.15-0.30 | $150-300 | **$1,800-3,600** |
+| **Anthropic Claude** | $0.08-0.15 | $80-150 | **$960-1,800** |
+| **Google Gemini** | $0.03-0.10 | $30-100 | **$360-1,200** |
+| **Ollama (Local)** | $0.00 | $0 | **$0** ✅ |
+
+**Annual Savings: $360-3,600** by using Ollama for multi-agent orchestration.
+
+---
+
+### Rate Limits by Provider
+
+#### OpenAI (Paid)
+- **GPT-4:** 10,000 requests/day (Tier 1), 500 RPM
+- **GPT-4 Turbo:** 30,000 requests/day (Tier 2), 3,000 RPM
+- **Registration:** ✅ Email + payment required
+- **Cost:** $30-60/1M tokens
+
+**Multi-Agent Impact:** 5 agents × 500 RPM limit = effective 100 RPM per agent
+
+#### Anthropic (Paid)
+- **Claude Sonnet:** 50,000 requests/day (Tier 1), 1,000 RPM
+- **Claude Opus:** 50,000 requests/day (Tier 1), 1,000 RPM
+- **Registration:** ✅ Email + payment required
+- **Cost:** $15-75/1M tokens
+
+**Multi-Agent Impact:** 5 agents × 1,000 RPM limit = effective 200 RPM per agent
+
+#### Google Gemini (Paid/Free Tier)
+- **Gemini 1.5 Flash (Free):** 15 RPM, 1M tokens/day
+- **Gemini 1.5 Pro (Free):** 2 RPM, 32K tokens/day
+- **Gemini (Paid):** 1,000 RPM, unlimited tokens
+- **Registration:** ✅ Google account required
+- **Cost:** Free tier available, $0.35-1.05/1M tokens (paid)
+
+**Multi-Agent Impact:** Free tier 15 RPM = 3 RPM per agent (5 agents) → Very restrictive
+
+#### Ollama (FREE - Self-Hosted)
+- **Requests:** ∞ Unlimited (hardware-limited only)
+- **Models:** Llama 3.2, Mistral, CodeLlama, etc.
+- **Registration:** ❌ Not required
+- **Cost:** $0 (one-time hardware: $0-600)
+
+**Multi-Agent Impact:** No API limits! Only limited by CPU/RAM. See [ollama-local-ai plugin](../ollama-local-ai/) for full hardware constraints documentation.
+
+---
+
+### Multi-Agent Coordination Strategies
+
+#### Strategy 1: Shared Ollama Instance (RECOMMENDED - FREE)
+
+```typescript
+// All agents share one local Ollama instance
+import { ollama } from 'ollama-ai-provider';
+
+const agents = {
+  coordinator: createAgent({
+    model: ollama('llama3.2'),  // FREE
+    name: 'coordinator'
+  }),
+  researcher: createAgent({
+    model: ollama('llama3.2'),  // FREE
+    name: 'researcher'
+  }),
+  coder: createAgent({
+    model: ollama('codellama'),  // FREE
+    name: 'coder'
+  }),
+  reviewer: createAgent({
+    model: ollama('llama3.2'),  // FREE
+    name: 'reviewer'
+  })
+};
+
+// 5 agents, 1,000 workflows/month = $0 cost
+```
+
+**Hardware Requirements:**
+- **4 agents × Llama 3.2 7B:** 32GB RAM minimum
+- **Concurrent requests:** Limited by CPU cores
+- **See:** [ollama-local-ai plugin](../ollama-local-ai/README.md#multi-agent-rate-limit-strategies) for detailed hardware sizing
+
+**Annual Cost:** $0 (vs $360-3,600 for cloud APIs)
+
+---
+
+#### Strategy 2: Hybrid (Free for Development, Paid for Production)
+
+```typescript
+const MODEL_CONFIG = {
+  development: {
+    coordinator: ollama('llama3.2'),      // FREE
+    researcher: ollama('llama3.2'),       // FREE
+    coder: ollama('codellama'),           // FREE
+    reviewer: ollama('llama3.2')          // FREE
+  },
+  production: {
+    coordinator: anthropic('claude-sonnet'),  // $15/1M tokens
+    researcher: anthropic('claude-sonnet'),   // $15/1M tokens
+    coder: anthropic('claude-sonnet'),        // $15/1M tokens
+    reviewer: anthropic('claude-sonnet')      // $15/1M tokens
+  }
+};
+
+const models = MODEL_CONFIG[process.env.NODE_ENV || 'development'];
+```
+
+**Cost Reduction:** $3,600/year → $300/year (92% savings) by using Ollama for dev/testing
+
+---
+
+#### Strategy 3: Rate Limit Coordinator (Paid APIs)
+
+```typescript
+// Centralized rate limiter for paid APIs
+class MultiAgentRateLimiter {
+  private requestsThisMinute = 0;
+  private lastReset = Date.now();
+  private readonly RPM_LIMIT = 1000;  // Anthropic limit
+  private readonly AGENTS_COUNT = 5;
+  private readonly PER_AGENT_LIMIT = this.RPM_LIMIT / this.AGENTS_COUNT;  // 200 RPM per agent
+
+  async executeAgentTask(agentName: string, task: () => Promise<any>) {
+    // Reset counter every minute
+    if (Date.now() - this.lastReset > 60000) {
+      this.requestsThisMinute = 0;
+      this.lastReset = Date.now();
+    }
+
+    // Wait if at limit
+    while (this.requestsThisMinute >= this.RPM_LIMIT) {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (Date.now() - this.lastReset > 60000) {
+        this.requestsThisMinute = 0;
+        this.lastReset = Date.now();
+      }
+    }
+
+    this.requestsThisMinute++;
+    return await task();
+  }
+}
+
+// All agents share the rate limiter
+const rateLimiter = new MultiAgentRateLimiter();
+
+// Agent execution
+await rateLimiter.executeAgentTask('coordinator', async () => {
+  return await coordinatorAgent.execute(task);
+});
+```
+
+**Result:** Prevents 429 rate limit errors when running 5 agents concurrently
+
+---
+
+### When to Use Paid APIs vs Ollama
+
+**Use Ollama (FREE) when:**
+- ✅ Development and testing multi-agent systems
+- ✅ Running 1,000+ workflows/month (saves $360-3,600/year)
+- ✅ Data privacy is critical (stays on your infrastructure)
+- ✅ You have hardware (32GB+ RAM for 4-5 agents)
+- ✅ Latency <2sec acceptable (not real-time)
+
+**Use Paid APIs when:**
+- ❌ Need <500ms latency for production
+- ❌ Managing 10+ agents (hardware becomes expensive)
+- ❌ Require enterprise SLA/support
+- ❌ Can't manage local infrastructure
+
+**For 80% of multi-agent use cases:** Ollama is sufficient and free.
+
+---
+
+### Resources
+
+- **Ollama Setup:** See [ollama-local-ai plugin](../ollama-local-ai/) for complete installation and hardware sizing guide
+- **OpenAI Rate Limits:** [platform.openai.com/docs/guides/rate-limits](https://platform.openai.com/docs/guides/rate-limits)
+- **Anthropic Rate Limits:** [docs.anthropic.com/en/api/rate-limits](https://docs.anthropic.com/en/api/rate-limits)
+- **Google Gemini Limits:** [ai.google.dev/pricing](https://ai.google.dev/pricing)
+
+---
+
 ## 💡 Core Concepts
 
 ### Agent Handoffs
