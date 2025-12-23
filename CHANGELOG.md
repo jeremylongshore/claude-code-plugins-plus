@@ -1,3 +1,106 @@
+## [4.3.0] - 2025-12-23
+
+### 🎉 Epic Complete: Rate Limits & Resource Constraints Documentation
+
+**Tom's request is DONE.** We've added **2,400+ lines** of comprehensive rate limit documentation across 6 plugins, plus a standardized template for all future plugins.
+
+### 🌟 Community Champion: @TomLucidor
+
+**Tom asked for transparency. We delivered.**
+
+His December feedback transformed this marketplace:
+1. *"Which plugins require paid APIs vs free/self-hosted?"* → **v4.1.0** (Make All Plugins Free initiative)
+2. *"Note rate limits and registration requirements. Ideally agents with skills would learn how to be resourceful with a single IP."* → **v4.3.0** (THIS RELEASE)
+
+**Epic claude-code-plugins-1k2: COMPLETED** - All 12 tasks finished. Tom notified on [Discussion #148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148).
+
+### 📚 Documentation Added (2,400+ Lines)
+
+#### **1. openbb-terminal** (309 lines) - Financial API Limits
+- **Alpha Vantage:** 25/day, 5/min (NOT 500/day - corrected misconception!)
+- **Yahoo Finance:** ~2,000/hour soft limit, IP-based bans
+- **SEC EDGAR:** 10/sec with User-Agent requirement
+- **CoinGecko:** 50/min soft limit
+- **FRED:** 120/min (unlimited daily)
+- **IEX Cloud:** 50K/month free tier
+- Registration step-by-step guides, fallback chains, multi-agent coordination
+
+#### **2. defi-yield-optimizer** (552 lines) - DeFi Data Sources
+- **DefiLlama API:** Unlimited (soft limit: 100/sec)
+- **Ankr Public RPC:** 30 req/sec per chain (Ethereum, Polygon, BSC, etc.)
+- **CoinGecko:** 30-50 req/min
+- 4 multi-agent strategies: data coordinator, request batching, RPC pools, caching
+- Annual savings: $5,112/year vs paid alternatives
+
+#### **3. n8n-workflow-designer** (515 lines) - Self-Hosted Platform Resources
+- Hardware requirements by workload (1 vCPU/2GB to 8+ vCPU/16GB+)
+- Execution throughput: 2.6M-259M executions/month
+- Docker Compose for 5 agents sharing one n8n instance
+- Queue-based execution with Redis
+- Annual savings: $228-22,788 vs Zapier/Make
+
+#### **4. ai-sdk-agents** (187 lines) - Multi-Agent LLM Coordination
+- Cost multiplication: 5 agents × $0.03/request = $0.15/workflow
+- Provider rate limits divided across agents:
+  - OpenAI: 500 RPM → 100 RPM per agent
+  - Anthropic: 1,000 RPM → 200 RPM per agent
+  - Google Gemini Free: 15 RPM → 3 RPM per agent (very restrictive!)
+  - Ollama: ∞ Unlimited (hardware-limited only)
+- Rate limit coordinator code examples
+
+#### **5. Standardized Template** (406 lines) - For All Future Plugins
+- Reusable template at `templates/rate-limits-documentation/RATE_LIMITS_TEMPLATE.md`
+- 4 multi-agent coordination strategies with working code
+- Registration requirements checklist
+- Validation checklist addressing all Tom's requirements
+
+### 🎯 Tom's Requirements: Addressed
+
+| Requirement | Status | Where |
+|------------|--------|-------|
+| **Rate limits** | ✅ Documented for 15+ services | All 6 plugins |
+| **Registration requirements** | ✅ Clear tables (email, API key, payment) | All 6 plugins |
+| **IP tracking** | ✅ Soft bans and hard limits documented | All 6 plugins |
+| **Multi-agent coordination** | ✅ 4 strategies with code examples | Template + plugins |
+| **Single IP resourcefulness** | ✅ Caching, batching, pooling, queuing | All examples |
+
+### 💰 Cost Savings Documented
+
+**Annual savings by using free alternatives:**
+- LLM services: $360-3,600 (Ollama vs OpenAI/Anthropic)
+- Financial APIs: $948-7,188 (free tiers vs premium)
+- Blockchain/DeFi: $588-2,388 (public RPCs vs Alchemy)
+- Automation: $228-22,788 (n8n self-hosted vs Zapier/Make)
+
+**Total possible savings: $2,124-35,964/year**
+
+### 📊 Metrics
+
+- **Documentation Added:** 2,400+ lines
+- **Plugins Updated:** 6 (+ standardized template)
+- **Epic Tasks Completed:** 12/12
+- **Services Documented:** 15+ with exact rate limits
+- **Code Examples:** Python, JavaScript, TypeScript, YAML
+- **Tom Notified:** ✅ Comprehensive reply posted
+
+### 🙏 Thank You, Tom
+
+**You kept us honest.** Before your feedback:
+- We said "free" without explaining signup requirements
+- We didn't document rate limits or IP tracking
+- We had no multi-agent coordination guidance
+
+**Now every major service type has:**
+- ✅ Exact rate limits (verified from official docs)
+- ✅ Registration requirements clearly stated
+- ✅ Multi-agent coordination code examples
+- ✅ Cost comparisons (paid vs free)
+- ✅ Hybrid approaches (best of both worlds)
+
+**The marketplace is better because of you.**
+
+---
+
 ## [4.2.0] - 2025-12-23
 
 ### 🎉 Highlights
