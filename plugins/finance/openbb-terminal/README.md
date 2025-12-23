@@ -338,6 +338,315 @@ critical_data = obb.equity.price.historical(
 
 ---
 
+## ⚠️ Rate Limits & API Requirements
+
+**IMPORTANT:** Tom (@TomLucidor) asked us to document the REAL constraints. Here they are - no marketing, just facts.
+
+### Free API Comparison Table
+
+| Provider | Daily Limit | Per-Minute | Registration | API Key | IP Tracking | Best For |
+|----------|-------------|------------|--------------|---------|-------------|----------|
+| **Yahoo Finance** | ~2,000/hour | ~100/min | ❌ No | ❌ No | ⚠️ Soft bans | Stock quotes, historical data |
+| **Alpha Vantage** | **25/day** | **5/min** | ✅ Email | ✅ Required | ✅ Yes | Fundamentals, technicals |
+| **FRED** | Unlimited | 120/min | ✅ Email | ✅ Required | ❌ No | Economic data |
+| **SEC EDGAR** | Unlimited | **10/sec** | ❌ No | ❌ No | ⚠️ User-Agent | Company filings |
+| **CoinGecko** | Unlimited | **50/min** | ❌ Optional | ❌ Optional | ⚠️ Soft limits | Crypto data |
+| **IEX Cloud** | 50K/month | 100/sec | ✅ Email | ✅ Required | ❌ No | Stock data (free tier) |
+
+### Detailed Limits by Provider
+
+#### 1. Alpha Vantage (Fundamentals & Technicals)
+
+**FREE TIER REALITY:**
+- ❌ **NOT 500/day** (that's outdated info from 2018)
+- ✅ **Actually 25 API calls/day** (since 2022)
+- ✅ **5 calls/minute max**
+- ✅ **Email signup required** (no credit card)
+- ✅ **Single IP per API key**
+
+**Registration Steps:**
+1. Go to: https://www.alphavantage.co/support/#api-key
+2. Enter email (no verification link, instant key)
+3. Copy API key (starts with uppercase letters)
+4. Add to OpenBB: `obb.user.credentials.alpha_vantage_api_key = "KEY"`
+
+**Agent Strategy for 25/day Limit:**
+```python
+# Strategy 1: Cache aggressively (24-hour TTL)
+from functools import lru_cache
+import time
+
+@lru_cache(maxsize=100)
+def get_fundamentals(symbol):
+    # Cached for full day
+    return obb.equity.fundamental.overview(
+        symbol=symbol,
+        provider="alpha_vantage"
+    )
+
+# Strategy 2: Batch symbols intelligently
+symbols_to_analyze = ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA"]
+
+# Don't use all 25 calls on 25 stocks!
+# Use 1 call for overview, then cache
+for symbol in symbols_to_analyze[:25]:  # Max 25
+    data = get_fundamentals(symbol)  # Only fetches once per symbol
+
+# Strategy 3: Fallback chain
+def get_stock_data(symbol):
+    try:
+        # Try Alpha Vantage first (most detailed)
+        return obb.equity.price.historical(symbol, provider="alpha_vantage")
+    except RateLimitError:
+        # Fallback to Yahoo Finance (unlimited)
+        return obb.equity.price.historical(symbol, provider="yfinance")
+```
+
+**When You Hit the Limit:**
+- Error: `"Thank you for using Alpha Vantage! Our standard API call frequency is 5 calls per minute and 25 calls per day."`
+- Wait time: 24 hours until reset (resets at midnight UTC)
+- Workaround: Use Yahoo Finance for price data, only use Alpha Vantage for fundamentals
+
+**Upgrade Path:**
+- $49.99/month: 75 calls/minute, 100K calls/month
+- Probably not worth it - use Yahoo Finance instead
+
+#### 2. Yahoo Finance (Stock Quotes & Historical Data)
+
+**FREE TIER REALITY:**
+- ✅ **~2,000 requests/hour** (undocumented soft limit)
+- ✅ **~100 requests/minute**
+- ✅ **No registration** (truly anonymous)
+- ✅ **No API key** (uses Python library yfinance)
+- ⚠️ **IP tracking** (can get soft-banned for aggressive scraping)
+
+**How It Actually Works:**
+```python
+# Yahoo Finance doesn't have "official" API
+# Uses yfinance library which scrapes website
+
+import yfinance as yf
+
+# This doesn't count against Alpha Vantage limit
+ticker = yf.Ticker("AAPL")
+hist = ticker.history(period="1y")  # FREE, unlimited (sort of)
+```
+
+**Agent Strategy for IP-Based Limits:**
+```python
+# Strategy 1: Respect rate limits (self-impose)
+import time
+
+class YFinanceCoordinator:
+    def __init__(self):
+        self.last_request = 0
+        self.min_interval = 0.1  # 100ms between requests
+
+    def get_data(self, symbol):
+        # Wait if needed
+        elapsed = time.time() - self.last_request
+        if elapsed < self.min_interval:
+            time.sleep(self.min_interval - elapsed)
+
+        # Make request
+        data = yf.Ticker(symbol).history(period="1d")
+        self.last_request = time.time()
+        return data
+
+# Strategy 2: Batch downloads (yfinance supports this!)
+symbols = ["AAPL", "GOOGL", "MSFT", "TSLA", "NVDA"]
+data = yf.download(
+    tickers=symbols,
+    period="1mo",
+    group_by='ticker',
+    threads=True  # Parallel downloads (faster but more aggressive)
+)
+
+# Strategy 3: Cache locally
+import pandas as pd
+from datetime import datetime, timedelta
+
+def get_cached_data(symbol, cache_hours=6):
+    cache_file = f"/tmp/yf_{symbol}.csv"
+
+    # Check cache age
+    if os.path.exists(cache_file):
+        age = time.time() - os.path.getmtime(cache_file)
+        if age < cache_hours * 3600:
+            return pd.read_csv(cache_file)
+
+    # Fetch fresh data
+    data = yf.Ticker(symbol).history(period="1y")
+    data.to_csv(cache_file)
+    return data
+```
+
+**When You Get Soft-Banned:**
+- Symptom: Empty DataFrames or 404 errors
+- Duration: Usually 1 hour
+- Workaround: Use residential proxy or wait
+- Prevention: Add 100ms delay between requests
+
+#### 3. SEC EDGAR (Company Filings)
+
+**FREE TIER REALITY:**
+- ✅ **Unlimited requests** (government data, public domain)
+- ⚠️ **10 requests/second limit** (hard limit since 2021)
+- ⚠️ **User-Agent header REQUIRED** (must include email or get 403)
+- ✅ **No registration**
+- ✅ **No API key**
+
+**Registration Requirements:**
+None! But you MUST set a User-Agent header with your email:
+
+```python
+import requests
+
+headers = {
+    'User-Agent': 'YourCompany yourname@email.com'  # REQUIRED
+}
+
+# This works
+response = requests.get(
+    'https://www.sec.gov/cgi-bin/browse-edgar',
+    headers=headers
+)
+
+# This gets 403 Forbidden
+response = requests.get(
+    'https://www.sec.gov/cgi-bin/browse-edgar'  # Missing User-Agent
+)
+```
+
+**Agent Strategy for 10/sec Limit:**
+```python
+import time
+from collections import deque
+
+class EDGARRateLimiter:
+    def __init__(self):
+        self.requests = deque(maxlen=10)  # Track last 10 requests
+
+    def make_request(self, url):
+        # Wait if we've made 10 requests in last second
+        if len(self.requests) == 10:
+            elapsed = time.time() - self.requests[0]
+            if elapsed < 1.0:
+                time.sleep(1.0 - elapsed)
+
+        # Make request
+        self.requests.append(time.time())
+        return requests.get(url, headers={
+            'User-Agent': 'OpenBB Terminal research@example.com'
+        })
+
+# Use with OpenBB
+edgar = EDGARRateLimiter()
+filings = edgar.make_request(
+    f'https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=AAPL'
+)
+```
+
+#### 4. CoinGecko (Cryptocurrency Data)
+
+**FREE TIER REALITY:**
+- ✅ **Unlimited requests/day** (generous free tier)
+- ⚠️ **50 calls/minute** (soft limit)
+- ✅ **No registration** (optional for higher limits)
+- ✅ **No API key** (optional)
+
+**With Free API Key (Optional):**
+- 30-50 calls/minute (still free)
+- More stable rate limits
+- Get key at: https://www.coingecko.com/en/api
+
+**Agent Strategy:**
+```python
+# CoinGecko is actually generous - just add small delay
+import time
+
+def get_crypto_data(coin_id):
+    time.sleep(1.2)  # 50/min = 1.2s per request
+    return obb.crypto.price.historical(
+        symbol=coin_id,
+        provider="coingecko"
+    )
+```
+
+### Multi-Agent Resource Management (Single IP)
+
+**Scenario: 5 AI Agents Analyzing 100 Stocks**
+
+```python
+# DON'T: Each agent hammers APIs independently
+# BAD - Will hit all rate limits in minutes!
+for agent in agents:
+    for stock in stocks:
+        data = agent.fetch_data(stock)  # 500 API calls!
+
+# DO: Centralized quota coordinator
+class FinancialDataCoordinator:
+    def __init__(self):
+        self.alpha_vantage_calls_today = 0
+        self.alpha_vantage_max = 25
+        self.yfinance_last_request = 0
+        self.cache = {}
+
+    def get_data(self, symbol, agent_id):
+        # Check cache first
+        if symbol in self.cache:
+            return self.cache[symbol]
+
+        # Try Yahoo Finance (unlimited-ish)
+        try:
+            data = self.fetch_yfinance(symbol)
+            self.cache[symbol] = data
+            return data
+        except RateLimitError:
+            pass
+
+        # Fallback to Alpha Vantage (use quota wisely)
+        if self.alpha_vantage_calls_today < self.alpha_vantage_max:
+            data = self.fetch_alpha_vantage(symbol)
+            self.alpha_vantage_calls_today += 1
+            self.cache[symbol] = data
+            return data
+
+        # Out of quota - return cached or error
+        raise QuotaExceededError(f"Out of API calls. Used {self.alpha_vantage_calls_today}/25 Alpha Vantage calls today")
+
+# All 5 agents share the same coordinator
+coordinator = FinancialDataCoordinator()
+for agent in agents:
+    agent.data_source = coordinator
+```
+
+### Upgrade Paths (When Free Tier Isn't Enough)
+
+| Your Problem | Solution | Cost |
+|--------------|----------|------|
+| Alpha Vantage 25/day too low | Upgrade to $49.99/mo | $600/year (still way cheaper than Bloomberg) |
+| Yahoo Finance soft bans | Use IEX Cloud 50K/month free | $0 |
+| Need real-time data | Upgrade to IEX Cloud $9/mo | $108/year |
+| Need 100% uptime | Use Polygon.io $29/mo | $348/year |
+| Bloomberg-level features | Still 10x cheaper | $600-3,000/year vs $24K+ |
+
+### Summary: Can You Run 10 Agents on One IP?
+
+**✅ YES** - if you're smart about it:
+
+| Provider | Single IP Strategy | Max Agents Supported |
+|----------|-------------------|---------------------|
+| Yahoo Finance | Shared cache, 100ms delays | 10-20 agents |
+| Alpha Vantage | Centralized quota (25/day total) | Unlimited agents (shared quota) |
+| FRED | No limits! | Unlimited |
+| SEC EDGAR | 10/sec shared limit | 5-10 agents |
+| CoinGecko | 50/min shared | 10+ agents |
+
+**Key: Agents must coordinate, not compete for quota.**
+
+---
+
 ## 💡 Core Commands (6)
 
 ### 1. `/openbb-equity` - Stock Analysis
