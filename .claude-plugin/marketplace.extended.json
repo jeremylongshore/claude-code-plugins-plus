@@ -3883,10 +3883,10 @@
       }
     },
     {
-      "name": "skills-powerkit",
-      "source": "./plugins/examples/skills-powerkit",
-      "description": "Ultimate plugin management toolkit with 5 Agent Skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
-      "version": "1.0.0",
+      "name": "jeremy-plugin-tool",
+      "source": "./plugins/examples/jeremy-plugin-tool",
+      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "version": "2.0.0",
       "category": "example",
       "keywords": [
         "skills",
