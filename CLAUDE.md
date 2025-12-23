@@ -38,6 +38,34 @@ Claude Code plugins marketplace and learning hub. 258 plugins across 18 categori
 
 **Monorepo structure:** pnpm workspaces with MCP plugins in `plugins/mcp/*` and Astro website in `marketplace/`.
 
+**Important:** This repository uses **pnpm workspaces**, not npm. Always use `pnpm` commands, not `npm` (except in `marketplace/` which uses npm).
+
+## Learning Lab
+
+**Location:** `workspace/lab/` (git-ignored, safe sandbox for experiments)
+
+**Purpose:** Production agent workflow teaching system with empirical verification patterns - teaches how to build agent systems that use scripts to verify LLM outputs instead of trusting them.
+
+**Key Resources:**
+- `README.md` - 5-minute introduction to the learning lab
+- `GUIDE-00-START-HERE.md` - Mental model for agent workflows
+- `GUIDE-01-PATTERN-EXPLAINED.md` - Architecture deep dive (15 min)
+- `GUIDE-02-BUILDING-YOUR-OWN.md` - Build your own workflow (30 min)
+- `GUIDE-03-DEBUGGING-TIPS.md` - Debugging techniques (15 min)
+- `ORCHESTRATION-PATTERN.md` - Complete orchestration pattern (60 min)
+- `VISUAL-MAP.md` - Visual architecture diagrams
+- `BUILT-SYSTEM-SUMMARY.md` - Summary of reference implementation
+- `schema-optimization/` - Reference implementation with 5-phase workflow
+- `exercises/` - Hands-on exercises
+
+**Interactive Tutorials:** `tutorials/` directory (11 Jupyter notebooks)
+- Skills tutorials (5 notebooks) - How Agent Skills work
+- Plugins tutorials (4 notebooks) - Plugin development
+- Orchestration tutorials (2 notebooks) - Multi-agent workflows
+- Available on Google Colab for instant access
+
+**Note:** workspace/ is git-ignored except for committed lab materials. Safe for experimentation.
+
 ## Essential Commands
 
 ### Before ANY Commit
@@ -514,6 +542,23 @@ git diff .claude-plugin/marketplace.json  # Should be clean
 /plugin uninstall [plugin-name]@claude-code-plugins-plus
 ```
 
+### Skill Generation & Analysis
+```bash
+# Analyze skill names for consistency
+python3 scripts/analyze-skill-names.py
+python3 scripts/analyze-skill-names-gemini.py      # Uses Vertex AI Gemini
+
+# Audit skills quality across all plugins
+python3 scripts/audit-skills-quality.py
+
+# Run comprehensive plugin audits
+./scripts/audit-run-full.sh                        # Full audit suite
+./scripts/audit-plugin-manifests.sh                # Check plugin.json files
+./scripts/audit-plugin-commands.sh                 # Audit slash commands
+./scripts/audit-plugin-agents.sh                   # Audit agent definitions
+./scripts/audit-plugin-directories.sh              # Check directory structure
+```
+
 ## Statistics (Current)
 
 - **Total Plugins**: 258 across 18 categories
@@ -524,7 +569,9 @@ git diff .claude-plugin/marketplace.json  # Should be clean
 - **Categories**: 18 total categories
 - **2025 Schema**: Validated with scripts/validate-skills-schema.py
 - **Website**: https://claudecodeplugins.io/ (Astro 5.16.0 + Tailwind 4.1.17)
-- **Version**: 1.5.0 (Last updated: 2025-12-19)
+- **Monorepo Version**: 1.5.0 (package.json)
+- **Release Version**: 4.0.0 (README.md - includes Learning Lab)
+- **Last Updated**: 2025-12-22
 
 ## Important Notes
 
