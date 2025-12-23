@@ -140,6 +140,306 @@ Visualization: Added column chart comparing regions
 
 ---
 
+## FREE Financial Data Sources: No Bloomberg Required
+
+**Get company financials, market data, and economic indicators for your models** - all free, no $24K/year Bloomberg subscription.
+
+### Quick Comparison
+
+| Data Type | Paid Source | FREE Source |
+|-----------|-------------|-------------|
+| **Company Financials** | Bloomberg ($24K/year) | SEC EDGAR: **$0** |
+| **Stock Prices** | Capital IQ ($12K/year) | Yahoo Finance: **$0** |
+| **Market Data** | FactSet ($12K/year) | Alpha Vantage: **$0** |
+| **Macro Indicators** | Refinitiv ($12K/year) | FRED: **$0** |
+| **Company News** | S&P CapitalIQ ($12K/year) | Google News: **$0** |
+
+**Annual Savings: $25K-74K** for professional-grade model inputs.
+
+### Why Free Data Works for Financial Modeling
+
+**For DCF Models:**
+- Revenue/EBITDA: SEC 10-K/10-Q filings (FREE)
+- Stock prices: Yahoo Finance (FREE)
+- Risk-free rate: FRED (Federal Reserve, FREE)
+- Beta: Calculated from Yahoo Finance data (FREE)
+
+**For LBO Models:**
+- Entry valuation: SEC filings + Yahoo Finance (FREE)
+- Debt terms: Company 10-K disclosure (FREE)
+- Comparable multiples: Public comps from Yahoo Finance (FREE)
+- Exit assumptions: Historical trading multiples (FREE)
+
+**For Variance Analysis:**
+- Budget data: Your internal files (already have)
+- Actual results: Your accounting system (already have)
+- Industry benchmarks: BEA.gov, Census.gov (FREE)
+
+**15-minute delayed data is perfectly fine for financial modeling** (not day trading).
+
+### Free Data Source Catalog
+
+#### 1. SEC EDGAR (Best for Fundamentals)
+
+**What:** Official company filings (10-K, 10-Q, 8-K)
+
+**Use For:**
+- Revenue, EBITDA, net income
+- Balance sheet data
+- Cash flow statements
+- Management discussion & analysis (MD&A)
+- Risk factors
+
+**Access:**
+- Website: [sec.gov/edgar](https://www.sec.gov/edgar)
+- API: FREE, unlimited access
+- Python: `pip install sec-api` (free tier)
+
+**Cost:** $0 (US government public data)
+
+**Example:**
+```python
+# Get Tesla's latest 10-K
+import requests
+
+cik = "0001318605"  # Tesla's CIK
+url = f"https://data.sec.gov/submissions/CIK{cik}.json"
+response = requests.get(url, headers={"User-Agent": "YourName yourname@example.com"})
+filings = response.json()
+```
+
+#### 2. Yahoo Finance (Best for Stock Data)
+
+**What:** Real-time stock prices, historical data, key stats
+
+**Use For:**
+- Current stock price
+- Historical prices (for beta calculation)
+- Market cap
+- P/E, EV/EBITDA ratios
+- 52-week high/low
+
+**Access:**
+- Website: [finance.yahoo.com](https://finance.yahoo.com)
+- Python: `pip install yfinance` (FREE)
+- Excel: Power Query (built-in, FREE)
+
+**Cost:** $0
+
+**Example:**
+```python
+import yfinance as yf
+
+# Get Tesla data for DCF model
+tesla = yf.Ticker("TSLA")
+revenue = tesla.financials.loc["Total Revenue"]
+stock_price = tesla.history(period="1d")["Close"].iloc[0]
+market_cap = tesla.info["marketCap"]
+```
+
+#### 3. FRED (Federal Reserve Economic Data)
+
+**What:** 817,000+ economic time series
+
+**Use For:**
+- Risk-free rate (10-year Treasury)
+- GDP growth rates
+- Inflation (CPI)
+- Unemployment rates
+- Market risk premium data
+
+**Access:**
+- Website: [fred.stlouisfed.org](https://fred.stlouisfed.org)
+- API: FREE (no rate limits)
+- Excel: FRED Excel Add-in (FREE)
+
+**Cost:** $0
+
+**Example:**
+```python
+from fredapi import Fred
+
+fred = Fred(api_key="YOUR_FREE_KEY")  # Free key from FRED website
+
+# Get 10-year Treasury rate for WACC calculation
+risk_free_rate = fred.get_series_latest_release("DGS10")
+print(f"Current risk-free rate: {risk_free_rate.iloc[-1]}%")
+```
+
+#### 4. Alpha Vantage (Best for Technicals)
+
+**What:** Stock fundamentals, technical indicators, forex
+
+**Use For:**
+- Financial statements (income statement, balance sheet, cash flow)
+- Key ratios
+- Earnings calendar
+- Technical indicators (SMA, RSI)
+
+**Access:**
+- Website: [alphavantage.co](https://www.alphavantage.co)
+- API: FREE tier (500 calls/day)
+
+**Cost:** $0 (free tier sufficient for modeling)
+
+**Example:**
+```python
+import requests
+
+api_key = "YOUR_FREE_KEY"  # Free from alphavantage.co
+symbol = "AAPL"
+
+url = f"https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol={symbol}&apikey={api_key}"
+response = requests.get(url)
+financials = response.json()
+```
+
+#### 5. OpenBB Platform (Best All-in-One)
+
+**What:** Unified interface to 100+ free data providers
+
+**Use For:**
+- Stocks, crypto, forex, commodities
+- Fundamentals, technicals, macro
+- Portfolio analytics
+
+**Install:** `pip install openbb[yfinance]`
+
+**Cost:** $0 (uses free providers)
+
+**See:** [openbb-terminal plugin](../../finance/openbb-terminal/) for full guide
+
+### Cost Comparison: Building a DCF Model
+
+#### Paid Data Approach
+
+**Annual Subscriptions:**
+- Bloomberg Terminal: $24,000/year
+- Capital IQ: $12,000/year
+- FactSet: $12,000/year
+- **Total: $48,000/year**
+
+**Advantages:**
+- Real-time data
+- Instant analyst estimates
+- Proprietary research
+
+#### Free Data Approach
+
+**Annual Subscriptions:**
+- SEC EDGAR: $0
+- Yahoo Finance: $0
+- FRED: $0
+- Alpha Vantage: $0
+- **Total: $0/year**
+
+**Advantages:**
+- Same official company data (SEC filings)
+- 15-min delayed (fine for modeling)
+- No credit card required
+
+**Savings: $48,000/year** with identical model quality.
+
+### Real Use Case Examples
+
+#### DCF Model for Apple
+
+**Paid Approach (Bloomberg):**
+1. Open Bloomberg Terminal ($24K/year)
+2. Type `AAPL <EQUITY> FA` for financials
+3. Export to Excel
+4. Build DCF model
+
+**Free Approach (This Plugin):**
+```python
+import yfinance as yf
+
+# Get Apple data
+aapl = yf.Ticker("AAPL")
+revenue = aapl.financials.loc["Total Revenue"]
+operating_income = aapl.financials.loc["Operating Income"]
+market_cap = aapl.info["marketCap"]
+
+# Get risk-free rate from FRED
+from fredapi import Fred
+fred = Fred(api_key="YOUR_FREE_KEY")
+risk_free_rate = fred.get_series_latest_release("DGS10").iloc[-1]
+
+# Now use Excel Analyst Pro to build DCF
+# Just say: "Create a DCF model for Apple"
+```
+
+**Cost:** $0 (vs $24K/year)
+
+**Data Quality:** Identical (both use SEC filings + public market data)
+
+#### LBO Model for Private Company
+
+**Data Needed:**
+- Entry valuation: Ask seller or use industry multiples
+- Debt terms: Term sheets from lenders
+- EBITDA projections: Internal management projections
+- Exit assumptions: Public comparable multiples (Yahoo Finance)
+
+**Cost with Free Data:** $0
+
+**No paid subscriptions required for private company LBO models.**
+
+#### Variance Analysis
+
+**Data Needed:**
+- Budget: Your internal Excel file
+- Actuals: Your accounting system export
+- KPIs: Your tracking dashboards
+
+**Cost:** $0 (all internal data)
+
+### Integration with This Plugin
+
+**Step 1:** Get free data from sources above
+
+**Step 2:** Use Excel Analyst Pro to build models
+
+```
+You: "Create a DCF model for Tesla"
+
+Claude: What base year revenue should we use for Tesla?
+
+You: "$96.8 billion" (from SEC 10-K or Yahoo Finance, both FREE)
+
+Claude: [Builds complete DCF model]
+```
+
+**Step 3:** Save $48K/year by avoiding Bloomberg
+
+### When Free Data Is NOT Enough
+
+**Use paid data if:**
+- You're an investment bank pitching M&A ($24K/year justified)
+- You need real-time intraday data for trading
+- Client requires Bloomberg screenshots for compliance
+- You manage $1B+ AUM and need institutional tools
+
+**For everyone else (99% of users):** Free data is sufficient for professional financial models.
+
+### Hybrid Approach
+
+**Best of both worlds:** Use free data 95% of the time, Bloomberg for final client deliverables.
+
+**Cost Reduction:** $48K/year → $2.4K/year (95% savings)
+
+### Resources
+
+- **SEC EDGAR:** [sec.gov/edgar](https://www.sec.gov/edgar) (FREE)
+- **Yahoo Finance:** [finance.yahoo.com](https://finance.yahoo.com) (FREE)
+- **FRED:** [fred.stlouisfed.org](https://fred.stlouisfed.org) (FREE API key)
+- **Alpha Vantage:** [alphavantage.co](https://www.alphavantage.co) (FREE API key)
+- **OpenBB:** Install [openbb-terminal plugin](../../finance/openbb-terminal/) for unified access
+
+**Bottom Line:** This plugin is free. Your model inputs can be free too. Save $25K-74K/year.
+
+---
+
 ## 📚 Skills Documentation
 
 Each Skill has detailed documentation in its `SKILL.md` file:
