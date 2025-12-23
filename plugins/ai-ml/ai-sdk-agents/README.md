@@ -2,7 +2,9 @@
 
 **Multi-agent orchestration with AI SDK v5 - handoffs, routing, and coordination for any AI provider.**
 
-Build sophisticated multi-agent systems with automatic handoffs, intelligent routing, and seamless coordination across OpenAI, Anthropic, Google, and other AI providers.
+Build sophisticated multi-agent systems with automatic handoffs, intelligent routing, and seamless coordination across **Ollama (FREE)**, OpenAI, Anthropic, Google, and other AI providers.
+
+💰 **NEW**: Use Ollama for zero-cost local AI agents - eliminate $30-200/month in API fees!
 
 ---
 
@@ -560,9 +562,118 @@ const result = await orchestrate({
 - **GitHub**: [ai-sdk-tools](https://github.com/midday-ai/ai-sdk-tools)
 - **AI SDK**: [Vercel AI SDK v5](https://sdk.vercel.ai)
 - **Provider SDKs**:
+  - **Ollama (FREE - Local)**: [ollama](https://www.npmjs.com/package/ollama) 💰 **$0/month**
   - Anthropic: [@ai-sdk/anthropic](https://www.npmjs.com/package/@ai-sdk/anthropic)
   - OpenAI: [@ai-sdk/openai](https://www.npmjs.com/package/@ai-sdk/openai)
   - Google: [@ai-sdk/google](https://www.npmjs.com/package/@ai-sdk/google)
+
+---
+
+## 💰 FREE Alternative: Use Ollama (Zero API Costs)
+
+**Eliminate $30-200/month in API fees** by running AI agents locally with Ollama.
+
+### Quick Setup
+
+```bash
+# 1. Install Ollama (one-time)
+/setup-ollama
+# or manually: curl -fsSL https://ollama.com/install.sh | sh
+
+# 2. Pull models
+ollama pull llama3.2   # General purpose
+ollama pull codellama  # Code generation
+
+# 3. Install Ollama SDK
+npm install ollama
+```
+
+### Using Ollama in Agents
+
+```typescript
+import ollama from 'ollama';
+
+// Create agent with Ollama (FREE)
+const coder = {
+  name: 'coder',
+  generate: async (prompt: string) => {
+    const response = await ollama.chat({
+      model: 'codellama',
+      messages: [{ role: 'user', content: prompt }]
+    });
+    return response.message.content;
+  }
+};
+
+// Multi-agent system with $0 costs
+const agents = [
+  { name: 'architect', model: 'llama3.2' },
+  { name: 'coder', model: 'codellama' },
+  { name: 'reviewer', model: 'mistral' }
+];
+
+// All agents use local models - NO API COSTS!
+```
+
+### Cost Comparison
+
+| Provider | Monthly Cost (1M tokens) | Setup | Privacy |
+|----------|-------------------------|-------|---------|
+| **Ollama** | **$0** ✓ | Local | **100% Private** ✓ |
+| OpenAI GPT-4 | $30-60 | API Key | Cloud |
+| Anthropic Claude | $15-75 | API Key | Cloud |
+| Google Gemini | $7-21 | API Key | Cloud |
+
+### Best Models for Multi-Agent Systems
+
+**Code Generation**:
+- `codellama` (34B) - Best for coding agents
+- `qwen2.5-coder` (32B) - Strong code understanding
+
+**General Purpose**:
+- `llama3.2` (70B) - Meta's flagship
+- `mistral` (7B) - Fast and efficient
+
+**Specialized**:
+- `phi3` (14B) - Microsoft's efficient model
+- `gemma` (27B) - Google's open model
+
+### Migration Guide: Paid → Free
+
+**Before (OpenAI - Paid)**:
+```typescript
+import { createOpenAI } from '@ai-sdk/openai';
+
+const openai = createOpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
+
+const agent = createAgent({
+  model: openai('gpt-4')
+});
+```
+
+**After (Ollama - Free)**:
+```typescript
+import ollama from 'ollama';
+
+const agent = createAgent({
+  generate: async (prompt) => {
+    const response = await ollama.chat({
+      model: 'llama3.2',
+      messages: [{ role: 'user', content: prompt }]
+    });
+    return response.message.content;
+  }
+});
+```
+
+**Savings: $30-60/month → $0** 🎉
+
+### Related Plugins
+
+- `/ollama-local-ai` - Ollama setup & configuration
+- `/local-llm-wrapper` - Generic local LLM wrapper
 
 ---
 
