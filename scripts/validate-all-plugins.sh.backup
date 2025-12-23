@@ -54,18 +54,6 @@ while IFS= read -r json_file; do
       echo -e "${RED}❌ Missing 'author' field: $json_file${NC}"
       ((ERRORS++))
     fi
-
-    # NEW: Check for invalid/forbidden fields (Claude Code strict schema)
-    # Allowed fields: name, version, description, author, repository, homepage, license, keywords
-    INVALID_FIELDS=$(jq -r 'keys - ["name","version","description","author","repository","homepage","license","keywords"] | .[]' "$json_file" 2>/dev/null)
-
-    if [ -n "$INVALID_FIELDS" ]; then
-      echo -e "${RED}❌ Invalid fields in $json_file:${NC}"
-      echo "$INVALID_FIELDS" | while read -r field; do
-        echo -e "   ${YELLOW}Unrecognized key: '$field' (Claude Code doesn't support this field)${NC}"
-      done
-      ((ERRORS++))
-    fi
   fi
 
   # Validate hooks.json structure

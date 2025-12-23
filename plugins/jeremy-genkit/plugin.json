@@ -23,21 +23,5 @@
     "multi-model",
     "rag",
     "function-calling"
-  ],
-  "skills": [
-    "skills/genkit-app-builder",
-    "skills/multi-model-orchestrator",
-    "skills/rag-pipeline-builder"
-  ],
-  "commands": [
-    "slash-commands/create-genkit-app.md",
-    "slash-commands/add-model-provider.md",
-    "slash-commands/deploy-genkit-flow.md"
-  ],
-  "requirements": [
-    "Claude Code 1.0+",
-    "Node.js 20+ or Python 3.11+ or Go 1.21+",
-    "Firebase CLI",
-    "@genkit-ai/core>=0.5.0"
   ]
 }

@@ -17,13 +17,5 @@
     "search",
     "fts",
     "agent"
-  ],
-  "mcpServers": {
-    "lumera-agent-memory": {
-      "command": "python3",
-      "args": [
-        "${CLAUDE_PLUGIN_ROOT}/src/mcp_server.py"
-      ]
-    }
-  }
+  ]
 }
