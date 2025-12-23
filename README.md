@@ -67,6 +67,7 @@
 
 **Huge thanks to our community contributors who make this marketplace better:**
 
+- **[@TomLucidor](https://github.com/TomLucidor) (Tom)** - 🏆 **TRANSPARENCY CHAMPION:** His simple question *"Which plugins require paid APIs vs free/self-hosted?"* sparked the entire "Make All Plugins Free" initiative (v4.1.0). His follow-up about rate limits and registration requirements drove **2,400+ lines** of comprehensive constraint documentation across 6 plugins (v4.3.0). Tom doesn't write code, but he keeps projects honest by asking the questions users are afraid to ask. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
 - **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the complete Learning Lab system (v4.0.0). His insights on empirical verification transformed how we teach agent development.
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🎉 **MASSIVE CONTRIBUTION:** Created geepers-agents with **51 specialized agents** for development workflows, deployment, quality audits, research, and game development - the largest single plugin contribution to date! ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
 - **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
