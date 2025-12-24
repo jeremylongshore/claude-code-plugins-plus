@@ -51,6 +51,10 @@ export async function doctorCheck(options: DoctorOptions): Promise<void> {
   const marketplaceChecks = await runMarketplaceChecks();
   results.push(marketplaceChecks);
 
+  // MCP server checks
+  const mcpChecks = await runMCPChecks();
+  results.push(mcpChecks);
+
   if (options.json) {
     console.log(JSON.stringify(results, null, 2));
     return;
@@ -354,6 +358,169 @@ async function checkMarketplaceIntegrity(paths: any): Promise<CheckResult[]> {
       name: 'Catalog Integrity',
       status: 'fail',
       message: 'Could not validate catalog',
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+
+  return checks;
+}
+
+/**
+ * Run MCP server health checks
+ */
+async function runMCPChecks(): Promise<DiagnosticResult> {
+  const checks: CheckResult[] = [];
+
+  try {
+    const paths = await detectClaudePaths();
+    const mcpServers = await detectMCPServers(paths);
+
+    if (mcpServers.length === 0) {
+      checks.push({
+        name: 'MCP Servers',
+        status: 'pass',
+        message: 'No MCP servers configured',
+        details: 'This is normal if you haven\'t installed MCP server plugins',
+      });
+      return {
+        category: 'MCP Servers',
+        checks,
+      };
+    }
+
+    checks.push({
+      name: 'MCP Servers Detected',
+      status: 'pass',
+      message: `${mcpServers.length} server(s) configured`,
+    });
+
+    // Check each MCP server
+    for (const server of mcpServers) {
+      const serverChecks = await checkMCPServer(server);
+      checks.push(...serverChecks);
+    }
+
+  } catch (error) {
+    checks.push({
+      name: 'MCP Server Check',
+      status: 'fail',
+      message: 'Could not check MCP servers',
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+
+  return {
+    category: 'MCP Servers',
+    checks,
+  };
+}
+
+/**
+ * Detect MCP servers from Claude settings
+ */
+async function detectMCPServers(paths: any): Promise<any[]> {
+  const servers: any[] = [];
+
+  try {
+    // Check for MCP settings in Claude config
+    const settingsPath = `${paths.configDir}/settings.json`;
+
+    if (!existsSync(settingsPath)) {
+      return servers;
+    }
+
+    const settingsContent = await fs.readFile(settingsPath, 'utf-8');
+    const settings = JSON.parse(settingsContent);
+
+    // MCP servers are typically in settings.mcp.servers or settings.mcpServers
+    const mcpConfig = settings.mcp?.servers || settings.mcpServers || {};
+
+    for (const [name, config] of Object.entries(mcpConfig)) {
+      servers.push({
+        name,
+        config: config as any,
+      });
+    }
+
+  } catch (error) {
+    // Settings file might not exist or be invalid - not an error
+  }
+
+  return servers;
+}
+
+/**
+ * Check individual MCP server health
+ */
+async function checkMCPServer(server: any): Promise<CheckResult[]> {
+  const checks: CheckResult[] = [];
+  const serverName = server.name;
+  const config = server.config;
+
+  try {
+    // Check if server command/path exists
+    const command = config.command || config.cmd;
+    const args = config.args || [];
+
+    if (!command) {
+      checks.push({
+        name: `${serverName}`,
+        status: 'warn',
+        message: 'No command configured',
+        details: 'MCP server configuration missing command',
+      });
+      return checks;
+    }
+
+    // Check if command is executable (basic validation)
+    let isAccessible = false;
+    try {
+      // Try to check if command exists
+      if (command.startsWith('/') || command.startsWith('./')) {
+        // Absolute or relative path
+        isAccessible = existsSync(command);
+      } else {
+        // Command in PATH - try to execute with --version or --help
+        try {
+          await execAsync(`${command} --version`, { timeout: 2000 });
+          isAccessible = true;
+        } catch {
+          try {
+            await execAsync(`${command} --help`, { timeout: 2000 });
+            isAccessible = true;
+          } catch {
+            // Command might not support --version or --help, assume it exists
+            isAccessible = true;
+          }
+        }
+      }
+    } catch {
+      isAccessible = false;
+    }
+
+    if (!isAccessible && (command.startsWith('/') || command.startsWith('./'))) {
+      checks.push({
+        name: `${serverName}`,
+        status: 'fail',
+        message: 'Command not found',
+        details: `MCP server command "${command}" does not exist`,
+      });
+      return checks;
+    }
+
+    // Server appears configured correctly
+    checks.push({
+      name: `${serverName}`,
+      status: 'pass',
+      message: 'Configured',
+      details: `Command: ${command}${args.length > 0 ? ' ' + args.join(' ') : ''}`,
+    });
+
+  } catch (error) {
+    checks.push({
+      name: `${serverName}`,
+      status: 'warn',
+      message: 'Could not validate',
       details: error instanceof Error ? error.message : undefined,
     });
   }
