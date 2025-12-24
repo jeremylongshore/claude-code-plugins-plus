@@ -1,21 +1,41 @@
 ---
+import type { GetStaticPaths } from 'astro';
 import skillsCatalog from '../../data/skills-catalog.json';
+
+export const getStaticPaths = (async ({ paginate }) => {
+  const allSkills = skillsCatalog.skills;
+  return paginate(allSkills, { pageSize: 25 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
 
 const pageTitle = 'Agent Skills Directory';
 const pageDescription = `Browse all ${skillsCatalog.count} agent skills across ${skillsCatalog.categories.length} categories`;
 
-// Group skills by category
-const skillsByCategory = skillsCatalog.skills.reduce((acc, skill) => {
-  const category = skill.parentPlugin.category;
-  if (!acc[category]) {
-    acc[category] = [];
-  }
-  acc[category].push(skill);
-  return acc;
-}, {});
+// Current page skills for rendering
+const currentPageSkills = page.data;
+
+// Pagination info
+const totalPages = page.lastPage;
+const currentPage = page.currentPage;
+const startIndex = (currentPage - 1) * page.size + 1;
+const endIndex = Math.min(currentPage * page.size, page.total);
 
 // Get unique allowed tools for filtering
 const allTools = skillsCatalog.allowedToolsUsed;
+
+// Prepare lightweight skills data for client-side search (current page only)
+// Remove the heavy 'content' field to reduce bundle size
+const lightweightSkills = currentPageSkills.map(skill => ({
+  slug: skill.slug,
+  name: skill.name,
+  description: skill.description,
+  allowedTools: skill.allowedTools,
+  version: skill.version,
+  parentPlugin: {
+    category: skill.parentPlugin.category
+  }
+}));
 ---
 
 <!DOCTYPE html>
@@ -23,21 +43,25 @@ const allTools = skillsCatalog.allowedToolsUsed;
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{pageTitle} - Claude Code Plugins</title>
+  <title>{pageTitle}{currentPage > 1 ? ` - Page ${currentPage}` : ''} - Claude Code Plugins</title>
   <meta name="description" content={pageDescription}>
-  <link rel="canonical" href="https://claudecodeplugins.io/skills/">
+  <link rel="canonical" href={`https://claudecodeplugins.io/skills/${currentPage > 1 ? currentPage + '/' : ''}`}>
+
+  {currentPage > 1 && <link rel="prev" href={currentPage === 2 ? '/skills/' : `/skills/${currentPage - 1}/`} />}
+  {currentPage < totalPages && <link rel="next" href={`/skills/${currentPage + 1}/`} />}
 
   <!-- Open Graph -->
   <meta property="og:title" content={pageTitle}>
   <meta property="og:description" content={pageDescription}>
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://claudecodeplugins.io/skills/">
+  <meta property="og:url" content={`https://claudecodeplugins.io/skills/${currentPage > 1 ? currentPage + '/' : ''}`}>
 
   <script type="module">
     // Client-side search functionality using Fuse.js
     import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
 
     const skills = window.__SKILLS_DATA__;
+    const pageInfo = window.__PAGE_INFO__;
 
     const fuse = new Fuse(skills, {
       keys: ['name', 'description', 'parentPlugin.category', 'allowedTools'],
@@ -80,7 +104,8 @@ const allTools = skillsCatalog.allowedToolsUsed;
       if (skills.length === 0) {
         grid.innerHTML = `
           <div class="col-span-full text-center py-12">
-            <p class="text-xl text-gray-600">No skills found matching your filters.</p>
+            <p class="text-xl text-gray-600">No skills found matching your filters on this page.</p>
+            <p class="text-sm text-gray-500 mt-2">Try a different page or clear filters.</p>
             <button onclick="clearFilters()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
               Clear Filters
             </button>
@@ -110,8 +135,9 @@ const allTools = skillsCatalog.allowedToolsUsed;
     }
 
     function updateResultsCount(count) {
+      const totalOnPage = pageInfo.pageSize;
       document.getElementById('results-count').textContent =
-        `Showing ${count} of ${skills.length} skills`;
+        `Showing ${count} of ${totalOnPage} skills on this page (${pageInfo.total} total)`;
     }
 
     // Event listeners
@@ -145,8 +171,9 @@ const allTools = skillsCatalog.allowedToolsUsed;
     });
   </script>
 
-  <script define:vars={{ skills: skillsCatalog.skills }}>
+  <script define:vars={{ skills: lightweightSkills, pageInfo: { currentPage, totalPages, pageSize: page.size, total: page.total } }}>
     window.__SKILLS_DATA__ = skills;
+    window.__PAGE_INFO__ = pageInfo;
   </script>
 </head>
 <body class="bg-gray-50">
@@ -159,11 +186,53 @@ const allTools = skillsCatalog.allowedToolsUsed;
           <p class="text-gray-600 mt-1">{skillsCatalog.count} skills across {skillsCatalog.categories.length} categories</p>
         </div>
         <a href="/" class="text-blue-600 hover:text-blue-700 font-medium">
-          ← Back to Marketplace
+          &larr; Back to Marketplace
         </a>
       </div>
     </div>
   </header>
+
+  <!-- Pagination Top -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Showing {startIndex}-{endIndex} of {page.total} skills
+        </p>
+        <nav class="flex items-center gap-2" aria-label="Pagination">
+          {page.url.prev ? (
+            <a
+              href={page.url.prev}
+              class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+            >
+              Previous
+            </a>
+          ) : (
+            <span class="px-3 py-1 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed">
+              Previous
+            </span>
+          )}
+
+          <span class="px-3 py-1 text-sm font-medium text-gray-700">
+            Page {currentPage} of {totalPages}
+          </span>
+
+          {page.url.next ? (
+            <a
+              href={page.url.next}
+              class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded hover:bg-gray-50"
+            >
+              Next
+            </a>
+          ) : (
+            <span class="px-3 py-1 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded cursor-not-allowed">
+              Next
+            </span>
+          )}
+        </nav>
+      </div>
+    </div>
+  </div>
 
   <!-- Filters -->
   <div class="bg-white border-b border-gray-200">
@@ -172,7 +241,7 @@ const allTools = skillsCatalog.allowedToolsUsed;
         <!-- Search -->
         <div>
           <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
-            Search Skills
+            Search Skills (this page)
           </label>
           <input
             type="text"
@@ -219,7 +288,7 @@ const allTools = skillsCatalog.allowedToolsUsed;
 
       <div class="mt-4 flex items-center justify-between">
         <p id="results-count" class="text-sm text-gray-600">
-          Showing {skillsCatalog.count} of {skillsCatalog.count} skills
+          Showing {currentPageSkills.length} of {currentPageSkills.length} skills on this page ({page.total} total)
         </p>
         <button
           onclick="clearFilters()"
@@ -234,7 +303,7 @@ const allTools = skillsCatalog.allowedToolsUsed;
   <!-- Skills Grid -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {skillsCatalog.skills.map(skill => (
+      {currentPageSkills.map(skill => (
         <a
           href={`/skills/${skill.slug}/`}
           class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200"
@@ -264,8 +333,65 @@ const allTools = skillsCatalog.allowedToolsUsed;
     </div>
   </main>
 
+  <!-- Pagination Bottom -->
+  <div class="bg-white border-t border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="flex items-center justify-center gap-2">
+        {page.url.prev ? (
+          <a
+            href={page.url.prev}
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            &larr; Previous
+          </a>
+        ) : (
+          <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+            &larr; Previous
+          </span>
+        )}
+
+        <!-- Page Numbers -->
+        <div class="flex items-center gap-1">
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => {
+            const pageUrl = pageNum === 1 ? '/skills/' : `/skills/${pageNum}/`;
+            const isCurrent = pageNum === currentPage;
+            return isCurrent ? (
+              <span class="px-3 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg">
+                {pageNum}
+              </span>
+            ) : (
+              <a
+                href={pageUrl}
+                class="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              >
+                {pageNum}
+              </a>
+            );
+          })}
+        </div>
+
+        {page.url.next ? (
+          <a
+            href={page.url.next}
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            Next &rarr;
+          </a>
+        ) : (
+          <span class="px-4 py-2 text-sm font-medium text-gray-400 bg-gray-100 border border-gray-200 rounded-lg cursor-not-allowed">
+            Next &rarr;
+          </span>
+        )}
+      </div>
+
+      <p class="text-center text-sm text-gray-500 mt-4">
+        Page {currentPage} of {totalPages} ({page.total} total skills)
+      </p>
+    </div>
+  </div>
+
   <!-- Footer -->
-  <footer class="bg-white border-t border-gray-200 mt-20">
+  <footer class="bg-white border-t border-gray-200 mt-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <p class="text-center text-gray-600">
         Claude Code Plugins Plus - {skillsCatalog.count} Agent Skills

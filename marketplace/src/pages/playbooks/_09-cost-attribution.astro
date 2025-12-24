@@ -1,0 +1,787 @@
+---
+import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
+
+const meta = {
+  title: "Cost Attribution System",
+  description: "Multi-dimensional cost tracking (team/project/user/workflow). Automatic tagging, chargeback models, budget enforcement, and usage analytics for AI operations.",
+  category: "Cost",
+  wordCount: 5500,
+  slug: "09-cost-attribution"
+};
+---
+
+<PlaybookTemplate {...meta}>
+  <div set:html={`<p><strong>Production Playbook for Finance Teams and Engineering Managers</strong></p>
+
+<p>Tracking AI infrastructure costs by team, project, user, and workflow enables accurate chargeback, budget management, and cost optimization. This playbook provides cost tagging strategies, budget enforcement, chargeback models, usage analytics, and optimization recommendations for Claude Code deployments.</p>
+
+<h2>Cost Attribution Strategy</h2>
+
+<h3>Cost Dimensions</h3>
+
+<pre><code class="language-typescript">interface CostAttribution {
+  // Primary dimensions
+  team: string;              // engineering-backend
+  project: string;           // api-server
+  user: string;              // user-123
+  workflow: string;          // code-review
+
+<p>// Secondary dimensions</p>
+<p>environment: &#039;dev&#039; | &#039;staging&#039; | &#039;production&#039;;</p>
+<p>region: string;            // us-east-1</p>
+<p>costCenter: string;        // eng-001</p>
+
+<p>// Cost details</p>
+<p>provider: &#039;anthropic&#039; | &#039;ollama&#039; | &#039;self-hosted&#039;;</p>
+<p>model: string;             // claude-3-5-sonnet-20241022</p>
+<p>inputTokens: number;</p>
+<p>outputTokens: number;</p>
+<p>cost: number;              // USD</p>
+<p>timestamp: number;</p>
+<p>}</code></pre></p>
+
+<h3>Attribution Hierarchy</h3>
+
+<pre><code class="language-mermaid">graph TB
+    A[Organization] --&gt; B[Cost Center]
+    B --&gt; C[Team]
+    C --&gt; D[Project]
+    D --&gt; E[User]
+    E --&gt; F[Workflow]
+    F --&gt; G[API Call]</code></pre>
+
+<p><strong>Roll-up Example</strong>:</p>
+<ul>
+<li><strong>API Call</strong>: \$0.015 (Claude API call)</li>
+<li><strong>Workflow</strong> (code-review): \$0.045 (3 API calls)</li>
+<li><strong>User</strong> (alice): \$2.50/day (multiple workflows)</li>
+<li><strong>Project</strong> (api-server): \$75/day (multiple users)</li>
+<li><strong>Team</strong> (backend): \$300/day (4 projects)</li>
+<li><strong>Cost Center</strong> (eng-001): \$1,200/day (4 teams)</li>
+</ul>
+
+<hr>
+
+<h2>Cost Tagging</h2>
+
+<h3>Automatic Cost Tagging</h3>
+
+<pre><code class="language-typescript">class CostTagger {
+  async tagAPICall(
+    request: any,
+    context: {
+      userId: string;
+      teamId: string;
+      projectId: string;
+      workflow: string;
+    }
+  ): Promise&lt;CostAttribution&gt; {
+    // Calculate cost
+    const inputCost = (request.inputTokens / 1_000_000) * 3.00;  // \$3/1M
+    const outputCost = (request.outputTokens / 1_000_000) * 15.00; // \$15/1M
+    const totalCost = inputCost + outputCost;
+
+<p>// Create attribution record</p>
+<p>const attribution: CostAttribution = {</p>
+<p>team: context.teamId,</p>
+<p>project: context.projectId,</p>
+<p>user: context.userId,</p>
+<p>workflow: context.workflow,</p>
+<p>environment: process.env.NODE_ENV as any,</p>
+<p>region: process.env.AWS_REGION || &#039;us-east-1&#039;,</p>
+<p>costCenter: await this.getCostCenter(context.teamId),</p>
+<p>provider: &#039;anthropic&#039;,</p>
+<p>model: request.model,</p>
+<p>inputTokens: request.inputTokens,</p>
+<p>outputTokens: request.outputTokens,</p>
+<p>cost: totalCost,</p>
+<p>timestamp: Date.now()</p>
+<p>};</p>
+
+<p>// Store for analysis</p>
+<p>await this.storeCostData(attribution);</p>
+
+<p>return attribution;</p>
+<p>}</p>
+
+<p>private async getCostCenter(teamId: string): Promise&lt;string&gt; {</p>
+<p>const teamMapping: Record&lt;string, string&gt; = {</p>
+<p>&#039;engineering-backend&#039;: &#039;eng-001&#039;,</p>
+<p>&#039;engineering-frontend&#039;: &#039;eng-002&#039;,</p>
+<p>&#039;product&#039;: &#039;prod-001&#039;,</p>
+<p>&#039;marketing&#039;: &#039;mkt-001&#039;</p>
+<p>};</p>
+
+<p>return teamMapping[teamId] || &#039;unallocated&#039;;</p>
+<p>}</p>
+
+<p>private async storeCostData(attribution: CostAttribution): Promise&lt;void&gt; {</p>
+<p>// Option 1: PostgreSQL</p>
+<p>await db.costs.insert(attribution);</p>
+
+<p>// Option 2: Time-series database (InfluxDB)</p>
+<p>await influx.writePoint({</p>
+<p>measurement: &#039;api_costs&#039;,</p>
+<p>tags: {</p>
+<p>team: attribution.team,</p>
+<p>project: attribution.project,</p>
+<p>environment: attribution.environment</p>
+<p>},</p>
+<p>fields: {</p>
+<p>cost: attribution.cost,</p>
+<p>inputTokens: attribution.inputTokens,</p>
+<p>outputTokens: attribution.outputTokens</p>
+<p>},</p>
+<p>timestamp: attribution.timestamp</p>
+<p>});</p>
+
+<p>// Option 3: Export to CSV for billing</p>
+<p>await this.appendToCSV(attribution);</p>
+<p>}</p>
+
+<p>private async appendToCSV(attribution: CostAttribution): Promise&lt;void&gt; {</p>
+<p>const line = [</p>
+<p>new Date(attribution.timestamp).toISOString(),</p>
+<p>attribution.team,</p>
+<p>attribution.project,</p>
+<p>attribution.user,</p>
+<p>attribution.workflow,</p>
+<p>attribution.provider,</p>
+<p>attribution.model,</p>
+<p>attribution.inputTokens,</p>
+<p>attribution.outputTokens,</p>
+<p>attribution.cost.toFixed(4)</p>
+<p>].join(&#039;,&#039;) + &#039;\n&#039;;</p>
+
+<p>await appendFile(&#039;/var/log/costs/costs.csv&#039;, line);</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<h3>Usage Example</h3>
+
+<pre><code class="language-typescript">// Intercept all API calls and tag costs
+const tagger = new CostTagger();
+
+<p>async function callClaudeWithTagging(prompt: string, context: any): Promise&lt;string&gt; {</p>
+<p>const startTime = Date.now();</p>
+
+<p>const response = await anthropic.messages.create({</p>
+<p>model: &#039;claude-3-5-sonnet-20241022&#039;,</p>
+<p>max_tokens: 1024,</p>
+<p>messages: [{ role: &#039;user&#039;, content: prompt }]</p>
+<p>});</p>
+
+<p>// Tag costs</p>
+<p>await tagger.tagAPICall({</p>
+<p>model: &#039;claude-3-5-sonnet-20241022&#039;,</p>
+<p>inputTokens: response.usage.input_tokens,</p>
+<p>outputTokens: response.usage.output_tokens</p>
+<p>}, {</p>
+<p>userId: context.userId,</p>
+<p>teamId: context.teamId,</p>
+<p>projectId: context.projectId,</p>
+<p>workflow: context.workflow</p>
+<p>});</p>
+
+<p>return response.content[0].text;</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>Budget Management</h2>
+
+<h3>Budget Enforcement</h3>
+
+<pre><code class="language-typescript">interface Budget {
+  id: string;
+  entity: { type: &#039;team&#039; | &#039;project&#039; | &#039;user&#039;; id: string };
+  period: &#039;daily&#039; | &#039;weekly&#039; | &#039;monthly&#039;;
+  limit: number;  // USD
+  alertThresholds: number[];  // [0.5, 0.8, 0.9]
+  enforced: boolean;
+}
+
+<p>class BudgetManager {</p>
+<p>private budgets: Map&lt;string, Budget&gt; = new Map();</p>
+
+<p>async setBudget(budget: Budget): Promise&lt;void&gt; {</p>
+<p>this.budgets.set(budget.id, budget);</p>
+<p>await db.budgets.upsert(budget);</p>
+<p>}</p>
+
+<p>async checkBudget(</p>
+<p>entityType: &#039;team&#039; | &#039;project&#039; | &#039;user&#039;,</p>
+<p>entityId: string</p>
+<p>): Promise&lt;{ allowed: boolean; spent: number; limit: number; remaining: number }&gt; {</p>
+<p>// Find budget</p>
+<p>const budget = await this.findBudget(entityType, entityId);</p>
+<p>if (!budget) {</p>
+<p>return { allowed: true, spent: 0, limit: Infinity, remaining: Infinity };</p>
+<p>}</p>
+
+<p>// Calculate current period spend</p>
+<p>const periodStart = this.getPeriodStart(budget.period);</p>
+<p>const spent = await this.calculateSpend(entityType, entityId, periodStart);</p>
+
+<p>// Check against limit</p>
+<p>const allowed = !budget.enforced || spent &lt; budget.limit;</p>
+<p>const remaining = budget.limit - spent;</p>
+
+<p>// Check alert thresholds</p>
+<p>const utilizationRate = spent / budget.limit;</p>
+<p>for (const threshold of budget.alertThresholds) {</p>
+<p>if (utilizationRate &gt;= threshold &amp;&amp; utilizationRate &lt; threshold + 0.01) {</p>
+<p>await this.sendBudgetAlert(budget, spent, utilizationRate);</p>
+<p>}</p>
+<p>}</p>
+
+<p>return { allowed, spent, limit: budget.limit, remaining };</p>
+<p>}</p>
+
+<p>private getPeriodStart(period: &#039;daily&#039; | &#039;weekly&#039; | &#039;monthly&#039;): number {</p>
+<p>const now = new Date();</p>
+
+<p>switch (period) {</p>
+<p>case &#039;daily&#039;:</p>
+<p>return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();</p>
+<p>case &#039;weekly&#039;:</p>
+<p>const weekStart = new Date(now);</p>
+<p>weekStart.setDate(now.getDate() - now.getDay());</p>
+<p>return weekStart.getTime();</p>
+<p>case &#039;monthly&#039;:</p>
+<p>return new Date(now.getFullYear(), now.getMonth(), 1).getTime();</p>
+<p>}</p>
+<p>}</p>
+
+<p>private async calculateSpend(</p>
+<p>entityType: string,</p>
+<p>entityId: string,</p>
+<p>since: number</p>
+<p>): Promise&lt;number&gt; {</p>
+<p>const costs = await db.costs.find({</p>
+<p>[entityType]: entityId,</p>
+<p>timestamp: { \$gte: since }</p>
+<p>});</p>
+
+<p>return costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>}</p>
+
+<p>private async findBudget(entityType: string, entityId: string): Promise&lt;Budget | null&gt; {</p>
+<p>return await db.budgets.findOne({</p>
+<p>&#039;entity.type&#039;: entityType,</p>
+<p>&#039;entity.id&#039;: entityId</p>
+<p>});</p>
+<p>}</p>
+
+<p>private async sendBudgetAlert(budget: Budget, spent: number, rate: number): Promise&lt;void&gt; {</p>
+<p>const message = <code></p>
+<p>Budget Alert: \${budget.entity.type} \${budget.entity.id}</p>
+
+<p>Current spend: \$\${spent.toFixed(2)}</p>
+<p>Budget limit: \$\${budget.limit.toFixed(2)}</p>
+<p>Utilization: \${(rate * 100).toFixed(1)}%</p>
+
+<p>Period: \${budget.period}</p>
+    </code>.trim();
+
+<p>// Send to Slack, email, PagerDuty, etc.</p>
+<p>console.warn(message);</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<h3>Usage with Budget Enforcement</h3>
+
+<pre><code class="language-typescript">const budgetManager = new BudgetManager();
+
+<p>// Set team budget: \$500/month</p>
+<p>await budgetManager.setBudget({</p>
+<p>id: &#039;budget-backend-monthly&#039;,</p>
+<p>entity: { type: &#039;team&#039;, id: &#039;engineering-backend&#039; },</p>
+<p>period: &#039;monthly&#039;,</p>
+<p>limit: 500,</p>
+<p>alertThresholds: [0.5, 0.8, 0.9],  // Alert at 50%, 80%, 90%</p>
+<p>enforced: true</p>
+<p>});</p>
+
+<p>// Check budget before API call</p>
+<p>async function callWithBudgetCheck(prompt: string, teamId: string): Promise&lt;string&gt; {</p>
+<p>const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);</p>
+
+<p>if (!budget.allowed) {</p>
+<p>throw new Error(`Budget exceeded for team \${teamId}. Spent: \$\${budget.spent.toFixed(2)}, Limit: \$\${budget.limit.toFixed(2)}`);</p>
+<p>}</p>
+
+<p>return await callClaude(prompt);</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>Chargeback Models</h2>
+
+<h3>Model 1: Direct Chargeback (Pay-per-use)</h3>
+
+<pre><code class="language-typescript">interface ChargebackModel {
+  type: &#039;direct&#039; | &#039;allocated&#039; | &#039;tiered&#039;;
+  rates: {
+    inputTokens: number;   // \$/1M tokens
+    outputTokens: number;  // \$/1M tokens
+  };
+  markup?: number;  // e.g., 1.2 for 20% markup
+}
+
+<p>class DirectChargeback {</p>
+<p>async calculateMonthlyChargeback(teamId: string, month: string): Promise&lt;number&gt; {</p>
+<p>// Get all costs for team in month</p>
+<p>const costs = await db.costs.find({</p>
+<p>team: teamId,</p>
+<p>timestamp: {</p>
+<p>\$gte: new Date(`\${month}-01`).getTime(),</p>
+<p>\$lt: new Date(`\${month}-01`).getTime() + 30 * 86400000</p>
+<p>}</p>
+<p>});</p>
+
+<p>// Sum costs</p>
+<p>const total = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+
+<p>// Apply markup (if infrastructure overhead)</p>
+<p>const markup = 1.2;  // 20% overhead</p>
+<p>return total * markup;</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<h3>Model 2: Allocated Chargeback (Fixed budgets)</h3>
+
+<pre><code class="language-typescript">class AllocatedChargeback {
+  async allocateBudget(totalBudget: number, teams: string[]): Promise&lt;Record&lt;string, number&gt;&gt; {
+    // Get usage share for each team
+    const usageShares = await this.calculateUsageShares(teams);
+
+<p>// Allocate budget proportionally</p>
+<p>const allocations: Record&lt;string, number&gt; = {};</p>
+<p>for (const team of teams) {</p>
+<p>allocations[team] = totalBudget * usageShares[team];</p>
+<p>}</p>
+
+<p>return allocations;</p>
+<p>}</p>
+
+<p>private async calculateUsageShares(teams: string[]): Promise&lt;Record&lt;string, number&gt;&gt; {</p>
+<p>const usage: Record&lt;string, number&gt; = {};</p>
+<p>let total = 0;</p>
+
+<p>for (const team of teams) {</p>
+<p>const costs = await db.costs.find({ team });</p>
+<p>const teamCost = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>usage[team] = teamCost;</p>
+<p>total += teamCost;</p>
+<p>}</p>
+
+<p>// Convert to shares (0-1)</p>
+<p>const shares: Record&lt;string, number&gt; = {};</p>
+<p>for (const team of teams) {</p>
+<p>shares[team] = usage[team] / total;</p>
+<p>}</p>
+
+<p>return shares;</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<h3>Model 3: Tiered Pricing (Volume discounts)</h3>
+
+<pre><code class="language-typescript">interface PricingTier {
+  minTokens: number;
+  maxTokens: number;
+  pricePerMillion: number;
+}
+
+<p>class TieredChargeback {</p>
+<p>private tiers: PricingTier[] = [</p>
+<p>{ minTokens: 0, maxTokens: 1_000_000, pricePerMillion: 15 },        // 0-1M: \$15/M</p>
+<p>{ minTokens: 1_000_000, maxTokens: 10_000_000, pricePerMillion: 12 }, // 1M-10M: \$12/M</p>
+<p>{ minTokens: 10_000_000, maxTokens: Infinity, pricePerMillion: 10 }   // 10M+: \$10/M</p>
+<p>];</p>
+
+<p>calculateCost(tokens: number): number {</p>
+<p>let cost = 0;</p>
+<p>let remaining = tokens;</p>
+
+<p>for (const tier of this.tiers) {</p>
+<p>const tierSize = tier.maxTokens - tier.minTokens;</p>
+<p>const tokensInTier = Math.min(remaining, tierSize);</p>
+
+<p>if (tokensInTier &gt; 0) {</p>
+<p>cost += (tokensInTier / 1_000_000) * tier.pricePerMillion;</p>
+<p>remaining -= tokensInTier;</p>
+<p>}</p>
+
+<p>if (remaining === 0) break;</p>
+<p>}</p>
+
+<p>return cost;</p>
+<p>}</p>
+<p>}</p>
+
+<p>// Example</p>
+<p>const tiered = new TieredChargeback();</p>
+<p>console.log(tiered.calculateCost(15_000_000));</p>
+<p>// 0-1M: \$15</p>
+<p>// 1M-10M: \$108 (9M × \$12)</p>
+<p>// 10M-15M: \$50 (5M × \$10)</p>
+<p>// Total: \$173</code></pre></p>
+
+<hr>
+
+<h2>Usage Analytics</h2>
+
+<h3>Cost Analytics Dashboard</h3>
+
+<pre><code class="language-typescript">interface UsageMetrics {
+  totalCost: number;
+  totalTokens: number;
+  avgCostPerRequest: number;
+  topProjects: Array&lt;{ project: string; cost: number }&gt;;
+  topUsers: Array&lt;{ user: string; cost: number }&gt;;
+  costTrend: Array&lt;{ date: string; cost: number }&gt;;
+}
+
+<p>class UsageAnalytics {</p>
+<p>async generateMonthlyReport(month: string): Promise&lt;UsageMetrics&gt; {</p>
+<p>const costs = await db.costs.find({</p>
+<p>timestamp: {</p>
+<p>\$gte: new Date(`\${month}-01`).getTime(),</p>
+<p>\$lt: new Date(`\${month}-01`).getTime() + 30 * 86400000</p>
+<p>}</p>
+<p>});</p>
+
+<p>// Total cost</p>
+<p>const totalCost = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>const totalTokens = costs.reduce((sum, c) =&gt; sum + c.inputTokens + c.outputTokens, 0);</p>
+
+<p>// Average cost per request</p>
+<p>const avgCostPerRequest = totalCost / costs.length;</p>
+
+<p>// Top projects by cost</p>
+<p>const projectCosts = this.groupBy(costs, &#039;project&#039;);</p>
+<p>const topProjects = Object.entries(projectCosts)</p>
+<p>.map(([project, costs]) =&gt; ({</p>
+<p>project,</p>
+<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>}))</p>
+<p>.sort((a, b) =&gt; b.cost - a.cost)</p>
+<p>.slice(0, 10);</p>
+
+<p>// Top users by cost</p>
+<p>const userCosts = this.groupBy(costs, &#039;user&#039;);</p>
+<p>const topUsers = Object.entries(userCosts)</p>
+<p>.map(([user, costs]) =&gt; ({</p>
+<p>user,</p>
+<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>}))</p>
+<p>.sort((a, b) =&gt; b.cost - a.cost)</p>
+<p>.slice(0, 10);</p>
+
+<p>// Daily cost trend</p>
+<p>const dailyCosts = this.groupByDate(costs);</p>
+<p>const costTrend = Object.entries(dailyCosts)</p>
+<p>.map(([date, costs]) =&gt; ({</p>
+<p>date,</p>
+<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>}))</p>
+<p>.sort((a, b) =&gt; a.date.localeCompare(b.date));</p>
+
+<p>return {</p>
+<p>totalCost,</p>
+<p>totalTokens,</p>
+<p>avgCostPerRequest,</p>
+<p>topProjects,</p>
+<p>topUsers,</p>
+<p>costTrend</p>
+<p>};</p>
+<p>}</p>
+
+<p>private groupBy(items: any[], key: string): Record&lt;string, any[]&gt; {</p>
+<p>return items.reduce((acc, item) =&gt; {</p>
+<p>const groupKey = item[key];</p>
+<p>if (!acc[groupKey]) acc[groupKey] = [];</p>
+<p>acc[groupKey].push(item);</p>
+<p>return acc;</p>
+<p>}, {});</p>
+<p>}</p>
+
+<p>private groupByDate(costs: any[]): Record&lt;string, any[]&gt; {</p>
+<p>return costs.reduce((acc, cost) =&gt; {</p>
+<p>const date = new Date(cost.timestamp).toISOString().split(&#039;T&#039;)[0];</p>
+<p>if (!acc[date]) acc[date] = [];</p>
+<p>acc[date].push(cost);</p>
+<p>return acc;</p>
+<p>}, {});</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>Cost Optimization</h2>
+
+<h3>Optimization Recommendations</h3>
+
+<pre><code class="language-typescript">interface OptimizationRecommendation {
+  category: &#039;model-selection&#039; | &#039;caching&#039; | &#039;batching&#039; | &#039;workflow&#039;;
+  description: string;
+  potentialSavings: number;  // USD/month
+  effort: &#039;low&#039; | &#039;medium&#039; | &#039;high&#039;;
+  implementation: string;
+}
+
+<p>class CostOptimizer {</p>
+<p>async analyzeAndRecommend(teamId: string): Promise&lt;OptimizationRecommendation[]&gt; {</p>
+<p>const recommendations: OptimizationRecommendation[] = [];</p>
+
+<p>// Analyze model usage</p>
+<p>const modelRecommendation = await this.analyzeModelUsage(teamId);</p>
+<p>if (modelRecommendation) recommendations.push(modelRecommendation);</p>
+
+<p>// Analyze caching opportunities</p>
+<p>const cacheRecommendation = await this.analyzeCachingOpportunities(teamId);</p>
+<p>if (cacheRecommendation) recommendations.push(cacheRecommendation);</p>
+
+<p>// Analyze batching opportunities</p>
+<p>const batchRecommendation = await this.analyzeBatchingOpportunities(teamId);</p>
+<p>if (batchRecommendation) recommendations.push(batchRecommendation);</p>
+
+<p>return recommendations.sort((a, b) =&gt; b.potentialSavings - a.potentialSavings);</p>
+<p>}</p>
+
+<p>private async analyzeModelUsage(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>// Check if using expensive model for simple tasks</p>
+<p>const costs = await db.costs.find({ team: teamId });</p>
+
+<p>const sonnetUsage = costs.filter(c =&gt; c.model.includes(&#039;sonnet&#039;));</p>
+<p>const simplePrompts = sonnetUsage.filter(c =&gt;</p>
+<p>c.inputTokens &lt; 1000 &amp;&amp; c.outputTokens &lt; 500</p>
+<p>);</p>
+
+<p>if (simplePrompts.length &gt; sonnetUsage.length * 0.5) {</p>
+<p>const currentCost = simplePrompts.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>const haikuCost = currentCost * (0.8 / 3.0);  // Haiku is cheaper</p>
+<p>const monthlySavings = (currentCost - haikuCost) * 30;</p>
+
+<p>return {</p>
+<p>category: &#039;model-selection&#039;,</p>
+<p>description: `\${simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.`,</p>
+<p>potentialSavings: monthlySavings,</p>
+<p>effort: &#039;low&#039;,</p>
+<p>implementation: &#039;Update model parameter in simple workflows to claude-3-5-haiku-20241022&#039;</p>
+<p>};</p>
+<p>}</p>
+
+<p>return null;</p>
+<p>}</p>
+
+<p>private async analyzeCachingOpportunities(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>const costs = await db.costs.find({ team: teamId });</p>
+
+<p>// Find duplicate prompts</p>
+<p>const promptCounts = new Map&lt;string, number&gt;();</p>
+<p>for (const cost of costs) {</p>
+<p>const hash = this.hashPrompt(cost);</p>
+<p>promptCounts.set(hash, (promptCounts.get(hash) || 0) + 1);</p>
+<p>}</p>
+
+<p>const duplicates = Array.from(promptCounts.entries()).filter(([_, count]) =&gt; count &gt; 1);</p>
+<p>const duplicateCost = duplicates.reduce((sum, [hash, count]) =&gt; {</p>
+<p>const prompt = costs.find(c =&gt; this.hashPrompt(c) === hash);</p>
+<p>return sum + (prompt?.cost || 0) * (count - 1);</p>
+<p>}, 0);</p>
+
+<p>if (duplicateCost &gt; 10) {</p>
+<p>return {</p>
+<p>category: &#039;caching&#039;,</p>
+<p>description: `\${duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.`,</p>
+<p>potentialSavings: duplicateCost * 30,</p>
+<p>effort: &#039;medium&#039;,</p>
+<p>implementation: &#039;Add Redis cache for LLM responses with 1-hour TTL&#039;</p>
+<p>};</p>
+<p>}</p>
+
+<p>return null;</p>
+<p>}</p>
+
+<p>private async analyzeBatchingOpportunities(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>// Find sequential requests that could be batched</p>
+<p>const costs = await db.costs.find({ team: teamId }).sort({ timestamp: 1 });</p>
+
+<p>let batchableCount = 0;</p>
+<p>for (let i = 0; i &lt; costs.length - 1; i++) {</p>
+<p>const timeDiff = costs[i + 1].timestamp - costs[i].timestamp;</p>
+<p>if (timeDiff &lt; 1000) {  // Within 1 second</p>
+<p>batchableCount++;</p>
+<p>}</p>
+<p>}</p>
+
+<p>if (batchableCount &gt; costs.length * 0.3) {</p>
+<p>const savings = (batchableCount / costs.length) * costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+
+<p>return {</p>
+<p>category: &#039;batching&#039;,</p>
+<p>description: `\${batchableCount} requests could be batched. Combine multiple prompts into single API call.`,</p>
+<p>potentialSavings: savings <em> 30 </em> 0.3,  // 30% reduction from batching</p>
+<p>effort: &#039;high&#039;,</p>
+<p>implementation: &#039;Implement request batching with 100ms window&#039;</p>
+<p>};</p>
+<p>}</p>
+
+<p>return null;</p>
+<p>}</p>
+
+<p>private hashPrompt(cost: any): string {</p>
+<p>return `\${cost.workflow}-\${cost.inputTokens}-\${cost.outputTokens}`;</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>Reporting & Dashboards</h2>
+
+<h3>Monthly Cost Report</h3>
+
+<pre><code class="language-typescript">class CostReporter {
+  async generateMonthlyReport(month: string): Promise&lt;string&gt; {
+    const analytics = new UsageAnalytics();
+    const metrics = await analytics.generateMonthlyReport(month);
+
+<p>const report = <code></p>
+<p># Cost Report - \${month}</p>
+
+<p>&lt;h2&gt;Summary&lt;/h2&gt;</p>
+<ul>
+<li><strong>Total Cost</strong>: \$\${metrics.totalCost.toFixed(2)}</li>
+<li><strong>Total Tokens</strong>: \${metrics.totalTokens.toLocaleString()}</li>
+<li><strong>Avg Cost/Request</strong>: \$\${metrics.avgCostPerRequest.toFixed(4)}</li>
+</ul>
+
+<p>&lt;h2&gt;Top Projects by Cost&lt;/h2&gt;</p>
+<p>\${metrics.topProjects.map((p, i) =&gt; `\${i + 1}. \${p.project}: \$\${p.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+
+<p>&lt;h2&gt;Top Users by Cost&lt;/h2&gt;</p>
+<p>\${metrics.topUsers.map((u, i) =&gt; `\${i + 1}. \${u.user}: \$\${u.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+
+<p>&lt;h2&gt;Daily Cost Trend&lt;/h2&gt;</p>
+<p>\${metrics.costTrend.map(d =&gt; `\${d.date}: \$\${d.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+
+<p>&lt;h2&gt;Optimization Recommendations&lt;/h2&gt;</p>
+<p>\${await this.getOptimizationRecommendations()}</p>
+
+<hr>
+<p>Generated: \${new Date().toISOString()}</p>
+    </code>.trim();
+
+<p>return report;</p>
+<p>}</p>
+
+<p>private async getOptimizationRecommendations(): Promise&lt;string&gt; {</p>
+<p>const optimizer = new CostOptimizer();</p>
+<p>const recommendations = await optimizer.analyzeAndRecommend(&#039;engineering-backend&#039;);</p>
+
+<p>return recommendations</p>
+<p>.map(r =&gt; `- <strong>\${r.category}</strong>: \${r.description} (Savings: \$\${r.potentialSavings.toFixed(2)}/month, Effort: \${r.effort})`)</p>
+<p>.join(&#039;\n&#039;);</p>
+<p>}</p>
+<p>}</code></pre></p>
+
+<hr>
+
+<h2>Best Practices</h2>
+
+<h3>DO ✅</h3>
+
+<ul>
+<li><strong>Tag all costs</strong></li>
+</ul>
+   <pre><code class="language-typescript">await tagger.tagAPICall(request, { teamId, projectId, userId, workflow });</code></pre>
+
+<ul>
+<li><strong>Enforce budgets</strong></li>
+</ul>
+   <pre><code class="language-typescript">const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);
+   if (!budget.allowed) throw new Error(&#039;Budget exceeded&#039;);</code></pre>
+
+<ul>
+<li><strong>Monitor trends</strong></li>
+</ul>
+   <pre><code class="language-typescript">const report = await analytics.generateMonthlyReport(&#039;2025-12&#039;);</code></pre>
+
+<h3>DON'T ❌</h3>
+
+<ul>
+<li><strong>Don't skip cost tracking</strong></li>
+</ul>
+   <pre><code class="language-typescript">// ❌ No cost tracking
+   await callClaude(prompt);
+
+<p>// ✅ Track costs</p>
+<p>await callClaudeWithTagging(prompt, context);</code></pre></p>
+
+<ul>
+<li><strong>Don't ignore optimization</strong></li>
+</ul>
+   <pre><code class="language-typescript">const recommendations = await optimizer.analyzeAndRecommend(teamId);
+   // Implement high-value, low-effort optimizations</code></pre>
+
+<hr>
+
+<h2>Tools & Resources</h2>
+
+<h3>Analytics Tools</h3>
+
+<ul>
+<li><strong>PostgreSQL</strong>: Cost data storage</li>
+<li><strong>InfluxDB</strong>: Time-series metrics</li>
+<li><strong>Grafana</strong>: Dashboards</li>
+<li><strong>Metabase</strong>: BI reporting</li>
+</ul>
+
+<h3>Cost Management</h3>
+
+<ul>
+<li><strong>AWS Cost Explorer</strong>: Cloud infrastructure costs</li>
+<li><strong>CloudHealth</strong>: Multi-cloud cost management</li>
+<li><strong>Kubecost</strong>: Kubernetes cost allocation</li>
+</ul>
+
+<hr>
+
+<h2>Summary</h2>
+
+<p><strong>Key Takeaways</strong>:</p>
+
+<ul>
+<li><strong>Tag all costs</strong> - Team, project, user, workflow dimensions</li>
+<li><strong>Enforce budgets</strong> - Hard limits with alerts at 50%/80%/90%</li>
+<li><strong>Implement chargeback</strong> - Direct, allocated, or tiered models</li>
+<li><strong>Analyze usage</strong> - Monthly reports with top consumers</li>
+<li><strong>Optimize continuously</strong> - Model selection, caching, batching</li>
+<li><strong>Report transparently</strong> - Share costs with stakeholders</li>
+<li><strong>Monitor trends</strong> - Daily cost tracking</li>
+</ul>
+
+<p><strong>Cost Attribution Checklist</strong>:</p>
+<ul>
+<li>[ ] Implement cost tagging on all API calls</li>
+<li>[ ] Set up PostgreSQL/InfluxDB for cost data</li>
+<li>[ ] Define budgets for teams and projects</li>
+<li>[ ] Configure budget alerts (50%, 80%, 90%)</li>
+<li>[ ] Implement chargeback model</li>
+<li>[ ] Generate monthly cost reports</li>
+<li>[ ] Create Grafana dashboard for cost visualization</li>
+<li>[ ] Run cost optimizer monthly</li>
+<li>[ ] Implement top 3 optimization recommendations</li>
+<li>[ ] Share cost reports with finance team</li>
+</ul>
+
+<hr>
+
+<p><strong>Last Updated</strong>: 2025-12-24</p>
+<p><strong>Author</strong>: Jeremy Longshore</p>
+<p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./08-team-presets.md">Team Presets & Workflows</a></p>
+`} />
+</PlaybookTemplate>
