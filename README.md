@@ -9,6 +9,14 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 
+### Technology Partners
+
+[![Powered by Anthropic](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-5436DA?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://www.anthropic.com/)
+[![Built on Google Cloud](https://img.shields.io/badge/Built%20on-Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/)
+[![Ollama Compatible](https://img.shields.io/badge/Ollama-Compatible-000000?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://ollama.com/)
+
+**[→ Learn more about our technology partners](https://claudecodeplugins.io/#sponsors)** | **[→ Become a sponsor](https://claudecodeplugins.io/sponsor)**
+
 ## 📖 Learning Lab
 
 **Build production agent workflows with empirical verification** - Complete teaching system with guides, diagrams, and working examples.

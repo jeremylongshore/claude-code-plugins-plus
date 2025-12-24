@@ -900,6 +900,111 @@ import StackBuilder from '../components/StackBuilder.astro';
             box-shadow: 0 15px 50px rgba(0,0,0,0.2);
         }
 
+        /* Sponsors Section */
+        .sponsors {
+            padding: 6rem 4rem;
+            background: var(--brand-light);
+            text-align: center;
+        }
+
+        .sponsors-title {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--brand-dark);
+            margin-bottom: 1rem;
+        }
+
+        .sponsors-subtitle {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 1.1rem;
+            color: var(--brand-mid-gray);
+            margin-bottom: 4rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .sponsors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+            max-width: 1000px;
+            margin: 0 auto 3rem;
+        }
+
+        .sponsor-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            transition: all 0.3s var(--transition-smooth);
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .sponsor-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+        }
+
+        .sponsor-logo {
+            font-size: 3.5rem;
+            filter: grayscale(0);
+            transition: all 0.3s ease;
+        }
+
+        .sponsor-card:hover .sponsor-logo {
+            transform: scale(1.1);
+        }
+
+        .sponsor-card h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin: 0;
+        }
+
+        .sponsor-card p {
+            font-family: 'Lora', Georgia, serif;
+            color: var(--brand-mid-gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .sponsor-badge {
+            display: inline-block;
+            padding: 0.4rem 0.9rem;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sponsors-cta {
+            margin-top: 2rem;
+        }
+
+        .sponsors-cta a {
+            color: var(--brand-orange);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .sponsors-cta a:hover {
+            color: var(--brand-orange-dark);
+            text-decoration: underline;
+        }
+
         /* Footer */
         footer {
             padding: 4rem 2rem;  /* Reduced horizontal padding for mobile safety */
@@ -1603,6 +1708,50 @@ import StackBuilder from '../components/StackBuilder.astro';
             <h2>Join the Claude Code Revolution</h2>
             <p>Start using the most comprehensive plugin marketplace today</p>
             <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-white">Explore on GitHub</a>
+        </div>
+    </section>
+
+    <section class="sponsors" id="sponsors">
+        <div class="section-label">Powered By</div>
+        <h2 class="sponsors-title">Our Technology Partners</h2>
+        <p class="sponsors-subtitle">
+            Claude Code Plugins is built with cutting-edge AI and cloud infrastructure from industry leaders
+        </p>
+
+        <div class="sponsors-grid">
+            <a href="https://www.anthropic.com/" target="_blank" class="sponsor-card">
+                <div class="sponsor-logo">🤖</div>
+                <div>
+                    <h3>Anthropic</h3>
+                    <p>Claude AI powers the intelligent automation behind every plugin and skill</p>
+                </div>
+                <span class="sponsor-badge">AI Partner</span>
+            </a>
+
+            <a href="https://cloud.google.com/" target="_blank" class="sponsor-card">
+                <div class="sponsor-logo">☁️</div>
+                <div>
+                    <h3>Google Cloud</h3>
+                    <p>Vertex AI and Cloud infrastructure enable scalable plugin development</p>
+                </div>
+                <span class="sponsor-badge">Cloud Partner</span>
+            </a>
+
+            <a href="https://ollama.com/" target="_blank" class="sponsor-card">
+                <div class="sponsor-logo">🦙</div>
+                <div>
+                    <h3>Ollama</h3>
+                    <p>Local LLM deployment for privacy-first, self-hosted AI workflows</p>
+                </div>
+                <span class="sponsor-badge">Open Source Partner</span>
+            </a>
+        </div>
+
+        <div class="sponsors-cta">
+            <p>
+                Interested in partnering with us?
+                <a href="/sponsor">Learn about sponsorship opportunities →</a>
+            </p>
         </div>
     </section>
 
