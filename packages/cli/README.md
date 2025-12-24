@@ -78,6 +78,54 @@ Install a plugin from the marketplace.
 npx @claude-code-plugins/ccp install python-pro
 ```
 
+### `ccp upgrade`
+
+Check for and install plugin updates.
+
+**Options:**
+- `--check` - Check for available updates without upgrading
+- `--all` - Upgrade all plugins with available updates
+- `--plugin <name>` - Upgrade a specific plugin
+
+**Examples:**
+```bash
+# Check for available updates
+npx @claude-code-plugins/ccp upgrade --check
+
+# Upgrade all plugins
+npx @claude-code-plugins/ccp upgrade --all
+
+# Upgrade a specific plugin
+npx @claude-code-plugins/ccp upgrade --plugin python-pro
+```
+
+**Sample Output (Updates Available):**
+```
+🔄 Plugin Upgrade Manager
+
+📦 2 update(s) available:
+
+  python-pro
+    Current: 1.0.0 → Latest: 1.2.0
+    Write idiomatic Python code with advanced features
+
+  devops-pack
+    Current: 2.1.0 → Latest: 2.3.0
+    Complete DevOps toolchain
+
+💡 To upgrade:
+
+   npx @claude-code-plugins/ccp upgrade --all
+   (Updates all plugins)
+
+   npx @claude-code-plugins/ccp upgrade --plugin <name>
+   (Updates specific plugin)
+```
+
+**Version Pinning:**
+
+To pin a plugin to a specific version, simply keep the current version installed and don't upgrade. The CLI will continue to show available updates, but you can choose when to upgrade.
+
 ### `ccp list`
 
 List installed plugins.

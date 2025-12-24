@@ -5,6 +5,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { detectClaudePaths } from './utils/paths.js';
 import { installPlugin } from './commands/install.js';
+import { upgradeCommand } from './commands/upgrade.js';
 import { listPlugins } from './commands/list.js';
 import { doctorCheck } from './commands/doctor.js';
 import { marketplaceCommand, addMarketplace, removeMarketplace } from './commands/marketplace.js';
@@ -35,6 +36,23 @@ program
       spinner.fail('Failed to detect Claude Code installation');
       console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
       console.error(chalk.yellow('\nRun `ccp doctor` for diagnostics'));
+      process.exit(1);
+    }
+  });
+
+// Upgrade command
+program
+  .command('upgrade')
+  .description('Check for and install plugin updates')
+  .option('--check', 'Check for available updates without upgrading')
+  .option('--all', 'Upgrade all plugins with available updates')
+  .option('--plugin <name>', 'Upgrade a specific plugin')
+  .action(async (options) => {
+    try {
+      const paths = await detectClaudePaths();
+      await upgradeCommand(paths, options);
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
       process.exit(1);
     }
   });
