@@ -465,10 +465,11 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
     // Check if server command/path exists
     const command = config.command || config.cmd;
     const args = config.args || [];
+    const env = config.env || {};
 
     if (!command) {
       checks.push({
-        name: `${serverName}`,
+        name: `${serverName} [Config]`,
         status: 'warn',
         message: 'No command configured',
         details: 'MCP server configuration missing command',
@@ -476,26 +477,23 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
       return checks;
     }
 
-    // Check if command is executable (basic validation)
+    // 1. Check if command is executable
     let isAccessible = false;
+    let commandPath = command;
     try {
-      // Try to check if command exists
       if (command.startsWith('/') || command.startsWith('./')) {
         // Absolute or relative path
         isAccessible = existsSync(command);
+        commandPath = command;
       } else {
-        // Command in PATH - try to execute with --version or --help
+        // Command in PATH - try which/where
         try {
-          await execAsync(`${command} --version`, { timeout: 2000 });
-          isAccessible = true;
+          const { stdout } = await execAsync(`which ${command} 2>/dev/null || where ${command} 2>nul`, { timeout: 2000 });
+          commandPath = stdout.trim();
+          isAccessible = !!commandPath;
         } catch {
-          try {
-            await execAsync(`${command} --help`, { timeout: 2000 });
-            isAccessible = true;
-          } catch {
-            // Command might not support --version or --help, assume it exists
-            isAccessible = true;
-          }
+          // Command not found in PATH, but might still work
+          isAccessible = false;
         }
       }
     } catch {
@@ -504,7 +502,7 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
 
     if (!isAccessible && (command.startsWith('/') || command.startsWith('./'))) {
       checks.push({
-        name: `${serverName}`,
+        name: `${serverName} [Config]`,
         status: 'fail',
         message: 'Command not found',
         details: `MCP server command "${command}" does not exist`,
@@ -512,17 +510,33 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
       return checks;
     }
 
-    // Server appears configured correctly
     checks.push({
-      name: `${serverName}`,
+      name: `${serverName} [Config]`,
       status: 'pass',
       message: 'Configured',
       details: `Command: ${command}${args.length > 0 ? ' ' + args.join(' ') : ''}`,
     });
 
+    // 2. Check if process is running
+    const processCheck = await checkMCPServerProcess(serverName, command);
+    checks.push(processCheck);
+
+    // 3. Check port if configured
+    if (config.port || env.PORT) {
+      const port = config.port || env.PORT;
+      const portCheck = await checkMCPServerPort(serverName, port);
+      checks.push(portCheck);
+    }
+
+    // 4. Check logs for recent errors (if log path is known)
+    if (config.logPath) {
+      const logCheck = await checkMCPServerLogs(serverName, config.logPath);
+      checks.push(logCheck);
+    }
+
   } catch (error) {
     checks.push({
-      name: `${serverName}`,
+      name: `${serverName} [Health]`,
       status: 'warn',
       message: 'Could not validate',
       details: error instanceof Error ? error.message : undefined,
@@ -530,6 +544,124 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
   }
 
   return checks;
+}
+
+/**
+ * Check if MCP server process is running
+ */
+async function checkMCPServerProcess(serverName: string, command: string): Promise<CheckResult> {
+  try {
+    // Use ps to find running processes matching the command
+    const { stdout } = await execAsync(`ps aux | grep -v grep | grep "${command}"`, { timeout: 3000 });
+
+    if (stdout.trim()) {
+      const processCount = stdout.trim().split('\n').length;
+      return {
+        name: `${serverName} [Process]`,
+        status: 'pass',
+        message: `Running (${processCount} process${processCount > 1 ? 'es' : ''})`,
+        details: `Process found for command: ${command}`,
+      };
+    } else {
+      return {
+        name: `${serverName} [Process]`,
+        status: 'warn',
+        message: 'Not running',
+        details: `No process found for command: ${command}\nSuggestion: Start the MCP server or check Claude Code configuration`,
+      };
+    }
+  } catch (error) {
+    return {
+      name: `${serverName} [Process]`,
+      status: 'warn',
+      message: 'Could not check process',
+      details: 'Process check failed - server may not be running',
+    };
+  }
+}
+
+/**
+ * Check if MCP server port is listening
+ */
+async function checkMCPServerPort(serverName: string, port: number | string): Promise<CheckResult> {
+  try {
+    // Try lsof first (macOS/Linux), then netstat (cross-platform)
+    let stdout: string;
+    try {
+      const result = await execAsync(`lsof -i :${port} -sTCP:LISTEN`, { timeout: 2000 });
+      stdout = result.stdout;
+    } catch {
+      // Try netstat as fallback
+      const result = await execAsync(`netstat -an | grep LISTEN | grep ":${port}"`, { timeout: 2000 });
+      stdout = result.stdout;
+    }
+
+    if (stdout.trim()) {
+      return {
+        name: `${serverName} [Port]`,
+        status: 'pass',
+        message: `Port ${port} listening`,
+        details: 'MCP server port is accessible',
+      };
+    } else {
+      return {
+        name: `${serverName} [Port]`,
+        status: 'warn',
+        message: `Port ${port} not listening`,
+        details: `Port may not be in use or server not started\nSuggestion: Check if MCP server is running`,
+      };
+    }
+  } catch (error) {
+    return {
+      name: `${serverName} [Port]`,
+      status: 'warn',
+      message: `Could not check port ${port}`,
+      details: 'Port check failed - may not have permissions or tools available',
+    };
+  }
+}
+
+/**
+ * Check MCP server logs for recent errors
+ */
+async function checkMCPServerLogs(serverName: string, logPath: string): Promise<CheckResult> {
+  try {
+    if (!existsSync(logPath)) {
+      return {
+        name: `${serverName} [Logs]`,
+        status: 'warn',
+        message: 'Log file not found',
+        details: `Expected log at: ${logPath}`,
+      };
+    }
+
+    // Read last 100 lines of log file
+    const { stdout } = await execAsync(`tail -n 100 "${logPath}" | grep -i "error\\|exception\\|fatal" || echo ""`, { timeout: 3000 });
+
+    if (stdout.trim()) {
+      const errorLines = stdout.trim().split('\n').length;
+      return {
+        name: `${serverName} [Logs]`,
+        status: 'warn',
+        message: `${errorLines} recent error(s)`,
+        details: `Recent errors found in logs:\n${stdout.slice(0, 500)}${stdout.length > 500 ? '...' : ''}\n\nSuggestion: Check full logs at: ${logPath}`,
+      };
+    } else {
+      return {
+        name: `${serverName} [Logs]`,
+        status: 'pass',
+        message: 'No recent errors',
+        details: 'Log file contains no recent errors',
+      };
+    }
+  } catch (error) {
+    return {
+      name: `${serverName} [Logs]`,
+      status: 'warn',
+      message: 'Could not read logs',
+      details: error instanceof Error ? error.message : 'Log parsing failed',
+    };
+  }
 }
 
 /**
