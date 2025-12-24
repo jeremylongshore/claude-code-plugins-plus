@@ -1,5 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const title = 'Learning Lab | Claude Code Plugins';
 const description = 'Master production agent workflows with empirical verification patterns. 8 guided learning paths and 11 interactive Jupyter notebooks.';
@@ -61,7 +61,7 @@ const notebooks = {
 };
 ---
 
-<Layout title={title} description={description}>
+<BaseLayout title={title} description={description}>
   <div class="learning-hub">
     <!-- Hero Section -->
     <section class="hero">
@@ -311,11 +311,12 @@ const notebooks = {
       </div>
     </section>
   </div>
-</Layout>
+</BaseLayout>
 
 <style>
   .learning-hub {
     min-height: 100vh;
+    background: var(--brand-light);
   }
 
   .container {
@@ -326,9 +327,9 @@ const notebooks = {
 
   /* Hero Section */
   .hero {
-    background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+    background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
     padding: 4rem 0;
-    border-bottom: 1px solid var(--slate-700);
+    border-bottom: 1px solid var(--brand-light-gray);
   }
 
   .hero-content {
@@ -340,24 +341,20 @@ const notebooks = {
   .hero-title {
     font-size: 3rem;
     font-weight: 700;
-    color: var(--slate-100);
+    color: white;
     margin: 0 0 1rem 0;
-    background: linear-gradient(135deg, var(--green-400), var(--blue-400));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
   .hero-subtitle {
     font-size: 1.5rem;
-    color: var(--slate-300);
+    color: rgba(255, 255, 255, 0.95);
     margin: 0 0 1rem 0;
     font-weight: 500;
   }
 
   .hero-description {
     font-size: 1.125rem;
-    color: var(--slate-400);
+    color: rgba(255, 255, 255, 0.9);
     line-height: 1.6;
     margin: 0 0 2rem 0;
   }
@@ -379,13 +376,13 @@ const notebooks = {
   .stat-number {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--green-400);
-    font-family: var(--font-mono);
+    color: white;
+    font-family: 'Poppins', Arial, sans-serif;
   }
 
   .stat-label {
     font-size: 0.875rem;
-    color: var(--slate-500);
+    color: rgba(255, 255, 255, 0.8);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -401,14 +398,14 @@ const notebooks = {
   .section-title {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--slate-100);
+    color: var(--brand-dark);
     margin: 0 0 1rem 0;
     text-align: center;
   }
 
   .section-subtitle {
     text-align: center;
-    color: var(--slate-400);
+    color: var(--brand-mid-gray);
     font-size: 1.125rem;
     margin: 0 0 3rem 0;
   }
@@ -422,17 +419,18 @@ const notebooks = {
   }
 
   .learn-card {
-    background: var(--slate-800);
-    border: 1px solid var(--slate-700);
-    border-radius: 0.5rem;
+    background: white;
+    border: 2px solid var(--brand-light-gray);
+    border-radius: 12px;
     padding: 2rem;
     text-align: center;
-    transition: all var(--transition-base);
+    transition: all 0.3s var(--transition-smooth);
   }
 
   .learn-card:hover {
-    border-color: var(--green-500);
+    border-color: var(--brand-orange);
     transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(217, 119, 87, 0.15);
   }
 
   .learn-icon {
@@ -442,12 +440,12 @@ const notebooks = {
 
   .learn-card h3 {
     font-size: 1.25rem;
-    color: var(--slate-100);
+    color: var(--brand-dark);
     margin: 0 0 0.5rem 0;
   }
 
   .learn-card p {
-    color: var(--slate-400);
+    color: var(--brand-mid-gray);
     font-size: 0.875rem;
     line-height: 1.6;
     margin: 0;
@@ -462,9 +460,9 @@ const notebooks = {
   }
 
   .path-card {
-    background: var(--slate-800);
-    border: 1px solid var(--slate-700);
-    border-radius: 0.5rem;
+    background: white;
+    border: 2px solid var(--brand-light-gray);
+    border-radius: 12px;
     padding: 2rem;
   }
 
@@ -477,21 +475,21 @@ const notebooks = {
 
   .path-header h3 {
     font-size: 1.5rem;
-    color: var(--green-400);
+    color: var(--brand-orange);
     margin: 0;
   }
 
   .path-duration {
-    background: var(--slate-700);
-    color: var(--slate-400);
+    background: var(--brand-light-gray);
+    color: var(--brand-mid-gray);
     padding: 0.25rem 0.75rem;
     border-radius: 1rem;
     font-size: 0.75rem;
-    font-family: var(--font-mono);
+    font-family: 'Poppins', Arial, sans-serif;
   }
 
   .path-description {
-    color: var(--slate-400);
+    color: var(--brand-mid-gray);
     margin: 0 0 1.5rem 0;
   }
 
@@ -509,17 +507,17 @@ const notebooks = {
     justify-content: space-between;
     align-items: center;
     padding: 0.75rem 1rem;
-    background: var(--slate-900);
-    border: 1px solid var(--slate-700);
-    border-radius: 0.375rem;
-    color: var(--slate-300);
+    background: var(--brand-light);
+    border: 2px solid var(--brand-light-gray);
+    border-radius: 8px;
+    color: var(--brand-dark);
     text-decoration: none;
-    transition: all var(--transition-fast);
+    transition: all 0.2s var(--transition-smooth);
   }
 
   .guide-link:hover {
-    border-color: var(--green-500);
-    color: var(--green-400);
+    border-color: var(--brand-orange);
+    color: var(--brand-orange);
     transform: translateX(4px);
   }
 
@@ -529,8 +527,8 @@ const notebooks = {
 
   .guide-time {
     font-size: 0.75rem;
-    color: var(--slate-500);
-    font-family: var(--font-mono);
+    color: var(--brand-mid-gray);
+    font-family: 'Poppins', Arial, sans-serif;
   }
 
   /* Notebooks */
@@ -540,10 +538,10 @@ const notebooks = {
 
   .category-title {
     font-size: 1.5rem;
-    color: var(--slate-200);
+    color: var(--brand-dark);
     margin: 0 0 1.5rem 0;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--slate-700);
+    border-bottom: 2px solid var(--brand-light-gray);
   }
 
   .notebook-grid {
@@ -553,16 +551,17 @@ const notebooks = {
   }
 
   .notebook-card {
-    background: var(--slate-800);
-    border: 1px solid var(--slate-700);
-    border-radius: 0.5rem;
+    background: white;
+    border: 2px solid var(--brand-light-gray);
+    border-radius: 12px;
     padding: 1.5rem;
-    transition: all var(--transition-base);
+    transition: all 0.3s var(--transition-smooth);
   }
 
   .notebook-card:hover {
-    border-color: var(--blue-500);
+    border-color: var(--brand-blue);
     transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(106, 155, 204, 0.15);
   }
 
   .notebook-header {
@@ -575,13 +574,13 @@ const notebooks = {
   .notebook-icon {
     width: 1.5rem;
     height: 1.5rem;
-    color: var(--blue-400);
+    color: var(--brand-blue);
     flex-shrink: 0;
   }
 
   .notebook-header h4 {
     font-size: 1rem;
-    color: var(--slate-100);
+    color: var(--brand-dark);
     margin: 0;
     line-height: 1.4;
   }
@@ -603,7 +602,7 @@ const notebooks = {
     text-decoration: none;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: all var(--transition-fast);
+    transition: all 0.2s var(--transition-smooth);
   }
 
   .colab-button {
@@ -621,14 +620,14 @@ const notebooks = {
   }
 
   .github-button {
-    background: var(--slate-700);
-    color: var(--slate-300);
-    border: 1px solid var(--slate-600);
+    background: var(--brand-light-gray);
+    color: var(--brand-dark);
+    border: 2px solid var(--brand-light-gray);
   }
 
   .github-button:hover {
-    background: var(--slate-600);
-    color: var(--slate-100);
+    background: var(--brand-dark);
+    color: white;
   }
 
   /* Getting Started Checklist */
@@ -649,8 +648,8 @@ const notebooks = {
   .checklist-number {
     width: 2.5rem;
     height: 2.5rem;
-    background: var(--green-500);
-    color: var(--slate-900);
+    background: var(--brand-orange);
+    color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -662,25 +661,25 @@ const notebooks = {
 
   .checklist-content h3 {
     font-size: 1.125rem;
-    color: var(--slate-100);
+    color: var(--brand-dark);
     margin: 0 0 0.5rem 0;
   }
 
   .checklist-content p {
-    color: var(--slate-400);
+    color: var(--brand-mid-gray);
     margin: 0;
     line-height: 1.6;
   }
 
   .checklist-content a {
-    color: var(--green-400);
+    color: var(--brand-orange);
     text-decoration: none;
-    border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+    border-bottom: 1px solid rgba(217, 119, 87, 0.3);
   }
 
   .checklist-content a:hover {
-    color: var(--green-300);
-    border-bottom-color: var(--green-300);
+    color: var(--brand-orange-dark);
+    border-bottom-color: var(--brand-orange-dark);
   }
 
   /* Responsive */
@@ -702,7 +701,8 @@ const notebooks = {
     }
 
     .learn-grid,
-    .paths-grid {
+    .paths-grid,
+    .notebook-grid {
       grid-template-columns: 1fr;
     }
 

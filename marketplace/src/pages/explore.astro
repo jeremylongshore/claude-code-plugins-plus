@@ -1,0 +1,579 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+const pageTitle = 'Explore Plugins & Skills';
+const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins and ${searchIndex.stats.totalSkills} skills in one place. Find exactly what you need with instant fuzzy search.`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    /* Explorer Page Styles */
+    .explorer-hero {
+      background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+      color: white;
+      padding: 4rem 4rem 3rem;
+      text-align: center;
+    }
+
+    .explorer-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .explorer-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.95;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-search-box {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .hero-search-input {
+      width: 100%;
+      padding: 1.25rem 1.75rem;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 12px;
+      font-family: 'Lora', Georgia, serif;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+
+    .hero-search-input:focus {
+      outline: none;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.3);
+    }
+
+    .hero-search-input::placeholder {
+      color: var(--brand-mid-gray);
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .hero-stat span {
+      font-weight: 700;
+      font-size: 1.2rem;
+      display: block;
+    }
+
+    /* Filters Section */
+    .filters-bar {
+      background: white;
+      border-bottom: 2px solid var(--brand-light-gray);
+      padding: 1.5rem 4rem;
+      position: sticky;
+      top: 80px;
+      z-index: 50;
+    }
+
+    .filters-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .type-toggle {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--brand-light);
+      padding: 0.25rem;
+      border-radius: 8px;
+    }
+
+    .type-btn {
+      font-family: 'Poppins', Arial, sans-serif;
+      padding: 0.5rem 1.25rem;
+      border: none;
+      background: transparent;
+      color: var(--brand-mid-gray);
+      font-size: 0.9rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .type-btn.active {
+      background: white;
+      color: var(--brand-orange);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .filter-select {
+      padding: 0.6rem 1rem;
+      border: 2px solid var(--brand-light-gray);
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-family: 'Lora', Georgia, serif;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--brand-orange);
+    }
+
+    .results-info {
+      margin-left: auto;
+      font-size: 0.875rem;
+      color: var(--brand-mid-gray);
+    }
+
+    /* Results Grid */
+    .results-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 4rem;
+    }
+
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .result-card {
+      display: block;
+      padding: 1.75rem;
+      background: white;
+      border-radius: 12px;
+      border: 2px solid var(--brand-light-gray);
+      text-decoration: none;
+      transition: all 0.3s var(--transition-smooth);
+      position: relative;
+    }
+
+    .result-card:hover {
+      border-color: var(--brand-orange);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(217, 119, 87, 0.15);
+    }
+
+    .result-type-badge {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      font-family: 'Poppins', Arial, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 6px;
+    }
+
+    .result-type-badge.plugin {
+      background: rgba(106, 155, 204, 0.15);
+      color: var(--brand-blue);
+    }
+
+    .result-type-badge.skill {
+      background: rgba(217, 119, 87, 0.15);
+      color: var(--brand-orange-dark);
+    }
+
+    .result-name {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.75rem;
+      padding-right: 4rem;
+    }
+
+    .result-description {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .parent-plugin {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      background: var(--brand-light);
+      border-radius: 6px;
+      color: var(--brand-orange-dark);
+      font-weight: 600;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .result-category {
+      text-transform: capitalize;
+    }
+
+    .result-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.75rem;
+    }
+
+    .tool-tag {
+      padding: 0.25rem 0.6rem;
+      background: rgba(217, 119, 87, 0.1);
+      color: var(--brand-orange-dark);
+      font-size: 0.7rem;
+      font-weight: 600;
+      border-radius: 4px;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+      grid-column: 1 / -1;
+    }
+
+    .no-results h3 {
+      font-size: 1.5rem;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .no-results p {
+      color: var(--brand-mid-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    .no-results button {
+      font-family: 'Poppins', Arial, sans-serif;
+      padding: 0.75rem 1.5rem;
+      background: var(--brand-orange);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .no-results button:hover {
+      background: var(--brand-orange-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .results-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .explorer-hero,
+      .filters-bar,
+      .results-section {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+
+      .filters-bar {
+        top: 70px;
+      }
+
+      .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .type-toggle {
+        justify-content: center;
+      }
+
+      .results-info {
+        margin-left: 0;
+        text-align: center;
+      }
+
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+    }
+  </style>
+
+  <!-- Hero Section with Search -->
+  <section class="explorer-hero">
+    <h1 class="explorer-title">Explore Everything</h1>
+    <p class="explorer-subtitle">
+      Search {searchIndex.stats.totalPlugins} plugins and {searchIndex.stats.totalSkills} skills in one unified catalog
+    </p>
+
+    <div class="hero-search-box">
+      <input
+        type="text"
+        id="main-search"
+        class="hero-search-input"
+        placeholder="Try: 'kubernetes deploy' or 'validate json' or 'terraform'"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span>{searchIndex.stats.totalPlugins}</span>
+        Plugins
+      </div>
+      <div class="hero-stat">
+        <span>{searchIndex.stats.totalSkills}</span>
+        Skills
+      </div>
+      <div class="hero-stat">
+        <span>{searchIndex.stats.categories.length}</span>
+        Categories
+      </div>
+    </div>
+  </section>
+
+  <!-- Filters Bar -->
+  <div class="filters-bar">
+    <div class="filters-container">
+      <div class="type-toggle">
+        <button class="type-btn active" data-type="all">All</button>
+        <button class="type-btn" data-type="plugin">Plugins</button>
+        <button class="type-btn" data-type="skill">Skills</button>
+      </div>
+
+      <select id="category-filter" class="filter-select">
+        <option value="">All Categories</option>
+        {searchIndex.stats.categories.map(category => (
+          <option value={category}>
+            {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+          </option>
+        ))}
+      </select>
+
+      <select id="tool-filter" class="filter-select">
+        <option value="">All Tools</option>
+        {searchIndex.stats.skillTools.map(tool => (
+          <option value={tool}>{tool}</option>
+        ))}
+      </select>
+
+      <span id="results-info" class="results-info">
+        Showing {searchIndex.stats.totalItems} items
+      </span>
+    </div>
+  </div>
+
+  <!-- Results Grid -->
+  <div class="results-section">
+    <div id="results-grid" class="results-grid">
+      {searchIndex.items.map(item => (
+        <a
+          href={item.type === 'plugin' ? `/plugins/${item.slug}/` : `/skills/${item.slug}/`}
+          class="result-card"
+          data-type={item.type}
+          data-category={item.category}
+          data-tools={item.type === 'skill' ? JSON.stringify(item.allowedTools) : '[]'}
+        >
+          <span class={`result-type-badge ${item.type}`}>
+            {item.type}
+          </span>
+
+          <h3 class="result-name">{item.name}</h3>
+          <p class="result-description">{item.description}</p>
+
+          <div class="result-meta">
+            {item.type === 'skill' && item.parentPlugin && (
+              <div class="parent-plugin">
+                <span>📦</span>
+                <span>Provided by {item.parentPlugin.name}</span>
+              </div>
+            )}
+            <div class="result-category">{item.category.replace(/-/g, ' ')}</div>
+          </div>
+
+          {item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0 && (
+            <div class="result-tools">
+              {item.allowedTools.slice(0, 4).map(tool => (
+                <span class="tool-tag">{tool}</span>
+              ))}
+              {item.allowedTools.length > 4 && (
+                <span class="tool-tag">+{item.allowedTools.length - 4} more</span>
+              )}
+            </div>
+          )}
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Search & Filter Logic -->
+  <script type="module">
+    import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
+
+    const allItems = window.__SEARCH_INDEX__;
+    const grid = document.getElementById('results-grid');
+    const resultsInfo = document.getElementById('results-info');
+
+    const fuse = new Fuse(allItems, {
+      keys: ['name', 'description', 'category', 'searchText'],
+      threshold: 0.3,
+      includeScore: true
+    });
+
+    let activeFilters = {
+      type: 'all',
+      category: null,
+      tool: null,
+      search: ''
+    };
+
+    function applyFilters() {
+      let filtered = allItems;
+
+      // Apply search
+      if (activeFilters.search) {
+        const results = fuse.search(activeFilters.search);
+        filtered = results.map(r => r.item);
+      }
+
+      // Apply type filter
+      if (activeFilters.type !== 'all') {
+        filtered = filtered.filter(item => item.type === activeFilters.type);
+      }
+
+      // Apply category filter
+      if (activeFilters.category) {
+        filtered = filtered.filter(item => item.category === activeFilters.category);
+      }
+
+      // Apply tool filter (skills only)
+      if (activeFilters.tool) {
+        filtered = filtered.filter(item =>
+          item.type === 'skill' && item.allowedTools && item.allowedTools.includes(activeFilters.tool)
+        );
+      }
+
+      renderResults(filtered);
+      updateResultsInfo(filtered.length);
+    }
+
+    function renderResults(items) {
+      if (items.length === 0) {
+        grid.innerHTML = `
+          <div class="no-results">
+            <h3>No results found</h3>
+            <p>Try adjusting your search or filters</p>
+            <button onclick="window.clearAllFilters()">Clear All Filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = items.map(item => {
+        const href = item.type === 'plugin' ? `/plugins/${item.slug}/` : `/skills/${item.slug}/`;
+        const parentPlugin = item.type === 'skill' && item.parentPlugin
+          ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${item.parentPlugin.name}</span></div>`
+          : '';
+        const tools = item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0
+          ? `<div class="result-tools">
+              ${item.allowedTools.slice(0, 4).map(tool => `<span class="tool-tag">${tool}</span>`).join('')}
+              ${item.allowedTools.length > 4 ? `<span class="tool-tag">+${item.allowedTools.length - 4} more</span>` : ''}
+             </div>`
+          : '';
+
+        return `
+          <a href="${href}" class="result-card">
+            <span class="result-type-badge ${item.type}">${item.type}</span>
+            <h3 class="result-name">${item.name}</h3>
+            <p class="result-description">${item.description}</p>
+            <div class="result-meta">
+              ${parentPlugin}
+              <div class="result-category">${item.category.replace(/-/g, ' ')}</div>
+            </div>
+            ${tools}
+          </a>
+        `;
+      }).join('');
+    }
+
+    function updateResultsInfo(count) {
+      resultsInfo.textContent = `Showing ${count} of ${allItems.length} items`;
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Search input
+      document.getElementById('main-search').addEventListener('input', (e) => {
+        activeFilters.search = e.target.value;
+        applyFilters();
+      });
+
+      // Type toggle buttons
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          activeFilters.type = e.target.dataset.type;
+          applyFilters();
+        });
+      });
+
+      // Category filter
+      document.getElementById('category-filter').addEventListener('change', (e) => {
+        activeFilters.category = e.target.value || null;
+        applyFilters();
+      });
+
+      // Tool filter
+      document.getElementById('tool-filter').addEventListener('change', (e) => {
+        activeFilters.tool = e.target.value || null;
+        applyFilters();
+      });
+
+      // Clear all filters function
+      window.clearAllFilters = () => {
+        activeFilters = { type: 'all', category: null, tool: null, search: '' };
+        document.getElementById('main-search').value = '';
+        document.getElementById('category-filter').value = '';
+        document.getElementById('tool-filter').value = '';
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector('.type-btn[data-type="all"]').classList.add('active');
+        applyFilters();
+      };
+    });
+  </script>
+
+  <script define:vars={{ items: searchIndex.items }}>
+    window.__SEARCH_INDEX__ = items;
+  </script>
+</BaseLayout>

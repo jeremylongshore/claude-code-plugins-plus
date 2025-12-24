@@ -1,40 +1,341 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 
 const pageTitle = 'Agent Skills Directory';
 const pageDescription = `Browse all ${skillsCatalog.count} agent skills across ${skillsCatalog.categories.length} categories`;
 
-// Group skills by category
-const skillsByCategory = skillsCatalog.skills.reduce((acc, skill) => {
-  const category = skill.parentPlugin.category;
-  if (!acc[category]) {
-    acc[category] = [];
-  }
-  acc[category].push(skill);
-  return acc;
-}, {});
-
 // Get unique allowed tools for filtering
 const allTools = skillsCatalog.allowedToolsUsed;
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{pageTitle} - Claude Code Plugins</title>
-  <meta name="description" content={pageDescription}>
-  <link rel="canonical" href="https://claudecodeplugins.io/skills/">
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    /* Skills Page Specific Styles */
+    .skills-header {
+      background: white;
+      border-bottom: 1px solid var(--brand-light-gray);
+      padding: 2rem 4rem;
+    }
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={pageTitle}>
-  <meta property="og:description" content={pageDescription}>
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://claudecodeplugins.io/skills/">
+    .skills-header-content {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
 
+    .skills-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .skills-subtitle {
+      color: var(--brand-mid-gray);
+      font-size: 1rem;
+    }
+
+    .filters-section {
+      background: white;
+      border-bottom: 1px solid var(--brand-light-gray);
+      padding: 2rem 4rem;
+    }
+
+    .filters-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .filters-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .filter-group label {
+      display: block;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .filter-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--brand-light-gray);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: 'Lora', Georgia, serif;
+      transition: all 0.2s var(--transition-smooth);
+    }
+
+    .filter-input:focus {
+      outline: none;
+      border-color: var(--brand-orange);
+      box-shadow: 0 0 0 3px rgba(217, 119, 87, 0.1);
+    }
+
+    .filter-input::placeholder {
+      color: var(--brand-mid-gray);
+    }
+
+    .filters-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .results-count {
+      font-size: 0.875rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .clear-filters-btn {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: transparent;
+      border: none;
+      color: var(--brand-orange);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .clear-filters-btn:hover {
+      color: var(--brand-orange-dark);
+    }
+
+    .skills-grid-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 4rem;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .skill-card {
+      display: block;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      border: 2px solid var(--brand-light-gray);
+      text-decoration: none;
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .skill-card:hover {
+      border-color: var(--brand-orange);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(217, 119, 87, 0.12);
+    }
+
+    .skill-name {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-description {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .skill-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tool-badge {
+      padding: 0.25rem 0.75rem;
+      background: rgba(217, 119, 87, 0.1);
+      color: var(--brand-orange-dark);
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 6px;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .tool-badge-more {
+      background: var(--brand-light-gray);
+      color: var(--brand-mid-gray);
+    }
+
+    .skill-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .skill-category {
+      text-transform: capitalize;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .no-results p {
+      font-size: 1.25rem;
+      color: var(--brand-mid-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    .no-results button {
+      font-family: 'Poppins', Arial, sans-serif;
+      padding: 0.75rem 1.5rem;
+      background: var(--brand-orange);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .no-results button:hover {
+      background: var(--brand-orange-dark);
+      transform: translateY(-2px);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 1024px) {
+      .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .skills-header,
+      .filters-section,
+      .skills-grid-section {
+        padding-left: 2rem;
+        padding-right: 2rem;
+      }
+
+      .filters-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <!-- Header -->
+  <div class="skills-header">
+    <div class="skills-header-content">
+      <h1 class="skills-title">Agent Skills Directory</h1>
+      <p class="skills-subtitle">{skillsCatalog.count} skills across {skillsCatalog.categories.length} categories</p>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filters-section">
+    <div class="filters-container">
+      <div class="filters-grid">
+        <!-- Search -->
+        <div class="filter-group">
+          <label for="search-input">Search Skills</label>
+          <input
+            type="text"
+            id="search-input"
+            class="filter-input"
+            placeholder="Search by name, description..."
+          />
+        </div>
+
+        <!-- Category Filter -->
+        <div class="filter-group">
+          <label for="category-filter">Filter by Category</label>
+          <select id="category-filter" class="filter-input">
+            <option value="">All Categories</option>
+            {skillsCatalog.categories.map(category => (
+              <option value={category}>
+                {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Tool Filter -->
+        <div class="filter-group">
+          <label for="tool-filter">Filter by Tool</label>
+          <select id="tool-filter" class="filter-input">
+            <option value="">All Tools</option>
+            {allTools.map(tool => (
+              <option value={tool}>{tool}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div class="filters-footer">
+        <p id="results-count" class="results-count">
+          Showing {skillsCatalog.count} of {skillsCatalog.count} skills
+        </p>
+        <button onclick="clearFilters()" class="clear-filters-btn">
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills Grid -->
+  <div class="skills-grid-section">
+    <div id="skills-grid" class="skills-grid">
+      {skillsCatalog.skills.map(skill => (
+        <a
+          href={`/skills/${skill.slug}/`}
+          class="skill-card"
+        >
+          <h3 class="skill-name">{skill.name}</h3>
+          <p class="skill-description">
+            {skill.description || 'No description available'}
+          </p>
+
+          <div class="skill-tools">
+            {skill.allowedTools.slice(0, 3).map(tool => (
+              <span class="tool-badge">{tool}</span>
+            ))}
+            {skill.allowedTools.length > 3 && (
+              <span class="tool-badge tool-badge-more">
+                +{skill.allowedTools.length - 3} more
+              </span>
+            )}
+          </div>
+
+          <div class="skill-meta">
+            <span class="skill-category">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+            <span>{skill.version}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <!-- Client-side search functionality using Fuse.js -->
   <script type="module">
-    // Client-side search functionality using Fuse.js
     import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
 
     const skills = window.__SKILLS_DATA__;
@@ -79,30 +380,28 @@ const allTools = skillsCatalog.allowedToolsUsed;
 
       if (skills.length === 0) {
         grid.innerHTML = `
-          <div class="col-span-full text-center py-12">
-            <p class="text-xl text-gray-600">No skills found matching your filters.</p>
-            <button onclick="clearFilters()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-              Clear Filters
-            </button>
+          <div class="no-results" style="grid-column: 1 / -1;">
+            <p>No skills found matching your filters.</p>
+            <button onclick="clearFilters()">Clear Filters</button>
           </div>
         `;
         return;
       }
 
       grid.innerHTML = skills.map(skill => `
-        <a href="/skills/${skill.slug}/" class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">${skill.name}</h3>
-          <p class="text-sm text-gray-600 mb-3 line-clamp-2">${skill.description || 'No description available'}</p>
+        <a href="/skills/${skill.slug}/" class="skill-card">
+          <h3 class="skill-name">${skill.name}</h3>
+          <p class="skill-description">${skill.description || 'No description available'}</p>
 
-          <div class="flex flex-wrap gap-2 mb-3">
+          <div class="skill-tools">
             ${skill.allowedTools.slice(0, 3).map(tool => `
-              <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">${tool}</span>
+              <span class="tool-badge">${tool}</span>
             `).join('')}
-            ${skill.allowedTools.length > 3 ? `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">+${skill.allowedTools.length - 3} more</span>` : ''}
+            ${skill.allowedTools.length > 3 ? `<span class="tool-badge tool-badge-more">+${skill.allowedTools.length - 3} more</span>` : ''}
           </div>
 
-          <div class="flex items-center justify-between text-xs text-gray-500">
-            <span class="capitalize">${skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+          <div class="skill-meta">
+            <span class="skill-category">${skill.parentPlugin.category.replace(/-/g, ' ')}</span>
             <span>${skill.version}</span>
           </div>
         </a>
@@ -148,138 +447,4 @@ const allTools = skillsCatalog.allowedToolsUsed;
   <script define:vars={{ skills: skillsCatalog.skills }}>
     window.__SKILLS_DATA__ = skills;
   </script>
-</head>
-<body class="bg-gray-50">
-  <!-- Header -->
-  <header class="bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <div class="flex items-center justify-between">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Agent Skills Directory</h1>
-          <p class="text-gray-600 mt-1">{skillsCatalog.count} skills across {skillsCatalog.categories.length} categories</p>
-        </div>
-        <a href="/" class="text-blue-600 hover:text-blue-700 font-medium">
-          ← Back to Marketplace
-        </a>
-      </div>
-    </div>
-  </header>
-
-  <!-- Filters -->
-  <div class="bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <!-- Search -->
-        <div>
-          <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
-            Search Skills
-          </label>
-          <input
-            type="text"
-            id="search-input"
-            placeholder="Search by name, description..."
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          />
-        </div>
-
-        <!-- Category Filter -->
-        <div>
-          <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">
-            Filter by Category
-          </label>
-          <select
-            id="category-filter"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">All Categories</option>
-            {skillsCatalog.categories.map(category => (
-              <option value={category}>
-                {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <!-- Tool Filter -->
-        <div>
-          <label for="tool-filter" class="block text-sm font-medium text-gray-700 mb-2">
-            Filter by Tool
-          </label>
-          <select
-            id="tool-filter"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-          >
-            <option value="">All Tools</option>
-            {allTools.map(tool => (
-              <option value={tool}>{tool}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div class="mt-4 flex items-center justify-between">
-        <p id="results-count" class="text-sm text-gray-600">
-          Showing {skillsCatalog.count} of {skillsCatalog.count} skills
-        </p>
-        <button
-          onclick="clearFilters()"
-          class="px-4 py-2 text-sm text-gray-700 hover:text-gray-900 font-medium"
-        >
-          Clear Filters
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Skills Grid -->
-  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {skillsCatalog.skills.map(skill => (
-        <a
-          href={`/skills/${skill.slug}/`}
-          class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200"
-        >
-          <h3 class="text-lg font-semibold text-gray-900 mb-2">{skill.name}</h3>
-          <p class="text-sm text-gray-600 mb-3 line-clamp-2">
-            {skill.description || 'No description available'}
-          </p>
-
-          <div class="flex flex-wrap gap-2 mb-3">
-            {skill.allowedTools.slice(0, 3).map(tool => (
-              <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">{tool}</span>
-            ))}
-            {skill.allowedTools.length > 3 && (
-              <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
-                +{skill.allowedTools.length - 3} more
-              </span>
-            )}
-          </div>
-
-          <div class="flex items-center justify-between text-xs text-gray-500">
-            <span class="capitalize">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
-            <span>{skill.version}</span>
-          </div>
-        </a>
-      ))}
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="bg-white border-t border-gray-200 mt-20">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <p class="text-center text-gray-600">
-        Claude Code Plugins Plus - {skillsCatalog.count} Agent Skills
-      </p>
-    </div>
-  </footer>
-
-  <style>
-    .line-clamp-2 {
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-  </style>
-</body>
-</html>
+</BaseLayout>
