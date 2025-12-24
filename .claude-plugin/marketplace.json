@@ -49,31 +49,6 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins"
     },
     {
-      "name": "001-jeremy-taskwarrior-integration",
-      "source": "./plugins/productivity/001-jeremy-taskwarrior-integration",
-      "description": "Enforces complete Taskwarrior integration protocol for ALL coding tasks with automatic task lifecycle management and time tracking via Timewarrior",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "taskwarrior",
-        "task-management",
-        "time-tracking",
-        "workflow",
-        "productivity",
-        "timewarrior",
-        "project-management",
-        "task-tracking",
-        "gtd",
-        "time-management"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "license": "MIT",
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
-    },
-    {
       "name": "002-jeremy-yaml-master-agent",
       "source": "./plugins/productivity/002-jeremy-yaml-master-agent",
       "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities",
