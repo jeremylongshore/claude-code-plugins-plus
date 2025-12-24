@@ -389,17 +389,17 @@ cp -r templates/command-plugin my-awesome-plugin
 - [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
 
 ### Production Playbooks
-- [Production Playbooks Index](docs/playbooks/README.md) - 10 comprehensive guides (~47,000 words)
-- [Multi-Agent Rate Limits](docs/playbooks/01-multi-agent-rate-limits.md) - Prevent API throttling
-- [Cost Caps & Budget Management](docs/playbooks/02-cost-caps.md) - Control AI spending
-- [MCP Server Reliability](docs/playbooks/03-mcp-reliability.md) - Self-healing MCP servers
-- [Ollama Migration Guide](docs/playbooks/04-ollama-migration.md) - Switch to self-hosted LLMs
-- [Incident Debugging](docs/playbooks/05-incident-debugging.md) - SEV-1/2/3/4 response protocols
-- [Self-Hosted Stack Setup](docs/playbooks/06-self-hosted-stack.md) - Full infrastructure deployment
-- [Compliance & Audit](docs/playbooks/07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
-- [Team Presets & Workflows](docs/playbooks/08-team-presets.md) - Team standardization
-- [Cost Attribution System](docs/playbooks/09-cost-attribution.md) - Multi-dimensional cost tracking
-- [Progressive Enhancement](docs/playbooks/10-progressive-enhancement.md) - Safe feature rollout
+- [Production Playbooks Index](playbooks/README.md) - 10 comprehensive guides (~47,000 words)
+- [Multi-Agent Rate Limits](playbooks/01-multi-agent-rate-limits.md) - Prevent API throttling
+- [Cost Caps & Budget Management](playbooks/02-cost-caps.md) - Control AI spending
+- [MCP Server Reliability](playbooks/03-mcp-reliability.md) - Self-healing MCP servers
+- [Ollama Migration Guide](playbooks/04-ollama-migration.md) - Switch to self-hosted LLMs
+- [Incident Debugging](playbooks/05-incident-debugging.md) - SEV-1/2/3/4 response protocols
+- [Self-Hosted Stack Setup](playbooks/06-self-hosted-stack.md) - Full infrastructure deployment
+- [Compliance & Audit](playbooks/07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
+- [Team Presets & Workflows](playbooks/08-team-presets.md) - Team standardization
+- [Cost Attribution System](playbooks/09-cost-attribution.md) - Multi-dimensional cost tracking
+- [Progressive Enhancement](playbooks/10-progressive-enhancement.md) - Safe feature rollout
 
 ---
 
