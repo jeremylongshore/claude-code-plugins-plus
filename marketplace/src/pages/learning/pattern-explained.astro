@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+const title = 'Pattern Explained | Learning Lab';
+const description = 'Deep dive into the test harness pattern architecture and why it works for production agent workflows.';
+---
+<Layout title={title} description={description}>
+  <div class="guide-page">
+    <div class="guide-container">
+      <div class="progress-bar"><div class="progress-fill" style="width: 25%"></div></div>
+      <div class="guide-header">
+        <a href="/learning" class="back-link">← Back to Learning Hub</a>
+        <div class="guide-meta"><span>Guide 2 of 8</span><span>15 min read</span></div>
+      </div>
+      <article class="guide-content">
+        <h1>Pattern Explained - Architecture Deep Dive</h1>
+        <div class="goal-box"><strong>Goal:</strong> Understand why this pattern works and how components fit together</div>
+        <section><h2>Component Breakdown</h2>
+        <p>The test harness pattern consists of four key components that work together to create a reliable, verifiable workflow:</p>
+        <ul><li><strong>Orchestrator:</strong> Main skill that coordinates all phases</li>
+        <li><strong>Phase Agents:</strong> Specialized subagents for each workflow step</li>
+        <li><strong>Validation Gates:</strong> Checkpoints between phases</li>
+        <li><strong>Session Directory:</strong> Isolated workspace for each run</li></ul>
+        <h2>Full Guide on GitHub</h2>
+        <p>This comprehensive guide contains deep architectural details. Access the full content:</p>
+        <div class="source-link-box">
+          <a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/GUIDE-01-PATTERN-EXPLAINED.md" class="github-link" target="_blank">View Full Guide on GitHub →</a>
+        </div></section>
+      </article>
+      <nav class="guide-nav">
+        <a href="/learning/start-here">← Start Here</a>
+        <a href="/learning/building-your-own">Building Your Own →</a>
+      </nav>
+    </div>
+  </div>
+</Layout>
+<style>
+.guide-page{min-height:100vh;background:var(--slate-900)}.guide-container{max-width:900px;margin:0 auto;padding:2rem 1rem}.progress-bar{width:100%;height:4px;background:var(--slate-800);border-radius:2px;margin-bottom:2rem}.progress-fill{height:100%;background:linear-gradient(90deg,var(--green-500),var(--blue-500))}.guide-header{margin-bottom:2rem}.back-link{color:var(--slate-400);text-decoration:none;font-size:.875rem}.guide-meta{display:flex;gap:1rem;font-size:.875rem;color:var(--slate-500);margin-top:.5rem}.guide-content{background:var(--slate-800);border:1px solid var(--slate-700);border-radius:.5rem;padding:3rem;margin-bottom:2rem}.guide-content h1{font-size:2.5rem;color:var(--slate-100);margin:0 0 2rem}.guide-content h2{font-size:1.75rem;color:var(--slate-200);margin:2.5rem 0 1rem;border-bottom:2px solid var(--slate-700);padding-bottom:.5rem}.guide-content p{color:var(--slate-400);line-height:1.7;margin:1rem 0}.guide-content ul{color:var(--slate-400);padding-left:2rem}.guide-content li{margin:.5rem 0}.goal-box{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(16,185,129,.2));border-left:4px solid var(--blue-500);padding:1rem 1.5rem;margin:2rem 0;border-radius:.375rem;color:var(--slate-200)}.source-link-box{text-align:center;margin:2rem 0}.github-link{display:inline-block;padding:1rem 2rem;background:var(--blue-500);color:white;text-decoration:none;border-radius:.375rem;font-weight:600}.github-link:hover{background:var(--blue-600)}.guide-nav{display:flex;justify-content:space-between;margin-top:2rem}.guide-nav a{padding:1rem 1.5rem;background:var(--slate-800);border:1px solid var(--slate-700);border-radius:.5rem;color:var(--slate-300);text-decoration:none}.guide-nav a:hover{border-color:var(--green-500)}
+</style>

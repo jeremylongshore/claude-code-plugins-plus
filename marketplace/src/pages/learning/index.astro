@@ -1,0 +1,719 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const title = 'Learning Lab | Claude Code Plugins';
+const description = 'Master production agent workflows with empirical verification patterns. 8 guided learning paths and 11 interactive Jupyter notebooks.';
+
+// Learning paths structure
+const learningPaths = [
+  {
+    name: 'Beginner',
+    duration: '1 hour',
+    description: 'Get started with the test harness pattern',
+    guides: [
+      { slug: 'start-here', title: 'Start Here - Mental Model', time: '5 min' },
+      { slug: 'pattern-explained', title: 'Pattern Architecture', time: '15 min' },
+      { slug: 'building-your-own', title: 'Build Your Own', time: '30 min' }
+    ]
+  },
+  {
+    name: 'Advanced',
+    duration: '3 hours',
+    description: 'Deep dive into orchestration patterns',
+    guides: [
+      { slug: 'debugging-tips', title: 'Debugging & Troubleshooting', time: '15 min' },
+      { slug: 'orchestration-pattern', title: 'Complete Orchestration', time: '60 min' }
+    ]
+  },
+  {
+    name: 'Reference',
+    duration: 'As needed',
+    description: 'Visual maps and reference documentation',
+    guides: [
+      { slug: 'visual-map', title: 'Visual Architecture Map', time: '10 min' },
+      { slug: 'reference-implementation', title: 'System Summary', time: '10 min' },
+      { slug: 'overview', title: 'Lab Overview', time: '5 min' }
+    ]
+  }
+];
+
+// Note: Jupyter notebooks mentioned in CLAUDE.md but not found in workspace/lab/tutorials/
+// The task description mentions 11 notebooks but the directory doesn't exist
+// For now, we'll create placeholders that can be filled when notebooks are added
+const notebooks = {
+  skills: [
+    { name: 'skills-101-basics', title: 'Agent Skills 101: Basics' },
+    { name: 'skills-102-triggers', title: 'Agent Skills 102: Trigger Phrases' },
+    { name: 'skills-103-tools', title: 'Agent Skills 103: Allowed Tools' },
+    { name: 'skills-104-composition', title: 'Agent Skills 104: Composition' },
+    { name: 'skills-105-production', title: 'Agent Skills 105: Production' }
+  ],
+  plugins: [
+    { name: 'plugins-101-structure', title: 'Plugin Development 101: Structure' },
+    { name: 'plugins-102-manifests', title: 'Plugin Development 102: Manifests' },
+    { name: 'plugins-103-commands', title: 'Plugin Development 103: Commands' },
+    { name: 'plugins-104-validation', title: 'Plugin Development 104: Validation' }
+  ],
+  orchestration: [
+    { name: 'orchestration-101-phases', title: 'Orchestration 101: Multi-Phase Workflows' },
+    { name: 'orchestration-102-verification', title: 'Orchestration 102: Empirical Verification' }
+  ]
+};
+---
+
+<Layout title={title} description={description}>
+  <div class="learning-hub">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h1 class="hero-title">Learning Lab</h1>
+          <p class="hero-subtitle">
+            Master production agent workflows with empirical verification patterns
+          </p>
+          <p class="hero-description">
+            Safe sandbox for learning and building phased workflow skills with strict validation.
+            Move beyond "LLM writes text" to "LLM executes validated procedures with evidence."
+          </p>
+          <div class="hero-stats">
+            <div class="stat">
+              <span class="stat-number">8</span>
+              <span class="stat-label">Learning Guides</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">11</span>
+              <span class="stat-label">Jupyter Notebooks</span>
+            </div>
+            <div class="stat">
+              <span class="stat-number">5</span>
+              <span class="stat-label">Phase System</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- What You'll Learn -->
+    <section class="what-learn">
+      <div class="container">
+        <h2 class="section-title">What You'll Learn</h2>
+        <div class="learn-grid">
+          <div class="learn-card">
+            <div class="learn-icon">📋</div>
+            <h3>Test Harness Pattern</h3>
+            <p>Understand the mental model behind evidence-based LLM workflows</p>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">🔄</div>
+            <h3>Multi-Phase Orchestration</h3>
+            <p>Build workflows with strict validation gates between phases</p>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">✅</div>
+            <h3>Empirical Verification</h3>
+            <p>Use scripts to validate LLM outputs instead of trusting them</p>
+          </div>
+          <div class="learn-card">
+            <div class="learn-icon">🏗️</div>
+            <h3>Production Deployment</h3>
+            <p>Take your workflows from learning lab to production systems</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Learning Paths -->
+    <section class="learning-paths">
+      <div class="container">
+        <h2 class="section-title">Guided Learning Paths</h2>
+        <div class="paths-grid">
+          {learningPaths.map(path => (
+            <div class="path-card">
+              <div class="path-header">
+                <h3>{path.name}</h3>
+                <span class="path-duration">{path.duration}</span>
+              </div>
+              <p class="path-description">{path.description}</p>
+              <ul class="path-guides">
+                {path.guides.map(guide => (
+                  <li>
+                    <a href={`/learning/${guide.slug}`} class="guide-link">
+                      <span class="guide-title">{guide.title}</span>
+                      <span class="guide-time">{guide.time}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Jupyter Notebooks -->
+    <section class="notebooks">
+      <div class="container">
+        <h2 class="section-title">Interactive Jupyter Notebooks</h2>
+        <p class="section-subtitle">
+          Launch instantly in Google Colab - no local setup required
+        </p>
+
+        <!-- Skills Notebooks -->
+        <div class="notebook-category">
+          <h3 class="category-title">Agent Skills (5 notebooks)</h3>
+          <div class="notebook-grid">
+            {notebooks.skills.map(notebook => (
+              <div class="notebook-card">
+                <div class="notebook-header">
+                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h4>{notebook.title}</h4>
+                </div>
+                <div class="notebook-actions">
+                  <a
+                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="colab-button"
+                  >
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
+                    </svg>
+                    Open in Colab
+                  </a>
+                  <a
+                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-button"
+                  >
+                    View on GitHub
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Plugin Development Notebooks -->
+        <div class="notebook-category">
+          <h3 class="category-title">Plugin Development (4 notebooks)</h3>
+          <div class="notebook-grid">
+            {notebooks.plugins.map(notebook => (
+              <div class="notebook-card">
+                <div class="notebook-header">
+                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h4>{notebook.title}</h4>
+                </div>
+                <div class="notebook-actions">
+                  <a
+                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="colab-button"
+                  >
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
+                    </svg>
+                    Open in Colab
+                  </a>
+                  <a
+                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-button"
+                  >
+                    View on GitHub
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Orchestration Notebooks -->
+        <div class="notebook-category">
+          <h3 class="category-title">Orchestration Patterns (2 notebooks)</h3>
+          <div class="notebook-grid">
+            {notebooks.orchestration.map(notebook => (
+              <div class="notebook-card">
+                <div class="notebook-header">
+                  <svg class="notebook-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <h4>{notebook.title}</h4>
+                </div>
+                <div class="notebook-actions">
+                  <a
+                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="colab-button"
+                  >
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path fill="#F9AB00" d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.6 0 12 0zm4.9 9.9c0 1-.8 1.8-1.8 1.8s-1.8-.8-1.8-1.8.8-1.8 1.8-1.8 1.8.8 1.8 1.8zm-9.8 0c0 1-.8 1.8-1.8 1.8S3.5 10.9 3.5 9.9s.8-1.8 1.8-1.8 1.8.8 1.8 1.8z"/>
+                    </svg>
+                    Open in Colab
+                  </a>
+                  <a
+                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="github-button"
+                  >
+                    View on GitHub
+                  </a>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Getting Started -->
+    <section class="getting-started">
+      <div class="container">
+        <h2 class="section-title">Getting Started</h2>
+        <div class="checklist">
+          <div class="checklist-item">
+            <span class="checklist-number">1</span>
+            <div class="checklist-content">
+              <h3>Read the Introduction</h3>
+              <p>Start with <a href="/learning/start-here">GUIDE 00: Start Here</a> to understand the mental model (5 min)</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <span class="checklist-number">2</span>
+            <div class="checklist-content">
+              <h3>Choose Your Path</h3>
+              <p>Pick Beginner, Advanced, or Reference based on your experience level</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <span class="checklist-number">3</span>
+            <div class="checklist-content">
+              <h3>Try Jupyter Notebooks</h3>
+              <p>Launch interactive tutorials in Google Colab - no setup required</p>
+            </div>
+          </div>
+          <div class="checklist-item">
+            <span class="checklist-number">4</span>
+            <div class="checklist-content">
+              <h3>Build Your Own</h3>
+              <p>Adapt the reference implementation for your production use case</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<style>
+  .learning-hub {
+    min-height: 100vh;
+  }
+
+  .container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* Hero Section */
+  .hero {
+    background: linear-gradient(135deg, var(--slate-900) 0%, var(--slate-800) 100%);
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--slate-700);
+  }
+
+  .hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    margin: 0 0 1rem 0;
+    background: linear-gradient(135deg, var(--green-400), var(--blue-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-subtitle {
+    font-size: 1.5rem;
+    color: var(--slate-300);
+    margin: 0 0 1rem 0;
+    font-weight: 500;
+  }
+
+  .hero-description {
+    font-size: 1.125rem;
+    color: var(--slate-400);
+    line-height: 1.6;
+    margin: 0 0 2rem 0;
+  }
+
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 2rem;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--green-400);
+    font-family: var(--font-mono);
+  }
+
+  .stat-label {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Sections */
+  .what-learn,
+  .learning-paths,
+  .notebooks,
+  .getting-started {
+    padding: 4rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    margin: 0 0 1rem 0;
+    text-align: center;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--slate-400);
+    font-size: 1.125rem;
+    margin: 0 0 3rem 0;
+  }
+
+  /* Learn Grid */
+  .learn-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .learn-card {
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    transition: all var(--transition-base);
+  }
+
+  .learn-card:hover {
+    border-color: var(--green-500);
+    transform: translateY(-4px);
+  }
+
+  .learn-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .learn-card h3 {
+    font-size: 1.25rem;
+    color: var(--slate-100);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .learn-card p {
+    color: var(--slate-400);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  /* Learning Paths */
+  .paths-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+
+  .path-card {
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    padding: 2rem;
+  }
+
+  .path-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  .path-header h3 {
+    font-size: 1.5rem;
+    color: var(--green-400);
+    margin: 0;
+  }
+
+  .path-duration {
+    background: var(--slate-700);
+    color: var(--slate-400);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  .path-description {
+    color: var(--slate-400);
+    margin: 0 0 1.5rem 0;
+  }
+
+  .path-guides {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .guide-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.375rem;
+    color: var(--slate-300);
+    text-decoration: none;
+    transition: all var(--transition-fast);
+  }
+
+  .guide-link:hover {
+    border-color: var(--green-500);
+    color: var(--green-400);
+    transform: translateX(4px);
+  }
+
+  .guide-title {
+    font-weight: 500;
+  }
+
+  .guide-time {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    font-family: var(--font-mono);
+  }
+
+  /* Notebooks */
+  .notebook-category {
+    margin-top: 3rem;
+  }
+
+  .category-title {
+    font-size: 1.5rem;
+    color: var(--slate-200);
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--slate-700);
+  }
+
+  .notebook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .notebook-card {
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: all var(--transition-base);
+  }
+
+  .notebook-card:hover {
+    border-color: var(--blue-500);
+    transform: translateY(-2px);
+  }
+
+  .notebook-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .notebook-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--blue-400);
+    flex-shrink: 0;
+  }
+
+  .notebook-header h4 {
+    font-size: 1rem;
+    color: var(--slate-100);
+    margin: 0;
+    line-height: 1.4;
+  }
+
+  .notebook-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .colab-button,
+  .github-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    text-decoration: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: all var(--transition-fast);
+  }
+
+  .colab-button {
+    background: #F9AB00;
+    color: #000;
+  }
+
+  .colab-button:hover {
+    background: #e09900;
+  }
+
+  .colab-button svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .github-button {
+    background: var(--slate-700);
+    color: var(--slate-300);
+    border: 1px solid var(--slate-600);
+  }
+
+  .github-button:hover {
+    background: var(--slate-600);
+    color: var(--slate-100);
+  }
+
+  /* Getting Started Checklist */
+  .checklist {
+    max-width: 800px;
+    margin: 2rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .checklist-item {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .checklist-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: var(--green-500);
+    color: var(--slate-900);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .checklist-content h3 {
+    font-size: 1.125rem;
+    color: var(--slate-100);
+    margin: 0 0 0.5rem 0;
+  }
+
+  .checklist-content p {
+    color: var(--slate-400);
+    margin: 0;
+    line-height: 1.6;
+  }
+
+  .checklist-content a {
+    color: var(--green-400);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(16, 185, 129, 0.3);
+  }
+
+  .checklist-content a:hover {
+    color: var(--green-300);
+    border-bottom-color: var(--green-300);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .hero-title {
+      font-size: 2rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+    }
+
+    .hero-stats {
+      gap: 2rem;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+    }
+
+    .learn-grid,
+    .paths-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .checklist-item {
+      gap: 1rem;
+    }
+
+    .checklist-number {
+      width: 2rem;
+      height: 2rem;
+      font-size: 1rem;
+    }
+  }
+</style>

@@ -378,3 +378,33 @@ jobs:
 
       - name: Run package manager policy check
         run: node scripts/check-package-manager.mjs
+
+  # Marketplace Validation Gates
+  marketplace-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install
+
+      - name: Build marketplace
+        run: |
+          cd marketplace
+          npm run build
+
+      - name: Validate routes
+        run: node scripts/check-routes.mjs
+
+      - name: Validate official links
+        run: node scripts/check-official-links.mjs
+
+      - name: Performance budget check
+        run: node scripts/check-performance.mjs

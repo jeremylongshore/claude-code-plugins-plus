@@ -1,0 +1,639 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+const title = 'Start Here - Mental Model | Learning Lab';
+const description = 'Understand the test harness pattern and mental model for production agent workflows with empirical verification.';
+
+// Read the markdown content
+const labPath = join(process.cwd(), '..', 'workspace', 'lab');
+const content = readFileSync(join(labPath, 'GUIDE-00-START-HERE.md'), 'utf-8');
+
+// Parse frontmatter and content
+const lines = content.split('\n');
+const readTime = lines.find(l => l.startsWith('**Read time:**'))?.replace('**Read time:**', '').trim() || '5 minutes';
+
+// Guide navigation
+const currentGuide = 0;
+const guides = [
+  { slug: 'start-here', title: 'Start Here - Mental Model', number: 0 },
+  { slug: 'pattern-explained', title: 'Pattern Architecture', number: 1 },
+  { slug: 'building-your-own', title: 'Build Your Own', number: 2 },
+  { slug: 'debugging-tips', title: 'Debugging Tips', number: 3 },
+  { slug: 'orchestration-pattern', title: 'Complete Orchestration', number: 4 },
+  { slug: 'visual-map', title: 'Visual Architecture', number: 5 },
+  { slug: 'reference-implementation', title: 'System Summary', number: 6 },
+  { slug: 'overview', title: 'Lab Overview', number: 7 }
+];
+
+const prevGuide = currentGuide > 0 ? guides[currentGuide - 1] : null;
+const nextGuide = currentGuide < guides.length - 1 ? guides[currentGuide + 1] : null;
+---
+
+<Layout title={title} description={description}>
+  <div class="guide-page">
+    <div class="guide-container">
+      <!-- Progress Bar -->
+      <div class="progress-bar">
+        <div class="progress-fill" style={`width: ${((currentGuide + 1) / guides.length) * 100}%`}></div>
+      </div>
+
+      <!-- Guide Header -->
+      <div class="guide-header">
+        <a href="/learning" class="back-link">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Learning Hub
+        </a>
+        <div class="guide-meta">
+          <span class="guide-number">Guide {currentGuide + 1} of {guides.length}</span>
+          <span class="guide-time">{readTime} read</span>
+        </div>
+      </div>
+
+      <!-- Guide Content -->
+      <article class="guide-content">
+        <h1>Start Here - The Test Harness Pattern</h1>
+
+        <div class="goal-box">
+          <strong>Goal:</strong> Understand the mental model before diving into code
+        </div>
+
+        <section>
+          <h2>The Problem We're Solving</h2>
+          <p>You ask an LLM to do multi-step work:</p>
+          <ol>
+            <li>"Analyze this codebase"</li>
+            <li>"Find performance bottlenecks"</li>
+            <li>"Suggest optimizations"</li>
+            <li>"Verify your suggestions"</li>
+            <li>"Write a report"</li>
+          </ol>
+
+          <div class="comparison-grid">
+            <div class="comparison-col bad">
+              <h3>What usually happens:</h3>
+              <ul>
+                <li>Agent writes a wall of text</li>
+                <li>You can't verify if it actually did the work</li>
+                <li>No structured output (just narrative)</li>
+                <li>If something's wrong, you can't tell where it failed</li>
+                <li>Hard to reuse or automate</li>
+              </ul>
+            </div>
+            <div class="comparison-col good">
+              <h3>What you wish happened:</h3>
+              <ul>
+                <li>Agent produces evidence of each step</li>
+                <li>You can verify work was done</li>
+                <li>Outputs are machine-readable</li>
+                <li>Failures are clear and debuggable</li>
+                <li>System is repeatable and composable</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>The Solution: Test Harness Pattern</h2>
+          <p>Think of this like a CI/CD pipeline for LLM work:</p>
+
+          <div class="architecture-diagram">
+            <div class="phase-box orchestrator">
+              <h4>ORCHESTRATOR (Main Skill)</h4>
+              <ul>
+                <li>Creates session directory (isolated run folder)</li>
+                <li>Spawns phases in order</li>
+                <li>Validates outputs before continuing</li>
+                <li>Aggregates final results</li>
+              </ul>
+            </div>
+            <div class="arrow-down">↓</div>
+            <div class="phase-box">
+              <h4>PHASE 1: Initial Analysis</h4>
+              <p>Reads instructions → Does work → Writes report file → Returns JSON</p>
+            </div>
+            <div class="arrow-down">↓ (orchestrator validates)</div>
+            <div class="phase-box">
+              <h4>PHASE 2: Deep Analysis</h4>
+              <p>Reads Phase 1 report → Does more work → Writes report file → Returns JSON</p>
+            </div>
+            <div class="arrow-down">↓ (orchestrator validates)</div>
+            <div class="phase-box">
+              <h4>PHASE 3: Risk Assessment</h4>
+              <p>Reads Phase 1-2 reports → Calculates risks → Writes report file → Returns JSON</p>
+            </div>
+            <div class="arrow-down">↓ (orchestrator validates)</div>
+            <div class="phase-box verification">
+              <h4>PHASE 4: VERIFICATION (KEY PHASE)</h4>
+              <p>Reads Phase 2-3 conclusions → RUNS REAL SCRIPT → Compares script vs conclusions → Writes verification report → Returns JSON</p>
+            </div>
+            <div class="arrow-down">↓ (orchestrator validates)</div>
+            <div class="phase-box">
+              <h4>PHASE 5: Final Recommendations</h4>
+              <p>Synthesizes all prior work → Prioritizes actions → Writes final report → Returns JSON</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Key Concepts</h2>
+
+          <div class="concept-card">
+            <h3>1. Session Directory</h3>
+            <p>Every workflow run gets its own isolated folder:</p>
+            <pre><code>reports/runs/2025-01-15_143022/
+├── 01-initial-analysis.md
+├── 02-deep-analysis.md
+├── 03-risk-assessment.md
+├── 04-verification.md
+└── 05-recommendations.md</code></pre>
+            <p class="concept-why"><strong>Why:</strong> Evidence. You can inspect what was actually done.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>2. Strict JSON Contracts</h3>
+            <p>Every phase MUST return this format:</p>
+            <pre><code>{
+  "status": "complete",
+  "report_path": "/absolute/path/to/report.md",
+  "phase_summary": {
+    "key1": "value1",
+    "key2": "value2"
+  }
+}</code></pre>
+            <p class="concept-why"><strong>Why:</strong> Machine-readable. The orchestrator can validate programmatically.</p>
+          </div>
+
+          <div class="concept-card">
+            <h3>3. Validation Gates</h3>
+            <p>After each phase, orchestrator checks:</p>
+            <ul>
+              <li>JSON is valid (not malformed)</li>
+              <li><code>status</code> is "complete"</li>
+              <li><code>report_path</code> file exists on disk</li>
+              <li>Required summary keys are present</li>
+            </ul>
+            <p class="concept-why"><strong>Why:</strong> Fail-fast. If Phase 2 fails, don't waste time on Phase 3-5.</p>
+          </div>
+
+          <div class="concept-card highlight">
+            <h3>4. The Verification Phase (Phase 4)</h3>
+            <p>This is the "money shot" that makes it feel real:</p>
+            <ul>
+              <li>Reads conclusions from Phases 2-3</li>
+              <li>Runs an ACTUAL SCRIPT (not LLM analysis)</li>
+              <li>Compares script output vs manual conclusions</li>
+              <li>Reports: confirmed, revised, unexpected findings</li>
+            </ul>
+            <p class="concept-why"><strong>Why:</strong> Empirical validation. Script doesn't lie.</p>
+          </div>
+        </section>
+
+        <section>
+          <h2>The Mental Model</h2>
+          <p>Think of it as a <strong>scientific experiment protocol</strong>:</p>
+          <ol>
+            <li><strong>Hypothesis Phase (1-3):</strong> Analyze, form conclusions</li>
+            <li><strong>Verification Phase (4):</strong> Run experiment to test hypothesis</li>
+            <li><strong>Conclusion Phase (5):</strong> Synthesize validated findings</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2>Why This Works</h2>
+
+          <div class="comparison-grid">
+            <div class="comparison-col">
+              <h3>Traditional LLM workflow:</h3>
+              <pre><code>User: "Analyze this and give recommendations"
+Agent: [writes 5000 words of text]
+User: "Uh... is this correct?"
+Agent: "Yes! Trust me!"
+User: "How do I verify?"
+Agent: "...you could manually check everything I said?"</code></pre>
+            </div>
+            <div class="comparison-col">
+              <h3>Test harness workflow:</h3>
+              <pre><code>User: "Run schema optimization workflow"
+Orchestrator: "Creating session directory..."
+Orchestrator: "Phase 1 complete. Report: ./01-analysis.md"
+Orchestrator: "Phase 2 complete. Report: ./02-utilization.md"
+Orchestrator: "Phase 3 complete. Report: ./03-impact.md"
+Orchestrator: "Phase 4 running verification script..."
+Orchestrator: "Script confirmed 21/23 conclusions. Revised 2."
+Orchestrator: "Phase 5 complete. Final JSON: {...}"
+User: "I can inspect all 5 reports. Phase 4 ran real script. Trust verified."</code></pre>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>What You'll Learn</h2>
+          <p>By the end of this lab, you'll be able to:</p>
+          <ol>
+            <li>Understand the test harness pattern and why it's powerful</li>
+            <li>Navigate the reference implementation (schema-optimization)</li>
+            <li>Modify phases and reference docs for your needs</li>
+            <li>Build your own multi-phase workflow from scratch</li>
+            <li>Debug when phases fail or return invalid outputs</li>
+            <li>Deploy production-ready workflows using this pattern</li>
+          </ol>
+        </section>
+
+        <div class="key-insight">
+          <strong>Key Insight:</strong> This pattern turns "LLM wrote some text" into "LLM executed a validated procedure with evidence and structured outputs."
+          <br><br>
+          That's the difference between a chatbot and a production system.
+        </div>
+      </article>
+
+      <!-- Navigation -->
+      <nav class="guide-nav">
+        <div class="nav-prev">
+          {prevGuide ? (
+            <a href={`/learning/${prevGuide.slug}`} class="nav-button">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+              </svg>
+              <div>
+                <span class="nav-label">Previous</span>
+                <span class="nav-title">{prevGuide.title}</span>
+              </div>
+            </a>
+          ) : <div></div>
+          }
+        </div>
+        <div class="nav-next">
+          {nextGuide ? (
+            <a href={`/learning/${nextGuide.slug}`} class="nav-button">
+              <div>
+                <span class="nav-label">Next</span>
+                <span class="nav-title">{nextGuide.title}</span>
+              </div>
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+              </svg>
+            </a>
+          ) : <div></div>
+          }
+        </div>
+      </nav>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .guide-page {
+    min-height: 100vh;
+    background: var(--slate-900);
+  }
+
+  .guide-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  /* Progress Bar */
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--slate-800);
+    border-radius: 2px;
+    margin-bottom: 2rem;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green-500), var(--blue-500));
+    transition: width 0.3s ease;
+  }
+
+  /* Guide Header */
+  .guide-header {
+    margin-bottom: 2rem;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--slate-400);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color var(--transition-fast);
+    margin-bottom: 1rem;
+  }
+
+  .back-link:hover {
+    color: var(--green-400);
+  }
+
+  .back-link svg {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  .guide-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    font-family: var(--font-mono);
+  }
+
+  /* Guide Content */
+  .guide-content {
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    padding: 3rem;
+    margin-bottom: 2rem;
+  }
+
+  .guide-content h1 {
+    font-size: 2.5rem;
+    color: var(--slate-100);
+    margin: 0 0 2rem 0;
+    font-weight: 700;
+  }
+
+  .guide-content h2 {
+    font-size: 1.75rem;
+    color: var(--slate-200);
+    margin: 2.5rem 0 1rem 0;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--slate-700);
+  }
+
+  .guide-content h3 {
+    font-size: 1.25rem;
+    color: var(--slate-300);
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  .guide-content h4 {
+    font-size: 1rem;
+    color: var(--green-400);
+    margin: 0 0 0.5rem 0;
+    font-weight: 600;
+  }
+
+  .guide-content p {
+    color: var(--slate-400);
+    line-height: 1.7;
+    margin: 1rem 0;
+  }
+
+  .guide-content ul,
+  .guide-content ol {
+    color: var(--slate-400);
+    line-height: 1.7;
+    margin: 1rem 0;
+    padding-left: 2rem;
+  }
+
+  .guide-content li {
+    margin: 0.5rem 0;
+  }
+
+  .guide-content code {
+    background: var(--slate-900);
+    color: var(--green-400);
+    padding: 0.2rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+    font-family: var(--font-mono);
+  }
+
+  .guide-content pre {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .guide-content pre code {
+    background: none;
+    padding: 0;
+    color: var(--slate-300);
+  }
+
+  /* Special Boxes */
+  .goal-box {
+    background: var(--blue-500);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(16, 185, 129, 0.2));
+    border-left: 4px solid var(--blue-500);
+    padding: 1rem 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0.375rem;
+    color: var(--slate-200);
+  }
+
+  .key-insight {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(59, 130, 246, 0.2));
+    border-left: 4px solid var(--green-500);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    border-radius: 0.375rem;
+    color: var(--slate-200);
+    font-size: 1.125rem;
+  }
+
+  /* Comparison Grid */
+  .comparison-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .comparison-col {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+  }
+
+  .comparison-col.bad {
+    border-left: 4px solid var(--red-500);
+  }
+
+  .comparison-col.good {
+    border-left: 4px solid var(--green-500);
+  }
+
+  .comparison-col h3 {
+    margin-top: 0;
+    font-size: 1rem;
+  }
+
+  /* Architecture Diagram */
+  .architecture-diagram {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.375rem;
+    padding: 2rem;
+    margin: 1.5rem 0;
+  }
+
+  .phase-box {
+    background: var(--slate-800);
+    border: 2px solid var(--blue-500);
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  .phase-box.orchestrator {
+    border-color: var(--green-500);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), transparent);
+  }
+
+  .phase-box.verification {
+    border-color: var(--yellow-500);
+    background: linear-gradient(135deg, rgba(234, 179, 8, 0.1), transparent);
+  }
+
+  .phase-box h4 {
+    margin: 0 0 0.75rem 0;
+    color: var(--slate-100);
+  }
+
+  .phase-box p {
+    margin: 0;
+    color: var(--slate-400);
+    font-size: 0.875rem;
+  }
+
+  .phase-box ul {
+    margin: 0;
+    padding-left: 1.5rem;
+  }
+
+  .phase-box li {
+    font-size: 0.875rem;
+    color: var(--slate-400);
+  }
+
+  .arrow-down {
+    text-align: center;
+    color: var(--slate-500);
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+  }
+
+  /* Concept Cards */
+  .concept-card {
+    background: var(--slate-900);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.375rem;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .concept-card.highlight {
+    border-color: var(--yellow-500);
+    border-width: 2px;
+  }
+
+  .concept-card h3 {
+    margin-top: 0;
+  }
+
+  .concept-why {
+    color: var(--green-400);
+    font-weight: 500;
+    margin-top: 1rem;
+  }
+
+  /* Guide Navigation */
+  .guide-nav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+
+  .nav-prev {
+    justify-self: start;
+  }
+
+  .nav-next {
+    justify-self: end;
+  }
+
+  .nav-button {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: var(--slate-800);
+    border: 1px solid var(--slate-700);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all var(--transition-base);
+  }
+
+  .nav-button:hover {
+    border-color: var(--green-500);
+    transform: translateY(-2px);
+  }
+
+  .nav-button svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--slate-500);
+  }
+
+  .nav-button div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .nav-label {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .nav-title {
+    font-size: 1rem;
+    color: var(--slate-200);
+    font-weight: 500;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .guide-content {
+      padding: 2rem 1.5rem;
+    }
+
+    .guide-content h1 {
+      font-size: 2rem;
+    }
+
+    .comparison-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .guide-nav {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .nav-prev,
+    .nav-next {
+      justify-self: stretch;
+    }
+  }
+</style>
