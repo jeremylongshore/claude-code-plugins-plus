@@ -7,6 +7,7 @@ import { detectClaudePaths } from './utils/paths.js';
 import { installPlugin } from './commands/install.js';
 import { listPlugins } from './commands/list.js';
 import { doctorCheck } from './commands/doctor.js';
+import { marketplaceCommand, addMarketplace, removeMarketplace } from './commands/marketplace.js';
 import { getVersion } from './utils/version.js';
 
 const program = new Command();
@@ -80,6 +81,49 @@ program
   .action(async (options) => {
     console.log(chalk.yellow('🚧 Analytics functionality coming soon!'));
     console.log(chalk.gray('This will show plugin usage, performance, and cost metrics'));
+  });
+
+// Marketplace command
+program
+  .command('marketplace')
+  .description('Manage marketplace connection')
+  .option('--verify', 'Verify marketplace installation')
+  .action(async (options) => {
+    try {
+      const paths = await detectClaudePaths();
+      await marketplaceCommand(paths, options);
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+      process.exit(1);
+    }
+  });
+
+// Marketplace add subcommand
+program
+  .command('marketplace-add')
+  .description('Add the marketplace to Claude Code')
+  .action(async () => {
+    try {
+      const paths = await detectClaudePaths();
+      await addMarketplace(paths);
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+      process.exit(1);
+    }
+  });
+
+// Marketplace remove subcommand
+program
+  .command('marketplace-remove')
+  .description('Remove the marketplace from Claude Code')
+  .action(async () => {
+    try {
+      const paths = await detectClaudePaths();
+      await removeMarketplace(paths);
+    } catch (error) {
+      console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
+      process.exit(1);
+    }
   });
 
 program.parse();

@@ -148,6 +148,75 @@ View plugin usage analytics (Coming Soon).
 **Options:**
 - `--json` - Output as JSON
 
+### `ccp marketplace`
+
+Manage marketplace connection and setup.
+
+**Options:**
+- `--verify` - Verify marketplace installation and show detailed status
+
+**Example:**
+```bash
+# Check marketplace status
+npx @claude-code-plugins/ccp marketplace
+
+# Verify installation with detailed diagnostics
+npx @claude-code-plugins/ccp marketplace --verify
+```
+
+**Sample Output (Not Installed):**
+```
+📦 Claude Code Plugins Marketplace
+
+⚠️  Marketplace not added yet
+
+📋 Setup Instructions:
+
+1. Open Claude Code (terminal or desktop app)
+2. Run this command:
+
+   /plugin marketplace add jeremylongshore/claude-code-plugins
+
+3. Wait for confirmation (usually < 5 seconds)
+4. Verify installation:
+
+   npx @claude-code-plugins/ccp marketplace --verify
+```
+
+**Sample Output (Installed):**
+```
+📦 Claude Code Plugins Marketplace
+
+✓ Marketplace is already added!
+
+🔍 Marketplace Status:
+
+Installation:
+  ✓ Marketplace added
+  Location: /home/user/.claude/marketplaces/claude-code-plugins-plus
+
+  ✓ Catalog found
+  File: /home/user/.claude/marketplaces/claude-code-plugins-plus/.claude-plugin/marketplace.json
+```
+
+### `ccp marketplace-add`
+
+Guide you through adding the marketplace to Claude Code.
+
+**Example:**
+```bash
+npx @claude-code-plugins/ccp marketplace-add
+```
+
+### `ccp marketplace-remove`
+
+Guide you through removing the marketplace from Claude Code.
+
+**Example:**
+```bash
+npx @claude-code-plugins/ccp marketplace-remove
+```
+
 ## Package Manager Performance
 
 | Package Manager | Startup Time | Market Share |
