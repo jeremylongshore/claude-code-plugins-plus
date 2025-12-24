@@ -4781,6 +4781,32 @@
         "name": "Luke Steuber",
         "url": "https://github.com/lukeslp"
       }
+    },
+    {
+      "name": "sprint",
+      "source": "./plugins/community/sprint",
+      "description": "Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend, frontend, QA, UI testing) handle implementation through self-iterating convergent loops.",
+      "version": "1.0.0",
+      "category": "development",
+      "keywords": [
+        "autonomous",
+        "agentic",
+        "yolo",
+        "self-iterating",
+        "multi-agent",
+        "hands-off",
+        "auto-pilot",
+        "orchestration",
+        "sprint",
+        "testing",
+        "qa",
+        "mcp"
+      ],
+      "author": {
+        "name": "Damien Laine",
+        "email": "damien.laine@gmail.com",
+        "url": "https://github.com/damienlaine"
+      }
     }
   ]
 }
