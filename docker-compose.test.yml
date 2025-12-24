@@ -1,0 +1,84 @@
+version: '3.9'
+
+# Docker Compose configuration for testing suite
+# Provides isolated test environments for different scenarios
+
+services:
+  # Primary test environment - full build and validation
+  test-full:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: test
+    image: claude-plugins-test:latest
+    container_name: claude-plugins-test-full
+    environment:
+      NODE_ENV: test
+      CI: "true"
+    volumes:
+      - ./test-results:/app/test-results
+    command: >
+      bash -c "
+        echo 'Running full test suite...' &&
+        mkdir -p /app/test-results &&
+        pnpm test 2>&1 | tee /app/test-results/test-output.log &&
+        pnpm lint 2>&1 | tee /app/test-results/lint-output.log &&
+        pnpm typecheck 2>&1 | tee /app/test-results/typecheck-output.log
+      "
+
+  # Production test - minimal footprint
+  test-production:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: production-test
+    image: claude-plugins-test-prod:latest
+    container_name: claude-plugins-test-prod
+    environment:
+      NODE_ENV: production
+    volumes:
+      - ./test-results:/app/test-results
+    healthcheck:
+      test: ["CMD", "pnpm", "--version"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    command: >
+      bash -c "
+        echo 'Production environment test' &&
+        echo 'Node version:' && node --version &&
+        echo 'Pnpm version:' && pnpm --version &&
+        echo 'Disk usage:' && du -sh /app &&
+        echo 'Environment OK'
+      "
+
+  # Validation-only test
+  test-validation:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+      target: builder
+    image: claude-plugins-validate:latest
+    container_name: claude-plugins-test-validate
+    environment:
+      NODE_ENV: test
+    volumes:
+      - ./test-results:/app/test-results
+      - ./scripts:/app/scripts
+      - ./.claude-plugin:/app/.claude-plugin
+      - ./plugins:/app/plugins
+    command: >
+      bash -c "
+        echo 'Running validation suite...' &&
+        mkdir -p /app/test-results &&
+        bash /app/scripts/validate-all-plugins.sh 2>&1 | tee /app/test-results/validation-output.log
+      "
+
+volumes:
+  test-results:
+    driver: local
+
+networks:
+  default:
+    name: claude-plugins-test-network
