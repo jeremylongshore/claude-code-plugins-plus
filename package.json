@@ -2,6 +2,7 @@
   "name": "claude-code-plugins-monorepo",
   "version": "4.3.0",
   "private": true,
+  "packageManager": "pnpm@9.15.9",
   "description": "Claude Code plugins workspace - simple plugins + MCP servers",
   "scripts": {
     "dev": "pnpm --filter '*' dev --parallel",
