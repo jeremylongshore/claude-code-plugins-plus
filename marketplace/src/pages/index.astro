@@ -17,7 +17,7 @@ import StackBuilder from '../components/StackBuilder.astro';
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Claude Code Plugins Marketplace",
-      "description": "Browse 258 plugins with embedded agent skills for Claude Code. Interactive tutorials, production workflows, and 2025 schema support.",
+      "description": "Search 244 agent skills with fuzzy search. Browse 259 plugins. Interactive tutorials and production workflows.",
       "url": "https://claudecodeplugins.io",
       "potentialAction": {
         "@type": "SearchAction",
@@ -1293,8 +1293,8 @@ import StackBuilder from '../components/StackBuilder.astro';
             Claude Code Skills
         </a>
         <ul class="nav-links">
-            <li><a href="#skills">AI Skills</a></li>
-            <li><a href="#features">Features</a></li>
+            <li><a href="/skills/">Skills</a></li>
+            <li><a href="/learning/">Learning</a></li>
             <li><a href="#categories">All Plugins</a></li>
             <li><a href="#process">Get Started</a></li>
             <li><a href="https://www.buymeacoffee.com/jeremylongshore" target="_blank">Sponsor</a></li>
@@ -1306,16 +1306,16 @@ import StackBuilder from '../components/StackBuilder.astro';
         <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
         <p class="hero-subtitle">
-            Discover 258 plugins with 241 embedded AI Skills that activate automatically to supercharge your Claude Code workflow. From auto-activating skills to powerful commands — all open source and ready to use.
+            Search 244 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready.
         </p>
 
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stats-number">241</div>
-                <div class="stat-label">AI Skills</div>
+                <div class="stats-number">244</div>
+                <div class="stat-label">Searchable Skills</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">258</div>
+                <div class="stats-number">259</div>
                 <div class="stat-label">Total Plugins</div>
             </div>
             <div class="stat-item">
@@ -1323,19 +1323,19 @@ import StackBuilder from '../components/StackBuilder.astro';
                 <div class="stat-label">Categories</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">6</div>
-                <div class="stat-label">MCP Servers</div>
+                <div class="stats-number">521</div>
+                <div class="stat-label">Live Routes</div>
             </div>
         </div>
 
         <div class="hero-cta-group">
-            <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-primary">
-                Get Plugins with Skills
+            <a href="/skills/" class="btn-primary">
+                Browse Skills Directory
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M5 12h14M12 5l7 7-7 7"/>
                 </svg>
             </a>
-            <a href="#skills" class="btn-secondary">How Skills Work</a>
+            <a href="/learning/" class="btn-secondary">Learning Hub</a>
         </div>
 
         <div class="install-box">
@@ -1362,6 +1362,65 @@ import StackBuilder from '../components/StackBuilder.astro';
                     <span class="code-comment">// 240 AI Skills (embedded in plugins) activate automatically</span>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- What's Live Now Section -->
+    <section class="features" style="padding: 4rem 2rem; background: white;">
+        <div class="section-label">What's Live Now</div>
+        <h2 class="section-title">Production Features Ready to Use</h2>
+
+        <div class="features-grid" style="max-width: 1200px; margin: 0 auto; margin-top: 3rem;">
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <h3>Skills Directory</h3>
+                <p>244 Agent Skills with instant fuzzy search, smart filters, and detailed documentation. Find exactly what you need in seconds.</p>
+                <a href="/skills/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600; font-family: 'Poppins', sans-serif; display: inline-block; margin-top: 0.5rem;">Browse Skills →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Learning Hub</h3>
+                <p>Interactive tutorials, hands-on exercises, and production workflow patterns. Learn by building real projects.</p>
+                <a href="/learning/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600; font-family: 'Poppins', sans-serif; display: inline-block; margin-top: 0.5rem;">Start Learning →</a>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🗺️</div>
+                <h3>521 Live Routes</h3>
+                <p>Complete static site with skills catalog, plugin pages, learning resources, and category indexes. Zero build errors.</p>
+                <a href="/skills/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600; font-family: 'Poppins', sans-serif; display: inline-block; margin-top: 0.5rem;">Explore →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Start Here Quick Links -->
+    <section class="features" style="padding: 3rem 2rem; background: var(--brand-light);">
+        <div class="section-label">Start Here</div>
+        <h2 class="section-title">Quick Navigation</h2>
+
+        <div class="features-grid" style="max-width: 900px; margin: 0 auto; margin-top: 2rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <a href="/skills/" style="text-decoration: none;">
+                <div class="feature-card" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="feature-icon">🎯</div>
+                    <h3 style="color: var(--brand-dark);">Skills</h3>
+                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Search 244 agent skills</p>
+                </div>
+            </a>
+            <a href="/learning/" style="text-decoration: none;">
+                <div class="feature-card" style="cursor: pointer; transition: transform 0.2s;">
+                    <div class="feature-icon">🧪</div>
+                    <h3 style="color: var(--brand-dark);">Learning</h3>
+                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Interactive tutorials</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Why This Exists -->
+    <section style="padding: 3rem 2rem; background: white; text-align: center;">
+        <div style="max-width: 800px; margin: 0 auto;">
+            <p style="font-size: 1.1rem; line-height: 1.8; color: var(--brand-dark);">
+                Built to solve real problems: finding skills fast, learning proven patterns, and shipping production code. No hype, no fluff—just tools that work.
+            </p>
         </div>
     </section>
 
