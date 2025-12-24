@@ -4,6 +4,11 @@ Comprehensive technical guides for building production-grade Claude Code plugin 
 
 ## 📚 Complete Playbook Collection
 
+### AI Architecture & Tool Use
+
+**[11. Advanced Tool Use](./11-advanced-tool-use.md)** (~6,500 words) ⭐ NEW
+Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture.
+
 ### Cost Management & Optimization
 
 **[01. Multi-Agent Rate Limits](./01-multi-agent-rate-limits.md)** (~2,800 words)
@@ -44,11 +49,11 @@ Team standardization and collaboration. Plugin bundles, workflow templates, auto
 
 ## 📊 Statistics
 
-- **Total Content**: ~47,000 words across 10 playbooks
-- **Average Length**: 4,700 words per playbook (range: 2,800 - 6,000 words)
-- **Code Examples**: 100+ production-ready TypeScript implementations
-- **Topics Covered**: 50+ production patterns
-- **Coverage Areas**: Cost, Infrastructure, Operations, Compliance
+- **Total Content**: ~53,500 words across 11 playbooks
+- **Average Length**: 4,900 words per playbook (range: 2,800 - 6,500 words)
+- **Code Examples**: 120+ production-ready TypeScript implementations
+- **Topics Covered**: 60+ production patterns
+- **Coverage Areas**: AI Architecture, Cost, Infrastructure, Operations, Compliance
 
 ## 🎯 Use Cases
 
@@ -88,6 +93,12 @@ Start with:
 1. **Team Presets** (08) - Understand collaboration patterns
 2. **MCP Reliability** (03) - Core plugin architecture
 3. **Progressive Enhancement** (10) - Safe rollout strategies
+
+### Building Large-Scale Agent Systems?
+Essential path:
+1. **Advanced Tool Use** (11) - Dynamic discovery, programmatic orchestration ⭐ NEW
+2. **Multi-Agent Rate Limits** (01) - Prevent API throttling
+3. **Cost Attribution** (09) - Track usage across features
 
 ### Building Production Systems?
 Focus on:

@@ -389,7 +389,8 @@ cp -r templates/command-plugin my-awesome-plugin
 - [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
 
 ### Production Playbooks
-- [Production Playbooks Index](playbooks/README.md) - 10 comprehensive guides (~47,000 words)
+- [Production Playbooks Index](playbooks/README.md) - 11 comprehensive guides (~53,500 words)
+- [Advanced Tool Use](playbooks/11-advanced-tool-use.md) - Dynamic discovery & programmatic orchestration ⭐ NEW
 - [Multi-Agent Rate Limits](playbooks/01-multi-agent-rate-limits.md) - Prevent API throttling
 - [Cost Caps & Budget Management](playbooks/02-cost-caps.md) - Control AI spending
 - [MCP Server Reliability](playbooks/03-mcp-reliability.md) - Self-healing MCP servers
