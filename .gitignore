@@ -86,3 +86,11 @@ packages/**/.npmrc
 workspace/
 .venv
 .venv/
+
+# Beads task management (development tooling only - never ship to production)
+.beads/
+.beads/*.db
+.beads/*.db-wal
+.beads/*.db-shm
+.beads/daemon.*
+.beads/.local_version

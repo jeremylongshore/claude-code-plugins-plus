@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 258,
+    "totalPlugins": 259,
     "skillsEnabled": 241,
     "lastUpdated": "2025-12-21"
   },
@@ -3157,6 +3157,33 @@
       }
     },
     {
+      "name": "ollama-local-ai",
+      "source": "./plugins/ai-ml/ollama-local-ai",
+      "description": "Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI infrastructure.",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "ollama",
+        "local-llm",
+        "free-ai",
+        "self-hosted",
+        "llama",
+        "mistral",
+        "privacy",
+        "zero-cost",
+        "openai-alternative"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 1,
+        "commands": 1,
+        "total": 2
+      }
+    },
+    {
       "name": "nosql-data-modeler",
       "source": "./plugins/database/nosql-data-modeler",
       "description": "Database plugin for nosql-data-modeler",
@@ -3856,10 +3883,10 @@
       }
     },
     {
-      "name": "skills-powerkit",
-      "source": "./plugins/examples/skills-powerkit",
-      "description": "Ultimate plugin management toolkit with 5 Agent Skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
-      "version": "1.0.0",
+      "name": "jeremy-plugin-tool",
+      "source": "./plugins/examples/jeremy-plugin-tool",
+      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "version": "2.0.0",
       "category": "example",
       "keywords": [
         "skills",

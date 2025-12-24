@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 258,
+    "totalPlugins": 259,
     "skillsEnabled": 241,
     "lastUpdated": "2025-12-21"
   },
@@ -3085,6 +3085,28 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      }
+    },
+    {
+      "name": "ollama-local-ai",
+      "source": "./plugins/ai-ml/ollama-local-ai",
+      "description": "Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI infrastructure.",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "ollama",
+        "local-llm",
+        "free-ai",
+        "self-hosted",
+        "llama",
+        "mistral",
+        "privacy",
+        "zero-cost",
+        "openai-alternative"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       }
     },
     {

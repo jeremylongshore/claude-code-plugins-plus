@@ -1,14 +1,25 @@
 {
+  "description": "Automatically validates GitHub Actions workflows for GCP deployments with Workload Identity Federation best practices",
+  "version": "2.0.0",
+  "author": "Jeremy Longshore",
+  "lastUpdated": "2025-12-22",
   "hooks": {
     "PreToolUse": [
       {
-        "matchers": [
+        "description": "Validate GitHub Actions workflow files before writing",
+        "matcher": "Write|Edit",
+        "filePattern": ".github/workflows/*.{yml,yaml}",
+        "priority": 100,
+        "enabled": true,
+        "hooks": [
           {
-            "tools": ["Write", "Edit"],
-            "filePatterns": [".github/workflows/*.yml", ".github/workflows/*.yaml"]
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-workflow.sh",
+            "description": "Validates GCP Workload Identity Federation configuration and best practices",
+            "timeout": 10000,
+            "continueOnError": false
           }
-        ],
-        "command": "${CLAUDE_PLUGIN_ROOT}/scripts/validate-workflow.sh"
+        ]
       }
     ]
   }

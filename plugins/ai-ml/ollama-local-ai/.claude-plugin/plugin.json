@@ -1,0 +1,21 @@
+{
+  "name": "ollama-local-ai",
+  "version": "1.0.0",
+  "description": "Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI infrastructure.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "keywords": [
+    "ollama",
+    "local-llm",
+    "free-ai",
+    "self-hosted",
+    "llama",
+    "mistral",
+    "privacy",
+    "zero-cost",
+    "openai-alternative"
+  ]
+}

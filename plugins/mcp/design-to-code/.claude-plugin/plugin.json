@@ -16,8 +16,5 @@
     "svelte",
     "a11y",
     "mcp"
-  ],
-  "mcp": {
-    "server": "servers/design-converter.ts"
-  }
+  ]
 }

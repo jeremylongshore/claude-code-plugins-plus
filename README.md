@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/version-4.0.0-brightgreen)](CHANGELOG.md)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-240%20Skills-orange?logo=sparkles)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
-[![2025 Schema](https://img.shields.io/badge/2025%20Schema-100%25%20Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
+[![2025 Schema](https://img.shields.io/badge/2025%20Schema-Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
 [![Tool Permissions](https://img.shields.io/badge/Tool%20Permissions-Secured-blueviolet?logo=shield)](tutorials/skills/02-skill-anatomy.ipynb)
 [![Interactive Tutorials](https://img.shields.io/badge/Tutorials-11%20Notebooks-yellow?logo=jupyter)](tutorials/README.md)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
@@ -48,11 +48,11 @@
 
 ---
 
-**🎯 240 Agent Skills & 258 Plugins for Claude Code - The largest collection of production-ready AI automation tools**
+**Claude Code plugins with embedded agent skills and interactive tutorials**
 
-🎓 **NEW in v4.0.0:** **Complete Learning Lab** - Build production agent workflows with empirical verification. 90+ pages of guides including definitive orchestration pattern reference, complete 5-phase implementation, working verification scripts, hands-on exercises, and visual architecture diagrams.
+**v4.0.0:** Learning Lab with interactive tutorials, comprehensive guides, and production workflow patterns.
 
-**Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0) - Test Harness Pattern learning system teaches you to turn "LLM analyzed" into "LLM + script verified with evidence"
+**Latest:** [v4.0.0 Release](https://github.com/jeremylongshore/claude-code-plugins/releases/tag/v4.0.0)
 
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
@@ -67,6 +67,7 @@
 
 **Huge thanks to our community contributors who make this marketplace better:**
 
+- **[@TomLucidor](https://github.com/TomLucidor) (Tom)** - 🏆 **TRANSPARENCY CHAMPION:** His simple question *"Which plugins require paid APIs vs free/self-hosted?"* sparked the entire "Make All Plugins Free" initiative (v4.1.0). His follow-up about rate limits and registration requirements drove **2,400+ lines** of comprehensive constraint documentation across 6 plugins (v4.3.0). Tom doesn't write code, but he keeps projects honest by asking the questions users are afraid to ask. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
 - **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the complete Learning Lab system (v4.0.0). His insights on empirical verification transformed how we teach agent development.
 - **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🎉 **MASSIVE CONTRIBUTION:** Created geepers-agents with **51 specialized agents** for development workflows, deployment, quality audits, research, and game development - the largest single plugin contribution to date! ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
 - **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
@@ -121,7 +122,7 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
 
 ### Quick Stats
 - **185 Skills** equipped across plugins
-- **100% Anthropic 2025 Schema** compliant
+- **2025 Schema:** Validated against Anthropic standards
 - **Average skill size:** 3.2KB of intelligent automation
 - **Categories covered:** 18 specialized domains
 

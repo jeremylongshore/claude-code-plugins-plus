@@ -14,6 +14,199 @@ Make.com (formerly Integromat) is a powerful visual automation platform:
 -  **Scalable** - Handle complex multi-step workflows
 - ️ **Built-in Error Handling** - Visual error routes
 
+## FREE Alternative: Use n8n + Ollama (Self-Hosted)
+
+**Want the same power without monthly costs?** Use n8n (self-hosted) + Ollama (local LLM) for $0/month.
+
+### Quick Comparison
+
+| Component | Paid (Make.com) | FREE (n8n + Ollama) |
+|-----------|----------------|---------------------|
+| **Automation Platform** | Make.com: $9-29/mo | n8n: $0 (self-hosted) |
+| **AI Provider** | OpenAI: $30-60/mo | Ollama: $0 (local) |
+| **Total Monthly Cost** | **$39-89/mo** | **$0/mo** |
+| **Operations Limit** | 10,000/mo | Unlimited |
+| **Privacy** | Data sent to Make.com | 100% local |
+| **Hosting** | Managed SaaS | Docker/K8s |
+
+**Savings: $468-1,068/year** (enough to buy new hardware!)
+
+### Why n8n + Ollama?
+
+**n8n (Self-Hosted Automation)**:
+- Visual workflow builder (same as Make.com)
+- 400+ integrations (vs Make's 1000+, but covers 90% of use cases)
+- Advanced error handling
+- Self-hosted = unlimited operations
+- Open-source = community support
+
+**Ollama (Local LLM)**:
+- Runs Llama 3.2, Mistral, CodeLlama locally
+- No API keys required
+- Privacy-first (data never leaves your machine)
+- Free forever
+
+### Setup Guide
+
+#### 1. Install n8n (Docker)
+
+```bash
+# Create docker-compose.yml
+cat > docker-compose.yml <<'EOF'
+version: '3'
+services:
+  n8n:
+    image: n8nio/n8n
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=changeme
+    volumes:
+      - ~/.n8n:/home/node/.n8n
+EOF
+
+# Start n8n
+docker-compose up -d
+
+# Access at http://localhost:5678
+```
+
+#### 2. Install Ollama
+
+```bash
+# macOS
+brew install ollama
+brew services start ollama
+
+# Linux
+curl -fsSL https://ollama.com/install.sh | sh
+
+# Pull AI model (4GB download)
+ollama pull llama3.2
+```
+
+See [ollama-local-ai](../../../ai-ml/ollama-local-ai/) plugin for detailed setup.
+
+#### 3. Connect Ollama to n8n
+
+In n8n, use the **HTTP Request** node:
+
+```json
+{
+  "method": "POST",
+  "url": "http://localhost:11434/api/generate",
+  "body": {
+    "model": "llama3.2",
+    "prompt": "{{ $json.input }}",
+    "stream": false
+  }
+}
+```
+
+### Migration Examples
+
+#### Before (Make.com + OpenAI)
+
+**Cost:** $9/mo + $30/mo = **$39/mo**
+
+```
+Trigger: Gmail New Email
+↓
+Action: OpenAI Chat Completion ($0.002/request)
+↓
+Action: Gmail Send Reply
+↓
+Action: Google Sheets Add Row
+```
+
+#### After (n8n + Ollama)
+
+**Cost:** $0/mo + $0/mo = **$0/mo**
+
+```
+Trigger: Gmail New Email (n8n)
+↓
+HTTP Request: Ollama Chat (localhost:11434)
+↓
+Action: Gmail Send Reply (n8n)
+↓
+Action: Google Sheets Add Row (n8n)
+```
+
+**Same functionality, zero cost.**
+
+### Real Use Case: AI Email Assistant
+
+#### Make.com + OpenAI Version
+- Make.com Core: $9/mo
+- OpenAI API: ~$30/mo (1000 emails)
+- **Total: $39/mo**
+
+#### n8n + Ollama Version
+```javascript
+// n8n HTTP Request Node
+{
+  "method": "POST",
+  "url": "http://localhost:11434/api/generate",
+  "body": {
+    "model": "llama3.2",
+    "prompt": "Reply professionally to: {{ $json.emailBody }}",
+    "stream": false
+  }
+}
+```
+- n8n (self-hosted): $0
+- Ollama (local): $0
+- **Total: $0/mo**
+
+**Same AI quality, $468/year saved.**
+
+### n8n Workflow Templates
+
+**Available in [n8n-workflow-designer](../../n8n-workflow-designer/) plugin:**
+- AI email automation
+- Lead scoring & routing
+- Content distribution
+- Document processing
+- Support ticket triage
+
+### Performance Comparison
+
+| Metric | Make.com + OpenAI | n8n + Ollama |
+|--------|-------------------|--------------|
+| **Response Time** | 2-5s (API latency) | 1-3s (local LLM) |
+| **Uptime** | 99.9% (SaaS) | 100% (self-hosted) |
+| **Privacy** | Data sent to cloud | 100% local |
+| **Operations/month** | 10,000 limit | Unlimited |
+| **Cost** | $39-89/mo | $0/mo |
+
+### When to Use Make.com vs n8n
+
+**Use Make.com if:**
+- You need 1000+ integrations (vs n8n's 400+)
+- You prefer managed hosting (no DevOps)
+- Your team is non-technical
+- Budget allows $39-89/month
+
+**Use n8n + Ollama if:**
+- You want unlimited operations
+- You need privacy/compliance (HIPAA, GDPR)
+- You have basic Docker skills
+- You want to save $468-1,068/year
+
+### Resources
+
+- **n8n Docs:** [docs.n8n.io](https://docs.n8n.io)
+- **Ollama Setup:** Use `/setup-ollama` command from [ollama-local-ai](../../../ai-ml/ollama-local-ai/) plugin
+- **n8n Workflows:** Install [n8n-workflow-designer](../../n8n-workflow-designer/) plugin
+- **Migration Guide:** [n8n vs Make.com](https://docs.n8n.io/integrations/make-to-n8n/)
+
+**Bottom Line:** If you're comfortable with Docker and want to save $468+/year, n8n + Ollama is the superior choice.
+
+---
+
 ## Installation
 
 ```bash
