@@ -28,12 +28,20 @@
   <div id="stack-items" class="stack-items"></div>
 
   <div id="stack-footer" class="stack-footer">
-    <button id="clear-stack" class="btn-secondary">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
-      </svg>
-      Clear All
-    </button>
+    <div class="footer-row">
+      <button id="share-stack" class="btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" d="M15.75 4.5a3 3 0 11.825 2.066l-8.421 4.679a3.002 3.002 0 010 1.51l8.421 4.679a3 3 0 11-.729 1.31l-8.421-4.678a3 3 0 110-4.132l8.421-4.679a3 3 0 01-.096-.755z" clip-rule="evenodd" />
+        </svg>
+        Share Stack
+      </button>
+      <button id="clear-stack" class="btn-secondary">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
+        </svg>
+        Clear All
+      </button>
+    </div>
     <button id="copy-commands" class="btn-primary">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
         <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />
@@ -213,6 +221,15 @@
     display: flex;
   }
 
+  .footer-row {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .footer-row .btn-secondary {
+    flex: 1;
+  }
+
   .btn-primary, .btn-secondary {
     padding: 0.75rem 1rem;
     border: none;
@@ -270,6 +287,29 @@
       max-height: 100vh;
     }
   }
+
+  /* Toast animations */
+  @keyframes toast-slide-up {
+    from {
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes toast-slide-down {
+    from {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-50%) translateY(100px);
+      opacity: 0;
+    }
+  }
 </style>
 
 <script>
@@ -285,10 +325,37 @@
     private readonly STORAGE_KEY = 'ccp-plugin-stack';
 
     constructor() {
+      this.loadFromURL();  // Load from URL first (overrides localStorage)
       this.loadFromStorage();
       this.initializeEventListeners();
       this.restoreCheckboxStates();
       this.updateUI();
+    }
+
+    private loadFromURL(): void {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        const pluginIds = params.get('stack');
+
+        if (pluginIds) {
+          const names = pluginIds.split(',').map(id => id.trim()).filter(Boolean);
+
+          // Pre-select these plugins
+          setTimeout(() => {
+            names.forEach(name => {
+              const checkbox = document.querySelector(
+                `.stack-select[data-plugin-name="${name}"]`
+              ) as HTMLInputElement;
+              if (checkbox && !checkbox.checked) {
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+              }
+            });
+          }, 100); // Small delay to ensure DOM is ready
+        }
+      } catch (e) {
+        console.error('Failed to load from URL:', e);
+      }
     }
 
     private loadFromStorage(): void {
@@ -334,6 +401,11 @@
       // Copy commands button
       document.getElementById('copy-commands')?.addEventListener('click', () => {
         this.copyCommands();
+      });
+
+      // Share stack button
+      document.getElementById('share-stack')?.addEventListener('click', () => {
+        this.shareStack();
       });
     }
 
@@ -460,6 +532,68 @@
           }, 2000);
         }
       });
+    }
+
+    private shareStack(): void {
+      if (this.stack.length === 0) return;
+
+      // Generate shareable URL
+      const pluginNames = this.stack.map(p => p.name).join(',');
+      const baseUrl = window.location.origin + window.location.pathname;
+      const shareUrl = `${baseUrl}?stack=${encodeURIComponent(pluginNames)}`;
+
+      // Copy URL to clipboard
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const btn = document.getElementById('share-stack');
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+            </svg>
+            Link Copied!
+          `;
+          setTimeout(() => {
+            btn.innerHTML = original;
+          }, 2000);
+        }
+
+        // Show toast notification with URL
+        this.showToast(`Shareable link copied! (${this.stack.length} plugins)`);
+      }).catch(() => {
+        alert(`Share this link:\n\n${shareUrl}`);
+      });
+    }
+
+    private showToast(message: string): void {
+      // Create toast element
+      const toast = document.createElement('div');
+      toast.className = 'share-toast';
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--green-500);
+        color: var(--slate-950);
+        padding: 1rem 1.5rem;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        font-size: 0.875rem;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        animation: toast-slide-up 0.3s ease;
+      `;
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.animation = 'toast-slide-down 0.3s ease';
+        setTimeout(() => {
+          document.body.removeChild(toast);
+        }, 300);
+      }, 3000);
     }
   }
 
