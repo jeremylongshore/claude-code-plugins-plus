@@ -34,11 +34,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Claude Code plugins marketplace and learning hub. 258 plugins across 18 categories with 241 Agent Skills. Live at https://claudecodeplugins.io/
+Claude Code plugins marketplace and learning hub. 259 plugins across 18 categories with 241 Agent Skills. Live at https://claudecodeplugins.io/
 
-**Monorepo structure:** pnpm workspaces with MCP plugins in `plugins/mcp/*` and Astro website in `marketplace/`.
+**Monorepo structure:** pnpm workspaces (v9.15.9+) with:
+- 7 MCP server plugins in `plugins/mcp/*` (TypeScript/Node.js)
+- 252 instruction-based plugins in `plugins/[category]/*` (Markdown)
+- Astro website in `marketplace/` (uses npm, not pnpm)
+- Shared packages in `packages/` (CLI, validator, analytics)
 
-**Important:** This repository uses **pnpm workspaces**, not npm. Always use `pnpm` commands, not `npm` (except in `marketplace/` which uses npm).
+**Package Manager Rules:**
+- **Root & workspaces:** Use `pnpm` (enforced via CI)
+- **Marketplace only:** Use `npm` (separate project)
+- **Never use:** `npm` or `yarn` in workspace root (CI fails)
 
 ## Learning Lab
 
@@ -68,19 +75,44 @@ Claude Code plugins marketplace and learning hub. 258 plugins across 18 categori
 
 ## Essential Commands
 
-### Before ANY Commit
+### Most Common Operations
+```bash
+# Before ANY commit (MANDATORY)
+pnpm run sync-marketplace           # Sync catalog files
+./scripts/validate-all-plugins.sh   # Full validation (or use quick-test.sh)
+git add .claude-plugin/marketplace.json  # Commit BOTH catalog files
+
+# Quick development workflow
+pnpm install                        # Fresh install (uses frozen lockfile)
+pnpm build                          # Build all packages
+pnpm test                           # Run all tests
+bash scripts/quick-test.sh          # Fast pre-commit check (~30s)
+
+# Local plugin testing
+/plugin marketplace add /home/jeremy/000-projects/claude-code-plugins
+/plugin install [plugin-name]@claude-code-plugins-plus
+```
+
+### Before ANY Commit (Detailed)
 ```bash
 pnpm run sync-marketplace           # Regenerates marketplace.json from .extended.json
-./scripts/validate-all-plugins.sh   # Full validation suite
+./scripts/validate-all-plugins.sh   # Full validation suite (or quick-test.sh)
 ```
 
 ### Build & Test
 ```bash
-pnpm install                        # Install all dependencies
+pnpm install                        # Install all dependencies (frozen lockfile in CI)
 pnpm build                          # Build all MCP plugins
 pnpm test                           # Run all tests
 pnpm typecheck                      # TypeScript validation
 pnpm lint                           # ESLint
+```
+
+### Quick Testing
+```bash
+bash scripts/quick-test.sh          # Fast validation (~30s)
+bash scripts/test-clean-environment.sh  # Full clean environment test (~2-5 min)
+bash scripts/test-docker-suite.sh   # Docker-based isolated test (~5-10 min)
 ```
 
 ### Single MCP Plugin Development
@@ -106,7 +138,93 @@ npm run preview                     # Test production build locally
 python3 scripts/validate-skills-schema.py            # Skills 2025 schema compliance
 python3 scripts/validate-frontmatter.py              # Markdown frontmatter validation
 node scripts/validate-plugin.js                      # Plugin structure validation
+node scripts/check-package-manager.mjs               # Enforce pnpm (CI critical)
+node scripts/check-routes.mjs                        # Marketplace route verification
+node scripts/check-performance.mjs                   # Website performance budget
 ```
+
+## Workspace Structure
+
+**pnpm Workspaces** (defined in `pnpm-workspace.yaml`):
+
+```yaml
+packages:
+  - 'plugins/mcp/*'           # 7 MCP server plugins (independent packages)
+  - 'marketplace'             # Astro website (uses npm internally)
+  - 'packages/cli'            # CLI tool (published to npm)
+  - 'packages/analytics-daemon'  # Analytics service
+```
+
+**Root Scripts** (package.json):
+- `pnpm dev` → Runs all workspace dev servers in parallel
+- `pnpm build` → Builds all workspace packages
+- `pnpm test` → Runs all workspace tests
+- `pnpm lint` → Lints all workspace packages
+- `pnpm typecheck` → TypeScript validation across workspaces
+- `pnpm run sync-marketplace` → **CRITICAL:** Syncs catalog files
+
+**Package Manager Enforcement:**
+- **Enforced:** pnpm@9.15.9 (via packageManager field in package.json)
+- **CI Check:** `node scripts/check-package-manager.mjs` (fails if npm/yarn used)
+- **Exception:** `marketplace/` directory uses npm (separate project)
+
+## Shared Packages
+
+**Location:** `packages/` (pnpm workspace)
+
+### 1. CLI Tool (`packages/cli/`)
+- **Package:** `@claude-code-plugins/ccp`
+- **Published to:** npm registry
+- **Framework:** Commander 12.1.0
+- **Commands:** `ccp --version`, `ccp --help`, `ccp doctor --json`
+- **Testing:** Cross-platform (Ubuntu, macOS, Windows) × 3 Node versions
+- **Build:** TypeScript → `dist/index.js` (executable with shebang)
+
+### 2. Plugin Validator (`packages/plugin-validator/`)
+- **Purpose:** Shared validation logic
+- **Used by:** Validation scripts, CI workflows
+- **Features:** Schema validation, frontmatter parsing, security scanning
+
+### 3. Analytics Daemon (`packages/analytics-daemon/`)
+- **Purpose:** Analytics collection for marketplace
+- **Type:** Background service
+- **Integration:** Website + plugin installations
+
+## Testing Infrastructure
+
+**Three-tier testing strategy:**
+
+### 1. Quick Test (`scripts/quick-test.sh`)
+- **Duration:** ~30 seconds
+- **Purpose:** Fast pre-commit validation
+- **Checks:** JSON syntax, marketplace sync, basic structure
+
+### 2. Clean Environment Test (`scripts/test-clean-environment.sh`)
+- **Duration:** 2-5 minutes
+- **Purpose:** Full validation in isolated environment
+- **Isolation:** Uses `/tmp/` directory (no Docker)
+- **Tests:** Install, build, test, lint, typecheck, validation, security
+- **Output:** `test-results/*.log` files
+- **Cross-platform:** Linux, macOS, Windows (WSL2)
+
+### 3. Docker Test Suite (`scripts/test-docker-suite.sh`)
+- **Duration:** 5-10 minutes (first build), 1-2 min (cached)
+- **Purpose:** Completely isolated reproducible testing
+- **Dockerfile:** `Dockerfile.test` (multi-stage)
+- **Docker Compose:** `docker-compose.test.yml` (3 services)
+- **Targets:**
+  - `test-full`: Complete build + test + lint + typecheck + validation
+  - `test-production`: Minimal production environment (300 MB)
+  - `test-validation`: Plugin validation only
+- **Usage:**
+  ```bash
+  bash scripts/test-docker-suite.sh              # Full suite
+  bash scripts/test-docker-suite.sh --target production
+  bash scripts/test-docker-suite.sh -v --cleanup
+  docker-compose -f docker-compose.test.yml up test-full
+  ```
+
+**Test Results:** All tests write to `test-results/` directory (git-ignored)
 
 ## Critical Architecture: Two Catalog System
 
@@ -283,31 +401,65 @@ author: Name <email>
 
 ## CI/CD Workflows
 
-**GitHub Actions:**
+**GitHub Actions** (10 workflows):
 
 1. **validate-plugins.yml** - Triggered on PR/push
-   - Runs `node scripts/sync-marketplace.cjs` (fails if out of sync)
+   - Marketplace catalog sync check (`node scripts/sync-marketplace.cjs`)
    - Full 6-stage validation suite
    - Security scans for secrets/dangerous commands
    - JSON validation for all .json files
    - Plugin structure verification
+   - MCP plugin tests (tsc + vitest + typecheck + eslint)
+   - Python validation scripts (pytest)
+   - Package manager enforcement (pnpm only in workspaces)
 
 2. **deploy-marketplace.yml** - Auto-deploys website
-   - Triggers on push to `marketplace/` directory
-   - Builds Astro site (`npm run build`)
+   - Triggers on push to `marketplace/` directory or workflow changes
+   - Skills generation (`npm run skills:generate`)
+   - Astro build (`npm run build`)
+   - Smoke tests: index.html, line length < 5000 (iOS Safari bug)
    - Deploys to GitHub Pages (https://claudecodeplugins.io)
    - Environment: production
 
-3. **daily-skill-generator.yml** - Automated skill generation
+3. **cli-test.yml** - Cross-platform CLI testing
+   - Matrix: 3 OS (Ubuntu, macOS, Windows) × 3 runtimes (Node 18/20/22)
+   - Deno runtime testing (separate pipeline)
+   - CLI commands: `--version`, `--help`, `doctor --json`
+   - Artifact uploads: build outputs + logs
+
+4. **cli-publish.yml** - Manual trigger
+   - Publish `@claude-code-plugins/ccp` to npm registry
+   - Version validation
+   - Distribution builds
+
+5. **release.yml** - Manual dispatch
+   - Version bumping (semver)
+   - Changelog generation
+   - Git tagging
+   - GitHub release creation
+
+6. **daily-skill-generator.yml** - Scheduled (daily)
    - Generates Agent Skills via Vertex AI Gemini
    - Batch processing workflow
    - Part of 500 Standalone Skills Initiative
 
-4. **release.yml** - Manual release workflow
-   - Version bumping
-   - Changelog generation
-   - Git tagging
-   - GitHub release creation
+7. **automerge.yml** - Automated PRs
+   - Merge Dependabot/contributor PRs
+   - Auto-approval workflow
+
+8. **maintainer-ready-automerge.yml** - PRs with label
+   - Fast-track maintainer-approved PRs
+   - Label-based automation
+
+9. **security-audit.yml** - Scheduled
+   - CodeQL scanning
+   - npm audit for dependencies
+   - Security vulnerability detection
+
+10. **codeql.yml** - PR/push
+    - Code quality analysis
+    - Security scanning
+    - Best practices enforcement
 
 **Critical Pre-Commit Checks:**
 ```bash
@@ -320,11 +472,17 @@ git add .claude-plugin/marketplace.json  # Commit generated file too
 ## Marketplace Website (Astro)
 
 **Tech Stack:**
-- Framework: Astro 5.16.0 (static site generator)
-- Styling: Tailwind CSS 4.1.17
+- Framework: Astro 5.16.6 (static site generator)
+- Styling: Tailwind CSS 4.1.18
 - Search: Fuse.js 7.1.0 (fuzzy search)
 - Deploy: GitHub Pages (auto on push)
 - Build command: `npm run build` → `./marketplace/dist/`
+
+**Build Constraints:**
+- **HTML Compression:** DISABLED (`compressHTML: false` in astro.config.mjs)
+- **Reason:** iOS Safari crashes on lines > 5000 chars
+- **Smoke Test:** Verifies line length < 5000 in deployment pipeline
+- **Skills Generation:** Runs automatically during build (`npm run skills:generate`)
 
 **Development Workflow:**
 ```bash
@@ -561,17 +719,18 @@ python3 scripts/audit-skills-quality.py
 
 ## Statistics (Current)
 
-- **Total Plugins**: 258 across 18 categories
+- **Total Plugins**: 259 across 18 categories
 - **Agent Skills**: 241 (73% of plugins have skills)
-- **MCP Plugins**: 6 (2% of marketplace)
+- **MCP Plugins**: 7 (2% of marketplace)
 - **AI Instruction Plugins**: 252 (98% of marketplace)
 - **Plugin Packs**: 4 major packs (devops, security, api-development, ai-ml)
 - **Categories**: 18 total categories
 - **2025 Schema**: Validated with scripts/validate-skills-schema.py
-- **Website**: https://claudecodeplugins.io/ (Astro 5.16.0 + Tailwind 4.1.17)
-- **Monorepo Version**: 1.5.0 (package.json)
+- **Website**: https://claudecodeplugins.io/ (Astro 5.16.6 + Tailwind 4.1.18)
+- **Monorepo Version**: 4.3.0 (package.json)
 - **Release Version**: 4.0.0 (README.md - includes Learning Lab)
-- **Last Updated**: 2025-12-22
+- **CLI Tool**: @claude-code-plugins/ccp (published to npm)
+- **Last Updated**: 2025-12-24
 
 ## Important Notes
 

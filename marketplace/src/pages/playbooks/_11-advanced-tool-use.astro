@@ -1,0 +1,30 @@
+---
+import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
+
+const meta = {
+  title: "Advanced Tool Use",
+  description: "Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture.",
+  category: "AI Architecture",
+  wordCount: 6500,
+  slug: "11-advanced-tool-use"
+};
+---
+
+<PlaybookTemplate {...meta}>
+  <div set:html={`<h2>Introduction</h2>
+
+<p>Advanced tool use transforms Claude from a simple function-calling agent into an intelligent orchestrator capable of working with hundreds of tools, processing massive datasets, and executing complex multi-step workflows. Anthropic's three beta features—<strong>Tool Search Tool</strong>, <strong>Programmatic Tool Calling</strong>, and <strong>Tool Use Examples</strong>—solve the fundamental bottlenecks preventing production-scale agent deployments.</p>
+
+<p>Traditional tool calling hits three critical walls: context bloat from loading tool definitions (55K+ tokens for basic MCP setups), context pollution from intermediate results (50KB+ of expense data for simple budget checks), and inference overhead (19+ separate model calls for 20-tool workflows). Advanced tool use eliminates these bottlenecks with dynamic tool discovery, code-based orchestration, and example-driven parameter guidance.</p>
+
+<p>This playbook provides production implementation patterns for building agents that scale to enterprise tool libraries, handle multi-step research workflows, and process large datasets without context exhaustion.</p>
+
+<p><strong>Related Playbooks:</strong></p>
+<ul>
+<li><a href="01-multi-agent-rate-limits.md">Multi-Agent Rate Limits</a> - Coordinate tool calls across concurrent agents</li>
+<li><a href="03-mcp-reliability.md">MCP Server Reliability</a> - Build self-healing tool backends</li>
+<li><a href="09-cost-attribution.md">Cost Attribution System</a> - Track token usage per feature</li>
+<li><a href="10-progressive-enhancement.md">Progressive Enhancement</a> - Roll out advanced features safely</li>
+</ul>
+`} />
+</PlaybookTemplate>

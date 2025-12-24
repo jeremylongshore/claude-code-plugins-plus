@@ -1,0 +1,905 @@
+---
+import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
+
+const meta = {
+  title: "Compliance & Audit Guide",
+  description: "SOC 2, GDPR, HIPAA, PCI DSS implementation. Audit logging with immutable signatures, RBAC, data privacy (PII redaction), and regulatory compliance.",
+  category: "Security",
+  wordCount: 6000,
+  slug: "07-compliance-audit"
+};
+---
+
+<PlaybookTemplate {...meta}>
+  <div set:html={`<p><strong>Production Playbook for Security Teams and Compliance Officers</strong></p>
+
+<p>Ensuring Claude Code plugin workflows meet SOC 2, GDPR, HIPAA, and other regulatory requirements is critical for enterprise deployments. This playbook provides audit logging implementation, compliance checklists, data privacy patterns, access controls, and security hardening procedures for AI-powered automation.</p>
+
+<h2>Regulatory Frameworks</h2>
+
+<h3>Compliance Requirements Overview</h3>
+
+<table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>Scope</th>
+<th>Key Requirements</th>
+<th>Claude Code Impact</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>SOC 2 Type II</strong></td>
+<td>Service organizations</td>
+<td>Security, availability, confidentiality</td>
+<td>Audit logs, access controls, encryption</td>
+</tr>
+<tr>
+<td><strong>GDPR</strong></td>
+<td>EU data subjects</td>
+<td>Consent, data minimization, right to erasure</td>
+<td>Data retention, anonymization, deletion</td>
+</tr>
+<tr>
+<td><strong>HIPAA</strong></td>
+<td>Healthcare data (PHI)</td>
+<td>Encryption, access logs, BAA required</td>
+<td>Self-hosted, audit trails, no cloud APIs</td>
+</tr>
+<tr>
+<td><strong>PCI DSS</strong></td>
+<td>Payment card data</td>
+<td>Encryption, access controls, logging</td>
+<td>Tokenization, secure storage</td>
+</tr>
+<tr>
+<td><strong>ISO 27001</strong></td>
+<td>Information security</td>
+<td>Risk management, controls framework</td>
+<td>Security policies, incident response</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Risk Assessment</h3>
+
+<pre><code class="language-typescript">interface ComplianceRisk {
+  framework: &#039;SOC2&#039; | &#039;GDPR&#039; | &#039;HIPAA&#039; | &#039;PCI&#039; | &#039;ISO27001&#039;;
+  requirement: string;
+  currentState: &#039;compliant&#039; | &#039;non-compliant&#039; | &#039;partial&#039;;
+  risk: &#039;critical&#039; | &#039;high&#039; | &#039;medium&#039; | &#039;low&#039;;
+  remediation: string;
+  dueDate: Date;
+}
+
+const risks: ComplianceRisk[] = [
+{
+framework: &#039;GDPR&#039;,
+requirement: &#039;Right to erasure (Article 17)&#039;,
+currentState: &#039;non-compliant&#039;,
+risk: &#039;high&#039;,
+remediation: &#039;Implement conversation deletion API&#039;,
+dueDate: new Date(&#039;2025-12-31&#039;)
+},
+{
+framework: &#039;SOC2&#039;,
+requirement: &#039;Audit logging (CC6.1)&#039;,
+currentState: &#039;partial&#039;,
+risk: &#039;medium&#039;,
+remediation: &#039;Enable immutable audit logs with timestamps&#039;,
+dueDate: new Date(&#039;2025-12-28&#039;)
+}
+];</code></pre>
+
+<hr>
+
+<h2>Audit Logging</h2>
+
+<h3>Comprehensive Audit Trail</h3>
+
+<p><strong>Required Events to Log</strong>:</p>
+<pre><code class="language-typescript">enum AuditEventType {
+  // Authentication
+  USER_LOGIN = &#039;user.login&#039;,
+  USER_LOGOUT = &#039;user.logout&#039;,
+  API_KEY_CREATED = &#039;api_key.created&#039;,
+  API_KEY_REVOKED = &#039;api_key.revoked&#039;,
+
+// Data Access
+CONVERSATION_READ = &#039;conversation.read&#039;,
+CONVERSATION_CREATED = &#039;conversation.created&#039;,
+CONVERSATION_DELETED = &#039;conversation.deleted&#039;,
+DATA_EXPORT = &#039;data.export&#039;,
+
+// Configuration Changes
+PLUGIN_INSTALLED = &#039;plugin.installed&#039;,
+PLUGIN_UNINSTALLED = &#039;plugin.uninstalled&#039;,
+SETTINGS_CHANGED = &#039;settings.changed&#039;,
+
+// Security Events
+AUTHENTICATION_FAILED = &#039;auth.failed&#039;,
+AUTHORIZATION_DENIED = &#039;authz.denied&#039;,
+ENCRYPTION_KEY_ROTATED = &#039;encryption.key_rotated&#039;,
+SUSPICIOUS_ACTIVITY = &#039;security.suspicious&#039;
+}
+
+interface AuditLog {
+id: string;
+timestamp: number;
+eventType: AuditEventType;
+userId: string;
+ipAddress: string;
+userAgent: string;
+resource: {
+type: string;
+id: string;
+};
+action: string;
+outcome: &#039;success&#039; | &#039;failure&#039;;
+metadata: Record&lt;string, any&gt;;
+signature: string;  // HMAC for tamper detection
+}</code></pre>
+
+<h3>Implementation</h3>
+
+<pre><code class="language-typescript">import crypto from &#039;crypto&#039;;
+
+class AuditLogger {
+private readonly secretKey: string;
+
+constructor(secretKey: string) {
+this.secretKey = secretKey;
+}
+
+async log(event: Omit&lt;AuditLog, &#039;id&#039; | &#039;timestamp&#039; | &#039;signature&#039;&gt;): Promise&lt;void&gt; {
+const auditLog: AuditLog = {
+id: crypto.randomUUID(),
+timestamp: Date.now(),
+...event,
+signature: &#039;&#039; // Computed below
+};
+
+// Generate HMAC signature for tamper detection
+const data = JSON.stringify({
+id: auditLog.id,
+timestamp: auditLog.timestamp,
+eventType: auditLog.eventType,
+userId: auditLog.userId,
+resource: auditLog.resource,
+action: auditLog.action,
+outcome: auditLog.outcome
+});
+
+auditLog.signature = crypto
+.createHmac(&#039;sha256&#039;, this.secretKey)
+.update(data)
+.digest(&#039;hex&#039;);
+
+// Write to immutable log storage
+await this.writeToStorage(auditLog);
+}
+
+private async writeToStorage(log: AuditLog): Promise&lt;void&gt; {
+// Option 1: Append-only file (WORM - Write Once Read Many)
+await appendFile(&#039;/var/log/audit/audit.jsonl&#039;, JSON.stringify(log) + &#039;\n&#039;);
+
+// Option 2: PostgreSQL with audit triggers
+await db.query(
+&#039;INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES (\$1, \$2, \$3, \$4, \$5, \$6)&#039;,
+[log.id, log.timestamp, log.eventType, log.userId, log, log.signature]
+);
+
+// Option 3: Send to SIEM (Splunk, ELK)
+await fetch(&#039;https://siem.example.com/audit&#039;, {
+method: &#039;POST&#039;,
+headers: { &#039;Content-Type&#039;: &#039;application/json&#039; },
+body: JSON.stringify(log)
+});
+}
+
+async verify(log: AuditLog): Promise&lt;boolean&gt; {
+const data = JSON.stringify({
+id: log.id,
+timestamp: log.timestamp,
+eventType: log.eventType,
+userId: log.userId,
+resource: log.resource,
+action: log.action,
+outcome: log.outcome
+});
+
+const expectedSignature = crypto
+.createHmac(&#039;sha256&#039;, this.secretKey)
+.update(data)
+.digest(&#039;hex&#039;);
+
+return log.signature === expectedSignature;
+}
+}</code></pre>
+
+<h3>Usage Example</h3>
+
+<pre><code class="language-typescript">const auditor = new AuditLogger(process.env.AUDIT_SECRET_KEY);
+
+// Log authentication event
+await auditor.log({
+eventType: AuditEventType.USER_LOGIN,
+userId: &#039;user-123&#039;,
+ipAddress: &#039;192.168.1.100&#039;,
+userAgent: &#039;Mozilla/5.0...&#039;,
+resource: { type: &#039;session&#039;, id: &#039;session-abc&#039; },
+action: &#039;authenticate&#039;,
+outcome: &#039;success&#039;,
+metadata: { method: &#039;api_key&#039; }
+});
+
+// Log data access
+await auditor.log({
+eventType: AuditEventType.CONVERSATION_READ,
+userId: &#039;user-123&#039;,
+ipAddress: &#039;192.168.1.100&#039;,
+userAgent: &#039;Claude Code CLI/1.0&#039;,
+resource: { type: &#039;conversation&#039;, id: &#039;conv-xyz&#039; },
+action: &#039;read&#039;,
+outcome: &#039;success&#039;,
+metadata: { messageCount: 42 }
+});
+
+// Log deletion (GDPR right to erasure)
+await auditor.log({
+eventType: AuditEventType.CONVERSATION_DELETED,
+userId: &#039;user-123&#039;,
+ipAddress: &#039;192.168.1.100&#039;,
+userAgent: &#039;Claude Code CLI/1.0&#039;,
+resource: { type: &#039;conversation&#039;, id: &#039;conv-xyz&#039; },
+action: &#039;delete&#039;,
+outcome: &#039;success&#039;,
+metadata: { reason: &#039;user_request&#039;, gdpr_article: &#039;17&#039; }
+});</code></pre>
+
+<hr>
+
+<h2>Data Privacy & Retention</h2>
+
+<h3>GDPR Data Minimization</h3>
+
+<pre><code class="language-typescript">interface ConversationData {
+  id: string;
+  userId: string;
+  messages: Message[];
+  metadata: {
+    createdAt: number;
+    lastModified: number;
+    pluginsUsed: string[];
+  };
+}
+
+class GDPRCompliantStorage {
+// Data minimization: Only store what&#039;s necessary
+async storeConversation(data: ConversationData): Promise&lt;void&gt; {
+const minimized = {
+id: data.id,
+userId: data.userId,  // Keep for right to access
+messages: data.messages.map(m =&gt; ({
+role: m.role,
+content: this.redactPII(m.content),  // Remove PII
+timestamp: m.timestamp
+})),
+metadata: {
+createdAt: data.metadata.createdAt,
+pluginsUsed: data.metadata.pluginsUsed
+// Omit: IP addresses, user agents, detailed telemetry
+}
+};
+
+await db.conversations.insert(minimized);
+}
+
+// Redact personally identifiable information
+private redactPII(text: string): string {
+return text
+// Email addresses
+.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, &#039;[EMAIL_REDACTED]&#039;)
+// Phone numbers
+.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, &#039;[PHONE_REDACTED]&#039;)
+// SSN
+.replace(/\b\d{3}-\d{2}-\d{4}\b/g, &#039;[SSN_REDACTED]&#039;)
+// Credit cards
+.replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, &#039;[CC_REDACTED]&#039;);
+}
+}</code></pre>
+
+<h3>Data Retention Policies</h3>
+
+<pre><code class="language-typescript">enum RetentionPolicy {
+  CONVERSATIONS = 90,      // 90 days
+  AUDIT_LOGS = 2555,       // 7 years (SOC 2 requirement)
+  ANALYTICS = 365,         // 1 year
+  BACKUPS = 30             // 30 days
+}
+
+class RetentionManager {
+async enforceRetention(): Promise&lt;void&gt; {
+const now = Date.now();
+
+// Delete old conversations (GDPR: storage limitation)
+const cutoff = now - (RetentionPolicy.CONVERSATIONS * 86400000);
+await db.conversations.deleteMany({
+lastModified: { \$lt: cutoff }
+});
+
+// Archive (not delete) audit logs
+const auditCutoff = now - (RetentionPolicy.AUDIT_LOGS * 86400000);
+const oldLogs = await db.auditLogs.find({
+timestamp: { \$lt: auditCutoff }
+});
+await this.archiveToS3(oldLogs);
+await db.auditLogs.deleteMany({
+timestamp: { \$lt: auditCutoff }
+});
+
+// Delete old analytics
+const analyticsCutoff = now - (RetentionPolicy.ANALYTICS * 86400000);
+await db.analytics.deleteMany({
+timestamp: { \$lt: analyticsCutoff }
+});
+}
+
+private async archiveToS3(logs: any[]): Promise&lt;void&gt; {
+const archive = JSON.stringify(logs);
+await s3.putObject({
+Bucket: &#039;audit-logs-archive&#039;,
+Key: `archive-\${Date.now()}.json.gz`,
+Body: gzip(archive)
+});
+}
+}</code></pre>
+
+<h3>Right to Erasure (GDPR Article 17)</h3>
+
+<pre><code class="language-typescript">class GDPRErasureHandler {
+  async processErasureRequest(userId: string, requestId: string): Promise&lt;void&gt; {
+    // Log the request
+    await auditor.log({
+      eventType: AuditEventType.DATA_EXPORT,
+      userId,
+      ipAddress: &#039;internal&#039;,
+      userAgent: &#039;erasure-service&#039;,
+      resource: { type: &#039;user&#039;, id: userId },
+      action: &#039;gdpr_erasure&#039;,
+      outcome: &#039;success&#039;,
+      metadata: { requestId, article: &#039;17&#039; }
+    });
+
+// Delete all user data
+await db.conversations.deleteMany({ userId });
+await db.analytics.deleteMany({ userId });
+await db.preferences.deleteMany({ userId });
+
+// Anonymize audit logs (can&#039;t delete due to legal requirements)
+await db.auditLogs.updateMany(
+{ userId },
+{ \$set: { userId: `ANONYMIZED_\${crypto.randomUUID()}` } }
+);
+
+// Generate confirmation
+await this.sendErasureConfirmation(userId, requestId);
+}
+
+private async sendErasureConfirmation(userId: string, requestId: string): Promise&lt;void&gt; {
+// Email or other notification confirming erasure
+console.log(</code>Erasure completed for \${userId}, request \${requestId}</code>);
+}
+}</code></pre>
+
+<hr>
+
+<h2>Access Controls</h2>
+
+<h3>Role-Based Access Control (RBAC)</h3>
+
+<pre><code class="language-typescript">enum Role {
+  ADMIN = &#039;admin&#039;,
+  DEVELOPER = &#039;developer&#039;,
+  AUDITOR = &#039;auditor&#039;,
+  USER = &#039;user&#039;
+}
+
+enum Permission {
+CONVERSATIONS_READ = &#039;conversations:read&#039;,
+CONVERSATIONS_WRITE = &#039;conversations:write&#039;,
+CONVERSATIONS_DELETE = &#039;conversations:delete&#039;,
+PLUGINS_INSTALL = &#039;plugins:install&#039;,
+SETTINGS_MODIFY = &#039;settings:modify&#039;,
+AUDIT_LOGS_READ = &#039;audit_logs:read&#039;,
+USERS_MANAGE = &#039;users:manage&#039;
+}
+
+const rolePermissions: Record&lt;Role, Permission[]&gt; = {
+[Role.ADMIN]: [
+Permission.CONVERSATIONS_READ,
+Permission.CONVERSATIONS_WRITE,
+Permission.CONVERSATIONS_DELETE,
+Permission.PLUGINS_INSTALL,
+Permission.SETTINGS_MODIFY,
+Permission.AUDIT_LOGS_READ,
+Permission.USERS_MANAGE
+],
+[Role.DEVELOPER]: [
+Permission.CONVERSATIONS_READ,
+Permission.CONVERSATIONS_WRITE,
+Permission.PLUGINS_INSTALL
+],
+[Role.AUDITOR]: [
+Permission.AUDIT_LOGS_READ,
+Permission.CONVERSATIONS_READ
+],
+[Role.USER]: [
+Permission.CONVERSATIONS_READ,
+Permission.CONVERSATIONS_WRITE
+]
+};
+
+class AccessControl {
+hasPermission(userRole: Role, permission: Permission): boolean {
+return rolePermissions[userRole].includes(permission);
+}
+
+async enforcePermission(
+userId: string,
+permission: Permission,
+action: () =&gt; Promise&lt;void&gt;
+): Promise&lt;void&gt; {
+const user = await db.users.findOne({ id: userId });
+
+if (!this.hasPermission(user.role, permission)) {
+await auditor.log({
+eventType: AuditEventType.AUTHORIZATION_DENIED,
+userId,
+ipAddress: &#039;0.0.0.0&#039;,
+userAgent: &#039;internal&#039;,
+resource: { type: &#039;permission&#039;, id: permission },
+action: &#039;check&#039;,
+outcome: &#039;failure&#039;,
+metadata: { role: user.role }
+});
+
+throw new Error(`Permission denied: \${permission}`);
+}
+
+await action();
+}
+}</code></pre>
+
+<hr>
+
+<h2>SOC 2 Compliance</h2>
+
+<h3>SOC 2 Type II Common Criteria</h3>
+
+<p><strong>CC6: Logical and Physical Access Controls</strong></p>
+
+<pre><code class="language-typescript">// CC6.1: Access granted based on job function
+class SOC2AccessControl {
+  async grantAccess(userId: string, role: Role): Promise&lt;void&gt; {
+    // Verify user identity
+    const user = await this.verifyIdentity(userId);
+
+// Apply least privilege
+const permissions = rolePermissions[role];
+
+// Log access grant
+await auditor.log({
+eventType: AuditEventType.SETTINGS_CHANGED,
+userId: &#039;system&#039;,
+ipAddress: &#039;internal&#039;,
+userAgent: &#039;access-control&#039;,
+resource: { type: &#039;user&#039;, id: userId },
+action: &#039;grant_access&#039;,
+outcome: &#039;success&#039;,
+metadata: { role, permissions }
+});
+}
+
+// CC6.2: Access removed when no longer needed
+async revokeAccess(userId: string): Promise&lt;void&gt; {
+await db.users.update(
+{ id: userId },
+{ \$set: { status: &#039;inactive&#039;, accessRevoked: Date.now() } }
+);
+
+await auditor.log({
+eventType: AuditEventType.SETTINGS_CHANGED,
+userId: &#039;system&#039;,
+ipAddress: &#039;internal&#039;,
+userAgent: &#039;access-control&#039;,
+resource: { type: &#039;user&#039;, id: userId },
+action: &#039;revoke_access&#039;,
+outcome: &#039;success&#039;,
+metadata: { reason: &#039;employment_termination&#039; }
+});
+}
+
+// CC6.7: Detection and response to security incidents
+async detectSuspiciousActivity(userId: string): Promise&lt;void&gt; {
+const recentLogins = await db.auditLogs.find({
+userId,
+eventType: AuditEventType.USER_LOGIN,
+timestamp: { \$gte: Date.now() - 3600000 } // Last hour
+});
+
+// Multiple failed logins
+const failedLogins = recentLogins.filter(l =&gt; l.outcome === &#039;failure&#039;);
+if (failedLogins.length &gt;= 5) {
+await this.lockAccount(userId);
+await this.alertSecurityTeam(userId, &#039;brute_force_detected&#039;);
+}
+
+// Login from unusual location
+const locations = recentLogins.map(l =&gt; l.ipAddress);
+if (new Set(locations).size &gt; 3) {
+await this.alertSecurityTeam(userId, &#039;multiple_locations&#039;);
+}
+}
+
+private async lockAccount(userId: string): Promise&lt;void&gt; {
+await db.users.update(
+{ id: userId },
+{ \$set: { locked: true, lockedReason: &#039;suspicious_activity&#039; } }
+);
+
+await auditor.log({
+eventType: AuditEventType.SUSPICIOUS_ACTIVITY,
+userId: &#039;system&#039;,
+ipAddress: &#039;internal&#039;,
+userAgent: &#039;security-monitor&#039;,
+resource: { type: &#039;user&#039;, id: userId },
+action: &#039;lock_account&#039;,
+outcome: &#039;success&#039;,
+metadata: { reason: &#039;brute_force_detected&#039; }
+});
+}
+
+private async alertSecurityTeam(userId: string, reason: string): Promise&lt;void&gt; {
+// Send to PagerDuty, Slack, email, etc.
+console.log(`SECURITY ALERT: \${reason} for user \${userId}`);
+}
+
+private async verifyIdentity(userId: string): Promise&lt;any&gt; {
+// Multi-factor authentication check
+return await db.users.findOne({ id: userId });
+}
+}</code></pre>
+
+<h3>SOC 2 Evidence Collection</h3>
+
+<pre><code class="language-bash">#!/bin/bash
+# collect-soc2-evidence.sh - Automated evidence gathering
+
+EVIDENCE_DIR=&quot;/compliance/soc2/evidence-\$(date +%Y-%m-%d)&quot;
+mkdir -p \$EVIDENCE_DIR
+
+# 1. Access control logs (CC6.1, CC6.2)
+pg_dump -t audit_logs --data-only &gt; \$EVIDENCE_DIR/access_logs.sql
+
+# 2. Configuration changes (CC7.2)
+git log --since=&quot;30 days ago&quot; --pretty=format:&quot;%h %an %ad %s&quot; \
+&gt; \$EVIDENCE_DIR/config_changes.txt
+
+# 3. Backup verification (A1.2)
+ls -lh /backups/postgres/ &gt; \$EVIDENCE_DIR/backup_verification.txt
+
+# 4. Encryption status (CC6.6)
+openssl s_client -connect claude.example.com:443 &lt; /dev/null \
+| openssl x509 -text &gt; \$EVIDENCE_DIR/ssl_certificate.txt
+
+# 5. Vulnerability scans (CC7.1)
+docker scan ollama:latest &gt; \$EVIDENCE_DIR/vulnerability_scan.txt
+
+echo &quot;Evidence collected: \$EVIDENCE_DIR&quot;</code></pre>
+
+<hr>
+
+<h2>GDPR Compliance</h2>
+
+<h3>GDPR Articles Implementation</h3>
+
+<table>
+<thead>
+<tr>
+<th>Article</th>
+<th>Requirement</th>
+<th>Implementation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Article 6</strong></td>
+<td>Lawful basis for processing</td>
+<td>Explicit consent on signup</td>
+</tr>
+<tr>
+<td><strong>Article 13</strong></td>
+<td>Information to be provided</td>
+<td>Privacy policy displayed</td>
+</tr>
+<tr>
+<td><strong>Article 15</strong></td>
+<td>Right of access</td>
+<td><code>/api/data-export</code> endpoint</td>
+</tr>
+<tr>
+<td><strong>Article 16</strong></td>
+<td>Right to rectification</td>
+<td>User can edit profile</td>
+</tr>
+<tr>
+<td><strong>Article 17</strong></td>
+<td>Right to erasure</td>
+<td><code>/api/delete-account</code> endpoint</td>
+</tr>
+<tr>
+<td><strong>Article 20</strong></td>
+<td>Right to data portability</td>
+<td>Export in JSON format</td>
+</tr>
+<tr>
+<td><strong>Article 32</strong></td>
+<td>Security of processing</td>
+<td>Encryption at rest and in transit</td>
+</tr>
+</tbody>
+</table>
+
+<h3>Data Subject Rights API</h3>
+
+<pre><code class="language-typescript">class GDPRDataSubjectRights {
+  // Article 15: Right of access
+  async exportUserData(userId: string): Promise&lt;any&gt; {
+    const data = {
+      profile: await db.users.findOne({ id: userId }),
+      conversations: await db.conversations.find({ userId }),
+      analytics: await db.analytics.find({ userId }),
+      auditLogs: await db.auditLogs.find({ userId }).limit(100) // Last 100 entries
+    };
+
+await auditor.log({
+eventType: AuditEventType.DATA_EXPORT,
+userId,
+ipAddress: &#039;internal&#039;,
+userAgent: &#039;gdpr-export-service&#039;,
+resource: { type: &#039;user&#039;, id: userId },
+action: &#039;export_data&#039;,
+outcome: &#039;success&#039;,
+metadata: { gdpr_article: &#039;15&#039; }
+});
+
+return data;
+}
+
+// Article 17: Right to erasure
+async deleteUserData(userId: string): Promise&lt;void&gt; {
+const erasure = new GDPRErasureHandler();
+await erasure.processErasureRequest(userId, crypto.randomUUID());
+}
+
+// Article 20: Right to data portability
+async exportPortableData(userId: string): Promise&lt;string&gt; {
+const data = await this.exportUserData(userId);
+
+// Export in machine-readable format (JSON)
+return JSON.stringify(data, null, 2);
+}
+}</code></pre>
+
+<hr>
+
+<h2>HIPAA Compliance</h2>
+
+<h3>HIPAA Technical Safeguards</h3>
+
+<p><strong>PHI (Protected Health Information) must never be sent to cloud APIs</strong>:</p>
+
+<pre><code class="language-typescript">class HIPAACompliantLLM {
+  async processHealthcareData(patientData: any): Promise&lt;string&gt; {
+    // ❌ HIPAA VIOLATION: Sending PHI to cloud
+    // const response = await anthropic.messages.create({
+    //   model: &#039;claude-3-5-sonnet-20241022&#039;,
+    //   messages: [{ role: &#039;user&#039;, content: `Analyze: \${patientData}` }]
+    // });
+
+// ✅ HIPAA COMPLIANT: Self-hosted Ollama
+const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
+method: &#039;POST&#039;,
+body: JSON.stringify({
+model: &#039;llama3.3:70b&#039;,
+prompt: </code>Analyze patient data: \${patientData}</code>,
+stream: false
+})
+});
+
+const result = await response.json();
+
+// Audit log (required by HIPAA)
+await auditor.log({
+eventType: AuditEventType.CONVERSATION_CREATED,
+userId: &#039;healthcare-worker-123&#039;,
+ipAddress: &#039;10.0.0.5&#039;,
+userAgent: &#039;medical-app/1.0&#039;,
+resource: { type: &#039;patient_analysis&#039;, id: &#039;patient-456&#039; },
+action: &#039;process_phi&#039;,
+outcome: &#039;success&#039;,
+metadata: { model: &#039;llama3.3:70b&#039;, local: true }
+});
+
+return result.response;
+}
+}</code></pre>
+
+<h3>HIPAA Business Associate Agreement (BAA)</h3>
+
+<p><strong>Self-hosted = No BAA required</strong> (data never leaves your control)</p>
+
+<p><strong>Required Security Controls</strong>:</p>
+<pre><code class="language-bash"># Encryption at rest
+cryptsetup luksFormat /dev/sdb
+cryptsetup luksOpen /dev/sdb encrypted_volume
+mkfs.ext4 /dev/mapper/encrypted_volume
+
+# Encryption in transit (TLS 1.3 only)
+openssl s_server -accept 443 -cert server.crt -key server.key \
+-tls1_3 -cipher TLS_AES_256_GCM_SHA384
+
+# Access logging (required by HIPAA)
+tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
+
+<hr>
+
+<h2>Security Hardening</h2>
+
+<h3>Security Checklist</h3>
+
+<pre><code class="language-markdown">&lt;h2&gt;Infrastructure Security&lt;/h2&gt;
+<ul>
+<li>[ ] All services run with least privilege (non-root users)</li>
+<li>[ ] Firewall configured (UFW/iptables) with default-deny</li>
+<li>[ ] SSH access restricted (key-only, no password auth)</li>
+<li>[ ] Automatic security updates enabled</li>
+<li>[ ] Intrusion detection system deployed (OSSEC, Fail2ban)</li>
+</ul>
+
+&lt;h2&gt;Application Security&lt;/h2&gt;
+<ul>
+<li>[ ] Input validation on all endpoints</li>
+<li>[ ] SQL injection prevention (parameterized queries)</li>
+<li>[ ] XSS prevention (output encoding)</li>
+<li>[ ] CSRF tokens on state-changing requests</li>
+<li>[ ] Rate limiting on APIs (429 responses)</li>
+</ul>
+
+&lt;h2&gt;Data Security&lt;/h2&gt;
+<ul>
+<li>[ ] Encryption at rest (LUKS for disks)</li>
+<li>[ ] Encryption in transit (TLS 1.3)</li>
+<li>[ ] Database credentials rotated quarterly</li>
+<li>[ ] API keys rotated after employee departure</li>
+<li>[ ] Backups encrypted with separate key</li>
+</ul>
+
+&lt;h2&gt;Monitoring &amp; Response&lt;/h2&gt;
+<ul>
+<li>[ ] SIEM configured (Splunk, ELK)</li>
+<li>[ ] Intrusion alerts sent to security team</li>
+<li>[ ] Vulnerability scanning automated (weekly)</li>
+<li>[ ] Penetration testing scheduled (annual)</li>
+<li>[ ] Incident response plan documented</code></pre></li>
+</ul>
+
+<hr>
+
+<h2>Best Practices</h2>
+
+<h3>DO ✅</h3>
+
+<ul>
+<li><strong>Log all security events</strong></li>
+</ul>
+   <pre><code class="language-typescript">await auditor.log({
+     eventType: AuditEventType.AUTHENTICATION_FAILED,
+     userId: &#039;unknown&#039;,
+     ipAddress,
+     // ... full details
+   });</code></pre>
+
+<ul>
+<li><strong>Encrypt sensitive data</strong></li>
+</ul>
+   <pre><code class="language-typescript">const encrypted = crypto.publicEncrypt(publicKey, Buffer.from(data));</code></pre>
+
+<ul>
+<li><strong>Implement data retention</strong></li>
+</ul>
+   <pre><code class="language-typescript">const retention = new RetentionManager();
+   setInterval(() =&gt; retention.enforceRetention(), 86400000); // Daily</code></pre>
+
+<h3>DON'T ❌</h3>
+
+<ul>
+<li><strong>Don't store PII unnecessarily</strong></li>
+</ul>
+   <pre><code class="language-typescript">// ❌ Store full conversation with PII
+   await db.save({ userId, messages: fullConversation });
+
+// ✅ Redact PII before storage
+await db.save({ userId, messages: redacted });</code></pre>
+
+<ul>
+<li><strong>Don't skip audit logging</strong></li>
+</ul>
+   <pre><code class="language-typescript">// ❌ No audit trail
+   await db.conversations.delete({ id });
+
+// ✅ Log deletion
+await auditor.log({ eventType: &#039;conversation.deleted&#039;, ... });
+await db.conversations.delete({ id });</code></pre>
+
+<hr>
+
+<h2>Tools & Resources</h2>
+
+<h3>Compliance Automation</h3>
+
+<ul>
+<li><strong>Vanta</strong>: SOC 2 automation</li>
+<li><strong>Drata</strong>: Continuous compliance</li>
+<li><strong>OneTrust</strong>: GDPR automation</li>
+<li><strong>TrustArc</strong>: Privacy management</li>
+</ul>
+
+<h3>Security Scanning</h3>
+
+<ul>
+<li><strong>Nessus</strong>: Vulnerability scanning</li>
+<li><strong>OWASP ZAP</strong>: Web app security testing</li>
+<li><strong>Trivy</strong>: Container scanning</li>
+<li><strong>Snyk</strong>: Dependency scanning</li>
+</ul>
+
+<hr>
+
+<h2>Summary</h2>
+
+<p><strong>Key Takeaways</strong>:</p>
+
+<ul>
+<li><strong>Audit everything</strong> - Immutable logs with HMAC signatures</li>
+<li><strong>Minimize data</strong> - GDPR requires storage limitation</li>
+<li><strong>Self-host for HIPAA</strong> - Cloud APIs violate PHI rules</li>
+<li><strong>Implement RBAC</strong> - Least privilege access</li>
+<li><strong>Automate compliance</strong> - Evidence collection scripts</li>
+<li><strong>Encrypt data</strong> - At rest and in transit</li>
+<li><strong>Test regularly</strong> - Penetration tests, vulnerability scans</li>
+</ul>
+
+<p><strong>Compliance Checklist</strong>:</p>
+<ul>
+<li>[ ] Audit logging implemented (immutable, signed)</li>
+<li>[ ] Data retention policies enforced (90-day conversations)</li>
+<li>[ ] GDPR rights endpoints deployed (access, erasure, portability)</li>
+<li>[ ] RBAC configured (admin, developer, auditor, user roles)</li>
+<li>[ ] SOC 2 evidence collection automated</li>
+<li>[ ] HIPAA PHI never sent to cloud (self-hosted Ollama only)</li>
+<li>[ ] Encryption enabled (TLS 1.3, LUKS disk encryption)</li>
+<li>[ ] Security hardening complete (firewall, SSH, updates)</li>
+<li>[ ] Quarterly security reviews scheduled</li>
+<li>[ ] Annual penetration testing planned</li>
+</ul>
+
+<hr>
+
+<p><strong>Last Updated</strong>: 2025-12-24</p>
+<p><strong>Author</strong>: Jeremy Longshore</p>
+<p><strong>Related Playbooks</strong>: <a href="./06-self-hosted-stack.md">Self-Hosted Stack Setup</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
+`} />
+</PlaybookTemplate>

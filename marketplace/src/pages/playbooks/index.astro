@@ -1,0 +1,539 @@
+---
+// Playbooks Index Page
+const playbooks = [
+  {
+    slug: '01-multi-agent-rate-limits',
+    title: 'Multi-Agent Rate Limits',
+    description: 'Prevent API throttling in concurrent multi-agent systems. Token bucket algorithms, sliding windows, priority queues, and backpressure handling for Claude API rate limits.',
+    category: 'Cost',
+    wordCount: 2800,
+    featured: false
+  },
+  {
+    slug: '02-cost-caps',
+    title: 'Cost Caps & Budget Management',
+    description: 'Hard budget controls for AI spending. Real-time spend tracking, automatic shutoffs, team quotas, and financial safeguards to prevent runaway costs.',
+    category: 'Cost',
+    wordCount: 3200,
+    featured: false
+  },
+  {
+    slug: '03-mcp-reliability',
+    title: 'MCP Server Reliability',
+    description: 'Self-healing MCP servers with circuit breakers, exponential backoff, health checks, and automatic recovery. Production-grade Model Context Protocol implementations.',
+    category: 'Infrastructure',
+    wordCount: 3500,
+    featured: true
+  },
+  {
+    slug: '04-ollama-migration',
+    title: 'Ollama Migration Guide',
+    description: 'Switch from OpenAI/Anthropic to self-hosted LLMs. Complete migration path: local setup, prompt translation, performance benchmarks, and cost analysis.',
+    category: 'Infrastructure',
+    wordCount: 4500,
+    featured: false
+  },
+  {
+    slug: '05-incident-debugging',
+    title: 'Incident Debugging Playbook',
+    description: 'SEV-1/2/3/4 incident response protocols. Log analysis, root cause investigation (5 Whys, Fishbone), postmortem templates, and on-call procedures.',
+    category: 'Operations',
+    wordCount: 5000,
+    featured: false
+  },
+  {
+    slug: '06-self-hosted-stack',
+    title: 'Self-Hosted Stack Setup',
+    description: 'Full infrastructure deployment with Docker/Kubernetes. Ollama, PostgreSQL, Redis, Prometheus, Grafana, Nginx - complete production stack with monitoring and backups.',
+    category: 'Infrastructure',
+    wordCount: 5500,
+    featured: true
+  },
+  {
+    slug: '07-compliance-audit',
+    title: 'Compliance & Audit Guide',
+    description: 'SOC 2, GDPR, HIPAA, PCI DSS implementation. Audit logging with immutable signatures, RBAC, data privacy (PII redaction), and regulatory compliance.',
+    category: 'Security',
+    wordCount: 6000,
+    featured: false
+  },
+  {
+    slug: '08-team-presets',
+    title: 'Team Presets & Workflows',
+    description: 'Team standardization and collaboration. Plugin bundles, workflow templates, automated onboarding, and multi-layer configuration hierarchy (org/team/project/individual).',
+    category: 'Operations',
+    wordCount: 5000,
+    featured: false
+  },
+  {
+    slug: '09-cost-attribution',
+    title: 'Cost Attribution System',
+    description: 'Multi-dimensional cost tracking (team/project/user/workflow). Automatic tagging, chargeback models, budget enforcement, and usage analytics for AI operations.',
+    category: 'Cost',
+    wordCount: 5500,
+    featured: true
+  },
+  {
+    slug: '10-progressive-enhancement',
+    title: 'Progressive Enhancement Patterns',
+    description: 'Safe AI feature rollout strategies. Feature flags (0% → 100%), A/B testing, canary deployments, graceful degradation, and automated rollback on failures.',
+    category: 'Operations',
+    wordCount: 5500,
+    featured: false
+  },
+  {
+    slug: '11-advanced-tool-use',
+    title: 'Advanced Tool Use',
+    description: 'Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture.',
+    category: 'AI Architecture',
+    wordCount: 6500,
+    featured: true
+  }
+];
+
+const categories = Array.from(new Set(playbooks.map(p => p.category))).sort();
+const totalWords = playbooks.reduce((sum, p) => sum + p.wordCount, 0);
+const featuredPlaybooks = playbooks.filter(p => p.featured);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Production Playbooks | Claude Code Plugins</title>
+  <meta name="description" content="Comprehensive technical guides for building production-grade Claude Code plugin systems. 11 playbooks covering AI architecture, cost management, infrastructure, operations, and compliance.">
+  <link rel="stylesheet" href="/styles/global.css">
+</head>
+<body>
+  <div class="playbooks-index">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-badge">Production Engineering</span>
+          <h1 class="hero-title">
+            <span class="gradient-text">Production Playbooks</span>
+          </h1>
+          <p class="hero-subtitle">
+            Comprehensive technical guides for building production-grade Claude Code plugin systems. Each playbook provides deep implementation details, production-ready code examples, and real-world patterns learned from operating large-scale AI agent deployments.
+          </p>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">{playbooks.length}</div>
+              <div class="stat-label">Playbooks</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">{Math.round(totalWords / 1000)}k</div>
+              <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">{categories.length}</div>
+              <div class="stat-label">Categories</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Search -->
+    <section class="filter-section">
+      <div class="container">
+        <div class="filter-controls">
+          <button class="filter-btn active" data-category="all">All Playbooks</button>
+          {categories.map(category => (
+            <button class="filter-btn" data-category={category}>{category}</button>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Playbooks -->
+    {featuredPlaybooks.length > 0 && (
+      <section class="featured-section">
+        <div class="container">
+          <h2 class="section-title">Featured Playbooks</h2>
+          <div class="playbooks-grid featured-grid">
+            {featuredPlaybooks.map(playbook => (
+              <a href={`/playbooks/${playbook.slug}`} class="playbook-card featured-card" data-category={playbook.category}>
+                <div class="card-header">
+                  <span class="category-badge">{playbook.category}</span>
+                  <span class="featured-badge">Featured</span>
+                </div>
+                <h3 class="card-title">{playbook.title}</h3>
+                <p class="card-description">{playbook.description}</p>
+                <div class="card-meta">
+                  <span class="meta-item">~{Math.round(playbook.wordCount / 200)} min read</span>
+                  <span class="meta-divider">•</span>
+                  <span class="meta-item">{playbook.wordCount.toLocaleString()} words</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- All Playbooks -->
+    <section class="playbooks-section">
+      <div class="container">
+        <h2 class="section-title">All Playbooks</h2>
+        <div class="playbooks-grid">
+          {playbooks.map(playbook => (
+            <a href={`/playbooks/${playbook.slug}`} class="playbook-card" data-category={playbook.category}>
+              <div class="card-header">
+                <span class="category-badge">{playbook.category}</span>
+              </div>
+              <h3 class="card-title">{playbook.title}</h3>
+              <p class="card-description">{playbook.description}</p>
+              <div class="card-meta">
+                <span class="meta-item">~{Math.round(playbook.wordCount / 200)} min read</span>
+                <span class="meta-divider">•</span>
+                <span class="meta-item">{playbook.wordCount.toLocaleString()} words</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to Home -->
+    <section class="footer-section">
+      <div class="container">
+        <a href="/" class="back-link">← Back to Home</a>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .playbooks-index {
+      min-height: 100vh;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 4rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(ellipse at top, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--green-400);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--slate-400);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--green-400) 0%, var(--green-300) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 3rem;
+      background: var(--slate-800);
+    }
+
+    /* Filter Section */
+    .filter-section {
+      padding: 2rem 0;
+      background: var(--slate-900);
+      border-top: 1px solid var(--slate-800);
+      border-bottom: 1px solid var(--slate-800);
+    }
+
+    .filter-controls {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--slate-850);
+      color: var(--slate-400);
+      border: 1px solid var(--slate-800);
+      padding: 0.625rem 1.25rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition-base);
+      font-family: var(--font-sans);
+    }
+
+    .filter-btn:hover {
+      color: var(--green-400);
+      border-color: var(--green-500);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .filter-btn.active {
+      background: var(--green-500);
+      color: var(--slate-950);
+      border-color: var(--green-500);
+    }
+
+    /* Section Styles */
+    .featured-section,
+    .playbooks-section {
+      padding: 3rem 0;
+    }
+
+    .section-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--slate-100);
+      margin-bottom: 2rem;
+    }
+
+    /* Playbooks Grid */
+    .playbooks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .featured-grid {
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    }
+
+    .playbook-card {
+      background: var(--slate-900);
+      border: 1px solid var(--slate-800);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: all var(--transition-base);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .playbook-card:hover {
+      border-color: var(--green-500);
+      box-shadow: 0 0 0 1px var(--green-500);
+      transform: translateY(-2px);
+    }
+
+    .featured-card {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+      border-color: rgba(16, 185, 129, 0.2);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--green-400);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .featured-badge {
+      display: inline-block;
+      background: var(--green-500);
+      color: var(--slate-950);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--slate-100);
+      line-height: 1.3;
+    }
+
+    .card-description {
+      flex: 1;
+      font-size: 0.9375rem;
+      color: var(--slate-400);
+      line-height: 1.6;
+    }
+
+    .card-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--slate-500);
+      padding-top: 1rem;
+      border-top: 1px solid var(--slate-800);
+    }
+
+    .meta-divider {
+      color: var(--slate-700);
+    }
+
+    /* Footer Section */
+    .footer-section {
+      padding: 3rem 0;
+      text-align: center;
+    }
+
+    .back-link {
+      color: var(--green-400);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color var(--transition-fast);
+    }
+
+    .back-link:hover {
+      color: var(--green-300);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .playbooks-grid,
+      .featured-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 2rem 0;
+      }
+
+      .hero-stats {
+        gap: 1rem;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+
+      .stat-divider {
+        height: 2rem;
+      }
+
+      .filter-controls {
+        gap: 0.5rem;
+      }
+
+      .filter-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.8125rem;
+      }
+    }
+  </style>
+
+  <script>
+    // Category filtering
+    document.addEventListener('DOMContentLoaded', () => {
+      const filterBtns = document.querySelectorAll('.filter-btn');
+      const playbookCards = document.querySelectorAll('.playbook-card');
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const category = btn.dataset.category;
+
+          // Update active button
+          filterBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          // Filter cards
+          playbookCards.forEach(card => {
+            if (category === 'all' || card.dataset.category === category) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
