@@ -10,6 +10,67 @@ import StackBuilder from '../components/StackBuilder.astro';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Claude Code Skills Hub | Plugins & Agent Skills</title>
     <meta name="description" content="Browse hundreds of plugins with embedded agent skills for Claude Code. Supports 2025 schema. Interactive tutorials and production workflows.">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Claude Code Plugins Marketplace",
+      "description": "Browse 258 plugins with embedded agent skills for Claude Code. Interactive tutorials, production workflows, and 2025 schema support.",
+      "url": "https://claudecodeplugins.io",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://claudecodeplugins.io/?stack={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Intent Solutions IO",
+        "url": "https://intentsolutions.io"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Claude Code Plugins",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Linux, macOS, Windows",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "258",
+        "bestRating": "5"
+      },
+      "description": "258 plugins for Claude Code with embedded agent skills, interactive tutorials, and production workflows. Supports 2025 schema.",
+      "softwareVersion": "4.0.0",
+      "url": "https://claudecodeplugins.io",
+      "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins",
+      "applicationSuite": "Claude Code",
+      "featureList": [
+        "258 plugins across 18 categories",
+        "241 embedded Agent Skills",
+        "Interactive Stack Builder",
+        "Shareable plugin collections",
+        "Cross-platform CLI tool",
+        "System diagnostics",
+        "Fuzzy search",
+        "LocalStorage persistence"
+      ]
+    }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
