@@ -123,7 +123,8 @@ jobs:
 
           # Check for private keys (critical - always fail)
           # Exclude README and SKILL files (documentation of patterns to look for)
-          PRIVATE_KEYS=$(grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "SKILL.md" | grep -v "Pattern:" || true)
+          # Exclude tests/, CHANGES.md, and security pattern definitions (redact.py)
+          PRIVATE_KEYS=$(grep -r "BEGIN.*PRIVATE KEY" plugins/ 2>/dev/null | grep -v "README.md" | grep -v "SKILL.md" | grep -v "Pattern:" | grep -v "/tests/" | grep -v "CHANGES.md" | grep -v "redact.py" || true)
           if [ -n "$PRIVATE_KEYS" ]; then
             echo "❌ ERROR: Private key detected!"
             echo "$PRIVATE_KEYS"
