@@ -1,0 +1,38 @@
+{
+  "name": "@claude-code-plugins/analytics-daemon",
+  "version": "0.1.0",
+  "description": "Local analytics daemon for Claude Code plugin usage tracking",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "ccp-analytics": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "test": "echo \"Tests not implemented yet\" && exit 0"
+  },
+  "keywords": [
+    "claude-code",
+    "analytics",
+    "plugin-usage",
+    "dashboard"
+  ],
+  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^4.0.3",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.2",
+    "@types/ws": "^8.5.13",
+    "typescript": "^5.7.3"
+  }
+}

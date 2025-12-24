@@ -1,0 +1,474 @@
+---
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+export async function getStaticPaths() {
+  // Load extended catalog
+  const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
+  const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+
+  return catalog.plugins.map((plugin: any) => ({
+    params: { name: plugin.name },
+    props: { plugin },
+  }));
+}
+
+const { plugin } = Astro.props;
+
+const MARKETPLACE_SLUG = 'claude-code-plugins-plus';
+const installCommand = `/plugin install ${plugin.name}@${MARKETPLACE_SLUG}`;
+
+// Format pricing
+const formatPricing = (pricing: any) => {
+  if (!pricing) return 'Free';
+  if (pricing.model === 'one-time') {
+    return `$${pricing.price} ${pricing.currency} (one-time)`;
+  }
+  return `$${pricing.price} ${pricing.currency}/${pricing.model}`;
+};
+
+// Format skills/commands count
+const formatComponents = (components: any) => {
+  if (!components) return [];
+  const items = [];
+  if (components.skills) items.push(`${components.skills} skill${components.skills > 1 ? 's' : ''}`);
+  if (components.commands) items.push(`${components.commands} command${components.commands > 1 ? 's' : ''}`);
+  if (components.agents) items.push(`${components.agents} agent${components.agents > 1 ? 's' : ''}`);
+  if (components.hooks) items.push(`${components.hooks} hook${components.hooks > 1 ? 's' : ''}`);
+  return items;
+};
+
+const componentList = formatComponents(plugin.components);
+
+// Related plugins (same category)
+const relatedPlugins = await (async () => {
+  const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
+  const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+  return catalog.plugins
+    .filter((p: any) => p.category === plugin.category && p.name !== plugin.name)
+    .slice(0, 6);
+})();
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{plugin.name} | Claude Code Plugins</title>
+    <meta name="description" content={plugin.description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={plugin.name} />
+    <meta property="og:description" content={plugin.description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={`https://claudecodeplugins.io/plugins/${plugin.name}`} />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={plugin.name} />
+    <meta name="twitter:description" content={plugin.description} />
+
+    <style>
+      :root {
+        --color-bg: #0f0f0f;
+        --color-surface: #1a1a1a;
+        --color-surface-hover: #2a2a2a;
+        --color-border: #333;
+        --color-text: #e0e0e0;
+        --color-text-muted: #888;
+        --color-accent: #00D4FF;
+        --color-success: #00C853;
+        --color-warning: #FFA000;
+        --radius: 12px;
+        --spacing: 1rem;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+        padding: 2rem 1rem;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-accent);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        transition: opacity 0.2s;
+      }
+
+      .back-link:hover {
+        opacity: 0.8;
+      }
+
+      .header {
+        margin-bottom: 2rem;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--color-accent) 0%, #00B8D4 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        color: var(--color-text-muted);
+        font-size: 0.9rem;
+      }
+
+      .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+      }
+
+      .badge {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .badge.featured {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-color: #667eea;
+        color: white;
+      }
+
+      .description {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+        color: var(--color-text);
+      }
+
+      .section {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .section h2 {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .install-box {
+        background: #000;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        font-size: 0.95rem;
+        position: relative;
+        margin-bottom: 1rem;
+      }
+
+      .install-command {
+        color: var(--color-accent);
+        user-select: all;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        color: var(--color-text);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: var(--color-surface-hover);
+        border-color: var(--color-accent);
+      }
+
+      .copy-btn.copied {
+        background: var(--color-success);
+        border-color: var(--color-success);
+        color: white;
+      }
+
+      .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+
+      .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+
+      .info-label {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        font-weight: 500;
+      }
+
+      .info-value {
+        font-size: 1rem;
+        color: var(--color-text);
+      }
+
+      .keywords {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .keyword {
+        background: var(--color-surface);
+        border: 1px solid var(--color-border);
+        padding: 0.3rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+      }
+
+      .components-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-top: 0.5rem;
+      }
+
+      .component-badge {
+        background: linear-gradient(135deg, var(--color-accent) 0%, #00B8D4 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .related-plugins {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .related-card {
+        background: var(--color-bg);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1rem;
+        text-decoration: none;
+        color: var(--color-text);
+        transition: all 0.2s;
+      }
+
+      .related-card:hover {
+        border-color: var(--color-accent);
+        transform: translateY(-2px);
+      }
+
+      .related-card h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--color-accent);
+      }
+
+      .related-card p {
+        font-size: 0.85rem;
+        color: var(--color-text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+      }
+
+      .repo-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-accent);
+        text-decoration: none;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .repo-link:hover {
+        text-decoration: underline;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .info-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">
+        ← Back to Marketplace
+      </a>
+
+      <div class="header">
+        <h1>{plugin.name}</h1>
+        <div class="meta">
+          {plugin.featured && <span class="badge featured">Featured</span>}
+          <span class="badge">{plugin.category}</span>
+          <span class="meta-item">v{plugin.version}</span>
+          {plugin.author?.name && <span class="meta-item">by {plugin.author.name}</span>}
+        </div>
+      </div>
+
+      <p class="description">{plugin.description}</p>
+
+      <div class="section">
+        <h2>📦 Installation</h2>
+        <p style="margin-bottom: 1rem; color: var(--color-text-muted); font-size: 0.95rem;">
+          Open Claude Code and run this command:
+        </p>
+        <div class="install-box">
+          <code class="install-command">{installCommand}</code>
+          <button class="copy-btn" id="copy-btn">Copy</button>
+        </div>
+        <p style="color: var(--color-text-muted); font-size: 0.9rem;">
+          💡 Tip: Use <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">--global</code> to install for all projects, or <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">--project</code> for current project only.
+        </p>
+      </div>
+
+      <div class="section">
+        <h2>ℹ️ Plugin Information</h2>
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Version</span>
+            <span class="info-value">{plugin.version}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Category</span>
+            <span class="info-value">{plugin.category}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">License</span>
+            <span class="info-value">{plugin.license || 'MIT'}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Pricing</span>
+            <span class="info-value">{formatPricing(plugin.pricing)}</span>
+          </div>
+        </div>
+      </div>
+
+      {componentList.length > 0 && (
+        <div class="section">
+          <h2>🧩 Components</h2>
+          <div class="components-list">
+            {componentList.map((item: string) => (
+              <span class="component-badge">{item}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {plugin.keywords && plugin.keywords.length > 0 && (
+        <div class="section">
+          <h2>🏷️ Keywords</h2>
+          <div class="keywords">
+            {plugin.keywords.map((keyword: string) => (
+              <span class="keyword">{keyword}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {plugin.repository && (
+        <div class="section">
+          <h2>🔗 Links</h2>
+          <a href={plugin.repository} class="repo-link" target="_blank" rel="noopener">
+            View on GitHub →
+          </a>
+        </div>
+      )}
+
+      {relatedPlugins.length > 0 && (
+        <div class="section">
+          <h2>🔗 Related Plugins</h2>
+          <div class="related-plugins">
+            {relatedPlugins.map((related: any) => (
+              <a href={`/plugins/${related.name}`} class="related-card">
+                <h3>{related.name}</h3>
+                <p>{related.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <script>
+      const copyBtn = document.getElementById('copy-btn');
+      const installCommand = document.querySelector('.install-command');
+
+      if (copyBtn && installCommand) {
+        copyBtn.addEventListener('click', async () => {
+          const text = installCommand.textContent || '';
+          await navigator.clipboard.writeText(text);
+
+          copyBtn.textContent = 'Copied!';
+          copyBtn.classList.add('copied');
+
+          setTimeout(() => {
+            copyBtn.textContent = 'Copy';
+            copyBtn.classList.remove('copied');
+          }, 2000);
+        });
+      }
+    </script>
+  </body>
+</html>

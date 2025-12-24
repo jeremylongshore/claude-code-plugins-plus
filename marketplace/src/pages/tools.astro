@@ -1,0 +1,556 @@
+---
+const MARKETPLACE_INSTALL = '/plugin marketplace add jeremylongshore/claude-code-plugins';
+const CLI_INSTALL = 'npx @claude-code-plugins/ccp doctor';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CLI Tools | Claude Code Plugins</title>
+    <meta name="description" content="Professional CLI tools for Claude Code plugin management: Doctor diagnostics, Analytics dashboard, and Chats mobile monitor." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="CLI Tools | Claude Code Plugins" />
+    <meta property="og:description" content="Professional CLI tools for Claude Code plugin management" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://claudecodeplugins.io/tools" />
+
+    <style>
+      :root {
+        --bg: #0a0a0a;
+        --surface: #111;
+        --surface-elevated: #1a1a1a;
+        --border: #222;
+        --text: #e5e5e5;
+        --text-muted: #a3a3a3;
+        --accent: #10b981;
+        --accent-hover: #059669;
+        --blue: #3b82f6;
+        --purple: #8b5cf6;
+        --orange: #f59e0b;
+        --radius: 12px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--accent);
+        text-decoration: none;
+        margin-bottom: 2rem;
+        font-size: 0.95rem;
+        transition: opacity 0.2s;
+      }
+
+      .back-link:hover {
+        opacity: 0.8;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .hero h1 {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent) 0%, var(--blue) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+      }
+
+      .tool-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        transition: all 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .tool-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent), var(--blue));
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .tool-card:hover {
+        border-color: var(--accent);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      }
+
+      .tool-card:hover::before {
+        opacity: 1;
+      }
+
+      .tool-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .tool-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        font-size: 1.5rem;
+      }
+
+      .tool-icon.doctor {
+        background: linear-gradient(135deg, var(--accent), var(--blue));
+      }
+
+      .tool-icon.analytics {
+        background: linear-gradient(135deg, var(--blue), var(--purple));
+      }
+
+      .tool-icon.chats {
+        background: linear-gradient(135deg, var(--purple), var(--orange));
+      }
+
+      .tool-title {
+        flex: 1;
+      }
+
+      .tool-title h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+      }
+
+      .tool-status {
+        font-size: 0.85rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
+        font-weight: 600;
+      }
+
+      .status-available {
+        background: rgba(16, 185, 129, 0.2);
+        color: var(--accent);
+        border: 1px solid var(--accent);
+      }
+
+      .status-soon {
+        background: rgba(251, 146, 60, 0.2);
+        color: var(--orange);
+        border: 1px solid var(--orange);
+      }
+
+      .tool-description {
+        color: var(--text-muted);
+        margin-bottom: 1.5rem;
+        font-size: 1rem;
+      }
+
+      .feature-list {
+        list-style: none;
+        margin-bottom: 1.5rem;
+      }
+
+      .feature-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
+        color: var(--text);
+        font-size: 0.95rem;
+      }
+
+      .feature-list li::before {
+        content: '✓';
+        color: var(--accent);
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .install-box {
+        background: #000;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1rem;
+        font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
+        font-size: 0.9rem;
+        position: relative;
+        margin-top: 1.5rem;
+      }
+
+      .install-command {
+        color: var(--accent);
+        user-select: all;
+      }
+
+      .copy-btn {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.4rem 0.8rem;
+        font-size: 0.8rem;
+        color: var(--text);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      .copy-btn:hover {
+        background: var(--surface-elevated);
+        border-color: var(--accent);
+      }
+
+      .copy-btn.copied {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #000;
+      }
+
+      .quick-start {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 2rem;
+        margin-top: 4rem;
+      }
+
+      .quick-start h2 {
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+      }
+
+      .steps {
+        display: grid;
+        gap: 1.5rem;
+      }
+
+      .step {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .step-number {
+        width: 32px;
+        height: 32px;
+        background: var(--accent);
+        color: #000;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+      }
+
+      .step-content h3 {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .step-content p {
+        color: var(--text-muted);
+      }
+
+      .cta-section {
+        text-align: center;
+        margin-top: 4rem;
+        padding: 3rem 1rem;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+      }
+
+      .cta-section h2 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .cta-buttons {
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 2rem;
+      }
+
+      .btn {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        text-decoration: none;
+        transition: all 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: #000;
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+      }
+
+      .btn-secondary {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text);
+      }
+
+      .btn-secondary:hover {
+        border-color: var(--accent);
+        background: var(--surface-elevated);
+      }
+
+      @media (max-width: 768px) {
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1rem;
+        }
+
+        .tools-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .cta-buttons {
+          flex-direction: column;
+          align-items: stretch;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <a href="/" class="back-link">
+        ← Back to Marketplace
+      </a>
+
+      <div class="hero">
+        <h1>CLI Tools</h1>
+        <p>
+          Professional command-line tools for managing Claude Code plugins.
+          Diagnose issues, monitor usage, and stay connected to your AI workflows.
+        </p>
+      </div>
+
+      <div class="tools-grid">
+        <!-- Doctor -->
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon doctor">🩺</div>
+            <div class="tool-title">
+              <h2>CCP Doctor</h2>
+              <span class="tool-status status-available">Available Now</span>
+            </div>
+          </div>
+
+          <p class="tool-description">
+            Comprehensive system diagnostics for your Claude Code installation.
+            Verify plugins, check dependencies, and ensure everything is configured correctly.
+          </p>
+
+          <ul class="feature-list">
+            <li>Detect Claude Code installation paths (Linux, macOS, Windows)</li>
+            <li>Verify Node.js and package manager versions</li>
+            <li>Check installed plugins and marketplace status</li>
+            <li>Validate plugin configurations</li>
+            <li>Generate detailed diagnostic reports (JSON output available)</li>
+          </ul>
+
+          <div class="install-box">
+            <code class="install-command">{CLI_INSTALL}</code>
+            <button class="copy-btn" data-command={CLI_INSTALL}>Copy</button>
+          </div>
+        </div>
+
+        <!-- Analytics -->
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon analytics">📊</div>
+            <div class="tool-title">
+              <h2>CCP Analytics</h2>
+              <span class="tool-status status-soon">Coming Soon</span>
+            </div>
+          </div>
+
+          <p class="tool-description">
+            Local daemon that tracks plugin usage, performance metrics, and costs.
+            Real-time dashboard with insights into your AI workflows.
+          </p>
+
+          <ul class="feature-list">
+            <li>Track plugin usage and activation patterns</li>
+            <li>Monitor Claude API costs per plugin/skill/MCP</li>
+            <li>Measure response latency and token usage</li>
+            <li>Real-time dashboard with charts and graphs</li>
+            <li>Export analytics data for custom reporting</li>
+          </ul>
+
+          <div class="install-box">
+            <code class="install-command" style="opacity: 0.5;">npx @claude-code-plugins/ccp analytics</code>
+            <button class="copy-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Soon</button>
+          </div>
+        </div>
+
+        <!-- Chats -->
+        <div class="tool-card">
+          <div class="tool-header">
+            <div class="tool-icon chats">💬</div>
+            <div class="tool-title">
+              <h2>CCP Chats</h2>
+              <span class="tool-status status-soon">Coming Soon</span>
+            </div>
+          </div>
+
+          <p class="tool-description">
+            Mobile-first conversation monitor. Watch Claude Code sessions in real-time
+            from your phone or tablet as they happen.
+          </p>
+
+          <ul class="feature-list">
+            <li>Real-time conversation streaming via WebSocket</li>
+            <li>Mobile-optimized responsive interface</li>
+            <li>View active plugins and skills in use</li>
+            <li>Monitor long-running operations remotely</li>
+            <li>Session history and replay functionality</li>
+          </ul>
+
+          <div class="install-box">
+            <code class="install-command" style="opacity: 0.5;">npx @claude-code-plugins/ccp chats</code>
+            <button class="copy-btn" disabled style="opacity: 0.5; cursor: not-allowed;">Soon</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="quick-start">
+        <h2>Quick Start</h2>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h3>Add the Marketplace</h3>
+              <p>Open Claude Code and run: <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">{MARKETPLACE_INSTALL}</code></p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h3>Install CLI Tools</h3>
+              <p>The <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">@claude-code-plugins/ccp</code> package is published to npm. No installation needed - just use npx!</p>
+            </div>
+          </div>
+
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h3>Run Diagnostics</h3>
+              <p>Verify your setup with: <code style="background: #000; padding: 0.2rem 0.4rem; border-radius: 4px;">npx @claude-code-plugins/ccp doctor</code></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cta-section">
+        <h2>Ready to Get Started?</h2>
+        <p style="color: var(--text-muted); margin-bottom: 2rem;">
+          Install plugins, run diagnostics, and optimize your Claude Code workflow.
+        </p>
+        <div class="cta-buttons">
+          <a href="/" class="btn btn-primary">
+            Browse Plugins
+          </a>
+          <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn btn-secondary">
+            View on GitHub
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Copy button functionality
+      const copyButtons = document.querySelectorAll('.copy-btn:not([disabled])');
+
+      copyButtons.forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const command = btn.getAttribute('data-command') || btn.previousElementSibling?.textContent;
+          if (!command) return;
+
+          await navigator.clipboard.writeText(command);
+
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      });
+    </script>
+  </body>
+</html>

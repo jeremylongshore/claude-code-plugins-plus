@@ -9,6 +9,14 @@
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 
+### Technology Partners
+
+[![Powered by Anthropic](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-5436DA?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://www.anthropic.com/)
+[![Built on Google Cloud](https://img.shields.io/badge/Built%20on-Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/)
+[![Ollama Compatible](https://img.shields.io/badge/Ollama-Compatible-000000?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://ollama.com/)
+
+**[→ Learn more about our technology partners](https://claudecodeplugins.io/#sponsors)** | **[→ Become a sponsor](https://claudecodeplugins.io/sponsor)**
+
 ## 📖 Learning Lab
 
 **Build production agent workflows with empirical verification** - Complete teaching system with guides, diagrams, and working examples.
@@ -379,6 +387,20 @@ cp -r templates/command-plugin my-awesome-plugin
 - [Marketplace Guide](docs/marketplace-guide.md) - Distribute your plugins
 - [Security Best Practices](docs/security-best-practices.md) - Secure plugin development
 - [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
+
+### Production Playbooks
+- [Production Playbooks Index](playbooks/README.md) - 11 comprehensive guides (~53,500 words)
+- [Advanced Tool Use](playbooks/11-advanced-tool-use.md) - Dynamic discovery & programmatic orchestration ⭐ NEW
+- [Multi-Agent Rate Limits](playbooks/01-multi-agent-rate-limits.md) - Prevent API throttling
+- [Cost Caps & Budget Management](playbooks/02-cost-caps.md) - Control AI spending
+- [MCP Server Reliability](playbooks/03-mcp-reliability.md) - Self-healing MCP servers
+- [Ollama Migration Guide](playbooks/04-ollama-migration.md) - Switch to self-hosted LLMs
+- [Incident Debugging](playbooks/05-incident-debugging.md) - SEV-1/2/3/4 response protocols
+- [Self-Hosted Stack Setup](playbooks/06-self-hosted-stack.md) - Full infrastructure deployment
+- [Compliance & Audit](playbooks/07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
+- [Team Presets & Workflows](playbooks/08-team-presets.md) - Team standardization
+- [Cost Attribution System](playbooks/09-cost-attribution.md) - Multi-dimensional cost tracking
+- [Progressive Enhancement](playbooks/10-progressive-enhancement.md) - Safe feature rollout
 
 ---
 

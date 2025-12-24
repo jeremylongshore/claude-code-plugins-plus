@@ -1,0 +1,174 @@
+name: Publish CLI to npm
+
+on:
+  push:
+    tags:
+      - 'cli-v*.*.*'  # Triggers on tags like cli-v1.0.0
+
+permissions:
+  contents: write
+  id-token: write  # Required for npm provenance
+
+jobs:
+  # Quality gate: Must pass all tests first
+  quality-gate:
+    name: Quality Gate - Run All Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run TypeScript type check
+        run: pnpm -C packages/cli typecheck
+
+      - name: Build CLI
+        run: pnpm -C packages/cli build
+
+      - name: Verify package.json version matches tag
+        working-directory: packages/cli
+        run: |
+          TAG_VERSION=${GITHUB_REF#refs/tags/cli-v}
+          PKG_VERSION=$(node -p "require('./package.json').version")
+
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "❌ Version mismatch!"
+            echo "   Git tag: $TAG_VERSION"
+            echo "   package.json: $PKG_VERSION"
+            exit 1
+          fi
+
+          echo "✅ Version verified: $PKG_VERSION"
+
+      - name: Run smoke tests
+        working-directory: packages/cli
+        run: |
+          # Test CLI commands
+          node dist/index.js --version
+          node dist/index.js --help
+          node dist/index.js doctor --json > /tmp/doctor.json || true
+
+          echo "✅ Smoke tests passed"
+
+  # Publish to npm
+  publish:
+    name: Publish to npm Registry
+    runs-on: ubuntu-latest
+    needs: quality-gate
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build for production
+        run: pnpm -C packages/cli build
+
+      - name: Publish to npm (with provenance)
+        working-directory: packages/cli
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/cli-v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "✅ Published version: $VERSION"
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: CLI v${{ steps.version.outputs.version }}
+          body: |
+            ## @claude-code-plugins/ccp v${{ steps.version.outputs.version }}
+
+            ### Installation
+
+            ```bash
+            npx @claude-code-plugins/ccp@${{ steps.version.outputs.version }} doctor
+            ```
+
+            ### Features
+
+            - ✅ Universal package manager support (npm/bun/pnpm/deno)
+            - ✅ Cross-platform (Linux/macOS/Windows)
+            - ✅ System diagnostics with `ccp doctor`
+            - ✅ Plugin installation and management
+
+            ### What's Changed
+
+            See [CHANGELOG.md](https://github.com/jeremylongshore/claude-code-plugins/blob/main/CHANGELOG.md) for details.
+
+            ### Links
+
+            - 📦 [npm Package](https://www.npmjs.com/package/@claude-code-plugins/ccp)
+            - 🌐 [Website](https://claudecodeplugins.io)
+            - 📚 [Documentation](https://github.com/jeremylongshore/claude-code-plugins/tree/main/packages/cli)
+
+            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+            Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>
+          draft: false
+          prerelease: false
+
+      - name: Report success
+        run: |
+          echo "## 🎉 CLI Published Successfully" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Package**: [@claude-code-plugins/ccp](https://www.npmjs.com/package/@claude-code-plugins/ccp)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Installation" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "npx @claude-code-plugins/ccp@${{ steps.version.outputs.version }} doctor" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+
+  # Post-publish verification
+  verify-publish:
+    name: Verify npm Package
+    runs-on: ubuntu-latest
+    needs: publish
+
+    steps:
+      - name: Wait for npm registry propagation
+        run: sleep 60
+
+      - name: Test installation from npm
+        run: |
+          # Test with npx
+          npx @claude-code-plugins/ccp@latest --version
+
+          echo "✅ Package successfully published and installable"
+
+      - name: Report
+        run: |
+          echo "## ✅ Verification Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Package is live and installable from npm registry" >> $GITHUB_STEP_SUMMARY

@@ -1,21 +1,24 @@
 ---
 const categories = [
-  'automation',
-  'business-tools',
-  'devops',
-  'code-analysis',
-  'debugging',
-  'ai-ml-assistance',
-  'frontend-development',
+  'productivity',
   'security',
-  'testing',
-  'documentation',
-  'performance',
+  'devops',
+  'ai-ml',
   'database',
-  'cloud-infrastructure',
-  'accessibility',
-  'mobile',
-  'other'
+  'api-development',
+  'crypto',
+  'finance',
+  'performance',
+  'business-tools',
+  'community',
+  'mcp',
+  'examples',
+  'life-sciences',
+  'jeremy-genkit',
+  'jeremy-google-adk',
+  'jeremy-vertex-ai',
+  'ai-agency',
+  'skill-enhancers'
 ];
 ---
 
@@ -29,7 +32,7 @@ const categories = [
         <input
           type="text"
           id="plugin-search"
-          placeholder="Search plugins by name, description, or keyword..."
+          placeholder="Search plugins by name, description, or keyword... (fuzzy search enabled)"
           class="search-input"
         />
         <button id="clear-search" class="clear-btn" style="display: none;">
@@ -37,6 +40,7 @@ const categories = [
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
+        <span class="search-hint">Press <kbd>Ctrl+K</kbd> to focus</span>
       </div>
 
       <div class="filters">
@@ -50,6 +54,7 @@ const categories = [
         </select>
 
         <select id="sort-filter" class="filter-select">
+          <option value="relevance">Sort: Relevance</option>
           <option value="name">Sort: A-Z</option>
           <option value="name-desc">Sort: Z-A</option>
           <option value="featured">Sort: Featured</option>
@@ -59,6 +64,7 @@ const categories = [
 
     <div class="search-results-info">
       <span id="results-count" class="results-count"></span>
+      <span id="search-mode" class="search-mode"></span>
       <button id="reset-filters" class="reset-btn" style="display: none;">
         Reset Filters
       </button>
@@ -121,6 +127,26 @@ const categories = [
 
   .search-input::placeholder {
     color: var(--slate-500);
+  }
+
+  .search-hint {
+    position: absolute;
+    right: 3.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.75rem;
+    color: var(--slate-500);
+    pointer-events: none;
+  }
+
+  .search-hint kbd {
+    display: inline-block;
+    padding: 0.125rem 0.375rem;
+    background: var(--slate-700);
+    border: 1px solid var(--slate-600);
+    border-radius: 0.25rem;
+    font-family: monospace;
+    font-size: 0.6875rem;
   }
 
   .clear-btn {
@@ -197,6 +223,15 @@ const categories = [
     font-weight: 500;
   }
 
+  .search-mode {
+    font-size: 0.75rem;
+    color: var(--green-500);
+    font-weight: 500;
+    padding: 0.25rem 0.5rem;
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 0.375rem;
+  }
+
   .reset-btn {
     padding: 0.5rem 1rem;
     background: var(--slate-800);
@@ -221,6 +256,10 @@ const categories = [
       position: relative;
     }
 
+    .search-hint {
+      display: none;
+    }
+
     .filters {
       flex-direction: column;
     }
@@ -237,59 +276,137 @@ const categories = [
 </style>
 
 <script>
-  // Client-side search and filter logic
+  import Fuse from 'fuse.js';
+
+  // Types
+  interface Plugin {
+    name: string;
+    description: string;
+    keywords?: string[];
+    category: string;
+    featured?: boolean;
+  }
+
+  // State
+  let fuse: Fuse<Plugin> | null = null;
+  let allPlugins: Plugin[] = [];
+  let fuseEnabled = false;
+
+  // DOM Elements
   const searchInput = document.getElementById('plugin-search') as HTMLInputElement;
   const clearBtn = document.getElementById('clear-search') as HTMLButtonElement;
   const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
   const sortFilter = document.getElementById('sort-filter') as HTMLSelectElement;
   const resultsCount = document.getElementById('results-count') as HTMLSpanElement;
+  const searchMode = document.getElementById('search-mode') as HTMLSpanElement;
   const resetBtn = document.getElementById('reset-filters') as HTMLButtonElement;
 
+  // Initialize Fuse.js
+  function initializeFuse() {
+    const pluginCards = Array.from(document.querySelectorAll('.plugin-card'));
+
+    allPlugins = pluginCards.map((card) => ({
+      name: card.getAttribute('data-name') || '',
+      description: card.getAttribute('data-description') || '',
+      keywords: (card.getAttribute('data-keywords') || '').split(',').map(k => k.trim()),
+      category: card.getAttribute('data-category') || '',
+      featured: card.getAttribute('data-featured') === 'true',
+    }));
+
+    fuse = new Fuse(allPlugins, {
+      keys: [
+        { name: 'name', weight: 3 },
+        { name: 'description', weight: 2 },
+        { name: 'keywords', weight: 1.5 }
+      ],
+      threshold: 0.4,
+      distance: 100,
+      minMatchCharLength: 2,
+      includeScore: true,
+      useExtendedSearch: true,
+    });
+
+    fuseEnabled = true;
+    searchMode.textContent = `🔍 Fuzzy Search Active (${allPlugins.length} plugins indexed)`;
+    searchMode.style.display = 'inline-block';
+  }
+
+  // Update plugin display with fuzzy search
   function updatePluginDisplay() {
-    const searchTerm = searchInput.value.toLowerCase().trim();
+    const searchTerm = searchInput.value.trim();
     const selectedCategory = categoryFilter.value;
     const sortBy = sortFilter.value;
 
     const pluginCards = Array.from(document.querySelectorAll('.plugin-card'));
     let visibleCount = 0;
+    const matchedNames = new Set<string>();
 
-    // Filter plugins
-    pluginCards.forEach((card) => {
-      const name = card.getAttribute('data-name')?.toLowerCase() || '';
-      const description = card.getAttribute('data-description')?.toLowerCase() || '';
-      const keywords = card.getAttribute('data-keywords')?.toLowerCase() || '';
-      const category = card.getAttribute('data-category') || '';
+    // Use fuzzy search if enabled and search term exists
+    if (fuseEnabled && fuse && searchTerm.length >= 2) {
+      const results = fuse.search(searchTerm);
+      results.forEach(result => {
+        matchedNames.add(result.item.name);
+      });
 
-      const matchesSearch = !searchTerm ||
-        name.includes(searchTerm) ||
-        description.includes(searchTerm) ||
-        keywords.includes(searchTerm);
+      pluginCards.forEach((card) => {
+        const name = card.getAttribute('data-name') || '';
+        const category = card.getAttribute('data-category') || '';
 
-      const matchesCategory = !selectedCategory || category === selectedCategory;
+        const matchesSearch = matchedNames.has(name);
+        const matchesCategory = !selectedCategory || category === selectedCategory;
 
-      if (matchesSearch && matchesCategory) {
-        (card as HTMLElement).style.display = '';
-        visibleCount++;
-      } else {
-        (card as HTMLElement).style.display = 'none';
-      }
-    });
+        if (matchesSearch && matchesCategory) {
+          (card as HTMLElement).style.display = '';
+          visibleCount++;
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    } else {
+      // Fallback to basic substring search
+      pluginCards.forEach((card) => {
+        const name = card.getAttribute('data-name')?.toLowerCase() || '';
+        const description = card.getAttribute('data-description')?.toLowerCase() || '';
+        const keywords = card.getAttribute('data-keywords')?.toLowerCase() || '';
+        const category = card.getAttribute('data-category') || '';
 
-    // Reorder in DOM - handle each grid separately
+        const searchLower = searchTerm.toLowerCase();
+        const matchesSearch = !searchTerm ||
+          name.includes(searchLower) ||
+          description.includes(searchLower) ||
+          keywords.includes(searchLower);
+
+        const matchesCategory = !selectedCategory || category === selectedCategory;
+
+        if (matchesSearch && matchesCategory) {
+          (card as HTMLElement).style.display = '';
+          visibleCount++;
+        } else {
+          (card as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+
+    // Sort visible plugins
     const containers = document.querySelectorAll('.plugins-grid');
     containers.forEach((container) => {
-      const cardsInThisContainer = Array.from(container.querySelectorAll('.plugin-card'));
-      const visibleCardsInThisContainer = cardsInThisContainer.filter(card =>
+      const cardsInContainer = Array.from(container.querySelectorAll('.plugin-card'));
+      const visibleCards = cardsInContainer.filter(card =>
         (card as HTMLElement).style.display !== 'none'
       );
 
-      visibleCardsInThisContainer.sort((a, b) => {
+      visibleCards.sort((a, b) => {
         const aName = a.getAttribute('data-name') || '';
         const bName = b.getAttribute('data-name') || '';
         const aFeatured = a.getAttribute('data-featured') === 'true';
         const bFeatured = b.getAttribute('data-featured') === 'true';
 
-        if (sortBy === 'featured') {
+        if (sortBy === 'relevance' && fuseEnabled && searchTerm) {
+          // Sort by fuzzy search score (already sorted by Fuse.js)
+          const aIndex = matchedNames.has(aName) ? Array.from(matchedNames).indexOf(aName) : 999;
+          const bIndex = matchedNames.has(bName) ? Array.from(matchedNames).indexOf(bName) : 999;
+          return aIndex - bIndex;
+        } else if (sortBy === 'featured') {
           if (aFeatured && !bFeatured) return -1;
           if (!aFeatured && bFeatured) return 1;
           return aName.localeCompare(bName);
@@ -300,18 +417,20 @@ const categories = [
         }
       });
 
-      visibleCardsInThisContainer.forEach(card => container.appendChild(card));
+      visibleCards.forEach(card => container.appendChild(card));
     });
 
-    // Update results count
+    // Update UI
     const total = pluginCards.length;
     resultsCount.textContent = `Showing ${visibleCount} of ${total} plugins`;
 
-    // Show/hide clear button
-    clearBtn.style.display = searchTerm ? 'flex' : 'none';
+    if (searchTerm && fuseEnabled) {
+      const accuracy = ((visibleCount / total) * 100).toFixed(0);
+      resultsCount.textContent += ` (${accuracy}% match)`;
+    }
 
-    // Show/hide reset button
-    const hasFilters = searchTerm || selectedCategory || sortBy !== 'name';
+    clearBtn.style.display = searchTerm ? 'flex' : 'none';
+    const hasFilters = searchTerm || selectedCategory || sortBy !== 'relevance';
     resetBtn.style.display = hasFilters ? 'block' : 'none';
   }
 
@@ -323,15 +442,44 @@ const categories = [
   clearBtn.addEventListener('click', () => {
     searchInput.value = '';
     updatePluginDisplay();
+    searchInput.focus();
   });
 
   resetBtn.addEventListener('click', () => {
     searchInput.value = '';
     categoryFilter.value = '';
-    sortFilter.value = 'name';
+    sortFilter.value = 'relevance';
     updatePluginDisplay();
   });
 
-  // Initial display
-  updatePluginDisplay();
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    // Ctrl+K or Cmd+K to focus search
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+
+    // Escape to clear search
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      searchInput.value = '';
+      updatePluginDisplay();
+      searchInput.blur();
+    }
+  });
+
+  // Initialize on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    initializeFuse();
+    updatePluginDisplay();
+  });
+
+  // Also initialize immediately (for SPAs)
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    setTimeout(() => {
+      initializeFuse();
+      updatePluginDisplay();
+    }, 100);
+  }
 </script>

@@ -47,29 +47,6 @@
       }
     },
     {
-      "name": "001-jeremy-taskwarrior-integration",
-      "source": "./plugins/productivity/001-jeremy-taskwarrior-integration",
-      "description": "Enforces complete Taskwarrior integration protocol for ALL coding tasks with automatic task lifecycle management and time tracking via Timewarrior",
-      "version": "1.0.0",
-      "category": "productivity",
-      "keywords": [
-        "taskwarrior",
-        "task-management",
-        "time-tracking",
-        "workflow",
-        "productivity",
-        "timewarrior",
-        "project-management",
-        "task-tracking",
-        "gtd",
-        "time-management"
-      ],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      }
-    },
-    {
       "name": "002-jeremy-yaml-master-agent",
       "source": "./plugins/productivity/002-jeremy-yaml-master-agent",
       "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities",
@@ -3792,10 +3769,10 @@
       }
     },
     {
-      "name": "skills-powerkit",
-      "source": "./plugins/examples/skills-powerkit",
-      "description": "Ultimate plugin management toolkit with 5 Agent Skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
-      "version": "1.0.0",
+      "name": "jeremy-plugin-tool",
+      "source": "./plugins/examples/jeremy-plugin-tool",
+      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "version": "2.0.0",
       "category": "example",
       "keywords": [
         "skills",
