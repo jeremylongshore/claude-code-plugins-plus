@@ -1,0 +1,474 @@
+---
+// Stack Builder - Floating sidebar for selected plugins
+---
+
+<div id="stack-builder" class="stack-builder">
+  <div class="stack-header">
+    <div class="stack-title">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M11.644 1.59a.75.75 0 01.712 0l9.75 5.25a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.712 0l-9.75-5.25a.75.75 0 010-1.32l9.75-5.25z" />
+        <path d="M3.265 10.602l7.668 4.129a2.25 2.25 0 002.134 0l7.668-4.13 1.37.739a.75.75 0 010 1.32l-9.75 5.25a.75.75 0 01-.71 0l-9.75-5.25a.75.75 0 010-1.32l1.37-.738z" />
+        <path d="M10.933 19.231l-7.668-4.13-1.37.739a.75.75 0 000 1.32l9.75 5.25c.221.12.489.12.71 0l9.75-5.25a.75.75 0 000-1.32l-1.37-.738-7.668 4.13a2.25 2.25 0 01-2.134-.001z" />
+      </svg>
+      <h3>Plugin Stack</h3>
+    </div>
+    <div class="stack-count">
+      <span id="stack-count">0</span> selected
+    </div>
+  </div>
+
+  <div id="stack-empty" class="stack-empty">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+      <path fill-rule="evenodd" d="M10.5 3.75a6 6 0 00-5.98 6.496A5.25 5.25 0 006.75 20.25H18a4.5 4.5 0 002.206-8.423 3.75 3.75 0 00-4.133-4.303A6.001 6.001 0 0010.5 3.75zm2.03 5.47a.75.75 0 00-1.06 0l-3 3a.75.75 0 101.06 1.06l1.72-1.72v4.94a.75.75 0 001.5 0v-4.94l1.72 1.72a.75.75 0 101.06-1.06l-3-3z" clip-rule="evenodd" />
+    </svg>
+    <p>No plugins selected</p>
+    <span>Hover over plugin cards and click "Add to Stack"</span>
+  </div>
+
+  <div id="stack-items" class="stack-items"></div>
+
+  <div id="stack-footer" class="stack-footer">
+    <button id="clear-stack" class="btn-secondary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 013.878.512.75.75 0 11-.256 1.478l-.209-.035-1.005 13.07a3 3 0 01-2.991 2.77H8.084a3 3 0 01-2.991-2.77L4.087 6.66l-.209.035a.75.75 0 01-.256-1.478A48.567 48.567 0 017.5 4.705v-.227c0-1.564 1.213-2.9 2.816-2.951a52.662 52.662 0 013.369 0c1.603.051 2.815 1.387 2.815 2.951zm-6.136-1.452a51.196 51.196 0 013.273 0C14.39 3.05 15 3.684 15 4.478v.113a49.488 49.488 0 00-6 0v-.113c0-.794.609-1.428 1.364-1.452zm-.355 5.945a.75.75 0 10-1.5.058l.347 9a.75.75 0 101.499-.058l-.346-9zm5.48.058a.75.75 0 10-1.498-.058l-.347 9a.75.75 0 001.5.058l.345-9z" clip-rule="evenodd" />
+      </svg>
+      Clear All
+    </button>
+    <button id="copy-commands" class="btn-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />
+        <path d="M15 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0017.25 7.5h-1.875A.375.375 0 0115 7.125V5.25zM4.875 6H6v10.125A3.375 3.375 0 009.375 19.5H16.5v1.125c0 1.035-.84 1.875-1.875 1.875h-9.75A1.875 1.875 0 013 20.625V7.875C3 6.839 3.84 6 4.875 6z" />
+      </svg>
+      Copy Install Commands
+    </button>
+  </div>
+</div>
+
+<style>
+  .stack-builder {
+    position: fixed;
+    right: -24rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22rem;
+    max-height: 85vh;
+    background: var(--slate-900);
+    border: 1px solid var(--slate-800);
+    border-radius: 1rem 0 0 1rem;
+    box-shadow: -10px 0 50px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    transition: right 0.3s ease;
+    z-index: 1000;
+  }
+
+  .stack-builder.active {
+    right: 0;
+  }
+
+  .stack-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--slate-800);
+    flex-shrink: 0;
+  }
+
+  .stack-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .stack-title svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--green-500);
+  }
+
+  .stack-title h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--slate-100);
+    margin: 0;
+  }
+
+  .stack-count {
+    font-size: 0.875rem;
+    color: var(--slate-500);
+    font-weight: 600;
+  }
+
+  .stack-count span {
+    color: var(--green-500);
+    font-weight: 700;
+  }
+
+  .stack-empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    text-align: center;
+    color: var(--slate-500);
+  }
+
+  .stack-empty svg {
+    width: 4rem;
+    height: 4rem;
+    color: var(--slate-700);
+    margin-bottom: 1rem;
+  }
+
+  .stack-empty p {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    color: var(--slate-400);
+  }
+
+  .stack-empty span {
+    font-size: 0.875rem;
+  }
+
+  .stack-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: none;
+  }
+
+  .stack-items.has-items {
+    display: block;
+  }
+
+  .stack-item {
+    background: var(--slate-850);
+    border: 1px solid var(--slate-800);
+    border-radius: 0.75rem;
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all var(--transition-base);
+  }
+
+  .stack-item:hover {
+    border-color: var(--slate-700);
+  }
+
+  .stack-item-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stack-item-name {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--slate-200);
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .stack-item-category {
+    font-size: 0.75rem;
+    color: var(--slate-500);
+  }
+
+  .stack-item-remove {
+    padding: 0.375rem;
+    background: transparent;
+    border: none;
+    color: var(--slate-600);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border-radius: 0.375rem;
+  }
+
+  .stack-item-remove:hover {
+    background: var(--slate-800);
+    color: var(--red-500);
+  }
+
+  .stack-item-remove svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .stack-footer {
+    padding: 1.5rem;
+    border-top: 1px solid var(--slate-800);
+    display: none;
+    flex-direction: column;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .stack-footer.active {
+    display: flex;
+  }
+
+  .btn-primary, .btn-secondary {
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+  }
+
+  .btn-primary {
+    background: var(--green-500);
+    color: var(--slate-950);
+  }
+
+  .btn-primary:hover {
+    background: var(--green-400);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--slate-400);
+    border: 1px solid var(--slate-700);
+  }
+
+  .btn-secondary:hover {
+    background: var(--slate-800);
+    border-color: var(--slate-600);
+    color: var(--slate-200);
+  }
+
+  .btn-primary svg, .btn-secondary svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  @media (max-width: 1280px) {
+    .stack-builder {
+      width: 20rem;
+      right: -21rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .stack-builder {
+      width: 100%;
+      right: -100%;
+      border-radius: 0;
+      max-height: 100vh;
+    }
+  }
+</style>
+
+<script>
+  // Stack Builder state management
+  interface StackPlugin {
+    name: string;
+    category: string;
+    installation: string;
+  }
+
+  class StackBuilderManager {
+    private stack: StackPlugin[] = [];
+    private readonly STORAGE_KEY = 'ccp-plugin-stack';
+
+    constructor() {
+      this.loadFromStorage();
+      this.initializeEventListeners();
+      this.restoreCheckboxStates();
+      this.updateUI();
+    }
+
+    private loadFromStorage(): void {
+      try {
+        const saved = localStorage.getItem(this.STORAGE_KEY);
+        if (saved) {
+          this.stack = JSON.parse(saved);
+        }
+      } catch {
+        this.stack = [];
+      }
+    }
+
+    private saveToStorage(): void {
+      try {
+        localStorage.setItem(this.STORAGE_KEY, JSON.stringify(this.stack));
+      } catch (e) {
+        console.error('Failed to save stack:', e);
+      }
+    }
+
+    private initializeEventListeners(): void {
+      // Listen to checkbox changes
+      document.addEventListener('change', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.classList.contains('stack-select')) {
+          const checkbox = target as HTMLInputElement;
+          const pluginName = checkbox.dataset.pluginName!;
+
+          if (checkbox.checked) {
+            this.addToStack(pluginName);
+          } else {
+            this.removeFromStack(pluginName);
+          }
+        }
+      });
+
+      // Clear stack button
+      document.getElementById('clear-stack')?.addEventListener('click', () => {
+        this.clearStack();
+      });
+
+      // Copy commands button
+      document.getElementById('copy-commands')?.addEventListener('click', () => {
+        this.copyCommands();
+      });
+    }
+
+    private addToStack(pluginName: string): void {
+      // Find plugin card
+      const card = document.querySelector(`.plugin-card[data-name="${pluginName}"]`);
+      if (!card) return;
+
+      const plugin: StackPlugin = {
+        name: pluginName,
+        category: card.getAttribute('data-category') || '',
+        installation: card.getAttribute('data-installation') || '',
+      };
+
+      // Add if not already in stack
+      if (!this.stack.find(p => p.name === pluginName)) {
+        this.stack.push(plugin);
+        this.saveToStorage();
+        this.updateUI();
+      }
+    }
+
+    private removeFromStack(pluginName: string): void {
+      this.stack = this.stack.filter(p => p.name !== pluginName);
+      this.saveToStorage();
+      this.updateUI();
+    }
+
+    private clearStack(): void {
+      this.stack = [];
+      this.saveToStorage();
+
+      // Uncheck all checkboxes
+      document.querySelectorAll('.stack-select').forEach(checkbox => {
+        (checkbox as HTMLInputElement).checked = false;
+      });
+
+      this.updateUI();
+    }
+
+    private restoreCheckboxStates(): void {
+      this.stack.forEach(plugin => {
+        const checkbox = document.querySelector(
+          `.stack-select[data-plugin-name="${plugin.name}"]`
+        ) as HTMLInputElement;
+        if (checkbox) {
+          checkbox.checked = true;
+        }
+      });
+    }
+
+    private updateUI(): void {
+      const builder = document.getElementById('stack-builder');
+      const count = document.getElementById('stack-count');
+      const empty = document.getElementById('stack-empty');
+      const items = document.getElementById('stack-items');
+      const footer = document.getElementById('stack-footer');
+
+      if (!builder || !count || !empty || !items || !footer) return;
+
+      // Update count
+      count.textContent = this.stack.length.toString();
+
+      // Show/hide builder
+      if (this.stack.length > 0) {
+        builder.classList.add('active');
+        empty.style.display = 'none';
+        items.classList.add('has-items');
+        footer.classList.add('active');
+
+        // Render stack items
+        items.innerHTML = this.stack.map(plugin => `
+          <div class="stack-item">
+            <div class="stack-item-info">
+              <div class="stack-item-name">${plugin.name}</div>
+              <div class="stack-item-category">
+                ${plugin.category.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')}
+              </div>
+            </div>
+            <button class="stack-item-remove" data-plugin-name="${plugin.name}">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
+              </svg>
+            </button>
+          </div>
+        `).join('');
+
+        // Add remove button listeners
+        items.querySelectorAll('.stack-item-remove').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const pluginName = (e.currentTarget as HTMLElement).dataset.pluginName!;
+            const checkbox = document.querySelector(
+              `.stack-select[data-plugin-name="${pluginName}"]`
+            ) as HTMLInputElement;
+            if (checkbox) {
+              checkbox.checked = false;
+            }
+            this.removeFromStack(pluginName);
+          });
+        });
+      } else {
+        builder.classList.remove('active');
+        empty.style.display = 'flex';
+        items.classList.remove('has-items');
+        footer.classList.remove('active');
+      }
+    }
+
+    private copyCommands(): void {
+      const commands = this.stack.map(p => p.installation).join('\n');
+
+      navigator.clipboard.writeText(commands).then(() => {
+        const btn = document.getElementById('copy-commands');
+        if (btn) {
+          const original = btn.innerHTML;
+          btn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" />
+            </svg>
+            Copied ${this.stack.length} Commands!
+          `;
+          setTimeout(() => {
+            btn.innerHTML = original;
+          }, 2000);
+        }
+      });
+    }
+  }
+
+  // Initialize on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      new StackBuilderManager();
+    });
+  } else {
+    new StackBuilderManager();
+  }
+</script>
