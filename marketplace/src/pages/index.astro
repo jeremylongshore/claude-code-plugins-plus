@@ -1,131 +1,22 @@
 ---
 // Claude Code Plugins Marketplace - Homepage
+import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claude Code Skills Hub | Plugins & Agent Skills</title>
-    <meta name="description" content="Browse hundreds of plugins with embedded agent skills for Claude Code. Supports 2025 schema. Interactive tutorials and production workflows.">
-
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "Claude Code Plugins Marketplace",
-      "description": "Search 244 agent skills with fuzzy search. Browse 259 plugins. Interactive tutorials and production workflows.",
-      "url": "https://claudecodeplugins.io",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": {
-          "@type": "EntryPoint",
-          "urlTemplate": "https://claudecodeplugins.io/?stack={search_term_string}"
-        },
-        "query-input": "required name=search_term_string"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Intent Solutions IO",
-        "url": "https://intentsolutions.io"
-      }
-    }
-    </script>
-
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "Claude Code Plugins",
-      "applicationCategory": "DeveloperApplication",
-      "operatingSystem": "Linux, macOS, Windows",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
-      },
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "258",
-        "bestRating": "5"
-      },
-      "description": "258 plugins for Claude Code with embedded agent skills, interactive tutorials, and production workflows. Supports 2025 schema.",
-      "softwareVersion": "4.0.0",
-      "url": "https://claudecodeplugins.io",
-      "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins",
-      "applicationSuite": "Claude Code",
-      "featureList": [
-        "258 plugins across 18 categories",
-        "241 embedded Agent Skills",
-        "Interactive Stack Builder",
-        "Shareable plugin collections",
-        "Cross-platform CLI tool",
-        "System diagnostics",
-        "Fuzzy search",
-        "LocalStorage persistence"
-      ]
-    }
-    </script>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<BaseLayout
+    title="Claude Code Skills Hub | Plugins & Agent Skills"
+    description="Search 244 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready."
+>
     <style>
         /* ========================================
-           ANTHROPIC OFFICIAL BRAND COLORS
+           HOMEPAGE-SPECIFIC STYLES
            ======================================== */
-        :root {
-            /* Main Colors */
-            --brand-dark: #141413;
-            --brand-light: #faf9f5;
-            --brand-mid-gray: #b0aea5;
-            --brand-light-gray: #e8e6dc;
-
-            /* Accent Colors */
-            --brand-orange: #d97757;
-            --brand-blue: #6a9bcc;
-            --brand-green: #788c5d;
-
-            /* Derived Colors */
-            --brand-orange-dark: #c45e3e;
-            --brand-orange-light: #e8937a;
-
-            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
         /* Prevent horizontal scroll on mobile */
         html, body {
             overflow-x: hidden;
             max-width: 100%;
-        }
-
-        /* ========================================
-           ANTHROPIC OFFICIAL TYPOGRAPHY
-           Headings: Poppins | Body: Lora
-           ======================================== */
-        body {
-            font-family: 'Lora', Georgia, serif;
-            background-color: var(--brand-light);
-            color: var(--brand-dark);
-            line-height: 1.7;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3, h4, h5, h6,
-        .nav-links, .logo, .btn-primary, .btn-secondary, .btn-white,
-        .hero-badge, .section-label, .step-number, .nav-cta,
-        .stats-number, .install-label {
-            font-family: 'Poppins', Arial, sans-serif;
         }
 
         /* Animated background grain */
@@ -140,75 +31,6 @@ import StackBuilder from '../components/StackBuilder.astro';
             opacity: 0.025;
             pointer-events: none;
             z-index: 1000;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 1.5rem 4rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            background: linear-gradient(to bottom, var(--brand-light) 0%, transparent 100%);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            font-size: 1.1rem;
-            letter-spacing: -0.02em;
-            color: var(--brand-dark);
-            text-decoration: none;
-        }
-
-        .logo-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            color: var(--brand-mid-gray);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.3s var(--transition-smooth);
-        }
-
-        .nav-links a:hover {
-            color: var(--brand-orange);
-        }
-
-        .nav-cta {
-            background: var(--brand-dark);
-            color: var(--brand-light) !important;
-            padding: 0.6rem 1.4rem;
-            border-radius: 6px;
-            transition: all 0.3s var(--transition-smooth) !important;
-        }
-
-        .nav-cta:hover {
-            background: var(--brand-orange) !important;
-            color: white !important;
-            transform: translateY(-1px);
         }
 
         /* Hero Section */
@@ -235,6 +57,7 @@ import StackBuilder from '../components/StackBuilder.astro';
             margin-bottom: 2rem;
             animation: fadeInUp 0.8s var(--transition-smooth) forwards;
             opacity: 0;
+            font-family: 'Poppins', Arial, sans-serif;
         }
 
         .hero-badge::before {
@@ -294,6 +117,7 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .stats-number {
+            font-family: 'Poppins', Arial, sans-serif;
             font-size: 2rem;
             font-weight: 700;
             color: var(--brand-orange);
@@ -314,6 +138,7 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .btn-primary {
+            font-family: 'Poppins', Arial, sans-serif;
             background: var(--brand-orange);
             color: white;
             padding: 1rem 2rem;
@@ -334,6 +159,7 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .btn-secondary {
+            font-family: 'Poppins', Arial, sans-serif;
             background: transparent;
             color: var(--brand-dark);
             padding: 1rem 2rem;
@@ -362,6 +188,7 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .install-label {
+            font-family: 'Poppins', Arial, sans-serif;
             color: var(--brand-mid-gray);
             font-size: 0.8rem;
             font-weight: 500;
@@ -449,6 +276,7 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .section-label {
+            font-family: 'Poppins', Arial, sans-serif;
             color: var(--brand-orange);
             font-size: 0.8rem;
             font-weight: 600;
@@ -504,615 +332,53 @@ import StackBuilder from '../components/StackBuilder.astro';
         }
 
         .feature-icon {
-            width: 56px;
-            height: 56px;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            font-size: 2.5rem;
             margin-bottom: 1.5rem;
-            font-size: 1.5rem;
-        }
-
-        /* Alternate icon colors using brand accents */
-        .feature-card:nth-child(2) .feature-icon,
-        .feature-card:nth-child(5) .feature-icon {
-            background: linear-gradient(135deg, var(--brand-blue) 0%, #5587b5 100%);
-        }
-
-        .feature-card:nth-child(3) .feature-icon,
-        .feature-card:nth-child(6) .feature-icon {
-            background: linear-gradient(135deg, var(--brand-green) 0%, #5f7349 100%);
+            display: block;
         }
 
         .feature-card h3 {
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 600;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.01em;
+            margin-bottom: 1rem;
+            color: var(--brand-dark);
         }
 
         .feature-card p {
-            font-family: 'Lora', Georgia, serif;
             color: var(--brand-mid-gray);
-            font-size: 0.95rem;
             line-height: 1.7;
-        }
-
-        /* Categories Section */
-        .categories {
-            padding: 8rem 4rem;
-            background: var(--brand-dark);
-            color: var(--brand-light);
-        }
-
-        .categories .section-label {
-            color: var(--brand-orange);
-        }
-
-        .categories .section-title {
-            color: white;
-        }
-
-        .categories-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .category-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 2rem 2.5rem;
-            background: var(--brand-dark);
-            cursor: pointer;
-            transition: all 0.3s var(--transition-smooth);
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .category-item:hover {
-            background: rgba(217, 119, 87, 0.1);
-            padding-left: 3rem;
-        }
-
-        .category-item h4 {
-            font-size: 1.25rem;
-            font-weight: 500;
-        }
-
-        .category-item span {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.9rem;
-        }
-
-        .category-count {
-            background: var(--brand-orange);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        /* Process Section */
-        .process {
-            padding: 8rem 4rem;
-            background: var(--brand-light);
-        }
-
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 2rem;
-            margin-top: 4rem;
-        }
-
-        .process-step {
-            text-align: center;
-            position: relative;
-        }
-
-        .process-step::after {
-            content: '→';
-            position: absolute;
-            right: -1.5rem;
-            top: 2rem;
-            color: var(--brand-mid-gray);
-            font-size: 1.5rem;
-        }
-
-        .process-step:last-child::after {
-            display: none;
-        }
-
-        .step-number {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 0 auto 1.5rem;
-        }
-
-        /* Alternate step colors */
-        .process-step:nth-child(2) .step-number {
-            background: linear-gradient(135deg, var(--brand-blue) 0%, #5587b5 100%);
-        }
-
-        .process-step:nth-child(3) .step-number {
-            background: linear-gradient(135deg, var(--brand-green) 0%, #5f7349 100%);
-        }
-
-        .process-step:nth-child(4) .step-number {
-            background: linear-gradient(135deg, var(--brand-dark) 0%, #2a2a28 100%);
-        }
-
-        .process-step h4 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .process-step p {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.9rem;
-        }
-
-        /* Skills Section */
-        .skills-section {
-            padding: 6rem 4rem;
-            background: var(--brand-light);
-            text-align: center;
-        }
-
-        .skills-title {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--brand-dark);
-            margin-bottom: 1rem;
-        }
-
-        .skills-subtitle {
-            font-family: 'Lora', Georgia, serif;
-            font-size: 1.2rem;
-            color: var(--brand-mid-gray);
-            margin-bottom: 3rem;
-            font-style: italic;
-        }
-
-        .skills-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto 4rem;
-        }
-
-        .skill-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .skill-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 30px rgba(212,119,87,0.15);
-        }
-
-        .skill-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .skill-card h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--brand-dark);
-            margin-bottom: 0.75rem;
-        }
-
-        .skill-card p {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-
-        .skills-examples {
-            background: white;
-            padding: 3rem;
-            border-radius: 20px;
-            max-width: 900px;
-            margin: 0 auto 3rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
-        .skills-examples h3 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--brand-dark);
-            margin-bottom: 2rem;
-        }
-
-        .skill-example {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            background: var(--brand-light);
-            border-radius: 12px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .skill-trigger {
-            color: var(--brand-blue);
-            font-weight: 500;
-            flex: 1;
-            text-align: right;
-        }
-
-        .skill-arrow {
-            color: var(--brand-orange);
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .skill-activates {
-            color: var(--brand-green);
-            font-weight: 600;
-            flex: 1;
-            text-align: left;
-        }
-
-        .skills-cta {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 2rem;
-            background: linear-gradient(135deg, var(--brand-orange), var(--brand-orange-dark));
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .skills-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(212,119,87,0.3);
-        }
-
-        .skills-install {
-            background: white;
-            padding: 2rem;
-            border-radius: 16px;
-            margin: 2rem auto;
-            max-width: 700px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
-        .skills-install h4 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--brand-dark);
-            margin-bottom: 1rem;
-        }
-
-        .skills-steps {
-            text-align: left;
-            margin: 0 auto;
-            max-width: 600px;
-            list-style-position: inside;
-        }
-
-        .skills-steps li {
-            margin-bottom: 0.75rem;
-            color: var(--brand-mid-gray);
-            line-height: 1.6;
-        }
-
-        .skills-steps code {
-            background: var(--brand-light);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            color: var(--brand-orange);
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 8rem 4rem;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .cta h2 {
-            font-size: clamp(2rem, 4vw, 3.2rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            margin-bottom: 1rem;
-        }
-
-        .cta p {
-            font-family: 'Lora', Georgia, serif;
-            font-size: 1.2rem;
-            opacity: 0.9;
-            margin-bottom: 2.5rem;
-            font-style: italic;
-        }
-
-        .btn-white {
-            background: white;
-            color: var(--brand-orange-dark);
-            padding: 1rem 2.5rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.3s var(--transition-smooth);
-            display: inline-block;
-        }
-
-        .btn-white:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.2);
-        }
-
-        /* Sponsors Section */
-        .sponsors {
-            padding: 6rem 4rem;
-            background: var(--brand-light);
-            text-align: center;
-        }
-
-        .sponsors-title {
-            font-size: clamp(2rem, 4vw, 2.8rem);
-            font-weight: 700;
-            letter-spacing: -0.02em;
-            color: var(--brand-dark);
-            margin-bottom: 1rem;
-        }
-
-        .sponsors-subtitle {
-            font-family: 'Lora', Georgia, serif;
-            font-size: 1.1rem;
-            color: var(--brand-mid-gray);
-            margin-bottom: 4rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .sponsors-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-            max-width: 1000px;
-            margin: 0 auto 3rem;
-        }
-
-        .sponsor-card {
-            background: white;
-            border-radius: 16px;
-            padding: 2.5rem 2rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
-            transition: all 0.3s var(--transition-smooth);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .sponsor-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-        }
-
-        .sponsor-logo {
-            font-size: 3.5rem;
-            filter: grayscale(0);
-            transition: all 0.3s ease;
-        }
-
-        .sponsor-card:hover .sponsor-logo {
-            transform: scale(1.1);
-        }
-
-        .sponsor-card h3 {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--brand-dark);
             margin: 0;
         }
 
-        .sponsor-card p {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .sponsor-badge {
-            display: inline-block;
-            padding: 0.4rem 0.9rem;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            color: white;
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sponsors-cta {
-            margin-top: 2rem;
-        }
-
-        .sponsors-cta a {
-            color: var(--brand-orange);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .sponsors-cta a:hover {
-            color: var(--brand-orange-dark);
-            text-decoration: underline;
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 2rem;  /* Reduced horizontal padding for mobile safety */
-            background: var(--brand-dark);
-            color: var(--brand-light);
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .footer-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            text-decoration: none;
-            color: var(--brand-light);
-            flex-shrink: 0;  /* Prevent logo from shrinking */
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-            flex-wrap: wrap;  /* Allow wrapping on small screens */
-            justify-content: center;
-        }
-
-        .footer-links a {
-            color: var(--brand-mid-gray);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-family: 'Poppins', Arial, sans-serif;
-            transition: color 0.3s;
-            white-space: nowrap;  /* Prevent individual links from breaking */
-        }
-
-        .footer-links a:hover {
-            color: var(--brand-orange);
-        }
-
-        .footer-copy {
-            font-family: 'Lora', Georgia, serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.85rem;
-            word-wrap: break-word;  /* Allow long text to wrap */
-            overflow-wrap: anywhere;  /* Modern overflow handling */
-            max-width: 100%;
-        }
-
-        /* Client Showcase Section */
+        /* Client Showcase */
         .client-showcase {
             background: var(--brand-dark);
-            padding: 2rem 0;
+            padding: 3rem 0;
             overflow: hidden;
-            position: relative;
-            margin-top: 4rem;
         }
 
         .client-showcase-label {
-            text-align: center;
             font-family: 'Poppins', Arial, sans-serif;
+            text-align: center;
+            color: var(--brand-mid-gray);
             font-size: 0.75rem;
-            font-weight: 600;
+            font-weight: 500;
             letter-spacing: 0.15em;
             text-transform: uppercase;
-            color: var(--brand-mid-gray);
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .client-marquee {
             display: flex;
+            gap: 4rem;
             animation: scroll 20s linear infinite;
-            width: max-content;
-        }
-
-        .client-marquee:hover {
-            animation-play-state: paused;
-        }
-
-        @keyframes scroll {
-            0% {
-                transform: translateX(0);
-            }
-            100% {
-                transform: translateX(-50%);
-            }
         }
 
         .client-item {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-            padding: 0 3rem;
-            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .client-logo {
-            height: 50px;
-            width: auto;
             opacity: 0.8;
             transition: opacity 0.3s;
         }
@@ -1121,131 +387,47 @@ import StackBuilder from '../components/StackBuilder.astro';
             opacity: 1;
         }
 
-        /* Responsive */
-        @media (max-width: 1200px) {
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
             .hero-decoration {
                 display: none;
             }
         }
 
-        @media (max-width: 900px) {
-            nav {
-                padding: 1.5rem 2rem;
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 2rem 2rem;
+                min-height: auto;
             }
 
-            .nav-links {
-                display: none;
+            .hero h1 {
+                font-size: 2.5rem;
             }
 
-            .hero, .features, .categories, .process, .cta {
+            .features {
                 padding: 4rem 2rem;
             }
 
             .features-grid {
                 grid-template-columns: 1fr;
-            }
-
-            .process-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .process-step::after {
-                display: none;
-            }
-
-            .stats-bar {
-                flex-wrap: wrap;
                 gap: 1.5rem;
             }
 
-            /* Improved footer mobile layout */
-            .footer-content {
+            .hero-cta-group {
                 flex-direction: column;
-                gap: 2rem;
-                text-align: center;
-                align-items: center;
             }
 
-            .footer-links {
-                width: 100%;
-                justify-content: center;
-                gap: 1rem;
+            .stats-bar {
+                gap: 1.5rem;
+                flex-wrap: wrap;
             }
 
-            footer {
-                padding: 3rem 1.5rem;  /* Further reduced padding on small screens */
-            }
-        }
-
-        /* Extra small mobile devices */
-        @media (max-width: 480px) {
-            footer {
-                padding: 2rem 1rem;  /* Minimal padding for very small screens */
-            }
-
-            .footer-links {
-                gap: 0.75rem;
-                padding: 0;
-            }
-
-            .footer-links li {
-                margin: 0.25rem;
-            }
-
-            .footer-copy {
-                font-size: 0.8rem;
-                line-height: 1.4;
-            }
-
-            /* Skills section mobile fixes */
-            .skills-section {
-                padding: 3rem 1rem;
-            }
-
-            .skills-grid {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-
-            .skill-card {
-                padding: 1.5rem;
-            }
-
-            .skills-examples {
-                padding: 1.5rem;
-                margin: 0 0 2rem;
-            }
-
-            .skill-example {
-                flex-direction: column;
-                gap: 0.5rem;
-                padding: 1rem;
-                text-align: center;
-            }
-
-            .skill-trigger,
-            .skill-activates {
-                text-align: center;
-                flex: none;
-            }
-
-            .skill-arrow {
-                transform: rotate(90deg);
-            }
-
-            .skills-install {
-                padding: 1.5rem;
-                margin: 1.5rem 0;
-            }
-
-            .skills-steps {
-                padding-left: 1.25rem;
-            }
-
-            /* Install box mobile fix */
             .install-box {
-                margin-top: 2rem;
-                padding: 1rem;
                 max-width: 100%;
             }
 
@@ -1253,55 +435,70 @@ import StackBuilder from '../components/StackBuilder.astro';
                 font-size: 0.75rem;
                 word-break: break-all;
             }
-
-            /* Stats bar mobile fix */
-            .stats-bar {
-                gap: 1rem;
-            }
-
-            .stat-item {
-                min-width: 70px;
-            }
-
-            .stats-number {
-                font-size: 1.5rem;
-            }
-
-            /* Categories mobile fix */
-            .category-item {
-                padding: 1.25rem 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-            }
-
-            .category-item:hover {
-                padding-left: 1rem;
-            }
-
-            /* Process grid mobile fix */
-            .process-grid {
-                grid-template-columns: 1fr;
-            }
         }
     </style>
-</head>
-<body>
-    <nav>
-        <a href="/" class="logo">
-            <div class="logo-icon">⌘</div>
-            Claude Code Skills
-        </a>
-        <ul class="nav-links">
-            <li><a href="/skills/">Skills</a></li>
-            <li><a href="/learning/">Learning</a></li>
-            <li><a href="#categories">All Plugins</a></li>
-            <li><a href="#process">Get Started</a></li>
-            <li><a href="https://www.buymeacoffee.com/jeremylongshore" target="_blank">Sponsor</a></li>
-            <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">Browse GitHub</a></li>
-        </ul>
-    </nav>
 
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json" slot="head">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Claude Code Plugins Marketplace",
+      "description": "Search 244 agent skills with fuzzy search. Browse 259 plugins. Interactive tutorials and production workflows.",
+      "url": "https://claudecodeplugins.io",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://claudecodeplugins.io/?stack={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Intent Solutions IO",
+        "url": "https://intentsolutions.io"
+      }
+    }
+    </script>
+
+    <script type="application/ld+json" slot="head">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Claude Code Plugins",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Linux, macOS, Windows",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "258",
+        "bestRating": "5"
+      },
+      "description": "258 plugins for Claude Code with embedded agent skills, interactive tutorials, and production workflows. Supports 2025 schema.",
+      "softwareVersion": "4.0.0",
+      "url": "https://claudecodeplugins.io",
+      "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins",
+      "applicationSuite": "Claude Code",
+      "featureList": [
+        "258 plugins across 18 categories",
+        "241 embedded Agent Skills",
+        "Interactive Stack Builder",
+        "Shareable plugin collections",
+        "Cross-platform CLI tool",
+        "System diagnostics",
+        "Fuzzy search",
+        "LocalStorage persistence"
+      ]
+    }
+    </script>
+
+    <!-- Hero Section -->
     <section class="hero">
         <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
@@ -1424,10 +621,11 @@ import StackBuilder from '../components/StackBuilder.astro';
         </div>
     </section>
 
+    <!-- Client Showcase -->
     <section class="client-showcase">
         <div class="client-showcase-label">strategic partners funding plugin innovation</div>
         <div class="client-marquee">
-            <!-- First set for seamless loop -->
+            <!-- Nixtla logo repeated 6 times for seamless scroll -->
             <div class="client-item">
                 <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla)">
@@ -1453,6 +651,7 @@ import StackBuilder from '../components/StackBuilder.astro';
                     </defs>
                 </svg>
             </div>
+            <!-- Repeat 5 more times for seamless scroll -->
             <div class="client-item">
                 <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g clip-path="url(#clip0_nixtla2)">
@@ -1480,108 +679,28 @@ import StackBuilder from '../components/StackBuilder.astro';
             </div>
             <div class="client-item">
                 <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_nixtla3)">
-                    <g clip-path="url(#clip1_nixtla3)">
-                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
-                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
-                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
-                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
-                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
-                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
-                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
-                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
-                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
-                    </g>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_nixtla3">
-                    <rect width="115" height="20" fill="white"/>
-                    </clipPath>
-                    <clipPath id="clip1_nixtla3">
-                    <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
-                    </clipPath>
-                    </defs>
-                </svg>
-            </div>
-            <!-- Duplicate for seamless scrolling -->
-            <div class="client-item">
-                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_nixtla4)">
-                    <g clip-path="url(#clip1_nixtla4)">
-                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
-                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
-                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
-                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
-                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
-                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
-                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
-                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
-                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
-                    </g>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_nixtla4">
-                    <rect width="115" height="20" fill="white"/>
-                    </clipPath>
-                    <clipPath id="clip1_nixtla4">
-                    <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
-                    </clipPath>
-                    </defs>
+                    <use href="#nixtla-logo"/>
                 </svg>
             </div>
             <div class="client-item">
                 <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_nixtla5)">
-                    <g clip-path="url(#clip1_nixtla5)">
-                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
-                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
-                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
-                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
-                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
-                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
-                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
-                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
-                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
-                    </g>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_nixtla5">
-                    <rect width="115" height="20" fill="white"/>
-                    </clipPath>
-                    <clipPath id="clip1_nixtla5">
-                    <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
-                    </clipPath>
-                    </defs>
+                    <use href="#nixtla-logo"/>
                 </svg>
             </div>
             <div class="client-item">
                 <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g clip-path="url(#clip0_nixtla6)">
-                    <g clip-path="url(#clip1_nixtla6)">
-                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/>
-                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/>
-                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/>
-                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/>
-                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/>
-                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/>
-                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/>
-                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/>
-                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/>
-                    </g>
-                    </g>
-                    <defs>
-                    <clipPath id="clip0_nixtla6">
-                    <rect width="115" height="20" fill="white"/>
-                    </clipPath>
-                    <clipPath id="clip1_nixtla6">
-                    <rect width="115" height="16.3556" fill="white" transform="translate(0 1.82227)"/>
-                    </clipPath>
-                    </defs>
+                    <use href="#nixtla-logo"/>
+                </svg>
+            </div>
+            <div class="client-item">
+                <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <use href="#nixtla-logo"/>
                 </svg>
             </div>
         </div>
     </section>
 
+    <!-- Features Section -->
     <section class="features" id="features">
         <div class="section-label">Why Choose Our Marketplace</div>
         <h2 class="section-title">Community-driven, production-ready plugins</h2>
@@ -1620,221 +739,8 @@ import StackBuilder from '../components/StackBuilder.astro';
         </div>
     </section>
 
-    <!-- AI Skills Section -->
-    <section class="skills-section" id="skills">
-        <h2 class="skills-title">Why AI Skills Are The Future</h2>
-        <p class="skills-subtitle">241 Agent Skills embedded in plugins that activate when you need them - no commands to remember</p>
-
-        <div class="skills-grid">
-            <div class="skill-card">
-                <div class="skill-icon">🎯</div>
-                <h3>Auto-Activation</h3>
-                <p>Skills detect context and activate automatically. Just describe what you want, and the right skill engages instantly.</p>
-            </div>
-            <div class="skill-card">
-                <div class="skill-icon">🔍</div>
-                <h3>3x More Discoverable</h3>
-                <p>Users search for "Claude Skills" 3x more than "Claude Plugins". Be where your users are looking.</p>
-            </div>
-            <div class="skill-card">
-                <div class="skill-icon">🚀</div>
-                <h3>Zero Learning Curve</h3>
-                <p>No slash commands to memorize. Skills understand natural language and activate based on conversation context.</p>
-            </div>
-            <div class="skill-card">
-                <div class="skill-icon">🛡️</div>
-                <h3>Secure by Design</h3>
-                <p>Every skill declares its tool permissions upfront. Know exactly what each skill can and cannot do.</p>
-            </div>
-        </div>
-
-        <div class="skills-examples">
-            <h3>Popular Skills in Action</h3>
-            <div class="skill-example">
-                <span class="skill-trigger">"analyze my codebase for security issues"</span>
-                <span class="skill-arrow">→</span>
-                <span class="skill-activates">Security Auditor skill activates</span>
-            </div>
-            <div class="skill-example">
-                <span class="skill-trigger">"optimize database queries"</span>
-                <span class="skill-arrow">→</span>
-                <span class="skill-activates">Database Optimizer skill engages</span>
-            </div>
-            <div class="skill-example">
-                <span class="skill-trigger">"create comprehensive documentation"</span>
-                <span class="skill-arrow">→</span>
-                <span class="skill-activates">Docs Architect skill begins</span>
-            </div>
-        </div>
-
-        <div class="skills-install">
-            <h4>How to Get These Skills:</h4>
-            <ol class="skills-steps">
-                <li>Install Claude Code from claude.ai</li>
-                <li>Add our marketplace: <code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></li>
-                <li>Install any plugin with Skills: <code>/plugin install [plugin-name]</code></li>
-                <li>Skills auto-activate when needed - no commands required!</li>
-            </ol>
-        </div>
-        <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins" target="_blank" class="skills-cta">
-            Browse Plugins with Skills
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M5 12h14M12 5l7 7-7 7"/>
-            </svg>
-        </a>
-    </section>
-
-    <section class="categories" id="categories">
-        <div class="section-label">Plugin Categories</div>
-        <h2 class="section-title">Find the perfect tools for your workflow</h2>
-
-        <div class="categories-list">
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/productivity" class="category-item">
-                <div>
-                    <h4>Productivity</h4>
-                    <span>Task automation, workflow optimization, and time-saving utilities</span>
-                </div>
-                <div class="category-count">40+</div>
-            </a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/security" class="category-item">
-                <div>
-                    <h4>Security</h4>
-                    <span>Vulnerability scanning, authentication, and secure coding tools</span>
-                </div>
-                <div class="category-count">25+</div>
-            </a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/devops" class="category-item">
-                <div>
-                    <h4>DevOps</h4>
-                    <span>CI/CD automation, deployment tools, and infrastructure management</span>
-                </div>
-                <div class="category-count">30+</div>
-            </a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/testing" class="category-item">
-                <div>
-                    <h4>Testing</h4>
-                    <span>Unit tests, integration testing, and quality assurance tools</span>
-                </div>
-                <div class="category-count">20+</div>
-            </a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/ai-ml" class="category-item">
-                <div>
-                    <h4>AI & Machine Learning</h4>
-                    <span>LLM integration, model deployment, and AI-powered features</span>
-                </div>
-                <div class="category-count">35+</div>
-            </a>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins/tree/main/plugins/mcp" class="category-item">
-                <div>
-                    <h4>MCP Servers</h4>
-                    <span>Model Context Protocol servers with advanced tool capabilities</span>
-                </div>
-                <div class="category-count">6</div>
-            </a>
-        </div>
-    </section>
-
-    <section class="process" id="process">
-        <div class="section-label">Getting Started</div>
-        <h2 class="section-title">From zero to productive in minutes</h2>
-
-        <div class="process-grid">
-            <div class="process-step">
-                <div class="step-number">1</div>
-                <h4>Add Marketplace</h4>
-                <p>Run the quick install command in Claude Code to add our marketplace.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">2</div>
-                <h4>Browse Plugins</h4>
-                <p>Explore 258 plugins across 18 categories. Find tools that fit your needs.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">3</div>
-                <h4>Install Instantly</h4>
-                <p>One command installs any plugin. No configuration or setup required.</p>
-            </div>
-            <div class="process-step">
-                <div class="step-number">4</div>
-                <h4>Start Building</h4>
-                <p>Use slash commands, AI skills, and tools immediately in your workflow.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="cta" id="contact">
-        <div class="cta-content">
-            <h2>Join the Claude Code Revolution</h2>
-            <p>Start using the most comprehensive plugin marketplace today</p>
-            <a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="btn-white">Explore on GitHub</a>
-        </div>
-    </section>
-
-    <section class="sponsors" id="sponsors">
-        <div class="section-label">Powered By</div>
-        <h2 class="sponsors-title">Our Technology Partners</h2>
-        <p class="sponsors-subtitle">
-            Claude Code Plugins is built with cutting-edge AI and cloud infrastructure from industry leaders
-        </p>
-
-        <div class="sponsors-grid">
-            <a href="https://www.anthropic.com/" target="_blank" class="sponsor-card">
-                <div class="sponsor-logo">🤖</div>
-                <div>
-                    <h3>Anthropic</h3>
-                    <p>Claude AI powers the intelligent automation behind every plugin and skill</p>
-                </div>
-                <span class="sponsor-badge">AI Partner</span>
-            </a>
-
-            <a href="https://cloud.google.com/" target="_blank" class="sponsor-card">
-                <div class="sponsor-logo">☁️</div>
-                <div>
-                    <h3>Google Cloud</h3>
-                    <p>Vertex AI and Cloud infrastructure enable scalable plugin development</p>
-                </div>
-                <span class="sponsor-badge">Cloud Partner</span>
-            </a>
-
-            <a href="https://ollama.com/" target="_blank" class="sponsor-card">
-                <div class="sponsor-logo">🦙</div>
-                <div>
-                    <h3>Ollama</h3>
-                    <p>Local LLM deployment for privacy-first, self-hosted AI workflows</p>
-                </div>
-                <span class="sponsor-badge">Open Source Partner</span>
-            </a>
-        </div>
-
-        <div class="sponsors-cta">
-            <p>
-                Interested in partnering with us?
-                <a href="/sponsor">Learn about sponsorship opportunities →</a>
-            </p>
-        </div>
-    </section>
-
-    <footer>
-        <div class="footer-content">
-            <a href="/" class="footer-logo">
-                <div class="logo-icon">⌘</div>
-                Claude Code Plugins
-            </a>
-            <ul class="footer-links">
-                <li><a href="/sponsor" style="color: var(--brand-orange); font-weight: 600;">💎 Become a Sponsor</a></li>
-                <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank">GitHub</a></li>
-                <li><a href="https://discord.com/invite/6PPFFzqPDZ" target="_blank">Discord</a></li>
-                <li><a href="https://docs.claude.com/en/docs/claude-code/" target="_blank">Docs</a></li>
-                <li><a href="https://intentsolutions.io" target="_blank">Intent Solutions</a></li>
-                <li><a href="mailto:jeremy@intentsolutions.io">Contact</a></li>
-            </ul>
-            <div class="footer-copy">
-                © 2025 Claude Code Plugins · 258 plugins · <a href="https://github.com/sponsors/jeremylongshore" target="_blank" style="color: var(--brand-orange); text-decoration: none;">Join Nixtla as an Enterprise Partner</a> · Built by <a href="https://intentsolutions.io" target="_blank" style="color: var(--brand-orange); text-decoration: none;">intent solutions io</a>
-            </div>
-        </div>
-    </footer>
-
-    <script>
+    <!-- JavaScript for interactions -->
+    <script is:inline>
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1863,7 +769,7 @@ import StackBuilder from '../components/StackBuilder.astro';
             });
         }, observerOptions);
 
-        document.querySelectorAll('.feature-card, .category-item, .process-step').forEach(el => {
+        document.querySelectorAll('.feature-card').forEach(el => {
             el.style.opacity = '0';
             el.style.transform = 'translateY(30px)';
             el.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
@@ -1871,21 +777,23 @@ import StackBuilder from '../components/StackBuilder.astro';
         });
 
         // Copy install command on click
-        document.querySelector('.install-command').addEventListener('click', function() {
-            const text = this.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                const original = this.textContent;
-                this.textContent = '✓ Copied to clipboard!';
-                this.style.color = 'var(--brand-green)';
-                setTimeout(() => {
-                    this.textContent = original;
-                    this.style.color = '';
-                }, 2000);
+        const installCmd = document.querySelector('.install-command');
+        if (installCmd) {
+            installCmd.addEventListener('click', function() {
+                const text = this.textContent;
+                navigator.clipboard.writeText(text).then(() => {
+                    const original = this.textContent;
+                    this.textContent = '✓ Copied to clipboard!';
+                    this.style.color = 'var(--brand-green)';
+                    setTimeout(() => {
+                        this.textContent = original;
+                        this.style.color = '';
+                    }, 2000);
+                });
             });
-        });
+        }
     </script>
 
     <!-- Stack Builder Component -->
     <StackBuilder />
-</body>
-</html>
+</BaseLayout>

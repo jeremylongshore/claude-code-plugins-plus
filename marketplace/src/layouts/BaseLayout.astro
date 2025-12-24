@@ -1,0 +1,419 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code." } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{title}</title>
+    <meta name="description" content={description}>
+    <link rel="canonical" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+    <meta property="og:title" content={title}>
+    <meta property="og:description" content={description}>
+    <meta property="og:site_name" content="Claude Code Plugins">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+    <meta name="twitter:title" content={title}>
+    <meta name="twitter:description" content={description}>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* ========================================
+           ANTHROPIC OFFICIAL BRAND COLORS
+           ======================================== */
+        :root {
+            /* Main Colors */
+            --brand-dark: #141413;
+            --brand-light: #faf9f5;
+            --brand-mid-gray: #b0aea5;
+            --brand-light-gray: #e8e6dc;
+
+            /* Accent Colors */
+            --brand-orange: #d97757;
+            --brand-blue: #6a9bcc;
+            --brand-green: #788c5d;
+
+            /* Derived Colors */
+            --brand-orange-dark: #c45e3e;
+            --brand-orange-light: #e8937a;
+
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            max-width: 100%;
+        }
+
+        body {
+            font-family: 'Lora', Georgia, serif;
+            background-color: var(--brand-light);
+            color: var(--brand-dark);
+            line-height: 1.7;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: linear-gradient(to bottom, var(--brand-light) 0%, transparent 100%);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            color: var(--brand-dark);
+            text-decoration: none;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            list-style: none;
+            font-family: 'Poppins', Arial, sans-serif;
+        }
+
+        .nav-links a {
+            color: var(--brand-mid-gray);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: color 0.3s var(--transition-smooth);
+        }
+
+        .nav-links a:hover {
+            color: var(--brand-orange);
+        }
+
+        .nav-cta {
+            background: var(--brand-orange);
+            color: white !important;
+            padding: 0.5rem 1.25rem;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s var(--transition-smooth);
+        }
+
+        .nav-cta:hover {
+            background: var(--brand-orange-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--brand-dark);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .mobile-menu-toggle svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--brand-dark);
+            color: var(--brand-light-gray);
+            padding: 3rem 2rem 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .footer-section h4 {
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section a {
+            color: var(--brand-mid-gray);
+            text-decoration: none;
+            font-size: 0.85rem;
+            line-height: 2;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--brand-orange);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--brand-mid-gray);
+        }
+
+        .footer-bottom a {
+            color: var(--brand-orange);
+            text-decoration: none;
+        }
+
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            nav {
+                padding: 1rem 1.5rem;
+            }
+
+            .mobile-menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 80%;
+                max-width: 300px;
+                height: 100vh;
+                background: var(--brand-light);
+                border-left: 1px solid var(--brand-light-gray);
+                flex-direction: column;
+                gap: 0;
+                padding: 5rem 0 2rem;
+                transition: right 0.3s var(--transition-smooth);
+                overflow-y: auto;
+                z-index: 999;
+                box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+            }
+
+            .nav-links.active {
+                right: 0;
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 1rem 2rem;
+                border-bottom: 1px solid var(--brand-light-gray);
+            }
+
+            .nav-cta {
+                margin: 1rem 2rem;
+                text-align: center;
+                display: block;
+            }
+
+            main {
+                padding-top: 70px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Prevent body scroll when mobile menu is open */
+        body.menu-open {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <a href="/" class="logo">
+            <div class="logo-icon">⌘</div>
+            Claude Code Skills
+        </a>
+        <button class="mobile-menu-toggle" aria-label="Toggle menu">
+            <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg class="close-icon" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+        <ul class="nav-links">
+            <li><a href="/explore">Explore</a></li>
+            <li><a href="/skills">Skills</a></li>
+            <li><a href="/learning">Learning</a></li>
+            <li><a href="/playbooks">Playbooks</a></li>
+            <li><a href="https://github.com/jeremylongshore/claude-code-plugins" target="_blank" class="nav-cta">GitHub</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <slot />
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="/explore">Explore Plugins</a></li>
+                    <li><a href="/skills">Agent Skills</a></li>
+                    <li><a href="/learning">Learning Hub</a></li>
+                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Categories</h4>
+                <ul>
+                    <li><a href="/explore?category=devops">DevOps</a></li>
+                    <li><a href="/explore?category=security">Security</a></li>
+                    <li><a href="/explore?category=ai-ml">AI/ML</a></li>
+                    <li><a href="/explore?category=productivity">Productivity</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Community</h4>
+                <ul>
+                    <li><a href="https://github.com/sponsors/jeremylongshore">Sponsor</a></li>
+                    <li><a href="https://buymeacoffee.com/jeremylongshore">Buy me a monster</a></li>
+                    <li><a href="https://github.com/jeremylongshore/claude-code-plugins/discussions">Discussions</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="/privacy">Privacy</a></li>
+                    <li><a href="/terms">Terms</a></li>
+                    <li><a href="/acceptable-use">Acceptable Use</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 Claude Code Plugins · Open Source (MIT) · Built by <a href="https://intentsolutions.io" target="_blank">intent solutions io</a></p>
+            <p style="margin-top: 0.5rem; font-size: 0.75rem;">Sponsored by <a href="https://nixtla.io" target="_blank">nixtla.io</a></p>
+        </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script is:inline>
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            const menuIcon = document.querySelector('.menu-icon');
+            const closeIcon = document.querySelector('.close-icon');
+
+            if (menuToggle && navLinks) {
+                menuToggle.addEventListener('click', function() {
+                    navLinks.classList.toggle('active');
+                    document.body.classList.toggle('menu-open');
+
+                    if (navLinks.classList.contains('active')) {
+                        menuIcon.style.display = 'none';
+                        closeIcon.style.display = 'block';
+                    } else {
+                        menuIcon.style.display = 'block';
+                        closeIcon.style.display = 'none';
+                    }
+                });
+
+                // Close menu when clicking a link
+                navLinks.querySelectorAll('a').forEach(function(link) {
+                    link.addEventListener('click', function() {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        menuIcon.style.display = 'block';
+                        closeIcon.style.display = 'none';
+                    });
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (navLinks.classList.contains('active') &&
+                        !navLinks.contains(e.target) &&
+                        !menuToggle.contains(e.target)) {
+                        navLinks.classList.remove('active');
+                        document.body.classList.remove('menu-open');
+                        menuIcon.style.display = 'block';
+                        closeIcon.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
