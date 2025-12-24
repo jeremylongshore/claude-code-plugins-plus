@@ -234,12 +234,9 @@ async function runMarketplaceChecks(): Promise<DiagnosticResult> {
     });
 
     if (marketplaceInstalled) {
-      // TODO: Check marketplace version/freshness
-      checks.push({
-        name: 'Catalog Freshness',
-        status: 'pass',
-        message: 'Up to date',
-      });
+      // Check catalog integrity
+      const integrityCheck = await checkMarketplaceIntegrity(paths);
+      checks.push(...integrityCheck);
     }
   } catch {
     checks.push({
@@ -253,6 +250,115 @@ async function runMarketplaceChecks(): Promise<DiagnosticResult> {
     category: 'Marketplace',
     checks,
   };
+}
+
+/**
+ * Check marketplace catalog integrity
+ */
+async function checkMarketplaceIntegrity(paths: any): Promise<CheckResult[]> {
+  const checks: CheckResult[] = [];
+  const marketplaceSlug = 'claude-code-plugins-plus';
+  const marketplacePath = `${paths.marketplacesDir}/${marketplaceSlug}`;
+
+  try {
+    // Check if both catalog files exist
+    const catalogPath = `${marketplacePath}/.claude-plugin/marketplace.json`;
+    const extendedPath = `${marketplacePath}/.claude-plugin/marketplace.extended.json`;
+
+    const catalogExists = existsSync(catalogPath);
+    const extendedExists = existsSync(extendedPath);
+
+    if (!catalogExists || !extendedExists) {
+      checks.push({
+        name: 'Catalog Files',
+        status: 'warn',
+        message: `${catalogExists ? 'marketplace.json' : 'Missing marketplace.json'}${!catalogExists && !extendedExists ? ', ' : ''}${extendedExists ? 'marketplace.extended.json' : !catalogExists ? 'Missing marketplace.extended.json' : ''}`,
+        details: 'Marketplace catalog files incomplete',
+      });
+      return checks;
+    }
+
+    // Validate JSON structure
+    let catalog: any;
+    let extended: any;
+
+    try {
+      const catalogContent = await fs.readFile(catalogPath, 'utf-8');
+      catalog = JSON.parse(catalogContent);
+    } catch (error) {
+      checks.push({
+        name: 'Catalog Structure',
+        status: 'fail',
+        message: 'marketplace.json is corrupted',
+        details: error instanceof Error ? error.message : 'Invalid JSON',
+      });
+      return checks;
+    }
+
+    try {
+      const extendedContent = await fs.readFile(extendedPath, 'utf-8');
+      extended = JSON.parse(extendedContent);
+    } catch (error) {
+      checks.push({
+        name: 'Extended Catalog Structure',
+        status: 'fail',
+        message: 'marketplace.extended.json is corrupted',
+        details: error instanceof Error ? error.message : 'Invalid JSON',
+      });
+      return checks;
+    }
+
+    // Check sync status (plugin count comparison)
+    const catalogCount = catalog.plugins?.length || 0;
+    const extendedCount = extended.plugins?.length || 0;
+
+    if (catalogCount !== extendedCount) {
+      checks.push({
+        name: 'Catalog Sync',
+        status: 'warn',
+        message: `Out of sync (${catalogCount} vs ${extendedCount} plugins)`,
+        details: 'Run `pnpm run sync-marketplace` in repository to sync catalogs',
+      });
+    } else {
+      checks.push({
+        name: 'Catalog Sync',
+        status: 'pass',
+        message: `In sync (${catalogCount} plugins)`,
+      });
+    }
+
+    // Validate plugin count is reasonable
+    if (catalogCount > 0) {
+      checks.push({
+        name: 'Catalog Size',
+        status: catalogCount >= 200 ? 'pass' : catalogCount >= 100 ? 'warn' : 'fail',
+        message: `${catalogCount} plugins available`,
+        details: catalogCount < 200 ? 'Catalog may be incomplete or outdated' : undefined,
+      });
+    }
+
+    // Check for required fields in catalog
+    const samplePlugin = catalog.plugins?.[0];
+    if (samplePlugin) {
+      const hasRequiredFields = samplePlugin.name && samplePlugin.version && samplePlugin.description;
+      checks.push({
+        name: 'Catalog Schema',
+        status: hasRequiredFields ? 'pass' : 'warn',
+        message: hasRequiredFields ? 'Valid structure' : 'Missing required fields',
+        details: !hasRequiredFields ? 'Catalog may be corrupted or outdated' : undefined,
+      });
+    }
+
+  } catch (error) {
+    checks.push({
+      name: 'Catalog Integrity',
+      status: 'fail',
+      message: 'Could not validate catalog',
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+
+  return checks;
 }
 
 /**
