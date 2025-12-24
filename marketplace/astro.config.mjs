@@ -11,7 +11,7 @@ export default defineConfig({
     inlineStylesheets: 'auto'
   },
   output: 'static',
-  compressHTML: true,
+  compressHTML: false,  // Disabled: iOS Safari fails with lines > 5000 chars
   vite: {
     plugins: [tailwindcss()],
     build: {
