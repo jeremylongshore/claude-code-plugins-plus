@@ -55,6 +55,10 @@ export async function doctorCheck(options: DoctorOptions): Promise<void> {
   const mcpChecks = await runMCPChecks();
   results.push(mcpChecks);
 
+  // Environment + API key checks
+  const envChecks = await runEnvironmentChecks();
+  results.push(envChecks);
+
   if (options.json) {
     console.log(JSON.stringify(results, null, 2));
     return;
@@ -522,6 +526,214 @@ async function checkMCPServer(server: any): Promise<CheckResult[]> {
       status: 'warn',
       message: 'Could not validate',
       details: error instanceof Error ? error.message : undefined,
+    });
+  }
+
+  return checks;
+}
+
+/**
+ * Run environment variable and API key checks for installed plugins
+ */
+async function runEnvironmentChecks(): Promise<DiagnosticResult> {
+  const checks: CheckResult[] = [];
+
+  try {
+    const paths = await detectClaudePaths();
+    const installedPluginsPath = `${paths.configDir}/plugins/installed_plugins.json`;
+
+    if (!existsSync(installedPluginsPath)) {
+      checks.push({
+        name: 'Environment Variables',
+        status: 'pass',
+        message: 'No plugins installed to check',
+      });
+      return {
+        category: 'Environment & API Keys',
+        checks,
+      };
+    }
+
+    // Read installed plugins
+    const fileContent = await fs.readFile(installedPluginsPath, 'utf-8');
+    const data = JSON.parse(fileContent);
+    const pluginNames: string[] = [];
+
+    if (data.plugins) {
+      pluginNames.push(...Object.keys(data.plugins));
+    }
+
+    if (pluginNames.length === 0) {
+      checks.push({
+        name: 'Environment Variables',
+        status: 'pass',
+        message: 'No plugins to check',
+      });
+      return {
+        category: 'Environment & API Keys',
+        checks,
+      };
+    }
+
+    // Check common API keys
+    const apiKeyChecks = checkCommonAPIKeys(pluginNames);
+    checks.push(...apiKeyChecks);
+
+    // Check plugin-specific requirements
+    const pluginEnvChecks = checkPluginSpecificEnv(pluginNames);
+    checks.push(...pluginEnvChecks);
+
+  } catch (error) {
+    checks.push({
+      name: 'Environment Check',
+      status: 'fail',
+      message: 'Could not check environment variables',
+      details: error instanceof Error ? error.message : undefined,
+    });
+  }
+
+  return {
+    category: 'Environment & API Keys',
+    checks,
+  };
+}
+
+/**
+ * Check common API keys used by AI/Cloud plugins
+ */
+function checkCommonAPIKeys(pluginNames: string[]): CheckResult[] {
+  const checks: CheckResult[] = [];
+
+  // Define common API keys and their plugins
+  const apiKeys: Array<{
+    key: string;
+    name: string;
+    requiredBy: string[];
+    signupUrl?: string;
+  }> = [
+    {
+      key: 'ANTHROPIC_API_KEY',
+      name: 'Anthropic API',
+      requiredBy: ['ai-sdk-agents', 'make-scenario-builder', 'geepers-agents'],
+      signupUrl: 'https://console.anthropic.com/',
+    },
+    {
+      key: 'OPENAI_API_KEY',
+      name: 'OpenAI API',
+      requiredBy: ['openai-', 'gpt-', 'chatgpt-'],
+      signupUrl: 'https://platform.openai.com/',
+    },
+    {
+      key: 'GOOGLE_APPLICATION_CREDENTIALS',
+      name: 'Google Cloud',
+      requiredBy: ['jeremy-genkit-', 'jeremy-vertex-', 'jeremy-adk-', 'jeremy-gcp-'],
+      signupUrl: 'https://console.cloud.google.com/',
+    },
+    {
+      key: 'GOOGLE_AI_API_KEY',
+      name: 'Google AI',
+      requiredBy: ['gemini-', 'google-ai-'],
+      signupUrl: 'https://makersuite.google.com/',
+    },
+    {
+      key: 'GITHUB_TOKEN',
+      name: 'GitHub',
+      requiredBy: ['github-', 'git-'],
+      signupUrl: 'https://github.com/settings/tokens',
+    },
+  ];
+
+  for (const apiKey of apiKeys) {
+    // Check if any installed plugin requires this key
+    const requiresKey = pluginNames.some(plugin =>
+      apiKey.requiredBy.some(pattern => plugin.includes(pattern))
+    );
+
+    if (requiresKey) {
+      const isSet = !!process.env[apiKey.key];
+
+      checks.push({
+        name: apiKey.name,
+        status: isSet ? 'pass' : 'warn',
+        message: isSet ? `${apiKey.key} is set` : `${apiKey.key} not found`,
+        details: !isSet ? `Set ${apiKey.key} in your environment. Get key from: ${apiKey.signupUrl}` : undefined,
+      });
+    }
+  }
+
+  return checks;
+}
+
+/**
+ * Check plugin-specific environment requirements
+ */
+function checkPluginSpecificEnv(pluginNames: string[]): CheckResult[] {
+  const checks: CheckResult[] = [];
+
+  // Check for database-related plugins
+  const dbPlugins = pluginNames.filter(p =>
+    p.includes('postgres') || p.includes('mysql') || p.includes('mongodb') ||
+    p.includes('redis') || p.includes('database')
+  );
+
+  if (dbPlugins.length > 0) {
+    const hasDbUrl = !!(
+      process.env.DATABASE_URL ||
+      process.env.POSTGRES_URL ||
+      process.env.MONGODB_URL ||
+      process.env.REDIS_URL
+    );
+
+    checks.push({
+      name: 'Database Configuration',
+      status: hasDbUrl ? 'pass' : 'warn',
+      message: hasDbUrl
+        ? 'Database connection string detected'
+        : 'No database connection strings found',
+      details: !hasDbUrl
+        ? `Plugins requiring databases: ${dbPlugins.join(', ')}. Set DATABASE_URL or plugin-specific connection strings.`
+        : undefined,
+    });
+  }
+
+  // Check for payment/billing plugins
+  const paymentPlugins = pluginNames.filter(p =>
+    p.includes('stripe') || p.includes('paypal') || p.includes('payment')
+  );
+
+  if (paymentPlugins.length > 0) {
+    const hasPaymentKey = !!(process.env.STRIPE_API_KEY || process.env.PAYPAL_CLIENT_ID);
+
+    checks.push({
+      name: 'Payment Provider',
+      status: hasPaymentKey ? 'pass' : 'warn',
+      message: hasPaymentKey
+        ? 'Payment API keys detected'
+        : 'No payment API keys found',
+      details: !hasPaymentKey
+        ? `Plugins: ${paymentPlugins.join(', ')}. Set STRIPE_API_KEY or PAYPAL_CLIENT_ID.`
+        : undefined,
+    });
+  }
+
+  // Check for cloud provider plugins
+  const awsPlugins = pluginNames.filter(p => p.includes('aws-') || p.includes('amazon-'));
+  if (awsPlugins.length > 0 && !process.env.AWS_ACCESS_KEY_ID) {
+    checks.push({
+      name: 'AWS Credentials',
+      status: 'warn',
+      message: 'AWS credentials not found',
+      details: `Plugins: ${awsPlugins.join(', ')}. Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY.`,
+    });
+  }
+
+  const azurePlugins = pluginNames.filter(p => p.includes('azure-'));
+  if (azurePlugins.length > 0 && !process.env.AZURE_CLIENT_ID) {
+    checks.push({
+      name: 'Azure Credentials',
+      status: 'warn',
+      message: 'Azure credentials not found',
+      details: `Plugins: ${azurePlugins.join(', ')}. Set AZURE_CLIENT_ID, AZURE_CLIENT_SECRET, AZURE_TENANT_ID.`,
     });
   }
 
