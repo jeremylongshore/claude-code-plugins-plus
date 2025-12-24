@@ -1,0 +1,526 @@
+---
+// PlaybookTemplate.astro - Reusable template for all playbook pages
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  wordCount: number;
+  slug: string;
+}
+
+const { title, description, category, wordCount, slug } = Astro.props;
+
+// Navigation data for prev/next
+const playbooks = [
+  { slug: '01-multi-agent-rate-limits', title: 'Multi-Agent Rate Limits' },
+  { slug: '02-cost-caps', title: 'Cost Caps & Budget Management' },
+  { slug: '03-mcp-reliability', title: 'MCP Server Reliability' },
+  { slug: '04-ollama-migration', title: 'Ollama Migration Guide' },
+  { slug: '05-incident-debugging', title: 'Incident Debugging Playbook' },
+  { slug: '06-self-hosted-stack', title: 'Self-Hosted Stack Setup' },
+  { slug: '07-compliance-audit', title: 'Compliance & Audit Guide' },
+  { slug: '08-team-presets', title: 'Team Presets & Workflows' },
+  { slug: '09-cost-attribution', title: 'Cost Attribution System' },
+  { slug: '10-progressive-enhancement', title: 'Progressive Enhancement Patterns' },
+  { slug: '11-advanced-tool-use', title: 'Advanced Tool Use' }
+];
+
+const currentIndex = playbooks.findIndex(p => p.slug === slug);
+const prevPlaybook = currentIndex > 0 ? playbooks[currentIndex - 1] : null;
+const nextPlaybook = currentIndex < playbooks.length - 1 ? playbooks[currentIndex + 1] : null;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | Production Playbooks</title>
+  <meta name="description" content={description}>
+  <link rel="stylesheet" href="/styles/global.css">
+</head>
+<body>
+  <div class="playbook-page">
+    <!-- Header -->
+    <header class="playbook-header">
+      <div class="container">
+        <nav class="breadcrumbs">
+          <a href="/">Home</a>
+          <span class="breadcrumb-separator">/</span>
+          <a href="/playbooks">Playbooks</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">{title}</span>
+        </nav>
+
+        <div class="playbook-hero">
+          <span class="category-badge">{category}</span>
+          <h1 class="playbook-title">{title}</h1>
+          <p class="playbook-description">{description}</p>
+          <div class="playbook-meta">
+            <span class="meta-item">~{Math.round(wordCount / 200)} min read</span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item">{wordCount.toLocaleString()} words</span>
+            <span class="meta-divider">•</span>
+            <span class="meta-item">Production-Ready</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="playbook-main">
+      <div class="container">
+        <div class="playbook-layout">
+          <!-- Table of Contents (Sidebar) -->
+          <aside class="toc-sidebar" id="toc-sidebar">
+            <div class="toc-sticky">
+              <h2 class="toc-title">Table of Contents</h2>
+              <nav class="toc-nav" id="toc-nav">
+                <!-- Will be populated by JavaScript -->
+              </nav>
+            </div>
+          </aside>
+
+          <!-- Playbook Content -->
+          <article class="playbook-content">
+            <slot />
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <!-- Navigation Footer -->
+    <footer class="playbook-footer">
+      <div class="container">
+        <div class="footer-nav">
+          {prevPlaybook && (
+            <a href={`/playbooks/${prevPlaybook.slug}`} class="nav-link nav-prev">
+              <span class="nav-label">Previous</span>
+              <span class="nav-title">{prevPlaybook.title}</span>
+            </a>
+          )}
+          {nextPlaybook && (
+            <a href={`/playbooks/${nextPlaybook.slug}`} class="nav-link nav-next">
+              <span class="nav-label">Next</span>
+              <span class="nav-title">{nextPlaybook.title}</span>
+            </a>
+          )}
+        </div>
+
+        <div class="back-to-index">
+          <a href="/playbooks" class="back-link">← Back to All Playbooks</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <style>
+    .playbook-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Styles */
+    .playbook-header {
+      background: var(--slate-900);
+      border-bottom: 1px solid var(--slate-800);
+      padding: 2rem 0;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+      color: var(--slate-400);
+    }
+
+    .breadcrumbs a {
+      color: var(--slate-400);
+      transition: color var(--transition-fast);
+    }
+
+    .breadcrumbs a:hover {
+      color: var(--green-400);
+    }
+
+    .breadcrumb-separator {
+      color: var(--slate-600);
+    }
+
+    .breadcrumb-current {
+      color: var(--slate-200);
+    }
+
+    .playbook-hero {
+      max-width: 800px;
+    }
+
+    .category-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--green-400);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      margin-bottom: 1rem;
+    }
+
+    .playbook-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--slate-100);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .playbook-description {
+      font-size: 1.125rem;
+      color: var(--slate-400);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .playbook-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--slate-500);
+    }
+
+    .meta-divider {
+      color: var(--slate-700);
+    }
+
+    /* Main Content Layout */
+    .playbook-main {
+      flex: 1;
+      padding: 3rem 0;
+    }
+
+    .playbook-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* Table of Contents */
+    .toc-sidebar {
+      position: relative;
+    }
+
+    .toc-sticky {
+      position: sticky;
+      top: 2rem;
+    }
+
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-400);
+      margin-bottom: 1rem;
+    }
+
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc-nav a {
+      display: block;
+      color: var(--slate-500);
+      font-size: 0.875rem;
+      padding: 0.375rem 0.75rem;
+      border-left: 2px solid var(--slate-800);
+      transition: all var(--transition-fast);
+    }
+
+    .toc-nav a:hover {
+      color: var(--green-400);
+      border-left-color: var(--green-500);
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .toc-nav a.active {
+      color: var(--green-400);
+      border-left-color: var(--green-500);
+      font-weight: 600;
+    }
+
+    /* Playbook Content */
+    .playbook-content {
+      max-width: 800px;
+    }
+
+    /* Typography within content */
+    .playbook-content :global(h2) {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--slate-100);
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--slate-800);
+      scroll-margin-top: 2rem;
+    }
+
+    .playbook-content :global(h3) {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--slate-200);
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .playbook-content :global(h4) {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--slate-300);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      scroll-margin-top: 2rem;
+    }
+
+    .playbook-content :global(p) {
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+      color: var(--slate-300);
+    }
+
+    .playbook-content :global(ul),
+    .playbook-content :global(ol) {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    .playbook-content :global(li) {
+      margin-bottom: 0.5rem;
+      line-height: 1.7;
+      color: var(--slate-300);
+    }
+
+    .playbook-content :global(table) {
+      width: 100%;
+      margin: 2rem 0;
+      border-collapse: collapse;
+      background: var(--slate-900);
+      border: 1px solid var(--slate-800);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .playbook-content :global(th) {
+      background: var(--slate-800);
+      color: var(--slate-200);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--slate-700);
+    }
+
+    .playbook-content :global(td) {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--slate-800);
+      color: var(--slate-300);
+    }
+
+    .playbook-content :global(tr:last-child td) {
+      border-bottom: none;
+    }
+
+    .playbook-content :global(pre) {
+      background: var(--slate-900);
+      border: 1px solid var(--slate-800);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .playbook-content :global(code) {
+      font-family: var(--font-mono);
+      font-size: 0.875em;
+    }
+
+    .playbook-content :global(blockquote) {
+      border-left: 4px solid var(--green-500);
+      background: rgba(16, 185, 129, 0.05);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--slate-300);
+      font-style: italic;
+    }
+
+    .playbook-content :global(hr) {
+      border: none;
+      border-top: 1px solid var(--slate-800);
+      margin: 3rem 0;
+    }
+
+    /* Footer Navigation */
+    .playbook-footer {
+      background: var(--slate-900);
+      border-top: 1px solid var(--slate-800);
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+
+    .footer-nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .nav-link {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      padding: 1.5rem;
+      background: var(--slate-850);
+      border: 1px solid var(--slate-800);
+      border-radius: 0.75rem;
+      transition: all var(--transition-base);
+    }
+
+    .nav-link:hover {
+      border-color: var(--green-500);
+      box-shadow: 0 0 0 1px var(--green-500);
+      transform: translateY(-2px);
+    }
+
+    .nav-prev {
+      text-align: left;
+    }
+
+    .nav-next {
+      text-align: right;
+      margin-left: auto;
+    }
+
+    .nav-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--slate-500);
+    }
+
+    .nav-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--slate-200);
+    }
+
+    .back-to-index {
+      text-align: center;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--slate-800);
+    }
+
+    .back-link {
+      color: var(--green-400);
+      font-weight: 600;
+      transition: color var(--transition-fast);
+    }
+
+    .back-link:hover {
+      color: var(--green-300);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .playbook-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .toc-sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .playbook-header {
+        padding: 1.5rem 0;
+      }
+
+      .playbook-main {
+        padding: 2rem 0;
+      }
+
+      .footer-nav {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-next {
+        margin-left: 0;
+      }
+
+      .playbook-meta {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+
+  <script>
+    // Generate Table of Contents from h2 and h3 headings
+    function generateTOC() {
+      const content = document.querySelector('.playbook-content');
+      const tocNav = document.getElementById('toc-nav');
+
+      if (!content || !tocNav) return;
+
+      const headings = content.querySelectorAll('h2, h3');
+
+      headings.forEach((heading, index) => {
+        // Add ID to heading if it doesn't have one
+        if (!heading.id) {
+          heading.id = `section-${index}`;
+        }
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent;
+        link.style.paddingLeft = heading.tagName === 'H3' ? '1.5rem' : '0.75rem';
+
+        tocNav.appendChild(link);
+      });
+
+      // Active section tracking
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            const links = tocNav.querySelectorAll('a');
+            links.forEach(link => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            });
+          }
+        });
+      }, {
+        rootMargin: '-100px 0px -66%'
+      });
+
+      headings.forEach(heading => observer.observe(heading));
+    }
+
+    // Run on page load
+    document.addEventListener('DOMContentLoaded', generateTOC);
+  </script>
+</body>
+</html>

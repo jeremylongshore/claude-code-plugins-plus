@@ -4,9 +4,10 @@
   "version": "3.0.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "npm run skills:generate && astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "skills:generate": "node scripts/discover-skills.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

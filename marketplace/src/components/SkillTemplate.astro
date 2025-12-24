@@ -1,0 +1,283 @@
+---
+interface Props {
+  skill: {
+    slug: string;
+    name: string;
+    description: string;
+    allowedTools: string[];
+    version: string;
+    author: string;
+    license: string;
+    content: string;
+    parentPlugin: {
+      name: string;
+      category: string;
+      path: string;
+      version: string;
+      description: string;
+    };
+    filePath: string;
+  };
+}
+
+const { skill } = Astro.props;
+
+// Format author (remove email if present)
+const authorName = skill.author && typeof skill.author === 'string'
+  ? skill.author.split('<')[0].trim()
+  : 'Unknown';
+
+// Extract trigger phrases from content (if present)
+const extractTriggers = (content: string): string[] => {
+  const triggers = [];
+  const regex = /trigger(?:s|ing)?[:\s]+["']([^"']+)["']/gi;
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    triggers.push(match[1]);
+  }
+  return triggers;
+};
+
+const triggers = extractTriggers(skill.content);
+---
+
+<div class="skill-template">
+  <!-- Breadcrumbs -->
+  <nav class="mb-8 text-sm text-gray-600">
+    <a href="/" class="hover:text-blue-600">Home</a>
+    <span class="mx-2">→</span>
+    <a href="/skills/" class="hover:text-blue-600">Skills</a>
+    <span class="mx-2">→</span>
+    <span class="text-gray-900">{skill.name}</span>
+  </nav>
+
+  <!-- Header -->
+  <header class="mb-8">
+    <h1 class="text-4xl font-bold text-gray-900 mb-4">{skill.name}</h1>
+
+    {skill.description && (
+      <p class="text-xl text-gray-700 mb-6">{skill.description}</p>
+    )}
+
+    <!-- Metadata -->
+    <div class="flex flex-wrap gap-4 text-sm">
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+        </svg>
+        <span class="text-gray-600">v{skill.version}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+        <span class="text-gray-600">{authorName}</span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+        <span class="text-gray-600">{skill.license}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Allowed Tools -->
+  <section class="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
+    <h2 class="text-lg font-semibold text-gray-900 mb-3">Allowed Tools</h2>
+    <div class="flex flex-wrap gap-2">
+      {skill.allowedTools.map(tool => (
+        <span class="px-3 py-1 bg-blue-600 text-white rounded-lg text-sm font-medium">
+          {tool}
+        </span>
+      ))}
+    </div>
+    {skill.allowedTools.length === 0 && (
+      <p class="text-gray-600 text-sm">No tools specified</p>
+    )}
+  </section>
+
+  <!-- Trigger Phrases (if found) -->
+  {triggers.length > 0 && (
+    <section class="mb-8 p-6 bg-green-50 rounded-lg border border-green-200">
+      <h2 class="text-lg font-semibold text-gray-900 mb-3">Trigger Phrases</h2>
+      <ul class="space-y-2">
+        {triggers.map(trigger => (
+          <li class="flex items-start gap-2">
+            <svg class="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+            <span class="text-gray-700">"{trigger}"</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- Parent Plugin -->
+  <section class="mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+    <h2 class="text-lg font-semibold text-gray-900 mb-3">Part of Plugin</h2>
+    <div class="flex items-start justify-between">
+      <div>
+        <h3 class="text-xl font-semibold text-blue-600 mb-1">
+          <a href={`/plugins/${skill.parentPlugin.name}/`} class="hover:underline">
+            {skill.parentPlugin.name}
+          </a>
+        </h3>
+        <p class="text-gray-600 mb-2">{skill.parentPlugin.description || 'Plugin for Claude Code'}</p>
+        <div class="flex gap-4 text-sm text-gray-500">
+          <span class="capitalize">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+          {skill.parentPlugin.version && (
+            <span>v{skill.parentPlugin.version}</span>
+          )}
+        </div>
+      </div>
+      <a
+        href={`/plugins/${skill.parentPlugin.name}/`}
+        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+      >
+        View Plugin
+      </a>
+    </div>
+  </section>
+
+  <!-- Skill Content (Markdown) -->
+  <section class="mb-8 prose prose-lg max-w-none">
+    <h2 class="text-2xl font-bold text-gray-900 mb-4">Instructions</h2>
+    <div class="skill-content bg-white p-8 rounded-lg border border-gray-200">
+      <div set:html={skill.content} />
+    </div>
+  </section>
+
+  <!-- Installation -->
+  <section class="mb-8 p-6 bg-gray-900 text-white rounded-lg">
+    <h2 class="text-lg font-semibold mb-3">Installation</h2>
+    <p class="text-gray-300 mb-3">This skill is included in the {skill.parentPlugin.name} plugin.</p>
+    <pre class="bg-gray-800 p-4 rounded overflow-x-auto"><code>/plugin install {skill.parentPlugin.name}@claude-code-plugins-plus</code></pre>
+  </section>
+
+  <!-- Metadata Footer -->
+  <footer class="mt-12 pt-6 border-t border-gray-200 text-sm text-gray-600">
+    <p>Skill file: <code class="bg-gray-100 px-2 py-1 rounded text-xs">{skill.filePath}</code></p>
+  </footer>
+</div>
+
+<style is:global>
+  .skill-content h1 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .skill-content h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .skill-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-content p {
+    color: #374151;
+    margin-bottom: 1rem;
+    line-height: 1.625;
+  }
+
+  .skill-content ul {
+    list-style-type: disc;
+    list-style-position: inside;
+    margin-bottom: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .skill-content ul li {
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-content ol {
+    list-style-type: decimal;
+    list-style-position: inside;
+    margin-bottom: 1rem;
+  }
+
+  .skill-content li {
+    color: #374151;
+  }
+
+  .skill-content code {
+    background-color: #f3f4f6;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-family: monospace;
+    color: #db2777;
+  }
+
+  .skill-content pre {
+    background-color: #111827;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    margin-bottom: 1rem;
+  }
+
+  .skill-content pre code {
+    background-color: transparent;
+    color: white;
+    padding: 0;
+  }
+
+  .skill-content blockquote {
+    border-left: 4px solid #3b82f6;
+    padding-left: 1rem;
+    font-style: italic;
+    color: #4b5563;
+    margin-bottom: 1rem;
+  }
+
+  .skill-content a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
+
+  .skill-content a:hover {
+    text-decoration: none;
+  }
+
+  .skill-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+  }
+
+  .skill-content th {
+    background-color: #f3f4f6;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+
+  .skill-content td {
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+  }
+
+  .skill-content hr {
+    margin: 2rem 0;
+    border-color: #d1d5db;
+  }
+</style>

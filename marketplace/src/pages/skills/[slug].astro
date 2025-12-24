@@ -1,0 +1,85 @@
+---
+import SkillTemplate from '../../components/SkillTemplate.astro';
+import skillsCatalog from '../../data/skills-catalog.json';
+
+export async function getStaticPaths() {
+  const skills = skillsCatalog.skills;
+
+  return skills.map(skill => ({
+    params: { slug: skill.slug },
+    props: { skill }
+  }));
+}
+
+const { skill } = Astro.props;
+
+const pageTitle = `${skill.name} - Agent Skill`;
+const pageDescription = skill.description || `Agent skill for Claude Code: ${skill.name}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{pageTitle}</title>
+  <meta name="description" content={pageDescription}>
+  <link rel="canonical" href={`https://claudecodeplugins.io/skills/${skill.slug}/`}>
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={pageTitle}>
+  <meta property="og:description" content={pageDescription}>
+  <meta property="og:type" content="article">
+  <meta property="og:url" content={`https://claudecodeplugins.io/skills/${skill.slug}/`}>
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareSourceCode",
+    "name": skill.name,
+    "description": skill.description,
+    "version": skill.version,
+    "author": {
+      "@type": "Person",
+      "name": skill.author.split('<')[0].trim()
+    },
+    "license": skill.license,
+    "programmingLanguage": "Claude Code Agent Skill",
+    "isPartOf": {
+      "@type": "SoftwareApplication",
+      "name": skill.parentPlugin.name,
+      "applicationCategory": skill.parentPlugin.category
+    }
+  })} />
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <a href="/skills/" class="text-blue-600 hover:text-blue-700 font-medium">
+        ← Back to Skills Directory
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <SkillTemplate skill={skill} />
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="flex items-center justify-between">
+        <p class="text-gray-600">
+          Claude Code Plugins Plus
+        </p>
+        <div class="flex gap-4">
+          <a href="/skills/" class="text-blue-600 hover:text-blue-700">All Skills</a>
+          <a href="/" class="text-blue-600 hover:text-blue-700">Marketplace</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

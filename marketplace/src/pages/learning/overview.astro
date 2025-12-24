@@ -1,0 +1,59 @@
+---
+import Layout from '../../layouts/Layout.astro';
+const title = 'Lab Overview | Learning Lab';
+const description = 'Overview of the Test Harness Pattern Learning Lab for production agent workflows.';
+---
+<Layout title={title} description={description}>
+  <div class="guide-page">
+    <div class="guide-container">
+      <div class="progress-bar"><div class="progress-fill" style="width: 100%"></div></div>
+      <div class="guide-header">
+        <a href="/learning" class="back-link">← Back to Learning Hub</a>
+        <div class="guide-meta"><span>Guide 8 of 8</span><span>5 min read</span></div>
+      </div>
+      <article class="guide-content">
+        <h1>Test Harness Pattern Learning Lab</h1>
+        <div class="goal-box"><strong>Purpose:</strong> Safe sandbox for learning and building phased workflow skills with strict validation.</div>
+        <section><h2>What's Inside</h2>
+        <h3>Reference Implementation</h3>
+        <p><strong>schema-optimization/</strong> - Complete 5-phase workflow skill system</p>
+        <ul><li>Orchestrator that creates session directories, spawns phases, validates outputs</li>
+        <li>5 phase agents with strict JSON contracts</li>
+        <li>Reference instruction docs</li>
+        <li>Real verification script</li>
+        <li>Sample outputs</li></ul>
+        <h3>Learning Guides</h3>
+        <ol><li><a href="/learning/start-here">GUIDE-00-START-HERE.md</a> - Introduction (5 min)</li>
+        <li><a href="/learning/pattern-explained">GUIDE-01-PATTERN-EXPLAINED.md</a> - Architecture (15 min)</li>
+        <li><a href="/learning/building-your-own">GUIDE-02-BUILDING-YOUR-OWN.md</a> - Build your own (30 min)</li>
+        <li><a href="/learning/debugging-tips">GUIDE-03-DEBUGGING-TIPS.md</a> - Debugging (15 min)</li>
+        <li><a href="/learning/orchestration-pattern">ORCHESTRATION-PATTERN.md</a> - Complete reference (60 min)</li></ol>
+        <h2>Why This Pattern Matters</h2>
+        <p>Traditional LLM workflows are fragile. The test harness pattern solves this with:</p>
+        <ul><li>Agent MUST produce file artifact (evidence)</li>
+        <li>Agent MUST return strict JSON (machine-checkable)</li>
+        <li>Orchestrator validates before continuing</li>
+        <li>Each phase builds on validated prior work</li>
+        <li>Failure points are clear and debuggable</li></ul>
+        <h2>Design Principles</h2>
+        <ol><li><strong>Evidence-Based:</strong> Every phase writes a file</li>
+        <li><strong>Machine-Checkable:</strong> JSON outputs validated programmatically</li>
+        <li><strong>Fail-Fast:</strong> Orchestrator stops on first validation failure</li>
+        <li><strong>Composable:</strong> Phases are independent, reusable</li>
+        <li><strong>Debuggable:</strong> Clear failure points</li>
+        <li><strong>Repeatable:</strong> Same inputs = same outputs</li></ol>
+        <div class="source-link-box">
+          <a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/README.md" class="github-link" target="_blank">View Full Lab README on GitHub →</a>
+        </div>
+        </section>
+      </article>
+      <nav class="guide-nav">
+        <a href="/learning/reference-implementation">← Reference</a>
+        <a href="/learning">Back to Hub →</a>
+      </nav>
+    </div>
+  </div>
+</Layout>
+<style>
+.guide-page{min-height:100vh;background:var(--slate-900)}.guide-container{max-width:900px;margin:0 auto;padding:2rem 1rem}.progress-bar{width:100%;height:4px;background:var(--slate-800);border-radius:2px;margin-bottom:2rem}.progress-fill{height:100%;background:linear-gradient(90deg,var(--green-500),var(--blue-500))}.guide-header{margin-bottom:2rem}.back-link{color:var(--slate-400);text-decoration:none;font-size:.875rem}.guide-meta{display:flex;gap:1rem;font-size:.875rem;color:var(--slate-500);margin-top:.5rem}.guide-content{background:var(--slate-800);border:1px solid var(--slate-700);border-radius:.5rem;padding:3rem;margin-bottom:2rem}.guide-content h1{font-size:2.5rem;color:var(--slate-100);margin:0 0 2rem}.guide-content h2{font-size:1.75rem;color:var(--slate-200);margin:2.5rem 0 1rem;border-bottom:2px solid var(--slate-700);padding-bottom:.5rem}.guide-content h3{font-size:1.25rem;color:var(--slate-300);margin:1.5rem 0 .75rem}.guide-content p{color:var(--slate-400);line-height:1.7;margin:1rem 0}.guide-content ul,.guide-content ol{color:var(--slate-400);padding-left:2rem}.guide-content li{margin:.5rem 0}.guide-content a{color:var(--green-400);text-decoration:none;border-bottom:1px solid rgba(16,185,129,.3)}.guide-content a:hover{color:var(--green-300)}.goal-box{background:linear-gradient(135deg,rgba(59,130,246,.2),rgba(16,185,129,.2));border-left:4px solid var(--blue-500);padding:1rem 1.5rem;margin:2rem 0;border-radius:.375rem;color:var(--slate-200)}.source-link-box{text-align:center;margin:2rem 0}.github-link{display:inline-block;padding:1rem 2rem;background:var(--blue-500);color:white;text-decoration:none;border-radius:.375rem;font-weight:600}.github-link:hover{background:var(--blue-600)}.guide-nav{display:flex;justify-content:space-between;margin-top:2rem}.guide-nav a{padding:1rem 1.5rem;background:var(--slate-800);border:1px solid var(--slate-700);border-radius:.5rem;color:var(--slate-300);text-decoration:none}.guide-nav a:hover{border-color:var(--green-500)}
+</style>

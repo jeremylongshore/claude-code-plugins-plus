@@ -1,0 +1,285 @@
+---
+import skillsCatalog from '../../data/skills-catalog.json';
+
+const pageTitle = 'Agent Skills Directory';
+const pageDescription = `Browse all ${skillsCatalog.count} agent skills across ${skillsCatalog.categories.length} categories`;
+
+// Group skills by category
+const skillsByCategory = skillsCatalog.skills.reduce((acc, skill) => {
+  const category = skill.parentPlugin.category;
+  if (!acc[category]) {
+    acc[category] = [];
+  }
+  acc[category].push(skill);
+  return acc;
+}, {});
+
+// Get unique allowed tools for filtering
+const allTools = skillsCatalog.allowedToolsUsed;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{pageTitle} - Claude Code Plugins</title>
+  <meta name="description" content={pageDescription}>
+  <link rel="canonical" href="https://claudecodeplugins.io/skills/">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={pageTitle}>
+  <meta property="og:description" content={pageDescription}>
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://claudecodeplugins.io/skills/">
+
+  <script type="module">
+    // Client-side search functionality using Fuse.js
+    import Fuse from 'https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/+esm';
+
+    const skills = window.__SKILLS_DATA__;
+
+    const fuse = new Fuse(skills, {
+      keys: ['name', 'description', 'parentPlugin.category', 'allowedTools'],
+      threshold: 0.3,
+      includeScore: true
+    });
+
+    let activeFilters = {
+      category: null,
+      tool: null,
+      search: ''
+    };
+
+    function filterSkills() {
+      let filtered = skills;
+
+      // Apply search
+      if (activeFilters.search) {
+        const results = fuse.search(activeFilters.search);
+        filtered = results.map(r => r.item);
+      }
+
+      // Apply category filter
+      if (activeFilters.category) {
+        filtered = filtered.filter(s => s.parentPlugin.category === activeFilters.category);
+      }
+
+      // Apply tool filter
+      if (activeFilters.tool) {
+        filtered = filtered.filter(s => s.allowedTools.includes(activeFilters.tool));
+      }
+
+      renderSkills(filtered);
+      updateResultsCount(filtered.length);
+    }
+
+    function renderSkills(skills) {
+      const grid = document.getElementById('skills-grid');
+
+      if (skills.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <p class="text-xl text-gray-600">No skills found matching your filters.</p>
+            <button onclick="clearFilters()" class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+              Clear Filters
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      grid.innerHTML = skills.map(skill => `
+        <a href="/skills/${skill.slug}/" class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">${skill.name}</h3>
+          <p class="text-sm text-gray-600 mb-3 line-clamp-2">${skill.description || 'No description available'}</p>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            ${skill.allowedTools.slice(0, 3).map(tool => `
+              <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">${tool}</span>
+            `).join('')}
+            ${skill.allowedTools.length > 3 ? `<span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">+${skill.allowedTools.length - 3} more</span>` : ''}
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span class="capitalize">${skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+            <span>${skill.version}</span>
+          </div>
+        </a>
+      `).join('');
+    }
+
+    function updateResultsCount(count) {
+      document.getElementById('results-count').textContent =
+        `Showing ${count} of ${skills.length} skills`;
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', () => {
+      // Search input
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        activeFilters.search = e.target.value;
+        filterSkills();
+      });
+
+      // Category filter
+      document.getElementById('category-filter').addEventListener('change', (e) => {
+        activeFilters.category = e.target.value || null;
+        filterSkills();
+      });
+
+      // Tool filter
+      document.getElementById('tool-filter').addEventListener('change', (e) => {
+        activeFilters.tool = e.target.value || null;
+        filterSkills();
+      });
+
+      // Clear filters button
+      window.clearFilters = () => {
+        activeFilters = { category: null, tool: null, search: '' };
+        document.getElementById('search-input').value = '';
+        document.getElementById('category-filter').value = '';
+        document.getElementById('tool-filter').value = '';
+        filterSkills();
+      };
+    });
+  </script>
+
+  <script define:vars={{ skills: skillsCatalog.skills }}>
+    window.__SKILLS_DATA__ = skills;
+  </script>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-900">Agent Skills Directory</h1>
+          <p class="text-gray-600 mt-1">{skillsCatalog.count} skills across {skillsCatalog.categories.length} categories</p>
+        </div>
+        <a href="/" class="text-blue-600 hover:text-blue-700 font-medium">
+          ← Back to Marketplace
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Filters -->
+  <div class="bg-white border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Search -->
+        <div>
+          <label for="search-input" class="block text-sm font-medium text-gray-700 mb-2">
+            Search Skills
+          </label>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search by name, description..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+        </div>
+
+        <!-- Category Filter -->
+        <div>
+          <label for="category-filter" class="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Category
+          </label>
+          <select
+            id="category-filter"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">All Categories</option>
+            {skillsCatalog.categories.map(category => (
+              <option value={category}>
+                {category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <!-- Tool Filter -->
+        <div>
+          <label for="tool-filter" class="block text-sm font-medium text-gray-700 mb-2">
+            Filter by Tool
+          </label>
+          <select
+            id="tool-filter"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          >
+            <option value="">All Tools</option>
+            {allTools.map(tool => (
+              <option value={tool}>{tool}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div class="mt-4 flex items-center justify-between">
+        <p id="results-count" class="text-sm text-gray-600">
+          Showing {skillsCatalog.count} of {skillsCatalog.count} skills
+        </p>
+        <button
+          onclick="clearFilters()"
+          class="px-4 py-2 text-sm text-gray-700 hover:text-gray-900 font-medium"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Skills Grid -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {skillsCatalog.skills.map(skill => (
+        <a
+          href={`/skills/${skill.slug}/`}
+          class="block p-6 bg-white rounded-lg shadow hover:shadow-lg transition-shadow border border-gray-200"
+        >
+          <h3 class="text-lg font-semibold text-gray-900 mb-2">{skill.name}</h3>
+          <p class="text-sm text-gray-600 mb-3 line-clamp-2">
+            {skill.description || 'No description available'}
+          </p>
+
+          <div class="flex flex-wrap gap-2 mb-3">
+            {skill.allowedTools.slice(0, 3).map(tool => (
+              <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">{tool}</span>
+            ))}
+            {skill.allowedTools.length > 3 && (
+              <span class="px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
+                +{skill.allowedTools.length - 3} more
+              </span>
+            )}
+          </div>
+
+          <div class="flex items-center justify-between text-xs text-gray-500">
+            <span class="capitalize">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+            <span>{skill.version}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-gray-200 mt-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <p class="text-center text-gray-600">
+        Claude Code Plugins Plus - {skillsCatalog.count} Agent Skills
+      </p>
+    </div>
+  </footer>
+
+  <style>
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</body>
+</html>
