@@ -26,7 +26,8 @@ jobs:
       - name: Validate JSON files
         run: |
           echo "Validating JSON files..."
-          find . -name "*.json" -type f -exec sh -c '
+          # Exclude tsconfig*.json files as they use JSONC (JSON with Comments)
+          find . -name "*.json" -not -name "tsconfig*.json" -type f -exec sh -c '
             for file; do
               echo "Checking $file"
               if ! jq empty "$file" 2>/dev/null; then
