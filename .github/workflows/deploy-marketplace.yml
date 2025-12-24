@@ -20,34 +20,34 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./marketplace
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build with Astro
-        run: npm run build
+        run: pnpm -C marketplace build
 
       - name: Smoke Test - Verify Build Output
         run: |
           # Check that index.html exists and has proper content
-          if [ ! -f "dist/index.html" ]; then
-            echo "ERROR: dist/index.html not found"
+          if [ ! -f "marketplace/dist/index.html" ]; then
+            echo "ERROR: marketplace/dist/index.html not found"
             exit 1
           fi
 
           # Check max line length (should be < 5000 chars to prevent iOS Safari issues)
-          MAX_LINE=$(wc -L dist/index.html | awk '{print $1}')
+          MAX_LINE=$(wc -L marketplace/dist/index.html | awk '{print $1}')
           if [ "$MAX_LINE" -gt 5000 ]; then
             echo "ERROR: HTML line too long ($MAX_LINE chars). iOS Safari may fail to render."
             echo "Disable compressHTML in astro.config.mjs"
@@ -55,12 +55,12 @@ jobs:
           fi
 
           # Check that it contains expected HTML markers
-          if ! grep -q "<!DOCTYPE html>" dist/index.html; then
+          if ! grep -q "<!DOCTYPE html>" marketplace/dist/index.html; then
             echo "ERROR: Missing DOCTYPE in index.html"
             exit 1
           fi
 
-          if ! grep -q "Claude Code" dist/index.html; then
+          if ! grep -q "Claude Code" marketplace/dist/index.html; then
             echo "ERROR: Missing expected content in index.html"
             exit 1
           fi
@@ -68,7 +68,7 @@ jobs:
           echo "✓ Smoke test passed: index.html is valid (max line: $MAX_LINE chars)"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
           path: ./marketplace/dist
 

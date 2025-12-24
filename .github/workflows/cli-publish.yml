@@ -23,19 +23,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
-        working-directory: packages/cli
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run TypeScript type check
-        working-directory: packages/cli
-        run: npm run typecheck
+        run: pnpm -C packages/cli typecheck
 
       - name: Build CLI
-        working-directory: packages/cli
-        run: npm run build
+        run: pnpm -C packages/cli build
 
       - name: Verify package.json version matches tag
         working-directory: packages/cli
@@ -77,15 +76,15 @@ jobs:
         with:
           node-version: 20
           registry-url: 'https://registry.npmjs.org'
-          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install dependencies
-        working-directory: packages/cli
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build for production
-        working-directory: packages/cli
-        run: npm run build
+        run: pnpm -C packages/cli build
 
       - name: Publish to npm (with provenance)
         working-directory: packages/cli

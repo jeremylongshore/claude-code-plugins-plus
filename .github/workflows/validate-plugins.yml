@@ -363,3 +363,17 @@ jobs:
           file: ./coverage.xml
           flags: python
           fail_ci_if_error: false
+
+  # Package Manager Policy Enforcement
+  check-package-manager:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Run package manager policy check
+        run: node scripts/check-package-manager.mjs

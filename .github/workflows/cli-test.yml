@@ -44,7 +44,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+
+      - name: Enable Corepack
+        run: corepack enable
 
       - name: Install Bun
         if: matrix.package-manager == 'bun'
@@ -52,19 +54,11 @@ jobs:
         with:
           bun-version: latest
 
-      - name: Install pnpm
-        if: matrix.package-manager == 'pnpm'
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      - name: Install dependencies
-        working-directory: packages/cli
-        run: npm install
+      - name: Install dependencies (workspace)
+        run: pnpm install --frozen-lockfile
 
       - name: Build CLI
-        working-directory: packages/cli
-        run: npm run build
+        run: pnpm -C packages/cli build
 
       - name: Verify build output
         shell: bash
@@ -137,14 +131,16 @@ jobs:
         with:
           node-version: 20
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Deno
         uses: denoland/setup-deno@v1
         with:
           deno-version: ${{ matrix.deno-version }}
 
       - name: Install dependencies and build
-        working-directory: packages/cli
-        run: npm install && npm run build
+        run: pnpm install --frozen-lockfile && pnpm -C packages/cli build
 
       - name: Test with Deno
         working-directory: packages/cli
