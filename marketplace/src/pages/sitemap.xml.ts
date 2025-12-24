@@ -13,6 +13,7 @@ export const GET: APIRoute = async () => {
   // Static pages
   const staticPages = [
     { url: '/', priority: '1.0', changefreq: 'daily' },
+    { url: '/tools', priority: '0.9', changefreq: 'weekly' },
     { url: '/sponsor', priority: '0.7', changefreq: 'weekly' },
     { url: '/privacy', priority: '0.5', changefreq: 'monthly' },
     { url: '/terms', priority: '0.5', changefreq: 'monthly' },
