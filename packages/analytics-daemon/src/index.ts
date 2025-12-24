@@ -4,6 +4,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { ConversationWatcher } from './watcher.js';
 import { AnalyticsServer } from './server.js';
+import { AnalyticsAPI } from './api.js';
 import type { AnalyticsEvent } from './types.js';
 
 /**
@@ -11,9 +12,11 @@ import type { AnalyticsEvent } from './types.js';
  *
  * Monitors ~/.claude/conversations/ for plugin usage, skill triggers, and LLM calls.
  * Broadcasts real-time events via WebSocket for dashboard consumption.
+ * Provides HTTP API for querying session data.
  */
 
-const DEFAULT_PORT = 3456;
+const DEFAULT_WS_PORT = 3456;
+const DEFAULT_API_PORT = 3333;
 const DEFAULT_HOST = 'localhost';
 
 /**
@@ -22,6 +25,7 @@ const DEFAULT_HOST = 'localhost';
 class AnalyticsDaemon {
   private watcher: ConversationWatcher;
   private server: AnalyticsServer;
+  private api: AnalyticsAPI;
   private conversationsPath: string;
 
   constructor() {
@@ -37,8 +41,14 @@ class AnalyticsDaemon {
 
     // Initialize WebSocket server
     this.server = new AnalyticsServer({
-      port: parseInt(process.env.CCP_ANALYTICS_PORT ?? String(DEFAULT_PORT)),
+      port: parseInt(process.env.CCP_ANALYTICS_PORT ?? String(DEFAULT_WS_PORT)),
       host: process.env.CCP_ANALYTICS_HOST ?? DEFAULT_HOST,
+    });
+
+    // Initialize HTTP API
+    this.api = new AnalyticsAPI(this.watcher, this.server, {
+      port: parseInt(process.env.CCP_API_PORT ?? String(DEFAULT_API_PORT)),
+      host: process.env.CCP_API_HOST ?? DEFAULT_HOST,
     });
 
     // Wire up events
@@ -61,6 +71,10 @@ class AnalyticsDaemon {
     console.log();
 
     try {
+      // Start HTTP API server
+      await this.api.start();
+      console.log();
+
       // Start WebSocket server
       await this.server.start();
       console.log();
@@ -71,7 +85,7 @@ class AnalyticsDaemon {
 
       console.log('✓ Daemon started successfully');
       console.log(`  Watching: ${this.conversationsPath}`);
-      console.log(`  Server: ws://${this.server.getStatus().host}:${this.server.getStatus().port}`);
+      console.log(`  WebSocket: ws://${this.server.getStatus().host}:${this.server.getStatus().port}`);
       console.log();
       console.log('Press Ctrl+C to stop');
       console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
@@ -88,6 +102,7 @@ class AnalyticsDaemon {
     console.log('\nStopping daemon...');
     await this.watcher.stop();
     await this.server.stop();
+    await this.api.stop();
     console.log('Daemon stopped');
   }
 

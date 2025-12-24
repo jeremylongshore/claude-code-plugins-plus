@@ -37,11 +37,157 @@ ccp-analytics
 Environment variables:
 
 ```bash
+# HTTP API server port (default: 3333)
+export CCP_API_PORT=3333
+
+# HTTP API server host (default: localhost)
+export CCP_API_HOST=localhost
+
 # WebSocket server port (default: 3456)
 export CCP_ANALYTICS_PORT=3456
 
 # WebSocket server host (default: localhost)
 export CCP_ANALYTICS_HOST=localhost
+```
+
+### HTTP API Endpoints
+
+The daemon provides a REST API for querying session data:
+
+#### `GET /health`
+Health check endpoint.
+
+```bash
+curl http://localhost:3333/health
+```
+
+Response:
+```json
+{
+  "status": "healthy",
+  "timestamp": 1703347200000,
+  "uptime": 123.45
+}
+```
+
+#### `GET /api/sessions`
+List all conversation sessions.
+
+```bash
+curl http://localhost:3333/api/sessions
+```
+
+Response:
+```json
+{
+  "sessions": [
+    {
+      "id": "abc123",
+      "title": "Deploy infrastructure with Terraform",
+      "messageCount": 12,
+      "plugins": ["terraform-specialist"],
+      "skills": ["terraform-plan-analyzer"],
+      "model": "claude-sonnet-4-5",
+      "lastMessage": 1703347200000
+    }
+  ],
+  "total": 1,
+  "timestamp": 1703347200000
+}
+```
+
+#### `GET /api/session/:id`
+Get detailed information about a specific session.
+
+```bash
+curl http://localhost:3333/api/session/abc123
+```
+
+Response:
+```json
+{
+  "id": "abc123",
+  "title": "Deploy infrastructure with Terraform",
+  "messageCount": 12,
+  "metadata": {
+    "plugins": ["terraform-specialist"],
+    "skills": ["terraform-plan-analyzer"],
+    "model": "claude-sonnet-4-5"
+  },
+  "messages": [
+    {
+      "role": "user",
+      "timestamp": 1703347200000,
+      "hasContent": true,
+      "contentLength": 150
+    }
+  ],
+  "timestamp": 1703347200000
+}
+```
+
+#### `GET /api/status`
+Get daemon status and statistics.
+
+```bash
+curl http://localhost:3333/api/status
+```
+
+Response:
+```json
+{
+  "api": {
+    "running": true,
+    "host": "localhost",
+    "port": 3333
+  },
+  "websocket": {
+    "running": true,
+    "clients": 2,
+    "host": "localhost",
+    "port": 3456
+  },
+  "watcher": {
+    "conversationCount": 5,
+    "totalMessages": 45
+  },
+  "system": {
+    "uptime": 123.45,
+    "nodeVersion": "v22.20.0",
+    "platform": "linux"
+  },
+  "timestamp": 1703347200000
+}
+```
+
+#### `GET /api/realtime`
+Get WebSocket connection information.
+
+```bash
+curl http://localhost:3333/api/realtime
+```
+
+Response:
+```json
+{
+  "websocket": {
+    "url": "ws://localhost:3456",
+    "running": true,
+    "clients": 2
+  },
+  "instructions": {
+    "connect": "const ws = new WebSocket('ws://localhost:3456');",
+    "events": [
+      "plugin.activation",
+      "skill.trigger",
+      "llm.call",
+      "cost.update",
+      "rate_limit.warning",
+      "conversation.created",
+      "conversation.updated"
+    ]
+  }
+}
 ```
 
 ### Connect to WebSocket
@@ -152,6 +298,7 @@ ws.onmessage = (event) => {
 │  - Detects file changes             │
 │  - Parses conversation JSON         │
 │  - Extracts plugin/skill data       │
+│  - Caches conversation state        │
 └────────────┬────────────────────────┘
              │
              ▼
@@ -162,19 +309,30 @@ ws.onmessage = (event) => {
 │  - llm.call                         │
 │  - cost.update                      │
 │  - rate_limit.warning               │
-└────────────┬────────────────────────┘
-             │
-             ▼
-┌─────────────────────────────────────┐
-│  AnalyticsServer (WebSocket)        │
-│  - Broadcasts events to clients     │
-│  - ws://localhost:3456              │
-└─────────────────────────────────────┘
-             │
-             ▼
+└─────┬──────────────────────┬────────┘
+      │                      │
+      ▼                      ▼
+┌──────────────┐   ┌─────────────────────┐
+│ AnalyticsAPI │   │ AnalyticsServer     │
+│ (HTTP/REST)  │   │ (WebSocket)         │
+│ :3333        │   │ :3456               │
+│              │   │                     │
+│ /health      │   │ Real-time events    │
+│ /api/        │   │ broadcast           │
+│   sessions   │   └─────────────────────┘
+│   session/:id│            │
+│   status     │            │
+│   realtime   │            │
+└──────────────┘            │
+      │                     │
+      │                     │
+      └─────────┬───────────┘
+                │
+                ▼
 ┌─────────────────────────────────────┐
 │  Dashboard / Client Applications    │
-│  - Real-time visualizations         │
+│  - REST API for session queries     │
+│  - Real-time WebSocket events       │
 │  - Usage analytics                  │
 │  - Cost tracking                    │
 └─────────────────────────────────────┘
