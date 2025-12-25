@@ -8,9 +8,9 @@
 | **Repo/App** | `jeremylongshore/claude-code-plugins-plus-skills` |
 | **Owner** | `jeremy` |
 | **Date/Time (CST)** | `2025-12-25 14:42 CST` |
-| **Status** | `DRAFT` |
-| **Related Issues/PRs** | `claude-code-plugins-qmd` (children: `claude-code-plugins-oor`, `claude-code-plugins-40q`, `claude-code-plugins-0lw`, `claude-code-plugins-ppt`, `claude-code-plugins-0ek`, `claude-code-plugins-5ix`, `claude-code-plugins-c4f`); PR: `not opened yet (pending push)` |
-| **Commit(s)** | `278df9e9` |
+| **Status** | `FINAL` |
+| **Related Issues/PRs** | `claude-code-plugins-qmd` (children: `claude-code-plugins-oor`, `claude-code-plugins-40q`, `claude-code-plugins-0lw`, `claude-code-plugins-ppt`, `claude-code-plugins-0ek`, `claude-code-plugins-5ix`, `claude-code-plugins-c4f`); PR: `https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/200` |
+| **Commit(s)** | `278df9e9`, `d87a3398` |
 
 ## Executive Summary
 
