@@ -547,7 +547,7 @@ jobs:
       - name: Install CLI dependencies
         run: |
           cd packages/cli
-          pnpm install
+          pnpm install --frozen-lockfile
 
       - name: Build CLI
         run: |
