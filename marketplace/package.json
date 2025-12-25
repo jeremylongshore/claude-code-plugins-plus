@@ -15,5 +15,8 @@
     "astro": "^5.16.6",
     "fuse.js": "^7.1.0",
     "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0"
   }
 }

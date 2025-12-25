@@ -25,6 +25,11 @@ const ALLOWED_PATTERNS = [
   /^https?:\/\/127\.0\.0\.1/,
   /^https?:\/\/0\.0\.0\.0/,
   /^https?:\/\/\[::1\]/, // IPv6 localhost
+  /^https?:\/\/.*\.local/, // Local network devices (.local domains)
+  /^https?:\/\/example\.com/, // Reserved documentation domain
+  /^https?:\/\/.*example\.com/, // Subdomains of example.com
+  /\[REGION\]/, // Placeholder URLs with template variables
+  /\[PROJECT/, // Placeholder URLs with template variables
 ];
 
 // NOTE: This validator is configured to BLOCK known bad domains
@@ -92,6 +97,11 @@ function findMarkdownFiles() {
     const walkPlugins = (dir) => {
       const items = fs.readdirSync(dir);
       for (const item of items) {
+        // Skip node_modules, dist, and other build artifacts
+        if (item === 'node_modules' || item === 'dist' || item === '.git') {
+          continue;
+        }
+
         const fullPath = path.join(dir, item);
         const stat = fs.statSync(fullPath);
 

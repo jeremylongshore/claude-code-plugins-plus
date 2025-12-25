@@ -401,6 +401,60 @@ jobs:
           cd marketplace
           npm run build
 
+      - name: Smoke Test - Verify Build Output
+        run: |
+          echo "Running smoke tests on marketplace build output..."
+
+          # 1. Verify dist/index.html exists and is valid HTML
+          if [ ! -f "marketplace/dist/index.html" ]; then
+            echo "ERROR: marketplace/dist/index.html not found"
+            exit 1
+          fi
+
+          if ! grep -q "<!DOCTYPE html>" marketplace/dist/index.html; then
+            echo "ERROR: Missing DOCTYPE in index.html"
+            exit 1
+          fi
+
+          if ! grep -q "Claude Code" marketplace/dist/index.html; then
+            echo "ERROR: Missing expected content in index.html"
+            exit 1
+          fi
+
+          echo "✓ index.html exists and is valid"
+
+          # 2. Verify at least one plugin page exists
+          PLUGIN_COUNT=$(find marketplace/dist/plugins -name "index.html" -type f 2>/dev/null | wc -l)
+          if [ "$PLUGIN_COUNT" -lt 1 ]; then
+            echo "ERROR: No plugin pages found in marketplace/dist/plugins/"
+            exit 1
+          fi
+          echo "✓ Found $PLUGIN_COUNT plugin pages"
+
+          # 3. Verify /explore/index.html exists
+          if [ ! -f "marketplace/dist/explore/index.html" ]; then
+            echo "ERROR: marketplace/dist/explore/index.html not found"
+            exit 1
+          fi
+          echo "✓ Explore page exists"
+
+          # 4. Verify /skills/index.html exists
+          if [ ! -f "marketplace/dist/skills/index.html" ]; then
+            echo "ERROR: marketplace/dist/skills/index.html not found"
+            exit 1
+          fi
+          echo "✓ Skills page exists"
+
+          # 5. Check max line length for iOS Safari compatibility
+          MAX_LINE=$(wc -L marketplace/dist/index.html | awk '{print $1}')
+          if [ "$MAX_LINE" -gt 5000 ]; then
+            echo "WARNING: HTML line too long ($MAX_LINE chars). iOS Safari may fail to render."
+          else
+            echo "✓ HTML line length OK ($MAX_LINE chars)"
+          fi
+
+          echo "✅ All smoke tests passed"
+
       - name: Validate routes
         run: node scripts/check-routes.mjs
 
@@ -409,3 +463,66 @@ jobs:
 
       - name: Performance budget check
         run: node scripts/check-performance.mjs
+
+  # Playwright E2E Tests (PROOF GATE)
+  playwright-tests:
+    runs-on: ubuntu-latest
+    needs: marketplace-validation
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install --ignore-scripts
+
+      - name: Install Playwright
+        run: |
+          cd marketplace
+          npm install -D @playwright/test
+
+      - name: Install Playwright browsers
+        run: |
+          cd marketplace
+          npx playwright install --with-deps chromium webkit
+
+      - name: Build marketplace
+        run: |
+          cd marketplace
+          npm run build
+
+      - name: Run Playwright tests
+        run: |
+          cd marketplace
+          npx playwright test --reporter=html,github
+        env:
+          CI: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: marketplace/playwright-report/
+          retention-days: 30
+
+      - name: Upload test screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-screenshots
+          path: marketplace/test-results/screenshots/
+          retention-days: 30
+
+      - name: Upload test videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-videos
+          path: marketplace/test-results/**/video.webm
+          retention-days: 7

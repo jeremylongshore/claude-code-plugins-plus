@@ -244,6 +244,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             }
 
             .nav-links {
+                display: none; /* Hidden by default on mobile to prevent horizontal scroll */
                 position: fixed;
                 top: 0;
                 right: -100%;
@@ -262,6 +263,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             }
 
             .nav-links.active {
+                display: flex; /* Show when menu is opened */
                 right: 0;
             }
 

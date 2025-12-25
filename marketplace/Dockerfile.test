@@ -1,0 +1,27 @@
+# Marketplace Test Environment Dockerfile
+# Provides clean, reproducible environment matching CI
+
+FROM mcr.microsoft.com/playwright:v1.48.2-noble
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --ignore-scripts && \
+    npm install -D @playwright/test
+
+# Copy project files
+COPY . .
+
+# Build the site
+RUN npm run build
+
+# Set environment
+ENV CI=true
+ENV BASE_URL=http://localhost:4321
+
+# Run tests by default
+CMD ["npx", "playwright", "test"]
