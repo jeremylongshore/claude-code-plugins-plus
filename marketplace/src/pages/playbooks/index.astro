@@ -1,4 +1,6 @@
 ---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
 // Playbooks Index Page
 const playbooks = [
   {
@@ -96,16 +98,10 @@ const totalWords = playbooks.reduce((sum, p) => sum + p.wordCount, 0);
 const featuredPlaybooks = playbooks.filter(p => p.featured);
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Production Playbooks | Claude Code Plugins</title>
-  <meta name="description" content="Comprehensive technical guides for building production-grade Claude Code plugin systems. 11 playbooks covering AI architecture, cost management, infrastructure, operations, and compliance.">
-  <link rel="stylesheet" href="/styles/global.css">
-</head>
-<body>
+<BaseLayout
+  title="Production Playbooks | Claude Code Plugins"
+  description="Comprehensive technical guides for building production-grade Claude Code plugin systems. 11 playbooks covering AI architecture, cost management, infrastructure, operations, and compliance."
+>
   <div class="playbooks-index">
     <!-- Hero Section -->
     <section class="hero">
@@ -535,5 +531,5 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       });
     });
   </script>
-</body>
-</html>
+  </div>
+</BaseLayout>

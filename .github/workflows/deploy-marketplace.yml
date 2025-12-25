@@ -38,6 +38,12 @@ jobs:
       - name: Build with Astro
         run: pnpm -C marketplace build
 
+      - name: Validate Plugin Routes
+        run: node marketplace/scripts/validate-routes.mjs
+
+      - name: Validate Skill→Plugin Links
+        run: node marketplace/scripts/validate-links.mjs
+
       - name: Smoke Test - Verify Build Output
         run: |
           # Check that index.html exists and has proper content

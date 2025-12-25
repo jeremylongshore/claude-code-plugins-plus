@@ -398,7 +398,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     <div id="results-grid" class="results-grid">
       {searchIndex.items.map(item => (
         <a
-          href={item.type === 'plugin' ? `/plugins/${item.slug}/` : `/skills/${item.slug}/`}
+          href={item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`}
           class="result-card"
           data-type={item.type}
           data-category={item.category}
@@ -408,7 +408,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             {item.type}
           </span>
 
-          <h3 class="result-name">{item.name}</h3>
+          <h3 class="result-name">{item.type === 'plugin' && item.displayName ? item.displayName : item.name}</h3>
           <p class="result-description">{item.description}</p>
 
           <div class="result-meta">
@@ -500,7 +500,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       }
 
       grid.innerHTML = items.map(item => {
-        const href = item.type === 'plugin' ? `/plugins/${item.slug}/` : `/skills/${item.slug}/`;
+        const href = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
+        const displayName = item.type === 'plugin' && item.displayName ? item.displayName : item.name;
         const parentPlugin = item.type === 'skill' && item.parentPlugin
           ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${item.parentPlugin.name}</span></div>`
           : '';
@@ -514,7 +515,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         return `
           <a href="${href}" class="result-card">
             <span class="result-type-badge ${item.type}">${item.type}</span>
-            <h3 class="result-name">${item.name}</h3>
+            <h3 class="result-name">${displayName}</h3>
             <p class="result-description">${item.description}</p>
             <div class="result-meta">
               ${parentPlugin}

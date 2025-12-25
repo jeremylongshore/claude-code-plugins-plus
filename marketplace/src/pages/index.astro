@@ -2,11 +2,12 @@
 // Claude Code Plugins Marketplace - Homepage
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
+import searchIndex from '../data/unified-search-index.json';
 ---
 
 <BaseLayout
     title="Claude Code Skills Hub | Plugins & Agent Skills"
-    description="Search 244 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready."
+    description="Search 239 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready."
 >
     <style>
         /* ========================================
@@ -203,6 +204,162 @@ import StackBuilder from '../components/StackBuilder.astro';
             font-size: 0.95rem;
             user-select: all;
             cursor: pointer;
+        }
+
+        /* Hero Search Bar */
+        .hero-search {
+            width: 100%;
+            max-width: 700px;
+            margin: 2rem auto 3rem;
+            position: relative;
+        }
+
+        .search-container {
+            position: relative;
+            background: white;
+            border: 2px solid var(--brand-light-gray);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(20, 20, 19, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            border-color: var(--brand-orange);
+            box-shadow: 0 8px 30px rgba(217, 119, 87, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--brand-mid-gray);
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--brand-dark);
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--brand-mid-gray);
+        }
+
+        .search-toggle {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 0.5rem;
+            background: var(--brand-light-gray);
+            padding: 0.25rem;
+            border-radius: 8px;
+        }
+
+        .toggle-btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: var(--brand-mid-gray);
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .toggle-btn:hover {
+            background: rgba(255,255,255,0.7);
+            color: var(--brand-dark);
+        }
+
+        .toggle-btn.active {
+            background: white;
+            color: var(--brand-orange);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .search-results {
+            position: absolute;
+            top: calc(100% + 0.5rem);
+            left: 0;
+            right: 0;
+            background: white;
+            border: 2px solid var(--brand-light-gray);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(20, 20, 19, 0.12);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 100;
+        }
+
+        .search-results.hidden {
+            display: none;
+        }
+
+        .search-result-item {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--brand-light-gray);
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            display: block;
+            color: inherit;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: var(--brand-light);
+        }
+
+        .result-type-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-type-badge.plugin {
+            background: rgba(106, 155, 204, 0.1);
+            color: var(--brand-blue);
+        }
+
+        .result-type-badge.skill {
+            background: rgba(217, 119, 87, 0.1);
+            color: var(--brand-orange);
+        }
+
+        .result-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            margin: 0.25rem 0;
+        }
+
+        .result-description {
+            font-size: 0.875rem;
+            color: var(--brand-mid-gray);
+            margin: 0.25rem 0;
+            line-height: 1.4;
+        }
+
+        .result-plugin-info {
+            font-size: 0.8125rem;
+            color: var(--brand-blue);
+            margin-top: 0.5rem;
         }
 
         /* Floating code block decoration */
@@ -444,7 +601,7 @@ import StackBuilder from '../components/StackBuilder.astro';
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Claude Code Plugins Marketplace",
-      "description": "Search 244 agent skills with fuzzy search. Browse 259 plugins. Interactive tutorials and production workflows.",
+      "description": "Search 239 agent skills with fuzzy search. Browse 259 plugins. Interactive tutorials and production workflows.",
       "url": "https://claudecodeplugins.io",
       "potentialAction": {
         "@type": "SearchAction",
@@ -487,7 +644,7 @@ import StackBuilder from '../components/StackBuilder.astro';
       "applicationSuite": "Claude Code",
       "featureList": [
         "258 plugins across 18 categories",
-        "241 embedded Agent Skills",
+        "239 embedded Agent Skills",
         "Interactive Stack Builder",
         "Shareable plugin collections",
         "Cross-platform CLI tool",
@@ -503,17 +660,40 @@ import StackBuilder from '../components/StackBuilder.astro';
         <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p style="font-family: 'Poppins', Arial, sans-serif; font-size: 0.9rem; color: var(--brand-mid-gray); margin-top: -0.5rem; margin-bottom: 1.5rem; letter-spacing: 0.05em;">by intent solutions io</p>
         <p class="hero-subtitle">
-            Search 244 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready.
+            Search 239 skills embedded in 258 plugins. Learn with interactive tutorials. All open source and production-ready.
         </p>
+
+        <!-- Hero Search Bar -->
+        <div class="hero-search">
+            <div class="search-container">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input
+                    type="text"
+                    id="hero-search-input"
+                    placeholder="Search plugins and skills..."
+                    class="search-input"
+                    autocomplete="off"
+                />
+                <div class="search-toggle">
+                    <button class="toggle-btn active" data-type="all">All</button>
+                    <button class="toggle-btn" data-type="plugin">Plugins</button>
+                    <button class="toggle-btn" data-type="skill">Skills</button>
+                </div>
+            </div>
+            <div id="hero-search-results" class="search-results hidden"></div>
+        </div>
 
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stats-number">244</div>
+                <div class="stats-number">239</div>
                 <div class="stat-label">Searchable Skills</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">259</div>
-                <div class="stat-label">Total Plugins</div>
+                <div class="stats-number">258</div>
+                <div class="stat-label">Plugins</div>
             </div>
             <div class="stat-item">
                 <div class="stats-number">18</div>
@@ -556,7 +736,7 @@ import StackBuilder from '../components/StackBuilder.astro';
                     <span class="code-keyword">/audit</span> <span class="code-function">--comprehensive</span><br>
                     <span class="code-keyword">/deploy</span> <span class="code-function">--production</span><br>
                     <br>
-                    <span class="code-comment">// 240 AI Skills (embedded in plugins) activate automatically</span>
+                    <span class="code-comment">// 239 AI Skills (embedded in plugins) activate automatically</span>
                 </div>
             </div>
         </div>
@@ -571,7 +751,7 @@ import StackBuilder from '../components/StackBuilder.astro';
             <div class="feature-card">
                 <div class="feature-icon">🔍</div>
                 <h3>Skills Directory</h3>
-                <p>244 Agent Skills with instant fuzzy search, smart filters, and detailed documentation. Find exactly what you need in seconds.</p>
+                <p>239 Agent Skills with instant fuzzy search, smart filters, and detailed documentation. Find exactly what you need in seconds.</p>
                 <a href="/skills/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600; font-family: 'Poppins', sans-serif; display: inline-block; margin-top: 0.5rem;">Browse Skills →</a>
             </div>
             <div class="feature-card">
@@ -599,7 +779,7 @@ import StackBuilder from '../components/StackBuilder.astro';
                 <div class="feature-card" style="cursor: pointer; transition: transform 0.2s;">
                     <div class="feature-icon">🎯</div>
                     <h3 style="color: var(--brand-dark);">Skills</h3>
-                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Search 244 agent skills</p>
+                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Search 239 agent skills</p>
                 </div>
             </a>
             <a href="/learning/" style="text-decoration: none;">
@@ -713,8 +893,8 @@ import StackBuilder from '../components/StackBuilder.astro';
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
-                <h3>240 AI Skills</h3>
-                <p>Agent Skills embedded in plugins that activate automatically based on conversation context.</p>
+                <h3>239 Skills (Embedded in Plugins)</h3>
+                <p>Agent Skills embedded in 258 plugins activate automatically based on conversation context.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>
@@ -791,6 +971,85 @@ import StackBuilder from '../components/StackBuilder.astro';
                     }, 2000);
                 });
             });
+        }
+
+        // Hero Search Functionality
+        const searchInput = document.getElementById('hero-search-input');
+        const searchResults = document.getElementById('hero-search-results');
+        const toggleBtns = document.querySelectorAll('.toggle-btn');
+        const searchData = <%= JSON.stringify(searchIndex.items) %>;
+        let activeType = 'all';
+
+        // Toggle button handling
+        toggleBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeType = btn.dataset.type;
+                performSearch(searchInput.value);
+            });
+        });
+
+        // Search input handling
+        let searchTimeout;
+        searchInput.addEventListener('input', (e) => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                performSearch(e.target.value);
+            }, 200);
+        });
+
+        // Click outside to close results
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.hero-search')) {
+                searchResults.classList.add('hidden');
+            }
+        });
+
+        // Perform search
+        function performSearch(query) {
+            if (!query || query.length < 2) {
+                searchResults.classList.add('hidden');
+                return;
+            }
+
+            const lowerQuery = query.toLowerCase();
+            let results = searchData.filter(item => {
+                // Filter by type
+                if (activeType !== 'all' && item.type !== activeType) return false;
+
+                // Search in name, description, and searchText
+                return (
+                    (item.displayName || item.name || '').toLowerCase().includes(lowerQuery) ||
+                    (item.description || '').toLowerCase().includes(lowerQuery) ||
+                    (item.searchText || '').toLowerCase().includes(lowerQuery)
+                );
+            }).slice(0, 8); // Limit to 8 results
+
+            if (results.length === 0) {
+                searchResults.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--brand-mid-gray);">No results found</div>';
+                searchResults.classList.remove('hidden');
+                return;
+            }
+
+            searchResults.innerHTML = results.map(item => {
+                const href = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
+                const displayName = item.type === 'plugin' && item.displayName ? item.displayName : item.name;
+                const pluginInfo = item.type === 'skill' && item.parentPlugin
+                    ? `<div class="result-plugin-info">from ${item.parentPlugin.name || item.parentPlugin.slug}</div>`
+                    : '';
+
+                return `
+                    <a href="${href}" class="search-result-item">
+                        <span class="result-type-badge ${item.type}">${item.type}</span>
+                        <div class="result-name">${displayName}</div>
+                        <div class="result-description">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</div>
+                        ${pluginInfo}
+                    </a>
+                `;
+            }).join('');
+
+            searchResults.classList.remove('hidden');
         }
     </script>
 

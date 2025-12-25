@@ -2,11 +2,21 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 
-const pageTitle = 'Agent Skills Directory';
-const pageDescription = `Browse all ${skillsCatalog.count} agent skills across ${skillsCatalog.categories.length} categories`;
+const pageTitle = 'Skills (Embedded in Plugins)';
+const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in plugins across ${skillsCatalog.categories.length} categories`;
 
 // Get unique allowed tools for filtering
 const allTools = skillsCatalog.allowedToolsUsed;
+
+// Lightweight skills for client-side search (exclude heavy 'content' field)
+const lightweightSkills = skillsCatalog.skills.map(skill => ({
+  slug: skill.slug,
+  name: skill.name,
+  description: skill.description,
+  allowedTools: skill.allowedTools,
+  version: skill.version,
+  parentPlugin: skill.parentPlugin
+}));
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -188,6 +198,19 @@ const allTools = skillsCatalog.allowedToolsUsed;
       text-transform: capitalize;
     }
 
+    .skill-plugin-info {
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--brand-light-gray);
+      font-size: 0.8125rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .skill-plugin-info strong {
+      color: var(--brand-blue);
+      font-weight: 600;
+    }
+
     .no-results {
       text-align: center;
       padding: 4rem 2rem;
@@ -245,8 +268,8 @@ const allTools = skillsCatalog.allowedToolsUsed;
   <!-- Header -->
   <div class="skills-header">
     <div class="skills-header-content">
-      <h1 class="skills-title">Agent Skills Directory</h1>
-      <p class="skills-subtitle">{skillsCatalog.count} skills across {skillsCatalog.categories.length} categories</p>
+      <h1 class="skills-title">Skills (Embedded in Plugins)</h1>
+      <p class="skills-subtitle">{skillsCatalog.count} skills embedded in plugins across {skillsCatalog.categories.length} categories</p>
     </div>
   </div>
 
@@ -328,6 +351,13 @@ const allTools = skillsCatalog.allowedToolsUsed;
           <div class="skill-meta">
             <span class="skill-category">{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
             <span>{skill.version}</span>
+          </div>
+
+          <div class="skill-plugin-info">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: middle; margin-right: 4px;">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            </svg>
+            Provided by <strong>{skill.parentPlugin.name}</strong>
           </div>
         </a>
       ))}
@@ -444,7 +474,7 @@ const allTools = skillsCatalog.allowedToolsUsed;
     });
   </script>
 
-  <script define:vars={{ skills: skillsCatalog.skills }}>
+  <script define:vars={{ skills: lightweightSkills }}>
     window.__SKILLS_DATA__ = skills;
   </script>
 </BaseLayout>
