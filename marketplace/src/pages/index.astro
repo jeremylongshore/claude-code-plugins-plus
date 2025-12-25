@@ -18,6 +18,13 @@ import searchIndex from '../data/unified-search-index.json';
         html, body {
             overflow-x: hidden;
             max-width: 100%;
+            width: 100%;
+        }
+
+        /* Ensure all sections respect viewport width */
+        section {
+            max-width: 100vw;
+            overflow-x: hidden;
         }
 
         /* Animated background grain */
