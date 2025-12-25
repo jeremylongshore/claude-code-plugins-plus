@@ -7,6 +7,16 @@ const pageDescription = `Browse ${skillsCatalog.count} agent skills embedded in 
 
 // Get unique allowed tools for filtering
 const allTools = skillsCatalog.allowedToolsUsed;
+
+// Lightweight skills for client-side search (exclude heavy 'content' field)
+const lightweightSkills = skillsCatalog.skills.map(skill => ({
+  slug: skill.slug,
+  name: skill.name,
+  description: skill.description,
+  allowedTools: skill.allowedTools,
+  version: skill.version,
+  parentPlugin: skill.parentPlugin
+}));
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
@@ -464,7 +474,7 @@ const allTools = skillsCatalog.allowedToolsUsed;
     });
   </script>
 
-  <script define:vars={{ skills: skillsCatalog.skills }}>
+  <script define:vars={{ skills: lightweightSkills }}>
     window.__SKILLS_DATA__ = skills;
   </script>
 </BaseLayout>
