@@ -9,6 +9,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 <BaseLayout title={pageTitle} description={pageDescription}>
   <style>
     /* Explorer Page Styles */
+
+    /* Prevent horizontal scroll on mobile */
+    :global(section) {
+      max-width: 100vw;
+      overflow-x: hidden;
+    }
+
     .explorer-hero {
       background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
       color: white;

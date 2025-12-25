@@ -615,6 +615,9 @@ import searchIndex from '../data/unified-search-index.json';
             .install-command {
                 font-size: 0.75rem;
                 word-break: break-all;
+                overflow-wrap: break-word;
+                white-space: pre-wrap; /* Allow wrapping while preserving structure */
+                max-width: 100%; /* Constrain to parent width */
             }
 
             /* Mobile search toggle fixes - iOS Safari 44px touch targets */
