@@ -959,7 +959,7 @@ import searchIndex from '../data/unified-search-index.json';
     </section>
 
     <!-- JavaScript for interactions -->
-    <script is:inline>
+    <script is:inline define:vars={{ searchItems: searchIndex.items }}>
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1016,7 +1016,7 @@ import searchIndex from '../data/unified-search-index.json';
         const searchInput = document.getElementById('hero-search-input');
         const searchResults = document.getElementById('hero-search-results');
         const toggleBtns = document.querySelectorAll('.toggle-btn');
-        const searchData = <%= JSON.stringify(searchIndex.items) %>;
+        const searchData = searchItems; // Passed via define:vars
         let activeType = 'all';
 
         // Toggle button handling
