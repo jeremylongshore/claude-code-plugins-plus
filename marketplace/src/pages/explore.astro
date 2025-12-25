@@ -415,7 +415,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             {item.type === 'skill' && item.parentPlugin && (
               <div class="parent-plugin">
                 <span>📦</span>
-                <span>Provided by {item.parentPlugin.name}</span>
+                <span>Part of plugin {item.parentPlugin.name}</span>
               </div>
             )}
             <div class="result-category">{item.category.replace(/-/g, ' ')}</div>
@@ -503,7 +503,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         const href = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
         const displayName = item.type === 'plugin' && item.displayName ? item.displayName : item.name;
         const parentPlugin = item.type === 'skill' && item.parentPlugin
-          ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${item.parentPlugin.name}</span></div>`
+          ? `<div class="parent-plugin"><span>📦</span><span>Part of plugin ${item.parentPlugin.name}</span></div>`
           : '';
         const tools = item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0
           ? `<div class="result-tools">

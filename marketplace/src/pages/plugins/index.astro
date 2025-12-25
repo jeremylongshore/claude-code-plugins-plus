@@ -1,0 +1,149 @@
+---
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Load plugin catalog
+const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
+const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
+
+const pageTitle = 'Browse All Plugins';
+const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claude Code across ${catalog.categories.length} categories`;
+
+// Group by category
+const byCategory = catalog.plugins.reduce((acc: any, plugin: any) => {
+  if (!acc[plugin.category]) acc[plugin.category] = [];
+  acc[plugin.category].push(plugin);
+  return acc;
+}, {});
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <div class="plugins-directory">
+    <div class="header">
+      <h1>{pageTitle}</h1>
+      <p class="subtitle">{pageDescription}</p>
+      <p class="explore-link">
+        <a href="/explore/">→ Use advanced search with filters</a>
+      </p>
+    </div>
+
+    <div class="categories">
+      {Object.entries(byCategory).map(([category, plugins]: [string, any]) => (
+        <div class="category-section">
+          <h2>{category.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</h2>
+          <div class="plugins-grid">
+            {plugins.map((plugin: any) => (
+              <a href={`/plugins/${plugin.name}/`} class="plugin-card">
+                <h3>{plugin.name}</h3>
+                <p>{plugin.description}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <style>
+    .plugins-directory {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: var(--brand-mid-gray);
+      margin-bottom: 1.5rem;
+    }
+
+    .explore-link a {
+      color: var(--brand-orange);
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .explore-link a:hover {
+      text-decoration: underline;
+    }
+
+    .category-section {
+      margin-bottom: 3rem;
+    }
+
+    .category-section h2 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--brand-orange);
+    }
+
+    .plugins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .plugin-card {
+      display: block;
+      padding: 1.5rem;
+      background: white;
+      border: 2px solid var(--brand-light-gray);
+      border-radius: 12px;
+      text-decoration: none;
+      transition: all 0.3s var(--transition-smooth);
+    }
+
+    .plugin-card:hover {
+      border-color: var(--brand-orange);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(217, 119, 87, 0.12);
+    }
+
+    .plugin-card h3 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .plugin-card p {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    @media (max-width: 768px) {
+      .plugins-directory {
+        padding: 2rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .plugins-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</BaseLayout>
