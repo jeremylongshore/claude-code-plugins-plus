@@ -526,3 +526,91 @@ jobs:
           name: test-videos
           path: marketplace/test-results/**/video.webm
           retention-days: 7
+
+  # CLI Smoke Tests (EPIC D - D3)
+  cli-smoke-tests:
+    runs-on: ubuntu-latest
+    needs: marketplace-validation
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install CLI dependencies
+        run: |
+          cd packages/cli
+          pnpm install
+
+      - name: Build CLI
+        run: |
+          cd packages/cli
+          pnpm build
+
+      - name: Verify bin entrypoint is executable
+        run: |
+          if [ ! -x packages/cli/dist/index.js ]; then
+            echo "❌ CLI bin entrypoint is not executable"
+            exit 1
+          fi
+          echo "✅ CLI bin entrypoint is executable"
+
+      - name: Test CLI --help
+        run: |
+          cd packages/cli
+          node dist/index.js --help
+          if [ $? -eq 0 ]; then
+            echo "✅ CLI --help works"
+          else
+            echo "❌ CLI --help failed"
+            exit 1
+          fi
+
+      - name: Test CLI --version
+        run: |
+          cd packages/cli
+          node dist/index.js --version
+          if [ $? -eq 0 ]; then
+            echo "✅ CLI --version works"
+          else
+            echo "❌ CLI --version failed"
+            exit 1
+          fi
+
+      - name: Test CLI doctor command
+        run: |
+          cd packages/cli
+          node dist/index.js doctor --help
+          if [ $? -eq 0 ]; then
+            echo "✅ CLI doctor --help works"
+          else
+            echo "❌ CLI doctor --help failed"
+            exit 1
+          fi
+
+      - name: Verify no workspace dependencies
+        run: |
+          if grep -q "workspace:" packages/cli/package.json; then
+            echo "❌ CLI has workspace: dependencies - will break at runtime!"
+            exit 1
+          fi
+          echo "✅ CLI has no workspace dependencies"
+
+      - name: Test npm pack
+        run: |
+          cd packages/cli
+          npm pack
+          if [ $? -eq 0 ]; then
+            echo "✅ npm pack works"
+            ls -lh *.tgz
+          else
+            echo "❌ npm pack failed"
+            exit 1
+          fi
