@@ -239,7 +239,7 @@ import searchIndex from '../data/unified-search-index.json';
 
         .search-input {
             width: 100%;
-            padding: 1.25rem 1.25rem 1.25rem 3.5rem;
+            padding: 1.25rem 15rem 1.25rem 3.5rem;
             border: none;
             background: transparent;
             font-size: 1.1rem;
@@ -605,6 +605,14 @@ import searchIndex from '../data/unified-search-index.json';
                 gap: 0.375rem;
                 padding: 0.375rem;
             }
+
+            .search-input {
+                padding-right: 16rem;
+            }
+
+            .hero-cta-group {
+                gap: 1rem;
+            }
         }
     </style>
 
@@ -712,6 +720,13 @@ import searchIndex from '../data/unified-search-index.json';
                 <div class="stats-number">18</div>
                 <div class="stat-label">Categories</div>
             </div>
+        </div>
+
+        <!-- Installation Instructions -->
+        <div class="install-box" style="max-width: 600px; margin: 2rem auto; padding: 1.5rem; background: white; border: 2px solid var(--brand-light-gray); border-radius: 12px;">
+            <h3 style="margin: 0 0 0.75rem 0; font-size: 0.875rem; font-weight: 600; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.05em;">Quick Install</h3>
+            <pre class="install-command" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins
+/plugin install [plugin-name]@claude-code-plugins-plus</code></pre>
         </div>
 
         <div class="hero-cta-group">
