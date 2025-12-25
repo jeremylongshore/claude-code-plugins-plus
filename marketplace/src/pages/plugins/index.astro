@@ -7,15 +7,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
 const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
 
-const pageTitle = 'Browse All Plugins';
-const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claude Code across ${catalog.categories.length} categories`;
-
 // Group by category
 const byCategory = catalog.plugins.reduce((acc: any, plugin: any) => {
   if (!acc[plugin.category]) acc[plugin.category] = [];
   acc[plugin.category].push(plugin);
   return acc;
 }, {});
+
+const pageTitle = 'Browse All Plugins';
+const pageDescription = `Explore all ${catalog.plugins.length} plugins for Claude Code across ${Object.keys(byCategory).length} categories`;
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription}>
