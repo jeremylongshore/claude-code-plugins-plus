@@ -276,7 +276,7 @@ import searchIndex from '../data/unified-search-index.json';
             padding: 0.25rem;
             border-radius: 8px;
             z-index: 10;
-            pointer-events: auto;
+            pointer-events: none; /* Allow clicks to pass through container */
         }
 
         /* Show toggle buttons on larger screens */
@@ -296,6 +296,7 @@ import searchIndex from '../data/unified-search-index.json';
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.2s ease;
+            pointer-events: auto; /* Re-enable clicks on buttons */
         }
 
         .toggle-btn:hover {

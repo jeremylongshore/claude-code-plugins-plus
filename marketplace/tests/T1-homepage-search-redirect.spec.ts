@@ -48,10 +48,10 @@ test.describe('Homepage Search Redirect', () => {
     // Verify navigation to /skills/ page
     await expect(page).toHaveURL(/\/skills\//);
 
-    // Take screenshot of skills page
+    // Take screenshot of skills page (viewport only to avoid size limit)
     await page.screenshot({
       path: 'test-results/screenshots/T1-skills-page.png',
-      fullPage: true
+      fullPage: false
     });
   });
 

@@ -31,9 +31,15 @@ test.describe('Install CTA Tests', () => {
     });
   });
 
-  test('should allow clicking install command to copy', async ({ page, context }) => {
-    // Grant clipboard permissions
-    await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  test('should allow clicking install command to copy', async ({ page, context, browserName }) => {
+    // Grant clipboard permissions (skip for webkit as it doesn't support clipboard-write)
+    if (browserName !== 'webkit') {
+      try {
+        await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+      } catch (e) {
+        // Ignore permission errors - test will still verify click behavior
+      }
+    }
 
     // Navigate to homepage
     await page.goto('/');
