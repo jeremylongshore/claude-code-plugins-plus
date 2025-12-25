@@ -239,12 +239,19 @@ import searchIndex from '../data/unified-search-index.json';
 
         .search-input {
             width: 100%;
-            padding: 1.25rem 15rem 1.25rem 3.5rem;
+            padding: 1.25rem 3rem 1.25rem 3.5rem; /* Reduced right padding from 15rem to 3rem */
             border: none;
             background: transparent;
             font-size: 1.1rem;
             color: var(--brand-dark);
             outline: none;
+        }
+
+        /* Adjust padding on larger screens where toggle buttons fit */
+        @media (min-width: 640px) {
+            .search-input {
+                padding-right: 15rem;
+            }
         }
 
         .search-input::placeholder {
@@ -256,13 +263,20 @@ import searchIndex from '../data/unified-search-index.json';
             right: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            display: flex;
+            display: none; /* Hidden on mobile by default */
             gap: 0.5rem;
             background: var(--brand-light-gray);
             padding: 0.25rem;
             border-radius: 8px;
             z-index: 10;
             pointer-events: auto;
+        }
+
+        /* Show toggle buttons on larger screens */
+        @media (min-width: 640px) {
+            .search-toggle {
+                display: flex;
+            }
         }
 
         .toggle-btn {
@@ -605,10 +619,6 @@ import searchIndex from '../data/unified-search-index.json';
             .search-toggle {
                 gap: 0.375rem;
                 padding: 0.375rem;
-            }
-
-            .search-input {
-                padding-right: 16rem;
             }
 
             .hero-cta-group {
