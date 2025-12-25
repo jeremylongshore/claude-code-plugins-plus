@@ -1,5 +1,5 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 
 const seo = {
   title: "Skill Enhancers - AI Automation Plugins for Claude Code Tools",
@@ -132,7 +132,7 @@ const collectionSchema = {
 };
 ---
 
-<Layout title={seo.title} description={seo.description}>
+<BaseLayout title={seo.title} description={seo.description}>
   <!-- SEO Meta Tags -->
   <link rel="canonical" href={seo.canonical} slot="head" />
   <meta name="keywords" content={seo.keywords} slot="head" />
@@ -657,7 +657,7 @@ export GITHUB_DEFAULT_REPO=owner/repo</code></pre>
       </div>
     </div>
   </section>
-</Layout>
+</BaseLayout>
 
 <style>
   /* Hero Section */

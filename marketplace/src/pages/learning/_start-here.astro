@@ -1,5 +1,5 @@
 ---
-import Layout from '../../layouts/Layout.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -31,7 +31,7 @@ const prevGuide = currentGuide > 0 ? guides[currentGuide - 1] : null;
 const nextGuide = currentGuide < guides.length - 1 ? guides[currentGuide + 1] : null;
 ---
 
-<Layout title={title} description={description}>
+<BaseLayout title={title} description={description}>
   <div class="guide-page">
     <div class="guide-container">
       <!-- Progress Bar -->
@@ -283,7 +283,7 @@ User: "I can inspect all 5 reports. Phase 4 ran real script. Trust verified."</c
       </nav>
     </div>
   </div>
-</Layout>
+</BaseLayout>
 
 <style>
   .guide-page {

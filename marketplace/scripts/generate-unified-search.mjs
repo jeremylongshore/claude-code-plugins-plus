@@ -29,7 +29,8 @@ const plugins = catalogData.plugins.map(plugin => ({
   type: 'plugin',
   id: plugin.slug,
   slug: plugin.slug,
-  name: plugin.displayName || plugin.name,
+  name: plugin.name,  // FULL plugin name (e.g., "004-jeremy-google-cloud-agent-sdk")
+  displayName: plugin.displayName || plugin.name,  // Display name for UI
   description: plugin.description,
   category: plugin.category,
   tags: plugin.tags || [],
