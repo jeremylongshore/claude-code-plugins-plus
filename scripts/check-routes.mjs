@@ -71,14 +71,13 @@ function generateExpectedRoutes() {
   routes.add('/acceptable-use');
 
   // Learning lab (if exists)
+  // Note: getting-started and built-system-summary were removed in PR #193 due to syntax errors
   const learningGuides = [
-    'getting-started',
     'pattern-explained',
     'building-your-own',
     'debugging-tips',
     'orchestration-pattern',
     'visual-map',
-    'built-system-summary',
   ];
 
   // Add learning routes only if dist has learning directory
