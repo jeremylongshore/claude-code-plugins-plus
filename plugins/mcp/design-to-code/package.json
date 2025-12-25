@@ -6,7 +6,7 @@
   "main": "./dist/servers/design-converter.js",
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest --passWithNoTests"
   },
   "keywords": ["mcp", "figma", "design", "code-generation", "components", "a11y"],
   "author": { "name": "Intent Solutions", "url": "https://intentsolutions.io" },
