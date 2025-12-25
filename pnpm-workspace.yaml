@@ -3,3 +3,4 @@ packages:
   - 'marketplace'
   - 'packages/cli'
   - 'packages/analytics-daemon'
+  - 'packages/analytics-dashboard'

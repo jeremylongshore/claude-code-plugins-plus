@@ -121,7 +121,7 @@ const triggers = extractTriggers(skill.content);
     <h2 class="text-lg font-semibold text-gray-900 mb-3">Part of Plugin</h2>
     <div class="flex items-start justify-between">
       <div>
-        <h3 class="text-xl font-semibold text-blue-600 mb-1">
+        <h3 class="text-xl font-semibold text-orange-600 mb-1">
           <a href={`/plugins/${skill.parentPlugin.name}/`} class="hover:underline">
             {skill.parentPlugin.name}
           </a>
@@ -136,7 +136,7 @@ const triggers = extractTriggers(skill.content);
       </div>
       <a
         href={`/plugins/${skill.parentPlugin.name}/`}
-        class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors"
       >
         View Plugin
       </a>
@@ -249,7 +249,7 @@ const triggers = extractTriggers(skill.content);
   }
 
   .skill-content a {
-    color: #2563eb;
+    color: var(--brand-orange);
     text-decoration: underline;
   }
 
