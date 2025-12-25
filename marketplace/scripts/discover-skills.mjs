@@ -16,6 +16,7 @@ const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..', '..');
 const PLUGINS_DIR = join(ROOT_DIR, 'plugins');
 const OUTPUT_FILE = join(ROOT_DIR, 'marketplace', 'src', 'data', 'skills-catalog.json');
+const MARKETPLACE_CATALOG = join(ROOT_DIR, '.claude-plugin', 'marketplace.extended.json');
 
 /**
  * Parse YAML frontmatter from markdown content
@@ -279,27 +280,56 @@ function main() {
   console.log(`Plugins directory: ${PLUGINS_DIR}`);
   console.log(`Output file: ${OUTPUT_FILE}\n`);
 
+  // Load marketplace catalog to get valid plugin names
+  let marketplacePluginNames = new Set();
+  try {
+    const marketplaceCatalog = JSON.parse(readFileSync(MARKETPLACE_CATALOG, 'utf-8'));
+    marketplacePluginNames = new Set(marketplaceCatalog.plugins.map(p => p.name));
+    console.log(`📦 Loaded marketplace catalog: ${marketplacePluginNames.size} plugins\n`);
+  } catch (error) {
+    console.warn(`⚠️  Could not load marketplace catalog: ${error.message}`);
+    console.warn(`    Proceeding without marketplace filtering...\n`);
+  }
+
   // Find all SKILL.md files
   const skillFiles = findSkillFiles(PLUGINS_DIR);
   console.log(`Found ${skillFiles.length} SKILL.md files\n`);
 
   // Process each skill file
   const skills = [];
+  const orphanedSkills = [];
   let successCount = 0;
   let failCount = 0;
 
   for (const filePath of skillFiles) {
     const skill = processSkillFile(filePath);
     if (skill) {
-      skills.push(skill);
-      successCount++;
+      // Only include skills whose parent plugin is in the marketplace
+      if (marketplacePluginNames.size === 0 || marketplacePluginNames.has(skill.parentPlugin.name)) {
+        skills.push(skill);
+        successCount++;
+      } else {
+        orphanedSkills.push({
+          skill: skill.name,
+          parentPlugin: skill.parentPlugin.name,
+          filePath: skill.filePath
+        });
+      }
     } else {
       failCount++;
     }
   }
 
   console.log(`✅ Successfully processed: ${successCount}`);
-  console.log(`❌ Failed to process: ${failCount}\n`);
+  console.log(`❌ Failed to process: ${failCount}`);
+  if (orphanedSkills.length > 0) {
+    console.log(`⚠️  Orphaned skills (parent not in marketplace): ${orphanedSkills.length}`);
+    orphanedSkills.forEach(({ skill, parentPlugin, filePath }) => {
+      console.log(`    • ${skill} (parent: ${parentPlugin})`);
+      console.log(`      ${filePath}`);
+    });
+  }
+  console.log('');
 
   // Sort skills by name
   skills.sort((a, b) => a.name.localeCompare(b.name));

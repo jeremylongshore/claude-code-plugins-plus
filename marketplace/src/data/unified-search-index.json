@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2025-12-25T01:31:21.565Z",
+    "generated": "2025-12-25T01:54:05.767Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
     "totalPlugins": 258,
-    "totalSkills": 244,
-    "totalItems": 502,
+    "totalSkills": 239,
+    "totalItems": 497,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -25,8 +25,6 @@
       "examples",
       "finance",
       "fullstack",
-      "jeremy-google-adk",
-      "jeremy-vertex-ai",
       "packages",
       "performance",
       "productivity",
@@ -4244,27 +4242,6 @@
     },
     {
       "type": "skill",
-      "id": "adk-agent-builder",
-      "slug": "adk-agent-builder",
-      "name": "adk-agent-builder",
-      "description": "Build production-ready AI agents using Google's Agent Development Kit",
-      "category": "jeremy-google-adk",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Bash"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-google-adk",
-        "category": "jeremy-google-adk"
-      },
-      "searchText": "adk-agent-builder build production-ready ai agents using google's agent development kit jeremy-google-adk read write edit grep bash"
-    },
-    {
-      "type": "skill",
       "id": "adk-deployment-specialist",
       "slug": "adk-deployment-specialist",
       "name": "adk-deployment-specialist",
@@ -4284,28 +4261,6 @@
         "category": "ai-ml"
       },
       "searchText": "adk-deployment-specialist deploy and orchestrate vertex ai adk agents using a2a protocol. manages ai-ml read write edit grep glob bash"
-    },
-    {
-      "type": "skill",
-      "id": "adk-engineer",
-      "slug": "adk-engineer",
-      "name": "adk-engineer",
-      "description": "Software engineer specializing in creating production-ready ADK agents with best practices, code structure, testing, and deployment automation. Use when asked to \"build ADK agent\", \"create agent code\", or \"engineer ADK application\".",
-      "category": "ai-ml",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Glob",
-        "Bash"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-adk-software-engineer",
-        "category": "ai-ml"
-      },
-      "searchText": "adk-engineer software engineer specializing in creating production-ready adk agents with best practices, code structure, testing, and deployment automation. use when asked to \"build adk agent\", \"create agent code\", or \"engineer adk application\". ai-ml read write edit grep glob bash"
     },
     {
       "type": "skill",
@@ -4770,21 +4725,6 @@
         "category": "security"
       },
       "searchText": "auditing-access-control audit access control implementations for security vulnerabilities and misconfigurations. use when reviewing authentication and authorization. trigger with 'audit access control', 'check permissions', or 'validate authorization'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
-    },
-    {
-      "type": "skill",
-      "id": "auditing-wallet-security",
-      "slug": "auditing-wallet-security",
-      "name": "auditing-wallet-security",
-      "description": "Audit crypto wallet security including private key management and transaction signing. Use when auditing wallet security practices. Trigger with phrases like \"audit wallet\", \"check security\", or \"verify signatures\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:wallet-*) license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
-      "category": "crypto",
-      "allowedTools": [],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "wallet-security-auditor",
-        "category": "crypto"
-      },
-      "searchText": "auditing-wallet-security audit crypto wallet security including private key management and transaction signing. use when auditing wallet security practices. trigger with phrases like \"audit wallet\", \"check security\", or \"verify signatures\". allowed-tools: read, write, edit, grep, glob, bash(crypto:wallet-*) license: mit author: jeremy longshore <jeremy@intentsolutions.io> crypto "
     },
     {
       "type": "skill",
@@ -5841,28 +5781,6 @@
         "category": "security"
       },
       "searchText": "finding-security-misconfigurations identify security misconfigurations in infrastructure-as-code, application settings, and system configurations. use when you need to audit terraform/cloudformation templates, check application config files, validate system security settings, or ensure compliance with security best practices. trigger with phrases like \"find security misconfigurations\", \"audit infrastructure security\", \"check config security\", or \"scan for misconfigured settings\". allowed-tools: version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> security "
-    },
-    {
-      "type": "skill",
-      "id": "firebase-vertex-ai",
-      "slug": "firebase-vertex-ai",
-      "name": "firebase-vertex-ai",
-      "description": "Firebase platform expert with Vertex AI Gemini integration for Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features. Use when asked to \"setup firebase\", \"deploy to firebase\", or \"integrate vertex ai with firebase\".",
-      "category": "community",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Glob",
-        "Bash"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-firebase",
-        "category": "community"
-      },
-      "searchText": "firebase-vertex-ai firebase platform expert with vertex ai gemini integration for authentication, firestore, storage, functions, hosting, and ai-powered features. use when asked to \"setup firebase\", \"deploy to firebase\", or \"integrate vertex ai with firebase\". community read write edit grep glob bash"
     },
     {
       "type": "skill",
@@ -8588,27 +8506,6 @@
         "category": "productivity"
       },
       "searchText": "vertex ai media master automatic activation for all google vertex ai multimodal operations - use when appropriate context detected. trigger with relevant phrases based on skill purpose. productivity read write edit grep glob bash(general:*) bash(util:*)"
-    },
-    {
-      "type": "skill",
-      "id": "vertex-agent-builder",
-      "slug": "vertex-agent-builder",
-      "name": "vertex-agent-builder",
-      "description": "Build and deploy production-ready generative AI agents using Vertex AI,",
-      "category": "jeremy-vertex-ai",
-      "allowedTools": [
-        "Read",
-        "Write",
-        "Edit",
-        "Grep",
-        "Bash"
-      ],
-      "version": "1.0.0",
-      "parentPlugin": {
-        "name": "jeremy-vertex-ai",
-        "category": "jeremy-vertex-ai"
-      },
-      "searchText": "vertex-agent-builder build and deploy production-ready generative ai agents using vertex ai, jeremy-vertex-ai read write edit grep bash"
     },
     {
       "type": "skill",
