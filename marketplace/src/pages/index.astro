@@ -746,8 +746,10 @@ import searchIndex from '../data/unified-search-index.json';
         <!-- Installation Instructions -->
         <div class="install-box" style="max-width: 600px; margin: 2rem auto; padding: 1.5rem; background: white; border: 2px solid var(--brand-light-gray); border-radius: 12px;">
             <h3 style="margin: 0 0 0.75rem 0; font-size: 0.875rem; font-weight: 600; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.05em;">Quick Install</h3>
-            <pre class="install-command" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins
+            <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins\n/plugin install [plugin-name]@claude-code-plugins-plus" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install [plugin-name]@claude-code-plugins-plus</code></pre>
+            <h3 style="margin: 1.25rem 0 0.75rem 0; font-size: 0.875rem; font-weight: 600; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.05em;">CLI Install (Terminal)</h3>
+            <pre class="install-command" data-copy="npx @claude-code-plugins/ccp install [plugin-name]@claude-code-plugins-plus" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>npx @claude-code-plugins/ccp install [plugin-name]@claude-code-plugins-plus</code></pre>
         </div>
 
         <div class="hero-cta-group">
@@ -761,8 +763,8 @@ import searchIndex from '../data/unified-search-index.json';
         </div>
 
         <div class="install-box">
-            <div class="install-label">Quick Install</div>
-            <div class="install-command">/plugin marketplace add jeremylongshore/claude-code-plugins</div>
+            <div class="install-label">CLI Install (Terminal)</div>
+            <div class="install-command" data-copy="npx @claude-code-plugins/ccp install [plugin-name]@claude-code-plugins-plus">npx @claude-code-plugins/ccp install [plugin-name]@claude-code-plugins-plus</div>
         </div>
 
         <div class="hero-decoration">
@@ -995,11 +997,10 @@ import searchIndex from '../data/unified-search-index.json';
             observer.observe(el);
         });
 
-        // Copy install command on click
-        const installCmd = document.querySelector('.install-command');
-        if (installCmd) {
-            installCmd.addEventListener('click', function() {
-                const text = this.textContent;
+        // Copy install command(s) on click
+        document.querySelectorAll('.install-command').forEach((el) => {
+            el.addEventListener('click', function() {
+                const text = this.dataset.copy || this.textContent;
                 navigator.clipboard.writeText(text).then(() => {
                     const original = this.textContent;
                     this.textContent = '✓ Copied to clipboard!';
@@ -1010,7 +1011,7 @@ import searchIndex from '../data/unified-search-index.json';
                     }, 2000);
                 });
             });
-        }
+        });
 
         // Hero Search Functionality
         const searchInput = document.getElementById('hero-search-input');
