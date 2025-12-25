@@ -109,23 +109,88 @@ def validate_agent_frontmatter(frontmatter, file_path):
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: check-frontmatter.py <markdown-file>")
+    args = sys.argv[1:]
+
+    strict = False
+    if '--strict' in args:
+        strict = True
+        args = [a for a in args if a != '--strict']
+
+    if len(args) == 0:
+        candidates = []
+        for pattern in ('plugins/**/commands/*.md', 'plugins/**/agents/*.md'):
+            candidates.extend(Path('.').glob(pattern))
+
+        if not candidates:
+            print("⚠️  No command/agent markdown files found under plugins/.")
+            sys.exit(0)
+
+        total = 0
+        warnings = 0
+        errors_count = 0
+        sample_errors = []
+
+        for file_path in sorted(set(candidates)):
+            total += 1
+
+            frontmatter, error = extract_frontmatter(file_path)
+            if error:
+                if strict:
+                    print(f"Error in {file_path}: {error}")
+                    errors_count += 1
+                else:
+                    print(f"⚠️  {file_path}: {error}")
+                    warnings += 1
+                continue
+
+            if '/commands/' in str(file_path):
+                errors = validate_command_frontmatter(frontmatter, file_path)
+                file_type = "command"
+            elif '/agents/' in str(file_path):
+                errors = validate_agent_frontmatter(frontmatter, file_path)
+                file_type = "agent"
+            else:
+                continue
+
+            if errors:
+                errors_count += 1
+                if len(sample_errors) < 25:
+                    sample_errors.append((file_path, file_type, errors))
+
+        print("\nFrontmatter validation summary:")
+        print(f"  Files checked: {total}")
+        print(f"  Warnings:      {warnings}")
+        print(f"  Errors:        {errors_count}")
+
+        if sample_errors:
+            print("\nSample validation errors (first 25):")
+            for file_path, file_type, errors in sample_errors:
+                print(f"- {file_path} ({file_type}):")
+                for err in errors:
+                    print(f"  - {err}")
+
+        if strict and errors_count > 0:
+            sys.exit(1)
+
+        # Non-strict mode is a CI smoke check: report but do not fail the build.
+        sys.exit(0)
+
+    if len(args) != 1:
+        print("Usage: validate-frontmatter.py [--strict] <markdown-file>")
+        print("       validate-frontmatter.py [--strict]   # validates all plugins/**/commands/*.md and plugins/**/agents/*.md")
         sys.exit(1)
 
-    file_path = Path(sys.argv[1])
+    file_path = Path(args[0])
 
     if not file_path.exists():
         print(f"Error: File not found: {file_path}")
         sys.exit(1)
 
-    # Extract frontmatter
     frontmatter, error = extract_frontmatter(file_path)
     if error:
         print(f"Error in {file_path}: {error}")
         sys.exit(1)
 
-    # Determine file type and validate
     if '/commands/' in str(file_path):
         errors = validate_command_frontmatter(frontmatter, file_path)
         file_type = "command"
@@ -136,11 +201,10 @@ def main():
         print(f"Warning: Cannot determine file type for {file_path}")
         sys.exit(0)
 
-    # Report results
     if errors:
         print(f"Validation errors in {file_path} ({file_type}):")
-        for error in errors:
-            print(f"  - {error}")
+        for err in errors:
+            print(f"  - {err}")
         sys.exit(1)
     else:
         print(f"✅ Valid {file_type} frontmatter: {file_path}")
