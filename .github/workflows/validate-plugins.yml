@@ -463,3 +463,66 @@ jobs:
 
       - name: Performance budget check
         run: node scripts/check-performance.mjs
+
+  # Playwright E2E Tests (PROOF GATE)
+  playwright-tests:
+    runs-on: ubuntu-latest
+    needs: marketplace-validation
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install --ignore-scripts
+
+      - name: Install Playwright
+        run: |
+          cd marketplace
+          npm install -D @playwright/test
+
+      - name: Install Playwright browsers
+        run: |
+          cd marketplace
+          npx playwright install --with-deps chromium webkit
+
+      - name: Build marketplace
+        run: |
+          cd marketplace
+          npm run build
+
+      - name: Run Playwright tests
+        run: |
+          cd marketplace
+          npx playwright test --reporter=html,github
+        env:
+          CI: true
+
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: marketplace/playwright-report/
+          retention-days: 30
+
+      - name: Upload test screenshots
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-screenshots
+          path: marketplace/test-results/screenshots/
+          retention-days: 30
+
+      - name: Upload test videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-videos
+          path: marketplace/test-results/**/video.webm
+          retention-days: 7
