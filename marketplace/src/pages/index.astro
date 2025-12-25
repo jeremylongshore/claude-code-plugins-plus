@@ -2,7 +2,6 @@
 // Claude Code Plugins Marketplace - Homepage
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
-import searchIndex from '../data/unified-search-index.json';
 ---
 
 <BaseLayout
@@ -725,7 +724,6 @@ import searchIndex from '../data/unified-search-index.json';
                     <button class="toggle-btn" data-type="skill">Skills</button>
                 </div>
             </div>
-            <div id="hero-search-results" class="search-results hidden"></div>
         </div>
 
         <div class="stats-bar">
@@ -961,7 +959,7 @@ import searchIndex from '../data/unified-search-index.json';
     </section>
 
     <!-- JavaScript for interactions -->
-    <script is:inline define:vars={{ searchItems: searchIndex.items }}>
+    <script is:inline>
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -1013,11 +1011,9 @@ import searchIndex from '../data/unified-search-index.json';
             });
         });
 
-        // Hero Search Functionality
+        // Homepage search is a redirect surface (search happens on /explore)
         const searchInput = document.getElementById('hero-search-input');
-        const searchResults = document.getElementById('hero-search-results');
         const toggleBtns = document.querySelectorAll('.toggle-btn');
-        const searchData = searchItems; // Passed via define:vars
         let activeType = 'all';
 
         // Toggle button handling
@@ -1026,70 +1022,22 @@ import searchIndex from '../data/unified-search-index.json';
                 toggleBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 activeType = btn.dataset.type;
-                performSearch(searchInput.value);
+
+                const url = new URL('/explore', window.location.origin);
+                if (activeType && activeType !== 'all') url.searchParams.set('type', activeType);
+                window.location.assign(url.toString());
             });
         });
 
-        // Search input handling
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                performSearch(e.target.value);
-            }, 200);
-        });
+        if (searchInput) {
+            const redirectToExplore = () => {
+                const url = new URL('/explore', window.location.origin);
+                if (activeType && activeType !== 'all') url.searchParams.set('type', activeType);
+                window.location.assign(url.toString());
+            };
 
-        // Click outside to close results
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.hero-search')) {
-                searchResults.classList.add('hidden');
-            }
-        });
-
-        // Perform search
-        function performSearch(query) {
-            if (!query || query.length < 2) {
-                searchResults.classList.add('hidden');
-                return;
-            }
-
-            const lowerQuery = query.toLowerCase();
-            let results = searchData.filter(item => {
-                // Filter by type
-                if (activeType !== 'all' && item.type !== activeType) return false;
-
-                // Search in name, description, and searchText
-                return (
-                    (item.displayName || item.name || '').toLowerCase().includes(lowerQuery) ||
-                    (item.description || '').toLowerCase().includes(lowerQuery) ||
-                    (item.searchText || '').toLowerCase().includes(lowerQuery)
-                );
-            }).slice(0, 8); // Limit to 8 results
-
-            if (results.length === 0) {
-                searchResults.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: var(--brand-mid-gray);">No results found</div>';
-                searchResults.classList.remove('hidden');
-                return;
-            }
-
-            searchResults.innerHTML = results.map(item => {
-                const href = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
-                const displayName = item.type === 'plugin' && item.displayName ? item.displayName : item.name;
-                const pluginInfo = item.type === 'skill' && item.parentPlugin
-                    ? `<div class="result-plugin-info">from ${item.parentPlugin.name || item.parentPlugin.slug}</div>`
-                    : '';
-
-                return `
-                    <a href="${href}" class="search-result-item">
-                        <span class="result-type-badge ${item.type}">${item.type}</span>
-                        <div class="result-name">${displayName}</div>
-                        <div class="result-description">${item.description.substring(0, 120)}${item.description.length > 120 ? '...' : ''}</div>
-                        ${pluginInfo}
-                    </a>
-                `;
-            }).join('');
-
-            searchResults.classList.remove('hidden');
+            searchInput.addEventListener('focus', redirectToExplore);
+            searchInput.addEventListener('click', redirectToExplore);
         }
     </script>
 

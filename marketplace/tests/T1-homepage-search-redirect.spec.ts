@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Homepage Search Redirect', () => {
-  test('should navigate to /explore when search input is focused', async ({ page }) => {
+  test('should navigate to /explore when search input is focused (desktop)', async ({ page }) => {
     // Load homepage
     await page.goto('/');
 
@@ -19,21 +19,51 @@ test.describe('Homepage Search Redirect', () => {
     const searchInput = page.locator('#hero-search-input');
     await expect(searchInput).toBeVisible();
 
-    // Click on search input (force click as toggle buttons may overlap)
-    await searchInput.click({ force: true });
+    // Redirect happens on focus/click
+    await Promise.all([
+      page.waitForURL(/\/explore/),
+      searchInput.click({ force: true }),
+    ]);
 
-    // Type in search input
-    await searchInput.fill('prettier');
-
-    // Verify search results appear on homepage (inline results)
-    const searchResults = page.locator('#hero-search-results');
-    await expect(searchResults).toBeVisible();
+    await expect(page).toHaveURL(/\/explore/);
 
     // Take screenshot of homepage search
     await page.screenshot({
       path: 'test-results/screenshots/T1-homepage-search.png',
       fullPage: true
     });
+  });
+
+  test('should navigate to /explore when search input is tapped (mobile viewport)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Claude Code Skills Hub/);
+
+    const searchInput = page.locator('#hero-search-input');
+    await expect(searchInput).toBeVisible();
+
+    await Promise.all([
+      page.waitForURL(/\/explore/),
+      searchInput.tap(),
+    ]);
+
+    await expect(page).toHaveURL(/\/explore/);
+  });
+
+  test('should navigate to /explore with type filter when toggle is clicked', async ({ page }) => {
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Claude Code Skills Hub/);
+
+    const pluginsToggle = page.locator('button.toggle-btn[data-type="plugin"]');
+    await expect(pluginsToggle).toBeVisible();
+
+    await Promise.all([
+      page.waitForURL(/\/explore\?type=plugin/),
+      pluginsToggle.click({ force: true }),
+    ]);
+
+    await expect(page).toHaveURL(/\/explore\?type=plugin/);
   });
 
   test('should navigate to /explore via Browse Skills button', async ({ page }) => {
