@@ -55,9 +55,17 @@ build/
 coverage/
 
 # Private documentation and business documents (NEVER commit)
-000-docs/
+# Ignore contents by default; selectively allow specific committed docs.
+000-docs/*
+# Re-include directory so allowlist patterns work.
+!000-docs/
 # EXCEPT: 6767 canonical standards (cross-repo standards)
 !000-docs/6767*.md
+!000-docs/107-OP-INDX-phase-0-doc-index.md
+!000-docs/108-OP-RMAP-repo-map.md
+!000-docs/109-OP-BRCH-branch-and-release-flow.md
+!000-docs/110-RA-P0PL-phase-1-punchlist.md
+!000-docs/111-AA-AACR-phase-0-repo-stabilization.md
 website/
 
 # Internal planning and research documents (do not commit to public repo)
