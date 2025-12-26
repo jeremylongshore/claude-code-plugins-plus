@@ -2,11 +2,17 @@
 // Claude Code Plugins Marketplace - Homepage
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+// Dynamic stats from search index (updated at build time)
+const totalSkills = searchIndex.stats.totalSkills;
+const totalPlugins = searchIndex.stats.totalPlugins;
+const totalCategories = searchIndex.stats.categories.length;
 ---
 
 <BaseLayout
     title="Claude Code Skills Hub | Plugins & Agent Skills"
-    description="Search 239 skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready."
+    description={`Search ${totalSkills} skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready.`}
 >
     <style>
         /* ========================================
@@ -684,7 +690,7 @@ import StackBuilder from '../components/StackBuilder.astro';
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Claude Code Plugins Marketplace",
-      "description": "Search 239 agent skills with fuzzy search. Browse 258 plugins. Interactive tutorials and production workflows.",
+      "description": "Search agent skills with fuzzy search. Browse plugins. Interactive tutorials and production workflows.",
       "url": "https://claudecodeplugins.io",
       "potentialAction": {
         "@type": "SearchAction",
@@ -742,7 +748,7 @@ import StackBuilder from '../components/StackBuilder.astro';
     <section class="hero">
         <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
         <p class="hero-subtitle">
-            Search 239 skills embedded in 258 plugins. Learn with interactive tutorials. All open source and production-ready.
+            Search {totalSkills} skills embedded in {totalPlugins} plugins. Learn with interactive tutorials. All open source and production-ready.
         </p>
 
         <!-- Strategic Partners (in hero for visibility) -->
@@ -787,15 +793,15 @@ import StackBuilder from '../components/StackBuilder.astro';
 
         <div class="stats-bar">
             <div class="stat-item">
-                <div class="stats-number">239</div>
+                <div class="stats-number">{totalSkills}</div>
                 <div class="stat-label">Searchable Skills</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">258</div>
+                <div class="stats-number">{totalPlugins}</div>
                 <div class="stat-label">Plugins</div>
             </div>
             <div class="stat-item">
-                <div class="stats-number">18</div>
+                <div class="stats-number">{totalCategories}</div>
                 <div class="stat-label">Categories</div>
             </div>
         </div>
@@ -950,7 +956,7 @@ import StackBuilder from '../components/StackBuilder.astro';
             <div class="feature-card">
                 <div class="feature-icon">🔍</div>
                 <h3>Skills Directory</h3>
-                <p>239 Agent Skills with instant fuzzy search, smart filters, and detailed documentation. Find exactly what you need in seconds.</p>
+                <p>{totalSkills} Agent Skills with instant fuzzy search, smart filters, and detailed documentation. Find exactly what you need in seconds.</p>
                 <a href="/skills/" style="color: var(--brand-orange); text-decoration: none; font-weight: 600; font-family: 'Poppins', sans-serif; display: inline-block; margin-top: 0.5rem;">Browse Skills →</a>
             </div>
             <div class="feature-card">
@@ -972,7 +978,7 @@ import StackBuilder from '../components/StackBuilder.astro';
                 <div class="feature-card" style="cursor: pointer; transition: transform 0.2s;">
                     <div class="feature-icon">🎯</div>
                     <h3 style="color: var(--brand-dark);">Skills</h3>
-                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Search 239 agent skills</p>
+                    <p style="color: var(--brand-mid-gray); font-size: 0.9rem;">Search {totalSkills} agent skills</p>
                 </div>
             </a>
             <a href="/learning/" style="text-decoration: none;">
@@ -1002,13 +1008,13 @@ import StackBuilder from '../components/StackBuilder.astro';
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🚀</div>
-                <h3>258 Plugins</h3>
-                <p>Browse plugins across 18 categories: DevOps, security, testing, data, AI/ML, and more.</p>
+                <h3>{totalPlugins} Plugins</h3>
+                <p>Browse plugins across {totalCategories} categories: DevOps, security, testing, data, AI/ML, and more.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🤖</div>
-                <h3>239 Skills (Embedded in Plugins)</h3>
-                <p>Agent Skills embedded in 258 plugins activate automatically based on conversation context.</p>
+                <h3>{totalSkills} Skills (Embedded in Plugins)</h3>
+                <p>Agent Skills embedded in {totalPlugins} plugins activate automatically based on conversation context.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⚡</div>

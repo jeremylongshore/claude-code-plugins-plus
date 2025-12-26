@@ -172,7 +172,7 @@
     {
       "slug": "analyzing-database-indexes",
       "name": "analyzing-database-indexes",
-      "description": "Use when you need to work with database indexing. This skill provides index design and optimization with comprehensive guidance and automation. Trigger with phrases like \"create indexes\", \"optimize indexes\", or \"improve query performance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database indexing. This skill provides index design and optimization with comprehensive guidance and automation. Trigger with phrases like \"create indexes\", \"optimize indexes\", or \"improve query performance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -375,7 +375,7 @@
     {
       "slug": "analyzing-query-performance",
       "name": "analyzing-query-performance",
-      "description": "Use when you need to work with query optimization. This skill provides query performance analysis with comprehensive guidance and automation. Trigger with phrases like \"optimize queries\", \"analyze performance\", or \"improve query speed\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with query optimization. This skill provides query performance analysis with comprehensive guidance and automation. Trigger with phrases like \"optimize queries\", \"analyze performance\", or \"improve query speed\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -507,7 +507,7 @@
     {
       "slug": "archiving-databases",
       "name": "archiving-databases",
-      "description": "Use when you need to archive historical database records to reduce primary database size. This skill automates moving old data to archive tables or cold storage (S3, Azure Blob, GCS). Trigger with phrases like \"archive old database records\", \"implement data retention policy\", \"move historical data to cold storage\", or \"reduce database size with archival\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, aws:s3:*), az:storage:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to archive historical database records to reduce primary database size. This skill automates moving old data to archive tables or cold storage (S3, Azure Blob, GCS). Trigger with phrases like \"archive old database records\", \"implement data retention policy\", \"move historical data to cold storage\", or \"reduce database size with archival\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(aws:s3:*), Bash(az:storage:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -525,7 +525,7 @@
     {
       "slug": "assisting-with-soc2-audit-preparation",
       "name": "assisting-with-soc2-audit-preparation",
-      "description": "Automate SOC 2 audit preparation including evidence gathering, control assessment, and compliance gap identification. Use when you need to prepare for SOC 2 audits, assess Trust Service Criteria compliance, document security controls, or generate readiness reports. Trigger with phrases like \"SOC 2 audit preparation\", \"SOC 2 readiness assessment\", \"collect SOC 2 evidence\", or \"Trust Service Criteria compliance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(audit-collect:*), compliance-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Automate SOC 2 audit preparation including evidence gathering, control assessment, and compliance gap identification. Use when you need to prepare for SOC 2 audits, assess Trust Service Criteria compliance, document security controls, or generate readiness reports. Trigger with phrases like \"SOC 2 audit preparation\", \"SOC 2 readiness assessment\", \"collect SOC 2 evidence\", or \"Trust Service Criteria compliance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(audit-collect:*), Bash(compliance-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -588,7 +588,7 @@
     {
       "slug": "automating-database-backups",
       "name": "automating-database-backups",
-      "description": "Use when you need to automate database backup processes with scheduling and encryption. This skill creates backup scripts for PostgreSQL, MySQL, MongoDB, and SQLite with compression. Trigger with phrases like \"automate database backups\", \"schedule database dumps\", \"create backup scripts\", or \"implement disaster recovery for database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*, mysqldump:*, mongodump:*), cron:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to automate database backup processes with scheduling and encryption. This skill creates backup scripts for PostgreSQL, MySQL, MongoDB, and SQLite with compression. Trigger with phrases like \"automate database backups\", \"schedule database dumps\", \"create backup scripts\", or \"implement disaster recovery for database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*), Bash(mysqldump:*), Bash(mongodump:*), Bash(cron:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -678,7 +678,7 @@
     {
       "slug": "building-cicd-pipelines",
       "name": "building-cicd-pipelines",
-      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -912,7 +912,7 @@
     {
       "slug": "checking-session-security",
       "name": "checking-session-security",
-      "description": "Analyze session management implementations to identify security vulnerabilities in web applications. Use when you need to audit session handling, check for session fixation risks, review session timeout configurations, or validate session ID generation security. Trigger with phrases like \"check session security\", \"audit session management\", \"review session handling\", or \"session fixation vulnerability\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), security-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Analyze session management implementations to identify security vulnerabilities in web applications. Use when you need to audit session handling, check for session fixation risks, review session timeout configurations, or validate session ID generation security. Trigger with phrases like \"check session security\", \"audit session management\", \"review session handling\", or \"session fixation vulnerability\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -975,7 +975,7 @@
     {
       "slug": "comparing-database-schemas",
       "name": "comparing-database-schemas",
-      "description": "Use when you need to work with schema comparison. This skill provides database schema diff and sync with comprehensive guidance and automation. Trigger with phrases like \"compare schemas\", \"diff databases\", or \"sync database schemas\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with schema comparison. This skill provides database schema diff and sync with comprehensive guidance and automation. Trigger with phrases like \"compare schemas\", \"diff databases\", or \"sync database schemas\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1065,7 +1065,7 @@
     {
       "slug": "creating-ansible-playbooks",
       "name": "creating-ansible-playbooks",
-      "description": "Use when you need to work with Ansible automation. This skill provides Ansible playbook creation with comprehensive guidance and automation. Trigger with phrases like \"create Ansible playbook\", \"automate with Ansible\", or \"configure with Ansible\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), terraform:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with Ansible automation. This skill provides Ansible playbook creation with comprehensive guidance and automation. Trigger with phrases like \"create Ansible playbook\", \"automate with Ansible\", or \"configure with Ansible\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), Bash(terraform:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1173,7 +1173,7 @@
     {
       "slug": "database-documentation-gen",
       "name": "database-documentation-gen",
-      "description": "Use when you need to work with database documentation. This skill provides automated documentation generation with comprehensive guidance and automation. Trigger with phrases like \"generate docs\", \"document schema\", or \"create database documentation\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database documentation. This skill provides automated documentation generation with comprehensive guidance and automation. Trigger with phrases like \"generate docs\", \"document schema\", or \"create database documentation\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1227,7 +1227,7 @@
     {
       "slug": "designing-database-schemas",
       "name": "designing-database-schemas",
-      "description": "Use when you need to work with database schema design. This skill provides schema design and migrations with comprehensive guidance and automation. Trigger with phrases like \"design schema\", \"create migration\", or \"model database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database schema design. This skill provides schema design and migrations with comprehensive guidance and automation. Trigger with phrases like \"design schema\", \"create migration\", or \"model database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1263,7 +1263,7 @@
     {
       "slug": "detecting-database-deadlocks",
       "name": "detecting-database-deadlocks",
-      "description": "Use when you need to work with deadlock detection. This skill provides deadlock detection and resolution with comprehensive guidance and automation. Trigger with phrases like \"detect deadlocks\", \"resolve deadlocks\", or \"prevent deadlocks\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with deadlock detection. This skill provides deadlock detection and resolution with comprehensive guidance and automation. Trigger with phrases like \"detect deadlocks\", \"resolve deadlocks\", or \"prevent deadlocks\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1370,7 +1370,7 @@
     {
       "slug": "detecting-sql-injection-vulnerabilities",
       "name": "detecting-sql-injection-vulnerabilities",
-      "description": "Detect and analyze SQL injection vulnerabilities in application code and database queries. Use when you need to scan code for SQL injection risks, review query construction, validate input sanitization, or implement secure query patterns. Trigger with phrases like \"detect SQL injection\", \"scan for SQLi vulnerabilities\", \"review database queries\", or \"check SQL security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), security-test:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Detect and analyze SQL injection vulnerabilities in application code and database queries. Use when you need to scan code for SQL injection risks, review query construction, validate input sanitization, or implement secure query patterns. Trigger with phrases like \"detect SQL injection\", \"scan for SQLi vulnerabilities\", \"review database queries\", or \"check SQL security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-test:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -1577,7 +1577,7 @@
     {
       "slug": "fairdb-backup-manager",
       "name": "fairdb-backup-manager",
-      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
@@ -1613,7 +1613,7 @@
     {
       "slug": "finding-security-misconfigurations",
       "name": "finding-security-misconfigurations",
-      "description": "Identify security misconfigurations in infrastructure-as-code, application settings, and system configurations. Use when you need to audit Terraform/CloudFormation templates, check application config files, validate system security settings, or ensure compliance with security best practices. Trigger with phrases like \"find security misconfigurations\", \"audit infrastructure security\", \"check config security\", or \"scan for misconfigured settings\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(config-scan:*), iac-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Identify security misconfigurations in infrastructure-as-code, application settings, and system configurations. Use when you need to audit Terraform/CloudFormation templates, check application config files, validate system security settings, or ensure compliance with security best practices. Trigger with phrases like \"find security misconfigurations\", \"audit infrastructure security\", \"check config security\", or \"scan for misconfigured settings\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(config-scan:*), Bash(iac-check:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -1820,7 +1820,7 @@
     {
       "slug": "generating-docker-compose-files",
       "name": "generating-docker-compose-files",
-      "description": "Use when you need to work with Docker Compose. This skill provides Docker Compose file generation with comprehensive guidance and automation. Trigger with phrases like \"generate docker-compose\", \"create compose file\", or \"configure multi-container app\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with Docker Compose. This skill provides Docker Compose file generation with comprehensive guidance and automation. Trigger with phrases like \"generate docker-compose\", \"create compose file\", or \"configure multi-container app\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1892,7 +1892,7 @@
     {
       "slug": "generating-orm-code",
       "name": "generating-orm-code",
-      "description": "Use when you need to work with ORM code generation. This skill provides ORM model and code generation with comprehensive guidance and automation. Trigger with phrases like \"generate ORM models\", \"create entity classes\", or \"scaffold database models\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with ORM code generation. This skill provides ORM model and code generation with comprehensive guidance and automation. Trigger with phrases like \"generate ORM models\", \"create entity classes\", or \"scaffold database models\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -1928,7 +1928,7 @@
     {
       "slug": "generating-security-audit-reports",
       "name": "generating-security-audit-reports",
-      "description": "Generate comprehensive security audit reports for applications and systems. Use when you need to assess security posture, identify vulnerabilities, evaluate compliance status, or create formal security documentation. Trigger with phrases like \"create security audit report\", \"generate security assessment\", \"audit security posture\", or \"PCI-DSS compliance report\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security-scan:*), report-gen:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Generate comprehensive security audit reports for applications and systems. Use when you need to assess security posture, identify vulnerabilities, evaluate compliance status, or create formal security documentation. Trigger with phrases like \"create security audit report\", \"generate security assessment\", \"audit security posture\", or \"PCI-DSS compliance report\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security-scan:*), Bash(report-gen:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -2162,7 +2162,7 @@
     {
       "slug": "implementing-backup-strategies",
       "name": "implementing-backup-strategies",
-      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2180,7 +2180,7 @@
     {
       "slug": "implementing-database-audit-logging",
       "name": "implementing-database-audit-logging",
-      "description": "Use when you need to track database changes for compliance and security monitoring. This skill implements audit logging using triggers, application-level logging, CDC, or native logs. Trigger with phrases like \"implement database audit logging\", \"add audit trails\", \"track database changes\", or \"monitor database activity for compliance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), mysql:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to track database changes for compliance and security monitoring. This skill implements audit logging using triggers, application-level logging, CDC, or native logs. Trigger with phrases like \"implement database audit logging\", \"add audit trails\", \"track database changes\", or \"monitor database activity for compliance\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2198,7 +2198,7 @@
     {
       "slug": "implementing-database-caching",
       "name": "implementing-database-caching",
-      "description": "Use when you need to implement multi-tier caching to improve database performance. This skill sets up Redis, in-memory caching, and CDN layers to reduce database load. Trigger with phrases like \"implement database caching\", \"add Redis cache layer\", \"improve query performance with caching\", or \"reduce database load\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), docker:redis:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to implement multi-tier caching to improve database performance. This skill sets up Redis, in-memory caching, and CDN layers to reduce database load. Trigger with phrases like \"implement database caching\", \"add Redis cache layer\", \"improve query performance with caching\", or \"reduce database load\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), Bash(docker:redis:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2332,7 +2332,7 @@
     {
       "slug": "managing-container-registries",
       "name": "managing-container-registries",
-      "description": "Use when you need to work with containerization. This skill provides container management and orchestration with comprehensive guidance and automation. Trigger with phrases like \"containerize app\", \"manage containers\", or \"orchestrate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with containerization. This skill provides container management and orchestration with comprehensive guidance and automation. Trigger with phrases like \"containerize app\", \"manage containers\", or \"orchestrate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2350,7 +2350,7 @@
     {
       "slug": "managing-database-migrations",
       "name": "managing-database-migrations",
-      "description": "Use when you need to work with database migrations. This skill provides schema migration management with comprehensive guidance and automation. Trigger with phrases like \"create migration\", \"run migrations\", or \"manage schema versions\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database migrations. This skill provides schema migration management with comprehensive guidance and automation. Trigger with phrases like \"create migration\", \"run migrations\", or \"manage schema versions\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2368,7 +2368,7 @@
     {
       "slug": "managing-database-partitions",
       "name": "managing-database-partitions",
-      "description": "Use when you need to work with database partitioning. This skill provides table partitioning strategies with comprehensive guidance and automation. Trigger with phrases like \"partition tables\", \"implement partitioning\", or \"optimize large tables\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database partitioning. This skill provides table partitioning strategies with comprehensive guidance and automation. Trigger with phrases like \"partition tables\", \"implement partitioning\", or \"optimize large tables\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2386,7 +2386,7 @@
     {
       "slug": "managing-database-recovery",
       "name": "managing-database-recovery",
-      "description": "Use when you need to work with database operations. This skill provides database management and optimization with comprehensive guidance and automation. Trigger with phrases like \"manage database\", \"optimize database\", or \"configure database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database operations. This skill provides database management and optimization with comprehensive guidance and automation. Trigger with phrases like \"manage database\", \"optimize database\", or \"configure database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2404,7 +2404,7 @@
     {
       "slug": "managing-database-replication",
       "name": "managing-database-replication",
-      "description": "Use when you need to work with database scalability. This skill provides replication and sharding with comprehensive guidance and automation. Trigger with phrases like \"set up replication\", \"implement sharding\", or \"scale database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database scalability. This skill provides replication and sharding with comprehensive guidance and automation. Trigger with phrases like \"set up replication\", \"implement sharding\", or \"scale database\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2422,7 +2422,7 @@
     {
       "slug": "managing-database-sharding",
       "name": "managing-database-sharding",
-      "description": "Use when you need to work with database sharding. This skill provides horizontal sharding strategies with comprehensive guidance and automation. Trigger with phrases like \"implement sharding\", \"shard database\", or \"distribute data\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with database sharding. This skill provides horizontal sharding strategies with comprehensive guidance and automation. Trigger with phrases like \"implement sharding\", \"shard database\", or \"distribute data\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2458,7 +2458,7 @@
     {
       "slug": "managing-deployment-rollbacks",
       "name": "managing-deployment-rollbacks",
-      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2620,7 +2620,7 @@
     {
       "slug": "modeling-nosql-data",
       "name": "modeling-nosql-data",
-      "description": "Use when you need to work with NoSQL data modeling. This skill provides NoSQL database design with comprehensive guidance and automation. Trigger with phrases like \"model NoSQL data\", \"design document structure\", or \"optimize NoSQL schema\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with NoSQL data modeling. This skill provides NoSQL database design with comprehensive guidance and automation. Trigger with phrases like \"model NoSQL data\", \"design document structure\", or \"optimize NoSQL schema\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2692,7 +2692,7 @@
     {
       "slug": "monitoring-database-health",
       "name": "monitoring-database-health",
-      "description": "Use when you need to work with monitoring and observability. This skill provides health monitoring and alerting with comprehensive guidance and automation. Trigger with phrases like \"monitor system health\", \"set up alerts\", or \"track metrics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with monitoring and observability. This skill provides health monitoring and alerting with comprehensive guidance and automation. Trigger with phrases like \"monitor system health\", \"set up alerts\", or \"track metrics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2710,7 +2710,7 @@
     {
       "slug": "monitoring-database-transactions",
       "name": "monitoring-database-transactions",
-      "description": "Use when you need to work with monitoring and observability. This skill provides health monitoring and alerting with comprehensive guidance and automation. Trigger with phrases like \"monitor system health\", \"set up alerts\", or \"track metrics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with monitoring and observability. This skill provides health monitoring and alerting with comprehensive guidance and automation. Trigger with phrases like \"monitor system health\", \"set up alerts\", or \"track metrics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2807,7 +2807,7 @@
     {
       "slug": "optimizing-cloud-costs",
       "name": "optimizing-cloud-costs",
-      "description": "Use when you need to work with cloud cost optimization. This skill provides cost analysis and optimization with comprehensive guidance and automation. Trigger with phrases like \"optimize costs\", \"analyze spending\", or \"reduce costs\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*, gcloud:*), az:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with cloud cost optimization. This skill provides cost analysis and optimization with comprehensive guidance and automation. Trigger with phrases like \"optimize costs\", \"analyze spending\", or \"reduce costs\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*), Bash(gcloud:*), Bash(az:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2825,7 +2825,7 @@
     {
       "slug": "optimizing-database-connection-pooling",
       "name": "optimizing-database-connection-pooling",
-      "description": "Use when you need to work with connection management. This skill provides connection pooling and management with comprehensive guidance and automation. Trigger with phrases like \"manage connections\", \"configure pooling\", or \"optimize connection usage\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with connection management. This skill provides connection pooling and management with comprehensive guidance and automation. Trigger with phrases like \"manage connections\", \"configure pooling\", or \"optimize connection usage\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2915,7 +2915,7 @@
     {
       "slug": "optimizing-sql-queries",
       "name": "optimizing-sql-queries",
-      "description": "Use when you need to work with query optimization. This skill provides query performance analysis with comprehensive guidance and automation. Trigger with phrases like \"optimize queries\", \"analyze performance\", or \"improve query speed\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with query optimization. This skill provides query performance analysis with comprehensive guidance and automation. Trigger with phrases like \"optimize queries\", \"analyze performance\", or \"improve query speed\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -2951,7 +2951,7 @@
     {
       "slug": "orchestrating-deployment-pipelines",
       "name": "orchestrating-deployment-pipelines",
-      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with deployment and CI/CD. This skill provides deployment automation and orchestration with comprehensive guidance and automation. Trigger with phrases like \"deploy application\", \"create pipeline\", or \"automate deployment\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -3130,7 +3130,7 @@
     {
       "slug": "planning-disaster-recovery",
       "name": "planning-disaster-recovery",
-      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with backup and recovery. This skill provides backup automation and disaster recovery with comprehensive guidance and automation. Trigger with phrases like \"create backups\", \"automate backups\", or \"implement disaster recovery\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -3318,7 +3318,7 @@
     {
       "slug": "responding-to-security-incidents",
       "name": "responding-to-security-incidents",
-      "description": "Guide security incident response, investigation, and remediation processes. Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. Trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*, forensics:*), network-trace:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Guide security incident response, investigation, and remediation processes. Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. Trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*), Bash(forensics:*), Bash(network-trace:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Jeremy Longshore <[email protected]>",
@@ -3544,7 +3544,7 @@
     {
       "slug": "scanning-container-security",
       "name": "scanning-container-security",
-      "description": "Use when you need to work with security and compliance. This skill provides security scanning and vulnerability detection with comprehensive guidance and automation. Trigger with phrases like \"scan for vulnerabilities\", \"implement security controls\", or \"audit security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with security and compliance. This skill provides security scanning and vulnerability detection with comprehensive guidance and automation. Trigger with phrases like \"scan for vulnerabilities\", \"implement security controls\", or \"audit security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -3562,7 +3562,7 @@
     {
       "slug": "scanning-database-security",
       "name": "scanning-database-security",
-      "description": "Use when you need to work with security and compliance. This skill provides security scanning and vulnerability detection with comprehensive guidance and automation. Trigger with phrases like \"scan for vulnerabilities\", \"implement security controls\", or \"audit security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to work with security and compliance. This skill provides security scanning and vulnerability detection with comprehensive guidance and automation. Trigger with phrases like \"scan for vulnerabilities\", \"implement security controls\", or \"audit security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -4373,7 +4373,7 @@
     {
       "slug": "validating-database-integrity",
       "name": "validating-database-integrity",
-      "description": "Use when you need to ensure database integrity through comprehensive data validation. This skill validates data types, ranges, formats, referential integrity, and business rules. Trigger with phrases like \"validate database data\", \"implement data validation rules\", \"enforce data integrity constraints\", or \"validate data formats\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), mysql:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to ensure database integrity through comprehensive data validation. This skill validates data types, ranges, formats, referential integrity, and business rules. Trigger with phrases like \"validate database data\", \"implement data validation rules\", \"enforce data integrity constraints\", or \"validate data formats\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "allowedTools": [],
       "version": "1.0.0",
       "author": "Claude Code Plugins <[email protected]>",
@@ -4570,7 +4570,7 @@
     }
   ],
   "count": 239,
-  "generatedAt": "2025-12-26T18:44:57.874Z",
+  "generatedAt": "2025-12-26T22:12:52.982Z",
   "categories": [
     "ai-ml",
     "api-development",
