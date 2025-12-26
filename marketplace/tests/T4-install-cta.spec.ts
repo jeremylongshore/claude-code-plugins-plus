@@ -20,9 +20,9 @@ test.describe('Install CTA Tests', () => {
     const installCommand = page.locator('.install-command').first();
     await expect(installCommand).toBeVisible();
 
-    // Verify command text contains expected content
+    // Verify command text contains expected content (CLI install is now primary)
     const commandText = await installCommand.textContent();
-    expect(commandText).toContain('plugin marketplace add');
+    expect(commandText).toContain('pnpm add -g @intentsolutionsio/ccpi');
 
     // Take screenshot
     await page.screenshot({

@@ -1,5 +1,5 @@
 ---
-import SkillTemplate from '../../components/SkillTemplate.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
 import skillsCatalog from '../../data/skills-catalog.json';
 
 export async function getStaticPaths() {
@@ -15,25 +15,329 @@ const { skill } = Astro.props;
 
 const pageTitle = `${skill.name} - Agent Skill`;
 const pageDescription = skill.description || `Agent skill for Claude Code: ${skill.name}`;
+
+// Format author (remove email if present)
+const authorName = skill.author && typeof skill.author === 'string'
+  ? skill.author.split('<')[0].trim()
+  : 'Unknown';
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{pageTitle}</title>
-  <meta name="description" content={pageDescription}>
-  <link rel="canonical" href={`https://claudecodeplugins.io/skills/${skill.slug}/`}>
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    .skill-detail {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
 
-  <!-- Open Graph -->
-  <meta property="og:title" content={pageTitle}>
-  <meta property="og:description" content={pageDescription}>
-  <meta property="og:type" content="article">
-  <meta property="og:url" content={`https://claudecodeplugins.io/skills/${skill.slug}/`}>
+    .breadcrumb {
+      font-size: 0.875rem;
+      color: var(--brand-mid-gray);
+      margin-bottom: 2rem;
+    }
+
+    .breadcrumb a {
+      color: var(--brand-mid-gray);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--brand-orange);
+    }
+
+    .skill-header {
+      margin-bottom: 2rem;
+    }
+
+    .skill-header h1 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .skill-description {
+      font-size: 1.1rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .skill-metadata {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .metadata-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .metadata-item svg {
+      width: 18px;
+      height: 18px;
+      color: var(--brand-mid-gray);
+    }
+
+    .section-box {
+      padding: 1.5rem;
+      background: white;
+      border: 2px solid var(--brand-light-gray);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-box.highlight {
+      background: rgba(217, 119, 87, 0.05);
+      border-color: rgba(217, 119, 87, 0.2);
+    }
+
+    .section-box.dark {
+      background: var(--brand-dark);
+      border-color: var(--brand-dark);
+    }
+
+    .section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .section-box.dark .section-title {
+      color: var(--brand-light);
+    }
+
+    .tools-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tool-badge {
+      padding: 0.4rem 0.85rem;
+      background: var(--brand-orange);
+      color: white;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .plugin-info {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .plugin-details h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--brand-orange);
+      margin-bottom: 0.5rem;
+    }
+
+    .plugin-details h3 a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .plugin-details h3 a:hover {
+      text-decoration: underline;
+    }
+
+    .plugin-details p {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .plugin-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .plugin-meta span {
+      text-transform: capitalize;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 0.6rem 1.25rem;
+      background: var(--brand-orange);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-weight: 600;
+      font-size: 0.875rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background: var(--brand-orange-dark);
+      transform: translateY(-2px);
+    }
+
+    .install-command {
+      margin: 0;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.08);
+      border-radius: 6px;
+      font-size: 0.875rem;
+      color: var(--brand-light);
+      overflow-x: auto;
+      cursor: pointer;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+    }
+
+    .install-note {
+      margin-top: 0.75rem;
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .skill-content-section {
+      margin-top: 2rem;
+    }
+
+    .skill-content-section h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .skill-content {
+      padding: 2rem;
+      background: white;
+      border: 2px solid var(--brand-light-gray);
+      border-radius: 12px;
+      line-height: 1.8;
+    }
+
+    .skill-content h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-content h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-top: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-content h3 {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-content p {
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+    }
+
+    .skill-content ul, .skill-content ol {
+      margin-bottom: 1rem;
+      padding-left: 1.5rem;
+    }
+
+    .skill-content li {
+      color: var(--brand-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-content code {
+      background: var(--brand-light-gray);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      color: var(--brand-orange-dark);
+    }
+
+    .skill-content pre {
+      background: var(--brand-dark);
+      color: var(--brand-light);
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+    }
+
+    .skill-content pre code {
+      background: transparent;
+      color: var(--brand-light);
+      padding: 0;
+    }
+
+    .skill-content blockquote {
+      border-left: 4px solid var(--brand-orange);
+      padding-left: 1rem;
+      font-style: italic;
+      color: var(--brand-mid-gray);
+      margin-bottom: 1rem;
+    }
+
+    .skill-content a {
+      color: var(--brand-orange);
+      text-decoration: underline;
+    }
+
+    .skill-content a:hover {
+      text-decoration: none;
+    }
+
+    .skill-footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--brand-light-gray);
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .skill-footer code {
+      background: var(--brand-light-gray);
+      padding: 0.15rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 768px) {
+      .skill-detail {
+        padding: 1rem;
+      }
+
+      .skill-header h1 {
+        font-size: 1.75rem;
+      }
+
+      .plugin-info {
+        flex-direction: column;
+      }
+    }
+  </style>
 
   <!-- JSON-LD Structured Data -->
-  <script type="application/ld+json" set:html={JSON.stringify({
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify({
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     "name": skill.name,
@@ -41,7 +345,7 @@ const pageDescription = skill.description || `Agent skill for Claude Code: ${ski
     "version": skill.version,
     "author": {
       "@type": "Person",
-      "name": skill.author.split('<')[0].trim()
+      "name": authorName
     },
     "license": skill.license,
     "programmingLanguage": "Claude Code Agent Skill",
@@ -51,35 +355,108 @@ const pageDescription = skill.description || `Agent skill for Claude Code: ${ski
       "applicationCategory": skill.parentPlugin.category
     }
   })} />
-</head>
-<body class="bg-gray-50">
-  <!-- Header -->
-  <header class="bg-white border-b border-gray-200">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-      <a href="/skills/" class="text-orange-600 hover:text-orange-700 font-medium">
-        ← Back to Skills Directory
-      </a>
-    </div>
-  </header>
 
-  <!-- Main Content -->
-  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-    <SkillTemplate skill={skill} />
-  </main>
+  <div class="skill-detail">
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb">
+      <a href="/">Home</a> → <a href="/skills/">Skills</a> → {skill.name}
+    </nav>
 
-  <!-- Footer -->
-  <footer class="bg-white border-t border-gray-200 mt-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex items-center justify-between">
-        <p class="text-gray-600">
-          Claude Code Plugins Plus
-        </p>
-        <div class="flex gap-4">
-          <a href="/skills/" class="text-orange-600 hover:text-orange-700">All Skills</a>
-          <a href="/" class="text-orange-600 hover:text-orange-700">Marketplace</a>
+    <!-- Header -->
+    <header class="skill-header">
+      <h1>{skill.name}</h1>
+      {skill.description && <p class="skill-description">{skill.description}</p>}
+
+      <div class="skill-metadata">
+        <div class="metadata-item">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+          </svg>
+          <span>v{skill.version}</span>
+        </div>
+        <div class="metadata-item">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+          <span>{authorName}</span>
+        </div>
+        <div class="metadata-item">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+          <span>{skill.license}</span>
         </div>
       </div>
-    </div>
-  </footer>
-</body>
-</html>
+    </header>
+
+    <!-- Allowed Tools -->
+    <section class="section-box highlight">
+      <h2 class="section-title">Allowed Tools</h2>
+      <div class="tools-grid">
+        {skill.allowedTools.map(tool => (
+          <span class="tool-badge">{tool}</span>
+        ))}
+      </div>
+      {skill.allowedTools.length === 0 && (
+        <p style="color: var(--brand-mid-gray); font-size: 0.875rem;">No tools specified</p>
+      )}
+    </section>
+
+    <!-- Provided by Plugin -->
+    <section class="section-box">
+      <h2 class="section-title">Provided by Plugin</h2>
+      <div class="plugin-info">
+        <div class="plugin-details">
+          <h3>
+            <a href={`/plugins/${skill.parentPlugin.name}/`}>{skill.parentPlugin.name}</a>
+          </h3>
+          <p>{skill.parentPlugin.description || 'Plugin for Claude Code'}</p>
+          <div class="plugin-meta">
+            <span>{skill.parentPlugin.category.replace(/-/g, ' ')}</span>
+            {skill.parentPlugin.version && <span>v{skill.parentPlugin.version}</span>}
+          </div>
+        </div>
+        <a href={`/plugins/${skill.parentPlugin.name}/`} class="btn-primary">View Plugin</a>
+      </div>
+    </section>
+
+    <!-- Installation -->
+    <section class="section-box dark">
+      <h2 class="section-title">Installation</h2>
+      <p class="install-note" style="color: var(--brand-light-gray); margin-bottom: 0.75rem;">This skill is included in the {skill.parentPlugin.name} plugin:</p>
+      <pre class="install-command" data-copy={`/plugin install ${skill.parentPlugin.name}@claude-code-plugins-plus`}><code>/plugin install {skill.parentPlugin.name}@claude-code-plugins-plus</code></pre>
+      <p class="install-note">Click to copy</p>
+    </section>
+
+    <!-- Skill Content (Markdown) -->
+    <section class="skill-content-section">
+      <h2>Instructions</h2>
+      <div class="skill-content">
+        <div set:html={skill.content} />
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="skill-footer">
+      <p>Skill file: <code>{skill.filePath}</code></p>
+    </footer>
+  </div>
+
+  <!-- Copy functionality -->
+  <script is:inline>
+    document.querySelectorAll('.install-command').forEach(el => {
+      el.addEventListener('click', function() {
+        const text = this.dataset.copy || this.textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          const originalText = this.textContent;
+          this.textContent = '✓ Copied to clipboard!';
+          this.style.color = 'var(--brand-green)';
+          setTimeout(() => {
+            this.textContent = originalText;
+            this.style.color = '';
+          }, 2000);
+        });
+      });
+    });
+  </script>
+</BaseLayout>

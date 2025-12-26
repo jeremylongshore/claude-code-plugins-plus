@@ -422,7 +422,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             {item.type === 'skill' && item.parentPlugin && (
               <div class="parent-plugin">
                 <span>📦</span>
-                <span>Part of plugin {item.parentPlugin.name}</span>
+                <span>Provided by {item.parentPlugin.name}</span>
               </div>
             )}
             <div class="result-category">{item.category.replace(/-/g, ' ')}</div>
@@ -510,7 +510,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         const href = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
         const displayName = item.type === 'plugin' && item.displayName ? item.displayName : item.name;
         const parentPlugin = item.type === 'skill' && item.parentPlugin
-          ? `<div class="parent-plugin"><span>📦</span><span>Part of plugin ${item.parentPlugin.name}</span></div>`
+          ? `<div class="parent-plugin"><span>📦</span><span>Provided by ${item.parentPlugin.name}</span></div>`
           : '';
         const tools = item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0
           ? `<div class="result-tools">
@@ -540,6 +540,28 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     // Event listeners
     document.addEventListener('DOMContentLoaded', () => {
+      // Read URL params on page load (from homepage redirect)
+      const urlParams = new URLSearchParams(window.location.search);
+      const typeParam = urlParams.get('type');
+      const searchParam = urlParams.get('q');
+
+      if (typeParam && ['all', 'plugin', 'skill'].includes(typeParam)) {
+        activeFilters.type = typeParam;
+        document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+        const targetBtn = document.querySelector(`.type-btn[data-type="${typeParam}"]`);
+        if (targetBtn) targetBtn.classList.add('active');
+      }
+
+      if (searchParam) {
+        activeFilters.search = searchParam;
+        document.getElementById('main-search').value = searchParam;
+      }
+
+      // Apply filters if any params were set
+      if (typeParam || searchParam) {
+        applyFilters();
+      }
+
       // Search input
       document.getElementById('main-search').addEventListener('input', (e) => {
         activeFilters.search = e.target.value;

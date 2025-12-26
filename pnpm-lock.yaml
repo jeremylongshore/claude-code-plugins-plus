@@ -149,6 +149,9 @@ importers:
       ora:
         specifier: ^8.1.1
         version: 8.2.0
+      yaml:
+        specifier: ^2.7.0
+        version: 2.8.2
     devDependencies:
       '@eslint/js':
         specifier: ^9.39.2
