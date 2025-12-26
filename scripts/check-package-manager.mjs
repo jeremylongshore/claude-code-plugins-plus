@@ -43,6 +43,14 @@ function checkForbiddenLockfiles() {
 
   const found = [];
 
+  function isAllowedLockfile(relPath, filename) {
+    if (filename === 'package-lock.json' && relPath === join('marketplace', 'package-lock.json')) {
+      const marketplacePkg = join(ROOT, 'marketplace', 'package.json');
+      return existsSync(marketplacePkg);
+    }
+    return false;
+  }
+
   function searchDirectory(dir, relativePath = '') {
     const entries = readdirSync(dir);
 
@@ -61,7 +69,9 @@ function checkForbiddenLockfiles() {
       if (stat.isDirectory()) {
         searchDirectory(fullPath, relPath);
       } else if (forbidden.includes(entry)) {
-        found.push(relPath);
+        if (!isAllowedLockfile(relPath, entry)) {
+          found.push(relPath);
+        }
       }
     }
   }

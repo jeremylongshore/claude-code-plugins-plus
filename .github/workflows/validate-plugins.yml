@@ -229,9 +229,7 @@ jobs:
 
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
+        uses: pnpm/action-setup@v4
 
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
@@ -260,6 +258,12 @@ jobs:
 
               # Check if test script exists
               if grep -q '"test":' package.json || grep -q '"test:ci":' package.json; then
+                # Skip Python-based plugins (tested in python-tests job)
+                if grep -q 'pytest' package.json; then
+                  echo "⏭️  Skipping $plugin_name (Python plugin, tested separately)"
+                  cd - > /dev/null
+                  continue
+                fi
                 # Prefer test:ci if available, otherwise use test
                 if grep -q '"test:ci":' package.json; then
                   pnpm test:ci || exit 1
@@ -307,6 +311,14 @@ jobs:
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           fi
+
+          # Install dependencies from plugin requirements.txt files
+          for req in plugins/mcp/*/requirements.txt; do
+            if [ -f "$req" ]; then
+              echo "Installing deps from $req"
+              pip install -r "$req" || true
+            fi
+          done
 
           # Install additional testing tools
           pip install pyyaml jsonschema
@@ -541,8 +553,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install CLI dependencies
         run: |

@@ -156,7 +156,9 @@ Exit code: 1
 
 **Issue**: Removed package from workspace without running `pnpm install` to update lockfile. This was a shortcut to unblock deployment.
 
-**Proper Fix Required**: Decide if analytics-dashboard should be in workspace. If yes, add it back and run `pnpm install`. If no, delete the directory entirely.
+**Proper Fix Required**: Decide if analytics-dashboard should be in workspace. If yes, add it back and run `pnpm install`. If no, archive/remove it.
+
+**Phase 1 Decision (implemented)**: Archived to `packages/_archive-analytics-dashboard/` to make workspace membership unambiguous without expanding CI scope.
 
 ---
 

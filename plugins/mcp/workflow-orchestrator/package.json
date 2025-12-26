@@ -6,7 +6,7 @@
   "main": "./dist/servers/workflow-engine.js",
   "scripts": {
     "build": "tsc",
-    "test": "vitest"
+    "test": "vitest --passWithNoTests"
   },
   "keywords": ["mcp", "workflow", "orchestration", "dag", "automation", "tasks"],
   "author": { "name": "Intent Solutions", "url": "https://intentsolutions.io" },

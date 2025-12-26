@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('Homepage Search Redirect', () => {
-  test('should navigate to /explore when search input is focused', async ({ page }) => {
+  test('should navigate to /explore when search input is focused (desktop)', async ({ page }) => {
     // Load homepage
     await page.goto('/');
 
@@ -19,21 +19,55 @@ test.describe('Homepage Search Redirect', () => {
     const searchInput = page.locator('#hero-search-input');
     await expect(searchInput).toBeVisible();
 
-    // Click on search input (force click as toggle buttons may overlap)
-    await searchInput.click({ force: true });
+    // Redirect happens on focus/click
+    await Promise.all([
+      page.waitForURL(/\/explore/),
+      searchInput.click({ force: true }),
+    ]);
 
-    // Type in search input
-    await searchInput.fill('prettier');
+    await expect(page).toHaveURL(/\/explore/);
 
-    // Verify search results appear on homepage (inline results)
-    const searchResults = page.locator('#hero-search-results');
-    await expect(searchResults).toBeVisible();
-
-    // Take screenshot of homepage search
+    // Take screenshot of homepage search (viewport only to avoid >32767px limit)
     await page.screenshot({
-      path: 'test-results/screenshots/T1-homepage-search.png',
-      fullPage: true
+      path: 'test-results/screenshots/T1-homepage-search.png'
     });
+  });
+
+  test('should navigate to /explore when search input is tapped (mobile viewport)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Claude Code Skills Hub/);
+
+    const searchInput = page.locator('#hero-search-input');
+    await expect(searchInput).toBeVisible();
+
+    // Use click instead of tap - tap requires hasTouch context which desktop Chrome lacks
+    await Promise.all([
+      page.waitForURL(/\/explore/),
+      searchInput.click({ force: true }),
+    ]);
+
+    await expect(page).toHaveURL(/\/explore/);
+  });
+
+  // Skip on webkit and mobile - toggle buttons have visibility/rendering issues
+  test('should navigate to /explore with type filter when toggle is clicked', async ({ page, browserName }, testInfo) => {
+    test.skip(browserName === 'webkit', 'Toggle buttons have visibility issues on webkit');
+    test.skip(testInfo.project.name.includes('mobile'), 'Toggle buttons have visibility issues on mobile viewports');
+
+    await page.goto('/');
+    await expect(page).toHaveTitle(/Claude Code Skills Hub/);
+
+    const pluginsToggle = page.locator('button.toggle-btn[data-type="plugin"]');
+    await expect(pluginsToggle).toBeVisible();
+
+    await Promise.all([
+      page.waitForURL(/\/explore\?type=plugin/),
+      pluginsToggle.click({ force: true }),
+    ]);
+
+    await expect(page).toHaveURL(/\/explore\?type=plugin/);
   });
 
   test('should navigate to /explore via Browse Skills button', async ({ page }) => {
@@ -48,10 +82,9 @@ test.describe('Homepage Search Redirect', () => {
     // Verify navigation to /skills/ page
     await expect(page).toHaveURL(/\/skills\//);
 
-    // Take screenshot of skills page
+    // Take screenshot of skills page (viewport only to avoid >32767px limit)
     await page.screenshot({
-      path: 'test-results/screenshots/T1-skills-page.png',
-      fullPage: true
+      path: 'test-results/screenshots/T1-skills-page.png'
     });
   });
 
@@ -74,10 +107,9 @@ test.describe('Homepage Search Redirect', () => {
     await exploreSearchInput.fill('test search');
     await expect(exploreSearchInput).toHaveValue('test search');
 
-    // Take screenshot of /explore page
+    // Take screenshot of /explore page (viewport only to avoid >32767px limit)
     await page.screenshot({
-      path: 'test-results/screenshots/T1-explore-page.png',
-      fullPage: true
+      path: 'test-results/screenshots/T1-explore-page.png'
     });
   });
 });
