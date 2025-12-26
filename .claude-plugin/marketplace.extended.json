@@ -4972,9 +4972,9 @@
       },
       "components": {
         "agents": 3,
-        "commands": 6,
+        "commands": 7,
         "hooks": 1,
-        "total": 10
+        "total": 11
       },
       "tags": ["beginner-friendly", "explanations", "noise-filtering"],
       "strict": true
