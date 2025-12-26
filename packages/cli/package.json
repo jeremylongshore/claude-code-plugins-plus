@@ -1,5 +1,5 @@
 {
-  "name": "@intentsolutionsio/ccp",
+  "name": "@intentsolutionsio/ccpi",
   "version": "1.0.0",
   "description": "Command-line tool for installing and managing Claude Code plugins from claudecodeplugins.io",
   "type": "module",
