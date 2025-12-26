@@ -230,8 +230,6 @@ jobs:
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
@@ -549,8 +547,6 @@ jobs:
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install CLI dependencies
         run: |
