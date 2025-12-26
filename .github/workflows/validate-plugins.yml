@@ -258,6 +258,12 @@ jobs:
 
               # Check if test script exists
               if grep -q '"test":' package.json || grep -q '"test:ci":' package.json; then
+                # Skip Python-based plugins (tested in python-tests job)
+                if grep -q 'pytest' package.json; then
+                  echo "⏭️  Skipping $plugin_name (Python plugin, tested separately)"
+                  cd - > /dev/null
+                  continue
+                fi
                 # Prefer test:ci if available, otherwise use test
                 if grep -q '"test:ci":' package.json; then
                   pnpm test:ci || exit 1
