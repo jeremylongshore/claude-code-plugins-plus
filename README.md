@@ -1,6 +1,7 @@
 # Claude Code Skills & Plugins Hub
 
 [![Version](https://img.shields.io/badge/version-4.0.0-brightgreen)](CHANGELOG.md)
+[![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-240%20Skills-orange?logo=sparkles)](CHANGELOG.md)
 [![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
@@ -69,6 +70,64 @@
 
 ---
 
+## 📦 Package Manager (CLI)
+
+**Discover, install, and manage plugins from your terminal.** The CLI reads from this repo's published catalog—no manual cloning required.
+
+### Install
+
+```bash
+pnpm add -g @intentsolutionsio/ccpi
+```
+
+Or with npm/yarn:
+```bash
+npm install -g @intentsolutionsio/ccpi
+yarn global add @intentsolutionsio/ccpi
+```
+
+### Usage
+
+```bash
+# Search plugins by keyword
+ccpi search devops
+
+# List all available plugins
+ccpi list
+
+# List installed plugins
+ccpi list --installed
+
+# Install a plugin
+ccpi install ansible-playbook-creator
+
+# Install multiple plugins at once
+ccpi install devops-automation-pack security-pack api-development-pack
+
+# Update all installed plugins
+ccpi update
+
+# Show plugin details
+ccpi info project-health-auditor
+
+# Validate plugin structure (for developers)
+ccpi validate ./my-plugin
+```
+
+### How It Works
+
+- **This repo is the source of truth** — All plugins live in `plugins/` and catalog in `.claude-plugin/marketplace.extended.json`
+- **Website publishes versioned catalog** — On merge to `main`, the catalog JSON is deployed to claudecodeplugins.io
+- **CLI consumes catalog with caching** — Fetches latest catalog on first use, caches locally for speed
+
+### Update Model
+
+- **Catalog updates:** Happen automatically when PRs merge to `main`
+- **CLI releases:** Only when CLI code changes (version bumps in `packages/cli/`)
+- **Plugin updates:** Run `ccpi update` to pull latest versions
+
+---
+
 ## 🙏 Contributors
 
 **Huge thanks to our community contributors who make this marketplace better:**
@@ -89,16 +148,22 @@
 
 ## Quick Start
 
-**Install a plugin:**
+**Option 1: CLI (Recommended)**
+```bash
+pnpm add -g @intentsolutionsio/ccpi
+ccpi install devops-automation-pack
+```
+
+**Option 2: Claude Built-in Commands**
 ```bash
 /plugin marketplace add jeremylongshore/claude-code-plugins
 /plugin install devops-automation-pack@claude-code-plugins-plus
 ```
 
-> Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug. Existing plugins keep working either way.
+> Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug.
 
 **Browse the catalog:**
-Visit **[Claude Code Skills & Plugins Marketplace](https://claudecodeplugins.io/)** (CLI slug `claude-code-plugins-plus`) or explore [`plugins/`](./plugins/)
+Visit **[Claude Code Skills & Plugins Marketplace](https://claudecodeplugins.io/)** or explore [`plugins/`](./plugins/)
 
 **Learn to build:**
 See [Learning Paths](#-learning-paths) for step-by-step guides
@@ -323,20 +388,16 @@ This article is the definitive external resource for understanding how Agent Ski
 ### For Developers
 
 ```bash
-# Analyze your codebase health
+# Install multiple plugins at once (CLI)
+ccpi install project-health-auditor conversational-api-debugger git-commit-smart
+
+# Or install individually (Claude built-in)
 /plugin install project-health-auditor@claude-code-plugins-plus
-/analyze /path/to/repo
 
-# Debug API failures
-/plugin install conversational-api-debugger@claude-code-plugins-plus
-/debug-api
-
-# Build a knowledge base
-/plugin install domain-memory-agent@claude-code-plugins-plus
-
-# Never write commit messages again
-/plugin install git-commit-smart@claude-code-plugins-plus
-/gc
+# Then use the plugin commands
+/analyze /path/to/repo    # Analyze codebase health
+/debug-api                # Debug API failures
+/gc                       # Smart commit messages
 ```
 
 ### For Teams
@@ -369,7 +430,10 @@ Use our templates to build your own plugins:
 # Copy a template
 cp -r templates/command-plugin my-awesome-plugin
 
-# Customize and test locally
+# Validate your plugin structure
+ccpi validate ./my-awesome-plugin
+
+# Test locally
 /plugin marketplace add ./my-test-marketplace
 /plugin install my-awesome-plugin@test
 ```
@@ -596,4 +660,4 @@ Made with dedication by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 1.3.0 | **Last Updated**: November 8, 2025
+**Status**: Public Beta | **Version**: 4.0.0 | **Last Updated**: December 2025
