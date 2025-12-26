@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "implement database audit logging", "add audit trails",
   "track database changes", or "monitor database activity for compliance".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

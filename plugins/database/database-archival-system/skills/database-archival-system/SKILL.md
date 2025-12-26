@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "archive old database records", "implement data retention policy",
   "move historical data to cold storage", or "reduce database size with archival".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, aws:s3:*, az:storage:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(aws:s3:*), Bash(az:storage:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

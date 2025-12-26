@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "validate database data", "implement data validation rules",
   "enforce data integrity constraints", or "validate data formats".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

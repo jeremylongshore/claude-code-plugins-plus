@@ -64,39 +64,13 @@ function parseYamlFrontmatter(content: string): Record<string, any> | null {
 
 /**
  * Parse allowed-tools which can be string or list
- * Handles multi-pattern wildcards like Bash(psql:*, mysql:*) correctly
+ * Uses simple comma split per Intent Solutions standard
  */
 function parseAllowedTools(toolsValue: any): string[] {
   if (Array.isArray(toolsValue)) {
     return toolsValue.map(String);
   } else if (typeof toolsValue === 'string') {
-    // Smart split that respects commas inside parentheses
-    const tools: string[] = [];
-    let current = '';
-    let parenDepth = 0;
-
-    for (const char of toolsValue) {
-      if (char === '(') {
-        parenDepth++;
-        current += char;
-      } else if (char === ')') {
-        parenDepth--;
-        current += char;
-      } else if (char === ',' && parenDepth === 0) {
-        if (current.trim()) {
-          tools.push(current.trim());
-        }
-        current = '';
-      } else {
-        current += char;
-      }
-    }
-
-    if (current.trim()) {
-      tools.push(current.trim());
-    }
-
-    return tools;
+    return toolsValue.split(',').map(t => t.trim());
   }
   return [];
 }

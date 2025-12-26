@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "generate docker-compose", "create compose file",
   or "configure multi-container app".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*, kubectl:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

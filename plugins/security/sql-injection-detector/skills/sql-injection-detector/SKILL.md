@@ -5,7 +5,7 @@ description: |
   Use when you need to scan code for SQL injection risks, review query construction, validate input sanitization, or implement secure query patterns.
   Trigger with phrases like "detect SQL injection", "scan for SQLi vulnerabilities", "review database queries", or "check SQL security".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*, security-test:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), Bash(security-test:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

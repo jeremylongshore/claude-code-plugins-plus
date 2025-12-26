@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "optimize costs", "analyze spending",
   or "reduce costs".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*, gcloud:*, az:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*), Bash(gcloud:*), Bash(az:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

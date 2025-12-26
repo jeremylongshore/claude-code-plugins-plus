@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "scan for vulnerabilities", "implement security controls",
   or "audit security".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*, kubectl:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

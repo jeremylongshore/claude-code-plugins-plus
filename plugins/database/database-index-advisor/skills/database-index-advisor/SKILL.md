@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "create indexes", "optimize indexes",
   or "improve query performance".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, mongosh:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
