@@ -60,10 +60,10 @@ async function verifyMarketplace(paths: ClaudePaths): Promise<void> {
   }
 
   console.log(chalk.bold('📚 Available Commands:\n'));
-  console.log(chalk.cyan('  ccp search <query>') + chalk.gray('  - Search for plugins'));
-  console.log(chalk.cyan('  ccp install <name>') + chalk.gray('  - Install a plugin'));
-  console.log(chalk.cyan('  ccp list') + chalk.gray('            - List installed plugins'));
-  console.log(chalk.cyan('  ccp doctor') + chalk.gray('          - System diagnostics\n'));
+  console.log(chalk.cyan('  ccpi search <query>') + chalk.gray('  - Search for plugins'));
+  console.log(chalk.cyan('  ccpi install <name>') + chalk.gray('  - Install a plugin'));
+  console.log(chalk.cyan('  ccpi list') + chalk.gray('            - List installed plugins'));
+  console.log(chalk.cyan('  ccpi doctor') + chalk.gray('          - System diagnostics\n'));
 }
 
 /**
@@ -79,7 +79,7 @@ function showMarketplaceSetupGuide(): void {
   console.log(chalk.gray('3. Wait for confirmation (usually < 5 seconds)'));
   console.log(chalk.gray('4. Verify installation:\n'));
 
-  console.log(chalk.cyan('   npx @claude-code-plugins/ccp marketplace --verify\n'));
+  console.log(chalk.cyan('   npx @intentsolutionsio/ccpi marketplace --verify\n'));
 
   console.log(chalk.gray('━'.repeat(60)));
   console.log(chalk.gray('💡 This gives you access to 258 plugins!'));
@@ -108,13 +108,13 @@ function showMarketplaceInfo(isInstalled: boolean): void {
 
   if (isInstalled) {
     console.log(chalk.bold('🚀 Next Steps:\n'));
-    console.log(chalk.gray('1. Search for plugins:  ') + chalk.cyan('ccp search <keyword>'));
-    console.log(chalk.gray('2. Install a plugin:    ') + chalk.cyan('ccp install <name>'));
+    console.log(chalk.gray('1. Search for plugins:  ') + chalk.cyan('ccpi search <keyword>'));
+    console.log(chalk.gray('2. Install a plugin:    ') + chalk.cyan('ccpi install <name>'));
     console.log(chalk.gray('3. Browse all plugins:  ') + chalk.cyan('https://claudecodeplugins.io\n'));
   } else {
     console.log(chalk.bold('🚀 After Setup:\n'));
-    console.log(chalk.gray('Run `ccp search <keyword>` to find plugins'));
-    console.log(chalk.gray('Run `ccp install <name>` to install them\n'));
+    console.log(chalk.gray('Run `ccpi search <keyword>` to find plugins'));
+    console.log(chalk.gray('Run `ccpi install <name>` to install them\n'));
   }
 }
 
@@ -128,7 +128,7 @@ export async function addMarketplace(paths: ClaudePaths): Promise<void> {
   const marketplacePath = path.join(paths.marketplacesDir, MARKETPLACE_SLUG);
   if (existsSync(marketplacePath)) {
     console.log(chalk.green('✓ Marketplace is already added!\n'));
-    console.log(chalk.gray('Run:') + chalk.cyan(' ccp marketplace --verify') + chalk.gray(' to check status\n'));
+    console.log(chalk.gray('Run:') + chalk.cyan(' ccpi marketplace --verify') + chalk.gray(' to check status\n'));
     return;
   }
 

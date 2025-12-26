@@ -53,7 +53,7 @@ async function listInstalledPlugins(paths: ClaudePaths): Promise<void> {
 
   if (plugins.length === 0) {
     console.log(chalk.yellow('No plugins installed'));
-    console.log(chalk.gray('\nRun `ccp install <plugin>` to install a plugin'));
+    console.log(chalk.gray('\nRun `ccpi install <plugin>` to install a plugin'));
     console.log(chalk.gray('Or visit https://claudecodeplugins.io to browse'));
     return;
   }
@@ -79,7 +79,7 @@ async function listInstalledPlugins(paths: ClaudePaths): Promise<void> {
 async function listAllPlugins(paths: ClaudePaths): Promise<void> {
   if (!await isMarketplaceInstalled(paths)) {
     console.log(chalk.yellow('Marketplace catalog not installed'));
-    console.log(chalk.gray('Run `ccp install <plugin>` to install the marketplace first'));
+    console.log(chalk.gray('Run `ccpi install <plugin>` to install the marketplace first'));
     return;
   }
 

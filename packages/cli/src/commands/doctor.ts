@@ -238,7 +238,7 @@ async function runMarketplaceChecks(): Promise<DiagnosticResult> {
       name: 'Marketplace Catalog',
       status: marketplaceInstalled ? 'pass' : 'warn',
       message: marketplaceInstalled ? 'Installed' : 'Not installed',
-      details: !marketplaceInstalled ? 'Run `ccp install <plugin>` to install marketplace' : undefined,
+      details: !marketplaceInstalled ? 'Run `ccpi install <plugin>` to install marketplace' : undefined,
     });
 
     if (marketplaceInstalled) {

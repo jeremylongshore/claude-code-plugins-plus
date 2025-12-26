@@ -1,11 +1,11 @@
 {
   "name": "@intentsolutionsio/ccpi",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Command-line tool for installing and managing Claude Code plugins from claudecodeplugins.io",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "ccp": "./dist/index.js"
+    "ccpi": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -47,7 +47,8 @@
     "chalk": "^5.3.0",
     "ora": "^8.1.1",
     "fs-extra": "^11.2.0",
-    "axios": "^1.7.9"
+    "axios": "^1.7.9",
+    "yaml": "^2.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
