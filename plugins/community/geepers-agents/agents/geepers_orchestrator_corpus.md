@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_corpus
+name: geepers-orchestrator-corpus
 description: "Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux..."
 capabilities:
   - "Workflow optimization"

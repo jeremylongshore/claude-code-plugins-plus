@@ -1,5 +1,5 @@
 ---
-name: geepers_react
+name: geepers-react
 description: "Agent for React development expertise - component architecture, hooks, st..."
 capabilities:
   - "Workflow optimization"

@@ -1,5 +1,5 @@
 ---
-name: geepers_swarm_research
+name: geepers-swarm-research
 description: "Multi-tier research agent that scales from quick queries to comprehensive m..."
 capabilities:
   - "Workflow optimization"

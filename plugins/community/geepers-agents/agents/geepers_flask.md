@@ -1,5 +1,5 @@
 ---
-name: geepers_flask
+name: geepers-flask
 description: "Flask application specialist. Use when building, reviewing, or debugging Fl..."
 capabilities:
   - "Debugging"

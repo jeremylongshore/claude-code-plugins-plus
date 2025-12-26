@@ -1,5 +1,5 @@
 ---
-name: geepers_corpus
+name: geepers-corpus
 description: "Agent for corpus linguistics projects, language dataset management, compu..."
 capabilities:
   - "Data analysis"

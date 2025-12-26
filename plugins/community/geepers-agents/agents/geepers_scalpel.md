@@ -1,5 +1,5 @@
 ---
-name: geepers_scalpel
+name: geepers-scalpel
 description: "Agent for precise, surgical code modifications in complex or large files"
 capabilities:
   - "Modification"

@@ -10,7 +10,8 @@ import * as yaml from 'yaml';
 
 const VALID_CATEGORIES = [
   'git', 'deployment', 'security', 'testing', 'documentation',
-  'database', 'api', 'frontend', 'backend', 'devops', 'other'
+  'database', 'api', 'frontend', 'backend', 'devops', 'forecasting',
+  'analytics', 'migration', 'monitoring', 'other'
 ];
 
 const VALID_DIFFICULTIES = ['beginner', 'intermediate', 'advanced', 'expert'];
@@ -50,9 +51,26 @@ function extractFrontmatter(content: string): { frontmatter: Record<string, any>
 
 /**
  * Validate frontmatter for command files
+ * Matches nixtla/004-scripts/validate_command_agent_frontmatter.py
  */
-function validateCommandFrontmatter(frontmatter: Record<string, any>): string[] {
+function validateCommandFrontmatter(frontmatter: Record<string, any>, filePath: string): string[] {
   const errors: string[] = [];
+  const fileName = path.basename(filePath, '.md');
+
+  // Required field: name (must be kebab-case, match filename)
+  if (!('name' in frontmatter)) {
+    errors.push('Missing required field: name');
+  } else if (typeof frontmatter.name !== 'string') {
+    errors.push("Field 'name' must be a string");
+  } else {
+    const name = frontmatter.name;
+    if (!/^[a-z][a-z0-9-]*[a-z0-9]$/.test(name) && name.length > 1) {
+      errors.push("Field 'name' must be kebab-case (lowercase + hyphens)");
+    }
+    if (name !== fileName) {
+      errors.push(`Field 'name' '${name}' should match filename '${fileName}.md'`);
+    }
+  }
 
   // Required field: description
   if (!('description' in frontmatter)) {
@@ -105,11 +123,24 @@ function validateCommandFrontmatter(frontmatter: Record<string, any>): string[] 
 
 /**
  * Validate frontmatter for agent files
+ * Matches nixtla/004-scripts/validate_command_agent_frontmatter.py
  */
-function validateAgentFrontmatter(frontmatter: Record<string, any>): string[] {
+function validateAgentFrontmatter(frontmatter: Record<string, any>, filePath: string): string[] {
   const errors: string[] = [];
 
-  // Required field: description
+  // Required field: name (must be kebab-case)
+  if (!('name' in frontmatter)) {
+    errors.push('Missing required field: name');
+  } else if (typeof frontmatter.name !== 'string') {
+    errors.push("Field 'name' must be a string");
+  } else {
+    const name = frontmatter.name;
+    if (!/^[a-z][a-z0-9-]*[a-z0-9]$/.test(name) && name.length > 1) {
+      errors.push("Field 'name' must be kebab-case (lowercase + hyphens)");
+    }
+  }
+
+  // Required field: description (20-200 chars per nixtla standard)
   if (!('description' in frontmatter)) {
     errors.push('Missing required field: description');
   } else if (typeof frontmatter.description !== 'string') {
@@ -118,8 +149,8 @@ function validateAgentFrontmatter(frontmatter: Record<string, any>): string[] {
     if (frontmatter.description.length < 20) {
       errors.push("Field 'description' must be at least 20 characters");
     }
-    if (frontmatter.description.length > 80) {
-      errors.push("Field 'description' must be 80 characters or less");
+    if (frontmatter.description.length > 200) {
+      errors.push("Field 'description' must be 200 characters or less");
     }
   }
 
@@ -134,6 +165,12 @@ function validateAgentFrontmatter(frontmatter: Record<string, any>): string[] {
     }
     if (frontmatter.capabilities.length > 10) {
       errors.push("Field 'capabilities' must have 10 or fewer items");
+    }
+    // Check each capability is a string
+    for (let i = 0; i < frontmatter.capabilities.length; i++) {
+      if (typeof frontmatter.capabilities[i] !== 'string') {
+        errors.push(`Field 'capabilities[${i}]' must be a string`);
+      }
     }
   }
 
@@ -193,9 +230,9 @@ export async function validateFrontmatterFile(filePath: string): Promise<Frontma
 
   // Validate based on file type
   if (result.fileType === 'command') {
-    result.errors = validateCommandFrontmatter(frontmatter);
+    result.errors = validateCommandFrontmatter(frontmatter, filePath);
   } else if (result.fileType === 'agent') {
-    result.errors = validateAgentFrontmatter(frontmatter);
+    result.errors = validateAgentFrontmatter(frontmatter, filePath);
   }
 
   return result;

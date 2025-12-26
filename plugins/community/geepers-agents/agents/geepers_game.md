@@ -1,5 +1,5 @@
 ---
-name: geepers_game
+name: geepers-game
 description: "Agent for gamification design - reward systems, engagement loops, progres..."
 capabilities:
   - "Gamification"

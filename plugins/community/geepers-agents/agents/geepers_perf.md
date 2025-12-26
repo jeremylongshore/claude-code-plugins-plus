@@ -1,5 +1,5 @@
 ---
-name: geepers_perf
+name: geepers-perf
 description: "Agent for performance profiling, bottleneck identification, resource anal..."
 capabilities:
   - "Profiling"

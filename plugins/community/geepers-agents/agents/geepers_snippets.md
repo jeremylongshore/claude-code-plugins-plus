@@ -1,5 +1,5 @@
 ---
-name: geepers_snippets
+name: geepers-snippets
 description: "Use this agent to harvest reusable code patterns, maintain the snippet libr..."
 capabilities:
   - "Quality checks"

@@ -1,5 +1,5 @@
 ---
-name: geepers_citations
+name: geepers-citations
 description: "Data validation and citation checker. Use when verifying data accuracy, che..."
 capabilities:
   - "Verifying"

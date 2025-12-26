@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_games
+name: geepers-orchestrator-games
 description: "Games orchestrator that coordinates game development agents - gamedev, game..."
 capabilities:
   - "Workflow optimization"

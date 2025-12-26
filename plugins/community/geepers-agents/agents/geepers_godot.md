@@ -1,5 +1,5 @@
 ---
-name: geepers_godot
+name: geepers-godot
 description: "Agent for Godot Engine development - GDScript, scene architecture, node p..."
 capabilities:
   - "Workflow optimization"

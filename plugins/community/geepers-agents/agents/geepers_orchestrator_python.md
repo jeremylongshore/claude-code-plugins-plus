@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_python
+name: geepers-orchestrator-python
 description: "Python project orchestrator that coordinates agents for Python development ..."
 capabilities:
   - "Workflow optimization"

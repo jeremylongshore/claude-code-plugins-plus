@@ -1,5 +1,5 @@
 ---
-name: geepers_code_checker
+name: geepers-code-checker
 description: "Multi-model code validation agent that checks code for errors using multipl..."
 capabilities:
   - "Validation"

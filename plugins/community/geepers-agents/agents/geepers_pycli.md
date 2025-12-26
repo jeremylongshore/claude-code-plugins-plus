@@ -1,5 +1,5 @@
 ---
-name: geepers_pycli
+name: geepers-pycli
 description: "Python CLI tool specialist. Use when building command-line applications wit..."
 capabilities:
   - "Building"

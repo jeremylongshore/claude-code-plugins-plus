@@ -1,5 +1,5 @@
 ---
-name: geepers_design
+name: geepers-design
 description: "Agent for visual design systems, typography, layout geometry, color palet..."
 capabilities:
   - "Workflow optimization"

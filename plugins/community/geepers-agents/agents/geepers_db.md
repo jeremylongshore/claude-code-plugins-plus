@@ -1,5 +1,5 @@
 ---
-name: geepers_db
+name: geepers-db
 description: "Agent for database optimization, query analysis, index recommendations, a..."
 capabilities:
   - "Optimization"

@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_quality
+name: geepers-orchestrator-quality
 description: "Quality orchestrator that coordinates audit agents - a11y, perf, api, and d..."
 capabilities:
   - "Endpoint review"

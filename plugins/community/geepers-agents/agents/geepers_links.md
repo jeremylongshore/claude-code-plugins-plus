@@ -1,5 +1,5 @@
 ---
-name: geepers_links
+name: geepers-links
 description: "Agent for link validation, broken link detection, URL enrichment, and res..."
 capabilities:
   - "Validation"

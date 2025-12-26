@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_checkpoint
+name: geepers-orchestrator-checkpoint
 description: "Checkpoint orchestrator that coordinates session maintenance agents - scout..."
 capabilities:
   - "Workflow optimization"

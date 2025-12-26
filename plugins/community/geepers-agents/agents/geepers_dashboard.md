@@ -1,5 +1,5 @@
 ---
-name: geepers_dashboard
+name: geepers-dashboard
 description: "Agent for dashboard synchronization, service persistence configuration, a..."
 capabilities:
   - "Synchronization"

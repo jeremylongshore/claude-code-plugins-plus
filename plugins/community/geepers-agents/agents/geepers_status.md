@@ -1,5 +1,5 @@
 ---
-name: geepers_status
+name: geepers-status
 description: "Use this agent to log work accomplishments and maintain the project status ..."
 capabilities:
   - "Task automation"

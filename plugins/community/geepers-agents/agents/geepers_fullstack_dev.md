@@ -1,5 +1,5 @@
 ---
-name: geepers_fullstack_dev
+name: geepers-fullstack-dev
 description: "Full-stack development agent that generates complete, working code from PRD..."
 capabilities:
   - "Working"

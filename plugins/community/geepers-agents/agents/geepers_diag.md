@@ -1,5 +1,5 @@
 ---
-name: geepers_diag
+name: geepers-diag
 description: "Agent for system diagnostics, error pattern detection, log analysis, and ..."
 capabilities:
   - "Workflow optimization"

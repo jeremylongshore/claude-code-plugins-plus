@@ -1,5 +1,5 @@
 ---
-name: geepers_gamedev
+name: geepers-gamedev
 description: "Agent for video game development expertise - gameplay mechanics, level de..."
 capabilities:
   - "Workflow optimization"

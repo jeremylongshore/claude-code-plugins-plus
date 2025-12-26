@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_fullstack
+name: geepers-orchestrator-fullstack
 description: "Full-stack engineering orchestrator that coordinates backend-to-frontend de..."
 capabilities:
   - "Workflow optimization"

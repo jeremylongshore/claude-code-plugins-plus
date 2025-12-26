@@ -1,5 +1,5 @@
 ---
-name: geepers_services
+name: geepers-services
 description: "Agent for service lifecycle management - starting, stopping, restarting s..."
 capabilities:
   - "Stopping"

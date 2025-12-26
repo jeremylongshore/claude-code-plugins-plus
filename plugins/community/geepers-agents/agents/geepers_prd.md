@@ -1,5 +1,5 @@
 ---
-name: geepers_prd
+name: geepers-prd
 description: "Product Requirements Document generator that creates detailed PRDs based on..."
 capabilities:
   - "Document"

@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_product
+name: geepers-orchestrator-product
 description: "Product development orchestrator that coordinates agents for complete produ..."
 capabilities:
   - "Workflow optimization"

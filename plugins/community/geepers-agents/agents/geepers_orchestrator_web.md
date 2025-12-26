@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_web
+name: geepers-orchestrator-web
 description: "Web application orchestrator that coordinates agents for building and revie..."
 capabilities:
   - "Building"

@@ -1,5 +1,5 @@
 ---
-name: geepers_intern_pool
+name: geepers-intern-pool
 description: "Cost-effective multi-model code generation agent. Uses a pool of smaller/ch..."
 capabilities:
   - "Quality checks"

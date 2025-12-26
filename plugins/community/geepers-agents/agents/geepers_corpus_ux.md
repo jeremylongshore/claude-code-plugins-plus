@@ -1,5 +1,5 @@
 ---
-name: geepers_corpus_ux
+name: geepers-corpus-ux
 description: "Agent for corpus linguistics UI/UX design - KWIC displays, concordance vi..."
 capabilities:
   - "Workflow optimization"

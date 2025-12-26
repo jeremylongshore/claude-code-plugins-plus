@@ -1,5 +1,5 @@
 ---
-name: geepers_system_onboard
+name: geepers-system-onboard
 description: "Project understanding agent for getting up to speed on unfamiliar codebases..."
 capabilities:
   - "Getting"

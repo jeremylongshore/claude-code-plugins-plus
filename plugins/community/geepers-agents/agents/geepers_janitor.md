@@ -1,5 +1,5 @@
 ---
-name: geepers_janitor
+name: geepers-janitor
 description: "Aggressive cleanup and maintenance agent. Use when projects have accumulate..."
 capabilities:
   - "Workflow optimization"

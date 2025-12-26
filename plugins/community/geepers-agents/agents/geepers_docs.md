@@ -1,5 +1,5 @@
 ---
-name: geepers_docs
+name: geepers-docs
 description: "Documentation generator that creates user-friendly manuals, README files, a..."
 capabilities:
   - "Content review"

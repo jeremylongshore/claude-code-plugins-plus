@@ -1,5 +1,5 @@
 ---
-name: geepers_system_diag
+name: geepers-system-diag
 description: "Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy ro..."
 capabilities:
   - "Workflow optimization"

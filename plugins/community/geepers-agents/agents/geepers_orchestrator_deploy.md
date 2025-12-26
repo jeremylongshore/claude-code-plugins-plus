@@ -1,5 +1,5 @@
 ---
-name: geepers_orchestrator_deploy
+name: geepers-orchestrator-deploy
 description: "Deployment orchestrator that coordinates infrastructure agents - validator,..."
 capabilities:
   - "Deployment automation"

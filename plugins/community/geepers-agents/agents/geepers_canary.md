@@ -1,5 +1,5 @@
 ---
-name: geepers_canary
+name: geepers-canary
 description: "Early warning system that spot-checks fragile and critical systems. Like a ..."
 capabilities:
   - "Warning"

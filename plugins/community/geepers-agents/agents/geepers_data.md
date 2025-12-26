@@ -1,5 +1,5 @@
 ---
-name: geepers_data
+name: geepers-data
 description: "Agent for data quality auditing, validation, enrichment, and freshness mo..."
 capabilities:
   - "Auditing"

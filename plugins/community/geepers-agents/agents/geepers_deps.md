@@ -1,5 +1,5 @@
 ---
-name: geepers_deps
+name: geepers-deps
 description: "Agent for dependency audits, security vulnerability scanning, license com..."
 capabilities:
   - "Task automation"

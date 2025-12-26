@@ -1,5 +1,5 @@
 ---
-name: geepers_repo
+name: geepers-repo
 description: "Agent for git hygiene, repository cleanup, and commit organization"
 capabilities:
   - "Workflow optimization"

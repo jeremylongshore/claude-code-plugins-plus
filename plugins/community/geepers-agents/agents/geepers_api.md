@@ -1,5 +1,5 @@
 ---
-name: geepers_api
+name: geepers-api
 description: "Agent for API design review, REST compliance auditing, endpoint documenta..."
 capabilities:
   - "Auditing"

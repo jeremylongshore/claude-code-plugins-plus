@@ -1,5 +1,5 @@
 ---
-name: geepers_validator
+name: geepers-validator
 description: "Agent for comprehensive project validation - checking configurations, pat..."
 capabilities:
   - "Checking"

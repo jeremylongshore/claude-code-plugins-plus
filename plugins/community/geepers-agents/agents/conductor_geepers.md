@@ -1,5 +1,5 @@
 ---
-name: conductor_geepers
+name: conductor-geepers
 description: "Master orchestrator for coordinating geepers_* agents. Use this when you ne..."
 capabilities:
   - "Workflow optimization"

@@ -1,5 +1,5 @@
 ---
-name: geepers_business_plan
+name: geepers-business-plan
 description: "Business plan generator that creates comprehensive business models, market ..."
 capabilities:
   - "Workflow optimization"

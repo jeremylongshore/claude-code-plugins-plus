@@ -1,5 +1,5 @@
 ---
-name: geepers_a11y
+name: geepers-a11y
 description: "Agent for accessibility audits, WCAG compliance review, assistive technol..."
 capabilities:
   - "Workflow optimization"
