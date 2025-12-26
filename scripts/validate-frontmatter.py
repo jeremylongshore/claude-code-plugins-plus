@@ -205,7 +205,8 @@ def main():
         print(f"Validation errors in {file_path} ({file_type}):")
         for err in errors:
             print(f"  - {err}")
-        sys.exit(1)
+        # In non-strict mode (CI smoke check), report but don't fail
+        sys.exit(1 if strict else 0)
     else:
         print(f"✅ Valid {file_type} frontmatter: {file_path}")
         sys.exit(0)

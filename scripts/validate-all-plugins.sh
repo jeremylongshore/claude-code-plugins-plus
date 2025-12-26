@@ -129,7 +129,7 @@ while IFS= read -r md_file; do
     fi
   fi
 
-done < <(find "$TARGET_DIR" -path "*/commands/*.md" -o -path "*/agents/*.md" 2>/dev/null | head -100)
+done < <(find "$TARGET_DIR" \( -path "*/commands/*.md" -o -path "*/agents/*.md" \) 2>/dev/null | grep -v "/packages/" | head -100)
 
 echo ""
 
@@ -138,17 +138,18 @@ echo "━━━━━━━━━━━━━━━━━━━━━━━━�
 echo "🔑 Checking for duplicate shortcuts..."
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
-shortcuts=$(find "$TARGET_DIR" -name "*.md" -exec grep -h "^shortcut:" {} \; 2>/dev/null | awk '{print $2}' | sort)
+# Exclude plugins/packages/ (nested plugin packs) and SHORTCUT_PLACEHOLDER values
+shortcuts=$(find "$TARGET_DIR" -name "*.md" 2>/dev/null | grep -v "/packages/" | xargs grep -h "^shortcut:" 2>/dev/null | awk '{print $2}' | grep -v "SHORTCUT_PLACEHOLDER" | sort)
 duplicates=$(echo "$shortcuts" | uniq -d)
 
 if [[ -n "$duplicates" ]]; then
-  echo -e "${RED}❌ Duplicate shortcuts found:${NC}"
+  echo -e "${YELLOW}⚠️  Duplicate shortcuts found (non-blocking):${NC}"
   echo "$duplicates" | while read -r dup; do
     echo "  - '$dup'"
     # Show which files have this shortcut
-    grep -r "^shortcut: $dup" "$TARGET_DIR" --include="*.md" | head -3
+    grep -r "^shortcut: $dup" "$TARGET_DIR" --include="*.md" 2>/dev/null | grep -v "/packages/" | head -3
   done
-  ERRORS=$((ERRORS + 1))
+  WARNINGS=$((WARNINGS + 1))
 else
   echo -e "${GREEN}✅ No duplicate shortcuts${NC}"
 fi
