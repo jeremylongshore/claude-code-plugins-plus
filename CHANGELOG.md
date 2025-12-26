@@ -1,3 +1,85 @@
+## [4.4.0] - 2025-12-26
+
+### 🎯 Release Highlights
+
+**CLI 2.0 + vibe-guide + Website Unification** - This release brings the package manager to production, adds a new plugin for non-technical users, and delivers a unified 521-route website experience.
+
+### 🙏 Contributors
+
+- **Jeremy Longshore** - CLI v2.0.0, vibe-guide plugin, website unification
+- **Damien Laine** - Gemini code review workflow integration
+- **intentsolutions.io** - Infrastructure and release engineering
+
+### 📦 New Plugin: vibe-guide
+
+**Non-technical progress summaries for Claude Code work** - Perfect for pair programming with non-developers.
+
+- **7 Commands:** `/vibe`, `/status`, `/continue`, `/stop`, `/learn`, `/details`, `/guide`
+- **3 Agents:** worker (executes steps), explainer (plain language), explorer (learning mode)
+- **PostToolUse Hook:** Auto-summarizes verbose output to friendly updates
+- **No diffs, no logs** - Just clear progress in plain language
+
+```bash
+ccpi install vibe-guide
+/vibe-guide:vibe Build a contact form
+/vibe-guide:continue
+```
+
+### 🚀 CLI v2.0.0 (@intentsolutionsio/ccpi)
+
+**Full package manager for Claude Code plugins** - Search, install, validate from your terminal.
+
+```bash
+pnpm add -g @intentsolutionsio/ccpi
+
+ccpi search devops          # Search plugins
+ccpi list                   # List all available
+ccpi install ansible-*      # Install plugins
+ccpi validate ./my-plugin   # Validate structure
+```
+
+**New in v2.0.0:**
+- `ccpi validate` command for plugin developers
+- Bulk install: `ccpi install pack1 pack2 pack3`
+- Binary renamed from `ccp` to `ccpi`
+- Homepage install CTA with smoke tests
+
+### 🌐 Website Unification (521 Routes)
+
+**Unified Explorer Experience** - Complete site-wide design system overhaul.
+
+- **Skills Pages:** 244 agent skill routes with proper rendering
+- **Learning Hub:** 8 routes for tutorials and guides
+- **Homepage Search:** Redirects to /explore with unified search
+- **Mobile Excellence:** 100% Playwright test pass rate
+- **Production Landing:** Phase 4 & 5 P0 fixes complete
+
+### 🔧 Fixes & Improvements
+
+- **Validators:** Nixtla standards with relaxed warnings (210 errors fixed)
+- **Frontmatter:** Fixed geepers-agents YAML parsing issues
+- **CI/CD:** Gemini code review workflow via Vertex AI
+- **Mobile UX:** Search toggle overlap fixed, installation instructions added
+- **Build:** Fixed undefined catalog.categories in plugins index
+
+### 📊 Metrics
+
+| Metric | Previous | Current | Change |
+|--------|----------|---------|--------|
+| Total Plugins | 258 | 264 | +6 |
+| Agent Skills | 241 | 244 | +3 |
+| Commands | 310 | 317 | +7 |
+| Agents | 144 | 147 | +3 |
+| Website Routes | ~400 | 521 | +121 |
+
+### 🎓 Documentation
+
+- **README:** Added Package Manager (CLI) section with install instructions
+- **vibe-guide:** Comprehensive README with progressive workflow examples
+- **MD Standards:** All plugin markdown aligned with Anthropic standards
+
+---
+
 ## [4.3.0] - 2025-12-23
 
 ### 🎉 Epic Complete: Rate Limits & Resource Constraints Documentation
