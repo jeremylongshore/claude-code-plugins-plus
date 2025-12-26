@@ -11,6 +11,7 @@ Vibe Guide introduces a completely new way to interact with Claude Code:
 - **Error Checklists**: When something breaks, you get a numbered list of what to do, not a stack trace
 - **Learning Mode**: Optional educational micro-explanations teach concepts as you go
 - **Session Persistence**: Progress is saved to `.vibe/` so you can pause and resume anytime
+- **Auto-Summarization**: Hook automatically condenses verbose command output
 
 This plugin is perfect for:
 - Non-technical founders working with AI to build products
@@ -18,21 +19,54 @@ This plugin is perfect for:
 - Product managers pairing on implementations
 - Anyone who wants to understand what's happening without reading code
 
+## Installation
+
+### Option 1: Install from Marketplace (Recommended)
+
+```bash
+# Step 1: Add the marketplace to Claude Code
+/plugin marketplace add jeremylongshore/claude-code-plugins
+
+# Step 2: Install vibe-guide
+/plugin install vibe-guide@claude-code-plugins-plus
+
+# Step 3: Verify installation
+/vibe-guide:guide
+```
+
+### Option 2: Install via CLI
+
+```bash
+# Using the Claude Code CLI
+claude plugin install vibe-guide@claude-code-plugins-plus
+```
+
+### Option 3: Local Development
+
+```bash
+# Clone the repository
+git clone https://github.com/jeremylongshore/claude-code-plugins.git
+
+# Run Claude with the plugin directory
+claude --plugin-dir ./claude-code-plugins/plugins/productivity/vibe-guide
+```
+
 ## Commands
 
 | Command | Description |
 |---------|-------------|
-| `/vibe-guide:vibe <goal>` | Start a new session with a goal |
-| `/vibe-guide:status` | Show current progress |
-| `/vibe-guide:continue` | Run the next step |
-| `/vibe-guide:stop` | Pause or resume the session |
-| `/vibe-guide:details on\|off` | Toggle technical details |
-| `/vibe-guide:learn on\|off` | Toggle educational explanations |
+| `/vibe-guide:vibe <goal>` | 🚀 Start a new session with a goal |
+| `/vibe-guide:status` | 📊 Show current progress |
+| `/vibe-guide:continue` | ⏭️ Run the next step |
+| `/vibe-guide:stop` | ⏸️ Pause or resume the session |
+| `/vibe-guide:details on\|off` | 🔍 Toggle technical details |
+| `/vibe-guide:learn on\|off` | 📚 Toggle educational explanations |
+| `/vibe-guide:guide` | ❓ Show usage help with examples |
 
 ## Quick Start
 
 ```bash
-# Start a session
+# Start a session with your goal
 /vibe-guide:vibe Build a WNBA stats table page
 
 # Check progress anytime
@@ -43,25 +77,28 @@ This plugin is perfect for:
 
 # Want to learn as you go?
 /vibe-guide:learn on
+
+# Need help?
+/vibe-guide:guide
 ```
 
-## Local Development
+## Progressive Workflow
 
-Test the plugin locally:
+Vibe Guide uses a **stepwise approach** - each command does ONE thing:
 
-```bash
-claude --plugin-dir ./plugins/productivity/vibe-guide
+```
+/vibe-guide:vibe "Add dark mode"     ← Start session, run step 1
+         ↓
+/vibe-guide:continue                  ← Run step 2
+         ↓
+/vibe-guide:continue                  ← Run step 3
+         ↓
+      ... repeat ...
+         ↓
+      ✅ Done!
 ```
 
-## Install from Marketplace
-
-```bash
-# Add the marketplace (if not already added)
-/plugin marketplace add jeremylongshore/claude-code-plugins
-
-# Install the plugin
-/plugin install vibe-guide@claude-code-plugins-plus
-```
+This gives you control - review each step before moving on.
 
 ## Example Transcripts
 
@@ -193,30 +230,75 @@ To fix this:
 3. Make sure the database exists
 
 After you've done that, run /vibe-guide:status to continue.
+```
 
-> /vibe-guide:status
+## Plugin Structure
 
-Something went wrong, but it's fixable.
-
-What happened: Couldn't connect to the database server.
-
-To fix this:
-1. Check if PostgreSQL is running (run: pg_isready)
-2. Verify your DATABASE_URL in the .env file
-3. Make sure the database exists
-
-After you've done that, run /vibe-guide:status to continue.
+```
+📁 vibe-guide/
+├── 📁 .claude-plugin/
+│   └── 📄 plugin.json          🏷️  Plugin manifest
+├── 📖 README.md                 📚 This file
+├── 📁 agents/
+│   ├── 🤖 worker.md            ⚙️  Executes tiny steps
+│   ├── 🗣️ explainer.md         💬 Plain language output
+│   └── 🎓 explorer.md          💡 Learning micro-lessons
+├── 📁 commands/
+│   ├── 🚀 vibe.md              ▶️  Start session
+│   ├── 📊 status.md            👀 Check progress
+│   ├── ⏭️ continue.md          🔄 Run next step
+│   ├── ⏸️ stop.md              ⏯️  Pause/resume
+│   ├── 🔍 details.md           🔧 Toggle verbosity
+│   ├── 📚 learn.md             🎯 Toggle learning
+│   └── ❓ guide.md             📖 Show usage help
+└── 📁 hooks/
+    └── 🪝 hooks.json           🧹 Auto-summarize verbose output
 ```
 
 ## Session Files
 
 Vibe Guide stores state in `.vibe/` at your project root:
 
-- `session.json` - Goal, settings, pause state
-- `status.json` - Current step, progress, errors
-- `changelog.md` - Human-readable log of all steps
+| File | Purpose |
+|------|---------|
+| `session.json` | Goal, settings, pause state |
+| `status.json` | Current step, progress, errors |
+| `changelog.md` | Human-readable log of all steps |
 
 This folder is automatically added to `.gitignore`.
+
+## Requirements
+
+- Claude Code (any recent version)
+- No additional dependencies
+
+## Troubleshooting
+
+### Plugin not found after install
+```bash
+# Verify the marketplace is added
+/plugin marketplace list
+
+# Re-add if needed
+/plugin marketplace add jeremylongshore/claude-code-plugins
+```
+
+### Commands not working
+```bash
+# Check plugin is installed
+/plugin list
+
+# Reinstall if needed
+/plugin uninstall vibe-guide@claude-code-plugins-plus
+/plugin install vibe-guide@claude-code-plugins-plus
+```
+
+### Session stuck or corrupted
+```bash
+# Remove the .vibe folder and start fresh
+rm -rf .vibe/
+/vibe-guide:vibe <your goal>
+```
 
 ## Contributors
 
