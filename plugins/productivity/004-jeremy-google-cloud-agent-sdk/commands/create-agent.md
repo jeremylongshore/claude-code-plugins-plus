@@ -1,9 +1,8 @@
 ---
 name: create-agent
-description: Create a production-ready Google Cloud agent using ADK and Agent Starter Pack with CI/CD, deployment, and testing infrastructure
+description: Create a production-ready Google Cloud agent using ADK and Agent Starter...
 model: sonnet
 ---
-
 # Create Production-Ready Google Cloud Agent
 
 Scaffold a complete agent project using Google's Agent Development Kit (ADK) and Agent Starter Pack with production-ready infrastructure.

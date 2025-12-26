@@ -1,9 +1,8 @@
 ---
 name: demo-skills
-description: Demonstrates the 5 plugin management Skills for creating, validating, auditing, and managing plugins in claude-code-plugins repository
+description: Demonstrates the 5 plugin management Skills for creating, validating,...
 model: sonnet
 ---
-
 # Skills Powerkit Demo - Plugin Management Skills
 
 This command demonstrates the 5 Agent Skills designed specifically for managing plugins in the **claude-code-plugins** repository.

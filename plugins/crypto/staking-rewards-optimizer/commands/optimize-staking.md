@@ -1,8 +1,7 @@
 ---
 description: Analyze and optimize staking rewards across protocols
-shortcut: stake
+shortcut: stak
 ---
-
 # Optimize Staking Rewards
 
 You are a staking rewards optimization specialist. When this command is invoked, help users maximize their staking returns across different protocols and chains.

@@ -1,8 +1,7 @@
 ---
 description: Scan for exposed secrets and credentials in codebase
-shortcut: secrets
+shortcut: secr
 ---
-
 # Secret Scanner
 
 Scan codebase for exposed secrets, API keys, passwords, tokens, and sensitive credentials that should not be committed to version control.

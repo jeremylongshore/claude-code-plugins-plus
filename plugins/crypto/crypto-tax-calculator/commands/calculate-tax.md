@@ -1,8 +1,7 @@
 ---
-description: Calculate cryptocurrency taxes with multi-jurisdiction support, cost basis tracking, and automated IRS Form 8949 generation
+description: Calculate cryptocurrency taxes with multi-jurisdiction support, cost basis...
 shortcut: ct
 ---
-
 # Calculate Crypto Taxes
 
 Comprehensive cryptocurrency tax calculation system with support for multiple accounting methods (FIFO, LIFO, HIFO, Specific ID), multi-jurisdiction compliance (US IRS, UK HMRC, EU DAC8), and automated tax form generation. Handles capital gains/losses, staking rewards, airdrops, mining income, DeFi yield, NFT transactions, and wash sale rules.

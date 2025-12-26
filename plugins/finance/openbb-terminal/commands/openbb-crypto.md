@@ -1,8 +1,7 @@
 ---
 name: openbb-crypto
-description: Cryptocurrency market analysis using OpenBB - price data, on-chain metrics, DeFi analytics, whale tracking, and market sentiment
+description: Cryptocurrency market analysis using OpenBB - price data, on-chain metrics,...
 ---
-
 # OpenBB Cryptocurrency Analysis
 
 Comprehensive cryptocurrency analysis using OpenBB Platform's crypto data sources.

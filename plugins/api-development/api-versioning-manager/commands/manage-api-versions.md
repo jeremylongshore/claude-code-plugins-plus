@@ -1,8 +1,7 @@
 ---
 description: Manage API versions with proper migration strategies
-shortcut: apiver
+shortcut: apiv
 ---
-
 # Manage API Versions
 
 Implement comprehensive API versioning strategies with backward compatibility, smooth migration paths, deprecation workflows, and automated compatibility testing to ensure seamless API evolution.

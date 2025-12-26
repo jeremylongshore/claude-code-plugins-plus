@@ -1,8 +1,7 @@
 ---
 description: Search AI experiments and display formatted results
-shortcut: search-exp
+shortcut: sear
 ---
-
 # Search AI Experiments
 
 When the user runs `/search-exp [query]`, search through all AI experiments and display formatted terminal results.

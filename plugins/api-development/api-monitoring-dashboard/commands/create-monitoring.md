@@ -1,8 +1,7 @@
 ---
 description: Create API monitoring dashboard
-shortcut: monitor
+shortcut: mon
 ---
-
 # Create API Monitoring Dashboard
 
 Build comprehensive monitoring infrastructure with metrics, logs, traces, and alerts for full API observability.

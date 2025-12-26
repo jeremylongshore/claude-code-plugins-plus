@@ -1,9 +1,8 @@
 ---
 name: vertex-campaign
-description: Generate complete multimodal marketing campaigns using Vertex AI - video, audio, images, copy for all channels
+description: Generate complete multimodal marketing campaigns using Vertex AI - video,...
 model: sonnet
 ---
-
 # Generate Multimodal Marketing Campaign with Vertex AI
 
 Create a comprehensive marketing campaign with all assets generated via Google Vertex AI multimodal capabilities.

@@ -1,8 +1,7 @@
 ---
 name: openbb-options
-description: Options analysis using OpenBB - chain data, Greeks, implied volatility, strategies, unusual activity
+description: Options analysis using OpenBB - chain data, Greeks, implied volatility,...
 ---
-
 # OpenBB Options Analysis
 
 Options chain analysis, Greeks calculations, and strategy optimization using OpenBB Platform.

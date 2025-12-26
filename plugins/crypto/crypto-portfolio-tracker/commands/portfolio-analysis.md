@@ -1,8 +1,7 @@
 ---
-description: Analyze entire crypto portfolio with allocation, risk metrics, and rebalancing suggestions
+description: Analyze entire crypto portfolio with allocation, risk metrics, and...
 shortcut: pa
 ---
-
 # Portfolio Analysis
 
 Comprehensive portfolio analysis for cryptocurrency holdings with advanced metrics, risk assessment, and optimization recommendations.

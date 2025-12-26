@@ -1,8 +1,7 @@
 ---
 description: Add rate limiting to API endpoints
-shortcut: ratelimit
+shortcut: rate
 ---
-
 # Add Rate Limiting to API Endpoints
 
 Implement production-ready rate limiting with token bucket, sliding window, or fixed window algorithms using Redis for distributed state management.

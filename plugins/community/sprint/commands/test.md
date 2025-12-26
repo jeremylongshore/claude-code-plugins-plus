@@ -1,9 +1,8 @@
 ---
 name: test
-description: Manual UI testing with Chrome browser - explore your app while errors are captured
+description: Manual UI testing with Chrome browser - explore your app while errors are...
 argument-hint: "[url]"
 ---
-
 # Manual UI Test Command
 
 You are launching a manual UI testing session using Chrome browser.

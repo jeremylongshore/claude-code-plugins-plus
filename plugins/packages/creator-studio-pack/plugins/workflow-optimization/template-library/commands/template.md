@@ -1,8 +1,7 @@
 ---
 name: template
-description: Save and reuse successful video templates including scripts, thumbnails, titles, and editing styles
+description: Save and reuse successful video templates including scripts, thumbnails,...
 ---
-
 # Template Library Command
 
 Save successful video formats as reusable templates to streamline content creation and maintain consistency.

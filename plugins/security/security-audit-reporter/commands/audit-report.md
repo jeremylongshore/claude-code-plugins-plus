@@ -1,8 +1,7 @@
 ---
 description: Generate comprehensive security audit report
-shortcut: auditreport
+shortcut: audi
 ---
-
 # Security Audit Reporter
 
 Generate comprehensive security audit reports covering vulnerabilities, compliance status, and remediation roadmap.

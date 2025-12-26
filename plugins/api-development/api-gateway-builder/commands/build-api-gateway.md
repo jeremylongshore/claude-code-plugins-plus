@@ -1,12 +1,11 @@
 ---
-description: Build production-ready API gateway with intelligent routing, authentication, rate limiting, and microservice orchestration
-shortcut: gateway
+description: Build production-ready API gateway with intelligent routing, authentication,...
+shortcut: gate
 category: api
 difficulty: advanced
 estimated_time: 3-5 hours
 version: 2.0.0
 ---
-
 <!-- DESIGN DECISIONS -->
 <!-- API gateways provide a single entry point for microservices, handling cross-cutting
      concerns like authentication, rate limiting, and routing. This command generates

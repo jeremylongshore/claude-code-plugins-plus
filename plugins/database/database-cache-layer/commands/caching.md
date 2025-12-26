@@ -1,8 +1,7 @@
 ---
-description: Implement multi-tier database caching with Redis, in-memory, and CDN layers for 10-100x performance improvement
-shortcut: caching
+description: Implement multi-tier database caching with Redis, in-memory, and CDN layers...
+shortcut: cach
 ---
-
 # Database Cache Layer
 
 Implement production-grade multi-tier caching architecture for databases using Redis (distributed cache), in-memory caching (L1), and CDN (static assets) to reduce database load by 80-95%, improve query latency from 50ms to 1-5ms, and support horizontal scaling with cache-aside, write-through, and read-through patterns.

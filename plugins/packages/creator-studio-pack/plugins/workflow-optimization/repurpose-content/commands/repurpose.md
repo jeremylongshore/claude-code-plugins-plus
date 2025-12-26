@@ -1,8 +1,7 @@
 ---
 name: repurpose
-description: Transform one long-form video into 30+ pieces of content across all platforms with platform-specific optimization
+description: Transform one long-form video into 30+ pieces of content across all...
 ---
-
 # Repurpose Content Command
 
 Transform one video into 30+ optimized content pieces across platforms, maximizing reach and minimizing effort.

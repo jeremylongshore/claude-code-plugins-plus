@@ -1,8 +1,7 @@
 ---
 name: optimize-title
-description: A/B test video titles for maximum CTR using proven formulas and psychological triggers
+description: A/B test video titles for maximum CTR using proven formulas and...
 ---
-
 # Title Optimizer Command
 
 Optimize video titles for maximum click-through rate using data-driven formulas and A/B testing.

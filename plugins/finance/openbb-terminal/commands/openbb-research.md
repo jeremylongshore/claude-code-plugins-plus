@@ -1,8 +1,7 @@
 ---
 name: openbb-research
-description: AI-powered investment research using OpenBB - comprehensive analysis, thesis generation, risk assessment, actionable insights
+description: AI-powered investment research using OpenBB - comprehensive analysis, thesis...
 ---
-
 # OpenBB AI Investment Research
 
 AI-powered comprehensive investment research combining OpenBB data with Claude's analytical capabilities.

@@ -1,8 +1,7 @@
 ---
-description: Comprehensive database replication management with streaming replication, failover automation, and lag monitoring
-shortcut: replication
+description: Comprehensive database replication management with streaming replication,...
+shortcut: repl
 ---
-
 # Database Replication Manager
 
 Implement production-grade database replication for PostgreSQL and MySQL with streaming replication (physical), logical replication (selective tables), synchronous and asynchronous modes, automatic failover, lag monitoring, conflict resolution, and read scaling across multiple replicas. Achieve 99.99% availability with RPO <5 seconds and RTO <30 seconds for automated failover.

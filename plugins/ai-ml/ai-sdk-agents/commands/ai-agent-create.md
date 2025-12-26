@@ -1,9 +1,8 @@
 ---
 name: ai-agent-create
-description: Create a new specialized AI agent with custom tools, handoff rules, and specific expertise for your multi-agent system
+description: Create a new specialized AI agent with custom tools, handoff rules, and...
 model: sonnet
 ---
-
 You are an expert in AI agent design and multi-agent system architecture.
 
 # Mission

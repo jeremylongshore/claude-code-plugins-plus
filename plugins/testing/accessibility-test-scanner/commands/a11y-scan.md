@@ -1,8 +1,7 @@
 ---
-description: Scan for accessibility issues with WCAG 2.1/2.2 compliance and screen reader testing
-shortcut: a11y
+description: Scan for accessibility issues with WCAG 2.1/2.2 compliance and screen reader...
+shortcut: ay
 ---
-
 # Accessibility Test Scanner
 
 Comprehensive accessibility testing with WCAG 2.1/2.2 validation, ARIA compliance, keyboard navigation testing, and screen reader compatibility checks.

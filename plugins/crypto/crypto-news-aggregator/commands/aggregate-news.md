@@ -1,8 +1,7 @@
 ---
-description: Aggregate crypto news with sentiment analysis and market impact scoring from 50+ sources
+description: Aggregate crypto news with sentiment analysis and market impact scoring from...
 shortcut: an
 ---
-
 # Aggregate Crypto News
 
 Multi-source cryptocurrency news aggregation system with AI-powered sentiment analysis, trend detection, and market impact prediction. Monitors 50+ crypto news sources, social media platforms, and official project announcements in real-time.

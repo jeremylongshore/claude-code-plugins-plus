@@ -1,8 +1,7 @@
 ---
 description: Validate API responses against schemas
-shortcut: validate
+shortcut: val
 ---
-
 # Validate API Responses
 
 Implement comprehensive API response validation using JSON Schema, OpenAPI specifications, and custom business rules to ensure data integrity and contract compliance.

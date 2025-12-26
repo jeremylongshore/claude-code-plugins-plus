@@ -1,8 +1,7 @@
 ---
-description: Comprehensive database security scanner with OWASP compliance checks, vulnerability detection, and automated remediation
-shortcut: security-scan
+description: Comprehensive database security scanner with OWASP compliance checks,...
+shortcut: secu
 ---
-
 # Database Security Scanner
 
 Implement production-grade database security scanning for PostgreSQL and MySQL that detects 50+ security vulnerabilities including weak passwords, excessive permissions, SQL injection vectors, missing encryption, exposed ports, and insecure configurations. Provides OWASP Database Security compliance reports, automated remediation scripts, and continuous security monitoring with SOC2/HIPAA/PCI DSS audit trails.

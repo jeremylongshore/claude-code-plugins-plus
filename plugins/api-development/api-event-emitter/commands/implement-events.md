@@ -1,8 +1,7 @@
 ---
 description: Implement event-driven API architecture
-shortcut: events
+shortcut: even
 ---
-
 # Implement Event-Driven API
 
 Build production-grade event-driven APIs with message queues, event streaming, and async communication patterns. This command generates event publishers, subscribers, message brokers integration, and event-driven architectures for microservices and distributed systems.

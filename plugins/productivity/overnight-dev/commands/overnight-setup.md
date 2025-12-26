@@ -1,8 +1,7 @@
 ---
 description: Setup overnight development with Git hooks for autonomous TDD sessions
-shortcut: setup-overnight
+shortcut: setu
 ---
-
 # Overnight Development Setup
 
 Install Git hooks and configure overnight autonomous development in your project.

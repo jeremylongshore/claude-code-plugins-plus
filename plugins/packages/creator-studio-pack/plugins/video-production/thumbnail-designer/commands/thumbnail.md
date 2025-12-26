@@ -1,8 +1,7 @@
 ---
 name: thumbnail
-description: Generate YouTube-style thumbnails with text overlays, faces, and attention-grabbing designs
+description: Generate YouTube-style thumbnails with text overlays, faces, and...
 ---
-
 # Thumbnail Designer Command
 
 Generate high-CTR YouTube thumbnails with AI-assisted design and proven formulas.

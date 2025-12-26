@@ -1,8 +1,7 @@
 ---
-description: Track real-time prices across crypto, stocks, forex, and commodities with multi-source feeds
+description: Track real-time prices across crypto, stocks, forex, and commodities with...
 shortcut: tp
 ---
-
 # Track Market Price
 
 Real-time price tracking system with institutional-grade data feeds from multiple sources for accuracy and reliability.

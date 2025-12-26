@@ -1,8 +1,7 @@
 ---
-description: Run API load tests with k6, Artillery, or Gatling to measure performance under load
-shortcut: loadtest
+description: Run API load tests with k6, Artillery, or Gatling to measure performance...
+shortcut: load
 ---
-
 # Run API Load Test
 
 Execute comprehensive load tests to measure API performance, identify bottlenecks, and validate scalability under realistic traffic patterns.

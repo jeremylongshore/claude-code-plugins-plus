@@ -1,8 +1,7 @@
 ---
-description: Backtest trading strategies with historical data and comprehensive performance analysis
+description: Backtest trading strategies with historical data and comprehensive...
 shortcut: bs
 ---
-
 # Backtest Trading Strategy
 
 Test trading strategies against historical data with performance metrics, risk analysis, and optimization.

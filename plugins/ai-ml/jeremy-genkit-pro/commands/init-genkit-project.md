@@ -1,9 +1,8 @@
 ---
 name: init-genkit-project
-description: Initialize a new Firebase Genkit project with best practices, proper structure, and production-ready configuration for Node.js, Python, or Go
+description: Initialize a new Firebase Genkit project with best practices, proper...
 model: sonnet
 ---
-
 # Initialize Genkit Project
 
 Initialize a production-ready Firebase Genkit project with proper structure, configuration, and best practices.

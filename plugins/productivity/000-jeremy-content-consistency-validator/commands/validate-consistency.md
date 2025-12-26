@@ -1,10 +1,9 @@
 ---
 name: validate-consistency
-description: Generate comprehensive read-only discrepancy report comparing messaging consistency across website, GitHub, and local documentation
+description: Generate comprehensive read-only discrepancy report comparing messaging...
 model: sonnet
 temperature: 0.0
 ---
-
 **CRITICAL INSTRUCTIONS:**
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
 - **Read-only** - Report discrepancies, never suggest creative solutions
