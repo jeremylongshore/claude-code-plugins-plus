@@ -10,9 +10,9 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 259,
+    "totalPlugins": 260,
     "skillsEnabled": 241,
-    "lastUpdated": "2025-12-21"
+    "lastUpdated": "2025-12-26"
   },
   "plugins": [
     {
@@ -4788,6 +4788,33 @@
         "email": "damien.laine@gmail.com",
         "url": "https://github.com/damienlaine"
       }
+    },
+    {
+      "name": "vibe-guide",
+      "source": "./plugins/productivity/vibe-guide",
+      "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "ux",
+        "accessibility",
+        "explain",
+        "pairing",
+        "non-technical",
+        "beginner-friendly",
+        "explanations",
+        "noise-filtering"
+      ],
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "tags": [
+        "beginner-friendly",
+        "explanations",
+        "noise-filtering"
+      ],
+      "strict": true
     }
   ]
 }

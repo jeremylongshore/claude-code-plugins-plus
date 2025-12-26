@@ -1,0 +1,74 @@
+---
+name: continue
+description: Execute the next step in the current session
+---
+
+# /vibe-guide:continue
+
+Run the next step in your vibe session.
+
+## Usage
+
+```
+/vibe-guide:continue
+```
+
+## Execution Steps
+
+### Step 1: Check Session Exists
+
+If `.vibe/session.json` doesn't exist:
+
+```
+No active vibe session.
+
+To start one, run:
+  /vibe-guide:vibe <your goal>
+```
+
+### Step 2: Check for Stop Flag
+
+If `session.stop` is true:
+
+```
+Session is paused.
+
+To resume, first run:
+  /vibe-guide:stop
+(This toggles the pause off)
+```
+
+### Step 3: Check for Error
+
+Read `.vibe/status.json`. If `error` field exists:
+
+Invoke `vibe-explainer` to show the error checklist, then stop.
+
+Do NOT run worker when there's an unresolved error.
+
+### Step 4: Check if Done
+
+If `status.phase` is "done":
+
+```
+This session is complete!
+
+To start a new one, run:
+  /vibe-guide:vibe <new goal>
+```
+
+### Step 5: Run Worker
+
+Invoke `vibe-worker` agent to execute the next step.
+
+### Step 6: Run Explainer
+
+Invoke `vibe-explainer` agent to present results.
+
+### Step 7: Run Explorer (Optional)
+
+If `session.learning_mode` is true, invoke `vibe-explorer` agent.
+
+## Output
+
+The explainer's friendly summary of what just happened.
