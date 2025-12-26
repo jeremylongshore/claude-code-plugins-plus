@@ -14,6 +14,14 @@ Toggle pause on the current session.
 /vibe-guide:stop
 ```
 
+## Examples
+
+```
+/vibe-guide:stop
+```
+
+Pauses the session. Run again to resume.
+
 ## Execution Steps
 
 ### Step 1: Check Session Exists
@@ -47,8 +55,9 @@ Invoke `vibe-explainer` to confirm the pause/resume.
 ## Output
 
 When paused:
+
 ```
-1) Where we are (1 sentence)
+1) Where we are
    Session is now paused.
 
 2) What changed
@@ -57,7 +66,7 @@ When paused:
 3) What I checked
    - Progress saved
 
-4) What's next (1 sentence)
+4) What's next
    Run /vibe-guide:stop again to resume.
 
 5) Do you need to do anything?
@@ -65,8 +74,9 @@ When paused:
 ```
 
 When resumed:
+
 ```
-1) Where we are (1 sentence)
+1) Where we are
    Session resumed at step X.
 
 2) What changed
@@ -75,7 +85,7 @@ When resumed:
 3) What I checked
    - Previous state restored
 
-4) What's next (1 sentence)
+4) What's next
    Run /vibe-guide:continue to keep going.
 
 5) Do you need to do anything?

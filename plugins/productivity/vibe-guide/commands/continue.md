@@ -14,6 +14,14 @@ Run the next step in your vibe session.
 /vibe-guide:continue
 ```
 
+## Examples
+
+```
+/vibe-guide:continue
+```
+
+Executes one step, then shows what happened.
+
 ## Execution Steps
 
 ### Step 1: Check Session Exists
@@ -72,4 +80,21 @@ If `session.learning_mode` is true, invoke `vibe-explorer` agent.
 
 ## Output
 
-The explainer's friendly summary of what just happened.
+The explainer's friendly summary of what just happened:
+
+```
+1) Where we are
+   [Current step completed]
+
+2) What changed
+   - [Changes in plain language]
+
+3) What I checked
+   - [Verifications performed]
+
+4) What's next
+   [Next step to run]
+
+5) Do you need to do anything?
+   No, nothing needed right now.
+```

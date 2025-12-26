@@ -6,13 +6,21 @@ allowed-tools: Read
 
 # /vibe-guide:status
 
-Check where we are in the current session.
+Check where we are in the current session without doing any more work.
 
 ## Usage
 
 ```
 /vibe-guide:status
 ```
+
+## Examples
+
+```
+/vibe-guide:status
+```
+
+Shows current progress, what changed, and what's next.
 
 ## Execution Steps
 
@@ -41,11 +49,37 @@ If `session.learning_mode` is true, invoke `vibe-explorer` agent.
 
 ## Output
 
-The explainer's friendly summary of current progress.
+The explainer presents current progress:
+
+```
+1) Where we are
+   [Current phase and step]
+
+2) What changed
+   - [Recent changes in plain language]
+
+3) What I checked
+   - [Recent verifications]
+
+4) What's next
+   [Next planned step]
+
+5) Do you need to do anything?
+   [Yes with steps, or No]
+```
 
 ## Error Handling
 
-If status.json has an error field, explainer will show only:
-- Friendly error summary
-- Numbered checklist to fix
-- Instruction to run /vibe-guide:status after fixing
+If `status.json` has an error field, explainer shows only:
+
+```
+Something went wrong, but it's fixable.
+
+What happened: [Friendly error summary]
+
+To fix this:
+1. [First step to fix]
+2. [Second step to fix]
+
+After you've done that, run /vibe-guide:status to continue.
+```

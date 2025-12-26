@@ -16,6 +16,13 @@ Toggle learning mode for educational explanations.
 /vibe-guide:learn off
 ```
 
+## Examples
+
+```
+/vibe-guide:learn on   # Enable mini-lessons after each step
+/vibe-guide:learn off  # Progress-only updates
+```
+
 ## Execution Steps
 
 ### Step 1: Check Session Exists
@@ -41,7 +48,10 @@ Update `.vibe/session.json` with new `learning_mode` value.
 
 ### Step 4: Confirm Change
 
+## Output
+
 When turned on:
+
 ```
 Learning mode: ON
 
@@ -54,6 +64,7 @@ To turn off, run: /vibe-guide:learn off
 ```
 
 When turned off:
+
 ```
 Learning mode: OFF
 

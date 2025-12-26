@@ -8,13 +8,27 @@ allowed-tools: Read
 
 Display usage guide for the vibe-guide plugin.
 
+## Usage
+
+```
+/vibe-guide:guide
+```
+
+## Examples
+
+```
+/vibe-guide:guide
+```
+
+Shows the quick start guide below.
+
 ## Output
 
 When this command runs, display the following:
 
 ---
 
-# 🎯 Vibe Guide - Quick Start
+# Vibe Guide - Quick Start
 
 ## Starting a Session
 
@@ -26,7 +40,7 @@ This creates a `.vibe/` folder and starts working on your goal.
 
 ---
 
-## 📊 Check Progress Anytime
+## Check Progress Anytime
 
 ```
 /vibe-guide:status
@@ -36,7 +50,7 @@ See where you are without doing more work.
 
 ---
 
-## ⏭️ Keep Going Step by Step
+## Keep Going Step by Step
 
 ```
 /vibe-guide:continue
@@ -46,7 +60,7 @@ Runs ONE step, then shows what happened in plain language.
 
 ---
 
-## ⏸️ Take a Break
+## Take a Break
 
 ```
 /vibe-guide:stop
@@ -56,7 +70,7 @@ Pauses the session. Run again to resume.
 
 ---
 
-## 🎓 Learning Mode (Optional)
+## Learning Mode (Optional)
 
 ```
 /vibe-guide:learn on
@@ -72,7 +86,7 @@ Turns lessons off.
 
 ---
 
-## 🔍 More Details (Optional)
+## More Details (Optional)
 
 ```
 /vibe-guide:details on
@@ -88,7 +102,7 @@ Back to simple mode.
 
 ---
 
-## 💡 Example Workflow
+## Example Workflow
 
 ```
 > /vibe-guide:vibe Add dark mode to settings
@@ -128,7 +142,7 @@ Back to simple mode.
 
 ---
 
-## 🆘 If Something Goes Wrong
+## If Something Goes Wrong
 
 You'll see a friendly checklist:
 
@@ -145,7 +159,7 @@ To fix this:
 
 ---
 
-## 📁 Files Created
+## Files Created
 
 Vibe Guide creates a `.vibe/` folder in your project:
 - `session.json` - Your goal and settings

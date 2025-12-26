@@ -7,13 +7,15 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 
 # /vibe-guide:vibe
 
-Start a new guided session with a goal. Progress shown in plain language.
+Start a new guided session with a goal. Progress is shown in plain language, hiding all technical details like diffs and logs.
 
 ## Usage
 
 ```
 /vibe-guide:vibe <goal>
 ```
+
+Provide a clear description of what you want to build or fix.
 
 ## Examples
 
@@ -35,13 +37,7 @@ mkdir -p .vibe
 
 ### Step 2: Add to .gitignore
 
-If `.gitignore` exists in project root, append `.vibe/` if not already present:
-
-```bash
-if [ -f .gitignore ] && ! grep -q "^.vibe/$" .gitignore; then
-  echo ".vibe/" >> .gitignore
-fi
-```
+If `.gitignore` exists in project root, append `.vibe/` if not already present.
 
 ### Step 3: Initialize Session
 
@@ -103,4 +99,22 @@ If `session.learning_mode` is true, invoke `vibe-explorer` agent.
 
 ## Output
 
-The explainer's friendly summary of where we are and what happened.
+The explainer presents a friendly summary:
+
+```
+1) Where we are
+   Starting: [goal description]
+
+2) What changed
+   - Set up session tracking
+   - Analyzed project structure
+
+3) What I checked
+   - Project files exist
+
+4) What's next
+   [First implementation step]
+
+5) Do you need to do anything?
+   No, nothing needed right now.
+```

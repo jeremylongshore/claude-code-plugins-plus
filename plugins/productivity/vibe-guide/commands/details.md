@@ -16,6 +16,13 @@ Toggle whether to show additional technical details.
 /vibe-guide:details off
 ```
 
+## Examples
+
+```
+/vibe-guide:details on   # Show more technical info
+/vibe-guide:details off  # Keep it simple
+```
+
 ## Execution Steps
 
 ### Step 1: Check Session Exists
@@ -41,9 +48,10 @@ Update `.vibe/session.json` with new `show_details` value.
 
 ### Step 4: Confirm Change
 
-Output confirmation:
+## Output
 
 When turned on:
+
 ```
 Details mode: ON
 
@@ -54,6 +62,7 @@ To turn off, run: /vibe-guide:details off
 ```
 
 When turned off:
+
 ```
 Details mode: OFF
 
