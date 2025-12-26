@@ -1,5 +1,5 @@
 {
-  "name": "@claude-code-plugins/ccp",
+  "name": "@intentsolutionsio/ccp",
   "version": "1.0.0",
   "description": "Command-line tool for installing and managing Claude Code plugins from claudecodeplugins.io",
   "type": "module",
@@ -18,7 +18,7 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "lint": "eslint src",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "npm run build"
   },
   "keywords": [
     "claude-code",
