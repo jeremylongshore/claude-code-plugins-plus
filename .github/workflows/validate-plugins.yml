@@ -229,9 +229,9 @@ jobs:
 
       - name: Setup pnpm
         if: matrix.test-type == 'mcp-plugins'
-        uses: pnpm/action-setup@v3
+        uses: pnpm/action-setup@v4
         with:
-          version: 8
+          version: 9
 
       - name: Install dependencies
         if: matrix.test-type == 'mcp-plugins'
@@ -307,6 +307,14 @@ jobs:
           if [ -f "requirements.txt" ]; then
             pip install -r requirements.txt
           fi
+
+          # Install dependencies from plugin requirements.txt files
+          for req in plugins/mcp/*/requirements.txt; do
+            if [ -f "$req" ]; then
+              echo "Installing deps from $req"
+              pip install -r "$req" || true
+            fi
+          done
 
           # Install additional testing tools
           pip install pyyaml jsonschema
