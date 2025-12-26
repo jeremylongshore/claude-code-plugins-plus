@@ -1,6 +1,8 @@
 ---
 name: learn
 description: Toggle learning mode with educational micro-explanations
+argument-hint: on|off
+allowed-tools: Read, Write
 ---
 
 # /vibe-guide:learn

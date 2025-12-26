@@ -1,6 +1,7 @@
 ---
 name: guide
 description: Show how to use vibe-guide with examples
+allowed-tools: Read
 ---
 
 # /vibe-guide:guide

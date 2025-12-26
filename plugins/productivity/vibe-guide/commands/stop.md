@@ -1,6 +1,7 @@
 ---
 name: stop
 description: Pause or resume the current session
+allowed-tools: Read, Write
 ---
 
 # /vibe-guide:stop

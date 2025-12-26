@@ -1,6 +1,15 @@
 ---
 name: vibe-worker
-description: Background worker that executes tasks in tiny steps, writing progress to .vibe/status.json
+type: agent
+description: Background worker that executes tasks in tiny steps, writing progress to .vibe/status.json. Invoke when running stepwise task execution for non-technical users.
+category: productivity
+version: 1.0.0
+author: Intent Solutions <jeremy@intentsolutions.io>
+activation_triggers:
+  - execute step
+  - run next step
+  - continue task
+  - stepwise execution
 capabilities:
   - Execute single task steps
   - Track progress in status.json

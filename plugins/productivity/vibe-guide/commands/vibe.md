@@ -1,6 +1,8 @@
 ---
 name: vibe
 description: Start a new vibe session with a goal
+argument-hint: <goal>
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # /vibe-guide:vibe

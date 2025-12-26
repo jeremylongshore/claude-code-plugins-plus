@@ -1,6 +1,8 @@
 ---
 name: details
 description: Toggle verbose mode on or off
+argument-hint: on|off
+allowed-tools: Read, Write
 ---
 
 # /vibe-guide:details

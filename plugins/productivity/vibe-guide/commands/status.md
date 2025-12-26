@@ -1,6 +1,7 @@
 ---
 name: status
 description: Show current progress in plain language
+allowed-tools: Read
 ---
 
 # /vibe-guide:status

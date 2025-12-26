@@ -1,6 +1,7 @@
 ---
 name: continue
 description: Execute the next step in the current session
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep
 ---
 
 # /vibe-guide:continue
