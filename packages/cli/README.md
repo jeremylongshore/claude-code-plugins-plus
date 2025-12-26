@@ -1,15 +1,15 @@
-# @claude-code-plugins/ccp
+# @intentsolutionsio/ccpi
 
 > Command-line tool for installing and managing Claude Code plugins from [claudecodeplugins.io](https://claudecodeplugins.io)
 
-[![npm version](https://img.shields.io/npm/v/@claude-code-plugins/ccp.svg)](https://www.npmjs.com/package/@claude-code-plugins/ccp)
+[![npm version](https://img.shields.io/npm/v/@intentsolutionsio/ccpi.svg)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
 - **One-Command Installation**: Install plugins with a single command
 - **Universal Compatibility**: Works with npm, bun, pnpm, and deno
-- **Built-in Diagnostics**: `ccp doctor` checks your Claude Code installation
+- **Built-in Diagnostics**: `ccpi doctor` checks your Claude Code installation
 - **Cross-Platform**: Supports Linux, macOS, and Windows
 - **Zero Configuration**: Automatically detects Claude Code paths
 
@@ -19,22 +19,22 @@ You don't need to install this package globally. Just use your preferred package
 
 ### npm / npx
 ```bash
-npx @claude-code-plugins/ccp install <plugin-name>
+npx @intentsolutionsio/ccpi install <plugin-name>
 ```
 
 ### Bun
 ```bash
-bunx @claude-code-plugins/ccp install <plugin-name>
+bunx @intentsolutionsio/ccpi install <plugin-name>
 ```
 
 ### pnpm
 ```bash
-pnpx @claude-code-plugins/ccp install <plugin-name>
+pnpx @intentsolutionsio/ccpi install <plugin-name>
 ```
 
 ### Deno
 ```bash
-deno run -A npm:@claude-code-plugins/ccp install <plugin-name>
+deno run -A npm:@intentsolutionsio/ccpi install <plugin-name>
 ```
 
 ## Quick Start
@@ -42,30 +42,30 @@ deno run -A npm:@claude-code-plugins/ccp install <plugin-name>
 ### Install a Plugin
 
 ```bash
-npx @claude-code-plugins/ccp install devops-pack
+npx @intentsolutionsio/ccpi install devops-pack
 ```
 
 ### List Installed Plugins
 
 ```bash
-npx @claude-code-plugins/ccp list
+npx @intentsolutionsio/ccpi list
 ```
 
 ### Run Diagnostics
 
 ```bash
-npx @claude-code-plugins/ccp doctor
+npx @intentsolutionsio/ccpi doctor
 ```
 
 ### Search for Plugins
 
 ```bash
-npx @claude-code-plugins/ccp search terraform
+npx @intentsolutionsio/ccpi search terraform
 ```
 
 ## Commands
 
-### `ccp install <plugin>`
+### `ccpi install <plugin>`
 
 Install a plugin from the marketplace.
 
@@ -75,10 +75,10 @@ Install a plugin from the marketplace.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp install python-pro
+npx @intentsolutionsio/ccpi install python-pro
 ```
 
-### `ccp upgrade`
+### `ccpi upgrade`
 
 Check for and install plugin updates.
 
@@ -90,35 +90,35 @@ Check for and install plugin updates.
 **Examples:**
 ```bash
 # Check for available updates
-npx @claude-code-plugins/ccp upgrade --check
+npx @intentsolutionsio/ccpi upgrade --check
 
 # Upgrade all plugins
-npx @claude-code-plugins/ccp upgrade --all
+npx @intentsolutionsio/ccpi upgrade --all
 
 # Upgrade a specific plugin
-npx @claude-code-plugins/ccp upgrade --plugin python-pro
+npx @intentsolutionsio/ccpi upgrade --plugin python-pro
 ```
 
 **Sample Output (Updates Available):**
 ```
-🔄 Plugin Upgrade Manager
+Plugin Upgrade Manager
 
-📦 2 update(s) available:
+2 update(s) available:
 
   python-pro
-    Current: 1.0.0 → Latest: 1.2.0
+    Current: 1.0.0 -> Latest: 1.2.0
     Write idiomatic Python code with advanced features
 
   devops-pack
-    Current: 2.1.0 → Latest: 2.3.0
+    Current: 2.1.0 -> Latest: 2.3.0
     Complete DevOps toolchain
 
-💡 To upgrade:
+To upgrade:
 
-   npx @claude-code-plugins/ccp upgrade --all
+   npx @intentsolutionsio/ccpi upgrade --all
    (Updates all plugins)
 
-   npx @claude-code-plugins/ccp upgrade --plugin <name>
+   npx @intentsolutionsio/ccpi upgrade --plugin <name>
    (Updates specific plugin)
 ```
 
@@ -126,7 +126,7 @@ npx @claude-code-plugins/ccp upgrade --plugin python-pro
 
 To pin a plugin to a specific version, simply keep the current version installed and don't upgrade. The CLI will continue to show available updates, but you can choose when to upgrade.
 
-### `ccp list`
+### `ccpi list`
 
 List installed plugins.
 
@@ -135,10 +135,10 @@ List installed plugins.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp list --all
+npx @intentsolutionsio/ccpi list --all
 ```
 
-### `ccp doctor`
+### `ccpi doctor`
 
 Run diagnostics on your Claude Code installation and plugins.
 
@@ -147,56 +147,55 @@ Run diagnostics on your Claude Code installation and plugins.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp doctor
+npx @intentsolutionsio/ccpi doctor
 ```
 
 **Sample Output:**
 ```
-🔍 Claude Code Plugins - System Diagnostics
+Claude Code Plugins - System Diagnostics
 
 System Environment:
-  ✓ Node.js Version: v22.20.0 (supported)
-  ✓ Operating System: linux 6.8.0-86-generic
-  ✓ Package Managers: npm, bun
+  Node.js Version: v22.20.0 (supported)
+  Operating System: linux 6.8.0-86-generic
+  Package Managers: npm, bun
 
 Claude Code Installation:
-  ✓ Claude Config Directory: /home/user/.claude
-  ✓ Plugins Directory: /home/user/.claude/plugins
-  ✓ Marketplaces Directory: /home/user/.claude/marketplaces
+  Claude Config Directory: /home/user/.claude
+  Plugins Directory: /home/user/.claude/plugins
+  Marketplaces Directory: /home/user/.claude/marketplaces
 
 Plugins:
-  ✓ Installed Plugins: 5 total (3 global, 2 local)
+  Installed Plugins: 5 total (3 global, 2 local)
 
 Marketplace:
-  ✓ Marketplace Catalog: Installed
-  ✓ Catalog Freshness: Up to date
+  Marketplace Catalog: Installed
+  Catalog Freshness: Up to date
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 Summary:
-  ✓ 9 passed
+  9 passed
 
-✨ All checks passed! Your Claude Code setup is healthy.
+All checks passed! Your Claude Code setup is healthy.
 ```
 
-### `ccp search <query>`
+### `ccpi search <query>`
 
 Search for plugins in the marketplace.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp search terraform
+npx @intentsolutionsio/ccpi search terraform
 ```
 
 *Note: Search functionality coming soon. For now, visit [claudecodeplugins.io](https://claudecodeplugins.io) to browse plugins.*
 
-### `ccp analytics`
+### `ccpi analytics`
 
 View plugin usage analytics (Coming Soon).
 
 **Options:**
 - `--json` - Output as JSON
 
-### `ccp marketplace`
+### `ccpi marketplace`
 
 Manage marketplace connection and setup.
 
@@ -206,19 +205,19 @@ Manage marketplace connection and setup.
 **Example:**
 ```bash
 # Check marketplace status
-npx @claude-code-plugins/ccp marketplace
+npx @intentsolutionsio/ccpi marketplace
 
 # Verify installation with detailed diagnostics
-npx @claude-code-plugins/ccp marketplace --verify
+npx @intentsolutionsio/ccpi marketplace --verify
 ```
 
 **Sample Output (Not Installed):**
 ```
-📦 Claude Code Plugins Marketplace
+Claude Code Plugins Marketplace
 
-⚠️  Marketplace not added yet
+Marketplace not added yet
 
-📋 Setup Instructions:
+Setup Instructions:
 
 1. Open Claude Code (terminal or desktop app)
 2. Run this command:
@@ -228,41 +227,41 @@ npx @claude-code-plugins/ccp marketplace --verify
 3. Wait for confirmation (usually < 5 seconds)
 4. Verify installation:
 
-   npx @claude-code-plugins/ccp marketplace --verify
+   npx @intentsolutionsio/ccpi marketplace --verify
 ```
 
 **Sample Output (Installed):**
 ```
-📦 Claude Code Plugins Marketplace
+Claude Code Plugins Marketplace
 
-✓ Marketplace is already added!
+Marketplace is already added!
 
-🔍 Marketplace Status:
+Marketplace Status:
 
 Installation:
-  ✓ Marketplace added
+  Marketplace added
   Location: /home/user/.claude/marketplaces/claude-code-plugins-plus
 
-  ✓ Catalog found
+  Catalog found
   File: /home/user/.claude/marketplaces/claude-code-plugins-plus/.claude-plugin/marketplace.json
 ```
 
-### `ccp marketplace-add`
+### `ccpi marketplace-add`
 
 Guide you through adding the marketplace to Claude Code.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp marketplace-add
+npx @intentsolutionsio/ccpi marketplace-add
 ```
 
-### `ccp marketplace-remove`
+### `ccpi marketplace-remove`
 
 Guide you through removing the marketplace from Claude Code.
 
 **Example:**
 ```bash
-npx @claude-code-plugins/ccp marketplace-remove
+npx @intentsolutionsio/ccpi marketplace-remove
 ```
 
 ## Package Manager Performance
@@ -310,7 +309,7 @@ Ensure Claude Code is installed and has been run at least once. The CLI looks fo
 - Linux/macOS: `~/.claude`
 - Windows: `%APPDATA%\Claude`
 
-Run `ccp doctor` to diagnose installation issues.
+Run `ccpi doctor` to diagnose installation issues.
 
 ### Permission Errors
 
@@ -318,14 +317,14 @@ If you get permission errors during installation:
 
 1. Try installing locally (project-level) instead of globally
 2. Check that you have write permissions to the Claude directories
-3. Run `ccp doctor` to check your setup
+3. Run `ccpi doctor` to check your setup
 
 ### Plugin Not Found
 
 If a plugin can't be found:
 
 1. Check the plugin name spelling
-2. Run `ccp list --all` to see available plugins
+2. Run `ccpi list --all` to see available plugins
 3. Visit [claudecodeplugins.io](https://claudecodeplugins.io) to browse the full marketplace
 4. Ensure your marketplace catalog is up to date
 
@@ -368,7 +367,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](../../CONTRIBUTING.md) f
 
 ## License
 
-MIT © [Intent Solutions IO](https://intentsolutions.io)
+MIT (c) [Intent Solutions IO](https://intentsolutions.io)
 
 ## Links
 
@@ -379,4 +378,4 @@ MIT © [Intent Solutions IO](https://intentsolutions.io)
 
 ---
 
-**Built with ❤️ for the Claude Code community**
+**Built with love for the Claude Code community**

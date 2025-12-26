@@ -51,7 +51,7 @@ export async function upgradeCommand(
     if (!marketplaceInstalled) {
       console.log(chalk.yellow('⚠️  Marketplace not added yet\n'));
       console.log(chalk.gray('Run this command to add the marketplace:\n'));
-      console.log(chalk.cyan(`   npx @claude-code-plugins/ccp marketplace\n`));
+      console.log(chalk.cyan(`   npx @intentsolutionsio/ccpi marketplace\n`));
       process.exit(1);
     }
 
@@ -61,7 +61,7 @@ export async function upgradeCommand(
     if (Object.keys(installedPlugins).length === 0) {
       console.log(chalk.yellow('⚠️  No plugins installed\n'));
       console.log(chalk.gray('Install plugins with:\n'));
-      console.log(chalk.cyan('   npx @claude-code-plugins/ccp install <plugin-name>\n'));
+      console.log(chalk.cyan('   npx @intentsolutionsio/ccpi install <plugin-name>\n'));
       return;
     }
 
@@ -92,9 +92,9 @@ export async function upgradeCommand(
       // Default: show updates with guidance
       await showAvailableUpdates(updates);
       console.log(chalk.gray('\n💡 To upgrade:\n'));
-      console.log(chalk.cyan('   npx @claude-code-plugins/ccp upgrade --all'));
+      console.log(chalk.cyan('   npx @intentsolutionsio/ccpi upgrade --all'));
       console.log(chalk.gray('   (Updates all plugins)\n'));
-      console.log(chalk.cyan('   npx @claude-code-plugins/ccp upgrade --plugin <name>'));
+      console.log(chalk.cyan('   npx @intentsolutionsio/ccpi upgrade --plugin <name>'));
       console.log(chalk.gray('   (Updates specific plugin)\n'));
     }
 
@@ -249,7 +249,7 @@ async function guideUpgradePlugin(pluginName: string, updates: PluginUpdate[]): 
     console.log(chalk.yellow(`⚠️  No update available for "${pluginName}"\n`));
     console.log(chalk.gray('Plugin is either up to date or not installed.\n'));
     console.log(chalk.gray('Check all updates with:\n'));
-    console.log(chalk.cyan('   npx @claude-code-plugins/ccp upgrade --check\n'));
+    console.log(chalk.cyan('   npx @intentsolutionsio/ccpi upgrade --check\n'));
     return;
   }
 

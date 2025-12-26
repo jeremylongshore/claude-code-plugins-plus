@@ -101,6 +101,14 @@ jobs:
             jq empty doctor-output.json && echo "✅ Valid JSON output"
           fi
 
+      - name: Test CLI validate --help
+        working-directory: packages/cli
+        run: node dist/index.js validate --help
+
+      - name: Test CLI install --help
+        working-directory: packages/cli
+        run: node dist/index.js install --help
+
       - name: Upload test artifacts
         if: always()
         uses: actions/upload-artifact@v4

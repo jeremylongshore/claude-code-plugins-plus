@@ -5,6 +5,7 @@ import { upgradeCommand } from './commands/upgrade.js';
 import { listPlugins } from './commands/list.js';
 import { doctorCheck } from './commands/doctor.js';
 import { marketplaceCommand, addMarketplace, removeMarketplace } from './commands/marketplace.js';
+import { validateCommand } from './commands/validate.js';
 import { getVersion } from './utils/version.js';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -13,16 +14,20 @@ export function buildProgram() {
   const program = new Command();
 
   program
-    .name('ccp')
+    .name('ccpi')
     .description('Claude Code Plugins - Install and manage plugins from claudecodeplugins.io')
     .version(getVersion());
 
   program
-    .command('install <plugin>')
+    .command('install [plugin]')
     .description('Install a plugin from the marketplace')
     .option('-y, --yes', 'Skip confirmation prompts')
     .option('--global', 'Install globally for all projects')
-    .action(async (plugin: string, options) => {
+    .option('--all', 'Install ALL plugins from marketplace')
+    .option('--skills', 'Install standalone skills (coming soon)')
+    .option('--pack <name>', 'Install a plugin pack (devops, security, api, etc)')
+    .option('--category <name>', 'Install all plugins in a category')
+    .action(async (plugin: string | undefined, options) => {
       const spinner = ora('Detecting Claude Code installation...').start();
 
       try {
@@ -33,7 +38,7 @@ export function buildProgram() {
       } catch (error) {
         spinner.fail('Failed to detect Claude Code installation');
         console.error(chalk.red(`Error: ${error instanceof Error ? error.message : String(error)}`));
-        console.error(chalk.yellow('\nRun `ccp doctor` for diagnostics'));
+        console.error(chalk.yellow('\nRun `ccpi doctor` for diagnostics'));
         process.exit(1);
       }
     });
@@ -86,11 +91,22 @@ export function buildProgram() {
     });
 
   program
+    .command('validate [path]')
+    .description('Validate plugins, skills, and frontmatter')
+    .option('--skills', 'Validate skills only')
+    .option('--frontmatter', 'Validate frontmatter only')
+    .option('--strict', 'Fail on warnings (for CI)')
+    .option('--json', 'Output results as JSON')
+    .action(async (targetPath: string | undefined, options) => {
+      await validateCommand(targetPath, options);
+    });
+
+  program
     .command('analytics')
     .description('View plugin usage analytics')
     .option('--json', 'Output as JSON')
     .action(async () => {
-      console.log(chalk.yellow('🚧 Analytics functionality coming soon!'));
+      console.log(chalk.yellow('Analytics functionality coming soon!'));
       console.log(chalk.gray('This will show plugin usage, performance, and cost metrics'));
     });
 

@@ -342,33 +342,50 @@ jobs:
             echo "⚠️  No Python test files found"
           fi
 
-      - name: Run validation script tests
+      - name: Setup Node.js for validation
+        if: matrix.test-type == 'validation-scripts'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup pnpm for validation
+        if: matrix.test-type == 'validation-scripts'
+        uses: pnpm/action-setup@v4
+
+      - name: Build ccpi CLI
         if: matrix.test-type == 'validation-scripts'
         run: |
-          echo "Testing validation scripts..."
+          cd packages/cli
+          pnpm install --frozen-lockfile
+          pnpm build
 
-          # Test validate-all-plugins.sh on sample plugins
+      - name: Run validation with ccpi
+        if: matrix.test-type == 'validation-scripts'
+        run: |
+          echo "Testing validation with ccpi CLI..."
+
+          # Test validate-all-plugins.sh on sample plugins (legacy support)
           if [ -f "./scripts/validate-all-plugins.sh" ]; then
             echo "Running validate-all-plugins.sh on MCP plugins..."
             ./scripts/validate-all-plugins.sh plugins/mcp/project-health-auditor/ || exit 1
-            echo "✅ Validation script test passed"
+            echo "✅ Shell validation script passed"
           fi
 
-          # Test Python validation scripts
-          if [ -f "scripts/validate-skills-schema.py" ]; then
-            echo "Running skills schema validation..."
-            python3 scripts/validate-skills-schema.py || exit 1
-            echo "✅ Skills schema validation passed"
-          fi
+          # Use ccpi for skills and frontmatter validation
+          echo "Running ccpi validate..."
+          node packages/cli/dist/index.js validate --strict || exit 1
+          echo "✅ ccpi validation passed"
 
-          # Test frontmatter validation
-          if [ -f "scripts/validate-frontmatter.py" ]; then
-            echo "Running frontmatter validation..."
-            python3 scripts/validate-frontmatter.py || exit 1
-            echo "✅ Frontmatter validation passed"
-          fi
+          # Also run skills-only and frontmatter-only for coverage
+          echo "Running ccpi validate --skills..."
+          node packages/cli/dist/index.js validate --skills || exit 1
+          echo "✅ Skills validation passed"
 
-          echo "✅ All validation script tests passed"
+          echo "Running ccpi validate --frontmatter..."
+          node packages/cli/dist/index.js validate --frontmatter || exit 1
+          echo "✅ Frontmatter validation passed"
+
+          echo "✅ All validation tests passed"
 
       - name: Upload test coverage
         if: matrix.test-type == 'python-tests' && always()
@@ -602,6 +619,28 @@ jobs:
             echo "✅ CLI doctor --help works"
           else
             echo "❌ CLI doctor --help failed"
+            exit 1
+          fi
+
+      - name: Test CLI validate command
+        run: |
+          cd packages/cli
+          node dist/index.js validate --help
+          if [ $? -eq 0 ]; then
+            echo "✅ CLI validate --help works"
+          else
+            echo "❌ CLI validate --help failed"
+            exit 1
+          fi
+
+      - name: Test CLI install command options
+        run: |
+          cd packages/cli
+          node dist/index.js install --help
+          if [ $? -eq 0 ]; then
+            echo "✅ CLI install --help works"
+          else
+            echo "❌ CLI install --help failed"
             exit 1
           fi
 
