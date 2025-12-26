@@ -33,10 +33,9 @@ test.describe('Mobile Viewport Tests', () => {
     const searchInput = page.locator('#hero-search-input');
     await expect(searchInput).toBeVisible();
 
-    // Take screenshot of mobile homepage
+    // Take screenshot of mobile homepage (viewport only to avoid >32767px limit)
     await page.screenshot({
-      path: 'test-results/screenshots/T3-mobile-homepage.png',
-      fullPage: true
+      path: 'test-results/screenshots/T3-mobile-homepage.png'
     });
   });
 
@@ -61,10 +60,9 @@ test.describe('Mobile Viewport Tests', () => {
     // Verify input accepted text
     await expect(searchInput).toHaveValue('test');
 
-    // Take screenshot of mobile search active
+    // Take screenshot of mobile search active (viewport only)
     await page.screenshot({
-      path: 'test-results/screenshots/T3-mobile-search-active.png',
-      fullPage: true
+      path: 'test-results/screenshots/T3-mobile-search-active.png'
     });
   });
 
@@ -89,10 +87,9 @@ test.describe('Mobile Viewport Tests', () => {
     await searchInput.fill('mobile test');
     await expect(searchInput).toHaveValue('mobile test');
 
-    // Take screenshot of mobile explore page
+    // Take screenshot of mobile explore page (viewport only)
     await page.screenshot({
-      path: 'test-results/screenshots/T3-mobile-explore.png',
-      fullPage: true
+      path: 'test-results/screenshots/T3-mobile-explore.png'
     });
   });
 
@@ -150,10 +147,9 @@ test.describe('Mobile Viewport Tests', () => {
     const installCommand = page.locator('.install-command').first();
     await expect(installCommand).toBeVisible();
 
-    // Take screenshot
+    // Take screenshot (viewport only)
     await page.screenshot({
-      path: 'test-results/screenshots/T3-mobile-install-cta.png',
-      fullPage: true
+      path: 'test-results/screenshots/T3-mobile-install-cta.png'
     });
   });
 });

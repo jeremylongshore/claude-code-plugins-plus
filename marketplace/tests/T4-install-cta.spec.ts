@@ -27,7 +27,7 @@ test.describe('Install CTA Tests', () => {
     // Take screenshot
     await page.screenshot({
       path: 'test-results/screenshots/T4-install-section.png',
-      fullPage: true
+      fullPage: false
     });
   });
 
@@ -99,7 +99,7 @@ test.describe('Install CTA Tests', () => {
     // Take screenshot
     await page.screenshot({
       path: 'test-results/screenshots/T4-mobile-install.png',
-      fullPage: true
+      fullPage: false
     });
   });
 
@@ -122,7 +122,7 @@ test.describe('Install CTA Tests', () => {
     // Take screenshot
     await page.screenshot({
       path: 'test-results/screenshots/T4-all-install-boxes.png',
-      fullPage: true
+      fullPage: false
     });
   });
 
@@ -151,7 +151,7 @@ test.describe('Install CTA Tests', () => {
     // Take screenshot
     await page.screenshot({
       path: 'test-results/screenshots/T4-cta-clicked.png',
-      fullPage: true
+      fullPage: false
     });
   });
 

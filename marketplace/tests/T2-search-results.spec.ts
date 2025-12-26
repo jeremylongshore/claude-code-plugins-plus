@@ -32,7 +32,7 @@ test.describe('Search Results', () => {
     // Take screenshot of search results
     await page.screenshot({
       path: 'test-results/screenshots/T2-search-results-prettier.png',
-      fullPage: true
+      fullPage: false
     });
   });
 
@@ -58,7 +58,7 @@ test.describe('Search Results', () => {
       // Take screenshot
       await page.screenshot({
         path: 'test-results/screenshots/T2-plugin-detail-page.png',
-        fullPage: true
+        fullPage: false
       });
     } else {
       // If no plugin results found, that's okay - just document it
@@ -77,7 +77,7 @@ test.describe('Search Results', () => {
     // Take screenshot of skill search results
     await page.screenshot({
       path: 'test-results/screenshots/T2-search-results-skill.png',
-      fullPage: true
+      fullPage: false
     });
   });
 
@@ -103,7 +103,7 @@ test.describe('Search Results', () => {
       // Take screenshot
       await page.screenshot({
         path: 'test-results/screenshots/T2-skill-detail-page.png',
-        fullPage: true
+        fullPage: false
       });
     } else {
       console.log('No skill results found for "skill" query');
@@ -121,7 +121,7 @@ test.describe('Search Results', () => {
     // Take screenshot of empty results
     await page.screenshot({
       path: 'test-results/screenshots/T2-empty-results.png',
-      fullPage: true
+      fullPage: false
     });
 
     // Verify no crash or error (page still accessible)
