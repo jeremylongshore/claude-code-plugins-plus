@@ -19,7 +19,8 @@
 │   ├── ⏭️ continue.md          🔄 Run next step: /vibe-guide:continue
 │   ├── ⏸️ stop.md              ⏯️  Pause/resume: /vibe-guide:stop
 │   ├── 🔍 details.md           🔧 Toggle verbosity: /vibe-guide:details on|off
-│   └── 📚 learn.md             🎯 Toggle learning: /vibe-guide:learn on|off
+│   ├── 📚 learn.md             🎯 Toggle learning: /vibe-guide:learn on|off
+│   └── ❓ guide.md             📖 Show usage help: /vibe-guide:guide
 │
 └── 📁 hooks/
     └── 🪝 hooks.json           🧹 Auto-summarizes verbose output (diffs, logs)
@@ -45,6 +46,7 @@
 | ⏸️ `/vibe-guide:stop` | Pauses work so you can take a break |
 | 🔍 `/vibe-guide:details` | Shows slightly more info (still no raw code) |
 | 📚 `/vibe-guide:learn` | Adds mini-lessons after each step |
+| ❓ `/vibe-guide:guide` | Shows this usage guide with examples |
 
 ### Hook
 
