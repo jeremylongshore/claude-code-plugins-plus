@@ -101,15 +101,15 @@ HAS_FRONTMATTER_SCRIPT=false
 
 if command -v python3 &> /dev/null; then
   HAS_PYTHON3=true
-  if [[ -f "$SCRIPT_DIR/check-frontmatter.py" ]]; then
+  if [[ -f "$SCRIPT_DIR/validate-frontmatter.py" ]]; then
     HAS_FRONTMATTER_SCRIPT=true
   else
-    echo -e "${YELLOW}⚠️  check-frontmatter.py not found, skipping detailed frontmatter validation${NC}"
-    WARNINGS=$((WARNINGS + 1))
+    echo -e "${RED}❌ validate-frontmatter.py not found - frontmatter validation FAILED${NC}"
+    ERRORS=$((ERRORS + 1))
   fi
 else
-  echo -e "${YELLOW}⚠️  Python3 not found, skipping detailed frontmatter validation${NC}"
-  WARNINGS=$((WARNINGS + 1))
+  echo -e "${RED}❌ Python3 not found - frontmatter validation FAILED${NC}"
+  ERRORS=$((ERRORS + 1))
 fi
 
 while IFS= read -r md_file; do
@@ -124,7 +124,7 @@ while IFS= read -r md_file; do
 
   # Validate with Python script if available
   if [[ "$HAS_FRONTMATTER_SCRIPT" == "true" ]]; then
-    if ! python3 "$SCRIPT_DIR/check-frontmatter.py" "$md_file" 2>&1; then
+    if ! python3 "$SCRIPT_DIR/validate-frontmatter.py" "$md_file" 2>&1; then
       ERRORS=$((ERRORS + 1))
     fi
   fi
