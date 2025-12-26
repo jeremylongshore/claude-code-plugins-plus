@@ -263,6 +263,12 @@ import StackBuilder from '../components/StackBuilder.astro';
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(20, 20, 19, 0.08);
             transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .search-container:hover {
+            border-color: var(--brand-orange);
+            box-shadow: 0 6px 25px rgba(217, 119, 87, 0.12);
         }
 
         .search-container:focus-within {
@@ -794,21 +800,33 @@ import StackBuilder from '../components/StackBuilder.astro';
             </div>
         </div>
 
-        <!-- Installation Instructions -->
-        <div class="install-box" style="max-width: 600px; margin: 2rem auto; padding: 1.5rem; background: white; border: 2px solid var(--brand-light-gray); border-radius: 12px;">
-            <h3 style="margin: 0 0 0.75rem 0; font-size: 0.875rem; font-weight: 600; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.05em;">Quick Install (Claude Code)</h3>
-            <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
-            <h3 style="margin: 1.25rem 0 0.75rem 0; font-size: 0.875rem; font-weight: 600; color: var(--brand-dark); text-transform: uppercase; letter-spacing: 0.05em;">CLI Install (Terminal)</h3>
-            <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 0.75rem; background: var(--brand-light); border-radius: 6px; font-size: 0.875rem; color: var(--brand-dark); overflow-x: auto;"><code>pnpm add -g @intentsolutionsio/ccpi</code></pre>
+        <!-- Installation Instructions - PROMINENT CTA -->
+        <div class="install-box" style="max-width: 650px; margin: 2rem auto; padding: 2rem; background: var(--brand-dark); border-radius: 16px; box-shadow: 0 8px 32px rgba(20, 20, 19, 0.2);">
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <span style="display: inline-block; background: var(--brand-orange); color: white; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Get Started in 30 Seconds</span>
+            </div>
+
+            <!-- CLI Install - PRIMARY -->
+            <div style="margin-bottom: 1.5rem;">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Install CLI (Recommended)</h3>
+                <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 1rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 1rem; color: var(--brand-light); overflow-x: auto; cursor: pointer;"><code style="font-family: 'SF Mono', 'Fira Code', monospace;">pnpm add -g @intentsolutionsio/ccpi</code></pre>
+                <p style="margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--brand-mid-gray);">Click to copy • Also works with npm, yarn, or bun</p>
+            </div>
+
+            <!-- Claude Code Install - SECONDARY -->
+            <div style="padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--brand-mid-gray); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Or Add Marketplace in Claude Code</h3>
+                <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.85rem; color: var(--brand-light-gray); overflow-x: auto; cursor: pointer;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
+            </div>
 
             <!-- What's Next -->
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--brand-light-gray);">
-                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.8rem; font-weight: 600; color: var(--brand-mid-gray); text-transform: uppercase; letter-spacing: 0.05em;">What's Next</h4>
-                <ol style="margin: 0; padding-left: 1.25rem; font-size: 0.875rem; color: var(--brand-dark); line-height: 1.8;">
-                    <li><a href="/explore" style="color: var(--brand-orange); text-decoration: none;">Browse or search</a> for plugins and skills</li>
-                    <li>Install with <code style="background: var(--brand-light); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.8rem;">/plugin install [name]</code></li>
-                    <li>Skills activate automatically based on context</li>
-                </ol>
+            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.7rem; font-weight: 600; color: var(--brand-mid-gray); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Then</h4>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--brand-light-gray);">
+                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">1.</span> <a href="/explore" style="color: var(--brand-light); text-decoration: underline;">Browse</a> plugins & skills</span>
+                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">2.</span> Install with <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem;">/plugin install [name]</code></span>
+                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">3.</span> Skills auto-activate</span>
+                </div>
             </div>
         </div>
 
@@ -1086,15 +1104,25 @@ import StackBuilder from '../components/StackBuilder.astro';
             });
         });
 
-        if (searchInput) {
-            const redirectToExplore = () => {
-                const url = new URL('/explore', window.location.origin);
-                if (activeType && activeType !== 'all') url.searchParams.set('type', activeType);
-                window.location.assign(url.toString());
-            };
+        const redirectToExplore = () => {
+            const url = new URL('/explore', window.location.origin);
+            if (activeType && activeType !== 'all') url.searchParams.set('type', activeType);
+            window.location.assign(url.toString());
+        };
 
+        // Make entire search container clickable
+        const searchContainer = document.querySelector('.search-container');
+        if (searchContainer) {
+            searchContainer.addEventListener('click', (e) => {
+                // Don't redirect if clicking toggle buttons (they have their own handlers)
+                if (!e.target.closest('.toggle-btn')) {
+                    redirectToExplore();
+                }
+            });
+        }
+
+        if (searchInput) {
             searchInput.addEventListener('focus', redirectToExplore);
-            searchInput.addEventListener('click', redirectToExplore);
         }
     </script>
 
