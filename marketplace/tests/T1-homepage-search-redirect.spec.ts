@@ -43,9 +43,10 @@ test.describe('Homepage Search Redirect', () => {
     const searchInput = page.locator('#hero-search-input');
     await expect(searchInput).toBeVisible();
 
+    // Use click instead of tap - tap requires hasTouch context which desktop Chrome lacks
     await Promise.all([
       page.waitForURL(/\/explore/),
-      searchInput.tap(),
+      searchInput.click({ force: true }),
     ]);
 
     await expect(page).toHaveURL(/\/explore/);
