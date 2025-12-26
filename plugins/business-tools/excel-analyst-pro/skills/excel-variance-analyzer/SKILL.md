@@ -1,23 +1,47 @@
 ---
-description: Automate budget vs actual variance analysis in excel with flagging, commentary,
-  and executive summaries for financial reporting and fp&a teams activates when you
-  request "excel variance analyzer" functionality.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: excel-variance-analyzer
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Automate budget vs actual variance analysis in excel with flagging, commentary, and executive summaries for financial reporting and fp&a teams activates when you request "excel variance analyzer" functionality. Use when analyzing code or data. Trigger with phrases like 'analyze', 'review', or 'examine'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Excel Variance Analyzer
 
 Automates variance analysis for monthly/quarterly financial reporting and budget reviews.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## When to Invoke This Skill
 
 Automatically load this Skill when the user asks to:

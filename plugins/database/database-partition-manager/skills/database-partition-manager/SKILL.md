@@ -5,18 +5,12 @@ description: |
   This skill provides table partitioning strategies with comprehensive guidance and automation.
   Trigger with phrases like "partition tables", "implement partitioning",
   or "optimize large tables".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*, mysql:*), mongosh:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/database-partition-manager-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/database-partition-manager-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

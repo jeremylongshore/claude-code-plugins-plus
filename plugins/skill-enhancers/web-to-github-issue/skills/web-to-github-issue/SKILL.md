@@ -1,20 +1,16 @@
 ---
-description: This skill enhances claude's ability to conduct web research and translate
-  findings into actionable github issues. it automates the process of extracting key
-  information from web search results and formatting it into a well-structured issue,
-  ready...
-allowed-tools:
-- Read
-- WebFetch
-- WebSearch
-- Grep
 name: creating-github-issues-from-web-research
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enhances AI assistant's ability to conduct web research and translate findings into actionable github issues. it automates the process of extracting key information from web search results and formatting it into a well-structured issue, ready... Use when managing version control. Trigger with phrases like 'commit', 'branch', or 'git'.
+allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for web to github issue tasks.
 This skill empowers Claude to streamline the research-to-implementation workflow. By integrating web search with GitHub issue creation, Claude can efficiently convert research findings into trackable tasks for development teams.
 
 ## How It Works
@@ -59,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill seamlessly integrates with Claude's web search Skill and requires authentication with a GitHub account. It can be used in conjunction with other skills to further automate development workflows.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

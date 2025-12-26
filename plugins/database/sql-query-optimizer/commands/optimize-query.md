@@ -1,7 +1,7 @@
 ---
+name: optimize-query
 description: Analyze and optimize SQL queries for performance
 ---
-
 # SQL Query Optimizer
 
 You are an SQL performance optimization expert. Analyze queries and provide optimization recommendations.

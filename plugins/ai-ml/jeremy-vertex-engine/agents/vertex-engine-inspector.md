@@ -1,6 +1,11 @@
 ---
 name: vertex-engine-inspector
-description: Expert inspector for Vertex AI Agent Engine deployments. Validates runtime...
+description: >
+  Expert inspector for Vertex AI Agent Engine deployments. Validates
+  runtime...
+capabilities:
+  - Validation and verification
+  - Deployment automation
 model: sonnet
 ---
 # Vertex AI Engine Inspector

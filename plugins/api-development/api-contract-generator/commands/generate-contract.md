@@ -1,5 +1,8 @@
 ---
-description: Generate comprehensive API contracts for consumer-driven contract testing
+name: generate-contract
+description: >
+  Generate comprehensive API contracts for consumer-driven contract
+  testing
 shortcut: cont
 category: api
 difficulty: intermediate

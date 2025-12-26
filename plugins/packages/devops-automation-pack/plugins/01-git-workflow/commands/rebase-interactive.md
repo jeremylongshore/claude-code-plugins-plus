@@ -1,11 +1,11 @@
 ---
+name: rebase-interactive
 description: Guide through interactive rebase to clean commit history
 shortcut: gr
 category: git
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Why this command exists -->
 <!-- Interactive rebase is powerful but intimidating. Developers avoid it due to fear
      of breaking history. This provides guardrails and guided workflow, making rebase

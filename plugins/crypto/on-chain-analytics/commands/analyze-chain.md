@@ -1,11 +1,19 @@
 ---
-description: Comprehensive blockchain metrics monitoring and on-chain analytics system
+name: analyze-chain
+description: >
+  Comprehensive blockchain metrics monitoring and on-chain analytics
+  system
 shortcut: ac
-tags: [blockchain, on-chain, metrics, whale-tracking, network-analysis, crypto-analytics]
+tags:
+  - blockchain
+  - on-chain
+  - metrics
+  - whale-tracking
+  - network-analysis
+  - crypto-analytics
 version: 2.0.0
 author: claude-code-plugins
 ---
-
 # Analyze On-Chain Data
 
 Comprehensive blockchain metrics monitoring system that tracks network health, holder distribution, whale movements, exchange flows, supply metrics, and transaction velocity across multiple blockchain networks.

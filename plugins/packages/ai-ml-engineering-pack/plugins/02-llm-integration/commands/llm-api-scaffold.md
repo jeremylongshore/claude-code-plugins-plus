@@ -1,14 +1,13 @@
 ---
 name: llm-api-scaffold
-type: command
 description: Generate production-ready LLM API integration boilerplate
-category: ai
+shortcut: las
+category: other
+type: command
 version: 1.0.0
 author: Jeremy Longshore
-shortcut: las
 estimated_time: 5-10 minutes
 ---
-
 # LLM API Scaffold Generator
 
 Generate complete, production-ready LLM API integration code with error handling, rate limiting, caching, monitoring, and best practices built-in.

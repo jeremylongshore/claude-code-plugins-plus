@@ -1,22 +1,37 @@
 ---
-description: Manages Firebase/Firestore operations including CRUD, queries, batch
-  processing, A2A agent communication, MCP server integration, and Cloud Run service
-  coordination. Activates when you request "firestore operations", "create firestore
-  document", "...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: firestore-operations-manager
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Manages Firebase/Firestore operations including CRUD, queries, batch processing, A2A agent communication, MCP server integration, and Cloud Run service coordination. Activates when you request "firestore operations", "create firestore document", "... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Firestore Operations Manager
 
+
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
 ## Overview
 
 This skill manages Firebase/Firestore operations for both regular web/mobile applications and AI agent-to-agent (A2A) frameworks. It handles:

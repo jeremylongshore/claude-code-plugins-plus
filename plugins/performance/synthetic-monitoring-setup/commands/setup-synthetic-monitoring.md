@@ -1,7 +1,7 @@
 ---
+name: setup-synthetic-monitoring
 description: Set up synthetic monitoring for application
 ---
-
 # Synthetic Monitoring Setup
 
 Implement proactive synthetic monitoring to track performance and availability.

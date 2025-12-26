@@ -1,5 +1,8 @@
 ---
-description: Comprehensive database replication management with streaming replication,...
+name: replication
+description: >
+  Comprehensive database replication management with streaming
+  replication,...
 shortcut: repl
 ---
 # Database Replication Manager

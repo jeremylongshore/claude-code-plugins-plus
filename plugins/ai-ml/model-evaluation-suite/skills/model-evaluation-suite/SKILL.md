@@ -1,19 +1,11 @@
 ---
-description: This skill allows claude to evaluate machine learning models using a
-  comprehensive suite of metrics. it should be used when the user requests model performance
-  analysis, validation, or testing. claude can use this skill to assess model accuracy,
-  p...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: evaluating-machine-learning-models
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill allows AI assistant to evaluate machine learning models using a comprehensive suite of metrics. it should be used when the user requests model performance analysis, validation, or testing. AI assistant can use this skill to assess model accuracy, p... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -62,3 +54,30 @@ The skill will:
 ## Integration
 
 This skill integrates seamlessly with the `model-evaluation-suite` plugin, providing a comprehensive solution for model evaluation within the Claude Code environment. It can be combined with other skills to build automated machine learning workflows.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

@@ -4,16 +4,12 @@ description: |
   Analyze HTTP security headers of web domains to identify vulnerabilities and misconfigurations.
   Use when you need to audit website security headers, assess header compliance, or get security recommendations for web applications.
   Trigger with phrases like "analyze security headers", "check HTTP headers", "audit website security headers", or "evaluate CSP and HSTS configuration".
-allowed-tools:
-- Read
-- WebFetch
-- WebSearch
-- Grep
+  
+allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -90,6 +86,15 @@ The skill produces:
 **Report Structure**:
 ```
 # Security Headers Analysis - example.com
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Overall Grade: B (82/100)
 
 ## Critical Headers Status

@@ -2,11 +2,23 @@
 name: geepers_swarm_research
 description: Multi-tier research agent that scales from quick queries to comprehensive multi-agent investigations. Uses three modes - Quick (focused search), Swarm (multi-source synthesis), and Hive (5-part task decomposition). Use for research tasks where depth can vary based on complexity.
 
+
+
+model: sonnet
+color: blue
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: Quick factual query
 user: "What are the current theories about language acquisition?"
 assistant: "Let me use geepers_swarm_research in Quick mode for focused results."
 </example>
+
+### Example 2
 
 <example>
 Context: Comprehensive research needed
@@ -14,14 +26,14 @@ user: "I need a thorough analysis of bilingualism's effect on cognitive developm
 assistant: "I'll invoke geepers_swarm_research in Swarm mode for multi-source synthesis."
 </example>
 
+### Example 3
+
 <example>
 Context: Complex multi-faceted topic
 user: "How can AI tools improve educational outcomes across different contexts?"
 assistant: "Running geepers_swarm_research in Hive mode to decompose this into specialized sub-tasks."
 </example>
-model: sonnet
-color: blue
----
+
 
 ## Mission
 

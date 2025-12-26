@@ -1,7 +1,7 @@
 ---
+name: track-response-times
 description: Track and optimize response times
 ---
-
 # Response Time Tracker
 
 Implement comprehensive response time tracking and optimization.

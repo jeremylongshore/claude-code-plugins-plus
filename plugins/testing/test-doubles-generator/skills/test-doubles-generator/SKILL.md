@@ -1,15 +1,15 @@
 ---
 name: generating-test-doubles
-version: 1.0.0
 description: |
   Generate mocks, stubs, spies, and fakes for dependency isolation.
   Use when creating mocks, stubs, or test isolation fixtures.
   Trigger with phrases like "generate mocks", "create test doubles", or "setup stubs".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:doubles-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for test doubles generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

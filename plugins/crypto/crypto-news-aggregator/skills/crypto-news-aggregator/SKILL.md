@@ -1,15 +1,15 @@
 ---
 name: aggregating-crypto-news
-version: 1.0.0
 description: |
   Aggregate breaking crypto news, announcements, and market-moving events in real-time.
   Use when staying updated on crypto market events.
   Trigger with phrases like "get crypto news", "check latest announcements", or "scan for updates".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:news-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

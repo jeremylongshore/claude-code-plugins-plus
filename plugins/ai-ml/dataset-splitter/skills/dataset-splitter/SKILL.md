@@ -1,11 +1,11 @@
 ---
 name: splitting-datasets
-description: Split datasets into training, validation, and testing sets for ML model
-  development. Use when requesting "split dataset", "train-test split", or "data partitioning".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Split datasets into training, validation, and testing sets for ML model development. Use when requesting "split dataset", "train-test split", or "data partitioning". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -51,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other data processing and model training tools within the Claude Code ecosystem to create a complete machine learning workflow.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

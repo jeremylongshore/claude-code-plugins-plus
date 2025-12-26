@@ -1,15 +1,15 @@
 ---
 name: managing-api-cache
-version: 1.0.0
 description: |
   Implement intelligent API response caching with Redis, Memcached, and CDN integration.
   Use when optimizing API performance with caching.
   Trigger with phrases like "add caching", "optimize API performance", or "implement cache layer".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:cache-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api cache manager tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -5,18 +5,12 @@ description: |
   This skill implements audit logging using triggers, application-level logging, CDC, or native logs.
   Trigger with phrases like "implement database audit logging", "add audit trails",
   "track database changes", or "monitor database activity for compliance".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*), mysql:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), mysql:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -136,3 +130,11 @@ This skill produces:
 **Audit Strategy Guide**: `{baseDir}/docs/audit-strategy-selection.md`
 **Performance Tuning**: `{baseDir}/docs/audit-performance-optimization.md`
 **Archival Procedures**: `{baseDir}/scripts/audit-archival.sh`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

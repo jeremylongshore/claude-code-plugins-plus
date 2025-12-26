@@ -1,6 +1,11 @@
 ---
 name: gh-actions-gcp-expert
-description: Expert in GitHub Actions with Google Cloud deployments using Workload...
+description: >
+  Expert in GitHub Actions with Google Cloud deployments using Workload...
+capabilities:
+  - Deployment automation
+  - Task automation
+  - Intelligent assistance
 model: sonnet
 ---
 # GitHub Actions GCP Expert

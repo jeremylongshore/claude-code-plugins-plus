@@ -1,6 +1,14 @@
 ---
-description: Specialized agent for load testing, performance benchmarking, and bottleneck...
-capabilities: ["load-testing", "stress-testing", "spike-testing", "endurance-testing", "metrics-analysis"]
+name: performance-tester
+description: >
+  Specialized agent for load testing, performance benchmarking, and
+  bottleneck...
+capabilities:
+  - load-testing
+  - stress-testing
+  - spike-testing
+  - endurance-testing
+  - metrics-analysis
 ---
 # Performance Test Suite Agent
 

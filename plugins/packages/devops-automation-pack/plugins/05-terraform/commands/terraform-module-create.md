@@ -1,11 +1,11 @@
 ---
+name: terraform-module-create
 description: Generate reusable Terraform modules with best practices
 shortcut: tm
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Simplifies Terraform module creation -->
 <!-- Modules are core to DRY Terraform but developers struggle with structure
      (variables, outputs, README, validation). This command generates production-ready

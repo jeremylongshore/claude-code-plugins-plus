@@ -1,9 +1,36 @@
 ---
 name: geepers_godot
-description: Use this agent for Godot Engine development - GDScript, scene architecture, node patterns, signals, physics, and Godot-specific best practices. Invoke when building games in Godot, debugging Godot issues, or optimizing Godot projects.\n\n<example>\nContext: Scene architecture\nuser: "How should I structure the player scene with all its components?"\nassistant: "Let me use geepers_godot to design an optimal node hierarchy."\n</example>\n\n<example>\nContext: Performance issue\nuser: "The game stutters when spawning enemies"\nassistant: "I'll use geepers_godot to analyze and implement object pooling."\n</example>\n\n<example>\nContext: Signal design\nuser: "Should I use signals or direct references between these nodes?"\nassistant: "Let me use geepers_godot to design a clean communication pattern."\n</example>
+description: "Use this agent for Godot Engine development - GDScript, scene architecture, node patterns, signals, physics, and Godot-specific best practices. Invoke when building games in Godot, debugging Godot issues, or optimizing Godot projects.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Scene architecture
+user: "How should I structure the player scene with all its components?"
+assistant: "Let me use geepers_godot to design an optimal node hierarchy."
+</example>
+
+### Example 2
+
+<example>
+Context: Performance issue
+user: "The game stutters when spawning enemies"
+assistant: "I'll use geepers_godot to analyze and implement object pooling."
+</example>
+
+### Example 3
+
+<example>
+Context: Signal design
+user: "Should I use signals or direct references between these nodes?"
+assistant: "Let me use geepers_godot to design a clean communication pattern."
+</example>
+
 
 ## Mission
 

@@ -5,18 +5,12 @@ description: |
   This skill provides deadlock detection and resolution with comprehensive guidance and automation.
   Trigger with phrases like "detect deadlocks", "resolve deadlocks",
   or "prevent deadlocks".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*, mysql:*), mongosh:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/database-deadlock-detector-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/database-deadlock-detector-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

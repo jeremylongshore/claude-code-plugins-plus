@@ -1,22 +1,16 @@
 ---
-description: This skill enables claude to deploy machine learning models to production
-  environments. it automates the deployment workflow, implements best practices for
-  serving models, optimizes performance, and handles potential errors. use this skill
-  when th...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: deploying-machine-learning-models
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to deploy machine learning models to production environments. it automates the deployment workflow, implements best practices for serving models, optimizes performance, and handles potential errors. use this skill when th... Use when deploying or managing infrastructure. Trigger with phrases like 'deploy', 'infrastructure', or 'CI/CD'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for model deployment helper tasks.
 This skill streamlines the process of deploying machine learning models to production, ensuring efficient and reliable model serving. It leverages automated workflows and best practices to simplify the deployment process and optimize performance.
 
 ## How It Works
@@ -61,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other tools for model training, data preprocessing, and monitoring.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

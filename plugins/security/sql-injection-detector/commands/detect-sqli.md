@@ -1,4 +1,5 @@
 ---
+name: detect-sqli
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

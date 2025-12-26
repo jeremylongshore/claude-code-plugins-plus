@@ -5,18 +5,12 @@ description: |
   This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
   Trigger with phrases like "create backups", "automate backups",
   or "implement disaster recovery".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(tar:*, rsync:*), aws:s3:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/backup-strategy-implementor-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/backup-strategy-implementor-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

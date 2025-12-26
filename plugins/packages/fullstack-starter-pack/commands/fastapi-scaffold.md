@@ -1,11 +1,12 @@
 ---
-description: Generate production-ready FastAPI REST API with async and authentication
+name: fastapi-scaffold
+description: >
+  Generate production-ready FastAPI REST API with async and authentication
 shortcut: fas
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes
 ---
-
 # FastAPI Scaffold
 
 Generates a complete FastAPI REST API boilerplate with async support, authentication, database integration, and testing setup.

@@ -1,7 +1,7 @@
 ---
+name: monitor-errors
 description: Monitor and analyze error rates
 ---
-
 # Error Rate Monitor
 
 Set up comprehensive error rate monitoring and alerting.

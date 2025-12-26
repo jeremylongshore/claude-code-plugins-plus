@@ -1,4 +1,5 @@
 ---
+name: explore
 description: Explore blockchain transactions, addresses, and contracts
 shortcut: expl
 ---

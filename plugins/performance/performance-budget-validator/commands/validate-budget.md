@@ -1,7 +1,7 @@
 ---
+name: validate-budget
 description: Validate against performance budgets
 ---
-
 # Performance Budget Validator
 
 Create and validate performance budgets to prevent performance regressions.

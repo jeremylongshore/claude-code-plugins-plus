@@ -1,15 +1,15 @@
 ---
 name: generating-grpc-services
-version: 1.0.0
 description: |
   Generate gRPC service definitions, stubs, and implementations from Protocol Buffers.
   Use when creating high-performance gRPC services.
   Trigger with phrases like "generate gRPC service", "create gRPC API", or "build gRPC server".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:grpc-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for grpc service generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

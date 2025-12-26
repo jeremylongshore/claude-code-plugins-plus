@@ -1,15 +1,15 @@
 ---
 name: building-api-gateway
-version: 1.0.0
 description: |
   Create API gateways with routing, load balancing, rate limiting, and authentication.
   Use when routing and managing multiple API services.
   Trigger with phrases like "build API gateway", "create API router", or "setup API gateway".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:gateway-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api gateway builder tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

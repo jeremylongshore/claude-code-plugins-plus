@@ -5,18 +5,12 @@ description: |
   This skill provides index design and optimization with comprehensive guidance and automation.
   Trigger with phrases like "create indexes", "optimize indexes",
   or "improve query performance".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*, mysql:*), mongosh:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/database-index-advisor-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/database-index-advisor-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

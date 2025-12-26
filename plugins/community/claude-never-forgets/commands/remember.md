@@ -1,8 +1,9 @@
 ---
+name: remember
 description: Manually add something to project memory
-argument-hint: [what to remember]
+argument-hint:
+  - what to remember
 ---
-
 Add to `.claude/memories/project_memory.json` in `manual_memories` array:
 
 ```json

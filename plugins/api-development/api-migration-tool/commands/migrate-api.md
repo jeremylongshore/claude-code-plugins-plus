@@ -1,5 +1,8 @@
 ---
-description: Migrate API to new version with compatibility layers and automated scripts
+name: migrate-api
+description: >
+  Migrate API to new version with compatibility layers and automated
+  scripts
 shortcut: mig
 ---
 # Migrate API Version

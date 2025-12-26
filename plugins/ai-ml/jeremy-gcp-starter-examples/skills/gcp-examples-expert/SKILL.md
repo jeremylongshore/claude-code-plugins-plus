@@ -1,12 +1,11 @@
 ---
 name: gcp-examples-expert
-description: Provide production-ready Google Cloud code examples from official repositories
-  including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns.
-  Use when asked to "show ADK example" or "provide GCP starter kit".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Provide production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to "show ADK example" or "provide GCP starter kit". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## What This Skill Does
 
@@ -364,3 +363,38 @@ This skill uses the following tools:
 - **GoogleCloudPlatform/vertex-ai-samples**: https://github.com/GoogleCloudPlatform/vertex-ai-samples
 - **GoogleCloudPlatform/generative-ai**: https://github.com/GoogleCloudPlatform/generative-ai
 - **GoogleCloudPlatform/agentsmithy**: https://github.com/GoogleCloudPlatform/agentsmithy
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands

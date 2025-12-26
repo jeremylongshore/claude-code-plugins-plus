@@ -1,5 +1,8 @@
 ---
-description: Aggregate crypto news with sentiment analysis and market impact scoring from...
+name: aggregate-news
+description: >
+  Aggregate crypto news with sentiment analysis and market impact scoring
+  from...
 shortcut: an
 ---
 # Aggregate Crypto News

@@ -1,7 +1,7 @@
 ---
+name: ci-cd-build
 description: Build CI/CD pipelines
 ---
-
 # CI/CD Pipeline Builder
 
 Generate production-ready CI/CD pipelines for multiple platforms.

@@ -1,11 +1,11 @@
 ---
+name: merge-safe
 description: Check for conflicts before merging branches safely
 shortcut: gm
 category: git
 difficulty: intermediate
 estimated_time: 1 minute
 ---
-
 <!-- DESIGN DECISION: Why this command exists -->
 <!-- Merges often create conflicts that aren't discovered until mid-merge, forcing
      developers into conflict resolution mode unexpectedly. This previews conflicts

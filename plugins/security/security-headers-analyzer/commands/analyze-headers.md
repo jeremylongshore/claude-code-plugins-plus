@@ -1,4 +1,5 @@
 ---
+name: analyze-headers
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

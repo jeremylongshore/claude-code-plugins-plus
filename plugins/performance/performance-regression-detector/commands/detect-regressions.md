@@ -1,7 +1,7 @@
 ---
+name: detect-regressions
 description: Detect performance regressions in CI/CD
 ---
-
 # Performance Regression Detector
 
 Detect performance regressions early in the development cycle through automated testing.

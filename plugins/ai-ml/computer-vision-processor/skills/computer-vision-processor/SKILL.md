@@ -1,15 +1,16 @@
 ---
 name: processing-computer-vision-tasks
-description: Process images using object detection, classification, and segmentation.
-  Use when requesting "analyze image", "object detection", "image classification",
-  or "computer vision".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Process images using object detection, classification, and segmentation. Use when requesting "analyze image", "object detection", "image classification", or "computer vision". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for computer vision processor tasks.
 This skill empowers Claude to leverage the computer-vision-processor plugin to analyze images, detect objects, and extract meaningful information. It automates computer vision workflows, optimizes performance, and provides detailed insights based on image content.
 
 ## How It Works
@@ -52,3 +53,30 @@ The skill will:
 ## Integration
 
 This skill utilizes the `/process-vision` command provided by the computer-vision-processor plugin. It can be integrated with other skills to further process the results of the computer vision analysis, such as generating reports or triggering actions based on detected objects.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

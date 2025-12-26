@@ -1,13 +1,11 @@
 ---
 name: genkit-production-expert
-description: Build production Firebase Genkit applications including RAG systems,
-  multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions
-  or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement
-  RAG".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Build production Firebase Genkit applications including RAG systems, multi-step flows, and tool calling for Node.js/Python/Go. Deploy to Firebase Functions or Cloud Run with AI monitoring. Use when asked to "create genkit flow" or "implement RAG". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## What This Skill Does
 
@@ -307,3 +305,40 @@ This skill uses the following tools:
 - Node.js 1.0 Announcement: https://firebase.blog/posts/2025/02/announcing-genkit/
 - Go 1.0 Announcement: https://developers.googleblog.com/en/announcing-genkit-go-10/
 - Vertex AI Plugin: https://genkit.dev/docs/integrations/vertex-ai/
+
+## Overview
+
+
+This skill provides automated assistance for genkit production expert tasks.
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands

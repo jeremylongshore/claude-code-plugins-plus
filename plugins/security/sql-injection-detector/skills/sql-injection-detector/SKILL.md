@@ -4,16 +4,11 @@ description: |
   Detect and analyze SQL injection vulnerabilities in application code and database queries.
   Use when you need to scan code for SQL injection risks, review query construction, validate input sanitization, or implement secure query patterns.
   Trigger with phrases like "detect SQL injection", "scan for SQLi vulnerabilities", "review database queries", or "check SQL security".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(code-scan:*), security-test:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), security-test:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Prerequisites
 
@@ -47,6 +42,15 @@ Locate database interaction code:
 **String Concatenation (Highly Vulnerable)**:
 ```python
 # INSECURE: Direct concatenation
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 query = "SELECT * FROM users WHERE username = '" + user_input + "'"
 cursor.execute(query)
 

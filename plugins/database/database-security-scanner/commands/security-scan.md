@@ -1,5 +1,7 @@
 ---
-description: Comprehensive database security scanner with OWASP compliance checks,...
+name: security-scan
+description: >
+  Comprehensive database security scanner with OWASP compliance checks,...
 shortcut: secu
 ---
 # Database Security Scanner

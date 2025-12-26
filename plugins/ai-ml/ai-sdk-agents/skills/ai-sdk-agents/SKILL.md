@@ -1,15 +1,15 @@
 ---
 name: orchestrating-multi-agent-systems
-version: 1.0.0
 description: |
   Orchestrate multi-agent systems with handoffs, routing, and workflows across AI providers.
   Use when building complex AI systems requiring agent collaboration, task delegation, or workflow coordination.
   Trigger with phrases like "create multi-agent system", "orchestrate agents", or "coordinate agent workflows".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(npm:*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -149,3 +149,11 @@ Common issues and solutions:
 - Research and analysis workflows
 - Content creation and review pipelines
 - Data processing and validation systems
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

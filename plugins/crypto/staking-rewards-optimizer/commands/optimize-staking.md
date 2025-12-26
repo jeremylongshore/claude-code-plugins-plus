@@ -1,4 +1,5 @@
 ---
+name: optimize-staking
 description: Analyze and optimize staking rewards across protocols
 shortcut: stak
 ---

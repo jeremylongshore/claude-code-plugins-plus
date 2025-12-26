@@ -1,9 +1,28 @@
 ---
 name: geepers_diag
-description: Use this agent for system diagnostics, error pattern detection, log analysis, and root cause investigation. Invoke when services are failing, experiencing errors, or behaving unexpectedly.\n\n<example>\nContext: Service crashes\nuser: "The wordblocks service keeps crashing"\nassistant: "Let me use geepers_diag to analyze logs and find the root cause."\n</example>\n\n<example>\nContext: Health check\nuser: "Can you check if all services are healthy?"\nassistant: "I'll use geepers_diag for comprehensive health analysis."\n</example>
+description: "Use this agent for system diagnostics, error pattern detection, log analysis, and root cause investigation. Invoke when services are failing, experiencing errors, or behaving unexpectedly.\n"
 model: sonnet
 color: teal
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Service crashes
+user: "The wordblocks service keeps crashing"
+assistant: "Let me use geepers_diag to analyze logs and find the root cause."
+</example>
+
+### Example 2
+
+<example>
+Context: Health check
+user: "Can you check if all services are healthy?"
+assistant: "I'll use geepers_diag for comprehensive health analysis."
+</example>
+
 
 ## Mission
 

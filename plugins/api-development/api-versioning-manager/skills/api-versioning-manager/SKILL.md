@@ -1,15 +1,15 @@
 ---
 name: versioning-apis
-version: 1.0.0
 description: |
   Manage API versions with backward compatibility, deprecation notices, and migration paths.
   Use when managing API versions and backward compatibility.
   Trigger with phrases like "version the API", "manage API versions", or "handle API versioning".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:version-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api versioning manager tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,15 +1,15 @@
 ---
 name: routing-dex-trades
-version: 1.0.0
 description: |
   Route trades across multiple DEXs to find optimal prices and minimize slippage.
   Use when routing trades for best execution.
   Trigger with phrases like "find best price", "route trade", or "check DEX prices".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

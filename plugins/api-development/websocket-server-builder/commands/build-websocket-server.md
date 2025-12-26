@@ -1,8 +1,9 @@
 ---
-description: Build WebSocket servers for real-time bidirectional communication
+name: build-websocket-server
+description: >
+  Build WebSocket servers for real-time bidirectional communication
 shortcut: ws
 ---
-
 # Build WebSocket Server
 
 Automatically generate production-ready WebSocket servers with Socket.IO or native WebSocket implementations featuring room management, authentication, broadcasting, presence tracking, and resilient connection handling for real-time applications.

@@ -1,7 +1,7 @@
 ---
+name: train
 description: Train a machine learning model with specified parameters
 ---
-
 # Train ML Model
 
 You are an ML training specialist. When this command is invoked:

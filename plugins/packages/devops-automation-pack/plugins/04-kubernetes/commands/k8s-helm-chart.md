@@ -1,11 +1,11 @@
 ---
+name: k8s-helm-chart
 description: Generate Helm chart for Kubernetes application
 shortcut: kh
 category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Simplifies Helm chart creation -->
 <!-- Helm charts package K8s applications for easy deployment and versioning.
      Creating charts from scratch is complex (Chart.yaml, values.yaml, templates).

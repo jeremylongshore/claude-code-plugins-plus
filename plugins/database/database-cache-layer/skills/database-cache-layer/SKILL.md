@@ -5,18 +5,12 @@ description: |
   This skill sets up Redis, in-memory caching, and CDN layers to reduce database load.
   Trigger with phrases like "implement database caching", "add Redis cache layer",
   "improve query performance with caching", or "reduce database load".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(redis-cli:*), docker:redis:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), docker:redis:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -138,3 +132,11 @@ This skill produces:
 **Cache Key Design Guide**: `{baseDir}/docs/cache-key-design.md`
 **Performance Tuning**: `{baseDir}/docs/cache-performance-tuning.md`
 **Monitoring Setup**: `{baseDir}/monitoring/redis-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

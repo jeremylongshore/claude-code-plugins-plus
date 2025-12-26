@@ -1,15 +1,15 @@
 ---
 name: monitoring-apis
-version: 1.0.0
 description: |
   Build real-time API monitoring dashboards with metrics, alerts, and health checks.
   Use when tracking API health and performance metrics.
   Trigger with phrases like "monitor the API", "add API metrics", or "setup API monitoring".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:monitor-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api monitoring dashboard tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

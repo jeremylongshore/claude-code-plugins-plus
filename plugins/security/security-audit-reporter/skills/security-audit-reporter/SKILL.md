@@ -4,18 +4,12 @@ description: |
   Generate comprehensive security audit reports for applications and systems.
   Use when you need to assess security posture, identify vulnerabilities, evaluate compliance status, or create formal security documentation.
   Trigger with phrases like "create security audit report", "generate security assessment", "audit security posture", or "PCI-DSS compliance report".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(security-scan:*), report-gen:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(security-scan:*), report-gen:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -72,6 +66,15 @@ The skill produces:
 **Report Structure**:
 ```
 # Security Audit Report - [System Name]
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Executive Summary
 - Overall risk rating
 - Critical findings count

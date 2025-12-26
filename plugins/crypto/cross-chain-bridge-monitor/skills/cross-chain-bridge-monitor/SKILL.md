@@ -1,15 +1,15 @@
 ---
 name: monitoring-cross-chain-bridges
-version: 1.0.0
 description: |
   Monitor cross-chain bridge security, liquidity, and transaction status across networks.
   Use when monitoring cross-chain asset transfers.
   Trigger with phrases like "monitor bridges", "check cross-chain", or "track bridge transfers".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:bridge-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

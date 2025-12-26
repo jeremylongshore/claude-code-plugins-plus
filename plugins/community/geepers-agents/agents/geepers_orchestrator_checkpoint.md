@@ -1,9 +1,34 @@
 ---
 name: geepers_orchestrator_checkpoint
-description: Checkpoint orchestrator that coordinates session maintenance agents - scout, repo, status, and snippets. Use at session boundaries, after completing features, or for routine project maintenance. This is your "wrap up and document" orchestrator.\n\n<example>\nContext: End of coding session\nuser: "I'm done for today"\nassistant: "Let me run geepers_orchestrator_checkpoint to clean up and document today's work."\n</example>\n\n<example>\nContext: Taking a break mid-session\nassistant: "Good checkpoint. Let me run geepers_orchestrator_checkpoint to capture progress."\n</example>\n\n<example>\nContext: Periodic maintenance during long session\nassistant: "We've been at this for a while. Running geepers_orchestrator_checkpoint for routine maintenance."\n</example>
+description: "Checkpoint orchestrator that coordinates session maintenance agents - scout, repo, status, and snippets. Use at session boundaries, after completing features, or for routine project maintenance."
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: End of coding session
+user: "I'm done for today"
+assistant: "Let me run geepers_orchestrator_checkpoint to clean up and document today's work."
+</example>
+
+### Example 2
+
+<example>
+Context: Taking a break mid-session
+assistant: "Good checkpoint. Let me run geepers_orchestrator_checkpoint to capture progress."
+</example>
+
+### Example 3
+
+<example>
+Context: Periodic maintenance during long session
+assistant: "We've been at this for a while. Running geepers_orchestrator_checkpoint for routine maintenance."
+</example>
+
 
 ## Mission
 

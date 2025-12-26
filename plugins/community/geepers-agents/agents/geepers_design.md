@@ -1,9 +1,28 @@
 ---
 name: geepers_design
-description: Use this agent for visual design systems, typography, layout geometry, color palettes, and UI/UX evaluation. Invoke when creating design systems, reviewing visual consistency, or applying modernist design principles.\n\n<example>\nContext: Typography review\nuser: "Can you review the CSS for my landing page typography and spacing?"\nassistant: "Let me use geepers_design for comprehensive typography and layout analysis."\n</example>\n\n<example>\nContext: Component design\nuser: "I need to create a card component for user profiles"\nassistant: "I'll use geepers_design to design it following geometric design patterns."\n</example>
+description: "Use this agent for visual design systems, typography, layout geometry, color palettes, and UI/UX evaluation. Invoke when creating design systems, reviewing visual consistency, or applying modernist design principles.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Typography review
+user: "Can you review the CSS for my landing page typography and spacing?"
+assistant: "Let me use geepers_design for comprehensive typography and layout analysis."
+</example>
+
+### Example 2
+
+<example>
+Context: Component design
+user: "I need to create a card component for user profiles"
+assistant: "I'll use geepers_design to design it following geometric design patterns."
+</example>
+
 
 ## Mission
 

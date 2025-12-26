@@ -1,5 +1,7 @@
 ---
-description: Generate comprehensive database documentation from existing schemas
+name: db-docs
+description: >
+  Generate comprehensive database documentation from existing schemas
 shortcut: dbdo
 ---
 # Database Documentation Generator

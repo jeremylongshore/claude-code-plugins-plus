@@ -1,4 +1,5 @@
 ---
+name: scan-secrets
 description: Scan for exposed secrets and credentials in codebase
 shortcut: secr
 ---

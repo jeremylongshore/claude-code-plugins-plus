@@ -1,17 +1,11 @@
 ---
-description: This skill enables claude to detect and resolve performance bottlenecks
-  in applications. it analyzes cpu, memory, i/o, and database performance to identify
-  areas of concern. use this skill when you need to diagnose slow application performance,
-  op...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: detecting-performance-bottlenecks
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to detect and resolve performance bottlenecks in applications. it analyzes cpu, memory, i/o, and database performance to identify areas of concern. use this skill when you need to diagnose slow application performance, op... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+allowed-tools: Read, Bash(cmd:*), Grep, Glob
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -57,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with code generation plugins to automatically implement the suggested remediation strategies. It also integrates with monitoring and logging tools to provide real-time performance data.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

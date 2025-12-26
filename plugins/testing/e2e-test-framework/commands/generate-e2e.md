@@ -1,4 +1,5 @@
 ---
+name: generate-e2e
 description: Generate end-to-end browser tests for user workflows
 shortcut: ee
 ---

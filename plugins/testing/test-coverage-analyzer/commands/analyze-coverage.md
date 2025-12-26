@@ -1,8 +1,8 @@
 ---
+name: analyze-coverage
 description: Analyze code coverage metrics and identify untested code
 shortcut: cov
 ---
-
 # Test Coverage Analyzer
 
 Analyze test coverage metrics, identify untested code paths, and generate comprehensive coverage reports.

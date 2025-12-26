@@ -1,9 +1,36 @@
 ---
 name: geepers_caddy
-description: Use this agent for ALL Caddy configuration changes, port allocation, and routing setup. This is the SOLE authority for /etc/caddy/Caddyfile. Invoke when adding new services, debugging 502 errors, checking port availability, or modifying any web routing.\n\n<example>\nContext: Deploying a new service\nuser: "I need to add a new API on port 5012 at /myapi/*"\nassistant: "I'll use geepers_caddy to safely add this route and verify port availability."\n</example>\n\n<example>\nContext: Routing errors\nuser: "Getting 502 Bad Gateway on /wordblocks/*"\nassistant: "Let me use geepers_caddy to check the configuration and port mapping."\n</example>\n\n<example>\nContext: Port conflict\nuser: "Address already in use error when starting my service"\nassistant: "I'll have geepers_caddy check port allocations and find an available one."\n</example>
+description: "Use this agent for ALL Caddy configuration changes, port allocation, and routing setup. This is the SOLE authority for /etc/caddy/Caddyfile. Invoke when adding new services, debugging 502 errors, checking port availability, or modifying any web routing.\n"
 model: opus
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Deploying a new service
+user: "I need to add a new API on port 5012 at /myapi/*"
+assistant: "I'll use geepers_caddy to safely add this route and verify port availability."
+</example>
+
+### Example 2
+
+<example>
+Context: Routing errors
+user: "Getting 502 Bad Gateway on /wordblocks/*"
+assistant: "Let me use geepers_caddy to check the configuration and port mapping."
+</example>
+
+### Example 3
+
+<example>
+Context: Port conflict
+user: "Address already in use error when starting my service"
+assistant: "I'll have geepers_caddy check port allocations and find an available one."
+</example>
+
 
 ## Mission
 

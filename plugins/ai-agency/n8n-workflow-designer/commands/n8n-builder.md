@@ -1,7 +1,7 @@
 ---
+name: n8n-builder
 description: Generate complete n8n workflow JSON files
 ---
-
 # n8n Workflow Builder
 
 Generate production-ready n8n workflow JSON files.

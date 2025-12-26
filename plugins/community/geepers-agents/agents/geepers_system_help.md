@@ -1,9 +1,36 @@
 ---
 name: geepers_system_help
-description: Reference guide for all geepers agents. Use when unsure which agent to use, want to see all available agents, or need to generate reference documentation. Creates an HTML index at ~/docs/geepers/index.html for mobile access.\n\n<example>\nContext: User unsure which agent to use\nuser: "What agents do I have?"\nassistant: "Let me run geepers_help to show you all available agents."\n</example>\n\n<example>\nContext: Looking for the right agent\nuser: "I need to clean something up but not sure which agent"\nassistant: "I'll use geepers_help to show agents related to cleanup."\n</example>\n\n<example>\nContext: Generate reference docs\nuser: "Update the geepers documentation"\nassistant: "Running geepers_help to regenerate the reference index."\n</example>
+description: "Reference guide for all geepers agents. Use when unsure which agent to use, want to see all available agents, or need to generate reference documentation. Creates an HTML index at ~/docs/geepers/index.html for mobile access.\n"
 model: haiku
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: User unsure which agent to use
+user: "What agents do I have?"
+assistant: "Let me run geepers_help to show you all available agents."
+</example>
+
+### Example 2
+
+<example>
+Context: Looking for the right agent
+user: "I need to clean something up but not sure which agent"
+assistant: "I'll use geepers_help to show agents related to cleanup."
+</example>
+
+### Example 3
+
+<example>
+Context: Generate reference docs
+user: "Update the geepers documentation"
+assistant: "Running geepers_help to regenerate the reference index."
+</example>
+
 
 ## Mission
 

@@ -1,8 +1,8 @@
 ---
+name: run-integration
 description: Run integration test suites with proper setup and teardown
 shortcut: rit
 ---
-
 # Integration Test Runner
 
 Run integration tests with comprehensive environment setup, database seeding, service orchestration, and cleanup.

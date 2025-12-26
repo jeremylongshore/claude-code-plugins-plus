@@ -1,5 +1,7 @@
 ---
-description: Backtest trading strategies with historical data and comprehensive...
+name: backtest-strategy
+description: >
+  Backtest trading strategies with historical data and comprehensive...
 shortcut: bs
 ---
 # Backtest Trading Strategy

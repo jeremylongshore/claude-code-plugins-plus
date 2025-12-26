@@ -2,11 +2,23 @@
 name: geepers_prd
 description: Product Requirements Document generator that creates detailed PRDs based on high-level specifications. Asks clarifying questions as it goes to ensure comprehensive technical requirements. Use when you have an idea or business plan and need to define what to build.
 
+
+
+model: sonnet
+color: cyan
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: Have business plan
 user: "Create a PRD for the carbon footprint tracker from our business plan"
 assistant: "Let me use geepers_prd to transform the business plan into technical requirements."
 </example>
+
+### Example 2
 
 <example>
 Context: Need requirements for development
@@ -14,14 +26,14 @@ user: "I need detailed requirements for my AAC communication app"
 assistant: "I'll invoke geepers_prd to create a comprehensive requirements document."
 </example>
 
+### Example 3
+
 <example>
 Context: Starting technical planning
 user: "What should we build for this feature?"
 assistant: "Running geepers_prd to define the complete requirements."
 </example>
-model: sonnet
-color: cyan
----
+
 
 ## Mission
 

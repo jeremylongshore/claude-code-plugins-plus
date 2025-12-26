@@ -1,23 +1,47 @@
 ---
-description: Generate pivot tables and charts from raw data using natural language
-  - analyze sales by region, summarize data by category, and create visualizations
-  effortlessly Activates when you request "excel pivot wizard" functionality.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: excel-pivot-wizard
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Generate pivot tables and charts from raw data using natural language - analyze sales by region, summarize data by category, and create visualizations effortlessly Activates when you request "excel pivot wizard" functionality. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Excel Pivot Wizard
 
 Creates pivot tables and visualizations from raw data using natural language commands.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## When to Invoke This Skill
 
 Automatically load this Skill when the user asks to:

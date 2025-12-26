@@ -1,5 +1,7 @@
 ---
-description: Generate production-ready stored procedures and database functions
+name: stored-proc
+description: >
+  Generate production-ready stored procedures and database functions
 shortcut: stor
 ---
 # Stored Procedure Generator

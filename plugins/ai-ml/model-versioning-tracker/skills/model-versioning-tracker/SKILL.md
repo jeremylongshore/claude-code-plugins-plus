@@ -1,22 +1,16 @@
 ---
-description: This skill enables claude to track and manage ai/ml model versions using
-  the model-versioning-tracker plugin. it should be used when the user asks to manage
-  model versions, track model lineage, log model performance, or implement version
-  control f...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: tracking-model-versions
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to track and manage ai/ml model versions using the model-versioning-tracker plugin. it should be used when the user asks to manage model versions, track model lineage, log model performance, or implement version control f... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for model versioning tracker tasks.
 This skill empowers Claude to interact with the model-versioning-tracker plugin, providing a streamlined approach to managing and tracking AI/ML model versions. It ensures that model development and deployment are conducted with proper version control, logging, and performance monitoring.
 
 ## How It Works
@@ -59,3 +53,30 @@ The skill will:
 ## Integration
 
 This skill integrates with other Claude Code plugins by providing a centralized location for managing AI/ML model versions. It can be used in conjunction with plugins that handle data processing, model training, and deployment to ensure a seamless AI/ML workflow.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

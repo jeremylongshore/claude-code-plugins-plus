@@ -1,11 +1,11 @@
 ---
+name: github-actions-create
 description: Generate GitHub Actions workflow with best practices
 shortcut: gha
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Automates GH Actions workflow creation with best practices built in -->
 <!-- VALIDATION: Tested with Node.js, Python, Go projects -->
 

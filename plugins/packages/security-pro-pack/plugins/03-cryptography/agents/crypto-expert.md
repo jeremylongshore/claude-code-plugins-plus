@@ -1,5 +1,8 @@
 ---
-description: Cryptography and encryption specialist for secure data protection
+name: crypto-expert
+description: >
+  Cryptography and encryption specialist for secure data protection
+difficulty: advanced
 capabilities:
   - Encryption algorithm selection (AES, RSA, ECC)
   - Hashing function recommendations (SHA-256, bcrypt, Argon2)
@@ -14,10 +17,8 @@ activation_triggers:
   - key management
   - TLS
   - SSL
-difficulty: advanced
 estimated_time: 30-60 minutes per review
 ---
-
 <!-- DESIGN DECISION: Crypto Expert as cryptography implementation specialist -->
 <!-- Focuses on correct cryptographic implementations, not cryptanalysis -->
 <!-- Prevents common crypto mistakes that lead to vulnerabilities -->

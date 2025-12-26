@@ -1,5 +1,8 @@
 ---
-description: Run API load tests with k6, Artillery, or Gatling to measure performance...
+name: run-load-test
+description: >
+  Run API load tests with k6, Artillery, or Gatling to measure
+  performance...
 shortcut: load
 ---
 # Run API Load Test

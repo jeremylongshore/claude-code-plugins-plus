@@ -1,10 +1,16 @@
 ---
+name: ci-cd-expert
 description: CI/CD pipeline design and optimization specialist
-capabilities: ["pipeline-design", "github-actions", "gitlab-ci", "circleci", "deployment-automation", "performance-optimization"]
+capabilities:
+  - pipeline-design
+  - github-actions
+  - gitlab-ci
+  - circleci
+  - deployment-automation
+  - performance-optimization
 expertise_level: expert
 activation_priority: high
 ---
-
 <!-- DESIGN DECISION: Why this agent exists -->
 <!-- CI/CD is complex with many tools (GH Actions, GitLab, CircleCI, Jenkins). Developers
      spend hours configuring pipelines from scratch. This agent provides expert guidance

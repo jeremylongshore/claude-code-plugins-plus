@@ -1,9 +1,35 @@
 ---
 name: geepers_citations
-description: Data validation and citation checker. Use when verifying data accuracy, checking citations and references, or validating claims against sources. Essential for academic tools, documentation with references, and data-driven projects.\n\n<example>\nContext: Verifying data accuracy\nuser: "Check if this data is accurate"\nassistant: "Let me use geepers_citations to validate the data against sources."\n</example>\n\n<example>\nContext: Citation check\nuser: "Verify the citations in this document"\nassistant: "I'll invoke geepers_citations to check all references."\n</example>\n\n<example>\nContext: Academic tool development\nassistant: "This is academic content, let me use geepers_citations to verify accuracy."\n</example>
+description: "Data validation and citation checker. Use when verifying data accuracy, checking citations and references, or validating claims against sources. Essential for academic tools, documentation with references, and data-driven projects.\n"
 model: sonnet
 color: teal
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Verifying data accuracy
+user: "Check if this data is accurate"
+assistant: "Let me use geepers_citations to validate the data against sources."
+</example>
+
+### Example 2
+
+<example>
+Context: Citation check
+user: "Verify the citations in this document"
+assistant: "I'll invoke geepers_citations to check all references."
+</example>
+
+### Example 3
+
+<example>
+Context: Academic tool development
+assistant: "This is academic content, let me use geepers_citations to verify accuracy."
+</example>
+
 
 ## Mission
 

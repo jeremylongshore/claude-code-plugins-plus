@@ -1,18 +1,46 @@
 ---
-description: Automatically validates claude code plugin structure, schemas, and compliance
-  when user mentions validate plugin, check plugin, or plugin errors. runs comprehensive
-  validation specific to claude-code-plugins repository standards.
-allowed-tools:
-- Read
-- Grep
-- Bash
 name: plugin-validator
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Automatically validates AI assistant code plugin structure, schemas, and compliance when user mentions validate plugin, check plugin, or plugin errors. runs comprehensive validation specific to AI assistant-code-plugins repository standards. Use when validating configurations or code. Trigger with phrases like 'validate', 'check', or 'verify'.
+allowed-tools: Read, Grep, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Plugin Validator
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Purpose
 Automatically validates Claude Code plugins against repository standards, checking structure, JSON schemas, frontmatter, permissions, security, and marketplace compliance - optimized for claude-code-plugins repository.
 

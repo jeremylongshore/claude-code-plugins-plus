@@ -1,4 +1,5 @@
 ---
+name: check-owasp
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

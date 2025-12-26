@@ -1,11 +1,11 @@
 ---
+name: monitoring-setup
 description: Set up monitoring stack with Prometheus, Grafana, alerts
 shortcut: ms
 category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Essential for production systems -->
 <!-- You can't improve what you don't measure. Monitoring is critical but complex
      (Prometheus, Grafana, AlertManager, exporters). This command generates production-ready

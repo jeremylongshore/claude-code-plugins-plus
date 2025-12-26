@@ -4,18 +4,12 @@ description: |
   Identify security misconfigurations in infrastructure-as-code, application settings, and system configurations.
   Use when you need to audit Terraform/CloudFormation templates, check application config files, validate system security settings, or ensure compliance with security best practices.
   Trigger with phrases like "find security misconfigurations", "audit infrastructure security", "check config security", or "scan for misconfigured settings".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(config-scan:*), iac-check:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(config-scan:*), iac-check:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -139,6 +133,15 @@ The skill produces:
 **Report Structure**:
 ```
 # Security Misconfiguration Findings
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 Scan Date: 2024-01-15
 Files Analyzed: 42
 Findings: 15 (3 Critical, 5 High, 4 Medium, 3 Low)

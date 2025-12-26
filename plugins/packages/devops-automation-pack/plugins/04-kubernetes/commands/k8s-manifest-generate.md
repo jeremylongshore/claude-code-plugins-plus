@@ -1,11 +1,11 @@
 ---
+name: k8s-manifest-generate
 description: Generate production-ready Kubernetes manifests
 shortcut: km
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Simplifies K8s manifest creation -->
 <!-- Kubernetes YAML is verbose and error-prone. Developers spend hours writing manifests
      and debugging YAML syntax. This command generates production-ready manifests with

@@ -3,22 +3,25 @@ name: agent-context-loader
 description: |
   Proactive auto-loading: automatically detects and loads agents.md files.
   Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(general:*)
-- Bash(util:*)
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Agent Context Auto-Loader
 
 **⚡ This skill activates AUTOMATICALLY - no user action required!**
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Purpose
 
 This skill makes Claude Code recognize and load `AGENTS.md` files with the same priority as `CLAUDE.md` files, enabling specialized agent-specific instructions for your projects.

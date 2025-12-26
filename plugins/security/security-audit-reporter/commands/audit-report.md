@@ -1,4 +1,5 @@
 ---
+name: audit-report
 description: Generate comprehensive security audit report
 shortcut: audi
 ---

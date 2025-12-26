@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_fullstack
-description: Full-stack engineering orchestrator that coordinates backend-to-frontend development - api, db, services on backend, design, a11y, react on frontend. Use when building features that span the entire stack. This is your "build it end-to-end" orchestrator.\n\n<example>\nContext: Building new feature\nuser: "I need to add user profiles with avatars and settings"\nassistant: "Let me use geepers_orchestrator_fullstack to coordinate the full-stack implementation."\n</example>\n\n<example>\nContext: Major refactoring\nuser: "I want to migrate the auth system"\nassistant: "I'll invoke geepers_orchestrator_fullstack to handle backend API changes through frontend updates."\n</example>\n\n<example>\nContext: New project kickoff\nuser: "Starting a new service that needs API and UI"\nassistant: "Running geepers_orchestrator_fullstack to set up the complete stack."\n</example>
+description: "Full-stack engineering orchestrator that coordinates backend-to-frontend development - api, db, services on backend, design, a11y, react on frontend. Use when building features that span the entire stack.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Building new feature
+user: "I need to add user profiles with avatars and settings"
+assistant: "Let me use geepers_orchestrator_fullstack to coordinate the full-stack implementation."
+</example>
+
+### Example 2
+
+<example>
+Context: Major refactoring
+user: "I want to migrate the auth system"
+assistant: "I'll invoke geepers_orchestrator_fullstack to handle backend API changes through frontend updates."
+</example>
+
+### Example 3
+
+<example>
+Context: New project kickoff
+user: "Starting a new service that needs API and UI"
+assistant: "Running geepers_orchestrator_fullstack to set up the complete stack."
+</example>
+
 
 ## Mission
 

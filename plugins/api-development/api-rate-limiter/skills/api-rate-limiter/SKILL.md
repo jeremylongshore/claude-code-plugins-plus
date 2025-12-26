@@ -1,15 +1,15 @@
 ---
 name: rate-limiting-apis
-version: 1.0.0
 description: |
   Implement sophisticated rate limiting with sliding windows, token buckets, and quotas.
   Use when protecting APIs from excessive requests.
   Trigger with phrases like "add rate limiting", "limit API requests", or "implement rate limits".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:ratelimit-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api rate limiter tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

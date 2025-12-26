@@ -1,9 +1,28 @@
 ---
 name: geepers_db
-description: Use this agent for database optimization, query analysis, index recommendations, and schema review. Invoke when queries are slow, planning database changes, or diagnosing database bottlenecks.\n\n<example>\nContext: Slow queries\nuser: "The search endpoint is slow, I think it's the database"\nassistant: "Let me use geepers_db to analyze query performance."\n</example>\n\n<example>\nContext: Database planning\nuser: "How is our database performing? Do we need to scale?"\nassistant: "I'll use geepers_db for capacity analysis."\n</example>
+description: "Use this agent for database optimization, query analysis, index recommendations, and schema review. Invoke when queries are slow, planning database changes, or diagnosing database bottlenecks.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Slow queries
+user: "The search endpoint is slow, I think it's the database"
+assistant: "Let me use geepers_db to analyze query performance."
+</example>
+
+### Example 2
+
+<example>
+Context: Database planning
+user: "How is our database performing? Do we need to scale?"
+assistant: "I'll use geepers_db for capacity analysis."
+</example>
+
 
 ## Mission
 

@@ -1,4 +1,5 @@
 ---
+name: validate-api-responses
 description: Validate API responses against schemas
 shortcut: val
 ---

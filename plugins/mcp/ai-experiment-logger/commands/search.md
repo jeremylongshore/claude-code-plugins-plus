@@ -1,4 +1,5 @@
 ---
+name: search
 description: Search AI experiments and display formatted results
 shortcut: sear
 ---

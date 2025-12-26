@@ -1,15 +1,15 @@
 ---
 name: performing-security-testing
-version: 1.0.0
 description: |
   Automate security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues.
   Use when performing security assessments, penetration tests, or vulnerability scans.
   Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration test".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -122,3 +122,13 @@ Common issues and solutions:
 - Obtain written authorization before security testing
 - Document all testing activities for audit trails
 - Validate remediation effectiveness with regression testing
+
+## Overview
+
+
+This skill provides automated assistance for security test scanner tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

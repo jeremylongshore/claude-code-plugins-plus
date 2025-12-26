@@ -1,3 +1,8 @@
+---
+name: sync-agent-context
+description: Merge all AGENTS.md files into CLAUDE.md for unified agent context
+---
+
 # Sync Agent Context - Slash Command
 
 **Command**: `/sync-agent-context`

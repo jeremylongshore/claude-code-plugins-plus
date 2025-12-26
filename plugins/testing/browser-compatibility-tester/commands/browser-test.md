@@ -1,8 +1,9 @@
 ---
-description: Cross-browser compatibility testing across multiple browsers and devices
+name: browser-test
+description: >
+  Cross-browser compatibility testing across multiple browsers and devices
 shortcut: bt
 ---
-
 # Browser Compatibility Tester
 
 Test web applications across multiple browsers (Chrome, Firefox, Safari, Edge), versions, and devices using BrowserStack, Selenium Grid, or Playwright.

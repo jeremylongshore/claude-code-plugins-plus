@@ -5,18 +5,12 @@ description: |
   This skill creates backup scripts for PostgreSQL, MySQL, MongoDB, and SQLite with compression.
   Trigger with phrases like "automate database backups", "schedule database dumps",
   "create backup scripts", or "implement disaster recovery for database".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(pg_dump:*, mysqldump:*, mongodump:*), cron:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*, mysqldump:*, mongodump:*), cron:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -132,3 +126,11 @@ This skill produces:
 **Retention Policy Templates**: `{baseDir}/templates/retention-policies.yaml`
 **Cron Job Examples**: `{baseDir}/examples/crontab-entries.txt`
 **Monitoring Scripts**: `{baseDir}/scripts/backup-monitoring.sh`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

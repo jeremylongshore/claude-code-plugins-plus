@@ -1,8 +1,9 @@
 ---
-description: Generate production-ready gRPC services with Protocol Buffers
+name: generate-grpc-service
+description: >
+  Generate production-ready gRPC services with Protocol Buffers
 shortcut: grpc
 ---
-
 # Generate gRPC Service
 
 Automatically generate high-performance gRPC services with Protocol Buffer definitions, streaming support, load balancing, and comprehensive service implementations for multiple programming languages.

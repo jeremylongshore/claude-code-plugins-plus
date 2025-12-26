@@ -1,15 +1,15 @@
 ---
 name: testing-mobile-apps
-version: 1.0.0
 description: |
   Execute mobile app testing on iOS and Android devices/simulators.
   Use when performing specialized testing.
   Trigger with phrases like "test mobile app", "run iOS tests", or "validate Android functionality".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mobile-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for mobile app tester tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

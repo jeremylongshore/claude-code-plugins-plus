@@ -1,15 +1,15 @@
 ---
 name: detecting-data-anomalies
-version: 1.0.0
 description: |
   Identify anomalies and outliers in datasets using machine learning algorithms.
   Use when analyzing data for unusual patterns, outliers, or unexpected deviations from normal behavior.
   Trigger with phrases like "detect anomalies", "find outliers", or "identify unusual patterns".
+  
 allowed-tools: Read, Bash(python:*), Grep, Glob
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -149,3 +149,11 @@ Common issues and solutions:
 - Monitor detection performance over time
 - Update models as normal behavior evolves
 - Document anomaly investigation procedures
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

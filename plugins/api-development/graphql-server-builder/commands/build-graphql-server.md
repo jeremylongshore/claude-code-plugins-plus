@@ -1,8 +1,8 @@
 ---
+name: build-graphql-server
 description: Build a GraphQL server with schema-first design
 shortcut: gql
 ---
-
 # Build GraphQL Server
 
 Create a production-ready GraphQL server with type-safe schemas, optimized resolvers, real-time subscriptions, authentication, and comprehensive tooling using schema-first design principles.

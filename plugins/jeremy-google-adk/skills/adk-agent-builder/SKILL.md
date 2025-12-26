@@ -1,22 +1,46 @@
 ---
-description: Build production-ready AI agents using Google's Agent Development Kit
-  with Claude integration, React patterns, multi-agent orchestration, and comprehensive
-  tool libraries
 name: adk-agent-builder
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Build production-ready AI agents using Google's Agent Development Kit with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive tool libraries. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # ADK Agent Builder Skill
 
+
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Overview
 
+
+This skill provides automated assistance for adk agent builder tasks.
 The ADK Agent Builder accelerates AI agent development using Google's Agent Development Kit (ADK) framework integrated with Claude API. This skill provides production-ready scaffolding for:
 
 - **React-pattern agents** (Reasoning + Acting loops)

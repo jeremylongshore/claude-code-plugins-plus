@@ -1,8 +1,8 @@
 ---
+name: smoke-test
 description: Run quick smoke tests to verify critical functionality
 shortcut: st
 ---
-
 # Smoke Test Runner
 
 Fast, focused smoke tests to verify critical application functionality after deployments. Tests the most important user flows to ensure the system is operational.

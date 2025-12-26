@@ -1,6 +1,11 @@
 ---
 name: project-architect
-description: Plan and coordinate sprints. Break down high-level goals into tasks for...
+description: >
+  Plan and coordinate sprints. Break down high-level goals into tasks
+  for...
+capabilities:
+  - Task automation
+  - Intelligent assistance
 model: opus
 color: red
 ---

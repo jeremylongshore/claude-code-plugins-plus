@@ -2,11 +2,23 @@
 name: geepers_fullstack_dev
 description: Full-stack development agent that generates complete, working code from PRDs and specifications. Creates frontend, backend, database, and configuration files. Use when you have requirements and need implementation.
 
+
+
+model: sonnet
+color: orange
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: Have PRD ready
 user: "Build the carbon footprint tracker from this PRD"
 assistant: "Let me use geepers_fullstack_dev to generate the complete implementation."
 </example>
+
+### Example 2
 
 <example>
 Context: Need working code
@@ -14,14 +26,14 @@ user: "I have the requirements, now write the code"
 assistant: "I'll invoke geepers_fullstack_dev to create the full-stack application."
 </example>
 
+### Example 3
+
 <example>
 Context: Specific tech stack
 user: "Build this with Flask backend and React frontend"
 assistant: "Running geepers_fullstack_dev with the specified technology stack."
 </example>
-model: sonnet
-color: orange
----
+
 
 ## Mission
 

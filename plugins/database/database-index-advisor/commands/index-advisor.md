@@ -1,5 +1,7 @@
 ---
-description: Analyze query patterns and recommend optimal database indexes
+name: index-advisor
+description: >
+  Analyze query patterns and recommend optimal database indexes
 shortcut: inde
 ---
 # Database Index Advisor

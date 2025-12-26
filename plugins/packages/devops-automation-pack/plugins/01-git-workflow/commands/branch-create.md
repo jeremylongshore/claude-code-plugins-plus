@@ -1,11 +1,11 @@
 ---
+name: branch-create
 description: Create feature branch with team naming convention
 shortcut: gb
 category: git
 difficulty: beginner
 estimated_time: 20 seconds
 ---
-
 <!-- DESIGN DECISION: Why this command exists -->
 <!-- Teams enforce branch naming conventions (feature/, fix/, etc.) but developers
      often forget or use inconsistent names. This ensures compliance and includes

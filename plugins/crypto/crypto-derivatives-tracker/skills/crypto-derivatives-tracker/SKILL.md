@@ -1,15 +1,15 @@
 ---
 name: tracking-crypto-derivatives
-version: 1.0.0
 description: |
   Track futures, options, and perpetual swap positions with P&L calculations.
   Use when tracking futures and options positions.
   Trigger with phrases like "track derivatives", "check futures positions", or "analyze perps".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:derivatives-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

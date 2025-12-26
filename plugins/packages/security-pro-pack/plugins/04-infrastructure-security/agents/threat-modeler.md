@@ -1,5 +1,8 @@
 ---
-description: Threat modeling specialist using STRIDE and attack surface analysis
+name: threat-modeler
+description: >
+  Threat modeling specialist using STRIDE and attack surface analysis
+difficulty: advanced
 capabilities:
   - STRIDE threat modeling (Spoofing, Tampering, Repudiation, Information Disclosure, Denial of Service, Elevation of Privilege)
   - Attack surface analysis and reduction
@@ -14,10 +17,8 @@ activation_triggers:
   - architectural security
   - security design
   - trust boundaries
-difficulty: advanced
 estimated_time: 45-90 minutes per system
 ---
-
 <!-- DESIGN DECISION: Threat modeling as proactive security design activity -->
 <!-- Identifies threats during design phase, not after implementation -->
 <!-- Focuses on STRIDE methodology for systematic threat identification -->

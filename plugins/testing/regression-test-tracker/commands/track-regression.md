@@ -1,8 +1,8 @@
 ---
+name: track-regression
 description: Track and run regression tests for existing functionality
 shortcut: reg
 ---
-
 # Regression Test Tracker
 
 Track critical tests and ensure new changes don't break existing functionality.

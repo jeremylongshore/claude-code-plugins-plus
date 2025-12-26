@@ -1,7 +1,7 @@
 ---
+name: audit-log
 description: Implement database audit logging
 ---
-
 # Database Audit Logger
 
 Track database changes for compliance and debugging.

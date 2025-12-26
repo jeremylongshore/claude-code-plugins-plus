@@ -1,14 +1,14 @@
 ---
 name: rag-pipeline-gen
+description: >
+  Generate complete RAG pipeline with embeddings, vector DB, and retrieval
+shortcut: rpg
+category: other
 type: command
-description: Generate complete RAG pipeline with embeddings, vector DB, and retrieval
-category: ai
 version: 1.0.0
 author: Jeremy Longshore
-shortcut: rpg
 estimated_time: 5-10 minutes
 ---
-
 # RAG Pipeline Generator
 
 Generate a complete, production-ready RAG (Retrieval-Augmented Generation) pipeline with document ingestion, embedding, vector storage, retrieval, and LLM integration.

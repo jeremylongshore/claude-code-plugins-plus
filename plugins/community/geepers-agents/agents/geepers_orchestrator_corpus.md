@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_corpus
-description: Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux, and db. Use when working on corpus linguistics projects, NLP tools, or language data systems. This is your "language data" orchestrator.\n\n<example>\nContext: Working on COCA project\nuser: "I need to improve the COCA search interface"\nassistant: "Let me use geepers_orchestrator_corpus to coordinate linguistics and UX expertise."\n</example>\n\n<example>\nContext: New linguistics feature\nuser: "I want to add collocation analysis to the corpus tool"\nassistant: "I'll invoke geepers_orchestrator_corpus to design and implement this linguistics feature."\n</example>\n\n<example>\nContext: Database optimization for corpus\nuser: "The corpus queries are too slow"\nassistant: "Running geepers_orchestrator_corpus with focus on database optimization."\n</example>
+description: "Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux, and db. Use when working on corpus linguistics projects, NLP tools, or language data systems.\n"
 model: sonnet
 color: teal
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Working on COCA project
+user: "I need to improve the COCA search interface"
+assistant: "Let me use geepers_orchestrator_corpus to coordinate linguistics and UX expertise."
+</example>
+
+### Example 2
+
+<example>
+Context: New linguistics feature
+user: "I want to add collocation analysis to the corpus tool"
+assistant: "I'll invoke geepers_orchestrator_corpus to design and implement this linguistics feature."
+</example>
+
+### Example 3
+
+<example>
+Context: Database optimization for corpus
+user: "The corpus queries are too slow"
+assistant: "Running geepers_orchestrator_corpus with focus on database optimization."
+</example>
+
 
 ## Mission
 

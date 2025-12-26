@@ -1,19 +1,35 @@
 ---
-description: Automatically creates new claude code plugins with proper structure,
-  validation, and marketplace integration when user mentions creating a plugin, new
-  plugin, or plugin from template. specific to claude-code-plugins repository workflow.
-allowed-tools:
-- Write
-- Read
-- Grep
-- Bash
 name: plugin-creator
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Automatically creates new AI assistant code plugins with proper structure, validation, and marketplace integration when user mentions creating a plugin, new plugin, or plugin from template. specific to AI assistant-code-plugins repository workflow. Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+allowed-tools: Write, Read, Grep, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Plugin Creator
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Purpose
 Automatically scaffolds new Claude Code plugins with complete directory structure, required files, proper formatting, and marketplace catalog integration - specifically optimized for the claude-code-plugins repository.
 

@@ -1,4 +1,5 @@
 ---
+name: scan-privacy
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

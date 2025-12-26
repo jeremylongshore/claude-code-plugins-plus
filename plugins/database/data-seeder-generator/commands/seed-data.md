@@ -1,7 +1,7 @@
 ---
+name: seed-data
 description: Generate realistic test data and seed scripts
 ---
-
 # Data Seeder Generator
 
 Generate realistic, consistent test data for database seeding.

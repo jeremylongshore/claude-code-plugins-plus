@@ -1,8 +1,8 @@
 ---
+name: generate-rest-api
 description: Generate production-ready RESTful APIs with best practices
 shortcut: gra
 ---
-
 # Generate REST API
 
 Automatically generate comprehensive RESTful API implementations from schema definitions with proper routing, validation, error handling, authentication, pagination, and OpenAPI documentation following industry best practices.

@@ -1,11 +1,11 @@
 ---
+name: deployment-strategy
 description: Recommend deployment strategy for your application
 shortcut: ds
 category: deployment
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Guides users to choose right deployment approach -->
 
 # Deployment Strategy Advisor

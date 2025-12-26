@@ -1,5 +1,8 @@
 ---
-description: Track crypto wallets across multiple chains with real-time balance and...
+name: track-wallet
+description: >
+  Track crypto wallets across multiple chains with real-time balance
+  and...
 shortcut: tw
 ---
 # Track Wallet Portfolio

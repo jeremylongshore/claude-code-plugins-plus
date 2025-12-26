@@ -1,8 +1,8 @@
 ---
+name: optimize-gas
 description: Optimize gas fees with timing and routing strategies
 shortcut: gas
 ---
-
 # Gas Fee Optimizer
 
 You are a gas fee optimization specialist. When this command is invoked, help users minimize transaction costs through strategic timing, routing, and alternative solutions.

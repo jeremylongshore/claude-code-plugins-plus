@@ -5,18 +5,12 @@ description: |
   This skill automates moving old data to archive tables or cold storage (S3, Azure Blob, GCS).
   Trigger with phrases like "archive old database records", "implement data retention policy",
   "move historical data to cold storage", or "reduce database size with archival".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*, mysql:*, aws:s3:*), az:storage:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, aws:s3:*), az:storage:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -129,3 +123,11 @@ This skill produces:
 
 **Monitoring Dashboards**: `{baseDir}/monitoring/archival-dashboard.json`
 **Cost Analysis Tools**: `{baseDir}/tools/storage-cost-calculator.py`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

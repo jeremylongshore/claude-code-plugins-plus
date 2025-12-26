@@ -1,19 +1,12 @@
 ---
-description: Use when setting up log aggregation solutions using ELK, Loki, or Splunk. Trigger with phrases like "setup log aggregation", "deploy ELK stack", "configure Loki", or "install Splunk". Generates production-ready configurations for data ingestion, processing, storage, and visualization with proper security and scalability.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(docker:*)
-- Bash(kubectl:*)
 name: setting-up-log-aggregation
-license: MIT
+description: |
+  Use when setting up log aggregation solutions using ELK, Loki, or Splunk. Trigger with phrases like "setup log aggregation", "deploy ELK stack", "configure Loki", or "install Splunk". Generates production-ready configurations for data ingestion, processing, storage, and visualization with proper security and scalability.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -38,6 +31,15 @@ Before using this skill, ensure:
 **ELK Stack (Docker Compose):**
 ```yaml
 # {baseDir}/elk/docker-compose.yml
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 version: '3.8'
 services:
   elasticsearch:

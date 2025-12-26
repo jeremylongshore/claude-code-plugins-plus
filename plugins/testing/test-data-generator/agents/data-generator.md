@@ -1,8 +1,13 @@
 ---
+name: data-generator
 description: Generate realistic test data for comprehensive testing
-capabilities: ["test-data", "fake-data", "fixtures", "factories", "seed-data"]
+capabilities:
+  - test-data
+  - fake-data
+  - fixtures
+  - factories
+  - seed-data
 ---
-
 # Test Data Generator Agent
 
 Generate realistic test data including users, products, orders, and custom schemas for comprehensive testing.

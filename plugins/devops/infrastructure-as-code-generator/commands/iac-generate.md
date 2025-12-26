@@ -1,7 +1,7 @@
 ---
+name: iac-generate
 description: Generate Infrastructure as Code
 ---
-
 # Infrastructure as Code Generator
 
 Generate production-ready IaC for multiple platforms and cloud providers.

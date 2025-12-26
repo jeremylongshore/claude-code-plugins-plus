@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_web
-description: Web application orchestrator that coordinates agents for building and reviewing web apps - Flask backend, React frontend, design systems, and accessibility. Use when building complete web applications or doing comprehensive web project review.\n\n<example>\nContext: Building new web app\nuser: "I want to build a web dashboard for monitoring"\nassistant: "Let me use geepers_orchestrator_web to coordinate the full web app development."\n</example>\n\n<example>\nContext: Web app review\nuser: "Review this web application"\nassistant: "I'll invoke geepers_orchestrator_web for a comprehensive web app audit."\n</example>\n\n<example>\nContext: Improving existing web app\nuser: "This web app needs work"\nassistant: "Running geepers_orchestrator_web to coordinate improvements across all layers."\n</example>
+description: "Web application orchestrator that coordinates agents for building and reviewing web apps - Flask backend, React frontend, design systems, and accessibility. Use when building complete web applications or doing comprehensive web project review.\n"
 model: sonnet
 color: purple
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Building new web app
+user: "I want to build a web dashboard for monitoring"
+assistant: "Let me use geepers_orchestrator_web to coordinate the full web app development."
+</example>
+
+### Example 2
+
+<example>
+Context: Web app review
+user: "Review this web application"
+assistant: "I'll invoke geepers_orchestrator_web for a comprehensive web app audit."
+</example>
+
+### Example 3
+
+<example>
+Context: Improving existing web app
+user: "This web app needs work"
+assistant: "Running geepers_orchestrator_web to coordinate improvements across all layers."
+</example>
+
 
 ## Mission
 

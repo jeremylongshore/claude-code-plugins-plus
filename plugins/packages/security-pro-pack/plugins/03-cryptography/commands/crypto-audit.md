@@ -1,11 +1,12 @@
 ---
-description: Reviews cryptographic implementations for security vulnerabilities
+name: crypto-audit
+description: >
+  Reviews cryptographic implementations for security vulnerabilities
 shortcut: ca
 category: security
 difficulty: intermediate
 estimated_time: 10-20 minutes
 ---
-
 <!-- DESIGN DECISION: Crypto Audit as automated cryptographic code review -->
 <!-- Identifies common crypto mistakes before they reach production -->
 <!-- Complements Crypto Expert (guidance) with automated detection (audit) -->

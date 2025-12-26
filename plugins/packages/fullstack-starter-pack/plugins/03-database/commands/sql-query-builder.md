@@ -1,11 +1,12 @@
 ---
-description: Generate optimized SQL queries from natural language descriptions
+name: sql-query-builder
+description: >
+  Generate optimized SQL queries from natural language descriptions
 shortcut: sqb
 category: database
 difficulty: beginner
 estimated_time: 2-3 minutes
 ---
-
 # SQL Query Builder
 
 Generates optimized SQL queries from natural language descriptions, supporting SELECT, INSERT, UPDATE, DELETE with JOINs, indexes, and best practices.

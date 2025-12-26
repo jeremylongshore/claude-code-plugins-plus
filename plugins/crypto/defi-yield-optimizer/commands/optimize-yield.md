@@ -1,8 +1,10 @@
 ---
-description: Find and optimize DeFi yield farming opportunities across multiple protocols
+name: optimize-yield
+description: >
+  Find and optimize DeFi yield farming opportunities across multiple
+  protocols
 shortcut: oy
 ---
-
 # Optimize DeFi Yield
 
 Comprehensive DeFi yield optimization across protocols with APY tracking, risk assessment, and automated strategy recommendations.

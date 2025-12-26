@@ -1,19 +1,11 @@
 ---
-description: Enables claude to manage sugar's autonomous development workflows. it
-  allows claude to create tasks, view the status of the system, review pending tasks,
-  and start autonomous execution mode. use this skill when the user asks to create
-  a new develo...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: managing-autonomous-development
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Enables AI assistant to manage sugar's autonomous development workflows. it allows AI assistant to create tasks, view the status of the system, review pending tasks, and start autonomous execution mode. use this skill when the user asks to create a new develo... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -63,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill integrates directly with the Sugar plugin, leveraging its command-line interface to manage autonomous development workflows. It can be combined with other skills to provide a more comprehensive development experience.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

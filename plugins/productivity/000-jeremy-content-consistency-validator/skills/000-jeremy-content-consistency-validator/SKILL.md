@@ -1,16 +1,11 @@
 ---
 name: 000-jeremy-content-consistency-validator
-description: Validate messaging consistency across website, GitHub repos, and local documentation generating read-only discrepancy reports. Use when checking content alignment or finding mixed messaging. Trigger with phrases like "check consistency", "validate documentation", or "audit messaging".
+description: |
+  Validate messaging consistency across website, GitHub repos, and local documentation generating read-only discrepancy reports. Use when checking content alignment or finding mixed messaging. Trigger with phrases like "check consistency", "validate documentation", or "audit messaging".
+allowed-tools: Read, WebFetch, WebSearch, Grep, Bash(diff:*), Bash(grep:*)
 version: 1.0.0
-allowed-tools:
-- Read
-- WebFetch
-- WebSearch
-- Grep
-- Bash(diff:*)
-- Bash(grep:*)
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 **CRITICAL OPERATING PARAMETERS:**
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
@@ -23,6 +18,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 - Local docs (SOPs, standards, principles, beliefs) MUST match website
 - Report what internal docs are missing compared to published website
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## What This Skill Does
 
 This skill performs comprehensive **read-only validation** of messaging consistency across three critical content sources:

@@ -1,5 +1,8 @@
 ---
-description: Compare database schemas and generate safe migration scripts with rollback...
+name: db-diff
+description: >
+  Compare database schemas and generate safe migration scripts with
+  rollback...
 shortcut: dbdi
 ---
 # Database Diff Tool

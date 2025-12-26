@@ -1,17 +1,52 @@
 ---
 name: spec-writing
-description: This skill should be used when the user asks about "writing specs", "specs.md format", "how to write specifications", "sprint requirements", "testing configuration", "scope definition", or needs guidance on creating effective sprint specifications for agentic development.
+description: |
+  This skill should be used when the user asks about "writing specs", "specs.md format", "how to write specifications", "sprint requirements", "testing configuration", "scope definition", or needs guidance on creating effective sprint specifications for agentic development. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read
 version: 1.0.0
 author: Damien Laine <damien.laine@gmail.com>
 license: MIT
-allowed-tools:
-  - Read
 ---
-
 # Spec Writing
 
 Specifications drive the entire sprint workflow. Well-written specs lead to focused implementations; vague specs cause wasted iterations. This skill covers writing effective `specs.md` files that guide autonomous agents toward successful outcomes.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## The specs.md File
 
 Located at `.claude/sprint/[N]/specs.md`, this file is the primary input to the sprint system. It tells the architect what to build and how to test it.

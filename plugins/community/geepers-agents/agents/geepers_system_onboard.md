@@ -1,9 +1,36 @@
 ---
 name: geepers_system_onboard
-description: Project understanding agent for getting up to speed on unfamiliar codebases. Use when picking up a project after time away, joining an existing project, or trying to understand how something works. Creates an ONBOARD.md summary.\n\n<example>\nContext: Returning to old project\nuser: "I haven't touched this in months, what is it?"\nassistant: "Let me run geepers_onboard to get you up to speed."\n</example>\n\n<example>\nContext: Understanding new code\nuser: "How does this project work?"\nassistant: "I'll use geepers_onboard to analyze and explain the codebase."\n</example>\n\n<example>\nContext: Before making changes\nuser: "I need to modify this but don't understand it"\nassistant: "Running geepers_onboard first to understand the architecture."\n</example>
+description: "Project understanding agent for getting up to speed on unfamiliar codebases. Use when picking up a project after time away, joining an existing project, or trying to understand how something works. Creates an ONBOARD.md summary.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Returning to old project
+user: "I haven't touched this in months, what is it?"
+assistant: "Let me run geepers_onboard to get you up to speed."
+</example>
+
+### Example 2
+
+<example>
+Context: Understanding new code
+user: "How does this project work?"
+assistant: "I'll use geepers_onboard to analyze and explain the codebase."
+</example>
+
+### Example 3
+
+<example>
+Context: Before making changes
+user: "I need to modify this but don't understand it"
+assistant: "Running geepers_onboard first to understand the architecture."
+</example>
+
 
 ## Mission
 

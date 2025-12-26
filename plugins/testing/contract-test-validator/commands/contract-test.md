@@ -1,8 +1,10 @@
 ---
-description: Validate API contracts with consumer-driven testing and OpenAPI validation
+name: contract-test
+description: >
+  Validate API contracts with consumer-driven testing and OpenAPI
+  validation
 shortcut: ct
 ---
-
 # Contract Test Validator
 
 Implement and validate API contracts using consumer-driven contract testing (Pact), OpenAPI specification validation, and microservices contract verification.

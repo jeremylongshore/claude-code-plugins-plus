@@ -1,7 +1,7 @@
 ---
+name: analyze-latency
 description: Analyze network latency and request patterns
 ---
-
 # Network Latency Analyzer
 
 Analyze network request patterns and optimize for reduced latency.

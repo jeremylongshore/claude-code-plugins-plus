@@ -5,18 +5,12 @@ description: |
   This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation.
   Trigger with phrases like "deploy application", "create pipeline",
   or "automate deployment".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(git:*, docker:*), kubectl:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*), kubectl:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/ci-cd-pipeline-builder-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/ci-cd-pipeline-builder-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

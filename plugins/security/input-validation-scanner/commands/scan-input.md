@@ -1,4 +1,5 @@
 ---
+name: scan-input
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

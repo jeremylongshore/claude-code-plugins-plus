@@ -1,22 +1,16 @@
 ---
-description: This skill optimizes prompts for large language models (llms) to reduce
-  token usage, lower costs, and improve performance. it analyzes the prompt, identifies
-  areas for simplification and redundancy removal, and rewrites the prompt to be more
-  conci...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: optimizing-prompts
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill optimizes prompts for large language models (llms) to reduce token usage, lower costs, and improve performance. it analyzes the prompt, identifies areas for simplification and redundancy removal, and rewrites the prompt to be more conci... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for ai ml engineering pack tasks.
 This skill empowers Claude to refine prompts for optimal LLM performance. It streamlines prompts to minimize token count, thereby reducing costs and enhancing response speed, all while maintaining or improving output quality.
 
 ## How It Works
@@ -61,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill integrates with the `prompt-architect` agent to leverage advanced prompt engineering techniques. It can also be used in conjunction with the `llm-integration-expert` to optimize prompts for specific LLM APIs.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

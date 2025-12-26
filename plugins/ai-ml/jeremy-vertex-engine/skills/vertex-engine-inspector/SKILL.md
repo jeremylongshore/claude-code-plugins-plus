@@ -1,13 +1,11 @@
 ---
 name: vertex-engine-inspector
-description: Inspect and validate Vertex AI Agent Engine deployments including Code
-  Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates
-  production readiness scores. Use when asked to "inspect agent engine" or "validate
-  depl...
-allowed-tools: Read, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Inspect and validate Vertex AI Agent Engine deployments including Code Execution Sandbox, Memory Bank, A2A protocol compliance, and security posture. Generates production readiness scores. Use when asked to "inspect agent engine" or "validate depl... Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## What This Skill Does
 
@@ -325,3 +323,40 @@ Recommendations:
 - Code Execution: https://cloud.google.com/agent-builder/agent-engine/code-execution/overview
 - Memory Bank: https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/memory-bank/overview
 - A2A Protocol: https://google.github.io/adk-docs/a2a/
+
+## Overview
+
+
+This skill provides automated assistance for vertex engine inspector tasks.
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands

@@ -1,7 +1,7 @@
 ---
+name: detect-leaks
 description: Detect potential memory leaks in code
 ---
-
 # Memory Leak Detector
 
 Analyze code for potential memory leaks and improper resource management.

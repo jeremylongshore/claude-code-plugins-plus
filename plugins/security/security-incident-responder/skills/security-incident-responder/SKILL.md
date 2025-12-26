@@ -4,18 +4,12 @@ description: |
   Guide security incident response, investigation, and remediation processes.
   Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts.
   Trigger with phrases like "security incident response", "ransomware attack response", "data breach investigation", "incident playbook", or "security forensics".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(log-analysis:*, forensics:*), network-trace:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*, forensics:*), network-trace:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -120,6 +114,15 @@ The skill produces:
 **Playbook Structure**:
 ```
 # Security Incident Response - [Incident Type]
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 Date: YYYY-MM-DD HH:MM
 Severity: CRITICAL
 Status: Contained

@@ -1,7 +1,7 @@
 ---
+name: roi
 description: Calculate automation ROI
 ---
-
 # ROI Calculator
 
 Calculate and present compelling ROI for AI automation projects.

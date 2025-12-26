@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to create intelligent alerting rules for proactive
-  performance monitoring. it is triggered when the user requests to "create alerts",
-  "define monitoring rules", or "set up alerting". the skill helps define thresholds,
-  rou...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: creating-alerting-rules
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to create intelligent alerting rules for proactive performance monitoring. it is triggered when the user requests to "create alerts", "define monitoring rules", or "set up alerting". the skill helps define thresholds, rou... Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -60,3 +52,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other Claude Code plugins to automate incident response workflows. For example, it can trigger automated remediation actions or create tickets in an issue tracking system.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

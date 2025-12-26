@@ -1,7 +1,7 @@
 ---
+name: secrets-integrate
 description: $(echo "$description" | cut -d' ' -f1-5)
 ---
-
 # $(echo "$name" | sed 's/-/ /g' | sed 's/\b\(.\)/\u\1/g')
 
 $(echo "$description")

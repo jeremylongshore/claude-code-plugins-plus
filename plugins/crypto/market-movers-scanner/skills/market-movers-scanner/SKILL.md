@@ -1,15 +1,15 @@
 ---
 name: scanning-market-movers
-version: 1.0.0
 description: |
   Identify significant price movements and unusual volume across crypto markets.
   Use when tracking significant price movements.
   Trigger with phrases like "scan market movers", "check biggest gainers", or "find pumps".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:movers-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

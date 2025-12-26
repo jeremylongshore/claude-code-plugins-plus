@@ -1,5 +1,7 @@
 ---
-description: Implement horizontal database sharding for massive scale applications
+name: sharding
+description: >
+  Implement horizontal database sharding for massive scale applications
 shortcut: shar
 ---
 # Database Sharding Manager

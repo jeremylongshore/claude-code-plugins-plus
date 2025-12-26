@@ -4,17 +4,25 @@ description: |
   Automatically formats and validates code files using Prettier and other formatting tools.
   Use when users mention "format my code", "fix formatting", "apply code style",
   "check formatting", "make code consistent", or "clean up code formatting".
-  Handles JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types.
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
+  Handles JavaScript, TypeScript, JSON, CSS, Markdown, and many other file types. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
-
 # Code Formatter Skill
 
 This skill provides comprehensive code formatting and validation capabilities using industry-standard tools like Prettier.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Prerequisites
 
 - Node.js and npm/npx installed

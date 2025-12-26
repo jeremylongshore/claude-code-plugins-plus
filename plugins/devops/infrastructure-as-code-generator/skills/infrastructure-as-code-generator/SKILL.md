@@ -1,21 +1,12 @@
 ---
-description: Use when generating infrastructure as code configurations. Trigger with phrases like "create Terraform config", "generate CloudFormation template", "write Pulumi code", or "IaC for AWS/GCP/Azure". Produces production-ready code for Terraform, CloudFormation, Pulumi, ARM templates, and CDK across multiple cloud providers.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(terraform:*)
-- Bash(aws:*)
-- Bash(gcloud:*)
-- Bash(az:*)
 name: generating-infrastructure-as-code
-license: MIT
+description: |
+  Use when generating infrastructure as code configurations. Trigger with phrases like "create Terraform config", "generate CloudFormation template", "write Pulumi code", or "IaC for AWS/GCP/Azure". Produces production-ready code for Terraform, CloudFormation, Pulumi, ARM templates, and CDK across multiple cloud providers.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(aws:*), Bash(gcloud:*), Bash(az:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -43,6 +34,15 @@ Generates infrastructure as code files:
 **Terraform Example:**
 ```hcl
 # {baseDir}/terraform/main.tf
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 terraform {
   required_version = ">= 1.0"
   required_providers {

@@ -1,7 +1,7 @@
 ---
+name: k8s-deploy
 description: Create Kubernetes deployments and services
 ---
-
 # Kubernetes Deployment Creator
 
 Generate production-ready Kubernetes manifests with best practices.

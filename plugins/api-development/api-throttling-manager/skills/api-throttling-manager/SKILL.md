@@ -1,15 +1,15 @@
 ---
 name: throttling-apis
-version: 1.0.0
 description: |
   Manage API throttling policies to protect backend services from overload.
   Use when controlling API request rates.
   Trigger with phrases like "throttle API", "control request rate", or "add throttling".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api throttling manager tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

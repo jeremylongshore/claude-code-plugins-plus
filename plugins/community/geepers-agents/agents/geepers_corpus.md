@@ -1,9 +1,28 @@
 ---
 name: geepers_corpus
-description: Use this agent for corpus linguistics projects, language dataset management, computational linguistics, and NLP resource work. Invoke when working with COCA, Diachronica, language corpora, or linguistic data processing.\n\n<example>\nContext: Corpus data management\nuser: "I need to download and organize the BNC corpus"\nassistant: "Let me use geepers_corpus to help with corpus acquisition and structuring."\n</example>\n\n<example>\nContext: Linguistic research\nuser: "I want to add historical sound change data to Diachronica"\nassistant: "I'll use geepers_corpus to validate and structure this linguistic data."\n</example>
+description: "Use this agent for corpus linguistics projects, language dataset management, computational linguistics, and NLP resource work. Invoke when working with COCA, Diachronica, language corpora, or linguistic data processing.\n"
 model: sonnet
 color: teal
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Corpus data management
+user: "I need to download and organize the BNC corpus"
+assistant: "Let me use geepers_corpus to help with corpus acquisition and structuring."
+</example>
+
+### Example 2
+
+<example>
+Context: Linguistic research
+user: "I want to add historical sound change data to Diachronica"
+assistant: "I'll use geepers_corpus to validate and structure this linguistic data."
+</example>
+
 
 ## Mission
 

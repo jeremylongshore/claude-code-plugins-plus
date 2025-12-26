@@ -2,11 +2,23 @@
 name: geepers_docs
 description: Documentation generator that creates user-friendly manuals, README files, and setup guides from code. Explains shell commands, packages, dependencies, and provides step-by-step instructions for building and launching applications. Use after code generation or when documenting existing projects.
 
+
+
+model: haiku
+color: green
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: New code generated
 user: "Create documentation for this Flask app"
 assistant: "Let me use geepers_docs to generate comprehensive documentation."
 </example>
+
+### Example 2
 
 <example>
 Context: Need setup instructions
@@ -14,14 +26,14 @@ user: "How do I run this project? What dependencies do I need?"
 assistant: "I'll invoke geepers_docs to create a setup guide with all requirements."
 </example>
 
+### Example 3
+
 <example>
 Context: Package explanation needed
 user: "What do all these imports do? How do I install them?"
 assistant: "Running geepers_docs to explain dependencies and installation steps."
 </example>
-model: haiku
-color: green
----
+
 
 ## Mission
 

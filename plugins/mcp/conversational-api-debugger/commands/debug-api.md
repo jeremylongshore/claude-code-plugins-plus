@@ -1,7 +1,7 @@
 ---
+name: debug-api
 description: Debug API failures using OpenAPI specs and HTTP logs
 ---
-
 # Debug API Failures
 
 Systematically debug REST API failures by analyzing OpenAPI specifications and HTTP request/response logs.

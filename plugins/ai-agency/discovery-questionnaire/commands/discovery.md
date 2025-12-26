@@ -1,7 +1,7 @@
 ---
+name: discovery
 description: Create client discovery questionnaire
 ---
-
 # Discovery Questionnaire Generator
 
 Generate comprehensive discovery questionnaires tailored to AI agency prospects.

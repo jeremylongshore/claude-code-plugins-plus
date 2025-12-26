@@ -1,9 +1,35 @@
 ---
 name: geepers_critic
-description: UX and architecture critic that generates CRITIC.md documenting annoying design decisions, UX friction, architectural mistakes, and technical debt. Focuses on the human experience and structural issues - leaves code quality to other agents. Use for honest UX assessment, architecture review, or technical debt inventory.\n\n<example>\nContext: UX feels off\nuser: "Something about this app annoys me but I can't pinpoint it"\nassistant: "Let me run geepers_critic to identify UX friction points."\n</example>\n\n<example>\nContext: Architecture review\nuser: "Is this architecture any good?"\nassistant: "I'll invoke geepers_critic for an honest architecture critique."\n</example>\n\n<example>\nContext: Technical debt assessment\nassistant: "Before adding features, let me use geepers_critic to document existing tech debt."\n</example>
+description: "UX and architecture critic that generates CRITIC.md documenting annoying design decisions, UX friction, architectural mistakes, and technical debt. Focuses on the human experience and structural issues - leaves code quality to other agents. Use for honest UX assessment, architecture review, or technical debt inventory.\n"
 model: sonnet
 color: purple
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: UX feels off
+user: "Something about this app annoys me but I can't pinpoint it"
+assistant: "Let me run geepers_critic to identify UX friction points."
+</example>
+
+### Example 2
+
+<example>
+Context: Architecture review
+user: "Is this architecture any good?"
+assistant: "I'll invoke geepers_critic for an honest architecture critique."
+</example>
+
+### Example 3
+
+<example>
+Context: Technical debt assessment
+assistant: "Before adding features, let me use geepers_critic to document existing tech debt."
+</example>
+
 
 ## Mission
 

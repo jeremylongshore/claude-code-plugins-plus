@@ -1,11 +1,11 @@
 ---
+name: terraform-plan-analyze
 description: Analyze terraform plan output for risks and cost impact
 shortcut: tpa
 category: devops
 difficulty: advanced
 estimated_time: 1 minute
 ---
-
 <!-- DESIGN DECISION: Prevents costly Terraform mistakes -->
 <!-- Terraform plan output is verbose and easy to miss critical changes (deletions, recreations).
      This command analyzes plan output, highlights risks (data loss, downtime), estimates costs,

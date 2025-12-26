@@ -1,19 +1,25 @@
 ---
 name: Google Cloud Agent SDK Master
-description: Automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: |
+  Automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, WebFetch, WebSearch, Grep
 version: 1.0.0
-allowed-tools:
-- Read
-- WebFetch
-- WebSearch
-- Grep
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Google Cloud Agent SDK Master - Production-Ready Agent Systems
 
 This Agent Skill provides comprehensive mastery of Google's Agent Development Kit (ADK) and Agent Starter Pack for building and deploying production-grade containerized agents.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Core Capabilities
 
 ### 🤖 Agent Development Kit (ADK)

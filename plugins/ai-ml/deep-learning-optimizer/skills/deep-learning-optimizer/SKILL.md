@@ -1,15 +1,16 @@
 ---
 name: optimizing-deep-learning-models
-description: Optimize deep learning models using Adam, SGD, and learning rate scheduling
-  to improve accuracy and reduce training time. Use when asked to "optimize deep learning
-  model" or "improve model performance".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Optimize deep learning models using Adam, SGD, and learning rate scheduling to improve accuracy and reduce training time. Use when asked to "optimize deep learning model" or "improve model performance". Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for deep learning optimizer tasks.
 This skill empowers Claude to automatically optimize deep learning models, enhancing their performance and efficiency. It intelligently applies various optimization techniques based on the model's characteristics and the user's objectives.
 
 ## How It Works
@@ -57,3 +58,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other plugins that provide model building and data preprocessing capabilities. It can also be used in conjunction with monitoring tools to track the performance of optimized models.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

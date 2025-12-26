@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to profile application performance, analyzing
-  cpu usage, memory consumption, and execution time. it is triggered when the user
-  requests performance analysis, bottleneck identification, or optimization recommendations.
-  the...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: profiling-application-performance
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to profile application performance, analyzing cpu usage, memory consumption, and execution time. it is triggered when the user requests performance analysis, bottleneck identification, or optimization recommendations. the... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -62,3 +54,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with code editing plugins to implement the recommended optimizations directly within the application's source code. It can also integrate with monitoring tools to track performance improvements over time.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

@@ -1,8 +1,9 @@
 ---
-description: Test load balancer traffic distribution and failover strategies
+name: lb-test
+description: >
+  Test load balancer traffic distribution and failover strategies
 shortcut: lbt
 ---
-
 # Load Balancer Tester
 
 Test load balancing strategies including round-robin, least connections, weighted distribution, sticky sessions, and failover scenarios.

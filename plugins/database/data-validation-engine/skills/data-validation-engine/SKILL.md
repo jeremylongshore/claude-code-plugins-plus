@@ -5,18 +5,12 @@ description: |
   This skill validates data types, ranges, formats, referential integrity, and business rules.
   Trigger with phrases like "validate database data", "implement data validation rules",
   "enforce data integrity constraints", or "validate data formats".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*), mysql:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), mysql:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -119,3 +113,11 @@ This skill produces:
 **Testing Guidelines**: `{baseDir}/docs/validation-testing.md`
 **Constraint Performance Analysis**: `{baseDir}/docs/constraint-performance.md`
 **Data Cleanup Procedures**: `{baseDir}/docs/data-cleanup-procedures.md`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,15 +1,16 @@
 ---
 name: setting-up-experiment-tracking
-description: Setup machine learning experiment tracking using MLflow or Weights &
-  Biases. Configures environment and provides code for logging parameters, metrics,
-  and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Setup machine learning experiment tracking using MLflow or Weights & Biases. Configures environment and provides code for logging parameters, metrics, and artifacts. Use when asked to "setup experiment tracking" or "initialize MLflow". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for experiment tracking setup tasks.
 This skill streamlines the process of setting up experiment tracking for machine learning projects. It automates environment configuration, tool initialization, and provides code examples to get you started quickly.
 
 ## How It Works
@@ -54,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other skills that generate or modify machine learning code, such as skills for model training or data preprocessing. It ensures that all experiments are properly tracked and documented.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

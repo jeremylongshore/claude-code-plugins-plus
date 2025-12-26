@@ -1,11 +1,11 @@
 ---
 name: creating-data-visualizations
-description: Generate plots, charts, and graphs from data with automatic visualization
-  type selection. Use when requesting "visualization", "plot", "chart", or "graph".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Generate plots, charts, and graphs from data with automatic visualization type selection. Use when requesting "visualization", "plot", "chart", or "graph". Trigger with phrases like 'generate', 'create', or 'scaffold'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -51,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other data processing and analysis tools within the Claude Code environment. It can receive data from other skills and provide visualizations for further analysis or reporting.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

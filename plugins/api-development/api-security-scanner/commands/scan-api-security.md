@@ -1,4 +1,5 @@
 ---
+name: scan-api-security
 description: Scan API for security vulnerabilities
 shortcut: apis
 ---

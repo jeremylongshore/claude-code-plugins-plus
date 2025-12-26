@@ -1,22 +1,16 @@
 ---
-description: This skill allows claude to conduct comprehensive security audits of
-  code, infrastructure, and configurations. it leverages various tools within the
-  security-pro-pack plugin, including vulnerability scanning, compliance checking,
-  cryptography revi...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: performing-security-audits
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill allows AI assistant to conduct comprehensive security audits of code, infrastructure, and configurations. it leverages various tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, cryptography revi... Use when assessing security or running audits. Trigger with phrases like 'security scan', 'audit', or 'vulnerability'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for security pro pack tasks.
 This skill empowers Claude to perform in-depth security audits across various domains, from code vulnerability scanning to compliance verification and infrastructure security assessment. It utilizes the specialized tools within the security-pro-pack to provide a comprehensive security posture analysis.
 
 ## How It Works
@@ -62,3 +56,30 @@ The skill will:
 ## Integration
 
 This skill seamlessly integrates with all other components of the security-pro-pack plugin. It also works well with Claude's existing code analysis capabilities, allowing for a holistic and integrated security review process.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

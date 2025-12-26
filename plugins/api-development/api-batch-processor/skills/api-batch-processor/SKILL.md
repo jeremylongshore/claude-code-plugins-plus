@@ -1,15 +1,15 @@
 ---
 name: processing-api-batches
-version: 1.0.0
 description: |
   Process bulk API requests efficiently with batching, throttling, and parallel execution.
   Use when processing bulk API operations efficiently.
   Trigger with phrases like "process bulk requests", "batch API calls", or "handle batch operations".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:batch-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api batch processor tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

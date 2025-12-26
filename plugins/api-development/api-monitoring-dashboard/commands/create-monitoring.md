@@ -1,4 +1,5 @@
 ---
+name: create-monitoring
 description: Create API monitoring dashboard
 shortcut: mon
 ---

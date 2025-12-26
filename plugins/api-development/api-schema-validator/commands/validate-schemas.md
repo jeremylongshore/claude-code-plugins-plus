@@ -1,4 +1,5 @@
 ---
+name: validate-schemas
 description: Validate API schemas
 shortcut: sche
 ---

@@ -1,4 +1,5 @@
 ---
+name: encrypt
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

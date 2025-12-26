@@ -1,7 +1,7 @@
 ---
+name: create-dashboard
 description: Create APM monitoring dashboards
 ---
-
 # APM Dashboard Creator
 
 Create comprehensive Application Performance Monitoring dashboards.

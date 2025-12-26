@@ -1,5 +1,7 @@
 ---
-description: Setup overnight development with Git hooks for autonomous TDD sessions
+name: overnight-setup
+description: >
+  Setup overnight development with Git hooks for autonomous TDD sessions
 shortcut: setu
 ---
 # Overnight Development Setup

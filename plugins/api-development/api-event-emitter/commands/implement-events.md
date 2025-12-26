@@ -1,4 +1,5 @@
 ---
+name: implement-events
 description: Implement event-driven API architecture
 shortcut: even
 ---

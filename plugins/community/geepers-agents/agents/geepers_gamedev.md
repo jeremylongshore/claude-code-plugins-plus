@@ -1,9 +1,36 @@
 ---
 name: geepers_gamedev
-description: Use this agent for video game development expertise - gameplay mechanics, level design, player psychology, game feel, and UX patterns specific to games. Invoke when creating games, designing game mechanics, or improving player experience.\n\n<example>\nContext: Game mechanics design\nuser: "I'm making a puzzle game, how should the difficulty curve work?"\nassistant: "Let me use geepers_gamedev to design an engaging difficulty progression."\n</example>\n\n<example>\nContext: Game feel improvement\nuser: "The character movement feels sluggish and unresponsive"\nassistant: "I'll use geepers_gamedev to analyze and improve the game feel."\n</example>\n\n<example>\nContext: Player retention\nuser: "Players are dropping off after the tutorial"\nassistant: "Let me use geepers_gamedev to analyze the onboarding and early game loop."\n</example>
+description: "Use this agent for video game development expertise - gameplay mechanics, level design, player psychology, game feel, and UX patterns specific to games. Invoke when creating games, designing game mechanics, or improving player experience.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Game mechanics design
+user: "I'm making a puzzle game, how should the difficulty curve work?"
+assistant: "Let me use geepers_gamedev to design an engaging difficulty progression."
+</example>
+
+### Example 2
+
+<example>
+Context: Game feel improvement
+user: "The character movement feels sluggish and unresponsive"
+assistant: "I'll use geepers_gamedev to analyze and improve the game feel."
+</example>
+
+### Example 3
+
+<example>
+Context: Player retention
+user: "Players are dropping off after the tutorial"
+assistant: "Let me use geepers_gamedev to analyze the onboarding and early game loop."
+</example>
+
 
 ## Mission
 

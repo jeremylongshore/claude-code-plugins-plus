@@ -1,15 +1,15 @@
 ---
 name: analyzing-mempool
-version: 1.0.0
 description: |
   Monitor blockchain mempools for pending transactions, front-running, and MEV opportunities.
   Use when monitoring pending blockchain transactions.
   Trigger with phrases like "check mempool", "scan pending txs", or "find MEV".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:mempool-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

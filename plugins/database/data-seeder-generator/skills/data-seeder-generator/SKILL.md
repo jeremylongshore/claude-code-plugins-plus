@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to generate realistic test data and database
-  seed scripts for development and testing environments. it uses faker libraries to
-  create realistic data, maintains relational integrity, and allows configurable data
-  volumes. u...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-database-seed-data
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to generate realistic test data and database seed scripts for development and testing environments. it uses faker libraries to create realistic data, maintains relational integrity, and allows configurable data volumes. u... Use when working with databases or data models. Trigger with phrases like 'database', 'query', or 'schema'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -63,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill integrates well with database migration tools and frameworks, allowing you to automate the entire database setup process, including schema creation and data seeding. It can also be used in conjunction with testing frameworks to generate realistic test data for automated testing.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

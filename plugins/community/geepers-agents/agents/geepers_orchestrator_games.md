@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_games
-description: Games orchestrator that coordinates game development agents - gamedev, game, react, and godot. Use when working on games, gamification features, or interactive experiences. This is your "make it fun" orchestrator.\n\n<example>\nContext: Creating new game\nuser: "I want to build a word puzzle game"\nassistant: "Let me use geepers_orchestrator_games to coordinate the game development process."\n</example>\n\n<example>\nContext: Adding gamification to app\nuser: "Can we add achievements to the lesson planner?"\nassistant: "I'll invoke geepers_orchestrator_games to design and implement gamification features."\n</example>\n\n<example>\nContext: Game review and enhancement\nuser: "The cube game needs to be more engaging"\nassistant: "Running geepers_orchestrator_games to analyze and enhance the game experience."\n</example>
+description: "Games orchestrator that coordinates game development agents - gamedev, game, react, and godot. Use when working on games, gamification features, or interactive experiences.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Creating new game
+user: "I want to build a word puzzle game"
+assistant: "Let me use geepers_orchestrator_games to coordinate the game development process."
+</example>
+
+### Example 2
+
+<example>
+Context: Adding gamification to app
+user: "Can we add achievements to the lesson planner?"
+assistant: "I'll invoke geepers_orchestrator_games to design and implement gamification features."
+</example>
+
+### Example 3
+
+<example>
+Context: Game review and enhancement
+user: "The cube game needs to be more engaging"
+assistant: "Running geepers_orchestrator_games to analyze and enhance the game experience."
+</example>
+
 
 ## Mission
 

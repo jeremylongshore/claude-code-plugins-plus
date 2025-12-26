@@ -1,15 +1,15 @@
 ---
 name: building-automl-pipelines
-version: 1.0.0
 description: |
   Build automated machine learning pipelines with feature engineering, model selection, and hyperparameter tuning.
   Use when automating ML workflows from data preparation through model deployment.
   Trigger with phrases like "build automl pipeline", "automate ml workflow", or "create automated training pipeline".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -69,6 +69,15 @@ The skill generates comprehensive AutoML pipeline artifacts:
 ### Pipeline Configuration Files
 ```python
 # {baseDir}/automl_config.py
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 {
   "task_type": "classification",
   "time_budget": 3600,

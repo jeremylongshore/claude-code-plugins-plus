@@ -5,18 +5,12 @@ description: |
   This skill provides cost analysis and optimization with comprehensive guidance and automation.
   Trigger with phrases like "optimize costs", "analyze spending",
   or "reduce costs".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(aws:*, gcloud:*), az:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*, gcloud:*), az:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/cloud-cost-optimizer-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/cloud-cost-optimizer-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

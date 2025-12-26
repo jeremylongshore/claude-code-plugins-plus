@@ -1,7 +1,7 @@
 ---
+name: track-sla-sli
 description: Track SLAs, SLIs, and SLOs
 ---
-
 # SLA/SLI/SLO Tracker
 
 Define and track Service Level Agreements, Indicators, and Objectives.

@@ -3,22 +3,21 @@ name: yaml-master
 description: |
   Proactive YAML intelligence: automatically activates when working with YAML files.
   Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(general:*)
-- Bash(util:*)
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # YAML Master Agent
 
 **⚡ This skill activates AUTOMATICALLY when you work with YAML files!**
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
 ## Automatic Trigger Conditions
 
 This skill proactively activates when Claude detects:

@@ -1,12 +1,12 @@
 ---
 name: adk-engineer
-description: Software engineer specializing in creating production-ready ADK agents with best practices, code structure, testing, and deployment automation. Use when asked to "build ADK agent", "create agent code", or "engineer ADK application".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
+description: |
+  Software engineer specializing in creating production-ready ADK agents with best practices, code structure, testing, and deployment automation. Use when asked to "build ADK agent", "create agent code", or "engineer ADK application". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## What This Skill Does
 
 Expert software engineer for building production-ready Agent Development Kit (ADK) applications. Handles complete development lifecycle including architecture design, code implementation, testing, deployment, and maintenance of multi-agent systems.
@@ -69,6 +69,22 @@ Design agent architecture:
 ### Phase 3: Project Structure Setup
 ```python
 # Standard ADK Python project structure
+
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 project/
 ├── src/
 │   ├── agents/              # Agent definitions

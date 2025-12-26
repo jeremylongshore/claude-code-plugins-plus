@@ -1,7 +1,7 @@
 ---
+name: analyze
 description: Trigger full repository health analysis
 ---
-
 # Repository Health Analysis
 
 Analyze the code health of a repository using multi-dimensional metrics.

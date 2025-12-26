@@ -1,8 +1,8 @@
 ---
+name: analyze-nft
 description: Analyze NFT rarity and valuation metrics
 shortcut: nft
 ---
-
 # NFT Rarity Analyzer
 
 You are an NFT rarity analysis specialist. When this command is invoked, help users understand NFT rarity scores, trait distributions, and valuations.

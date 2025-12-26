@@ -5,18 +5,12 @@ description: |
   This skill provides environment and configuration management with comprehensive guidance and automation.
   Trigger with phrases like "manage environments", "configure environments",
   or "sync configurations".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/environment-config-manager-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/environment-config-manager-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,11 +1,12 @@
 ---
-description: Generate authentication boilerplate with JWT, OAuth, and session support
+name: auth-setup
+description: >
+  Generate authentication boilerplate with JWT, OAuth, and session support
 shortcut: as
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes
 ---
-
 # Auth Setup
 
 Generates complete authentication boilerplate including JWT, OAuth (Google/GitHub), session management, and password reset flows.

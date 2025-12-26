@@ -1,11 +1,11 @@
 ---
+name: prisma-schema-gen
 description: Generate Prisma schema from natural language descriptions
 shortcut: psg
 category: database
 difficulty: beginner
 estimated_time: 3-5 minutes
 ---
-
 # Prisma Schema Generator
 
 Generates complete Prisma schema files from natural language descriptions, including models, relationships, indexes, and validation.

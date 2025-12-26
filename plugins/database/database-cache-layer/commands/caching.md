@@ -1,5 +1,8 @@
 ---
-description: Implement multi-tier database caching with Redis, in-memory, and CDN layers...
+name: caching
+description: >
+  Implement multi-tier database caching with Redis, in-memory, and CDN
+  layers...
 shortcut: cach
 ---
 # Database Cache Layer

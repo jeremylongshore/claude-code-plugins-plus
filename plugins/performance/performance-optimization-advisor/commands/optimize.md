@@ -1,7 +1,7 @@
 ---
+name: optimize
 description: Get performance optimization recommendations
 ---
-
 # Performance Optimization Advisor
 
 Receive comprehensive, prioritized performance optimization recommendations.

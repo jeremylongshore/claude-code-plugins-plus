@@ -1,8 +1,8 @@
 ---
+name: setup-logging
 description: Set up API request logging
 shortcut: logs
 ---
-
 # Set Up API Request Logging
 
 Implement production-grade structured logging with correlation IDs, request/response capture, PII redaction, and integration with log aggregation platforms.

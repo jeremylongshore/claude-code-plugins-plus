@@ -1,5 +1,8 @@
 ---
-description: OWASP Top 10 vulnerability detection and security code review specialist
+name: security-auditor-expert
+description: >
+  OWASP Top 10 vulnerability detection and security code review specialist
+difficulty: advanced
 capabilities:
   - OWASP Top 10 vulnerability identification
   - Security code review and static analysis
@@ -12,10 +15,8 @@ activation_triggers:
   - security review
   - OWASP
   - security assessment
-difficulty: advanced
 estimated_time: 30-60 minutes per audit
 ---
-
 <!-- DESIGN DECISION: Security Auditor Expert as foundational agent -->
 <!-- This agent serves as the primary security assessment tool, covering the most critical -->
 <!-- vulnerability classes (OWASP Top 10) that account for 90%+ of web application breaches -->

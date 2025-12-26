@@ -1,15 +1,15 @@
 ---
 name: handling-api-errors
-version: 1.0.0
 description: |
   Implement standardized error handling with proper HTTP status codes and error responses.
   Use when implementing standardized error handling.
   Trigger with phrases like "add error handling", "standardize errors", or "implement error responses".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:error-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api error handler tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

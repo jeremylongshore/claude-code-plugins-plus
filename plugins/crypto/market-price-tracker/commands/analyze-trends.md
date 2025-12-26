@@ -1,5 +1,8 @@
 ---
-description: Analyze price trends with technical indicators, pattern recognition, and...
+name: analyze-trends
+description: >
+  Analyze price trends with technical indicators, pattern recognition,
+  and...
 shortcut: at
 ---
 # Analyze Market Trends

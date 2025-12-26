@@ -1,22 +1,16 @@
 ---
-description: Generates conventional commit messages using AI. It analyzes code changes
-  and suggests a commit message adhering to the conventional commits specification.
-  Use this skill when you need help writing clear, standardized commit messages, especially
-  a...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: generating-conventional-commits
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Generates conventional commit messages using AI. It analyzes code changes and suggests a commit message adhering to the conventional commits specification. Use this skill when you need help writing clear, standardized commit messages, especially a... Use when managing version control. Trigger with phrases like 'commit', 'branch', or 'git'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for devops automation pack tasks.
 This skill helps you create well-formatted, informative commit messages that follow the conventional commits standard, improving collaboration and automation in your Git workflow. It saves you time and ensures consistency across your project.
 
 ## How It Works
@@ -59,3 +53,30 @@ The skill will:
 ## Integration
 
 This skill integrates with your Git workflow, providing a convenient way to generate commit messages directly within Claude Code. It complements other Git-related skills in the DevOps Automation Pack, such as `/branch-create` and `/pr-create`.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

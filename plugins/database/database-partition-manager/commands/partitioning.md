@@ -1,5 +1,7 @@
 ---
-description: Design and implement table partitioning strategies for massive datasets
+name: partitioning
+description: >
+  Design and implement table partitioning strategies for massive datasets
 shortcut: part
 ---
 # Database Partition Manager

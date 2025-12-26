@@ -1,10 +1,16 @@
 ---
+name: terraform-architect
 description: Terraform infrastructure as code expert
-capabilities: ["terraform-modules", "aws-infrastructure", "gcp-infrastructure", "azure-infrastructure", "state-management", "best-practices"]
+capabilities:
+  - terraform-modules
+  - aws-infrastructure
+  - gcp-infrastructure
+  - azure-infrastructure
+  - state-management
+  - best-practices
 expertise_level: expert
 activation_priority: high
 ---
-
 <!-- DESIGN DECISION: Why this agent exists -->
 <!-- Terraform is the standard for Infrastructure as Code but has complex patterns
      (modules, state management, provider configs, remote backends). Developers struggle

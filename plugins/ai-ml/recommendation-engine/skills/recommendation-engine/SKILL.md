@@ -1,18 +1,11 @@
 ---
-description: This skill empowers claude to construct recommendation systems using
-  collaborative filtering, content-based filtering, or hybrid approaches. it analyzes
-  user preferences, item features, and interaction data to generate personalized recommendations...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: building-recommendation-systems
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill empowers AI assistant to construct recommendation systems using collaborative filtering, content-based filtering, or hybrid approaches. it analyzes user preferences, item features, and interaction data to generate personalized recommendations... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -58,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other Claude Code plugins to access data sources, deploy models, and monitor performance. For example, it can use data analysis plugins to extract features from raw data and deployment plugins to deploy the recommendation system to a production environment.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

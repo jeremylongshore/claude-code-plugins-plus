@@ -1,5 +1,8 @@
 ---
-description: Modern React specialist for hooks, server components, and performance
+name: react-specialist
+description: >
+  Modern React specialist for hooks, server components, and performance
+difficulty: intermediate
 capabilities:
   - React 18+ features (hooks, Suspense, Server Components)
   - State management (useState, useReducer, Context, Zustand, Redux)
@@ -13,10 +16,8 @@ activation_triggers:
   - state management
   - react server components
   - next.js
-difficulty: intermediate
 estimated_time: 20-40 minutes per component review
 ---
-
 <!-- DESIGN DECISION: React Specialist as modern React expert -->
 <!-- Focuses on React 18+ features, hooks, performance, best practices -->
 <!-- Covers full React ecosystem including Next.js, testing, state management -->

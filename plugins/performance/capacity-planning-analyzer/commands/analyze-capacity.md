@@ -1,7 +1,7 @@
 ---
+name: analyze-capacity
 description: Analyze capacity and plan for growth
 ---
-
 # Capacity Planning Analyzer
 
 Analyze current capacity and plan for future growth requirements.

@@ -1,11 +1,12 @@
 ---
-description: Convert Terraform to CloudFormation or generate CFN templates
+name: cloudformation-generate
+description: >
+  Convert Terraform to CloudFormation or generate CFN templates
 shortcut: cfn
 category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Bridges Terraform and CloudFormation -->
 <!-- Some organizations require CloudFormation for AWS (governance, StackSets).
      This command helps teams migrate Terraform to CFN or create CFN templates

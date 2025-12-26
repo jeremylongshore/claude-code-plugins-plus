@@ -1,7 +1,7 @@
 ---
+name: zap
 description: Build Zapier Zap configurations
 ---
-
 # Zapier Zap Builder
 
 Create multi-step Zapier automation configurations with filters, paths, and AI integration.

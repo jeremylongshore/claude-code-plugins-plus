@@ -1,11 +1,11 @@
 ---
+name: docker-optimize
 description: Analyze and optimize Docker images for size and build speed
 shortcut: do
 category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Helps reduce bloated Docker images -->
 <!-- Docker images often become bloated due to poor layer ordering, unnecessary files,
      dev dependencies in production, etc. This command analyzes existing Dockerfiles

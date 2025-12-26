@@ -1,8 +1,8 @@
 ---
+name: generate-sdk
 description: Generate client SDKs from OpenAPI specs
 shortcut: sdk
 ---
-
 # Generate Client SDK
 
 Automatically generate type-safe, production-ready client SDKs from OpenAPI/Swagger specifications for multiple programming languages with comprehensive features and documentation.

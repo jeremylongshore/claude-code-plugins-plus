@@ -1,9 +1,36 @@
 ---
 name: geepers_pycli
-description: Python CLI tool specialist. Use when building command-line applications with argparse, click, typer, or similar. Knows CLI UX patterns, argument parsing, output formatting, and distribution. Invoke for CLI architecture or troubleshooting.\n\n<example>\nContext: Building CLI tool\nuser: "I need to create a command-line tool for data processing"\nassistant: "Let me use geepers_pycli to design the CLI interface."\n</example>\n\n<example>\nContext: CLI improvement\nuser: "The CLI is confusing to use"\nassistant: "I'll invoke geepers_pycli to improve the CLI UX."\n</example>\n\n<example>\nContext: Adding subcommands\nuser: "I want to add more commands to this tool"\nassistant: "Let me use geepers_pycli to structure the subcommands properly."\n</example>
+description: "Python CLI tool specialist. Use when building command-line applications with argparse, click, typer, or similar. Knows CLI UX patterns, argument parsing, output formatting, and distribution. Invoke for CLI architecture or troubleshooting.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Building CLI tool
+user: "I need to create a command-line tool for data processing"
+assistant: "Let me use geepers_pycli to design the CLI interface."
+</example>
+
+### Example 2
+
+<example>
+Context: CLI improvement
+user: "The CLI is confusing to use"
+assistant: "I'll invoke geepers_pycli to improve the CLI UX."
+</example>
+
+### Example 3
+
+<example>
+Context: Adding subcommands
+user: "I want to add more commands to this tool"
+assistant: "Let me use geepers_pycli to structure the subcommands properly."
+</example>
+
 
 ## Mission
 

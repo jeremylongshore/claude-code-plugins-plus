@@ -5,18 +5,12 @@ description: |
   This skill provides container management and orchestration with comprehensive guidance and automation.
   Trigger with phrases like "containerize app", "manage containers",
   or "orchestrate deployment".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(docker:*), kubectl:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/container-registry-manager-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/container-registry-manager-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

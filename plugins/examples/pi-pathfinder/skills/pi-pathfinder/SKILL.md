@@ -1,19 +1,50 @@
 ---
-description: Analyzes existing plugins to extract their capabilities, then adapts
-  and applies those skills to the current task. Acts as a universal skill chameleon
-  that learns from other plugins. Activates when you request "skill adapter" functionality.
-allowed-tools:
-- Read
-- Grep
-- Glob
-- Bash
 name: skill-adapter
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Analyzes existing plugins to extract their capabilities, then adapts and applies those skills to the current task. Acts as a universal skill chameleon that learns from other plugins. Activates when you request "skill adapter" functionality. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Skill Adapter - Universal Plugin Capability Extractor
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Purpose
 Analyzes plugins in the claude-code-plugins marketplace to understand their capabilities, extracts the core patterns and approaches, then adapts those skills to solve the current user's task. Acts as a "skill chameleon" that can adopt any plugin's capabilities.
 

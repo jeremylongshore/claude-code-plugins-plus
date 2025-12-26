@@ -1,18 +1,12 @@
 ---
-description: Use when generating Kubernetes deployment manifests and services. Trigger with phrases like "create kubernetes deployment", "generate k8s manifest", "deploy app to kubernetes", or "create service and ingress". Produces production-ready YAML with health checks, auto-scaling, resource limits, ingress configuration, and TLS termination.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(kubectl:*)
 name: creating-kubernetes-deployments
-license: MIT
+description: |
+  Use when generating Kubernetes deployment manifests and services. Trigger with phrases like "create kubernetes deployment", "generate k8s manifest", "deploy app to kubernetes", or "create service and ingress". Produces production-ready YAML with health checks, auto-scaling, resource limits, ingress configuration, and TLS termination.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -39,6 +33,15 @@ Before using this skill, ensure:
 **Deployment Manifest:**
 ```yaml
 # {baseDir}/k8s/deployment.yaml
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 apiVersion: apps/v1
 kind: Deployment
 metadata:

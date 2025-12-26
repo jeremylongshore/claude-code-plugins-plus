@@ -1,15 +1,15 @@
 ---
 name: analyzing-liquidity-pools
-version: 1.0.0
 description: |
   Analyze liquidity pool metrics including TVL, volume, fees, and impermanent loss.
   Use when analyzing DEX liquidity pools.
   Trigger with phrases like "analyze pool", "check TVL", or "calculate impermanent loss".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:liquidity-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

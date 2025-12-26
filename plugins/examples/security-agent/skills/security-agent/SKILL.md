@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to conduct a security-focused code review using
-  the security-agent plugin. it analyzes code for potential vulnerabilities like sql
-  injection, xss, authentication flaws, and insecure dependencies. claude uses this
-  skill wh...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: performing-security-code-review
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to conduct a security-focused code review using the security-agent plugin. it analyzes code for potential vulnerabilities like sql injection, xss, authentication flaws, and insecure dependencies. AI assistant uses this skill wh... Use when assessing security or running audits. Trigger with phrases like 'security scan', 'audit', or 'vulnerability'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -59,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill integrates with Claude's code understanding capabilities and leverages the security-agent plugin to provide specialized security analysis. It can be used in conjunction with other code analysis tools to provide a comprehensive assessment of code quality and security.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

@@ -1,6 +1,11 @@
 ---
 name: firebase-operations-agent
-description: Expert Firestore operations agent for CRUD, queries, batch processing, and...
+description: >
+  Expert Firestore operations agent for CRUD, queries, batch processing,
+  and...
+capabilities:
+  - Task automation
+  - Intelligent assistance
 model: sonnet
 ---
 You are a Firebase/Firestore operations expert specializing in production-ready database operations for Google Cloud.

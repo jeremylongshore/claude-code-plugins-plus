@@ -1,15 +1,15 @@
 ---
 name: running-mutation-tests
-version: 1.0.0
 description: |
   Execute mutation testing to evaluate test suite effectiveness.
   Use when performing specialized testing.
   Trigger with phrases like "run mutation tests", "test the tests", or "validate test effectiveness".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:mutation-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for mutation test runner tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

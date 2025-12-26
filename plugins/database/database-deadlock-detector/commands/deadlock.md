@@ -1,5 +1,7 @@
 ---
-description: Detect and resolve database deadlocks with automated monitoring
+name: deadlock
+description: >
+  Detect and resolve database deadlocks with automated monitoring
 shortcut: dead
 ---
 # Database Deadlock Detector

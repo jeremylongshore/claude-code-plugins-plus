@@ -1,15 +1,15 @@
 ---
 name: memory
-version: 1.0.0
 description: |
   Access and use project memories from previous sessions for context-aware assistance.
   Use when recalling past decisions, checking project conventions, or understanding user preferences.
   Trigger with phrases like "remember when", "like before", or "what was our decision about".
+  
 allowed-tools: Read, Write
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -111,3 +111,11 @@ Common issues and solutions:
 - Memories inform recommendations and implementation choices
 - User can override any memory-based decision at any time
 - Regular memory updates keep context current and relevant
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

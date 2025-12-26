@@ -1,11 +1,12 @@
 ---
-description: Generates compliance documentation for HIPAA, GDPR, PCI DSS, and SOC 2
+name: compliance-docs-generate
+description: >
+  Generates compliance documentation for HIPAA, GDPR, PCI DSS, and SOC 2
 shortcut: cdg
 category: security
 difficulty: intermediate
 estimated_time: 15-30 minutes
 ---
-
 <!-- DESIGN DECISION: Automated compliance documentation generator -->
 <!-- Produces audit-ready documentation templates for major compliance frameworks -->
 <!-- Reduces time from weeks to hours for documentation preparation -->

@@ -1,11 +1,12 @@
 ---
-description: Scans Docker containers and images for security vulnerabilities
+name: docker-security-scan
+description: >
+  Scans Docker containers and images for security vulnerabilities
 shortcut: dss
 category: security
 difficulty: intermediate
 estimated_time: 5-10 minutes
 ---
-
 <!-- DESIGN DECISION: Container security as critical infrastructure concern -->
 <!-- Containers run in production with elevated privileges, must be secured -->
 <!-- Covers both image vulnerabilities and runtime configuration -->

@@ -2,11 +2,23 @@
 name: geepers_code_checker
 description: Multi-model code validation agent that checks code for errors using multiple AI models simultaneously. Identifies bugs, suggests improvements, and ensures code quality. Use after code generation or when reviewing existing code.
 
+
+
+model: sonnet
+color: red
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: Code validation needed
 user: "Check this code for errors"
 assistant: "Let me use geepers_code_checker to validate with multiple models."
 </example>
+
+### Example 2
 
 <example>
 Context: Post-generation review
@@ -14,14 +26,14 @@ user: "Review the code that was just generated"
 assistant: "I'll invoke geepers_code_checker for comprehensive validation."
 </example>
 
+### Example 3
+
 <example>
 Context: Quality assurance
 user: "Make sure this code is production-ready"
 assistant: "Running geepers_code_checker for thorough quality review."
 </example>
-model: sonnet
-color: red
----
+
 
 ## Mission
 

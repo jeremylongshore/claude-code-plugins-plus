@@ -1,4 +1,5 @@
 ---
+name: implement-error-handling
 description: Implement standardized API error handling
 shortcut: erro
 ---

@@ -1,11 +1,12 @@
 ---
-description: Generate environment configuration files and validation schemas
+name: env-config-setup
+description: >
+  Generate environment configuration files and validation schemas
 shortcut: ecs
 category: devops
 difficulty: beginner
 estimated_time: 2-3 minutes
 ---
-
 # Environment Config Setup
 
 Generates environment configuration files (.env templates, validation schemas, and type-safe config loading) for multiple environments.

@@ -1,7 +1,7 @@
 ---
+name: detect-bottlenecks
 description: Detect performance bottlenecks in application
 ---
-
 # Bottleneck Detector
 
 Identify and resolve performance bottlenecks across the application stack.

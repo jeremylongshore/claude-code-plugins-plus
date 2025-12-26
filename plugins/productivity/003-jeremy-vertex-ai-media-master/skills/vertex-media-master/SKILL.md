@@ -1,22 +1,25 @@
 ---
 name: Vertex AI Media Master
-description: Automatic activation for all google vertex ai multimodal operations - Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+description: |
+  Automatic activation for all google vertex ai multimodal operations - Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*)
 version: 1.0.0
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(general:*)
-- Bash(util:*)
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Vertex AI Media Master - Comprehensive Multimodal AI Operations
 
 This Agent Skill provides comprehensive mastery of Google Vertex AI multimodal capabilities for video, audio, image, and text processing with focus on marketing applications.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 ## Core Capabilities
 
 ### 🎥 Video Processing (Gemini 2.0/2.5)

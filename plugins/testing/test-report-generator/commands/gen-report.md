@@ -1,4 +1,5 @@
 ---
+name: gen-report
 description: Generate comprehensive test reports with coverage and trends
 shortcut: rpt
 ---

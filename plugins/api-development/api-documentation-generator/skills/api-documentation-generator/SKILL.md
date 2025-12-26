@@ -1,15 +1,15 @@
 ---
 name: generating-api-docs
-version: 1.0.0
 description: |
   Create comprehensive API documentation with examples, authentication guides, and SDKs.
   Use when creating comprehensive API documentation.
   Trigger with phrases like "generate API docs", "create API documentation", or "document the API".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:docs-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api documentation generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

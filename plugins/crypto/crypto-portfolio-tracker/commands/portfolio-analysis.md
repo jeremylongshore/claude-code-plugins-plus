@@ -1,5 +1,7 @@
 ---
-description: Analyze entire crypto portfolio with allocation, risk metrics, and...
+name: portfolio-analysis
+description: >
+  Analyze entire crypto portfolio with allocation, risk metrics, and...
 shortcut: pa
 ---
 # Portfolio Analysis

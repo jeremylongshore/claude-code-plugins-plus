@@ -1,4 +1,5 @@
 ---
+name: manage-api-versions
 description: Manage API versions with proper migration strategies
 shortcut: apiv
 ---

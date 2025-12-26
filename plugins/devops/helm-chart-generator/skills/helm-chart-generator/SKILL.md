@@ -1,19 +1,12 @@
 ---
-description: Use when generating Helm charts for Kubernetes applications. Trigger with phrases like "create Helm chart", "generate chart for app", "package Kubernetes deployment", or "helm template". Produces production-ready charts with Chart.yaml, values.yaml, templates, and best practices for multi-environment deployments.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(helm:*)
-- Bash(kubectl:*)
 name: generating-helm-charts
-license: MIT
+description: |
+  Use when generating Helm charts for Kubernetes applications. Trigger with phrases like "create Helm chart", "generate chart for app", "package Kubernetes deployment", or "helm template". Produces production-ready charts with Chart.yaml, values.yaml, templates, and best practices for multi-environment deployments.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(helm:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -110,3 +103,11 @@ Common issues and solutions:
 - Template function reference: https://helm.sh/docs/chart_template_guide/
 - Example charts repository: https://github.com/helm/charts
 - Chart testing guide in {baseDir}/docs/helm-testing.md
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

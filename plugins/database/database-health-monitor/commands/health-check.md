@@ -1,5 +1,8 @@
 ---
-description: Monitor database health with real-time metrics, predictive alerts, and...
+name: health-check
+description: >
+  Monitor database health with real-time metrics, predictive alerts,
+  and...
 shortcut: heal
 ---
 # Database Health Monitor

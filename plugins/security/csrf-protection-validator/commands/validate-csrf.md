@@ -1,4 +1,5 @@
 ---
+name: validate-csrf
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

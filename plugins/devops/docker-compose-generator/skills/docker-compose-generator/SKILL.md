@@ -5,18 +5,12 @@ description: |
   This skill provides Docker Compose file generation with comprehensive guidance and automation.
   Trigger with phrases like "generate docker-compose", "create compose file",
   or "configure multi-container app".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(docker:*), kubectl:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/docker-compose-generator-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/docker-compose-generator-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

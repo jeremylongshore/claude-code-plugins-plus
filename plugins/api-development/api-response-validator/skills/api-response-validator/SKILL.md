@@ -1,15 +1,15 @@
 ---
 name: validating-api-responses
-version: 1.0.0
 description: |
   Validate API responses against schemas to ensure contract compliance and data integrity.
   Use when ensuring API response correctness.
   Trigger with phrases like "validate responses", "check API responses", or "verify response format".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:validate-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api response validator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

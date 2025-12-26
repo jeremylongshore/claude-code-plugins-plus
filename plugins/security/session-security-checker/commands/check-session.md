@@ -1,4 +1,5 @@
 ---
+name: check-session
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

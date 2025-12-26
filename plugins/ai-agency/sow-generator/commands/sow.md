@@ -1,7 +1,7 @@
 ---
+name: sow
 description: Create Statement of Work document
 ---
-
 # SOW Generator
 
 Generate professional Statements of Work for AI automation projects.

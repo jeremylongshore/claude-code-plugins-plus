@@ -1,5 +1,7 @@
 ---
-description: Implement disaster recovery and point-in-time recovery strategies
+name: recovery
+description: >
+  Implement disaster recovery and point-in-time recovery strategies
 shortcut: reco
 ---
 # Database Recovery Manager

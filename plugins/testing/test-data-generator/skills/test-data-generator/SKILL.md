@@ -1,15 +1,15 @@
 ---
 name: generating-test-data
-version: 1.0.0
 description: |
   Generate realistic test data including edge cases and boundary conditions.
   Use when creating realistic fixtures or edge case test data.
   Trigger with phrases like "generate test data", "create fixtures", or "setup test database".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:data-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for test data generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

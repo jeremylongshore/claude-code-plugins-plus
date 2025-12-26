@@ -1,5 +1,8 @@
 ---
-description: Scan for accessibility issues with WCAG 2.1/2.2 compliance and screen reader...
+name: a11y-scan
+description: >
+  Scan for accessibility issues with WCAG 2.1/2.2 compliance and screen
+  reader...
 shortcut: ay
 ---
 # Accessibility Test Scanner

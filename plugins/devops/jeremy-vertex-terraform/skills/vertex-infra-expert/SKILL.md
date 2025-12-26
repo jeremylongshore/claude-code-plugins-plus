@@ -1,19 +1,12 @@
 ---
-description: Use when provisioning Vertex AI infrastructure with Terraform. Trigger with phrases like "vertex ai terraform", "deploy gemini terraform", "model garden infrastructure", "vertex ai endpoints terraform", or "vector search terraform". Provisions Model Garden models, Gemini endpoints, vector search indices, ML pipelines, and production AI services with encryption and auto-scaling.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(terraform:*)
-- Bash(gcloud:*)
 name: vertex-infra-expert
-license: MIT
+description: |
+  Use when provisioning Vertex AI infrastructure with Terraform. Trigger with phrases like "vertex ai terraform", "deploy gemini terraform", "model garden infrastructure", "vertex ai endpoints terraform", or "vector search terraform". Provisions Model Garden models, Gemini endpoints, vector search indices, ML pipelines, and production AI services with encryption and auto-scaling.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -40,6 +33,15 @@ Before using this skill, ensure:
 **Gemini Model Endpoint:**
 ```hcl
 # {baseDir}/terraform/vertex-endpoints.tf
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 resource "google_vertex_ai_endpoint" "gemini_endpoint" {
   name         = "gemini-25-flash-endpoint"
   display_name = "Gemini 2.5 Flash Production"

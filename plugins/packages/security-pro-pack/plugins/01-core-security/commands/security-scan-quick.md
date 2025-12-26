@@ -1,11 +1,12 @@
 ---
-description: Fast automated security scan for common vulnerabilities and CVEs
+name: security-scan-quick
+description: >
+  Fast automated security scan for common vulnerabilities and CVEs
 shortcut: ss
 category: security
 difficulty: beginner
 estimated_time: 2-5 minutes
 ---
-
 <!-- DESIGN DECISION: Quick security scan as entry point for security assessment -->
 <!-- Provides fast, actionable feedback on common security issues without deep manual review -->
 <!-- Complements Security Auditor Expert (comprehensive) with quick wins approach -->

@@ -1,7 +1,7 @@
 ---
+name: docker-compose
 description: Generate Docker Compose configurations
 ---
-
 # Docker Compose Generator
 
 Generate production-ready Docker Compose files with best practices.

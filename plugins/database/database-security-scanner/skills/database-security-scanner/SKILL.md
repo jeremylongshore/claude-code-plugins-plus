@@ -5,18 +5,12 @@ description: |
   This skill provides security scanning and vulnerability detection with comprehensive guidance and automation.
   Trigger with phrases like "scan for vulnerabilities", "implement security controls",
   or "audit security".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(psql:*, mysql:*), mongosh:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/database-security-scanner-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/database-security-scanner-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

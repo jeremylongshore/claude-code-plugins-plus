@@ -1,8 +1,9 @@
 ---
-description: Analyze institutional options flow and detect smart money movements
+name: analyze-flow
+description: >
+  Analyze institutional options flow and detect smart money movements
 shortcut: af
 ---
-
 # Analyze Options Flow
 
 Track institutional options flow, unusual options activity, and smart money movements with advanced flow analysis.

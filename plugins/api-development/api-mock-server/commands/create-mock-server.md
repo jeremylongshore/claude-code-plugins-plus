@@ -1,8 +1,8 @@
 ---
+name: create-mock-server
 description: Create a mock API server for testing
 shortcut: mock
 ---
-
 # Create Mock API Server
 
 Generate production-grade mock API servers from OpenAPI specifications with realistic fake data, stateful operations, and customizable response scenarios. Perfect for frontend development, integration testing, and API prototyping without backend dependencies.

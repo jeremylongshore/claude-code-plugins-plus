@@ -4,18 +4,12 @@ description: |
   Analyze session management implementations to identify security vulnerabilities in web applications.
   Use when you need to audit session handling, check for session fixation risks, review session timeout configurations, or validate session ID generation security.
   Trigger with phrases like "check session security", "audit session management", "review session handling", or "session fixation vulnerability".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(code-scan:*), security-check:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(code-scan:*), security-check:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -69,6 +63,15 @@ Verify session ID regeneration:
 **Vulnerable Pattern**:
 ```python
 # INSECURE: Reuses existing session ID
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 def login(username, password):
     if authenticate(username, password):
         session['authenticated'] = True  # Session ID not regenerated

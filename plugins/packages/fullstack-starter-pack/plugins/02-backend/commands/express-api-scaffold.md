@@ -1,11 +1,12 @@
 ---
-description: Generate production-ready Express.js REST API with TypeScript and auth
+name: express-api-scaffold
+description: >
+  Generate production-ready Express.js REST API with TypeScript and auth
 shortcut: eas
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes
 ---
-
 # Express API Scaffold
 
 Generates a complete Express.js REST API boilerplate with TypeScript, authentication, database integration, and testing setup.

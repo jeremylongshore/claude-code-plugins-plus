@@ -1,15 +1,15 @@
 ---
 name: emitting-api-events
-version: 1.0.0
 description: |
   Build event-driven APIs with webhooks, Server-Sent Events, and real-time notifications.
   Use when building event-driven API architectures.
   Trigger with phrases like "add webhooks", "implement events", or "create event-driven API".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:events-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api event emitter tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

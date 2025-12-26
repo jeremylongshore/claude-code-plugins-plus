@@ -1,18 +1,11 @@
 ---
-description: This skill allows claude to construct and configure neural network architectures
-  using the neural-network-builder plugin. it should be used when the user requests
-  the creation of a new neural network, modification of an existing one, or assistance...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: building-neural-networks
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill allows AI assistant to construct and configure neural network architectures using the neural-network-builder plugin. it should be used when the user requests the creation of a new neural network, modification of an existing one, or assistance... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -58,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill integrates with the core Claude Code environment by utilizing the `build-nn` command provided by the neural-network-builder plugin. It can be combined with other skills for data preprocessing, model evaluation, and deployment.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

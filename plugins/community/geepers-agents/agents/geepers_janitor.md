@@ -1,9 +1,35 @@
 ---
 name: geepers_janitor
-description: Aggressive cleanup and maintenance agent. Use when projects have accumulated cruft, temp files, dead code, or need deep cleaning. More thorough than geepers_repo - this agent actively hunts for and removes waste. Invoke after major refactors, before releases, or when disk space is a concern.\n\n<example>\nContext: Project has accumulated debris\nuser: "This project is a mess, clean it up"\nassistant: "Let me unleash geepers_janitor for a deep clean."\n</example>\n\n<example>\nContext: Pre-release cleanup\nassistant: "Before release, I'll run geepers_janitor to remove all cruft."\n</example>\n\n<example>\nContext: Disk space concerns\nuser: "What's taking up space in this project?"\nassistant: "I'll use geepers_janitor to identify and clean up waste."\n</example>
+description: "Aggressive cleanup and maintenance agent. Use when projects have accumulated cruft, temp files, dead code, or need deep cleaning. More thorough than geepers_repo - this agent actively hunts for and removes waste. Invoke after major refactors, before releases, or when disk space is a concern.\n"
 model: sonnet
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Project has accumulated debris
+user: "This project is a mess, clean it up"
+assistant: "Let me unleash geepers_janitor for a deep clean."
+</example>
+
+### Example 2
+
+<example>
+Context: Pre-release cleanup
+assistant: "Before release, I'll run geepers_janitor to remove all cruft."
+</example>
+
+### Example 3
+
+<example>
+Context: Disk space concerns
+user: "What's taking up space in this project?"
+assistant: "I'll use geepers_janitor to identify and clean up waste."
+</example>
+
 
 ## Mission
 

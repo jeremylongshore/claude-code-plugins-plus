@@ -1,11 +1,12 @@
 ---
-description: Create pull request with auto-generated template and description
+name: pr-create
+description: >
+  Create pull request with auto-generated template and description
 shortcut: gpr
 category: git
 difficulty: beginner
 estimated_time: 1 minute
 ---
-
 <!-- DESIGN DECISION: Why this command exists -->
 <!-- Creating PRs manually requires switching contexts (terminal → GitHub UI → write description).
      This automates PR creation with AI-generated description based on commits, keeping

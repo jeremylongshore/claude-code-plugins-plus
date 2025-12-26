@@ -1,7 +1,7 @@
 ---
+name: profile
 description: Profile application performance metrics
 ---
-
 # Application Profiler
 
 Analyze application performance including CPU usage, memory consumption, execution time, and identify bottlenecks.

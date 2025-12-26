@@ -1,15 +1,15 @@
 ---
 name: migrating-apis
-version: 1.0.0
 description: |
   Migrate APIs between versions, platforms, or frameworks with minimal downtime.
   Use when upgrading APIs between versions.
   Trigger with phrases like "migrate the API", "upgrade API version", or "migrate to new API".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:migrate-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api migration tool tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

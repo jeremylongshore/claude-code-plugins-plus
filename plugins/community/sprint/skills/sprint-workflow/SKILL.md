@@ -1,17 +1,52 @@
 ---
 name: sprint-workflow
-description: This skill should be used when the user asks about "how sprints work", "sprint phases", "iteration workflow", "convergent development", "sprint lifecycle", "when to use sprints", or wants to understand the sprint execution model and its convergent diffusion approach.
+description: |
+  This skill should be used when the user asks about "how sprints work", "sprint phases", "iteration workflow", "convergent development", "sprint lifecycle", "when to use sprints", or wants to understand the sprint execution model and its convergent diffusion approach. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read
 version: 1.0.0
 author: Damien Laine <damien.laine@gmail.com>
 license: MIT
-allowed-tools:
-  - Read
 ---
-
 # Sprint Workflow
 
 Sprint implements a convergent development model where autonomous agents iteratively refine implementations until specifications are satisfied. This skill covers the execution lifecycle, phase transitions, and iteration patterns.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Core Concept: Convergent Diffusion
 
 Traditional AI-assisted development suffers from context bloat - each iteration adds more information, compounding errors and noise. Sprint reverses this pattern:

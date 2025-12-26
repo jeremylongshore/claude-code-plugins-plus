@@ -1,4 +1,5 @@
 ---
+name: add-rate-limiting
 description: Add rate limiting to API endpoints
 shortcut: rate
 ---

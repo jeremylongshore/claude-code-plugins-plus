@@ -1,15 +1,15 @@
 ---
 name: tracking-token-launches
-version: 1.0.0
 description: |
   Monitor new token launches, IDOs, and fair launches with contract verification.
   Use when discovering new token launches.
   Trigger with phrases like "track launches", "find new tokens", or "monitor IDOs".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:launch-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

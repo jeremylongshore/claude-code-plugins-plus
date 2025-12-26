@@ -1,7 +1,7 @@
 ---
+name: create-alerts
 description: Create intelligent alerting rules
 ---
-
 # Alerting Rule Creator
 
 Create comprehensive alerting rules to detect performance issues proactively.

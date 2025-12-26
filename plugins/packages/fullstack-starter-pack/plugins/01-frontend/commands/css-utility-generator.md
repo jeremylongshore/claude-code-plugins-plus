@@ -1,11 +1,12 @@
 ---
-description: Generate utility CSS classes for spacing, colors, typography, and layout
+name: css-utility-generator
+description: >
+  Generate utility CSS classes for spacing, colors, typography, and layout
 shortcut: cug
 category: frontend
 difficulty: beginner
 estimated_time: 2-5 minutes
 ---
-
 # CSS Utility Generator
 
 Generates utility CSS classes similar to Tailwind CSS for common styling needs, creating a custom utility-first CSS framework.

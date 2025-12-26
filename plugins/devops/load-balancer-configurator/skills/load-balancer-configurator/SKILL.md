@@ -1,20 +1,12 @@
 ---
-description: Use when configuring load balancers including ALB, NLB, Nginx, and HAProxy. Trigger with phrases like "configure load balancer", "create ALB", "setup nginx load balancing", or "haproxy configuration". Generates production-ready configurations with health checks, SSL termination, sticky sessions, and traffic distribution rules.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(aws:*)
-- Bash(gcloud:*)
-- Bash(nginx:*)
 name: configuring-load-balancers
-license: MIT
+description: |
+  Use when configuring load balancers including ALB, NLB, Nginx, and HAProxy. Trigger with phrases like "configure load balancer", "create ALB", "setup nginx load balancing", or "haproxy configuration". Generates production-ready configurations with health checks, SSL termination, sticky sessions, and traffic distribution rules.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*), Bash(gcloud:*), Bash(nginx:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -41,6 +33,15 @@ Before using this skill, ensure:
 **Nginx Configuration:**
 ```nginx
 # {baseDir}/nginx/load-balancer.conf
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 upstream backend_servers {
     least_conn;
     server 10.0.1.10:8080 weight=3;

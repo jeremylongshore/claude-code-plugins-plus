@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to provide interpretability and explainability
-  for machine learning models. it is triggered when the user requests explanations
-  for model predictions, insights into feature importance, or help understanding model
-  behavior...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: explaining-machine-learning-models
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to provide interpretability and explainability for machine learning models. it is triggered when the user requests explanations for model predictions, insights into feature importance, or help understanding model behavior... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -64,3 +56,30 @@ The skill will:
 ## Integration
 
 This skill integrates with other data analysis and visualization plugins to provide a comprehensive model understanding workflow. It can be used in conjunction with data cleaning and preprocessing plugins to ensure data quality and with visualization tools to present the explanation results in an informative way.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

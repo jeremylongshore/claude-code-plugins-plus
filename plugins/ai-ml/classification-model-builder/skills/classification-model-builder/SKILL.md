@@ -1,12 +1,11 @@
 ---
 name: building-classification-models
-description: Build and evaluate classification models for supervised learning tasks
-  with labeled data. Use when requesting "build a classifier", "create classification
-  model", or "train classifier".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Build and evaluate classification models for supervised learning tasks with labeled data. Use when requesting "build a classifier", "create classification model", or "train classifier". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -52,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill integrates with the classification-model-builder plugin to automate the model building process. It can also be used in conjunction with other plugins for data analysis and visualization.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

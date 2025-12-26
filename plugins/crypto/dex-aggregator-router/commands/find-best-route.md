@@ -1,4 +1,5 @@
 ---
+name: find-best-route
 description: Find optimal DEX routing for token swaps
 shortcut: rout
 ---

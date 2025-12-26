@@ -1,7 +1,7 @@
 ---
+name: analyze-throughput
 description: Analyze and optimize system throughput
 ---
-
 # Throughput Analyzer
 
 Analyze system throughput and identify optimization opportunities.

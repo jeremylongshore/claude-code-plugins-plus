@@ -1,15 +1,15 @@
 ---
 name: building-api-authentication
-version: 1.0.0
 description: |
   Build secure API authentication systems with OAuth2, JWT, API keys, and session management.
   Use when implementing secure authentication flows.
   Trigger with phrases like "build authentication", "add API auth", or "secure the API".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:auth-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api authentication builder tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

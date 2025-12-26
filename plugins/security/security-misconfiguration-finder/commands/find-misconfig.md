@@ -1,4 +1,5 @@
 ---
+name: find-misconfig
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

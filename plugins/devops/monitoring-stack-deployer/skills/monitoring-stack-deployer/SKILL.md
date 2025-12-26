@@ -1,19 +1,12 @@
 ---
-description: Use when deploying monitoring stacks including Prometheus, Grafana, and Datadog. Trigger with phrases like "deploy monitoring stack", "setup prometheus", "configure grafana", or "install datadog agent". Generates production-ready configurations with metric collection, visualization dashboards, and alerting rules.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(docker:*)
-- Bash(kubectl:*)
 name: deploying-monitoring-stacks
-license: MIT
+description: |
+  Use when deploying monitoring stacks including Prometheus, Grafana, and Datadog. Trigger with phrases like "deploy monitoring stack", "setup prometheus", "configure grafana", or "install datadog agent". Generates production-ready configurations with metric collection, visualization dashboards, and alerting rules.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -38,6 +31,15 @@ Before using this skill, ensure:
 **Prometheus + Grafana (Kubernetes):**
 ```yaml
 # {baseDir}/monitoring/prometheus.yaml
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 apiVersion: v1
 kind: ConfigMap
 metadata:

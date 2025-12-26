@@ -1,5 +1,8 @@
 ---
-description: Implement high-performance batch API operations with job queues, progress...
+name: implement-batch-processing
+description: >
+  Implement high-performance batch API operations with job queues,
+  progress...
 shortcut: btch
 category: api
 difficulty: intermediate

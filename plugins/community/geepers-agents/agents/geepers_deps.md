@@ -1,9 +1,28 @@
 ---
 name: geepers_deps
-description: Use this agent for dependency audits, security vulnerability scanning, license compliance, and update recommendations. Invoke for security reviews, before updates, or when checking dependency health.\n\n<example>\nContext: Security audit\nuser: "Can you audit dependencies for vulnerabilities?"\nassistant: "I'll use geepers_deps to scan all requirements files."\n</example>\n\n<example>\nContext: Update planning\nuser: "I want to update Flask to 3.0, what will break?"\nassistant: "Let me use geepers_deps to analyze the upgrade impact."\n</example>
+description: "Use this agent for dependency audits, security vulnerability scanning, license compliance, and update recommendations. Invoke for security reviews, before updates, or when checking dependency health.\n"
 model: sonnet
 color: purple
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Security audit
+user: "Can you audit dependencies for vulnerabilities?"
+assistant: "I'll use geepers_deps to scan all requirements files."
+</example>
+
+### Example 2
+
+<example>
+Context: Update planning
+user: "I want to update Flask to 3.0, what will break?"
+assistant: "Let me use geepers_deps to analyze the upgrade impact."
+</example>
+
 
 ## Mission
 

@@ -1,17 +1,52 @@
 ---
 name: agent-patterns
-description: This skill should be used when the user asks about "SPAWN REQUEST format", "agent reports", "agent coordination", "parallel agents", "report format", "agent communication", or needs to understand how agents coordinate within the sprint system.
+description: |
+  This skill should be used when the user asks about "SPAWN REQUEST format", "agent reports", "agent coordination", "parallel agents", "report format", "agent communication", or needs to understand how agents coordinate within the sprint system. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read
 version: 1.0.0
 author: Damien Laine <damien.laine@gmail.com>
 license: MIT
-allowed-tools:
-  - Read
 ---
-
 # Agent Patterns
 
 Sprint coordinates multiple specialized agents through structured communication patterns. This skill covers the SPAWN REQUEST format, report structure, parallel execution, and inter-agent coordination.
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Agent Hierarchy
 
 ```

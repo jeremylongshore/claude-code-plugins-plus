@@ -1,11 +1,11 @@
 ---
 name: preprocessing-data-with-automated-pipelines
-description: Automate data cleaning, transformation, and validation for ML tasks.
-  Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Automate data cleaning, transformation, and validation for ML tasks. Use when requesting "preprocess data", "clean data", "ETL pipeline", or "data transformation". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -52,3 +52,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other Claude Code skills for data analysis, model training, and deployment. It provides a standardized way to prepare data for these tasks, ensuring consistency and reliability.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

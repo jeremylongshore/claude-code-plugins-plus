@@ -1,7 +1,7 @@
 ---
+name: optimize-cache
 description: Optimize caching strategies and implementation
 ---
-
 # Cache Performance Optimizer
 
 Analyze and optimize caching strategies for maximum performance.

@@ -1,9 +1,35 @@
 ---
 name: geepers_repo
-description: Use this agent for git hygiene, repository cleanup, and commit organization. Invoke at session checkpoints, before ending work sessions, when uncommitted changes accumulate, after adding dependencies, or when preparing for code reviews.\n\n<example>\nContext: End of coding session\nuser: "I'm wrapping up for today"\nassistant: "Let me run geepers_repo to ensure everything is properly committed and cleaned up."\n</example>\n\n<example>\nContext: Noticed messy repository state\nassistant: "I see several uncommitted changes and temp files. Let me run geepers_repo to organize this."\n</example>\n\n<example>\nContext: Preparing for code review\nuser: "Getting ready to submit this PR"\nassistant: "I'll use geepers_repo to verify repository hygiene before submission."\n</example>
+description: "Use this agent for git hygiene, repository cleanup, and commit organization. Invoke at session checkpoints, before ending work sessions, when uncommitted changes accumulate, after adding dependencies, or when preparing for code reviews.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: End of coding session
+user: "I'm wrapping up for today"
+assistant: "Let me run geepers_repo to ensure everything is properly committed and cleaned up."
+</example>
+
+### Example 2
+
+<example>
+Context: Noticed messy repository state
+assistant: "I see several uncommitted changes and temp files. Let me run geepers_repo to organize this."
+</example>
+
+### Example 3
+
+<example>
+Context: Preparing for code review
+user: "Getting ready to submit this PR"
+assistant: "I'll use geepers_repo to verify repository hygiene before submission."
+</example>
+
 
 ## Mission
 

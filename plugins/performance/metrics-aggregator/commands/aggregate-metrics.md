@@ -1,7 +1,7 @@
 ---
+name: aggregate-metrics
 description: Aggregate performance metrics centrally
 ---
-
 # Metrics Aggregator
 
 Implement centralized metrics aggregation for comprehensive performance visibility.

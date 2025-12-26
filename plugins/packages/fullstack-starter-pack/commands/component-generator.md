@@ -1,11 +1,12 @@
 ---
-description: Generate React components from descriptions with TypeScript and tests
+name: component-generator
+description: >
+  Generate React components from descriptions with TypeScript and tests
 shortcut: cg
 category: frontend
 difficulty: beginner
 estimated_time: 2-5 minutes
 ---
-
 # Component Generator
 
 Generates production-ready React components from natural language descriptions, including TypeScript types, styling, and tests.

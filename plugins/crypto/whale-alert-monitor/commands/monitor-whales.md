@@ -1,5 +1,8 @@
 ---
-description: Monitor whale transactions in real-time with market impact analysis and...
+name: monitor-whales
+description: >
+  Monitor whale transactions in real-time with market impact analysis
+  and...
 shortcut: mw
 ---
 # Monitor Whale Activity

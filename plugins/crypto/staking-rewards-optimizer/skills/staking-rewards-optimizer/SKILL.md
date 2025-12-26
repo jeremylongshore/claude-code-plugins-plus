@@ -1,15 +1,15 @@
 ---
 name: optimizing-staking-rewards
-version: 1.0.0
 description: |
   Compare staking rewards across validators and networks with ROI calculations.
   Use when optimizing proof-of-stake rewards.
   Trigger with phrases like "optimize staking", "compare validators", or "calculate rewards".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:staking-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

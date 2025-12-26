@@ -1,11 +1,11 @@
 ---
+name: circleci-config
 description: Generate CircleCI configuration file
 shortcut: cci
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Automates CircleCI config creation -->
 
 # CircleCI Config Generator

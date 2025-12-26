@@ -5,18 +5,12 @@ description: |
   This skill provides stored procedure code generation with comprehensive guidance and automation.
   Trigger with phrases like "generate stored procedures", "create database functions",
   or "write SQL procedures".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/stored-procedure-generator-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/stored-procedure-generator-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

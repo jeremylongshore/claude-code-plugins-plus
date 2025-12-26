@@ -1,11 +1,11 @@
 ---
+name: api-security-audit
 description: Comprehensive security audit for REST and GraphQL APIs
 shortcut: asa
 category: security
 difficulty: intermediate
 estimated_time: 15-30 minutes
 ---
-
 <!-- DESIGN DECISION: API security as critical attack surface -->
 <!-- APIs are primary attack vectors for modern applications -->
 <!-- Covers both REST and GraphQL with OWASP API Security Top 10 -->

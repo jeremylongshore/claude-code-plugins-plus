@@ -1,11 +1,11 @@
 ---
+name: commit-smart
 description: Generate conventional commits with AI-powered messages
 shortcut: gc
 category: git
 difficulty: beginner
 estimated_time: 30 seconds
 ---
-
 <!-- DESIGN DECISION: Why this command exists -->
 <!-- Developers spend 5-10 minutes writing good commit messages. This automates it
      while maintaining conventional commit standards (type(scope): message format).

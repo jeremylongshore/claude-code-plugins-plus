@@ -1,6 +1,14 @@
 ---
-description: Specialized agent for security vulnerability testing and OWASP compliance...
-capabilities: ["vulnerability-scanning", "owasp-testing", "sql-injection", "xss-testing", "authentication-testing"]
+name: security-scanner
+description: >
+  Specialized agent for security vulnerability testing and OWASP
+  compliance...
+capabilities:
+  - vulnerability-scanning
+  - owasp-testing
+  - sql-injection
+  - xss-testing
+  - authentication-testing
 ---
 # Security Test Scanner Agent
 

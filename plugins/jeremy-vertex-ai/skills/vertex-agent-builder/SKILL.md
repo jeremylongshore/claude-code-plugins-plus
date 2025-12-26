@@ -1,22 +1,41 @@
 ---
-description: Build and deploy production-ready generative AI agents using Vertex AI,
-  Gemini models, and Google Cloud infrastructure with RAG, function calling, and multi-modal
-  capabilities
 name: vertex-agent-builder
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Build and deploy production-ready generative AI agents using Vertex AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and multi-modal capabilities. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Vertex AI Agent Builder Skill
 
+
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
 ## Overview
 
+
+This skill provides automated assistance for vertex agent builder tasks.
 This skill provides production-ready scaffolding and deployment for generative AI agents using Google Cloud's Vertex AI platform. Built on actual Google Cloud source code from `GoogleCloudPlatform/generative-ai` and `agent-starter-pack` repositories, it offers:
 
 - **Gemini Model Integration** (1.5 Pro, 1.5 Flash, experimental models)

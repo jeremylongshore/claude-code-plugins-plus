@@ -1,6 +1,16 @@
 ---
 name: geepers_orchestrator_product
-description: Product development orchestrator that coordinates agents for complete product lifecycle - business planning, PRD creation, full-stack development, and code validation. Use when building new products from idea to implementation. This is your "idea to code" orchestrator.
+description: Product development orchestrator that coordinates agents for complete product lifecycle - business planning, PRD creation, full-stack development, and code validation. Use when building new products from idea to implementation.
+
+
+
+model: sonnet
+color: purple
+---
+
+## Examples
+
+### Example 1
 
 <example>
 Context: New product idea
@@ -8,20 +18,22 @@ user: "I have an idea for an app that tracks carbon footprints"
 assistant: "Let me use geepers_orchestrator_product to take this from idea to implementation."
 </example>
 
+### Example 2
+
 <example>
 Context: Need business plan first
 user: "I want to build a SaaS product but need to validate the business model"
 assistant: "I'll invoke geepers_orchestrator_product starting with business plan generation."
 </example>
 
+### Example 3
+
 <example>
 Context: Have PRD, need code
 user: "I have requirements documented, now I need the actual code"
 assistant: "Running geepers_orchestrator_product in development mode to generate implementation."
 </example>
-model: sonnet
-color: purple
----
+
 
 ## Mission
 

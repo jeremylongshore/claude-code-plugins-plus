@@ -1,9 +1,36 @@
 ---
 name: geepers_validator
-description: Use this agent for comprehensive project validation - checking configurations, paths, permissions, integrations, and overall project health. Invoke before deployments, after significant changes, when troubleshooting cross-cutting issues, or for periodic health checks.\n\n<example>\nContext: Pre-deployment check\nuser: "Ready to deploy, everything good?"\nassistant: "Let me run geepers_validator for comprehensive validation."\n</example>\n\n<example>\nContext: After service setup\nuser: "I finished setting up the new service"\nassistant: "I'll use geepers_validator to verify the complete setup."\n</example>\n\n<example>\nContext: Mysterious issues\nuser: "Something's broken but I don't know what"\nassistant: "Let me use geepers_validator for systematic diagnosis."\n</example>
+description: "Use this agent for comprehensive project validation - checking configurations, paths, permissions, integrations, and overall project health. Invoke before deployments, after significant changes, when troubleshooting cross-cutting issues, or for periodic health checks.\n"
 model: sonnet
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Pre-deployment check
+user: "Ready to deploy, everything good?"
+assistant: "Let me run geepers_validator for comprehensive validation."
+</example>
+
+### Example 2
+
+<example>
+Context: After service setup
+user: "I finished setting up the new service"
+assistant: "I'll use geepers_validator to verify the complete setup."
+</example>
+
+### Example 3
+
+<example>
+Context: Mysterious issues
+user: "Something's broken but I don't know what"
+assistant: "Let me use geepers_validator for systematic diagnosis."
+</example>
+
 
 ## Mission
 

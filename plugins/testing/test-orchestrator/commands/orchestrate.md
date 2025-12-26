@@ -1,8 +1,8 @@
 ---
+name: orchestrate
 description: Orchestrate complex test workflows with smart execution
 shortcut: orch
 ---
-
 # Test Orchestrator
 
 Orchestrate complex test execution workflows with dependency management, parallel execution, smart test selection, and optimized CI/CD integration.

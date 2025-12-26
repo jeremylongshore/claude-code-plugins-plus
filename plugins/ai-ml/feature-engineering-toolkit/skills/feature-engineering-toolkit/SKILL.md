@@ -1,15 +1,16 @@
 ---
 name: engineering-features-for-machine-learning
-description: Create, select, and transform features to improve machine learning model
-  performance. Handles feature scaling, encoding, and importance analysis. Use when
-  asked to "engineer features" or "select features".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Create, select, and transform features to improve machine learning model performance. Handles feature scaling, encoding, and importance analysis. Use when asked to "engineer features" or "select features". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for feature engineering toolkit tasks.
 This skill enables Claude to leverage the feature-engineering-toolkit plugin to enhance machine learning models. It automates the process of creating new features, selecting the most relevant ones, and transforming existing features to better suit the model's needs. By using this skill, you can improve the accuracy, efficiency, and interpretability of your machine learning models.
 
 ## How It Works
@@ -53,3 +54,30 @@ The skill will:
 ## Integration
 
 This skill integrates with the feature-engineering-toolkit plugin, providing a seamless way to create, select, and transform features for machine learning models. It can be used in conjunction with other Claude Code skills to build complete machine learning pipelines.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

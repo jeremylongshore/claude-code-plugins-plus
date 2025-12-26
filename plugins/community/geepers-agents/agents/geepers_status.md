@@ -1,9 +1,35 @@
 ---
 name: geepers_status
-description: Use this agent to log work accomplishments and maintain the project status dashboard. Invoke after making commits, at end of work sessions, when reviewing progress, or when updating project documentation.\n\n<example>\nContext: Work session ending\nuser: "Done for today, updated the search API and fixed auth bugs"\nassistant: "I'll use geepers_status to log today's accomplishments."\n</example>\n\n<example>\nContext: Checking recent progress\nuser: "What have I been working on this week?"\nassistant: "Let me use geepers_status to review the status log and recent commits."\n</example>\n\n<example>\nContext: After significant commits\nassistant: "Good progress! Let me update geepers_status with this feature completion."\n</example>
+description: "Use this agent to log work accomplishments and maintain the project status dashboard. Invoke after making commits, at end of work sessions, when reviewing progress, or when updating project documentation.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Work session ending
+user: "Done for today, updated the search API and fixed auth bugs"
+assistant: "I'll use geepers_status to log today's accomplishments."
+</example>
+
+### Example 2
+
+<example>
+Context: Checking recent progress
+user: "What have I been working on this week?"
+assistant: "Let me use geepers_status to review the status log and recent commits."
+</example>
+
+### Example 3
+
+<example>
+Context: After significant commits
+assistant: "Good progress! Let me update geepers_status with this feature completion."
+</example>
+
 
 ## Mission
 

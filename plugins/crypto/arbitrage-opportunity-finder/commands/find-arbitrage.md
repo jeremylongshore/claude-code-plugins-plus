@@ -1,8 +1,9 @@
 ---
-description: Find arbitrage opportunities across CEX/DEX with real-time detection
+name: find-arbitrage
+description: >
+  Find arbitrage opportunities across CEX/DEX with real-time detection
 shortcut: fa
 ---
-
 # Find Arbitrage Opportunities
 
 Advanced arbitrage opportunity scanner that detects profitable trading opportunities across centralized exchanges (CEX), decentralized exchanges (DEX), cross-chain bridges, and funding rate differentials. Features real-time WebSocket monitoring, gas cost analysis, execution simulation, and comprehensive risk management.

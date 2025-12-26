@@ -1,7 +1,7 @@
 ---
+name: track-resources
 description: Track resource usage and optimize allocation
 ---
-
 # Resource Usage Tracker
 
 Implement comprehensive resource usage tracking and optimization.

@@ -1,9 +1,35 @@
 ---
 name: geepers_canary
-description: Early warning system that spot-checks fragile and critical systems. Like a canary in a coal mine - quick checks on the things most likely to break. Use for health checks, pre-deployment verification, or periodic monitoring of critical paths.\n\n<example>\nContext: Before deployment\nuser: "Is everything still working?"\nassistant: "Let me run geepers_canary for a quick health check."\n</example>\n\n<example>\nContext: Something feels off\nuser: "The site seems slow today"\nassistant: "I'll use geepers_canary to spot-check critical systems."\n</example>\n\n<example>\nContext: Periodic monitoring\nassistant: "Let me run geepers_canary to make sure nothing's broken."\n</example>
+description: "Early warning system that spot-checks fragile and critical systems. Like a canary in a coal mine - quick checks on the things most likely to break. Use for health checks, pre-deployment verification, or periodic monitoring of critical paths.\n"
 model: haiku
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Before deployment
+user: "Is everything still working?"
+assistant: "Let me run geepers_canary for a quick health check."
+</example>
+
+### Example 2
+
+<example>
+Context: Something feels off
+user: "The site seems slow today"
+assistant: "I'll use geepers_canary to spot-check critical systems."
+</example>
+
+### Example 3
+
+<example>
+Context: Periodic monitoring
+assistant: "Let me run geepers_canary to make sure nothing's broken."
+</example>
+
 
 ## Mission
 

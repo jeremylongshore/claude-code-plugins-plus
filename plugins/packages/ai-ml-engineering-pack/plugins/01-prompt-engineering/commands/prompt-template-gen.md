@@ -1,14 +1,14 @@
 ---
 name: prompt-template-gen
+description: >
+  Generate reusable prompt templates with variables and best practices
+shortcut: ptg
+category: other
 type: command
-description: Generate reusable prompt templates with variables and best practices
-category: ai
 version: 1.0.0
 author: Jeremy Longshore
-shortcut: ptg
 estimated_time: 2-5 minutes
 ---
-
 # Prompt Template Generator
 
 Generate production-ready prompt templates with variable substitution, type validation, and optimization best practices built-in.

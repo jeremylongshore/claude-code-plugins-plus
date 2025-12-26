@@ -1,20 +1,42 @@
 ---
-description: Automatically handles semantic version updates across plugin.json and
-  marketplace catalog when user mentions version bump, update version, or release.
-  ensures version consistency in claude-code-plugins repository.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Bash
 name: version-bumper
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Automatically handles semantic version updates across plugin.json and marketplace catalog when user mentions version bump, update version, or release. ensures version consistency in AI assistant-code-plugins repository. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 # Version Bumper
 
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 ## Purpose
 Automatically manages semantic version updates for Claude Code plugins, ensuring consistency across plugin.json, marketplace catalog, and git tags - optimized for claude-code-plugins repository workflow.
 

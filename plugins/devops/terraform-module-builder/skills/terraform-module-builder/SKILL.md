@@ -1,19 +1,11 @@
 ---
-description: This skill empowers claude to build reusable terraform modules based
-  on user specifications. it leverages the terraform-module-builder plugin to generate
-  production-ready, well-documented terraform module code, incorporating best practices
-  for sec...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: building-terraform-modules
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill empowers AI assistant to build reusable terraform modules based on user specifications. it leverages the terraform-module-builder plugin to generate production-ready, well-documented terraform module code, incorporating best practices for sec... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -59,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill integrates seamlessly with other Claude Code plugins by providing a foundation for infrastructure provisioning. The generated Terraform modules can be used by other plugins to deploy and manage resources in various cloud environments.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

@@ -1,9 +1,35 @@
 ---
 name: geepers_orchestrator_deploy
-description: Deployment orchestrator that coordinates infrastructure agents - validator, caddy, and services. Use before/during deployments, when changing infrastructure, or when services need coordination. This is your "make it live safely" orchestrator.\n\n<example>\nContext: Deploying new service\nuser: "I want to deploy this new Flask app"\nassistant: "Let me use geepers_orchestrator_deploy to handle the full deployment safely."\n</example>\n\n<example>\nContext: Infrastructure changes\nuser: "I need to add a new Caddy route for this service"\nassistant: "I'll invoke geepers_orchestrator_deploy to coordinate the Caddy and service changes."\n</example>\n\n<example>\nContext: Post-deployment verification\nassistant: "Deployment complete. Running geepers_orchestrator_deploy in verify mode to confirm everything is working."\n</example>
+description: "Deployment orchestrator that coordinates infrastructure agents - validator, caddy, and services. Use before/during deployments, when changing infrastructure, or when services need coordination.\n"
 model: sonnet
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Deploying new service
+user: "I want to deploy this new Flask app"
+assistant: "Let me use geepers_orchestrator_deploy to handle the full deployment safely."
+</example>
+
+### Example 2
+
+<example>
+Context: Infrastructure changes
+user: "I need to add a new Caddy route for this service"
+assistant: "I'll invoke geepers_orchestrator_deploy to coordinate the Caddy and service changes."
+</example>
+
+### Example 3
+
+<example>
+Context: Post-deployment verification
+assistant: "Deployment complete. Running geepers_orchestrator_deploy in verify mode to confirm everything is working."
+</example>
+
 
 ## Mission
 

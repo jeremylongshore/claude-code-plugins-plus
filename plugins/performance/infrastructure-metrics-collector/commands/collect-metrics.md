@@ -1,7 +1,7 @@
 ---
+name: collect-metrics
 description: Collect infrastructure performance metrics
 ---
-
 # Infrastructure Metrics Collector
 
 Set up comprehensive infrastructure metrics collection for performance monitoring.

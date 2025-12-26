@@ -1,8 +1,10 @@
 ---
-description: Track crypto positions with entry prices, current values, and PnL calculations
+name: track-position
+description: >
+  Track crypto positions with entry prices, current values, and PnL
+  calculations
 shortcut: tp
 ---
-
 # Track Crypto Position
 
 Comprehensive position tracking for cryptocurrency investments with real-time price updates and advanced analytics.

@@ -1,7 +1,7 @@
 ---
+name: setup-tracing
 description: Set up distributed tracing
 ---
-
 # Distributed Tracing Setup
 
 Implement distributed tracing for end-to-end request visibility in microservices.

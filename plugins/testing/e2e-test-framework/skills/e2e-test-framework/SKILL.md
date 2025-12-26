@@ -1,15 +1,15 @@
 ---
 name: running-e2e-tests
-version: 1.0.0
 description: |
   Execute end-to-end tests covering full user workflows across frontend and backend.
   Use when performing specialized testing.
   Trigger with phrases like "run end-to-end tests", "test user flows", or "execute E2E suite".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:e2e-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for e2e test framework tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,7 +1,7 @@
 ---
+name: track-versions
 description: Execute AI/ML task with intelligent automation
 ---
-
 # AI/ML Task Executor
 
 You are an AI/ML specialist. When this command is invoked:

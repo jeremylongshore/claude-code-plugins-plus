@@ -1,7 +1,7 @@
 ---
+name: memories
 description: Show all stored project memories
 ---
-
 Read `.claude/memories/project_memory.json` and display:
 
 ```

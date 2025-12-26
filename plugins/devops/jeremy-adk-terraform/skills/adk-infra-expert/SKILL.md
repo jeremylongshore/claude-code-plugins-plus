@@ -1,19 +1,12 @@
 ---
-description: Use when provisioning Vertex AI ADK infrastructure with Terraform. Trigger with phrases like "deploy ADK terraform", "agent engine infrastructure", "provision ADK agent", "vertex AI agent terraform", or "code execution sandbox terraform". Provisions Agent Engine runtime, 14-day code execution sandbox, Memory Bank, VPC Service Controls, IAM roles, and secure multi-agent infrastructure.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(terraform:*)
-- Bash(gcloud:*)
 name: adk-infra-expert
-license: MIT
+description: |
+  Use when provisioning Vertex AI ADK infrastructure with Terraform. Trigger with phrases like "deploy ADK terraform", "agent engine infrastructure", "provision ADK agent", "vertex AI agent terraform", or "code execution sandbox terraform". Provisions Agent Engine runtime, 14-day code execution sandbox, Memory Bank, VPC Service Controls, IAM roles, and secure multi-agent infrastructure.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -40,6 +33,15 @@ Before using this skill, ensure:
 **Agent Engine Deployment:**
 ```hcl
 # {baseDir}/terraform/main.tf
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 resource "google_vertex_ai_agent_runtime" "adk_agent" {
   project  = var.project_id
   location = var.region

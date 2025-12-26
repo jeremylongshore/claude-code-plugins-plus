@@ -1,15 +1,15 @@
 ---
 name: generating-api-sdks
-version: 1.0.0
 description: |
   Generate client SDKs in multiple languages from OpenAPI specifications.
   Use when generating client libraries for API consumption.
   Trigger with phrases like "generate SDK", "create client library", or "build API SDK".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:sdk-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api sdk generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

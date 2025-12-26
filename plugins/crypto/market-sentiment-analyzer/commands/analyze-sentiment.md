@@ -1,8 +1,9 @@
 ---
-description: Analyze market sentiment from social media, news, and on-chain metrics
+name: analyze-sentiment
+description: >
+  Analyze market sentiment from social media, news, and on-chain metrics
 shortcut: as
 ---
-
 # Analyze Market Sentiment
 
 Comprehensive multi-source sentiment analysis system that aggregates data from social media platforms, news outlets, on-chain metrics, derivatives markets, and whale tracking to predict market movements and identify trading opportunities.

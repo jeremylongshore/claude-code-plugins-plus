@@ -1,4 +1,5 @@
 ---
+name: check-hipaa
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

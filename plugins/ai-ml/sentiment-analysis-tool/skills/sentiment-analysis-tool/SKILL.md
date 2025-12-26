@@ -1,16 +1,11 @@
 ---
-description: This skill enables claude to analyze the sentiment of text data. it identifies
-  the emotional tone expressed in text, classifying it as positive, negative, or neutral.
-  use this skill when a user requests sentiment analysis, opinion mining, or emoti...
-allowed-tools:
-- Read
-- Write
-- Bash
-- Grep
 name: analyzing-text-sentiment
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to analyze the sentiment of text data. it identifies the emotional tone expressed in text, classifying it as positive, negative, or neutral. use this skill when a user requests sentiment analysis, opinion mining, or emoti... Use when analyzing code or data. Trigger with phrases like 'analyze', 'review', or 'examine'.
+allowed-tools: Read, Write, Bash(cmd:*), Grep
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -57,3 +52,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other Claude Code plugins to automate workflows, such as summarizing feedback alongside sentiment scores or triggering actions based on sentiment polarity (e.g., escalating negative feedback).
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

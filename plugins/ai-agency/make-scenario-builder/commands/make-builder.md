@@ -1,7 +1,7 @@
 ---
+name: make-builder
 description: Design Make.com scenarios with AI assistance
 ---
-
 # Make.com Scenario Builder
 
 Create visual Make.com automation scenarios with detailed module configuration.

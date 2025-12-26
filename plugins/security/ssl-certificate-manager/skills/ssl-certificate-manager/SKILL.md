@@ -1,17 +1,11 @@
 ---
-description: This skill enables claude to manage and monitor ssl/tls certificates
-  using the ssl-certificate-manager plugin. it is activated when the user requests
-  actions related to ssl certificates, such as checking certificate expiry, renewing
-  certificates, ...
-allowed-tools:
-- Read
-- Bash
-- Grep
-- Glob
 name: managing-ssltls-certificates
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to manage and monitor ssl/tls certificates using the ssl-certificate-manager plugin. it is activated when the user requests actions related to ssl certificates, such as checking certificate expiry, renewing certificates, ... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Bash(cmd:*), Grep, Glob
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -61,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other security-related plugins to provide a comprehensive security overview. For example, it can be integrated with vulnerability scanning tools to identify potential weaknesses related to outdated or misconfigured certificates.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

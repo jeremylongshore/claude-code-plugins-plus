@@ -1,8 +1,8 @@
 ---
+name: fuzz-api
 description: Fuzz test APIs with malformed inputs and edge cases
 shortcut: fuzz
 ---
-
 # API Fuzzer
 
 Automated fuzz testing for REST APIs to discover vulnerabilities, crashes, and unexpected behavior through malformed inputs, boundary values, and random payloads. This command generates comprehensive fuzz test suites targeting injection attacks, input validation failures, and edge cases.

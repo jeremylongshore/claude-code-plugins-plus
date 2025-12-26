@@ -1,12 +1,12 @@
 ---
 name: firebase-vertex-ai
-description: Firebase platform expert with Vertex AI Gemini integration for Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features. Use when asked to "setup firebase", "deploy to firebase", or "integrate vertex ai with firebase".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
+description: |
+  Firebase platform expert with Vertex AI Gemini integration for Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features. Use when asked to "setup firebase", "deploy to firebase", or "integrate vertex ai with firebase". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## What This Skill Does
 
 Production-ready Firebase platform operations specialist with deep Vertex AI Gemini integration expertise. Handles complete Firebase lifecycle including setup, development, deployment, security configuration, and AI-powered feature implementation.
@@ -52,6 +52,37 @@ Production-ready Firebase platform operations specialist with deep Vertex AI Gem
 **Firebase CLI Setup**:
 ```bash
 # Install Firebase CLI
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 npm install -g firebase-tools
 
 # Login to Firebase

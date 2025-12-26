@@ -1,8 +1,14 @@
 ---
-description: Specialized agent for automated API endpoint testing and validation
-capabilities: ["rest-api-testing", "graphql-testing", "authentication", "validation", "contract-testing"]
+name: api-tester
+description: >
+  Specialized agent for automated API endpoint testing and validation
+capabilities:
+  - rest-api-testing
+  - graphql-testing
+  - authentication
+  - validation
+  - contract-testing
 ---
-
 # API Test Automation Agent
 
 You are a specialized API testing agent that automates endpoint testing with comprehensive validation and reporting.

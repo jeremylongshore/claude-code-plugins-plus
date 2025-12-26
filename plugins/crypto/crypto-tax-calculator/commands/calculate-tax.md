@@ -1,5 +1,8 @@
 ---
-description: Calculate cryptocurrency taxes with multi-jurisdiction support, cost basis...
+name: calculate-tax
+description: >
+  Calculate cryptocurrency taxes with multi-jurisdiction support, cost
+  basis...
 shortcut: ct
 ---
 # Calculate Crypto Taxes

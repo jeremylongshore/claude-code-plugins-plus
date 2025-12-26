@@ -1,18 +1,12 @@
 ---
-description: Use when managing Kubernetes network policies and firewall rules. Trigger with phrases like "create network policy", "configure firewall rules", "restrict pod communication", or "setup ingress/egress rules". Generates Kubernetes NetworkPolicy manifests following least privilege and zero-trust principles.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(kubectl:*)
 name: managing-network-policies
-license: MIT
+description: |
+  Use when managing Kubernetes network policies and firewall rules. Trigger with phrases like "create network policy", "configure firewall rules", "restrict pod communication", or "setup ingress/egress rules". Generates Kubernetes NetworkPolicy manifests following least privilege and zero-trust principles.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -37,6 +31,15 @@ Before using this skill, ensure:
 **Network Policy Examples:**
 ```yaml
 # {baseDir}/network-policies/allow-frontend-to-backend.yaml
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:

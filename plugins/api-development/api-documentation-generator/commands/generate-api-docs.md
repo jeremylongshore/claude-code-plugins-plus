@@ -1,5 +1,7 @@
 ---
-description: Generate comprehensive OpenAPI/Swagger documentation from existing APIs
+name: generate-api-docs
+description: >
+  Generate comprehensive OpenAPI/Swagger documentation from existing APIs
 shortcut: apid
 ---
 # Generate API Documentation

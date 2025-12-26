@@ -1,11 +1,12 @@
 ---
-description: Generate complete fullstack project structure with all boilerplate
+name: project-scaffold
+description: >
+  Generate complete fullstack project structure with all boilerplate
 shortcut: ps
 category: devops
 difficulty: beginner
 estimated_time: 5-10 minutes
 ---
-
 # Project Scaffold
 
 Generates a complete fullstack project structure with frontend, backend, database, authentication, testing, and deployment configuration.

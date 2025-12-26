@@ -1,8 +1,9 @@
 ---
-description: Manage snapshot tests with intelligent diff analysis and updates
+name: snapshot-manager
+description: >
+  Manage snapshot tests with intelligent diff analysis and updates
 shortcut: sm
 ---
-
 # Snapshot Test Manager
 
 Manage and update snapshot tests across your codebase with intelligent diff analysis, selective updates, and snapshot validation.

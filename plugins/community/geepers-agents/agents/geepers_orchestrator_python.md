@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_python
-description: Python project orchestrator that coordinates agents for Python development - Flask apps, CLI tools, APIs, and dependencies. Use when building or reviewing Python projects of any kind.\n\n<example>\nContext: Building Python project\nuser: "I need to build a Python data processing tool"\nassistant: "Let me use geepers_orchestrator_python to coordinate the development."\n</example>\n\n<example>\nContext: Python project review\nuser: "Review this Python codebase"\nassistant: "I'll invoke geepers_orchestrator_python for comprehensive Python review."\n</example>\n\n<example>\nContext: Python best practices\nuser: "Is this Python code any good?"\nassistant: "Running geepers_orchestrator_python to audit Python patterns and practices."\n</example>
+description: "Python project orchestrator that coordinates agents for Python development - Flask apps, CLI tools, APIs, and dependencies. Use when building or reviewing Python projects of any kind.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Building Python project
+user: "I need to build a Python data processing tool"
+assistant: "Let me use geepers_orchestrator_python to coordinate the development."
+</example>
+
+### Example 2
+
+<example>
+Context: Python project review
+user: "Review this Python codebase"
+assistant: "I'll invoke geepers_orchestrator_python for comprehensive Python review."
+</example>
+
+### Example 3
+
+<example>
+Context: Python best practices
+user: "Is this Python code any good?"
+assistant: "Running geepers_orchestrator_python to audit Python patterns and practices."
+</example>
+
 
 ## Mission
 

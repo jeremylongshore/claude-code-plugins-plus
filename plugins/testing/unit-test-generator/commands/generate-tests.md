@@ -1,8 +1,8 @@
 ---
+name: generate-tests
 description: Generate comprehensive unit tests for source code files
 shortcut: gut
 ---
-
 # Unit Test Generator
 
 Generate comprehensive, production-ready unit tests for source code files.

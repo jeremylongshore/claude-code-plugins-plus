@@ -1,4 +1,5 @@
 ---
+name: implement-throttling
 description: Implement API throttling and quotas
 shortcut: thro
 ---

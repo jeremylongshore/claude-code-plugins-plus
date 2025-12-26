@@ -1,11 +1,11 @@
 ---
+name: pipeline-optimize
 description: Analyze and optimize slow CI/CD pipelines
 shortcut: po
 category: devops
 difficulty: advanced
 estimated_time: 3 minutes
 ---
-
 <!-- DESIGN DECISION: Helps identify pipeline bottlenecks and suggests fixes -->
 
 # Pipeline Optimizer

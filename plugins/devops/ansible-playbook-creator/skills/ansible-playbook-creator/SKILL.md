@@ -5,18 +5,12 @@ description: |
   This skill provides Ansible playbook creation with comprehensive guidance and automation.
   Trigger with phrases like "create Ansible playbook", "automate with Ansible",
   or "configure with Ansible".
-allowed-tools:
-  - Read
-  - Write
-  - Edit
-  - Grep
-  - Glob
-  - Bash(ansible:*), terraform:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), terraform:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -121,3 +115,11 @@ This skill produces:
 **Best Practices**: `{baseDir}/docs/ansible-playbook-creator-best-practices.md`
 
 **Monitoring Setup**: `{baseDir}/monitoring/ansible-playbook-creator-dashboard.json`
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

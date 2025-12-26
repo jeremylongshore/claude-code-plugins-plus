@@ -1,15 +1,15 @@
 ---
 name: validating-ai-ethics-and-fairness
-version: 1.0.0
 description: |
   Validate AI/ML models and datasets for bias, fairness, and ethical concerns.
   Use when auditing AI systems for ethical compliance, fairness assessment, or bias detection.
   Trigger with phrases like "evaluate model fairness", "check for bias", or "validate AI ethics".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -118,3 +118,13 @@ Common issues and solutions:
 - Document all ethical decisions and trade-offs
 - Implement continuous monitoring for fairness drift
 - Maintain transparency in model limitations and biases
+
+## Overview
+
+
+This skill provides automated assistance for ai ethics validator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

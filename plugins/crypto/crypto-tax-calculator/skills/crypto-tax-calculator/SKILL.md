@@ -1,15 +1,15 @@
 ---
 name: calculating-crypto-taxes
-version: 1.0.0
 description: |
   Calculate cryptocurrency tax obligations with cost basis tracking and jurisdiction rules.
   Use when calculating crypto tax obligations.
   Trigger with phrases like "calculate crypto taxes", "compute tax liability", or "generate tax report".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:tax-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

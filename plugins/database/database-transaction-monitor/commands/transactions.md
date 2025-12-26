@@ -1,5 +1,8 @@
 ---
-description: Monitor database transactions with real-time alerting for performance and...
+name: transactions
+description: >
+  Monitor database transactions with real-time alerting for performance
+  and...
 shortcut: txnm
 ---
 # Database Transaction Monitor

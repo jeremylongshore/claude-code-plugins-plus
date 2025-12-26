@@ -1,9 +1,28 @@
 ---
 name: geepers_dashboard
-description: Use this agent for dashboard synchronization, service persistence configuration, and admin panel updates. Invoke when deploying new services, after system reboots, or for dashboard maintenance.\n\n<example>\nContext: New service deployment\nuser: "I created a new analytics service that needs to stay running after reboot"\nassistant: "I'll use geepers_dashboard to add it to service manager and ensure persistence."\n</example>\n\n<example>\nContext: Post-reboot\nuser: "Server just came back online after reboot"\nassistant: "Let me use geepers_dashboard to verify all services are running."\n</example>
+description: "Use this agent for dashboard synchronization, service persistence configuration, and admin panel updates. Invoke when deploying new services, after system reboots, or for dashboard maintenance.\n"
 model: sonnet
 color: orange
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: New service deployment
+user: "I created a new analytics service that needs to stay running after reboot"
+assistant: "I'll use geepers_dashboard to add it to service manager and ensure persistence."
+</example>
+
+### Example 2
+
+<example>
+Context: Post-reboot
+user: "Server just came back online after reboot"
+assistant: "Let me use geepers_dashboard to verify all services are running."
+</example>
+
 
 ## Mission
 

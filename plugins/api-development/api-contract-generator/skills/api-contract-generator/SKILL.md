@@ -1,15 +1,15 @@
 ---
 name: generating-api-contracts
-version: 1.0.0
 description: |
   Generate API contracts and OpenAPI specifications from code or design documents.
   Use when documenting API contracts and specifications.
   Trigger with phrases like "generate API contract", "create OpenAPI spec", or "document API contract".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:contract-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api contract generator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,22 +1,16 @@
 ---
-description: This skill empowers claude to perform regression analysis and modeling
-  using the regression-analysis-tool plugin. it analyzes datasets, generates appropriate
-  regression models (linear, polynomial, etc.), validates the models, and provides
-  performa...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: performing-regression-analysis
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill empowers AI assistant to perform regression analysis and modeling using the regression-analysis-tool plugin. it analyzes datasets, generates appropriate regression models (linear, polynomial, etc.), validates the models, and provides performa... Use when analyzing code or data. Trigger with phrases like 'analyze', 'review', or 'examine'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for regression analysis tool tasks.
 This skill enables Claude to analyze data, build regression models, and provide insights into the relationships between variables. It leverages the regression-analysis-tool plugin to automate the process and ensure best practices are followed.
 
 ## How It Works
@@ -63,3 +57,30 @@ The skill will:
 ## Integration
 
 This skill works independently using the regression-analysis-tool plugin. It can be used in conjunction with other data analysis and visualization tools to provide a comprehensive understanding of the data.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

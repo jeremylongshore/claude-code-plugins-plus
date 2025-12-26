@@ -1,4 +1,5 @@
 ---
+name: log
 description: Log a new AI experiment with terminal report
 shortcut: loge
 ---

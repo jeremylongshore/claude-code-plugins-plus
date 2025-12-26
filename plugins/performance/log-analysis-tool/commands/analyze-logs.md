@@ -1,7 +1,7 @@
 ---
+name: analyze-logs
 description: Analyze logs for performance insights
 ---
-
 # Log Analysis Tool
 
 Analyze application logs to identify performance issues and optimization opportunities.

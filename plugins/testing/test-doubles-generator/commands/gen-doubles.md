@@ -1,8 +1,9 @@
 ---
-description: Generate test doubles (mocks, stubs, spies, fakes) for unit testing
+name: gen-doubles
+description: >
+  Generate test doubles (mocks, stubs, spies, fakes) for unit testing
 shortcut: gd
 ---
-
 # Test Doubles Generator
 
 Generate appropriate test doubles (mocks, stubs, spies, fakes, dummies) for unit testing based on the testing framework and dependencies being tested.

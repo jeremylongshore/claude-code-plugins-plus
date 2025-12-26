@@ -1,5 +1,7 @@
 ---
-description: Create secure webhook endpoints with validation and resilience
+name: create-webhook-handler
+description: >
+  Create secure webhook endpoints with validation and resilience
 shortcut: webh
 ---
 # Create Webhook Handler

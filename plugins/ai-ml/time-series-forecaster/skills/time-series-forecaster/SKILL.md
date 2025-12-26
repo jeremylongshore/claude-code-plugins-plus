@@ -1,22 +1,16 @@
 ---
-description: This skill enables claude to forecast future values based on historical
-  time series data. it analyzes time-dependent data to identify trends, seasonality,
-  and other patterns. use this skill when the user asks to predict future values of
-  a time ser...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: forecasting-time-series-data
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to forecast future values based on historical time series data. it analyzes time-dependent data to identify trends, seasonality, and other patterns. use this skill when the user asks to predict future values of a time ser... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for time series forecaster tasks.
 This skill empowers Claude to perform time series forecasting, providing insights into future trends and patterns. It automates the process of data analysis, model selection, and prediction generation, delivering valuable information for decision-making.
 
 ## How It Works
@@ -61,3 +55,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other data analysis and visualization tools within the Claude Code ecosystem to provide a comprehensive solution for time series analysis and forecasting.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

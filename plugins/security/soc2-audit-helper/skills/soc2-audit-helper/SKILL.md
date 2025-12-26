@@ -4,16 +4,11 @@ description: |
   Automate SOC 2 audit preparation including evidence gathering, control assessment, and compliance gap identification.
   Use when you need to prepare for SOC 2 audits, assess Trust Service Criteria compliance, document security controls, or generate readiness reports.
   Trigger with phrases like "SOC 2 audit preparation", "SOC 2 readiness assessment", "collect SOC 2 evidence", or "Trust Service Criteria compliance".
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(audit-collect:*), compliance-check:*)
+  
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(audit-collect:*), compliance-check:*)
 version: 1.0.0
-license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Prerequisites
 
@@ -138,6 +133,15 @@ The skill produces:
 **Report Structure**:
 ```
 # SOC 2 Readiness Assessment
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 Assessment Date: 2024-01-15
 Organization: TechCorp Inc.
 Audit Type: SOC 2 Type II (Security + Availability)

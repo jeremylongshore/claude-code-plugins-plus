@@ -1,21 +1,16 @@
 ---
-description: This skill automates the adaptation of pre-trained machine learning models
-  using transfer learning techniques. it is triggered when the user requests assistance
-  with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: adapting-transfer-learning-models
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill automates the adaptation of pre-trained machine learning models using transfer learning techniques. it is triggered when the user requests assistance with fine-tuning a model, adapting a pre-trained model to a new dataset, or performing... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
+
+This skill provides automated assistance for transfer learning adapter tasks.
 This skill streamlines the process of adapting pre-trained machine learning models via transfer learning. It enables you to quickly fine-tune models for specific tasks, saving time and resources compared to training from scratch. It handles the complexities of model adaptation, data validation, and performance optimization.
 
 ## How It Works
@@ -61,3 +56,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other plugins for data loading, model evaluation, and deployment. For example, it can work with a data loading plugin to fetch datasets and a model deployment plugin to deploy the adapted model to a serving infrastructure.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

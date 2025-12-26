@@ -1,20 +1,12 @@
 ---
-description: Use when detecting infrastructure drift from desired state. Trigger with phrases like "check for drift", "infrastructure drift detection", "compare actual vs desired state", or "detect configuration changes". Identifies discrepancies between current infrastructure and IaC definitions using terraform plan, cloudformation drift detection, or manual comparison.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(terraform:*)
-- Bash(aws:*)
-- Bash(gcloud:*)
 name: detecting-infrastructure-drift
-license: MIT
+description: |
+  Use when detecting infrastructure drift from desired state. Trigger with phrases like "check for drift", "infrastructure drift detection", "compare actual vs desired state", or "detect configuration changes". Identifies discrepancies between current infrastructure and IaC definitions using terraform plan, cloudformation drift detection, or manual comparison.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(terraform:*), Bash(aws:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -113,3 +105,11 @@ Common issues and solutions:
 - AWS CloudFormation drift detection: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html
 - Drift remediation best practices in {baseDir}/docs/drift-remediation.md
 - Automated drift detection scripts in {baseDir}/scripts/drift-check.sh
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,8 +1,8 @@
 ---
+name: mobile-test
 description: Mobile app test automation for iOS and Android
 shortcut: mt
 ---
-
 # Mobile App Tester
 
 Automated testing for mobile applications using Appium, Detox, XCUITest (iOS), and Espresso (Android) with support for simulators, emulators, and real devices.

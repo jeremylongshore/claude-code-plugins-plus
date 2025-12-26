@@ -1,12 +1,12 @@
 ---
+name: hello
 description: Greet the user with a contextual, helpful welcome message
 shortcut: h
-category: utility
+category: other
 difficulty: beginner
 estimated_time: instant
 version: 2.0.0
 ---
-
 <!-- DESIGN DECISIONS -->
 <!-- This command serves as the first interaction many users have with Claude Code.
      It must demonstrate professional quality while remaining warm and approachable.

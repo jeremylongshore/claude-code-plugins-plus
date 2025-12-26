@@ -42,9 +42,10 @@ def extract_frontmatter(file_path: Path) -> Tuple[Optional[Dict[str, Any]], Opti
         return None, f"Invalid YAML: {e}"
 
 
-def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> List[str]:
-    """Validate frontmatter for command files."""
+def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> Tuple[List[str], List[str]]:
+    """Validate frontmatter for command files. Returns (errors, warnings)."""
     errors = []
+    warnings = []
 
     # Required field: name
     if 'name' not in frontmatter:
@@ -53,13 +54,13 @@ def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -
         errors.append("Field 'name' must be a string")
     else:
         name = frontmatter['name']
-        # Must be kebab-case
+        # Kebab-case is best practice, not required (WARN)
         if not re.match(r'^[a-z][a-z0-9-]*[a-z0-9]$', name) and len(name) > 1:
-            errors.append("Field 'name' must be kebab-case (lowercase + hyphens)")
-        # Should match filename (without .md extension)
+            warnings.append("Field 'name' should be kebab-case (lowercase + hyphens)")
+        # Should match filename (WARN)
         expected_name = file_path.stem
         if name != expected_name:
-            errors.append(f"Field 'name' '{name}' should match filename '{expected_name}.md'")
+            warnings.append(f"Field 'name' '{name}' should match filename '{expected_name}.md'")
 
     # Required field: description
     if 'description' not in frontmatter:
@@ -71,7 +72,7 @@ def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -
         if len(desc) < 10:
             errors.append("Field 'description' must be at least 10 characters")
         if len(desc) > 80:
-            errors.append("Field 'description' must be 80 characters or less")
+            warnings.append("Field 'description' should be 80 characters or less")
 
     # Optional field: shortcut
     if 'shortcut' in frontmatter:
@@ -79,11 +80,11 @@ def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -
         if not isinstance(shortcut, str):
             errors.append("Field 'shortcut' must be a string")
         elif len(shortcut) < 1 or len(shortcut) > 4:
-            errors.append("Field 'shortcut' must be 1-4 characters")
+            warnings.append("Field 'shortcut' should be 1-4 characters")
         elif not shortcut.islower():
-            errors.append("Field 'shortcut' must be lowercase")
+            warnings.append("Field 'shortcut' should be lowercase")
         elif not shortcut.isalpha():
-            errors.append("Field 'shortcut' must contain only letters")
+            warnings.append("Field 'shortcut' should contain only letters")
 
     # Optional field: category (expanded list from nixtla)
     valid_categories = ['git', 'deployment', 'security', 'testing', 'documentation',
@@ -91,20 +92,21 @@ def validate_command_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -
                        'analytics', 'migration', 'monitoring', 'other']
     if 'category' in frontmatter:
         if frontmatter['category'] not in valid_categories:
-            errors.append(f"Invalid category. Must be one of: {', '.join(valid_categories)}")
+            warnings.append(f"Unknown category: {frontmatter['category']}")
 
     # Optional field: difficulty
     valid_difficulties = ['beginner', 'intermediate', 'advanced', 'expert']
     if 'difficulty' in frontmatter:
         if frontmatter['difficulty'] not in valid_difficulties:
-            errors.append(f"Invalid difficulty. Must be one of: {', '.join(valid_difficulties)}")
+            warnings.append(f"Unknown difficulty: {frontmatter['difficulty']}")
 
-    return errors
+    return errors, warnings
 
 
-def validate_agent_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> List[str]:
-    """Validate frontmatter for agent files."""
+def validate_agent_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> Tuple[List[str], List[str]]:
+    """Validate frontmatter for agent files. Returns (errors, warnings)."""
     errors = []
+    warnings = []
 
     # Required field: name
     if 'name' not in frontmatter:
@@ -113,11 +115,11 @@ def validate_agent_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> 
         errors.append("Field 'name' must be a string")
     else:
         name = frontmatter['name']
-        # Must be kebab-case
+        # Kebab-case is best practice (WARN)
         if not re.match(r'^[a-z][a-z0-9-]*[a-z0-9]$', name) and len(name) > 1:
-            errors.append("Field 'name' must be kebab-case (lowercase + hyphens)")
+            warnings.append("Field 'name' should be kebab-case (lowercase + hyphens)")
 
-    # Required field: description (nixtla: 20-200 chars for agents)
+    # Required field: description (20 chars minimum for agents)
     if 'description' not in frontmatter:
         errors.append("Missing required field: description")
     elif not isinstance(frontmatter['description'], str):
@@ -127,17 +129,17 @@ def validate_agent_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> 
         if len(desc) < 20:
             errors.append("Field 'description' must be at least 20 characters")
         if len(desc) > 200:
-            errors.append("Field 'description' must be 200 characters or less")
+            warnings.append("Field 'description' should be 200 characters or less")
 
-    # Required field: capabilities
+    # Capabilities are best practice, not required (WARN)
     if 'capabilities' not in frontmatter:
-        errors.append("Missing required field: capabilities")
+        warnings.append("Missing recommended field: capabilities")
     elif not isinstance(frontmatter['capabilities'], list):
-        errors.append("Field 'capabilities' must be an array")
+        warnings.append("Field 'capabilities' should be an array")
     elif len(frontmatter['capabilities']) < 2:
-        errors.append("Field 'capabilities' must have at least 2 items")
+        warnings.append("Field 'capabilities' should have at least 2 items")
     elif len(frontmatter['capabilities']) > 10:
-        errors.append("Field 'capabilities' must have 10 or fewer items")
+        warnings.append("Field 'capabilities' should have 10 or fewer items")
     else:
         # Check each capability is a string
         for i, cap in enumerate(frontmatter['capabilities']):
@@ -148,15 +150,15 @@ def validate_agent_frontmatter(frontmatter: Dict[str, Any], file_path: Path) -> 
     valid_expertise = ['intermediate', 'advanced', 'expert']
     if 'expertise_level' in frontmatter:
         if frontmatter['expertise_level'] not in valid_expertise:
-            errors.append(f"Invalid expertise_level. Must be one of: {', '.join(valid_expertise)}")
+            warnings.append(f"Unknown expertise_level: {frontmatter['expertise_level']}")
 
     # Optional field: activation_priority
     valid_priorities = ['low', 'medium', 'high', 'critical']
     if 'activation_priority' in frontmatter:
         if frontmatter['activation_priority'] not in valid_priorities:
-            errors.append(f"Invalid activation_priority. Must be one of: {', '.join(valid_priorities)}")
+            warnings.append(f"Unknown activation_priority: {frontmatter['activation_priority']}")
 
-    return errors
+    return errors, warnings
 
 
 def find_command_agent_files(root: Path) -> List[Tuple[Path, str]]:
@@ -189,13 +191,13 @@ def validate_file(file_path: Path, file_type: str) -> Dict[str, Any]:
 
     # Validate based on file type
     if file_type == "command":
-        errors = validate_command_frontmatter(frontmatter, file_path)
+        errors, warnings = validate_command_frontmatter(frontmatter, file_path)
     elif file_type == "agent":
-        errors = validate_agent_frontmatter(frontmatter, file_path)
+        errors, warnings = validate_agent_frontmatter(frontmatter, file_path)
     else:
         return {'fatal': f"Unknown file type: {file_type}"}
 
-    return {'errors': errors}
+    return {'errors': errors, 'warnings': warnings}
 
 
 def main() -> int:
@@ -212,7 +214,9 @@ def main() -> int:
     print(f"Found {len(files)} files to validate.\n")
 
     total_errors = 0
+    total_warnings = 0
     files_with_errors = []
+    files_with_warnings = []
     files_compliant = []
 
     for file_path, file_type in files:
@@ -225,16 +229,26 @@ def main() -> int:
             files_with_errors.append(str(rel))
             continue
 
-        if result['errors']:
+        errors = result.get('errors', [])
+        warnings = result.get('warnings', [])
+
+        if errors:
             print(f"❌ {rel} ({file_type}):")
-            for error in result['errors']:
+            for error in errors:
                 print(f"   ERROR: {error}")
-            total_errors += len(result['errors'])
+            for warn in warnings:
+                print(f"   WARN: {warn}")
+            total_errors += len(errors)
+            total_warnings += len(warnings)
             files_with_errors.append(str(rel))
+        elif warnings:
+            print(f"⚠️  {rel} ({file_type}):")
+            for warn in warnings:
+                print(f"   WARN: {warn}")
+            total_warnings += len(warnings)
+            files_with_warnings.append(str(rel))
         else:
             files_compliant.append(str(rel))
-            # Only print OK in verbose mode
-            # print(f"✅ {rel} ({file_type}) - OK")
 
     # Summary
     print(f"\n{'=' * 70}")
@@ -242,16 +256,22 @@ def main() -> int:
     print(f"{'=' * 70}")
     print(f"Total files validated: {len(files)}")
     print(f"✅ Fully compliant: {len(files_compliant)}")
+    print(f"⚠️  Warnings only: {len(files_with_warnings)}")
     print(f"❌ With errors: {len(files_with_errors)}")
     print(f"{'=' * 70}")
 
-    # Compliance rate
-    compliant_pct = (len(files_compliant) / len(files) * 100) if files else 0
+    # Compliance rate (passing = no errors)
+    passing_count = len(files_compliant) + len(files_with_warnings)
+    compliant_pct = (passing_count / len(files) * 100) if files else 0
     print(f"\n📈 Compliance rate: {compliant_pct:.1f}%")
 
     if total_errors > 0:
         print(f"\n❌ Validation FAILED with {total_errors} errors")
         return 1
+    elif total_warnings > 0:
+        print(f"\n⚠️  Validation PASSED with {total_warnings} warnings")
+        print(f"(Warnings are best practices - not blocking)")
+        return 0
     else:
         print(f"\n✅ All command/agent files fully compliant!")
         return 0

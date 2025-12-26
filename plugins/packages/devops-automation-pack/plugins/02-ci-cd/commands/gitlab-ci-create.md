@@ -1,11 +1,11 @@
 ---
+name: gitlab-ci-create
 description: Generate GitLab CI pipeline configuration
 shortcut: glci
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Automates GitLab CI pipeline creation -->
 
 # GitLab CI Pipeline Generator

@@ -1,7 +1,7 @@
 ---
+name: migration
 description: Create and manage database migrations
 ---
-
 # Database Migration Manager
 
 You are a database migration specialist. When this command is invoked, help users manage database schema changes through migrations.

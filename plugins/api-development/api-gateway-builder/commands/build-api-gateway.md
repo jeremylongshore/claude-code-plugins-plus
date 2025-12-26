@@ -1,5 +1,8 @@
 ---
-description: Build production-ready API gateway with intelligent routing, authentication,...
+name: build-api-gateway
+description: >
+  Build production-ready API gateway with intelligent routing,
+  authentication,...
 shortcut: gate
 category: api
 difficulty: advanced

@@ -1,17 +1,11 @@
 ---
-description: This skill enables claude to analyze and improve application caching
-  strategies. it optimizes cache hit rates, ttl configurations, cache key design,
-  and invalidation strategies. use this skill when the user requests to "optimize
-  cache performance"...
-allowed-tools:
-- Read
-- Write
-- Bash
-- Grep
 name: optimizing-cache-performance
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to analyze and improve application caching strategies. it optimizes cache hit rates, ttl configurations, cache key design, and invalidation strategies. use this skill when the user requests to "optimize cache performance"... Use when optimizing performance. Trigger with phrases like 'optimize', 'performance', or 'speed up'.
+allowed-tools: Read, Write, Bash(cmd:*), Grep
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -57,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can integrate with code analysis tools to automatically identify caching implementations and configuration. It can also work with monitoring tools to track cache hit rates and performance metrics.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

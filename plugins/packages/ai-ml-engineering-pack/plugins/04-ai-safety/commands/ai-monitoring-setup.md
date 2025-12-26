@@ -1,14 +1,14 @@
 ---
 name: ai-monitoring-setup
+description: >
+  Set up comprehensive LLM monitoring, cost tracking, and observability
+shortcut: ams
+category: other
 type: command
-description: Set up comprehensive LLM monitoring, cost tracking, and observability
-category: ai
 version: 1.0.0
 author: Jeremy Longshore
-shortcut: ams
 estimated_time: 5-10 minutes
 ---
-
 # AI Monitoring Setup
 
 Generate complete LLM monitoring infrastructure with cost tracking, performance metrics, error logging, and alerting for production AI applications.

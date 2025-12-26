@@ -1,11 +1,11 @@
 ---
+name: docker-compose-create
 description: Generate docker-compose.yml for multi-service applications
 shortcut: dcc
 category: devops
 difficulty: intermediate
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Simplifies multi-container orchestration setup -->
 <!-- Docker Compose is essential for local development with databases, caches, etc.
      This command generates production-ready compose files with proper networking,

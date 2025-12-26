@@ -1,12 +1,11 @@
 ---
 name: tuning-hyperparameters
-description: Optimize machine learning model hyperparameters using grid search, random
-  search, or Bayesian optimization. Finds best parameter configurations to maximize
-  performance. Use when asked to "tune hyperparameters" or "optimize model".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Optimize machine learning model hyperparameters using grid search, random search, or Bayesian optimization. Finds best parameter configurations to maximize performance. Use when asked to "tune hyperparameters" or "optimize model". Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -54,3 +53,30 @@ The skill will:
 ## Integration
 
 This skill integrates seamlessly with other Claude Code plugins that involve machine learning tasks, such as data analysis, model training, and deployment. It can be used in conjunction with data visualization tools to gain insights into the impact of different hyperparameter settings on model performance.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

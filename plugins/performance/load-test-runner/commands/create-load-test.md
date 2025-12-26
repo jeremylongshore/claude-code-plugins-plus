@@ -1,7 +1,7 @@
 ---
+name: create-load-test
 description: Create load test scenarios and scripts
 ---
-
 # Load Test Runner
 
 Create comprehensive load test scenarios to validate application performance.

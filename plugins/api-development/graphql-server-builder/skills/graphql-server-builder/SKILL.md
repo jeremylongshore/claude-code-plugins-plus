@@ -1,15 +1,15 @@
 ---
 name: building-graphql-server
-version: 1.0.0
 description: |
   Build production-ready GraphQL servers with schema design, resolvers, and subscriptions.
   Use when building GraphQL APIs with schemas and resolvers.
   Trigger with phrases like "build GraphQL API", "create GraphQL server", or "setup GraphQL".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:graphql-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for graphql server builder tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,15 +1,15 @@
 ---
 name: finding-arbitrage-opportunities
-version: 1.0.0
 description: |
   Identify profitable arbitrage opportunities across exchanges and DEXs in real-time.
   Use when discovering profitable arbitrage across exchanges.
   Trigger with phrases like "find arbitrage", "scan for arb opportunities", or "check arbitrage".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:arbitrage-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

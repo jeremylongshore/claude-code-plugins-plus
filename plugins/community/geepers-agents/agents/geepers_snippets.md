@@ -1,9 +1,36 @@
 ---
 name: geepers_snippets
-description: Use this agent to harvest reusable code patterns, maintain the snippet library, and deduplicate/enhance existing snippets. Invoke after completing features with reusable patterns, at session checkpoints, when consolidating similar code, or for snippet library maintenance.\n\n<example>\nContext: Completed a reusable implementation\nuser: "Just finished the Stripe integration"\nassistant: "Let me use geepers_snippets to harvest any reusable patterns from this implementation."\n</example>\n\n<example>\nContext: Noticed duplicate code patterns\nuser: "I feel like I've written this auth middleware before"\nassistant: "I'll use geepers_snippets to check the library and reconcile any duplicates."\n</example>\n\n<example>\nContext: Library maintenance\nuser: "Can you organize the snippets collection?"\nassistant: "I'll run geepers_snippets to audit, deduplicate, and reorganize the library."\n</example>
+description: "Use this agent to harvest reusable code patterns, maintain the snippet library, and deduplicate/enhance existing snippets. Invoke after completing features with reusable patterns, at session checkpoints, when consolidating similar code, or for snippet library maintenance.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Completed a reusable implementation
+user: "Just finished the Stripe integration"
+assistant: "Let me use geepers_snippets to harvest any reusable patterns from this implementation."
+</example>
+
+### Example 2
+
+<example>
+Context: Noticed duplicate code patterns
+user: "I feel like I've written this auth middleware before"
+assistant: "I'll use geepers_snippets to check the library and reconcile any duplicates."
+</example>
+
+### Example 3
+
+<example>
+Context: Library maintenance
+user: "Can you organize the snippets collection?"
+assistant: "I'll run geepers_snippets to audit, deduplicate, and reorganize the library."
+</example>
+
 
 ## Mission
 

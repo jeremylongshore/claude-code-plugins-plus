@@ -1,4 +1,5 @@
 ---
+name: validate-auth
 description: DESCRIPTION_PLACEHOLDER
 shortcut: shor
 ---

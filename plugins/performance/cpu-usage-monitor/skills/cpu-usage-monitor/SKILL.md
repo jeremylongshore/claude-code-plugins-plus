@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to monitor and analyze cpu usage patterns within
-  applications. it helps identify cpu hotspots, analyze algorithmic complexity, and
-  detect blocking operations. use this skill when the user asks to "monitor cpu usage",
-  "opt...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: monitoring-cpu-usage
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to monitor and analyze cpu usage patterns within applications. it helps identify cpu hotspots, analyze algorithmic complexity, and detect blocking operations. use this skill when the user asks to "monitor cpu usage", "opt... Use when setting up monitoring or observability. Trigger with phrases like 'monitor', 'metrics', or 'alerts'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -61,3 +53,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other code analysis and refactoring tools to implement the suggested optimizations. It can also be integrated into CI/CD pipelines to automatically monitor CPU usage and identify performance regressions.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

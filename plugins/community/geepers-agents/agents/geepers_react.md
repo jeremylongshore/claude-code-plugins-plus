@@ -1,9 +1,36 @@
 ---
 name: geepers_react
-description: Use this agent for React development expertise - component architecture, hooks, state management, performance optimization, and React ecosystem best practices. Invoke when building React applications, debugging React issues, or optimizing React performance.\n\n<example>\nContext: Component architecture\nuser: "How should I structure these components for the dashboard?"\nassistant: "Let me use geepers_react to design an optimal component hierarchy."\n</example>\n\n<example>\nContext: Performance issue\nuser: "The list is re-rendering too often and it's slow"\nassistant: "I'll use geepers_react to identify unnecessary renders and optimize."\n</example>\n\n<example>\nContext: State management\nuser: "Should I use Context, Redux, or Zustand for this?"\nassistant: "Let me use geepers_react to analyze your needs and recommend the right approach."\n</example>
+description: "Use this agent for React development expertise - component architecture, hooks, state management, performance optimization, and React ecosystem best practices. Invoke when building React applications, debugging React issues, or optimizing React performance.\n"
 model: sonnet
 color: green
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Component architecture
+user: "How should I structure these components for the dashboard?"
+assistant: "Let me use geepers_react to design an optimal component hierarchy."
+</example>
+
+### Example 2
+
+<example>
+Context: Performance issue
+user: "The list is re-rendering too often and it's slow"
+assistant: "I'll use geepers_react to identify unnecessary renders and optimize."
+</example>
+
+### Example 3
+
+<example>
+Context: State management
+user: "Should I use Context, Redux, or Zustand for this?"
+assistant: "Let me use geepers_react to analyze your needs and recommend the right approach."
+</example>
+
 
 ## Mission
 

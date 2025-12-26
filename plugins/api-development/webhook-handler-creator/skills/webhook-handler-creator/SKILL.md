@@ -1,15 +1,15 @@
 ---
 name: creating-webhook-handlers
-version: 1.0.0
 description: |
   Create webhook endpoints with signature verification, retry logic, and payload validation.
   Use when receiving and processing webhook events.
   Trigger with phrases like "create webhook", "handle webhook events", or "setup webhook handler".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:webhook-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for webhook handler creator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

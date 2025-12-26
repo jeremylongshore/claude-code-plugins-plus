@@ -1,9 +1,35 @@
 ---
 name: geepers_scout
-description: Use this agent for project reconnaissance, quick fixes, and generating improvement reports. Invoke at session checkpoints, when picking up a project after time away, after completing features, or when you want a fresh perspective on code quality. This is the primary "what's going on here" agent.\n\n<example>\nContext: Starting work on a project after some time away\nuser: "I'm picking up the wordblocks project again"\nassistant: "Let me run geepers_scout to review the current state and identify any quick wins."\n</example>\n\n<example>\nContext: Checkpoint during development session\nassistant: "We've made good progress. Let me run geepers_scout to sweep for any issues before we continue."\n</example>\n\n<example>\nContext: Code review request\nuser: "Can you review this module for issues?"\nassistant: "I'll use geepers_scout to do a comprehensive scan and generate a report."\n</example>
+description: "Use this agent for project reconnaissance, quick fixes, and generating improvement reports. Invoke at session checkpoints, when picking up a project after time away, after completing features, or when you want a fresh perspective on code quality."
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Starting work on a project after some time away
+user: "I'm picking up the wordblocks project again"
+assistant: "Let me run geepers_scout to review the current state and identify any quick wins."
+</example>
+
+### Example 2
+
+<example>
+Context: Checkpoint during development session
+assistant: "We've made good progress. Let me run geepers_scout to sweep for any issues before we continue."
+</example>
+
+### Example 3
+
+<example>
+Context: Code review request
+user: "Can you review this module for issues?"
+assistant: "I'll use geepers_scout to do a comprehensive scan and generate a report."
+</example>
+
 
 ## Mission
 

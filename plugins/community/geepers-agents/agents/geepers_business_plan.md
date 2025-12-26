@@ -2,11 +2,23 @@
 name: geepers_business_plan
 description: Business plan generator that creates comprehensive business models, market analysis, and strategy documents for software projects. Use when starting from an idea and need to validate the business case before technical development.
 
+
+
+model: sonnet
+color: green
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: New product idea
 user: "I want to build an app that helps users track their carbon footprint"
 assistant: "Let me use geepers_business_plan to create a comprehensive business plan."
 </example>
+
+### Example 2
 
 <example>
 Context: Need market validation
@@ -14,14 +26,14 @@ user: "Is there a market for accessible AAC tools?"
 assistant: "I'll invoke geepers_business_plan to analyze the market opportunity."
 </example>
 
+### Example 3
+
 <example>
 Context: Investor preparation
 user: "I need a business plan for my pitch deck"
 assistant: "Running geepers_business_plan to generate investor-ready documentation."
 </example>
-model: sonnet
-color: green
----
+
 
 ## Mission
 

@@ -1,4 +1,5 @@
 ---
+name: report
 description: Generate comprehensive terminal report of AI experiments
 shortcut: aire
 ---

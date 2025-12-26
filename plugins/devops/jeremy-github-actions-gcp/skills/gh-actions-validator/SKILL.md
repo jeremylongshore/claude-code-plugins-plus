@@ -1,19 +1,12 @@
 ---
-description: Use when validating GitHub Actions workflows for Google Cloud and Vertex AI deployments. Trigger with phrases like "validate github actions", "setup workload identity federation", "github actions security", "deploy agent with ci/cd", or "automate vertex ai deployment". Enforces Workload Identity Federation (WIF), validates OIDC permissions, ensures least privilege IAM, and implements security best practices.
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash(git:*)
-- Bash(gcloud:*)
 name: gh-actions-validator
-license: MIT
+description: |
+  Use when validating GitHub Actions workflows for Google Cloud and Vertex AI deployments. Trigger with phrases like "validate github actions", "setup workload identity federation", "github actions security", "deploy agent with ci/cd", or "automate vertex ai deployment". Enforces Workload Identity Federation (WIF), validates OIDC permissions, ensures least privilege IAM, and implements security best practices.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(gcloud:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -40,6 +33,15 @@ Before using this skill, ensure:
 **Secure Workflow Template:**
 ```yaml
 # {baseDir}/.github/workflows/deploy-vertex-ai.yml
+
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
 name: Deploy Vertex AI Agent
 
 on:

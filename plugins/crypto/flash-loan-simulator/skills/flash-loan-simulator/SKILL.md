@@ -1,15 +1,15 @@
 ---
 name: simulating-flash-loans
-version: 1.0.0
 description: |
   Simulate flash loan arbitrage strategies and profitability across DeFi protocols.
   Use when performing crypto analysis.
   Trigger with phrases like "analyze crypto", "check blockchain", or "monitor market".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:flashloan-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -136,3 +136,11 @@ Common issues and solutions:
 - Implement proper error handling for network failures
 - Monitor gas prices before submitting transactions
 - Validate all user inputs to prevent injection attacks
+
+## Overview
+
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

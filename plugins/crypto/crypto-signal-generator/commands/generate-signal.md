@@ -1,4 +1,5 @@
 ---
+name: generate-signal
 description: Generate trading signals from technical indicators
 shortcut: sign
 ---

@@ -1,9 +1,35 @@
 ---
 name: geepers_system_diag
-description: Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy routes, ports, databases, and infrastructure health. Use for full system audit, troubleshooting cross-service issues, or periodic infrastructure review.\n\n<example>\nContext: System health check\nuser: "Is everything running properly?"\nassistant: "Let me run geepers_system_diag for a full infrastructure check."\n</example>\n\n<example>\nContext: Something's wrong somewhere\nuser: "The site is acting weird"\nassistant: "I'll use geepers_system_diag to check all systems."\n</example>\n\n<example>\nContext: Periodic audit\nassistant: "Running geepers_system_diag for monthly infrastructure review."\n</example>
+description: "Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy routes, ports, databases, and infrastructure health. Use for full system audit, troubleshooting cross-service issues, or periodic infrastructure review.\n"
 model: sonnet
 color: red
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: System health check
+user: "Is everything running properly?"
+assistant: "Let me run geepers_system_diag for a full infrastructure check."
+</example>
+
+### Example 2
+
+<example>
+Context: Something's wrong somewhere
+user: "The site is acting weird"
+assistant: "I'll use geepers_system_diag to check all systems."
+</example>
+
+### Example 3
+
+<example>
+Context: Periodic audit
+assistant: "Running geepers_system_diag for monthly infrastructure review."
+</example>
+
 
 ## Mission
 

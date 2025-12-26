@@ -1,19 +1,11 @@
 ---
-description: This skill automates the setup of distributed tracing for microservices.
-  it helps developers implement end-to-end request visibility by configuring context
-  propagation, span creation, trace collection, and analysis. use this skill when
-  the user re...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: setting-up-distributed-tracing
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill automates the setup of distributed tracing for microservices. it helps developers implement end-to-end request visibility by configuring context propagation, span creation, trace collection, and analysis. use this skill when the user re... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -59,3 +51,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other plugins to automate the deployment and configuration of tracing infrastructure. For example, it can integrate with infrastructure-as-code tools to provision Jaeger or Zipkin clusters.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

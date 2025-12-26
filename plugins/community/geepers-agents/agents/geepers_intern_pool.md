@@ -2,11 +2,23 @@
 name: geepers_intern_pool
 description: Cost-effective multi-model code generation agent. Uses a pool of smaller/cheaper models for initial generation, then validates with more capable models. Ideal for budget-conscious development or high-volume code generation. Think of it as having a team of enthusiastic interns overseen by a senior developer.
 
+
+
+model: haiku
+color: yellow
+---
+
+## Examples
+
+### Example 1
+
 <example>
 Context: Budget-conscious development
 user: "Generate the code but keep API costs low"
 assistant: "Let me use geepers_intern_pool for cost-effective code generation."
 </example>
+
+### Example 2
 
 <example>
 Context: Bulk code generation
@@ -14,14 +26,14 @@ user: "I need to generate many similar components"
 assistant: "I'll invoke geepers_intern_pool to efficiently generate at scale."
 </example>
 
+### Example 3
+
 <example>
 Context: Initial draft needed
 user: "Get me a rough implementation to start with"
 assistant: "Running geepers_intern_pool for fast initial code generation."
 </example>
-model: haiku
-color: yellow
----
+
 
 ## Mission
 

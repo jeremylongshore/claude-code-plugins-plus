@@ -1,7 +1,7 @@
 ---
+name: setup-rum
 description: Set up Real User Monitoring
 ---
-
 # Real User Monitoring Setup
 
 Implement RUM to capture actual user performance experiences.

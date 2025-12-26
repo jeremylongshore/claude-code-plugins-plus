@@ -1,5 +1,8 @@
 ---
-description: Implement comprehensive multi-level API caching strategies with Redis, CDN,...
+name: implement-caching
+description: >
+  Implement comprehensive multi-level API caching strategies with Redis,
+  CDN,...
 shortcut: cach
 category: api
 difficulty: intermediate

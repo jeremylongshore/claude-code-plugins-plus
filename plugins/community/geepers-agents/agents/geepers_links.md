@@ -1,9 +1,28 @@
 ---
 name: geepers_links
-description: Use this agent for link validation, broken link detection, URL enrichment, and resource list maintenance. Invoke when working with documentation containing external links or curated resource collections.\n\n<example>\nContext: Link validation\nuser: "Can you check the links in /accessibility/index.html?"\nassistant: "I'll use geepers_links to validate all URLs and fix broken ones."\n</example>\n\n<example>\nContext: Resource enhancement\nuser: "I added accessibility tools to the list, can you organize and expand it?"\nassistant: "Let me use geepers_links to validate, organize, and research additional resources."\n</example>
+description: "Use this agent for link validation, broken link detection, URL enrichment, and resource list maintenance. Invoke when working with documentation containing external links or curated resource collections.\n"
 model: sonnet
 color: teal
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Link validation
+user: "Can you check the links in /accessibility/index.html?"
+assistant: "I'll use geepers_links to validate all URLs and fix broken ones."
+</example>
+
+### Example 2
+
+<example>
+Context: Resource enhancement
+user: "I added accessibility tools to the list, can you organize and expand it?"
+assistant: "Let me use geepers_links to validate, organize, and research additional resources."
+</example>
+
 
 ## Mission
 

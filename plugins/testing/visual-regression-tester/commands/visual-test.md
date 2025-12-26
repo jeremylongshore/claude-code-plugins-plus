@@ -1,8 +1,9 @@
 ---
-description: Visual regression testing with screenshot comparison and diff analysis
+name: visual-test
+description: >
+  Visual regression testing with screenshot comparison and diff analysis
 shortcut: vt
 ---
-
 # Visual Regression Tester
 
 Automated visual regression testing using screenshot comparison, pixel-perfect diff analysis, and integration with Percy, Chromatic, BackstopJS, and Playwright.

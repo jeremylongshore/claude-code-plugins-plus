@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to create application performance monitoring
-  (apm) dashboards. it is triggered when the user requests the creation of a new apm
-  dashboard, monitoring dashboard, or a dashboard for application performance. the
-  skill helps ...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: creating-apm-dashboards
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to create application performance monitoring (apm) dashboards. it is triggered when the user requests the creation of a new apm dashboard, monitoring dashboard, or a dashboard for application performance. the skill helps ... Use when generating or creating new content. Trigger with phrases like 'generate', 'create', or 'scaffold'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -62,3 +54,30 @@ The skill will:
 ## Integration
 
 This skill can be integrated with other plugins that manage infrastructure or application deployment to automatically create APM dashboards as part of the deployment process. It can also work with alerting plugins to define alert rules based on the metrics displayed in the generated dashboards.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

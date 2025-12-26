@@ -1,11 +1,11 @@
 ---
+name: k8s-troubleshoot
 description: Debug Kubernetes pod failures and issues
 shortcut: kt
 category: devops
 difficulty: advanced
 estimated_time: 2 minutes
 ---
-
 <!-- DESIGN DECISION: Streamlines K8s debugging -->
 <!-- Kubernetes failures are cryptic (CrashLoopBackOff, ImagePullBackOff, OOMKilled).
      Developers waste hours running kubectl describe/logs/events manually.

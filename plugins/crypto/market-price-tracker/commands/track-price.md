@@ -1,5 +1,8 @@
 ---
-description: Track real-time prices across crypto, stocks, forex, and commodities with...
+name: track-price
+description: >
+  Track real-time prices across crypto, stocks, forex, and commodities
+  with...
 shortcut: tp
 ---
 # Track Market Price

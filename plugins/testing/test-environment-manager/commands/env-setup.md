@@ -1,8 +1,8 @@
 ---
+name: env-setup
 description: Set up and manage isolated test environments
 shortcut: env
 ---
-
 # Test Environment Manager
 
 Create and manage isolated test environments using Docker Compose, Testcontainers, and environment variables for consistent, reproducible testing.

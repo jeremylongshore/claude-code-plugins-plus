@@ -1,11 +1,11 @@
 ---
+name: dockerfile-generate
 description: Generate optimized Dockerfile with multi-stage builds
 shortcut: dg
 category: devops
 difficulty: beginner
 estimated_time: 1 minute
 ---
-
 <!-- DESIGN DECISION: Automates Dockerfile creation with best practices -->
 <!-- Most developers copy-paste Dockerfiles without understanding optimizations.
      This command detects project type and generates production-ready Dockerfile

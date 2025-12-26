@@ -1,19 +1,11 @@
 ---
-description: This skill enables claude to seamlessly integrate with various secrets
-  managers like hashicorp vault and aws secrets manager. it generates configurations
-  and setup code, ensuring best practices for secure credential management. use this
-  skill when...
-allowed-tools:
-- Read
-- Write
-- Edit
-- Grep
-- Glob
-- Bash
 name: integrating-secrets-managers
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  This skill enables AI assistant to seamlessly integrate with various secrets managers like hashicorp vault and aws secrets manager. it generates configurations and setup code, ensuring best practices for secure credential management. use this skill when... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## Overview
 
@@ -62,3 +54,30 @@ The skill will:
 ## Integration
 
 This skill can be used in conjunction with other skills for deploying applications, configuring infrastructure, and automating DevOps workflows. It provides a secure foundation for managing sensitive information across your entire infrastructure.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

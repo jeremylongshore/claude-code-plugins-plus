@@ -1,15 +1,15 @@
 ---
 name: load-testing-apis
-version: 1.0.0
 description: |
   Execute comprehensive load and stress testing to validate API performance and scalability.
   Use when validating API performance under load.
   Trigger with phrases like "load test the API", "stress test API", or "benchmark API performance".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:load-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -134,3 +134,13 @@ Common issues and solutions:
 - JWT best practices for token-based auth
 - Rate limiting strategies to prevent abuse
 - Input validation and sanitization techniques
+
+## Overview
+
+
+This skill provides automated assistance for api load tester tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

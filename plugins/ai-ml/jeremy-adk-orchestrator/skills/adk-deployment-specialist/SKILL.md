@@ -1,12 +1,11 @@
 ---
 name: adk-deployment-specialist
-description: Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages
-  AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use
-  when asked to "deploy ADK agent" or "orchestrate agents".
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash
-license: MIT
-author: Jeremy Longshore <jeremy@intentsolutions.io>
+description: |
+  Deploy and orchestrate Vertex AI ADK agents using A2A protocol. Manages AgentCard discovery, task submission, Code Execution Sandbox, and Memory Bank. Use when asked to "deploy ADK agent" or "orchestrate agents". Trigger with phrases like 'deploy', 'infrastructure', or 'CI/CD'.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
 ## What This Skill Does
 
@@ -61,6 +60,44 @@ User Request → Analyze:
 from google import adk
 
 # Define agent with tools
+
+
+## Overview
+
+
+This skill provides automated assistance for adk deployment specialist tasks.
+This skill provides automated assistance for the described functionality.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Examples
+
+Example usage patterns will be demonstrated in context.
+
+## Resources
+
+- Project documentation
+- Related skills and commands
 agent = adk.Agent(
     model="gemini-2.5-flash",
     tools=[

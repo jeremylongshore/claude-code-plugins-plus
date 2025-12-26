@@ -1,4 +1,5 @@
 ---
+name: check-deps
 description: Check dependencies for vulnerabilities and outdated packages
 shortcut: depc
 ---

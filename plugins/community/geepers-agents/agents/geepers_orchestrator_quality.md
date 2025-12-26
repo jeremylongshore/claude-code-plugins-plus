@@ -1,9 +1,36 @@
 ---
 name: geepers_orchestrator_quality
-description: Quality orchestrator that coordinates audit agents - a11y, perf, api, and deps. Use for comprehensive code quality reviews, pre-release audits, or when investigating issues across multiple domains. This is your "is it good enough?" orchestrator.\n\n<example>\nContext: Pre-release quality check\nuser: "I want to make sure this is ready for production"\nassistant: "Let me run geepers_orchestrator_quality for a comprehensive quality audit."\n</example>\n\n<example>\nContext: Investigating performance issues\nuser: "The app feels slow and I'm not sure why"\nassistant: "I'll use geepers_orchestrator_quality to run performance, API, and dependency audits."\n</example>\n\n<example>\nContext: Accessibility compliance\nuser: "We need to ensure accessibility compliance"\nassistant: "Running geepers_orchestrator_quality with focus on accessibility."\n</example>
+description: "Quality orchestrator that coordinates audit agents - a11y, perf, api, and deps. Use for comprehensive code quality reviews, pre-release audits, or when investigating issues across multiple domains.\n"
 model: sonnet
 color: purple
 ---
+
+## Examples
+
+### Example 1
+
+<example>
+Context: Pre-release quality check
+user: "I want to make sure this is ready for production"
+assistant: "Let me run geepers_orchestrator_quality for a comprehensive quality audit."
+</example>
+
+### Example 2
+
+<example>
+Context: Investigating performance issues
+user: "The app feels slow and I'm not sure why"
+assistant: "I'll use geepers_orchestrator_quality to run performance, API, and dependency audits."
+</example>
+
+### Example 3
+
+<example>
+Context: Accessibility compliance
+user: "We need to ensure accessibility compliance"
+assistant: "Running geepers_orchestrator_quality with focus on accessibility."
+</example>
+
 
 ## Mission
 

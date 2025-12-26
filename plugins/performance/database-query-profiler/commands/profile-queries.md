@@ -1,7 +1,7 @@
 ---
+name: profile-queries
 description: Profile and optimize database queries
 ---
-
 # Database Query Profiler
 
 Analyze database queries for performance issues and optimization opportunities.

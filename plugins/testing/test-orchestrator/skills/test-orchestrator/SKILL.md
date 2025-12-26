@@ -1,15 +1,15 @@
 ---
 name: orchestrating-test-execution
-version: 1.0.0
 description: |
   Coordinate parallel test execution across multiple environments and frameworks.
   Use when performing specialized testing.
   Trigger with phrases like "orchestrate tests", "run parallel tests", or "coordinate test execution".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:orchestrate-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for test orchestrator tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

@@ -1,7 +1,7 @@
 ---
+name: monitor-cpu
 description: Monitor and optimize CPU usage
 ---
-
 # CPU Usage Monitor
 
 Analyze code for CPU-intensive operations and optimize processor utilization.

@@ -1,8 +1,9 @@
 ---
-description: Analyze liquidity pools for APY, impermanent loss, and optimization
+name: analyze-pool
+description: >
+  Analyze liquidity pools for APY, impermanent loss, and optimization
 shortcut: ap
 ---
-
 # Analyze Liquidity Pool
 
 Comprehensive analysis of DeFi liquidity pools with impermanent loss calculations, APY projections, risk assessment, and optimization strategies across multiple DEX protocols and chains.

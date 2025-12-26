@@ -1,12 +1,13 @@
 ---
-description: Build comprehensive API authentication and authorization system
+name: build-auth-system
+description: >
+  Build comprehensive API authentication and authorization system
 shortcut: auth
 category: api
 difficulty: intermediate
 estimated_time: 5-10 minutes
 version: 2.0.0
 ---
-
 # Build API Authentication System
 
 Implements a complete authentication and authorization system for your API, supporting JWT tokens, OAuth2 flows, API keys, session-based auth, and multi-factor authentication. Generates production-ready auth middleware, user management, and role-based access control.

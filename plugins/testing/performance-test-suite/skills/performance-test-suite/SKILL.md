@@ -1,15 +1,15 @@
 ---
 name: running-performance-tests
-version: 1.0.0
 description: |
   Execute load testing, stress testing, and performance benchmarking.
   Use when performing specialized testing.
   Trigger with phrases like "run load tests", "test performance", or "benchmark the system".
+  
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:perf-*)
-license: MIT
+version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
 ---
-
 ## Prerequisites
 
 Before using this skill, ensure you have:
@@ -106,3 +106,13 @@ Common issues and solutions:
 - Implement proper setup and teardown
 - Version control test artifacts
 - Run tests in CI/CD pipelines
+
+## Overview
+
+
+This skill provides automated assistance for performance test suite tasks.
+This skill provides automated assistance for the described functionality.
+
+## Examples
+
+Example usage patterns will be demonstrated in context.

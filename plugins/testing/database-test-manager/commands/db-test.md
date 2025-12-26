@@ -1,5 +1,8 @@
 ---
-description: Database testing with test data setup, transaction rollback, and schema...
+name: db-test
+description: >
+  Database testing with test data setup, transaction rollback, and
+  schema...
 shortcut: dbt
 ---
 # Database Test Manager
