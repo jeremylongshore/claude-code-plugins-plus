@@ -1,6 +1,10 @@
 ---
 name: geepers_deps
-description: "Use this agent for dependency audits, security vulnerability scanning, license compliance, and update recommendations. Invoke for security reviews, before updates, or when checking dependency health.\n"
+description: "Agent for dependency audits, security vulnerability scanning, license com..."
+capabilities:
+  - "Task automation"
+  - "Workflow optimization"
+  - "Scanning"
 model: sonnet
 color: purple
 ---

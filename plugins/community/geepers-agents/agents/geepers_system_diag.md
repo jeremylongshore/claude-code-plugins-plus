@@ -1,6 +1,9 @@
 ---
 name: geepers_system_diag
-description: "Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy routes, ports, databases, and infrastructure health. Use for full system audit, troubleshooting cross-service issues, or periodic infrastructure review.\n"
+description: "Comprehensive dr.eamer.dev system diagnostic. Checks all services, Caddy ro..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: red
 ---

@@ -1,9 +1,10 @@
 ---
 name: geepers_orchestrator_product
-description: Product development orchestrator that coordinates agents for complete product lifecycle - business planning, PRD creation, full-stack development, and code validation. Use when building new products from idea to implementation.
-
-
-
+description: "Product development orchestrator that coordinates agents for complete produ..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Development"
 model: sonnet
 color: purple
 ---

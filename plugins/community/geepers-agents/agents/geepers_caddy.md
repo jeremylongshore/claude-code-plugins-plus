@@ -1,6 +1,10 @@
 ---
 name: geepers_caddy
-description: "Use this agent for ALL Caddy configuration changes, port allocation, and routing setup. This is the SOLE authority for /etc/caddy/Caddyfile. Invoke when adding new services, debugging 502 errors, checking port availability, or modifying any web routing.\n"
+description: "Agent for ALL Caddy configuration changes, port allocation, and routing setup"
+capabilities:
+  - "Routing"
+  - "Configuration"
+  - "Allocation"
 model: opus
 color: orange
 ---

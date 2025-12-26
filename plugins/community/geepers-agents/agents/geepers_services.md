@@ -1,6 +1,11 @@
 ---
 name: geepers_services
-description: "Use this agent for service lifecycle management - starting, stopping, restarting services, checking status, viewing logs, and managing the service manager. Delegates ALL Caddy work to geepers_caddy.\n"
+description: "Agent for service lifecycle management - starting, stopping, restarting s..."
+capabilities:
+  - "Stopping"
+  - "Starting"
+  - "Restarting"
+  - "Management"
 model: sonnet
 color: orange
 ---

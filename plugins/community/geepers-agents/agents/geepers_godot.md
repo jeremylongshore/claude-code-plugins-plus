@@ -1,6 +1,10 @@
 ---
 name: geepers_godot
-description: "Use this agent for Godot Engine development - GDScript, scene architecture, node patterns, signals, physics, and Godot-specific best practices. Invoke when building games in Godot, debugging Godot issues, or optimizing Godot projects.\n"
+description: "Agent for Godot Engine development - GDScript, scene architecture, node p..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Development"
 model: sonnet
 color: red
 ---

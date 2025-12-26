@@ -1,6 +1,9 @@
 ---
 name: geepers_pycli
-description: "Python CLI tool specialist. Use when building command-line applications with argparse, click, typer, or similar. Knows CLI UX patterns, argument parsing, output formatting, and distribution. Invoke for CLI architecture or troubleshooting.\n"
+description: "Python CLI tool specialist. Use when building command-line applications wit..."
+capabilities:
+  - "Building"
+  - "Application"
 model: sonnet
 color: green
 ---

@@ -1,6 +1,10 @@
 ---
 name: geepers_orchestrator_deploy
-description: "Deployment orchestrator that coordinates infrastructure agents - validator, caddy, and services. Use before/during deployments, when changing infrastructure, or when services need coordination.\n"
+description: "Deployment orchestrator that coordinates infrastructure agents - validator,..."
+capabilities:
+  - "Deployment automation"
+  - "Deployment"
+  - "Release management"
 model: sonnet
 color: orange
 ---

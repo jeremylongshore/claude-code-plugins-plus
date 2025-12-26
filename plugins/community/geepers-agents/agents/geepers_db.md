@@ -1,6 +1,9 @@
 ---
 name: geepers_db
-description: "Use this agent for database optimization, query analysis, index recommendations, and schema review. Invoke when queries are slow, planning database changes, or diagnosing database bottlenecks.\n"
+description: "Agent for database optimization, query analysis, index recommendations, a..."
+capabilities:
+  - "Optimization"
+  - "Recommendation"
 model: sonnet
 color: green
 ---

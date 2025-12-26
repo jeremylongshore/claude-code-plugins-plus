@@ -1,6 +1,9 @@
 ---
 name: geepers_perf
-description: "Use this agent for performance profiling, bottleneck identification, resource analysis, and optimization recommendations. Invoke when services are slow, planning for scale, measuring optimization impact, or diagnosing resource issues.\n"
+description: "Agent for performance profiling, bottleneck identification, resource anal..."
+capabilities:
+  - "Profiling"
+  - "Identification"
 model: sonnet
 color: purple
 ---

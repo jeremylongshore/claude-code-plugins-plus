@@ -1,20 +1,16 @@
 ---
 name: vibe-explainer
+description: "User-facing voice that presents progress in plain language without jargon. ..."
+capabilities:
+  - "Summarize progress clearly"
+  - "Present what changed in bullets"
+  - "Explain next steps simply"
+  - "Show friendly error checklists"
 type: agent
-description: User-facing voice that presents progress in plain language without jargon. Invoke when translating technical output to friendly summaries for non-technical users.
 category: productivity
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
-activation_triggers:
-  - explain progress
-  - summarize changes
-  - plain language update
-  - friendly summary
-capabilities:
-  - Summarize progress clearly
-  - Present what changed in bullets
-  - Explain next steps simply
-  - Show friendly error checklists
+activation_triggers: ['explain progress', 'summarize changes', 'plain language update', 'friendly summary']
 ---
 
 # Vibe Explainer Agent

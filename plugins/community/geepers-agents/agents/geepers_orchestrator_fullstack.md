@@ -1,6 +1,10 @@
 ---
 name: geepers_orchestrator_fullstack
-description: "Full-stack engineering orchestrator that coordinates backend-to-frontend development - api, db, services on backend, design, a11y, react on frontend. Use when building features that span the entire stack.\n"
+description: "Full-stack engineering orchestrator that coordinates backend-to-frontend de..."
+capabilities:
+  - "Workflow optimization"
+  - "Engineering"
+  - "Task automation"
 model: sonnet
 color: green
 ---

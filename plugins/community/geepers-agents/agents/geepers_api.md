@@ -1,6 +1,9 @@
 ---
 name: geepers_api
-description: "Use this agent for API design review, REST compliance auditing, endpoint documentation, and breaking change detection. Invoke when designing new APIs, refactoring existing endpoints, reviewing API documentation, or before releasing API changes.\n"
+description: "Agent for API design review, REST compliance auditing, endpoint documenta..."
+capabilities:
+  - "Auditing"
+  - "Document"
 model: sonnet
 color: orange
 ---

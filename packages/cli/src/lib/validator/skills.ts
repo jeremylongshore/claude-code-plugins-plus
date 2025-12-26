@@ -64,54 +64,66 @@ function parseYamlFrontmatter(content: string): Record<string, any> | null {
 
 /**
  * Parse allowed-tools which can be string or list
+ * Handles multi-pattern wildcards like Bash(psql:*, mysql:*) correctly
  */
 function parseAllowedTools(toolsValue: any): string[] {
   if (Array.isArray(toolsValue)) {
     return toolsValue.map(String);
   } else if (typeof toolsValue === 'string') {
-    return toolsValue.split(',').map(t => t.trim());
+    // Smart split that respects commas inside parentheses
+    const tools: string[] = [];
+    let current = '';
+    let parenDepth = 0;
+
+    for (const char of toolsValue) {
+      if (char === '(') {
+        parenDepth++;
+        current += char;
+      } else if (char === ')') {
+        parenDepth--;
+        current += char;
+      } else if (char === ',' && parenDepth === 0) {
+        if (current.trim()) {
+          tools.push(current.trim());
+        }
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    if (current.trim()) {
+      tools.push(current.trim());
+    }
+
+    return tools;
   }
   return [];
 }
 
 /**
  * Validate a single tool permission including wildcards like Bash(git:*)
- * Returns severity: 'error' for critical issues, 'warning' for non-standard patterns
  */
-function validateToolPermission(tool: string): { valid: boolean; severity: 'error' | 'warning'; message: string } {
-  // Handle empty or whitespace-only tools
-  if (!tool || !tool.trim()) {
-    return { valid: true, severity: 'warning', message: '' };
-  }
-
+function validateToolPermission(tool: string): { valid: boolean; message: string } {
   // Extract base tool name (before parentheses)
   const baseTool = tool.split('(')[0].trim();
 
-  // Check for obviously broken patterns (missing closing paren, stray characters)
-  if (tool.includes('(') && !tool.includes(')')) {
-    // This is a warning, not error - the tool may still work
-    return { valid: false, severity: 'warning', message: `Incomplete wildcard syntax: ${tool}` };
-  }
-
-  // Check for patterns without a base tool (e.g., "mysql:*)" which is invalid)
   if (!VALID_TOOLS.has(baseTool)) {
-    // Non-standard tool - treat as warning, not error
-    // Many skills use custom tool names that may be valid in certain contexts
-    return { valid: false, severity: 'warning', message: `Non-standard tool: ${baseTool}` };
+    return { valid: false, message: `Unknown tool: ${baseTool}` };
   }
 
   // Validate wildcard syntax if present
   if (tool.includes('(')) {
     if (!tool.endsWith(')')) {
-      return { valid: false, severity: 'warning', message: `Invalid wildcard syntax: ${tool}` };
+      return { valid: false, message: `Invalid wildcard syntax: ${tool}` };
     }
     const inner = tool.slice(tool.indexOf('(') + 1, -1);
     if (!inner.includes(':')) {
-      return { valid: false, severity: 'warning', message: `Wildcard missing colon: ${tool}` };
+      return { valid: false, message: `Wildcard missing colon: ${tool}` };
     }
   }
 
-  return { valid: true, severity: 'warning', message: '' };
+  return { valid: true, message: '' };
 }
 
 /**
@@ -236,10 +248,9 @@ export async function validateSkillFile(filePath: string): Promise<SkillValidati
   if ('allowed-tools' in frontmatter) {
     const tools = parseAllowedTools(frontmatter['allowed-tools']);
     for (const tool of tools) {
-      const { valid, severity, message } = validateToolPermission(tool);
-      if (!valid && message) {
-        // Tool validation issues are warnings, not errors (for CI stability)
-        result.warnings.push(message);
+      const { valid, message } = validateToolPermission(tool);
+      if (!valid) {
+        result.errors.push(message);
       }
     }
 

@@ -105,57 +105,53 @@ function validateCommandFrontmatter(frontmatter: Record<string, any>): string[] 
 
 /**
  * Validate frontmatter for agent files
- * Returns { errors: string[], warnings: string[] }
- * Errors block CI, warnings are informational
  */
-function validateAgentFrontmatter(frontmatter: Record<string, any>): { errors: string[], warnings: string[] } {
+function validateAgentFrontmatter(frontmatter: Record<string, any>): string[] {
   const errors: string[] = [];
-  const warnings: string[] = [];
 
-  // Required field: description (relaxed - warn if missing/short, don't error on length)
+  // Required field: description
   if (!('description' in frontmatter)) {
-    warnings.push('Missing field: description');
+    errors.push('Missing required field: description');
   } else if (typeof frontmatter.description !== 'string') {
-    warnings.push("Field 'description' should be a string");
+    errors.push("Field 'description' must be a string");
   } else {
     if (frontmatter.description.length < 20) {
-      warnings.push("Field 'description' is short (< 20 characters)");
+      errors.push("Field 'description' must be at least 20 characters");
     }
     if (frontmatter.description.length > 80) {
-      // Relaxed: many legacy agents have long descriptions
-      warnings.push("Field 'description' is long (> 80 characters)");
+      errors.push("Field 'description' must be 80 characters or less");
     }
   }
 
-  // Capabilities field: relaxed to warning (many legacy agents don't have it)
+  // Required field: capabilities
   if (!('capabilities' in frontmatter)) {
-    warnings.push('Missing field: capabilities (recommended for agent discovery)');
+    errors.push('Missing required field: capabilities');
   } else if (!Array.isArray(frontmatter.capabilities)) {
-    warnings.push("Field 'capabilities' should be an array");
+    errors.push("Field 'capabilities' must be an array");
   } else {
     if (frontmatter.capabilities.length < 2) {
-      warnings.push("Field 'capabilities' should have at least 2 items");
+      errors.push("Field 'capabilities' must have at least 2 items");
     }
     if (frontmatter.capabilities.length > 10) {
-      warnings.push("Field 'capabilities' has many items (> 10)");
+      errors.push("Field 'capabilities' must have 10 or fewer items");
     }
   }
 
   // Optional field: expertise_level
   if ('expertise_level' in frontmatter) {
     if (!VALID_EXPERTISE.includes(frontmatter.expertise_level)) {
-      warnings.push(`Invalid expertise_level. Should be one of: ${VALID_EXPERTISE.join(', ')}`);
+      errors.push(`Invalid expertise_level. Must be one of: ${VALID_EXPERTISE.join(', ')}`);
     }
   }
 
   // Optional field: activation_priority
   if ('activation_priority' in frontmatter) {
     if (!VALID_PRIORITIES.includes(frontmatter.activation_priority)) {
-      warnings.push(`Invalid activation_priority. Should be one of: ${VALID_PRIORITIES.join(', ')}`);
+      errors.push(`Invalid activation_priority. Must be one of: ${VALID_PRIORITIES.join(', ')}`);
     }
   }
 
-  return { errors, warnings };
+  return errors;
 }
 
 /**
@@ -199,10 +195,7 @@ export async function validateFrontmatterFile(filePath: string): Promise<Frontma
   if (result.fileType === 'command') {
     result.errors = validateCommandFrontmatter(frontmatter);
   } else if (result.fileType === 'agent') {
-    // Agent validation returns { errors, warnings } - for CI stability, use empty errors
-    const agentResult = validateAgentFrontmatter(frontmatter);
-    result.errors = agentResult.errors;  // Only true errors (currently none)
-    // Warnings are logged but don't fail CI
+    result.errors = validateAgentFrontmatter(frontmatter);
   }
 
   return result;

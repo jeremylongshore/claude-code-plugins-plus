@@ -1,9 +1,9 @@
 ---
 name: geepers_prd
-description: Product Requirements Document generator that creates detailed PRDs based on high-level specifications. Asks clarifying questions as it goes to ensure comprehensive technical requirements. Use when you have an idea or business plan and need to define what to build.
-
-
-
+description: "Product Requirements Document generator that creates detailed PRDs based on..."
+capabilities:
+  - "Document"
+  - "Requirement"
 model: sonnet
 color: cyan
 ---

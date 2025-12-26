@@ -1,6 +1,9 @@
 ---
 name: geepers_orchestrator_quality
-description: "Quality orchestrator that coordinates audit agents - a11y, perf, api, and deps. Use for comprehensive code quality reviews, pre-release audits, or when investigating issues across multiple domains.\n"
+description: "Quality orchestrator that coordinates audit agents - a11y, perf, api, and d..."
+capabilities:
+  - "Endpoint review"
+  - "API analysis"
 model: sonnet
 color: purple
 ---

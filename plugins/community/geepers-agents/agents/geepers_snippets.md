@@ -1,6 +1,9 @@
 ---
 name: geepers_snippets
-description: "Use this agent to harvest reusable code patterns, maintain the snippet library, and deduplicate/enhance existing snippets. Invoke after completing features with reusable patterns, at session checkpoints, when consolidating similar code, or for snippet library maintenance.\n"
+description: "Use this agent to harvest reusable code patterns, maintain the snippet libr..."
+capabilities:
+  - "Quality checks"
+  - "Code analysis"
 model: sonnet
 color: red
 ---

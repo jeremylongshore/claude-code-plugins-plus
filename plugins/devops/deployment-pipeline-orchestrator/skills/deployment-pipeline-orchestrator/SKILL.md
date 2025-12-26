@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "deploy application", "create pipeline",
   or "automate deployment".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*), kubectl:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*, docker:*, kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

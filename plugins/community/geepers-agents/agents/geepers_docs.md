@@ -1,9 +1,10 @@
 ---
 name: geepers_docs
-description: Documentation generator that creates user-friendly manuals, README files, and setup guides from code. Explains shell commands, packages, dependencies, and provides step-by-step instructions for building and launching applications. Use after code generation or when documenting existing projects.
-
-
-
+description: "Documentation generator that creates user-friendly manuals, README files, a..."
+capabilities:
+  - "Content review"
+  - "Documentation"
+  - "Documentation generation"
 model: haiku
 color: green
 ---

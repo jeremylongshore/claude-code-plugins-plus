@@ -1,6 +1,9 @@
 ---
 name: geepers_design
-description: "Use this agent for visual design systems, typography, layout geometry, color palettes, and UI/UX evaluation. Invoke when creating design systems, reviewing visual consistency, or applying modernist design principles.\n"
+description: "Agent for visual design systems, typography, layout geometry, color palet..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: green
 ---

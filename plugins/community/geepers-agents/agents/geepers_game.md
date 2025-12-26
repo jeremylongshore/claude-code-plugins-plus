@@ -1,6 +1,9 @@
 ---
 name: geepers_game
-description: "Use this agent for gamification design - reward systems, engagement loops, progress mechanics, and fun factor enhancement. Invoke when adding game-like elements to applications, improving engagement, or designing interactive experiences.\n"
+description: "Agent for gamification design - reward systems, engagement loops, progres..."
+capabilities:
+  - "Gamification"
+  - "Engagement"
 model: sonnet
 color: red
 ---

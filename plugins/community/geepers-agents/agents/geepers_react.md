@@ -1,6 +1,10 @@
 ---
 name: geepers_react
-description: "Use this agent for React development expertise - component architecture, hooks, state management, performance optimization, and React ecosystem best practices. Invoke when building React applications, debugging React issues, or optimizing React performance.\n"
+description: "Agent for React development expertise - component architecture, hooks, st..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Development"
 model: sonnet
 color: green
 ---

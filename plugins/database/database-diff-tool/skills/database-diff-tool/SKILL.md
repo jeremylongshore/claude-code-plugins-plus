@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "compare schemas", "diff databases",
   or "sync database schemas".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

@@ -1,6 +1,9 @@
 ---
 name: geepers_system_onboard
-description: "Project understanding agent for getting up to speed on unfamiliar codebases. Use when picking up a project after time away, joining an existing project, or trying to understand how something works. Creates an ONBOARD.md summary.\n"
+description: "Project understanding agent for getting up to speed on unfamiliar codebases..."
+capabilities:
+  - "Getting"
+  - "Understanding"
 model: sonnet
 color: red
 ---

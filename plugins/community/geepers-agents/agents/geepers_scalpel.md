@@ -1,6 +1,10 @@
 ---
 name: geepers_scalpel
-description: "Use this agent for precise, surgical code modifications in complex or large files. Invoke when making targeted changes that require high precision, when previous edits introduced regressions, or when modifying delicate code with intricate dependencies.\n"
+description: "Agent for precise, surgical code modifications in complex or large files"
+capabilities:
+  - "Modification"
+  - "Quality checks"
+  - "Code analysis"
 model: sonnet
 color: orange
 ---

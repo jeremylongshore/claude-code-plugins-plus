@@ -1,6 +1,9 @@
 ---
 name: geepers_dashboard
-description: "Use this agent for dashboard synchronization, service persistence configuration, and admin panel updates. Invoke when deploying new services, after system reboots, or for dashboard maintenance.\n"
+description: "Agent for dashboard synchronization, service persistence configuration, a..."
+capabilities:
+  - "Synchronization"
+  - "Configuration"
 model: sonnet
 color: orange
 ---

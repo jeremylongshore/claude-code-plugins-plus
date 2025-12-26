@@ -1,6 +1,9 @@
 ---
 name: geepers_diag
-description: "Use this agent for system diagnostics, error pattern detection, log analysis, and root cause investigation. Invoke when services are failing, experiencing errors, or behaving unexpectedly.\n"
+description: "Agent for system diagnostics, error pattern detection, log analysis, and ..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: teal
 ---

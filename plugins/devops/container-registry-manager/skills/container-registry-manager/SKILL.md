@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "containerize app", "manage containers",
   or "orchestrate deployment".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), kubectl:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*, kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

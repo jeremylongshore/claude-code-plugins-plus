@@ -1,6 +1,10 @@
 ---
 name: geepers_status
-description: "Use this agent to log work accomplishments and maintain the project status dashboard. Invoke after making commits, at end of work sessions, when reviewing progress, or when updating project documentation.\n"
+description: "Use this agent to log work accomplishments and maintain the project status ..."
+capabilities:
+  - "Task automation"
+  - "Workflow optimization"
+  - "Accomplishment"
 model: sonnet
 color: red
 ---

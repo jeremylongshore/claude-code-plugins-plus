@@ -1,6 +1,9 @@
 ---
 name: geepers_orchestrator_checkpoint
-description: "Checkpoint orchestrator that coordinates session maintenance agents - scout, repo, status, and snippets. Use at session boundaries, after completing features, or for routine project maintenance."
+description: "Checkpoint orchestrator that coordinates session maintenance agents - scout..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: red
 ---

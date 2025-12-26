@@ -1,9 +1,9 @@
 ---
 name: geepers_swarm_research
-description: Multi-tier research agent that scales from quick queries to comprehensive multi-agent investigations. Uses three modes - Quick (focused search), Swarm (multi-source synthesis), and Hive (5-part task decomposition). Use for research tasks where depth can vary based on complexity.
-
-
-
+description: "Multi-tier research agent that scales from quick queries to comprehensive m..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: blue
 ---

@@ -1,9 +1,9 @@
 ---
 name: geepers_business_plan
-description: Business plan generator that creates comprehensive business models, market analysis, and strategy documents for software projects. Use when starting from an idea and need to validate the business case before technical development.
-
-
-
+description: "Business plan generator that creates comprehensive business models, market ..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: green
 ---

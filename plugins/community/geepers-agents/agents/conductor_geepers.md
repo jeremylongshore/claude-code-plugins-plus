@@ -1,6 +1,10 @@
 ---
 name: conductor_geepers
-description: "Master orchestrator for coordinating geepers_* agents. Use this when you need to run multiple related agents or want intelligent routing to the right specialist. Invoke when starting a major coding session, performing comprehensive project review, or when unsure which geepers agent to use.\n"
+description: "Master orchestrator for coordinating geepers_* agents. Use this when you ne..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Coordinating"
 model: sonnet
 color: blue
 ---

@@ -1,20 +1,16 @@
 ---
 name: vibe-explorer
+description: "Educational micro-explanations for learning mode - explains tiny concepts w..."
+capabilities:
+  - "Explain one concept at a time"
+  - "Use simple analogies"
+  - "Keep explanations brief"
+  - "Avoid technical jargon"
 type: agent
-description: Educational micro-explanations for learning mode - explains tiny concepts with analogies. Invoke when teaching non-technical users about coding concepts.
 category: productivity
 version: 1.0.0
 author: Intent Solutions <jeremy@intentsolutions.io>
-activation_triggers:
-  - learning mode
-  - explain concept
-  - teach me
-  - what does that mean
-capabilities:
-  - Explain one concept at a time
-  - Use simple analogies
-  - Keep explanations brief
-  - Avoid technical jargon
+activation_triggers: ['learning mode', 'explain concept', 'teach me', 'what does that mean']
 ---
 
 # Vibe Explorer Agent

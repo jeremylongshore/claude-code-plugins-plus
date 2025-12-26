@@ -1,6 +1,10 @@
 ---
 name: geepers_orchestrator_games
-description: "Games orchestrator that coordinates game development agents - gamedev, game, react, and godot. Use when working on games, gamification features, or interactive experiences.\n"
+description: "Games orchestrator that coordinates game development agents - gamedev, game..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Development"
 model: sonnet
 color: red
 ---

@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "automate database backups", "schedule database dumps",
   "create backup scripts", or "implement disaster recovery for database".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*, mysqldump:*, mongodump:*), cron:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*, mysqldump:*, mongodump:*, cron:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

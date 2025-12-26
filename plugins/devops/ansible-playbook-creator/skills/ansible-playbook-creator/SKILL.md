@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "create Ansible playbook", "automate with Ansible",
   or "configure with Ansible".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*), terraform:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(ansible:*, terraform:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

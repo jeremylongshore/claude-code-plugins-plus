@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "implement database caching", "add Redis cache layer",
   "improve query performance with caching", or "reduce database load".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*), docker:redis:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(redis-cli:*, docker:redis:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

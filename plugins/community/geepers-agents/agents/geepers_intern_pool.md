@@ -1,9 +1,10 @@
 ---
 name: geepers_intern_pool
-description: Cost-effective multi-model code generation agent. Uses a pool of smaller/cheaper models for initial generation, then validates with more capable models. Ideal for budget-conscious development or high-volume code generation. Think of it as having a team of enthusiastic interns overseen by a senior developer.
-
-
-
+description: "Cost-effective multi-model code generation agent. Uses a pool of smaller/ch..."
+capabilities:
+  - "Quality checks"
+  - "Generation"
+  - "Code analysis"
 model: haiku
 color: yellow
 ---

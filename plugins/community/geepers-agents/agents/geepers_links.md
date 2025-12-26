@@ -1,6 +1,9 @@
 ---
 name: geepers_links
-description: "Use this agent for link validation, broken link detection, URL enrichment, and resource list maintenance. Invoke when working with documentation containing external links or curated resource collections.\n"
+description: "Agent for link validation, broken link detection, URL enrichment, and res..."
+capabilities:
+  - "Validation"
+  - "Enrichment"
 model: sonnet
 color: teal
 ---

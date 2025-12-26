@@ -1,6 +1,11 @@
 ---
 name: geepers_flask
-description: "Flask application specialist. Use when building, reviewing, or debugging Flask web applications. Knows Flask patterns, blueprints, extensions, deployment, and common pitfalls. Invoke for Flask-specific architecture decisions or troubleshooting.\n"
+description: "Flask application specialist. Use when building, reviewing, or debugging Fl..."
+capabilities:
+  - "Debugging"
+  - "Building"
+  - "Application"
+  - "Reviewing"
 model: sonnet
 color: purple
 ---

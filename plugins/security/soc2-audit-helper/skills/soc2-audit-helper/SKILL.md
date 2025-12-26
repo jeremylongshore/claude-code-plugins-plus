@@ -5,7 +5,7 @@ description: |
   Use when you need to prepare for SOC 2 audits, assess Trust Service Criteria compliance, document security controls, or generate readiness reports.
   Trigger with phrases like "SOC 2 audit preparation", "SOC 2 readiness assessment", "collect SOC 2 evidence", or "Trust Service Criteria compliance".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(audit-collect:*), compliance-check:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(audit-collect:*, compliance-check:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

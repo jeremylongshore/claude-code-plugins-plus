@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "generate docs", "document schema",
   or "create database documentation".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*), mongosh:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*, mysql:*, mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

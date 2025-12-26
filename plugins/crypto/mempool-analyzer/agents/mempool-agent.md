@@ -1,8 +1,6 @@
 ---
 name: mempool-agent
-description: >
-  Mempool analysis specialist for MEV detection and pending transaction
-  monitoring
+description: "Mempool analysis specialist for MEV detection and transaction monitoring"
 capabilities:
   - mempool-monitoring
   - mev-detection

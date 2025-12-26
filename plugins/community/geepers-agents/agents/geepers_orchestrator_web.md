@@ -1,6 +1,9 @@
 ---
 name: geepers_orchestrator_web
-description: "Web application orchestrator that coordinates agents for building and reviewing web apps - Flask backend, React frontend, design systems, and accessibility. Use when building complete web applications or doing comprehensive web project review.\n"
+description: "Web application orchestrator that coordinates agents for building and revie..."
+capabilities:
+  - "Building"
+  - "Application"
 model: sonnet
 color: purple
 ---

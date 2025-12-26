@@ -1,6 +1,10 @@
 ---
 name: geepers_orchestrator_research
-description: "Research orchestrator that coordinates data gathering agents in swarm-style parallel execution - data, links, diag, plus web fetching. Use when you need to gather information from multiple sources, validate external resources, or build knowledge bases.\n"
+description: "Research orchestrator that coordinates data gathering agents in swarm-style..."
+capabilities:
+  - "Gathering"
+  - "Schema validation"
+  - "Data analysis"
 model: sonnet
 color: teal
 ---

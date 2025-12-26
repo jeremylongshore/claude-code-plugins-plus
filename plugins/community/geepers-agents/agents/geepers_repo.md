@@ -1,6 +1,10 @@
 ---
 name: geepers_repo
-description: "Use this agent for git hygiene, repository cleanup, and commit organization. Invoke at session checkpoints, before ending work sessions, when uncommitted changes accumulate, after adding dependencies, or when preparing for code reviews.\n"
+description: "Agent for git hygiene, repository cleanup, and commit organization"
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Organization"
 model: sonnet
 color: red
 ---

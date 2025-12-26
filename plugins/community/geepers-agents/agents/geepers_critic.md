@@ -1,6 +1,9 @@
 ---
 name: geepers_critic
-description: "UX and architecture critic that generates CRITIC.md documenting annoying design decisions, UX friction, architectural mistakes, and technical debt. Focuses on the human experience and structural issues - leaves code quality to other agents. Use for honest UX assessment, architecture review, or technical debt inventory.\n"
+description: "UX and architecture critic that generates CRITIC.md documenting annoying de..."
+capabilities:
+  - "Documenting"
+  - "Annoying"
 model: sonnet
 color: purple
 ---

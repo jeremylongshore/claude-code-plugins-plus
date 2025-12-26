@@ -1,6 +1,10 @@
 ---
 name: geepers_canary
-description: "Early warning system that spot-checks fragile and critical systems. Like a canary in a coal mine - quick checks on the things most likely to break. Use for health checks, pre-deployment verification, or periodic monitoring of critical paths.\n"
+description: "Early warning system that spot-checks fragile and critical systems. Like a ..."
+capabilities:
+  - "Warning"
+  - "Workflow optimization"
+  - "Task automation"
 model: haiku
 color: orange
 ---

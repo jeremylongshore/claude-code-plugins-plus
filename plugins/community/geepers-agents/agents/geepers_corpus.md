@@ -1,6 +1,10 @@
 ---
 name: geepers_corpus
-description: "Use this agent for corpus linguistics projects, language dataset management, computational linguistics, and NLP resource work. Invoke when working with COCA, Diachronica, language corpora, or linguistic data processing.\n"
+description: "Agent for corpus linguistics projects, language dataset management, compu..."
+capabilities:
+  - "Data analysis"
+  - "Schema validation"
+  - "Management"
 model: sonnet
 color: teal
 ---

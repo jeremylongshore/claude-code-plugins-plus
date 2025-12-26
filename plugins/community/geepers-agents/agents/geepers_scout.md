@@ -1,6 +1,9 @@
 ---
 name: geepers_scout
-description: "Use this agent for project reconnaissance, quick fixes, and generating improvement reports. Invoke at session checkpoints, when picking up a project after time away, after completing features, or when you want a fresh perspective on code quality."
+description: "Agent for project reconnaissance, quick fixes, and generating improvement..."
+capabilities:
+  - "Generating"
+  - "Improvement"
 model: sonnet
 color: red
 ---

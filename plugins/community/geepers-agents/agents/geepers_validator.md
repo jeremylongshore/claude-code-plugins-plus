@@ -1,6 +1,10 @@
 ---
 name: geepers_validator
-description: "Use this agent for comprehensive project validation - checking configurations, paths, permissions, integrations, and overall project health. Invoke before deployments, after significant changes, when troubleshooting cross-cutting issues, or for periodic health checks.\n"
+description: "Agent for comprehensive project validation - checking configurations, pat..."
+capabilities:
+  - "Checking"
+  - "Validation"
+  - "Configuration"
 model: sonnet
 color: orange
 ---

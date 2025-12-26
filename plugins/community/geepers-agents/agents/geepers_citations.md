@@ -1,6 +1,10 @@
 ---
 name: geepers_citations
-description: "Data validation and citation checker. Use when verifying data accuracy, checking citations and references, or validating claims against sources. Essential for academic tools, documentation with references, and data-driven projects.\n"
+description: "Data validation and citation checker. Use when verifying data accuracy, che..."
+capabilities:
+  - "Verifying"
+  - "Validation"
+  - "Citation"
 model: sonnet
 color: teal
 ---

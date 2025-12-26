@@ -1,9 +1,9 @@
 ---
 name: geepers_fullstack_dev
-description: Full-stack development agent that generates complete, working code from PRDs and specifications. Creates frontend, backend, database, and configuration files. Use when you have requirements and need implementation.
-
-
-
+description: "Full-stack development agent that generates complete, working code from PRD..."
+capabilities:
+  - "Working"
+  - "Development"
 model: sonnet
 color: orange
 ---

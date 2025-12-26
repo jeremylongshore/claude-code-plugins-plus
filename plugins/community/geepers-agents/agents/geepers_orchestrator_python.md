@@ -1,6 +1,10 @@
 ---
 name: geepers_orchestrator_python
-description: "Python project orchestrator that coordinates agents for Python development - Flask apps, CLI tools, APIs, and dependencies. Use when building or reviewing Python projects of any kind.\n"
+description: "Python project orchestrator that coordinates agents for Python development ..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
+  - "Development"
 model: sonnet
 color: green
 ---

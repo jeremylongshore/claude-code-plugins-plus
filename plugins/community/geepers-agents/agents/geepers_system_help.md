@@ -1,6 +1,9 @@
 ---
 name: geepers_system_help
-description: "Reference guide for all geepers agents. Use when unsure which agent to use, want to see all available agents, or need to generate reference documentation. Creates an HTML index at ~/docs/geepers/index.html for mobile access.\n"
+description: "Reference guide for all geepers agents. Use when unsure which agent to use,..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: haiku
 color: red
 ---

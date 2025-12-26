@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "create backups", "automate backups",
   or "implement disaster recovery".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*), aws:s3:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*, rsync:*, aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

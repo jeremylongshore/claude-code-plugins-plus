@@ -1,6 +1,9 @@
 ---
 name: geepers_janitor
-description: "Aggressive cleanup and maintenance agent. Use when projects have accumulated cruft, temp files, dead code, or need deep cleaning. More thorough than geepers_repo - this agent actively hunts for and removes waste. Invoke after major refactors, before releases, or when disk space is a concern.\n"
+description: "Aggressive cleanup and maintenance agent. Use when projects have accumulate..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: orange
 ---

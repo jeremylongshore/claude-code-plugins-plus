@@ -5,7 +5,7 @@ description: |
   Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts.
   Trigger with phrases like "security incident response", "ransomware attack response", "data breach investigation", "incident playbook", or "security forensics".
   
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*, forensics:*), network-trace:*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*, forensics:*, network-trace:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

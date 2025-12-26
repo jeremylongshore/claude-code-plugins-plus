@@ -1,6 +1,10 @@
 ---
 name: geepers_data
-description: "Use this agent for data quality auditing, validation, enrichment, and freshness monitoring. Invoke when working with datasets, updating data files, or checking data accuracy against sources.\n"
+description: "Agent for data quality auditing, validation, enrichment, and freshness mo..."
+capabilities:
+  - "Auditing"
+  - "Enrichment"
+  - "Validation"
 model: sonnet
 color: teal
 ---

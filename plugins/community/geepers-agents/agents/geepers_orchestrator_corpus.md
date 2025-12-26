@@ -1,6 +1,9 @@
 ---
 name: geepers_orchestrator_corpus
-description: "Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux, and db. Use when working on corpus linguistics projects, NLP tools, or language data systems.\n"
+description: "Corpus orchestrator that coordinates linguistics agents - corpus, corpus_ux..."
+capabilities:
+  - "Workflow optimization"
+  - "Task automation"
 model: sonnet
 color: teal
 ---
