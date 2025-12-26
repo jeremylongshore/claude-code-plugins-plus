@@ -1,8 +1,7 @@
 ---
-description: Compare database schemas and generate safe migration scripts with rollback support
-shortcut: db-diff
+description: Compare database schemas and generate safe migration scripts with rollback...
+shortcut: dbdi
 ---
-
 # Database Diff Tool
 
 Implement production-grade database schema comparison for PostgreSQL and MySQL that detects all schema differences (tables, columns, indexes, constraints, triggers), generates safe migration scripts with transaction safety, validates changes before deployment, and provides rollback procedures. Essential for CI/CD pipelines and environment synchronization with zero-downtime deployments.

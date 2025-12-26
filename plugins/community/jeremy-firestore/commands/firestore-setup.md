@@ -1,9 +1,8 @@
 ---
 name: firestore-setup
-description: Initialize Firebase Admin SDK, configure Firestore, and setup A2A/MCP integration
+description: Initialize Firebase Admin SDK, configure Firestore, and setup A2A/MCP...
 model: sonnet
 ---
-
 # Firestore Setup Command
 
 Initialize Firebase Admin SDK in your project with support for:

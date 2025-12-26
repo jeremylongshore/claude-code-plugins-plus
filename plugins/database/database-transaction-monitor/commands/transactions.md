@@ -1,8 +1,7 @@
 ---
-description: Monitor database transactions with real-time alerting for performance and lock issues
-shortcut: txn-monitor
+description: Monitor database transactions with real-time alerting for performance and...
+shortcut: txnm
 ---
-
 # Database Transaction Monitor
 
 Monitor database transaction performance, detect long-running transactions, identify lock contention, track rollback rates, and automatically alert on transaction anomalies for production database health.

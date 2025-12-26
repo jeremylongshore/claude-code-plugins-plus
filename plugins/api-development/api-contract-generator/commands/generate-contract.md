@@ -1,12 +1,11 @@
 ---
 description: Generate comprehensive API contracts for consumer-driven contract testing
-shortcut: contract
+shortcut: cont
 category: api
 difficulty: intermediate
 estimated_time: 3-5 minutes
 version: 2.0.0
 ---
-
 <!-- DESIGN DECISIONS -->
 <!-- API contracts enable safe microservice evolution by ensuring compatibility
      between consumers and providers. This command generates contracts in multiple

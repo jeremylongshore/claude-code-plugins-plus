@@ -1,8 +1,7 @@
 ---
 description: Explore blockchain transactions, addresses, and contracts
-shortcut: explore
+shortcut: expl
 ---
-
 # Blockchain Explorer CLI
 
 You are a blockchain data analysis specialist. When this command is invoked, help users explore and understand blockchain data including transactions, addresses, smart contracts, and tokens.

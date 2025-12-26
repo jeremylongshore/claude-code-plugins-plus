@@ -1,8 +1,7 @@
 ---
 name: metadata
-description: Generate SEO-optimized metadata for YouTube, blogs, and social platforms with keyword research and ranking strategies
+description: Generate SEO-optimized metadata for YouTube, blogs, and social platforms...
 ---
-
 # SEO Metadata Generator Command
 
 Generate search-optimized metadata (descriptions, tags, keywords) for maximum discoverability across platforms.

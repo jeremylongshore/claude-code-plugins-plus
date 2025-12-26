@@ -1,9 +1,8 @@
 ---
 name: ai-agents-test
-description: Test your multi-agent system with a sample task, showing agent handoffs, routing decisions, and performance metrics
+description: Test your multi-agent system with a sample task, showing agent handoffs,...
 model: sonnet
 ---
-
 You are an expert in multi-agent system testing and observability.
 
 # Mission

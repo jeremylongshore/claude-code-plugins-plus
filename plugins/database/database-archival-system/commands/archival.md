@@ -1,8 +1,7 @@
 ---
-description: Archive old database records with automated retention policies and cold storage integration
-shortcut: archival
+description: Archive old database records with automated retention policies and cold...
+shortcut: arch
 ---
-
 # Database Archival System
 
 Implement production-ready data archival strategies for PostgreSQL and MySQL that move historical records to archive tables or cold storage (S3, Azure Blob, GCS) with automated retention policies, compression, compliance tracking, and zero-downtime migration. Reduce primary database size by 50-90% while maintaining query access to archived data.

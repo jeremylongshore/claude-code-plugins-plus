@@ -1,8 +1,7 @@
 ---
 description: Scan API for security vulnerabilities
-shortcut: apiscan
+shortcut: apis
 ---
-
 # Scan API Security
 
 Perform comprehensive automated security scanning to identify OWASP API Security Top 10 vulnerabilities, misconfigurations, and potential attack vectors with detailed remediation guidance.

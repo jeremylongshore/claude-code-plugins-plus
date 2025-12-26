@@ -1,8 +1,7 @@
 ---
 description: Detect and resolve database deadlocks with automated monitoring
-shortcut: deadlock
+shortcut: dead
 ---
-
 # Database Deadlock Detector
 
 Detect, analyze, and prevent database deadlocks with automated monitoring, alerting, and resolution strategies for production database systems.

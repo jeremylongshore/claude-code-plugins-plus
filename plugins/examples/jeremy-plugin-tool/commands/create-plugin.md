@@ -1,11 +1,10 @@
 ---
 name: create-plugin
-description: Interactive plugin creator with nixtla-grade validation - guides you through creating production-ready plugins
+description: Interactive plugin creator with nixtla-grade validation - guides you through...
 shortcut: cp
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 version: 2.0.0
 ---
-
 # Create Plugin - Interactive Workflow
 
 You are creating a **production-grade Claude Code plugin** with nixtla-validated quality standards.

@@ -1,8 +1,7 @@
 ---
 name: analytics
-description: Track content performance across platforms, identify winning patterns, and optimize strategy with data-driven insights
+description: Track content performance across platforms, identify winning patterns, and...
 ---
-
 # Analytics Insights Command
 
 Track and analyze content performance across all platforms to optimize your content strategy with data-driven decisions.

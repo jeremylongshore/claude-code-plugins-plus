@@ -1,8 +1,7 @@
 ---
 description: Generate production-ready stored procedures and database functions
-shortcut: stored-proc
+shortcut: stor
 ---
-
 # Stored Procedure Generator
 
 Generate production-ready stored procedures, functions, triggers, and custom database logic for complex business rules, performance optimization, and transaction safety across PostgreSQL, MySQL, and SQL Server.

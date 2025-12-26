@@ -1,8 +1,7 @@
 ---
 description: Generate comprehensive test reports with coverage and trends
-shortcut: report
+shortcut: rpt
 ---
-
 # Test Report Generator
 
 Create detailed, stakeholder-friendly test reports with coverage metrics, test trends, failure analysis, and exportable formats (HTML, PDF, JSON).

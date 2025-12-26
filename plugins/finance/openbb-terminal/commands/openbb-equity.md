@@ -1,8 +1,7 @@
 ---
 name: openbb-equity
-description: Comprehensive equity analysis using OpenBB - historical prices, fundamentals, technical indicators, insider trading, analyst ratings, and AI-powered insights
+description: Comprehensive equity analysis using OpenBB - historical prices,...
 ---
-
 # OpenBB Equity Analysis
 
 Perform comprehensive stock analysis using the OpenBB Platform.

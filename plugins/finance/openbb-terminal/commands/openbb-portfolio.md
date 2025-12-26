@@ -1,8 +1,7 @@
 ---
 name: openbb-portfolio
-description: Portfolio analysis and optimization using OpenBB - performance tracking, risk metrics, asset allocation, rebalancing
+description: Portfolio analysis and optimization using OpenBB - performance tracking,...
 ---
-
 # OpenBB Portfolio Analysis
 
 Comprehensive portfolio management and optimization using OpenBB Platform.

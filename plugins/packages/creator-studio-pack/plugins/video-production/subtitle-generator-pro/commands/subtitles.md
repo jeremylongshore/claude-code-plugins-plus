@@ -1,8 +1,7 @@
 ---
 name: subtitles
-description: Generate animated subtitles in popular creator styles (Mr Beast, Ali Abdaal, Hormozi) with automatic timing and effects
+description: Generate animated subtitles in popular creator styles (Mr Beast, Ali Abdaal,...
 ---
-
 # Subtitle Generator Pro Command
 
 Create professional, animated subtitles in various popular creator styles with automatic transcription and timing.

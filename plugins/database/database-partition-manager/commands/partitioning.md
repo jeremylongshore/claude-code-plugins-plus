@@ -1,8 +1,7 @@
 ---
 description: Design and implement table partitioning strategies for massive datasets
-shortcut: partition
+shortcut: part
 ---
-
 # Database Partition Manager
 
 Design, implement, and manage table partitioning strategies for massive datasets with automated partition maintenance, query optimization, and data lifecycle management.

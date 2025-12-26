@@ -1,8 +1,7 @@
 ---
 description: Log a new AI experiment with terminal report
-shortcut: log-exp
+shortcut: loge
 ---
-
 # Log AI Experiment
 
 When the user runs `/log-exp` or `/log`, help them log a new AI experiment by gathering the following information:

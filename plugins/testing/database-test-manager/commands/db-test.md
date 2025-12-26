@@ -1,8 +1,7 @@
 ---
-description: Database testing with test data setup, transaction rollback, and schema validation
+description: Database testing with test data setup, transaction rollback, and schema...
 shortcut: dbt
 ---
-
 # Database Test Manager
 
 Comprehensive database testing utilities including test data generation, transaction management, schema validation, migration testing, and database cleanup.

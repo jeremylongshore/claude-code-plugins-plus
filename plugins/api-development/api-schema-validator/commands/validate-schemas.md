@@ -1,8 +1,7 @@
 ---
 description: Validate API schemas
-shortcut: schema
+shortcut: sche
 ---
-
 # Validate API Schemas
 
 Implement comprehensive schema validation using modern validation libraries like JSON Schema, Joi, Yup, or Zod to ensure type safety, data integrity, and contract compliance across your API.

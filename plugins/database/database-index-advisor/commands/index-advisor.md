@@ -1,8 +1,7 @@
 ---
 description: Analyze query patterns and recommend optimal database indexes
-shortcut: index-advisor
+shortcut: inde
 ---
-
 # Database Index Advisor
 
 Analyze query workloads, identify missing indexes, detect unused indexes, and recommend optimal indexing strategies with automated index impact analysis and maintenance scheduling for production databases.

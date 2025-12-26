@@ -1,8 +1,7 @@
 ---
-description: Track crypto wallets across multiple chains with real-time balance and transaction monitoring
+description: Track crypto wallets across multiple chains with real-time balance and...
 shortcut: tw
 ---
-
 # Track Wallet Portfolio
 
 Monitor cryptocurrency wallets across multiple blockchain networks with comprehensive portfolio analytics, DeFi position tracking, NFT holdings, transaction history, profit/loss analysis, and tax reporting integration. This command provides institutional-grade portfolio tracking capabilities for individual investors, traders, and portfolio managers.

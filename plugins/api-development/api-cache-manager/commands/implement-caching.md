@@ -1,12 +1,11 @@
 ---
-description: Implement comprehensive multi-level API caching strategies with Redis, CDN, and intelligent invalidation
-shortcut: cache
+description: Implement comprehensive multi-level API caching strategies with Redis, CDN,...
+shortcut: cach
 category: api
 difficulty: intermediate
 estimated_time: 2-3 hours
 version: 2.0.0
 ---
-
 <!-- DESIGN DECISIONS -->
 <!-- Multi-level caching dramatically reduces database load and improves response times.
      This command implements a three-tier caching strategy: browser cache, CDN cache,

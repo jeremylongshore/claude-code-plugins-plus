@@ -1,8 +1,7 @@
 ---
-description: Monitor database health with real-time metrics, predictive alerts, and automated remediation
-shortcut: health-check
+description: Monitor database health with real-time metrics, predictive alerts, and...
+shortcut: heal
 ---
-
 # Database Health Monitor
 
 Implement production-grade database health monitoring for PostgreSQL and MySQL with real-time metrics collection, predictive alerting, automated remediation, and comprehensive dashboards. Detect performance degradation, resource exhaustion, and replication issues before they impact production with 99.9% uptime SLA compliance.

@@ -1,8 +1,7 @@
 ---
 description: Migrate API to new version with compatibility layers and automated scripts
-shortcut: migrate
+shortcut: mig
 ---
-
 # Migrate API Version
 
 Orchestrate comprehensive API version migrations with automated compatibility layers, breaking change detection, and zero-downtime deployment strategies. This command manages the complete lifecycle of API evolution from initial analysis through deployment and deprecation.

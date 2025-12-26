@@ -1,12 +1,11 @@
 ---
-description: Implement high-performance batch API operations with job queues, progress tracking, and intelligent error recovery
-shortcut: batch
+description: Implement high-performance batch API operations with job queues, progress...
+shortcut: btch
 category: api
 difficulty: intermediate
 estimated_time: 2-4 hours
 version: 2.0.0
 ---
-
 <!-- DESIGN DECISIONS -->
 <!-- Batch processing enables efficient handling of large-scale operations that would
      otherwise overwhelm synchronous APIs. This command implements asynchronous job

@@ -1,8 +1,7 @@
 ---
 description: Check dependencies for vulnerabilities and outdated packages
-shortcut: depcheck
+shortcut: depc
 ---
-
 # Dependency Checker
 
 Analyze project dependencies for known vulnerabilities, outdated packages, and license compliance issues.

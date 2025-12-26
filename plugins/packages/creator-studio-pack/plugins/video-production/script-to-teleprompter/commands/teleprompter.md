@@ -1,8 +1,7 @@
 ---
 name: teleprompter
-description: Convert video scripts to teleprompter format with auto-scroll, timing marks, and delivery coaching
+description: Convert video scripts to teleprompter format with auto-scroll, timing marks,...
 ---
-
 # Script to Teleprompter Command
 
 Transform written scripts into teleprompter-ready formats with auto-scroll and delivery optimization.

@@ -1,8 +1,7 @@
 ---
-description: Analyze price trends with technical indicators, pattern recognition, and market structure analysis
+description: Analyze price trends with technical indicators, pattern recognition, and...
 shortcut: at
 ---
-
 # Analyze Market Trends
 
 Advanced trend analysis system using technical indicators, chart patterns, and market structure to identify trading opportunities.

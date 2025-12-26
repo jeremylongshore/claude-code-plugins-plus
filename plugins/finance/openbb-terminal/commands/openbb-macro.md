@@ -1,8 +1,7 @@
 ---
 name: openbb-macro
-description: Macroeconomic analysis using OpenBB - GDP, inflation, interest rates, employment, global economic indicators
+description: Macroeconomic analysis using OpenBB - GDP, inflation, interest rates,...
 ---
-
 # OpenBB Macroeconomic Analysis
 
 Analyze global macroeconomic trends and indicators using OpenBB Platform.

@@ -1,8 +1,7 @@
 ---
-description: Monitor whale transactions in real-time with market impact analysis and automated alerting
+description: Monitor whale transactions in real-time with market impact analysis and...
 shortcut: mw
 ---
-
 # Monitor Whale Activity
 
 Real-time monitoring system for tracking large cryptocurrency transactions (whales) across multiple blockchains. Detects significant wallet movements, analyzes market impact, and provides automated alerts through multiple channels (Slack, Discord, Telegram, email).

@@ -1,8 +1,7 @@
 ---
 description: Generate end-to-end browser tests for user workflows
-shortcut: e2e
+shortcut: ee
 ---
-
 # End-to-End Test Generator
 
 Generate comprehensive browser-based E2E tests for complete user workflows using Playwright, Cypress, or Selenium.

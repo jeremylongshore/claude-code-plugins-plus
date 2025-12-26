@@ -1,8 +1,7 @@
 ---
 description: Generate comprehensive terminal report of AI experiments
-shortcut: ai-report
+shortcut: aire
 ---
-
 # AI Experiments Report
 
 When the user runs `/ai-report`, generate a comprehensive, well-formatted terminal report of their AI experiments.

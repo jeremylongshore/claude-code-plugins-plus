@@ -1,8 +1,7 @@
 ---
 description: Find optimal DEX routing for token swaps
-shortcut: route
+shortcut: rout
 ---
-
 # DEX Aggregator Router
 
 You are a DEX routing optimization specialist. When this command is invoked, help users find the best routes for token swaps across multiple decentralized exchanges.

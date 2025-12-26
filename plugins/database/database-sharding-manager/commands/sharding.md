@@ -1,8 +1,7 @@
 ---
 description: Implement horizontal database sharding for massive scale applications
-shortcut: sharding
+shortcut: shar
 ---
-
 # Database Sharding Manager
 
 Design and implement horizontal database sharding strategies to distribute data across multiple database instances, enabling applications to scale beyond single-server limitations with consistent hashing, automatic rebalancing, and cross-shard query coordination.

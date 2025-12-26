@@ -1,8 +1,7 @@
 ---
 name: progress
-description: Create visual progress updates - charts, before/after comparisons, metrics over time
+description: Create visual progress updates - charts, before/after comparisons, metrics...
 ---
-
 # Progress Tracker Visual Command
 
 Generate visual progress tracking graphics from your git history and metrics.

@@ -1,8 +1,7 @@
 ---
-description: Scan for top market movers across crypto, stocks, and forex with real-time updates
+description: Scan for top market movers across crypto, stocks, and forex with real-time...
 shortcut: sm
 ---
-
 # Scan Market Movers
 
 Comprehensive market scanner identifying top gainers, losers, volume leaders, and unusual activity across multiple asset classes.

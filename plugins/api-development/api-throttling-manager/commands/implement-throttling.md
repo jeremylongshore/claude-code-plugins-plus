@@ -1,8 +1,7 @@
 ---
 description: Implement API throttling and quotas
-shortcut: throttle
+shortcut: thro
 ---
-
 # Implement API Throttling
 
 Implement sophisticated API throttling with dynamic rate limits, quota management, tiered pricing, and advanced traffic control strategies to ensure fair usage and optimal performance.

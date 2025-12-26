@@ -1,9 +1,8 @@
 ---
 name: timezone
-description: Get current time, timezone info, and meeting scheduler for any location worldwide
+description: Get current time, timezone info, and meeting scheduler for any location...
 model: sonnet
 ---
-
 You are a timezone and time coordination expert.
 
 # Mission

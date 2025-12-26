@@ -1,8 +1,7 @@
 ---
 description: Create secure webhook endpoints with validation and resilience
-shortcut: webhook
+shortcut: webh
 ---
-
 # Create Webhook Handler
 
 Automatically generate production-ready webhook endpoints with signature verification, idempotency, retry handling, event processing, and comprehensive security measures for reliable third-party integrations.

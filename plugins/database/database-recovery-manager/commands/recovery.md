@@ -1,8 +1,7 @@
 ---
 description: Implement disaster recovery and point-in-time recovery strategies
-shortcut: recovery
+shortcut: reco
 ---
-
 # Database Recovery Manager
 
 Implement comprehensive disaster recovery, point-in-time recovery (PITR), and automated failover strategies for production database systems with automated backup verification and recovery testing.

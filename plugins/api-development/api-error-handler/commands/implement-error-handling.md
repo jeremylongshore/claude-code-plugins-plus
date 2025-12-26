@@ -1,8 +1,7 @@
 ---
 description: Implement standardized API error handling
-shortcut: errors
+shortcut: erro
 ---
-
 # Implement Error Handling
 
 Create standardized, production-ready error handling middleware with proper HTTP status codes, consistent error formats, and comprehensive logging. This command generates custom error classes, middleware, and error recovery strategies for Node.js, Python, and other backend frameworks.

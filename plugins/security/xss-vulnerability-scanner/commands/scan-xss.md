@@ -1,8 +1,7 @@
 ---
 description: DESCRIPTION_PLACEHOLDER
-shortcut: SHORTCUT_PLACEHOLDER
+shortcut: shor
 ---
-
 # TITLE_PLACEHOLDER
 
 CONTENT_PLACEHOLDER

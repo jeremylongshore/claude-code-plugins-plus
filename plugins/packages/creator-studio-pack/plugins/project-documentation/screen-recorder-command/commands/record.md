@@ -1,8 +1,7 @@
 ---
 name: record
-description: Start, stop, pause, or mark moments in screen recordings with organized file management
+description: Start, stop, pause, or mark moments in screen recordings with organized file...
 ---
-
 # Screen Recording Command
 
 Start and stop screen recordings with automatic organization and metadata tracking.

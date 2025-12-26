@@ -1,8 +1,7 @@
 ---
 description: Generate comprehensive OpenAPI/Swagger documentation from existing APIs
-shortcut: apidoc
+shortcut: apid
 ---
-
 # Generate API Documentation
 
 Automatically generate comprehensive OpenAPI 3.0 specifications with interactive documentation, automated testing, and multi-language client SDKs from your existing API codebase or by analyzing live endpoints.

@@ -1,8 +1,7 @@
 ---
 description: Generate comprehensive database documentation from existing schemas
-shortcut: dbdocs
+shortcut: dbdo
 ---
-
 # Database Documentation Generator
 
 Automatically generate comprehensive database documentation including ERD diagrams, table relationships, column descriptions, indexes, triggers, stored procedures, and interactive HTML documentation from your existing database schemas across multiple database engines.
