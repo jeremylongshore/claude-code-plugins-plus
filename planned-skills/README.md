@@ -20,13 +20,13 @@
 
 ## Key Decision: Standalone Skills
 
-These 500 skills will be **standalone** in `/skills/`, separate from the 241 plugin-embedded skills.
+These 500 skills will be **standalone** in `/skills/`, separate from the 239 plugin-embedded skills.
 
 | Type | Location | Count |
 |------|----------|-------|
 | **Standalone Skills (NEW)** | `/skills/[category]/[skill]/SKILL.md` | 500 planned |
-| Plugin-Embedded Skills | `/plugins/*/skills/*/SKILL.md` | 241 existing |
-| **Total After Completion** | | **741 skills** |
+| Plugin-Embedded Skills | `/plugins/*/skills/*/SKILL.md` | 239 existing |
+| **Total After Completion** | | **739 skills** |
 
 ---
 
@@ -211,4 +211,4 @@ skills/
 
 **Last Updated**: 2025-12-19
 **Maintained By**: Intent Solutions (Jeremy Longshore)
-**Target**: 500 standalone skills + 241 embedded = 741 total
+**Target**: 500 standalone skills + 239 embedded = 739 total
