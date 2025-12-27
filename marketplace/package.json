@@ -8,7 +8,10 @@
     "preview": "astro preview",
     "astro": "astro",
     "skills:generate": "node scripts/discover-skills.mjs",
-    "search:generate": "node scripts/generate-unified-search.mjs"
+    "search:generate": "node scripts/generate-unified-search.mjs",
+    "validate:routes": "node scripts/validate-routes.mjs",
+    "validate:playbooks": "node scripts/validate-playbook-routes.mjs",
+    "validate": "npm run validate:playbooks && npm run validate:routes"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

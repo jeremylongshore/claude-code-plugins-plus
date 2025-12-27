@@ -38,6 +38,9 @@ jobs:
       - name: Build with Astro
         run: pnpm -C marketplace build
 
+      - name: Validate Playbook Routes
+        run: node marketplace/scripts/validate-playbook-routes.mjs
+
       - name: Validate Plugin Routes
         run: node marketplace/scripts/validate-routes.mjs
 
