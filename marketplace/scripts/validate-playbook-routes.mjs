@@ -1,13 +1,18 @@
 #!/usr/bin/env node
 /**
- * CI GATE: Playbook Route Validation
+ * CI GATE: Playbook Route Validation (0kh.10.3 - Real-world Scenario Testing)
  *
  * Validates that every playbook link in index.astro has a corresponding page file.
+ * Also validates dist output exists after build (when available).
  * Prevents shipping broken 404s on /playbooks/* routes.
  *
  * Exit codes:
  * - 0: All playbook routes valid
  * - 1: Missing playbook pages detected
+ *
+ * Usage:
+ *   node validate-playbook-routes.mjs           # Pre-build: check source files
+ *   node validate-playbook-routes.mjs --dist    # Post-build: also check dist output
  */
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
@@ -17,6 +22,7 @@ import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const checkDist = process.argv.includes('--dist');
 
 const PLAYBOOKS_DIR = join(__dirname, '../src/pages/playbooks');
 const INDEX_FILE = join(PLAYBOOKS_DIR, 'index.astro');
@@ -112,5 +118,53 @@ if (orphanPages.length > 0) {
   console.warn(`\n⚠️  Playbook validation completed with ${orphanPages.length} warning(s)`);
 }
 
-console.log('✅ All playbook routes validated successfully!\n');
+console.log('✅ Source file validation passed!\n');
+
+// Phase 2: Validate dist output (post-build)
+if (checkDist) {
+  console.log('🔍 Validating dist output...\n');
+
+  const DIST_DIR = join(__dirname, '../dist/playbooks');
+
+  if (!existsSync(DIST_DIR)) {
+    console.error('❌ Dist playbooks directory not found:', DIST_DIR);
+    console.error('   Run `npm run build` first, then `npm run validate:playbooks -- --dist`');
+    process.exit(1);
+  }
+
+  let distErrors = 0;
+  const missingDist = [];
+
+  for (const slug of expectedSlugs) {
+    const distPath = join(DIST_DIR, slug, 'index.html');
+    if (!existsSync(distPath)) {
+      missingDist.push(slug);
+      distErrors++;
+    }
+  }
+
+  if (distErrors > 0) {
+    console.error(`❌ ${distErrors} playbook(s) missing from dist output:\n`);
+    missingDist.forEach(slug => {
+      console.error(`   • ${slug}`);
+      console.error(`     Expected: dist/playbooks/${slug}/index.html`);
+      console.error(`     URL: /playbooks/${slug}/\n`);
+    });
+    console.error('\n❌ Dist validation FAILED - these pages will 404 in production');
+    process.exit(1);
+  }
+
+  // Count what's in dist
+  const distDirs = readdirSync(DIST_DIR, { withFileTypes: true })
+    .filter(d => d.isDirectory())
+    .map(d => d.name);
+
+  console.log(`📊 Dist Statistics:`);
+  console.log(`   Expected playbooks: ${expectedSlugs.length}`);
+  console.log(`   Built pages: ${distDirs.length}\n`);
+
+  console.log('✅ Dist output validation passed!\n');
+}
+
+console.log('✅ All playbook route validations passed!\n');
 process.exit(0);
