@@ -2,6 +2,7 @@
 // Claude Code Plugins Marketplace - Homepage
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
+import CollectionsGrid from '../components/CollectionsGrid.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -997,6 +998,25 @@ const totalCategories = searchIndex.stats.categories.length;
             <p style="font-size: 1.1rem; line-height: 1.8; color: var(--brand-dark);">
                 Built to solve real problems: finding skills fast, learning proven patterns, and shipping production code. No hype, no fluff—just tools that work.
             </p>
+        </div>
+    </section>
+
+    <!-- Quick-Start Collections -->
+    <section class="features" style="padding: 4rem 2rem; background: var(--brand-light);">
+        <div class="section-label">Quick Start</div>
+        <h2 class="section-title">Curated Plugin Collections</h2>
+        <p style="text-align: center; color: var(--brand-mid-gray); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Pre-built bundles for common use cases. One-click install for instant productivity.
+        </p>
+
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <CollectionsGrid featured={true} />
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--brand-orange); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif;">
+                View All Collections →
+            </a>
         </div>
     </section>
 

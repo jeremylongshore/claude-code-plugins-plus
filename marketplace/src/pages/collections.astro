@@ -1,0 +1,260 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CollectionsGrid from '../components/CollectionsGrid.astro';
+import collections from '../data/collections.json';
+
+const totalCollections = collections.collections.length;
+const totalPluginsInCollections = collections.collections.reduce(
+  (sum, c) => sum + c.plugins.length, 0
+);
+---
+
+<BaseLayout
+  title="Plugin Collections | Curated Bundles for Claude Code"
+  description={`Browse ${totalCollections} curated plugin collections with ${totalPluginsInCollections} plugins. Pre-built bundles for DevOps, Security, AI/ML, and more.`}
+>
+  <style>
+    .collections-page {
+      padding: 6rem 2rem 4rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .page-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--brand-light);
+      border: 1px solid rgba(217, 119, 87, 0.25);
+      padding: 0.5rem 1rem;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--brand-orange-dark);
+      margin-bottom: 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .page-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      margin: 0 0 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .page-description {
+      font-size: 1.1rem;
+      color: var(--brand-mid-gray);
+      max-width: 600px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--brand-orange);
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+    }
+
+    .collections-section {
+      margin-bottom: 4rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .section-badge {
+      background: var(--brand-orange);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .install-guide {
+      background: var(--brand-light);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 4rem;
+    }
+
+    .install-guide h3 {
+      margin: 0 0 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .install-guide p {
+      color: var(--brand-mid-gray);
+      margin: 0 0 1rem;
+      line-height: 1.6;
+    }
+
+    .install-steps {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .install-step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--brand-orange);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .step-content code {
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      display: block;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+      overflow-x: auto;
+    }
+
+    @media (max-width: 768px) {
+      .collections-page {
+        padding: 4rem 1rem 2rem;
+      }
+
+      .stats-bar {
+        gap: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+
+  <div class="collections-page">
+    <header class="page-header">
+      <span class="page-badge">Quick Start</span>
+      <h1 class="page-title">Plugin Collections</h1>
+      <p class="page-description">
+        Pre-built plugin bundles for common workflows. Each collection is curated
+        to give you everything you need to supercharge a specific domain.
+      </p>
+    </header>
+
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-value">{totalCollections}</div>
+        <div class="stat-label">Collections</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{totalPluginsInCollections}</div>
+        <div class="stat-label">Total Plugins</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">1-Click</div>
+        <div class="stat-label">Install</div>
+      </div>
+    </div>
+
+    <section class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">Featured Collections</h2>
+        <span class="section-badge">Most Popular</span>
+      </div>
+      <CollectionsGrid featured={true} />
+    </section>
+
+    <section class="collections-section">
+      <div class="section-header">
+        <h2 class="section-title">All Collections</h2>
+      </div>
+      <CollectionsGrid />
+    </section>
+
+    <div class="install-guide">
+      <h3>How to Install a Collection</h3>
+      <p>
+        Installing a collection copies the install commands for all plugins to your clipboard.
+        Then paste into Claude Code to install them one by one.
+      </p>
+      <div class="install-steps">
+        <div class="install-step">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <strong>Click "Copy Install" on any collection</strong>
+            This copies the install commands for all plugins in the bundle.
+          </div>
+        </div>
+        <div class="install-step">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <strong>Open Claude Code</strong>
+            Launch your Claude Code terminal session.
+          </div>
+        </div>
+        <div class="install-step">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <strong>Paste and run the commands</strong>
+            Each plugin will be installed from the marketplace.
+            <code>/plugin install devops-automation-pack@claude-code-plugins-plus</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
