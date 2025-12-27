@@ -1,0 +1,378 @@
+---
+// CompareBar - Sticky comparison bar for selecting plugins to compare
+---
+
+<div id="compare-bar" class="compare-bar hidden">
+  <div class="compare-content">
+    <div class="compare-header">
+      <span class="compare-icon">⚖️</span>
+      <span class="compare-title">Compare Plugins</span>
+      <span id="compare-count" class="compare-count">0 selected</span>
+    </div>
+
+    <div id="compare-items" class="compare-items">
+      <!-- Selected items will be inserted here -->
+    </div>
+
+    <div class="compare-actions">
+      <button id="compare-clear" class="compare-btn secondary">Clear All</button>
+      <a id="compare-go" href="/compare/" class="compare-btn primary disabled">
+        Compare Now
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .compare-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    border-top: 2px solid var(--brand-orange);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+  }
+
+  .compare-bar.visible {
+    transform: translateY(0);
+  }
+
+  .compare-bar.hidden {
+    display: none;
+  }
+
+  .compare-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .compare-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .compare-icon {
+    font-size: 1.25rem;
+  }
+
+  .compare-title {
+    font-weight: 600;
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+
+  .compare-count {
+    background: var(--brand-light);
+    color: var(--brand-orange);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .compare-items {
+    display: flex;
+    gap: 0.75rem;
+    flex: 1;
+    overflow-x: auto;
+    padding: 0.25rem 0;
+  }
+
+  .compare-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--brand-light);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .compare-item-name {
+    font-weight: 500;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .compare-item-type {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: var(--brand-mid-gray);
+    padding: 0.15rem 0.4rem;
+    background: white;
+    border-radius: 4px;
+  }
+
+  .compare-item-remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  .compare-item-remove:hover {
+    opacity: 1;
+  }
+
+  .compare-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-shrink: 0;
+  }
+
+  .compare-btn {
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Poppins', Arial, sans-serif;
+  }
+
+  .compare-btn.secondary {
+    background: white;
+    border: 1px solid var(--brand-light-gray);
+    color: var(--brand-dark);
+  }
+
+  .compare-btn.secondary:hover {
+    border-color: var(--brand-orange);
+    color: var(--brand-orange);
+  }
+
+  .compare-btn.primary {
+    background: var(--brand-orange);
+    border: none;
+    color: white;
+  }
+
+  .compare-btn.primary:hover:not(.disabled) {
+    background: var(--brand-orange-dark);
+  }
+
+  .compare-btn.primary.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  @media (max-width: 768px) {
+    .compare-content {
+      padding: 1rem;
+      gap: 1rem;
+    }
+
+    .compare-header {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    .compare-items {
+      width: 100%;
+    }
+
+    .compare-actions {
+      width: 100%;
+      justify-content: stretch;
+    }
+
+    .compare-btn {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script is:inline>
+  // Comparison state management
+  window.CompareManager = {
+    MAX_ITEMS: 4,
+    items: [],
+
+    init() {
+      // Load from localStorage
+      const saved = localStorage.getItem('compare-items');
+      if (saved) {
+        try {
+          this.items = JSON.parse(saved);
+          this.render();
+        } catch (e) {
+          this.items = [];
+        }
+      }
+
+      // Set up event listeners
+      document.getElementById('compare-clear')?.addEventListener('click', () => {
+        this.clearAll();
+      });
+
+      // Update compare link on changes
+      this.updateCompareLink();
+    },
+
+    add(item) {
+      if (this.items.length >= this.MAX_ITEMS) {
+        this.showToast(`Maximum ${this.MAX_ITEMS} items for comparison`);
+        return false;
+      }
+
+      if (this.items.find(i => i.id === item.id)) {
+        this.showToast('Already added to comparison');
+        return false;
+      }
+
+      this.items.push(item);
+      this.save();
+      this.render();
+      this.showToast(`Added "${item.name}" to comparison`);
+      return true;
+    },
+
+    remove(id) {
+      const index = this.items.findIndex(i => i.id === id);
+      if (index > -1) {
+        const item = this.items[index];
+        this.items.splice(index, 1);
+        this.save();
+        this.render();
+        this.showToast(`Removed "${item.name}" from comparison`);
+      }
+    },
+
+    clearAll() {
+      this.items = [];
+      this.save();
+      this.render();
+      this.showToast('Comparison cleared');
+    },
+
+    has(id) {
+      return this.items.some(i => i.id === id);
+    },
+
+    save() {
+      localStorage.setItem('compare-items', JSON.stringify(this.items));
+    },
+
+    render() {
+      const bar = document.getElementById('compare-bar');
+      const itemsContainer = document.getElementById('compare-items');
+      const countEl = document.getElementById('compare-count');
+
+      if (!bar || !itemsContainer || !countEl) return;
+
+      // Update count
+      countEl.textContent = `${this.items.length} selected`;
+
+      // Show/hide bar
+      if (this.items.length > 0) {
+        bar.classList.remove('hidden');
+        setTimeout(() => bar.classList.add('visible'), 10);
+      } else {
+        bar.classList.remove('visible');
+        setTimeout(() => bar.classList.add('hidden'), 300);
+      }
+
+      // Render items
+      itemsContainer.innerHTML = this.items.map(item => `
+        <div class="compare-item" data-id="${item.id}">
+          <span class="compare-item-type">${item.type}</span>
+          <span class="compare-item-name">${item.name}</span>
+          <button class="compare-item-remove" onclick="CompareManager.remove('${item.id}')" title="Remove">×</button>
+        </div>
+      `).join('');
+
+      this.updateCompareLink();
+      this.updateCardStates();
+    },
+
+    updateCompareLink() {
+      const btn = document.getElementById('compare-go');
+      if (!btn) return;
+
+      if (this.items.length >= 2) {
+        const ids = this.items.map(i => i.id).join(',');
+        btn.href = `/compare/?items=${encodeURIComponent(ids)}`;
+        btn.classList.remove('disabled');
+      } else {
+        btn.href = '/compare/';
+        btn.classList.add('disabled');
+      }
+    },
+
+    updateCardStates() {
+      // Update compare buttons on cards
+      document.querySelectorAll('[data-compare-id]').forEach(btn => {
+        const id = btn.dataset.compareId;
+        if (this.has(id)) {
+          btn.classList.add('active');
+          btn.textContent = '✓ Added';
+        } else {
+          btn.classList.remove('active');
+          btn.textContent = '+ Compare';
+        }
+      });
+    },
+
+    showToast(message) {
+      const existing = document.querySelector('.compare-toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'compare-toast';
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 6rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a1a1a;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        z-index: 1001;
+        animation: fadeInOut 2s ease-in-out forwards;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+  };
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => CompareManager.init());
+  } else {
+    CompareManager.init();
+  }
+</script>
+
+<style is:global>
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+    15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  }
+</style>
