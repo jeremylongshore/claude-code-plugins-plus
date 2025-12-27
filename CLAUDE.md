@@ -34,11 +34,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-Claude Code plugins marketplace and learning hub. 259 plugins across 18 categories with 241 Agent Skills. Live at https://claudecodeplugins.io/
+Claude Code plugins marketplace and learning hub. 258 plugins across 22 categories with 239 Agent Skills. Live at https://claudecodeplugins.io/
 
 **Monorepo structure:** pnpm workspaces (v9.15.9+) with:
 - 7 MCP server plugins in `plugins/mcp/*` (TypeScript/Node.js)
-- 252 instruction-based plugins in `plugins/[category]/*` (Markdown)
+- 251 instruction-based plugins in `plugins/[category]/*` (Markdown)
 - Astro website in `marketplace/` (uses npm, not pnpm)
 - Shared packages in `packages/` (CLI, validator, analytics)
 
@@ -290,7 +290,7 @@ packages:
 - Entry point must be executable: `chmod +x dist/index.js`
 - Set `"type": "module"` in package.json for ES modules
 
-### 3. Agent Skills (241 across 73% of plugins)
+### 3. Agent Skills (239 across plugins)
 - **What they are**: Auto-activating capabilities triggered by conversation context
 - **Location**: `plugins/[category]/[plugin]/skills/[skill-name]/SKILL.md`
 - **How they work**: Claude reads trigger phrases and activates automatically
@@ -358,7 +358,7 @@ author: Name <email>
 - Description must include trigger phrases
 - Validate with: `python3 scripts/validate-skills-schema.py`
 
-**Skill Count:** 241 skills across 18 categories, all 2025-compliant
+**Skill Count:** 239 skills across 22 categories, all 2025-compliant
 
 ## Validation Pipeline (6 Stages)
 
@@ -545,8 +545,8 @@ npm run preview      # Test production build locally
 **Location:** `planned-skills/`
 
 **Goal**: Generate 500 standalone Agent Skills separate from plugins
-- Current: 241 skills embedded in plugins
-- Target: 741 total skills (500 standalone + 241 embedded)
+- Current: 239 skills embedded in plugins
+- Target: 739 total skills (500 standalone + 239 embedded)
 
 **Structure:**
 ```
@@ -719,18 +719,19 @@ python3 scripts/audit-skills-quality.py
 
 ## Statistics (Current)
 
-- **Total Plugins**: 259 across 18 categories
-- **Agent Skills**: 241 (73% of plugins have skills)
-- **MCP Plugins**: 7 (2% of marketplace)
-- **AI Instruction Plugins**: 252 (98% of marketplace)
+> **Canonical Source:** `node scripts/metrics-summary.js` or `marketplace/src/data/unified-search-index.json`
+
+- **Total Plugins**: 258 (indexed in search)
+- **Agent Skills**: 239 (indexed in search)
+- **Categories**: 22 (from search index)
+- **MCP Plugins**: 7 (3% of marketplace)
+- **AI Instruction Plugins**: 251 (97% of marketplace)
 - **Plugin Packs**: 4 major packs (devops, security, api-development, ai-ml)
-- **Categories**: 18 total categories
 - **2025 Schema**: Validated with scripts/validate-skills-schema.py
 - **Website**: https://claudecodeplugins.io/ (Astro 5.16.6 + Tailwind 4.1.18)
-- **Monorepo Version**: 4.3.0 (package.json)
-- **Release Version**: 4.0.0 (README.md - includes Learning Lab)
-- **CLI Tool**: @claude-code-plugins/ccp (published to npm)
-- **Last Updated**: 2025-12-24
+- **Monorepo Version**: 4.4.0 (package.json)
+- **CLI Tool**: @intentsolutionsio/ccpi (published to npm)
+- **Last Updated**: 2025-12-26
 
 ## Important Notes
 
@@ -744,4 +745,4 @@ There is currently no monetization mechanism for Claude Code plugins. All plugin
 Claude Code plugins are in **public beta** (October 2025). Features and best practices evolve. This marketplace stays updated with latest changes from Anthropic.
 
 ### Agent Skills Launch
-Agent Skills feature launched October 16, 2025 by Anthropic. This marketplace was first to implement comprehensive skill support across 241 plugins.
+Agent Skills feature launched October 16, 2025 by Anthropic. This marketplace was first to implement comprehensive skill support with 239 indexed skills.
