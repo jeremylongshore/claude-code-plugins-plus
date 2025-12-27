@@ -186,7 +186,7 @@ await appendFile(&#039;/var/log/audit/audit.jsonl&#039;, JSON.stringify(log) + &
 
 // Option 2: PostgreSQL with audit triggers
 await db.query(
-&#039;INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES (\$1, \$2, \$3, \$4, \$5, \$6)&#039;,
+&#039;INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES (&#36;1, &#36;2, &#36;3, &#36;4, &#36;5, &#36;6)&#039;,
 [log.id, log.timestamp, log.eventType, log.userId, log, log.signature]
 );
 
@@ -326,23 +326,23 @@ const now = Date.now();
 // Delete old conversations (GDPR: storage limitation)
 const cutoff = now - (RetentionPolicy.CONVERSATIONS * 86400000);
 await db.conversations.deleteMany({
-lastModified: { \$lt: cutoff }
+lastModified: { &#36;lt: cutoff }
 });
 
 // Archive (not delete) audit logs
 const auditCutoff = now - (RetentionPolicy.AUDIT_LOGS * 86400000);
 const oldLogs = await db.auditLogs.find({
-timestamp: { \$lt: auditCutoff }
+timestamp: { &#36;lt: auditCutoff }
 });
 await this.archiveToS3(oldLogs);
 await db.auditLogs.deleteMany({
-timestamp: { \$lt: auditCutoff }
+timestamp: { &#36;lt: auditCutoff }
 });
 
 // Delete old analytics
 const analyticsCutoff = now - (RetentionPolicy.ANALYTICS * 86400000);
 await db.analytics.deleteMany({
-timestamp: { \$lt: analyticsCutoff }
+timestamp: { &#36;lt: analyticsCutoff }
 });
 }
 
@@ -350,7 +350,7 @@ private async archiveToS3(logs: any[]): Promise&lt;void&gt; {
 const archive = JSON.stringify(logs);
 await s3.putObject({
 Bucket: &#039;audit-logs-archive&#039;,
-Key: `archive-\${Date.now()}.json.gz`,
+Key: `archive-&#36;{Date.now()}.json.gz`,
 Body: gzip(archive)
 });
 }
@@ -380,7 +380,7 @@ await db.preferences.deleteMany({ userId });
 // Anonymize audit logs (can&#039;t delete due to legal requirements)
 await db.auditLogs.updateMany(
 { userId },
-{ \$set: { userId: `ANONYMIZED_\${crypto.randomUUID()}` } }
+{ &#36;set: { userId: `ANONYMIZED_&#36;{crypto.randomUUID()}` } }
 );
 
 // Generate confirmation
@@ -389,7 +389,7 @@ await this.sendErasureConfirmation(userId, requestId);
 
 private async sendErasureConfirmation(userId: string, requestId: string): Promise&lt;void&gt; {
 // Email or other notification confirming erasure
-console.log(</code>Erasure completed for \${userId}, request \${requestId}</code>);
+console.log(</code>Erasure completed for &#36;{userId}, request &#36;{requestId}</code>);
 }
 }</code></pre>
 
@@ -465,7 +465,7 @@ outcome: &#039;failure&#039;,
 metadata: { role: user.role }
 });
 
-throw new Error(`Permission denied: \${permission}`);
+throw new Error(`Permission denied: &#36;{permission}`);
 }
 
 await action();
@@ -506,7 +506,7 @@ metadata: { role, permissions }
 async revokeAccess(userId: string): Promise&lt;void&gt; {
 await db.users.update(
 { id: userId },
-{ \$set: { status: &#039;inactive&#039;, accessRevoked: Date.now() } }
+{ &#36;set: { status: &#039;inactive&#039;, accessRevoked: Date.now() } }
 );
 
 await auditor.log({
@@ -526,7 +526,7 @@ async detectSuspiciousActivity(userId: string): Promise&lt;void&gt; {
 const recentLogins = await db.auditLogs.find({
 userId,
 eventType: AuditEventType.USER_LOGIN,
-timestamp: { \$gte: Date.now() - 3600000 } // Last hour
+timestamp: { &#36;gte: Date.now() - 3600000 } // Last hour
 });
 
 // Multiple failed logins
@@ -546,7 +546,7 @@ await this.alertSecurityTeam(userId, &#039;multiple_locations&#039;);
 private async lockAccount(userId: string): Promise&lt;void&gt; {
 await db.users.update(
 { id: userId },
-{ \$set: { locked: true, lockedReason: &#039;suspicious_activity&#039; } }
+{ &#36;set: { locked: true, lockedReason: &#039;suspicious_activity&#039; } }
 );
 
 await auditor.log({
@@ -563,7 +563,7 @@ metadata: { reason: &#039;brute_force_detected&#039; }
 
 private async alertSecurityTeam(userId: string, reason: string): Promise&lt;void&gt; {
 // Send to PagerDuty, Slack, email, etc.
-console.log(`SECURITY ALERT: \${reason} for user \${userId}`);
+console.log(`SECURITY ALERT: &#36;{reason} for user &#36;{userId}`);
 }
 
 private async verifyIdentity(userId: string): Promise&lt;any&gt; {
@@ -577,27 +577,27 @@ return await db.users.findOne({ id: userId });
 <pre><code class="language-bash">#!/bin/bash
 # collect-soc2-evidence.sh - Automated evidence gathering
 
-EVIDENCE_DIR=&quot;/compliance/soc2/evidence-\$(date +%Y-%m-%d)&quot;
-mkdir -p \$EVIDENCE_DIR
+EVIDENCE_DIR=&quot;/compliance/soc2/evidence-&#36;(date +%Y-%m-%d)&quot;
+mkdir -p &#36;EVIDENCE_DIR
 
 # 1. Access control logs (CC6.1, CC6.2)
-pg_dump -t audit_logs --data-only &gt; \$EVIDENCE_DIR/access_logs.sql
+pg_dump -t audit_logs --data-only &gt; &#36;EVIDENCE_DIR/access_logs.sql
 
 # 2. Configuration changes (CC7.2)
 git log --since=&quot;30 days ago&quot; --pretty=format:&quot;%h %an %ad %s&quot; \
-&gt; \$EVIDENCE_DIR/config_changes.txt
+&gt; &#36;EVIDENCE_DIR/config_changes.txt
 
 # 3. Backup verification (A1.2)
-ls -lh /backups/postgres/ &gt; \$EVIDENCE_DIR/backup_verification.txt
+ls -lh /backups/postgres/ &gt; &#36;EVIDENCE_DIR/backup_verification.txt
 
 # 4. Encryption status (CC6.6)
 openssl s_client -connect claude.example.com:443 &lt; /dev/null \
-| openssl x509 -text &gt; \$EVIDENCE_DIR/ssl_certificate.txt
+| openssl x509 -text &gt; &#36;EVIDENCE_DIR/ssl_certificate.txt
 
 # 5. Vulnerability scans (CC7.1)
-docker scan ollama:latest &gt; \$EVIDENCE_DIR/vulnerability_scan.txt
+docker scan ollama:latest &gt; &#36;EVIDENCE_DIR/vulnerability_scan.txt
 
-echo &quot;Evidence collected: \$EVIDENCE_DIR&quot;</code></pre>
+echo &quot;Evidence collected: &#36;EVIDENCE_DIR&quot;</code></pre>
 
 <hr>
 
@@ -706,7 +706,7 @@ return JSON.stringify(data, null, 2);
     // ❌ HIPAA VIOLATION: Sending PHI to cloud
     // const response = await anthropic.messages.create({
     //   model: &#039;claude-3-5-sonnet-20241022&#039;,
-    //   messages: [{ role: &#039;user&#039;, content: `Analyze: \${patientData}` }]
+    //   messages: [{ role: &#039;user&#039;, content: `Analyze: &#36;{patientData}` }]
     // });
 
 // ✅ HIPAA COMPLIANT: Self-hosted Ollama
@@ -714,7 +714,7 @@ const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
 method: &#039;POST&#039;,
 body: JSON.stringify({
 model: &#039;llama3.3:70b&#039;,
-prompt: </code>Analyze patient data: \${patientData}</code>,
+prompt: </code>Analyze patient data: &#36;{patientData}</code>,
 stream: false
 })
 });

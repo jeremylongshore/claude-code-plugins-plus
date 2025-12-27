@@ -90,7 +90,7 @@ description: string;
 tail -n 1000 /var/log/claude-code.log | grep -c ERROR
 
 # Check affected users
-grep &quot;ERROR&quot; /var/log/claude-code.log | awk &#039;{print \$5}&#039; | sort -u | wc -l
+grep &quot;ERROR&quot; /var/log/claude-code.log | awk &#039;{print &#36;5}&#039; | sort -u | wc -l
 
 # Check service health
 curl http://localhost:3333/api/status</code></pre>
@@ -113,7 +113,7 @@ issues.push(&#039;Network connectivity issue&#039;);
 }
 
 // 2. Check disk space
-const { stdout } = await execAsync(&quot;df -h / | tail -1 | awk &#039;{print \$5}&#039; | sed &#039;s/%//&#039;&quot;);
+const { stdout } = await execAsync(&quot;df -h / | tail -1 | awk &#039;{print &#36;5}&#039; | sed &#039;s/%//&#039;&quot;);
 if (parseInt(stdout) &gt; 90) issues.push(&#039;Disk space critical&#039;);
 
 // 3. Check memory
@@ -177,7 +177,7 @@ In 15 minutes or when resolved.</code></pre>
 <pre><code class="language-typescript">async function diagnoseRateLimits(): Promise&lt;void&gt; {
   // Check recent API calls
   const recentCalls = await queryLogs(&#039;SELECT COUNT(*) FROM api_calls WHERE timestamp &gt; NOW() - INTERVAL 1 MINUTE&#039;);
-  console.log(`API calls in last minute: \${recentCalls}`);
+  console.log(`API calls in last minute: &#36;{recentCalls}`);
 
 // Check rate limit headers from last successful call
 const lastHeaders = await getLastAPIHeaders();
@@ -239,7 +239,7 @@ class TimeoutManager {
     return Promise.race([
       fn(),
       new Promise&lt;never&gt;((_, reject) =&gt;
-        setTimeout(() =&gt; reject(new Error(`Timeout after \${timeoutMs}ms`)), timeoutMs)
+        setTimeout(() =&gt; reject(new Error(`Timeout after &#36;{timeoutMs}ms`)), timeoutMs)
       )
     ]);
   }
@@ -378,7 +378,7 @@ const byPlugin = groupBy(failures, f =&gt; f.pluginName);
 const suspiciousPlugin = Object.entries(byPlugin)
 .sort((a, b) =&gt; b[1].length - a[1].length)[0];
 
-console.log(`Most failures from plugin: \${suspiciousPlugin[0]} (\${suspiciousPlugin[1].length} errors)`);
+console.log(`Most failures from plugin: &#36;{suspiciousPlugin[0]} (&#36;{suspiciousPlugin[1].length} errors)`);
 }</code></pre>
 
 <h3>3. Distributed Tracing</h3>
@@ -455,7 +455,7 @@ const message = lines[0];
 // Parse metadata
 const metadata: Record&lt;string, any&gt; = {};
 for (const line of lines.slice(1)) {
-const metaMatch = line.match(/^\s*(\w+): (.+)\$/);
+const metaMatch = line.match(/^\s*(\w+): (.+)&#36;/);
 if (metaMatch) {
 const [, key, value] = metaMatch;
 metadata[key] = value;
@@ -487,7 +487,7 @@ console.log(&#039;Errors by component:&#039;);
 Object.entries(errorsByComponent)
 .sort((a, b) =&gt; b[1].length - a[1].length)
 .forEach(([component, errors]) =&gt; {
-console.log(`  \${component}: \${errors.length}`);
+console.log(`  &#36;{component}: &#36;{errors.length}`);
 });
 
 // Recent errors (last 5 minutes)
@@ -496,9 +496,9 @@ l.level === &#039;ERROR&#039; &amp;&amp;
 Date.now() - l.timestamp.getTime() &lt; 300000
 );
 
-console.log(`\nRecent errors: \${recentErrors.length}`);
+console.log(`\nRecent errors: &#36;{recentErrors.length}`);
 recentErrors.slice(0, 10).forEach(err =&gt; {
-console.log(`  \${err.timestamp.toISOString()} - \${err.message}`);
+console.log(`  &#36;{err.timestamp.toISOString()} - &#36;{err.message}`);
 });
 }</code></pre>
 
@@ -512,12 +512,12 @@ const data = JSON.parse(event.data);
 
 // Track rate limit warnings
 if (data.type === &#039;rate_limit.warning&#039;) {
-console.warn(`⚠️ Rate limit approaching: \${data.current}/\${data.limit}`);
+console.warn(`⚠️ Rate limit approaching: &#36;{data.current}/&#36;{data.limit}`);
 }
 
 // Track errors
 if (data.type === &#039;llm.call&#039; &amp;&amp; data.error) {
-console.error(`❌ LLM call failed: \${data.error}`);
+console.error(`❌ LLM call failed: &#36;{data.error}`);
 }
 };
 
@@ -526,7 +526,7 @@ const response = await fetch(&#039;http://localhost:3333/api/sessions&#039;);
 const sessions = await response.json();
 const failedSessions = sessions.filter(s =&gt; s.errorCount &gt; 0);
 
-console.log(`Failed sessions: \${failedSessions.length}/\${sessions.length}`);</code></pre>
+console.log(`Failed sessions: &#36;{failedSessions.length}/&#36;{sessions.length}`);</code></pre>
 
 <hr>
 
@@ -644,7 +644,7 @@ const breaker = this.breakers.get(serviceName);
 if (breaker) {
 breaker.state = &#039;closed&#039;;
 breaker.failures = 0;
-console.log(`✓ Reset circuit breaker for \${serviceName}`);
+console.log(`✓ Reset circuit breaker for &#36;{serviceName}`);
 }
 }
 
@@ -665,10 +665,10 @@ BACKUP_DATE=&quot;2025-12-24-14:00&quot;
 pm2 stop all
 
 # Restore database
-pg_restore -d database_prod backups/backup_\${BACKUP_DATE}.sql
+pg_restore -d database_prod backups/backup_&#36;{BACKUP_DATE}.sql
 
 # Restore files
-rsync -av backups/files_\${BACKUP_DATE}/ /var/lib/claude-code/
+rsync -av backups/files_&#36;{BACKUP_DATE}/ /var/lib/claude-code/
 
 # Restart
 pm2 restart all
@@ -772,7 +772,7 @@ console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
      pagerDuty.trigger({
        severity: &#039;critical&#039;,
        title: &#039;High error rate detected&#039;,
-       details: `Error rate: \${(errorRate * 100).toFixed(1)}%`
+       details: `Error rate: &#36;{(errorRate * 100).toFixed(1)}%`
      });
    }</code></pre>
 

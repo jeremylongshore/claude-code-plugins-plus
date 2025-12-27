@@ -164,33 +164,33 @@ const meta = {
 <pre><code class="language-bash">#!/bin/bash
 # install-team-bundle.sh - Install team plugin bundle
 
-<p>BUNDLE=\$1</p>
+<p>BUNDLE=&#36;1</p>
 
-<p>if [ -z &quot;\$BUNDLE&quot; ]; then</p>
+<p>if [ -z &quot;&#36;BUNDLE&quot; ]; then</p>
 <p>echo &quot;Usage: ./install-team-bundle.sh &lt;backend|frontend|devops&gt;&quot;</p>
 <p>exit 1</p>
 <p>fi</p>
 
-<p>BUNDLE_FILE=&quot;team-bundles/\${BUNDLE}-engineering-pack.json&quot;</p>
+<p>BUNDLE_FILE=&quot;team-bundles/&#36;{BUNDLE}-engineering-pack.json&quot;</p>
 
-<p>if [ ! -f &quot;\$BUNDLE_FILE&quot; ]; then</p>
-<p>echo &quot;Bundle not found: \$BUNDLE_FILE&quot;</p>
+<p>if [ ! -f &quot;&#36;BUNDLE_FILE&quot; ]; then</p>
+<p>echo &quot;Bundle not found: &#36;BUNDLE_FILE&quot;</p>
 <p>exit 1</p>
 <p>fi</p>
 
 <p># Parse plugins from bundle</p>
-<p>PLUGINS=\$(jq -r &#039;.plugins[]&#039; \$BUNDLE_FILE)</p>
+<p>PLUGINS=&#36;(jq -r &#039;.plugins[]&#039; &#36;BUNDLE_FILE)</p>
 
 <p># Install each plugin</p>
-<p>for plugin in \$PLUGINS; do</p>
-<p>echo &quot;Installing: \$plugin&quot;</p>
-<p>/plugin install \$plugin</p>
+<p>for plugin in &#36;PLUGINS; do</p>
+<p>echo &quot;Installing: &#36;plugin&quot;</p>
+<p>/plugin install &#36;plugin</p>
 <p>done</p>
 
 <p># Verify installation</p>
 <p>/plugin list</p>
 
-<p>echo &quot;✓ Team bundle installed: \$BUNDLE&quot;</code></pre></p>
+<p>echo &quot;✓ Team bundle installed: &#36;BUNDLE&quot;</code></pre></p>
 
 <hr>
 
@@ -378,15 +378,15 @@ const meta = {
 <pre><code class="language-bash">#!/bin/bash
 # onboard-team-member.sh - Automated onboarding
 
-<p>MEMBER_NAME=\$1</p>
-<p>TEAM=\$2</p>
+<p>MEMBER_NAME=&#36;1</p>
+<p>TEAM=&#36;2</p>
 
-<p>if [ -z &quot;\$MEMBER_NAME&quot; ] || [ -z &quot;\$TEAM&quot; ]; then</p>
+<p>if [ -z &quot;&#36;MEMBER_NAME&quot; ] || [ -z &quot;&#36;TEAM&quot; ]; then</p>
 <p>echo &quot;Usage: ./onboard-team-member.sh &lt;name&gt; &lt;team&gt;&quot;</p>
 <p>exit 1</p>
 <p>fi</p>
 
-<p>echo &quot;🚀 Onboarding: \$MEMBER_NAME to \$TEAM team&quot;</p>
+<p>echo &quot;🚀 Onboarding: &#36;MEMBER_NAME to &#36;TEAM team&quot;</p>
 
 <p># 1. Install Claude Code</p>
 <p>echo &quot;Installing Claude Code...&quot;</p>
@@ -395,15 +395,15 @@ const meta = {
 <p># 2. Configure team settings</p>
 <p>echo &quot;Configuring team settings...&quot;</p>
 <p>mkdir -p ~/.claude</p>
-<p>cp team-configs/\$TEAM/config.json ~/.claude/config.json</p>
+<p>cp team-configs/&#36;TEAM/config.json ~/.claude/config.json</p>
 
 <p># 3. Install team plugin bundle</p>
 <p>echo &quot;Installing team plugins...&quot;</p>
-<p>./install-team-bundle.sh \$TEAM</p>
+<p>./install-team-bundle.sh &#36;TEAM</p>
 
 <p># 4. Set up Git hooks</p>
 <p>echo &quot;Setting up Git hooks...&quot;</p>
-<p>cp team-configs/\$TEAM/hooks/* .git/hooks/</p>
+<p>cp team-configs/&#36;TEAM/hooks/* .git/hooks/</p>
 <p>chmod +x .git/hooks/*</p>
 
 <p># 5. Install Beads (task tracker)</p>
@@ -413,12 +413,12 @@ const meta = {
 <p># 6. Clone team repositories</p>
 <p>echo &quot;Cloning team repositories...&quot;</p>
 <p>while read repo; do</p>
-<p>git clone git@github.com:acme-corp/\$repo.git</p>
-<p>done &lt; team-configs/\$TEAM/repositories.txt</p>
+<p>git clone git@github.com:acme-corp/&#36;repo.git</p>
+<p>done &lt; team-configs/&#36;TEAM/repositories.txt</p>
 
 <p># 7. Generate welcome document</p>
-<p>cat &gt; ONBOARDING_\$MEMBER_NAME.md &lt;&lt;EOF</p>
-<p># Welcome to the \$TEAM Team!</p>
+<p>cat &gt; ONBOARDING_&#36;MEMBER_NAME.md &lt;&lt;EOF</p>
+<p># Welcome to the &#36;TEAM Team!</p>
 
 <p>&lt;h2&gt;Your Setup&lt;/h2&gt;</p>
 <ul>
@@ -430,8 +430,8 @@ const meta = {
 
 <p>&lt;h2&gt;Next Steps&lt;/h2&gt;</p>
 <ul>
-<li>Read team docs: https://wiki.acme.com/\$TEAM</li>
-<li>Join Slack: #team-\$TEAM</li>
+<li>Read team docs: https://wiki.acme.com/&#36;TEAM</li>
+<li>Join Slack: #team-&#36;TEAM</li>
 <li>Attend standup: Daily at 9:30 AM</li>
 <li>Review team workflows: .claude/workflows/</li>
 </ul>
@@ -454,7 +454,7 @@ const meta = {
 <p>EOF</p>
 
 <p>echo &quot;✅ Onboarding complete!&quot;</p>
-<p>echo &quot;Review: ONBOARDING_\$MEMBER_NAME.md&quot;</code></pre></p>
+<p>echo &quot;Review: ONBOARDING_&#36;MEMBER_NAME.md&quot;</code></pre></p>
 
 <h3>Interactive Onboarding CLI</h3>
 
@@ -557,30 +557,30 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 
 <p>async syncFromCentral(team: string): Promise&lt;void&gt; {</p>
 <p>// Clone/pull config repo</p>
-<p>execSync(`git clone \${this.configRepo} /tmp/team-configs || (cd /tmp/team-configs &amp;&amp; git pull)`);</p>
+<p>execSync(`git clone &#36;{this.configRepo} /tmp/team-configs || (cd /tmp/team-configs &amp;&amp; git pull)`);</p>
 
 <p>// Copy team config</p>
-<p>const teamConfig = readFileSync(`/tmp/team-configs/\${team}/config.json`, &#039;utf-8&#039;);</p>
-<p>writeFileSync(`\${process.env.HOME}/.claude/config.json`, teamConfig);</p>
+<p>const teamConfig = readFileSync(`/tmp/team-configs/&#36;{team}/config.json`, &#039;utf-8&#039;);</p>
+<p>writeFileSync(`&#36;{process.env.HOME}/.claude/config.json`, teamConfig);</p>
 
 <p>// Copy workflows</p>
-<p>execSync(`cp -r /tmp/team-configs/\${team}/workflows/* \${process.env.HOME}/.claude/workflows/`);</p>
+<p>execSync(`cp -r /tmp/team-configs/&#36;{team}/workflows/* &#36;{process.env.HOME}/.claude/workflows/`);</p>
 
 <p>// Copy hooks</p>
-<p>execSync(`cp /tmp/team-configs/\${team}/hooks/* .git/hooks/`);</p>
+<p>execSync(`cp /tmp/team-configs/&#36;{team}/hooks/* .git/hooks/`);</p>
 
-<p>console.log(`✓ Synced configuration for \${team} team`);</p>
+<p>console.log(`✓ Synced configuration for &#36;{team} team`);</p>
 <p>}</p>
 
 <p>async pushLocalChanges(team: string, message: string): Promise&lt;void&gt; {</p>
 <p>// Copy local config back to central repo</p>
-<p>execSync(`cp \${process.env.HOME}/.claude/config.json /tmp/team-configs/\${team}/config.json`);</p>
+<p>execSync(`cp &#36;{process.env.HOME}/.claude/config.json /tmp/team-configs/&#36;{team}/config.json`);</p>
 
 <p>// Commit and push</p>
 <p>execSync(</code></p>
 <p>cd /tmp/team-configs &amp;&amp;</p>
-<p>git add \${team}/ &amp;&amp;</p>
-<p>git commit -m &quot;\${message}&quot; &amp;&amp;</p>
+<p>git add &#36;{team}/ &amp;&amp;</p>
+<p>git commit -m &quot;&#36;{message}&quot; &amp;&amp;</p>
 <p>git push origin main</p>
 <p><code>);</p>
 
@@ -617,8 +617,8 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>};</p>
 
 <p>console.log(`🎯 Pair Programming Session Started`);</p>
-<p>console.log(`Task: \${task}`);</p>
-<p>console.log(`Navigator: \${session.navigator}`);</p>
+<p>console.log(`Task: &#36;{task}`);</p>
+<p>console.log(`Navigator: &#36;{session.navigator}`);</p>
 <p>console.log(&#039;------------------------------------------\n&#039;);</p>
 
 <p>return session;</p>
@@ -628,7 +628,7 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>// AI agent analyzes code and provides real-time feedback</p>
 <p>const response = await callClaude({</p>
 <p>agent: &#039;code-reviewer&#039;,</p>
-<p>prompt: `As a pair programming navigator, review this code:\n\n\${code}\n\nContext: \${context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices`</p>
+<p>prompt: `As a pair programming navigator, review this code:\n\n&#36;{code}\n\nContext: &#36;{context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices`</p>
 <p>});</p>
 
 <p>return response;</p>
@@ -637,7 +637,7 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>async endSession(session: PairSession): Promise&lt;void&gt; {</p>
 <p>const duration = Date.now() - session.startTime;</p>
 <p>console.log(`\n✅ Pair Programming Session Complete`);</p>
-<p>console.log(`Duration: \${Math.floor(duration / 60000)} minutes`);</p>
+<p>console.log(`Duration: &#36;{Math.floor(duration / 60000)} minutes`);</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -782,7 +782,7 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
    { &quot;apiKey&quot;: &quot;sk-...&quot; }
 
 <p>// ✅ Environment variable</p>
-<p>{ &quot;apiKey&quot;: &quot;\${ANTHROPIC_API_KEY}&quot; }</code></pre></p>
+<p>{ &quot;apiKey&quot;: &quot;&#36;{ANTHROPIC_API_KEY}&quot; }</code></pre></p>
 
 <ul>
 <li><strong>Don't skip testing workflows</strong></li>
