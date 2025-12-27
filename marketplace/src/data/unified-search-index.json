@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2025-12-26T22:12:53.295Z",
+    "generated": "2025-12-27T06:05:46.000Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
@@ -89,6 +89,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "content consistency validator read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across any html-based website (wordpress, hugo, next.js, react, vue, static html, etc.), github repositories, and local documentation. detects mixed messaging without making changes. productivity "
     },
     {
@@ -105,6 +111,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "taskwarrior integration enforces complete taskwarrior integration protocol for all coding tasks with automatic task lifecycle management and time tracking via timewarrior productivity "
     },
     {
@@ -121,6 +133,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "yaml master agent intelligent yaml validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities productivity "
     },
     {
@@ -137,6 +155,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "vertex ai media master comprehensive google vertex ai multimodal mastery for jeremy - video processing (6+ hours), audio generation, image creation with gemini 2.0/2.5 and imagen 4. marketing campaign automation, content generation, and media asset production. productivity "
     },
     {
@@ -153,6 +177,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "google cloud agent sdk google cloud agent development kit (adk) and agent starter pack mastery - build containerized multi-agent systems with production-ready templates, deploy to cloud run/gke/agent engine, rag agents, react agents, and multi-agent orchestration. productivity "
     },
     {
@@ -169,6 +199,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "access control auditor audit access control implementations security "
     },
     {
@@ -185,6 +221,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "accessibility test scanner a11y compliance testing with wcag 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits testing "
     },
     {
@@ -200,6 +242,12 @@
         "name": "Jeremy Longshore"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "agent context manager automatically detects and loads agents.md files to provide agent-specific instructions productivity "
     },
     {
@@ -216,6 +264,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "ai commit gen ai-powered commit message generator - analyzes your git diff and creates conventional commit messages instantly productivity "
     },
     {
@@ -232,6 +284,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ai ethics validator ai ethics and fairness validation ai-ml "
     },
     {
@@ -247,6 +305,10 @@
         "name": "Claude Code Plugins"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "ai experiment logger track and analyze ai experiments with a web dashboard and mcp tools ai-ml "
     },
     {
@@ -263,6 +325,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ai ml engineering pack professional ai/ml engineering toolkit: prompt engineering, llm integration, rag systems, ai safety with 12 expert plugins ai-ml "
     },
     {
@@ -279,6 +347,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ai sdk agents multi-agent orchestration with ai sdk v5 - handoffs, routing, and coordination for any ai provider (openai, anthropic, google) ai-ml "
     },
     {
@@ -295,6 +369,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "alerting rule creator create intelligent alerting rules for performance monitoring performance "
     },
     {
@@ -311,6 +391,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "anomaly detection system detect anomalies and outliers in data ai-ml "
     },
     {
@@ -327,6 +413,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ansible playbook creator create ansible playbooks for configuration management devops "
     },
     {
@@ -343,6 +435,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api authentication builder build authentication systems with jwt, oauth2, and api keys api-development "
     },
     {
@@ -359,6 +457,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api batch processor implement batch api operations with bulk processing and job queues api-development "
     },
     {
@@ -375,6 +479,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api cache manager implement caching strategies with redis, cdn, and http headers api-development "
     },
     {
@@ -391,6 +501,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api contract generator generate api contracts for consumer-driven contract testing api-development "
     },
     {
@@ -407,6 +523,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api documentation generator generate comprehensive api documentation from openapi/swagger specs api-development "
     },
     {
@@ -423,6 +545,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api error handler implement standardized error handling with proper http status codes api-development "
     },
     {
@@ -439,6 +567,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api event emitter implement event-driven apis with message queues and event streaming api-development "
     },
     {
@@ -455,6 +589,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api fuzzer fuzz testing for apis with malformed inputs, edge cases, and security vulnerability detection testing "
     },
     {
@@ -471,6 +611,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api gateway builder build api gateway with routing, authentication, and rate limiting api-development "
     },
     {
@@ -487,6 +633,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api load tester load test apis with k6, gatling, or artillery api-development "
     },
     {
@@ -503,6 +655,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api migration tool migrate apis between versions with backward compatibility api-development "
     },
     {
@@ -519,6 +677,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api mock server create mock api servers from openapi specs for testing api-development "
     },
     {
@@ -535,6 +699,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api monitoring dashboard create monitoring dashboards for api health, metrics, and alerts api-development "
     },
     {
@@ -551,6 +721,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api rate limiter implement rate limiting with token bucket, sliding window, and redis api-development "
     },
     {
@@ -567,6 +743,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api request logger log api requests with structured logging and correlation ids api-development "
     },
     {
@@ -583,6 +765,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api response validator validate api responses against schemas and contracts api-development "
     },
     {
@@ -599,6 +787,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api schema validator validate api schemas with json schema, joi, yup, or zod api-development "
     },
     {
@@ -615,6 +809,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api sdk generator generate client sdks from openapi specs for multiple languages api-development "
     },
     {
@@ -631,6 +831,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api security scanner scan apis for security vulnerabilities and owasp api top 10 api-development "
     },
     {
@@ -647,6 +853,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api test automation automated api endpoint testing with request generation, validation, and comprehensive test coverage testing "
     },
     {
@@ -663,6 +875,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api throttling manager manage api throttling with dynamic rate limits and quota management api-development "
     },
     {
@@ -679,6 +897,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "api versioning manager manage api versions with migration strategies and backward compatibility api-development "
     },
     {
@@ -695,6 +919,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "apm dashboard creator create application performance monitoring dashboards performance "
     },
     {
@@ -711,6 +941,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "application profiler profile application performance with cpu, memory, and execution time analysis performance "
     },
     {
@@ -727,6 +963,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "arbitrage opportunity finder find and analyze arbitrage opportunities across exchanges and defi protocols crypto "
     },
     {
@@ -743,6 +985,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "authentication validator validate authentication implementations security "
     },
     {
@@ -759,6 +1007,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "auto scaling configurator configure auto-scaling policies for applications and infrastructure devops "
     },
     {
@@ -775,6 +1029,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "automl pipeline builder build automl pipelines ai-ml "
     },
     {
@@ -791,6 +1051,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "backup strategy implementor implement backup strategies for databases and applications devops "
     },
     {
@@ -807,6 +1073,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "blockchain explorer cli command-line blockchain explorer for transactions, addresses, and contracts crypto "
     },
     {
@@ -823,6 +1095,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "bottleneck detector detect and resolve performance bottlenecks performance "
     },
     {
@@ -839,6 +1117,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "browser compatibility tester cross-browser testing with browserstack, selenium grid, and playwright - test across chrome, firefox, safari, edge testing "
     },
     {
@@ -855,6 +1139,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "cache performance optimizer optimize caching strategies for improved performance performance "
     },
     {
@@ -870,6 +1160,10 @@
         "name": "Claude Code Plugins Team"
       },
       "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "calendar to workflow enhances calendar skills by automating meeting prep and workflow triggers skill-enhancers "
     },
     {
@@ -886,6 +1180,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "capacity planning analyzer analyze and plan for capacity requirements performance "
     },
     {
@@ -902,6 +1202,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "chaos engineering toolkit chaos testing for resilience with failure injection, latency simulation, and system resilience validation testing "
     },
     {
@@ -918,6 +1224,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ci cd pipeline builder build ci/cd pipelines for github actions, gitlab ci, jenkins, and more devops "
     },
     {
@@ -934,6 +1246,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "classification model builder build classification models ai-ml "
     },
     {
@@ -950,6 +1268,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "cloud cost optimizer optimize cloud costs and generate cost reports devops "
     },
     {
@@ -966,6 +1290,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "clustering algorithm runner run clustering algorithms on datasets ai-ml "
     },
     {
@@ -982,6 +1312,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "compliance checker check infrastructure compliance (soc2, hipaa, pci-dss) devops "
     },
     {
@@ -998,6 +1334,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "compliance report generator generate compliance reports security "
     },
     {
@@ -1014,6 +1356,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "computer vision processor computer vision image processing and analysis ai-ml "
     },
     {
@@ -1030,6 +1378,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "container registry manager manage container registries (ecr, gcr, harbor) devops "
     },
     {
@@ -1046,6 +1400,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "container security scanner scan containers for vulnerabilities using trivy, snyk, and other security tools devops "
     },
     {
@@ -1062,6 +1422,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "contract test validator api contract testing with pact, openapi validation, and consumer-driven contract verification testing "
     },
     {
@@ -1078,6 +1444,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "conversational api debugger debug rest api failures using openapi specs and http logs (har) - root cause analysis with curl generation debugging "
     },
     {
@@ -1094,6 +1466,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "cors policy validator validate cors policies security "
     },
     {
@@ -1110,6 +1488,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "cpu usage monitor monitor and analyze cpu usage patterns in applications performance "
     },
     {
@@ -1126,6 +1510,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "creator studio pack complete plugin suite for builder-filmmakers: build products and create viral videos. 20 plugins covering documentation, video production, content strategy, and workflow optimization. transform from code to published video in 30 minutes. packages "
     },
     {
@@ -1142,6 +1530,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "cross chain bridge monitor monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits crypto "
     },
     {
@@ -1158,6 +1552,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "crypto derivatives tracker track crypto futures, options, perpetual swaps with funding rates, open interest, and derivatives market analysis crypto "
     },
     {
@@ -1174,6 +1574,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "crypto news aggregator aggregate and analyze crypto news from multiple sources with sentiment analysis crypto "
     },
     {
@@ -1190,6 +1596,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "crypto portfolio tracker professional crypto portfolio tracking with real-time prices, pnl analysis, and risk metrics crypto "
     },
     {
@@ -1206,6 +1618,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "crypto signal generator generate trading signals from technical indicators and market analysis crypto "
     },
     {
@@ -1222,6 +1640,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "crypto tax calculator calculate crypto taxes with fifo/lifo methods and generate tax reports crypto "
     },
     {
@@ -1238,6 +1662,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "csrf protection validator validate csrf protection security "
     },
     {
@@ -1254,6 +1684,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "data preprocessing pipeline automated data preprocessing and cleaning pipelines ai-ml "
     },
     {
@@ -1270,6 +1706,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "data privacy scanner scan for data privacy issues security "
     },
     {
@@ -1286,6 +1728,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "data seeder generator generate realistic test data and database seed scripts for development and testing environments database "
     },
     {
@@ -1302,6 +1750,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "data validation engine database plugin for data-validation-engine database "
     },
     {
@@ -1318,6 +1772,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "data visualization creator create data visualizations and plots ai-ml "
     },
     {
@@ -1334,6 +1794,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database archival system database plugin for database-archival-system database "
     },
     {
@@ -1350,6 +1816,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database audit logger database plugin for database-audit-logger database "
     },
     {
@@ -1366,6 +1838,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database backup automator automate database backups with scheduling, compression, encryption, and restore procedures database "
     },
     {
@@ -1382,6 +1860,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database cache layer database plugin for database-cache-layer database "
     },
     {
@@ -1398,6 +1882,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database connection pooler implement and optimize database connection pooling for improved performance and resource management database "
     },
     {
@@ -1414,6 +1904,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database deadlock detector database plugin for database-deadlock-detector database "
     },
     {
@@ -1430,6 +1926,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database diff tool database plugin for database-diff-tool database "
     },
     {
@@ -1446,6 +1948,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database documentation gen database plugin for database-documentation-gen database "
     },
     {
@@ -1462,6 +1970,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database health monitor database plugin for database-health-monitor database "
     },
     {
@@ -1478,6 +1992,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database index advisor analyze query patterns and recommend optimal database indexes with impact analysis database "
     },
     {
@@ -1494,6 +2014,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database migration manager manage database migrations with version control, rollback capabilities, and automated schema evolution tracking database "
     },
     {
@@ -1510,6 +2036,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database partition manager database plugin for database-partition-manager database "
     },
     {
@@ -1526,6 +2058,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "database query profiler profile and optimize database queries for performance performance "
     },
     {
@@ -1542,6 +2078,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database recovery manager database plugin for database-recovery-manager database "
     },
     {
@@ -1558,6 +2100,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database replication manager manage database replication, failover, and high availability configurations database "
     },
     {
@@ -1574,6 +2122,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database schema designer design and visualize database schemas with normalization guidance, relationship mapping, and erd generation database "
     },
     {
@@ -1590,6 +2144,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database security scanner database plugin for database-security-scanner database "
     },
     {
@@ -1606,6 +2166,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database sharding manager database plugin for database-sharding-manager database "
     },
     {
@@ -1622,6 +2188,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database test manager database testing utilities with test data setup, transaction rollback, and schema validation testing "
     },
     {
@@ -1638,6 +2210,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "database transaction monitor database plugin for database-transaction-monitor database "
     },
     {
@@ -1654,6 +2232,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "dataset splitter split datasets for training, validation, and testing ai-ml "
     },
     {
@@ -1670,6 +2254,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "deep learning optimizer deep learning optimization techniques ai-ml "
     },
     {
@@ -1686,6 +2276,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "defi yield optimizer optimize defi yield farming strategies across protocols with apy tracking and risk assessment crypto "
     },
     {
@@ -1702,6 +2298,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "dependency checker check dependencies for known vulnerabilities, outdated packages, and license compliance security "
     },
     {
@@ -1718,6 +2320,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "deployment pipeline orchestrator orchestrate complex multi-stage deployment pipelines devops "
     },
     {
@@ -1734,6 +2342,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "deployment rollback manager manage and execute deployment rollbacks with safety checks devops "
     },
     {
@@ -1750,6 +2364,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "design to code convert figma designs and screenshots to react/svelte/vue components with built-in accessibility design "
     },
     {
@@ -1766,6 +2386,13 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "featured",
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "devops automation pack complete devops automation suite with 25 plugins covering git workflows, ci/cd pipelines, docker optimization, kubernetes management, terraform iac, and deployment strategies devops "
     },
     {
@@ -1782,6 +2409,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "dex aggregator router find optimal dex routes for token swaps across multiple exchanges crypto "
     },
     {
@@ -1798,6 +2431,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "disaster recovery planner plan and implement disaster recovery procedures devops "
     },
     {
@@ -1813,6 +2452,10 @@
         "name": "Claude Code Plugin Hub"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "discovery questionnaire generate custom discovery questionnaires for ai agency prospects ai-agency "
     },
     {
@@ -1829,6 +2472,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "distributed tracing setup set up distributed tracing for microservices performance "
     },
     {
@@ -1845,6 +2494,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "docker compose generator generate docker compose configurations for multi-container applications with best practices devops "
     },
     {
@@ -1861,6 +2516,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "domain memory agent knowledge base with tf-idf semantic search and extractive summarization - no ml dependencies required productivity "
     },
     {
@@ -1877,6 +2538,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "e2e test framework end-to-end test automation with playwright, cypress, and selenium for browser-based testing testing "
     },
     {
@@ -1893,6 +2560,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "encryption tool encrypt and decrypt data with various algorithms security "
     },
     {
@@ -1909,6 +2582,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "environment config manager manage environment configurations and secrets across deployments devops "
     },
     {
@@ -1925,6 +2604,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "error rate monitor monitor and analyze application error rates performance "
     },
     {
@@ -1941,6 +2626,12 @@
         "email": "plugins@claudecodeplugins.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 4,
       "searchText": "excel analyst pro professional financial modeling toolkit for claude code with auto-invoked skills and excel mcp integration. build dcf models, lbo analysis, variance reports, and pivot tables using natural language. business-tools "
     },
     {
@@ -1957,6 +2648,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "experiment tracking setup set up ml experiment tracking ai-ml "
     },
     {
@@ -1973,6 +2670,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "fairdb operations kit complete operations kit for fairdb postgresql as a service - vps setup, postgresql management, customer provisioning, monitoring, and backup automation devops "
     },
     {
@@ -1988,6 +2691,10 @@
         "name": "Community"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "fairdb ops manager database operations management for fairdb postgresql clusters database "
     },
     {
@@ -2004,6 +2711,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "feature engineering toolkit feature creation, selection, and transformation tools ai-ml "
     },
     {
@@ -2019,6 +2732,10 @@
         "name": "Claude Code Plugins Team"
       },
       "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "file to code converts file references into executable code implementations skill-enhancers "
     },
     {
@@ -2035,6 +2752,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "flash loan simulator simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps crypto "
     },
     {
@@ -2047,6 +2770,12 @@
       "category": "productivity",
       "tags": [],
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "formatter code formatting plugin using hooks to auto-format on save productivity "
     },
     {
@@ -2063,6 +2792,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "fullstack starter pack complete fullstack development toolkit: react, express/fastapi, postgresql scaffolding with ai agents fullstack "
     },
     {
@@ -2079,6 +2812,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "gas fee optimizer optimize transaction gas fees with timing and routing recommendations crypto "
     },
     {
@@ -2095,6 +2834,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "gdpr compliance scanner scan for gdpr compliance issues security "
     },
     {
@@ -2111,6 +2856,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "git commit smart ai-powered conventional commit message generator with smart analysis devops "
     },
     {
@@ -2127,6 +2878,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "gitops workflow builder build gitops workflows with argocd and flux devops "
     },
     {
@@ -2143,6 +2900,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "graphql server builder build graphql servers with schema-first design, resolvers, and subscriptions api-development "
     },
     {
@@ -2159,6 +2922,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "grpc service generator generate grpc services with protocol buffers and streaming support api-development "
     },
     {
@@ -2174,6 +2943,10 @@
         "name": "Jeremy Longshore"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "hello world simple example plugin demonstrating basic slash commands example "
     },
     {
@@ -2190,6 +2963,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "helm chart generator generate helm charts for kubernetes applications devops "
     },
     {
@@ -2206,6 +2985,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "hipaa compliance checker check hipaa compliance security "
     },
     {
@@ -2222,6 +3007,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "hyperparameter tuner optimize hyperparameters using grid/random/bayesian search ai-ml "
     },
     {
@@ -2238,6 +3029,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "infrastructure as code generator generate infrastructure as code for terraform, cloudformation, pulumi, and more devops "
     },
     {
@@ -2254,6 +3051,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "infrastructure drift detector detect infrastructure drift from desired state devops "
     },
     {
@@ -2270,6 +3073,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "infrastructure metrics collector collect comprehensive infrastructure performance metrics performance "
     },
     {
@@ -2286,6 +3095,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "input validation scanner scan input validation practices security "
     },
     {
@@ -2302,6 +3117,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "integration test runner run and manage integration test suites with environment setup, database seeding, and cleanup testing "
     },
     {
@@ -2318,6 +3139,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "kubernetes deployment creator create kubernetes deployments, services, and configurations with best practices devops "
     },
     {
@@ -2334,6 +3161,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "liquidity pool analyzer analyze defi liquidity pools for impermanent loss, apy, and optimization opportunities crypto "
     },
     {
@@ -2350,6 +3183,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "load balancer configurator configure load balancers (alb, nlb, nginx, haproxy) devops "
     },
     {
@@ -2366,6 +3205,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "load balancer tester test load balancing strategies with traffic distribution validation and failover testing testing "
     },
     {
@@ -2382,6 +3227,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "load test runner create and execute load tests for performance validation performance "
     },
     {
@@ -2398,6 +3249,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "log aggregation setup set up log aggregation (elk, loki, splunk) devops "
     },
     {
@@ -2414,6 +3271,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "log analysis tool analyze logs for performance insights and issues performance "
     },
     {
@@ -2429,6 +3292,10 @@
         "name": "Claude Code Plugin Hub"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "make scenario builder create make.com (integromat) scenarios with ai assistance ai-agency "
     },
     {
@@ -2445,6 +3312,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "market movers scanner scan for top market movers - gainers, losers, volume spikes, and unusual activity crypto "
     },
     {
@@ -2461,6 +3334,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "market price tracker real-time market price tracking with multi-exchange feeds and advanced alerts crypto "
     },
     {
@@ -2477,6 +3356,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "market sentiment analyzer analyze market sentiment from social media, news, and on-chain data crypto "
     },
     {
@@ -2493,6 +3378,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "memory leak detector detect memory leaks and analyze memory usage patterns performance "
     },
     {
@@ -2509,6 +3400,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "mempool analyzer advanced mempool analysis for mev opportunities, pending transaction monitoring, and gas price optimization crypto "
     },
     {
@@ -2525,6 +3422,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "metrics aggregator aggregate and centralize performance metrics performance "
     },
     {
@@ -2541,6 +3444,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ml model trainer train and optimize machine learning models with automated workflows ai-ml "
     },
     {
@@ -2557,6 +3466,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "mobile app tester mobile app test automation with appium, detox, xcuitest - test ios and android apps testing "
     },
     {
@@ -2573,6 +3488,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "model deployment helper deploy ml models to production ai-ml "
     },
     {
@@ -2589,6 +3510,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "model evaluation suite comprehensive model evaluation with multiple metrics ai-ml "
     },
     {
@@ -2605,6 +3532,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "model explainability tool model interpretability and explainability ai-ml "
     },
     {
@@ -2621,6 +3554,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "model versioning tracker track and manage model versions ai-ml "
     },
     {
@@ -2637,6 +3576,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "monitoring stack deployer deploy monitoring stacks (prometheus, grafana, datadog) devops "
     },
     {
@@ -2653,6 +3598,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "mutation test runner mutation testing to validate test quality by introducing code changes and verifying tests catch them testing "
     },
     {
@@ -2669,6 +3620,10 @@
         "url": "https://github.com/jeremylongshore/claude-code-plugins"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "n8n workflow designer design complex n8n workflows with ai assistance - loops, branching, error handling ai-agency "
     },
     {
@@ -2685,6 +3640,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "network latency analyzer analyze network latency and optimize request patterns performance "
     },
     {
@@ -2701,6 +3662,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "network policy manager manage kubernetes network policies and firewall rules devops "
     },
     {
@@ -2717,6 +3684,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "neural network builder build and configure neural network architectures ai-ml "
     },
     {
@@ -2733,6 +3706,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "nft rarity analyzer analyze nft rarity scores and valuations across collections crypto "
     },
     {
@@ -2749,6 +3728,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "nlp text analyzer natural language processing and text analysis ai-ml "
     },
     {
@@ -2765,6 +3750,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "nosql data modeler database plugin for nosql-data-modeler database "
     },
     {
@@ -2781,6 +3772,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "on chain analytics analyze on-chain metrics including whale movements, network activity, and holder distribution crypto "
     },
     {
@@ -2797,6 +3794,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "openbb terminal open-source investment research terminal integration - comprehensive equity analysis, crypto tracking, macro indicators, portfolio optimization, and ai-powered financial insights using openbb platform finance "
     },
     {
@@ -2813,6 +3814,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "options flow analyzer track institutional options flow, unusual activity, and smart money movements crypto "
     },
     {
@@ -2829,6 +3836,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "orm code generator generate orm models from database schemas or create database schemas from models for typeorm, prisma, sequelize, sqlalchemy, and more database "
     },
     {
@@ -2846,6 +3859,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "overnight dev run claude autonomously for 6-8 hours overnight using git hooks that enforce tdd - wake up to fully tested features productivity "
     },
     {
@@ -2862,6 +3881,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "owasp compliance checker check owasp top 10 compliance security "
     },
     {
@@ -2878,6 +3903,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "pci dss validator validate pci dss compliance security "
     },
     {
@@ -2894,6 +3925,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "penetration tester automated penetration testing for web applications with owasp top 10 coverage security "
     },
     {
@@ -2910,6 +3947,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "performance budget validator validate application against performance budgets performance "
     },
     {
@@ -2926,6 +3969,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "performance optimization advisor get comprehensive performance optimization recommendations performance "
     },
     {
@@ -2942,6 +3991,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "performance regression detector detect performance regressions in ci/cd pipeline performance "
     },
     {
@@ -2958,6 +4013,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "performance test suite load testing and performance benchmarking with metrics analysis and bottleneck identification testing "
     },
     {
@@ -2974,6 +4035,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "pi pathfinder pi pathfinder - finds the path through 229 plugins. automatically picks the best plugin for your task, extracts its skills, and applies them. you don't pick plugins, pi does. part of our initiative to update all plugins with appropriate skill sets. example "
     },
     {
@@ -2990,6 +4057,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "project health auditor multi-dimensional code health analysis with complexity, churn, and test coverage - identifies technical debt hot spots code-quality "
     },
     {
@@ -3006,6 +4079,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "query performance analyzer analyze query performance with explain plan interpretation, bottleneck identification, and optimization recommendations database "
     },
     {
@@ -3022,6 +4101,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "real user monitoring implement real user monitoring for actual performance data performance "
     },
     {
@@ -3038,6 +4123,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "recommendation engine build recommendation systems and engines ai-ml "
     },
     {
@@ -3054,6 +4145,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "regression analysis tool regression analysis and modeling ai-ml "
     },
     {
@@ -3070,6 +4167,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "regression test tracker track and run regression tests to ensure new changes don't break existing functionality testing "
     },
     {
@@ -3085,6 +4188,10 @@
         "name": "Claude Code Plugins Team"
       },
       "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "research to deploy transforms research findings into deployed solutions automatically skill-enhancers "
     },
     {
@@ -3101,6 +4208,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "resource usage tracker track and optimize resource usage across the stack performance "
     },
     {
@@ -3117,6 +4230,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "response time tracker track and optimize application response times performance "
     },
     {
@@ -3133,6 +4252,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "rest api generator generate restful apis from schemas with proper routing, validation, and documentation api-development "
     },
     {
@@ -3148,6 +4273,10 @@
         "name": "Claude Code Plugin Hub"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "roi calculator calculate and present roi for ai automation projects ai-agency "
     },
     {
@@ -3163,6 +4292,10 @@
         "name": "Claude Code Plugins Team"
       },
       "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "search to slack automatically posts search results to slack channels skill-enhancers "
     },
     {
@@ -3179,6 +4312,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "secret scanner scan codebase for exposed secrets, api keys, passwords, and sensitive credentials security "
     },
     {
@@ -3195,6 +4334,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "secrets manager integrator integrate with secrets managers (vault, aws secrets manager, etc) devops "
     },
     {
@@ -3207,6 +4352,12 @@
       "category": "security",
       "tags": [],
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security agent security review subagent for code analysis security "
     },
     {
@@ -3223,6 +4374,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security audit reporter generate comprehensive security audit reports security "
     },
     {
@@ -3239,6 +4396,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security headers analyzer analyze http security headers security "
     },
     {
@@ -3255,6 +4418,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security incident responder assist with security incident response security "
     },
     {
@@ -3271,6 +4440,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security misconfiguration finder find security misconfigurations security "
     },
     {
@@ -3287,6 +4462,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security pro pack professional security tools for claude code: vulnerability scanning, compliance, cryptography audit, container & api security security "
     },
     {
@@ -3303,6 +4484,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "security test scanner automated security vulnerability testing covering owasp top 10, sql injection, xss, csrf, and authentication issues testing "
     },
     {
@@ -3319,6 +4506,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "sentiment analysis tool sentiment analysis on text data ai-ml "
     },
     {
@@ -3335,6 +4528,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "service mesh configurator configure service mesh (istio, linkerd) for microservices devops "
     },
     {
@@ -3351,6 +4550,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "session security checker check session security implementation security "
     },
     {
@@ -3367,6 +4572,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "skills powerkit ultimate plugin management toolkit with 5 agent skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace example "
     },
     {
@@ -3383,6 +4594,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "sla sli tracker track slas, slis, and slos for service reliability performance "
     },
     {
@@ -3399,6 +4616,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "smoke test runner quick smoke test suites to verify critical functionality after deployments testing "
     },
     {
@@ -3415,6 +4638,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "snapshot test manager manage and update snapshot tests with intelligent diff analysis and selective updates testing "
     },
     {
@@ -3431,6 +4660,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "soc2 audit helper assist with soc2 audit preparation security "
     },
     {
@@ -3446,6 +4681,10 @@
         "name": "Claude Code Plugin Hub"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "sow generator generate professional statements of work for ai projects ai-agency "
     },
     {
@@ -3462,6 +4701,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "sql injection detector detect sql injection vulnerabilities security "
     },
     {
@@ -3478,6 +4723,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "sql query optimizer analyze and optimize sql queries for better performance, suggesting indexes, query rewrites, and execution plan improvements database "
     },
     {
@@ -3494,6 +4745,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "ssl certificate manager manage and monitor ssl/tls certificates security "
     },
     {
@@ -3510,6 +4767,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "staking rewards optimizer optimize staking rewards across multiple protocols and chains crypto "
     },
     {
@@ -3526,6 +4789,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "stored procedure generator database plugin for stored-procedure-generator database "
     },
     {
@@ -3543,6 +4812,12 @@
         "url": "https://intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "jeremy firestore firestore database specialist for schema design, queries, and real-time sync database "
     },
     {
@@ -3559,6 +4834,12 @@
         "email": "contact@roboticforce.io"
       },
       "version": "2.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "sugar transform claude code into an autonomous ai development powerhouse with rich task context, specialized agents, and intelligent workflow automation devops "
     },
     {
@@ -3575,6 +4856,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "synthetic monitoring setup set up synthetic monitoring for proactive performance tracking performance "
     },
     {
@@ -3591,6 +4878,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "terraform module builder build reusable terraform modules devops "
     },
     {
@@ -3607,6 +4900,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test coverage analyzer analyze code coverage metrics, identify untested code, and generate comprehensive coverage reports testing "
     },
     {
@@ -3623,6 +4922,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test data generator generate realistic test data including users, products, orders, and custom schemas for comprehensive testing testing "
     },
     {
@@ -3639,6 +4944,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test doubles generator generate mocks, stubs, spies, and fakes for unit testing with jest, sinon, and test frameworks testing "
     },
     {
@@ -3655,6 +4966,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test environment manager manage test environments with docker compose, testcontainers, and environment isolation testing "
     },
     {
@@ -3671,6 +4988,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test orchestrator orchestrate complex test workflows with dependencies, parallel execution, and smart test selection testing "
     },
     {
@@ -3687,6 +5010,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "test report generator generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats testing "
     },
     {
@@ -3703,6 +5032,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "throughput analyzer analyze and optimize system throughput performance "
     },
     {
@@ -3719,6 +5054,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "time series forecaster time series forecasting and analysis ai-ml "
     },
     {
@@ -3735,6 +5076,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "token launch tracker track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects crypto "
     },
     {
@@ -3751,6 +5098,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "trading strategy backtester backtest trading strategies with historical data, performance metrics, and risk analysis crypto "
     },
     {
@@ -3767,6 +5120,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "transfer learning adapter transfer learning adaptation ai-ml "
     },
     {
@@ -3783,6 +5142,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "travel assistant intelligent travel assistant with real-time weather, currency conversion, timezone info, and ai-powered itinerary planning. your complete travel companion. productivity "
     },
     {
@@ -3799,6 +5162,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "unit test generator automatically generate comprehensive unit tests from source code with multiple testing framework support testing "
     },
     {
@@ -3815,6 +5184,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "visual regression tester visual diff testing with percy, chromatic, backstopjs - catch unintended ui changes testing "
     },
     {
@@ -3831,6 +5206,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "vulnerability scanner comprehensive vulnerability scanning for code, dependencies, and configurations with cve detection security "
     },
     {
@@ -3847,6 +5228,10 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "wallet portfolio tracker track crypto wallets across multiple chains with portfolio analytics and transaction history crypto "
     },
     {
@@ -3863,6 +5248,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "web to github issue enhances web_search skill by automatically creating github issues from research findings. research topics, extract key insights, and generate formatted tickets in seconds. skill-enhancers "
     },
     {
@@ -3879,6 +5270,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "webhook handler creator create secure webhook endpoints with signature verification and retry logic api-development "
     },
     {
@@ -3895,6 +5292,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "websocket server builder build websocket servers for real-time bidirectional communication api-development "
     },
     {
@@ -3911,6 +5314,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "whale alert monitor monitor large crypto transactions and whale wallet movements in real-time crypto "
     },
     {
@@ -3927,6 +5336,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "workflow orchestrator dag-based workflow automation with parallel task execution and dependency management automation "
     },
     {
@@ -3943,6 +5358,12 @@
         "email": "[email protected]"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "xss vulnerability scanner scan for xss vulnerabilities security "
     },
     {
@@ -3958,6 +5379,10 @@
         "name": "Claude Code Plugin Hub"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 0,
       "searchText": "zapier zap builder create multi-step zapier zaps with filters, paths, and formatters ai-agency "
     },
     {
@@ -3974,6 +5399,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy genkit pro firebase genkit expert for production-ready ai workflows with rag and tool calling ai-ml "
     },
     {
@@ -3990,6 +5421,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy adk orchestrator production adk orchestrator for a2a protocol and multi-agent coordination on vertex ai ai-ml "
     },
     {
@@ -4006,6 +5443,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy vertex validator production readiness validator for vertex ai deployments and configurations ai-ml "
     },
     {
@@ -4022,6 +5465,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy genkit terraform terraform modules for firebase genkit infrastructure and deployments devops "
     },
     {
@@ -4038,6 +5487,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy adk terraform terraform infrastructure as code for adk and vertex ai agent engine deployments devops "
     },
     {
@@ -4054,6 +5509,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy vertex terraform terraform configurations for vertex ai platform and agent engine devops "
     },
     {
@@ -4070,6 +5531,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy vertex engine vertex ai agent engine deployment inspector and runtime validator ai-ml "
     },
     {
@@ -4086,6 +5553,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy gcp starter examples google cloud starter kits and example code aggregator with adk samples ai-ml "
     },
     {
@@ -4102,6 +5575,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "jeremy github actions gcp github actions ci/cd workflows for google cloud and vertex ai deployments devops "
     },
     {
@@ -4118,6 +5597,12 @@
         "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "agent context manager automatically detects and loads agents.md files to provide agent-specific instructions alongside claude.md. enables specialized agent behaviors without manual intervention. productivity "
     },
     {
@@ -4135,6 +5620,12 @@
         "url": "https://github.com/terrylica"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "prettier markdown hook automatically format markdown files with prettier when claude stops responding, with configurable organization and path exclusions productivity "
     },
     {
@@ -4151,6 +5642,10 @@
         "url": "https://github.com/CharlesWiltgen"
       },
       "version": "0.1.6",
+      "isFeatured": false,
+      "isNew": false,
+      "badges": [],
+      "skillCount": 13,
       "searchText": "axiom battle-tested claude code skills for modern xos (ios, ipados, watchos, tvos) development - 13 production-ready skills covering debugging, concurrency, persistence, ui, and performance skill-enhancers "
     },
     {
@@ -4167,6 +5662,12 @@
         "url": "https://github.com/yldrmahmet"
       },
       "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
       "searchText": "claude never forgets persistent memory plugin for claude code - remembers preferences, decisions, and corrections across sessions and context limits productivity "
     },
     {
@@ -4183,6 +5684,12 @@
         "url": "https://github.com/lukeslp"
       },
       "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
       "searchText": "geepers agents multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and more. includes orchestrators for checkpoint, deploy, quality, fullstack, research, games, corpus, web, and python workflows. ai-ml "
     },
     {

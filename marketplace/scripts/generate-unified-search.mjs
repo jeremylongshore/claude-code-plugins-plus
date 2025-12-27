@@ -36,6 +36,11 @@ const plugins = catalogData.plugins.map(plugin => ({
   tags: plugin.tags || [],
   author: plugin.author,
   version: plugin.version,
+  // Trust signals
+  isFeatured: plugin.isFeatured || false,
+  isNew: plugin.isNew || false,
+  badges: plugin.badges || [],
+  skillCount: plugin.skillCount || 0,
   // Search-specific fields
   searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.tags || []).join(' ')}`.toLowerCase()
 }));

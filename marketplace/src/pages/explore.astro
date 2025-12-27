@@ -239,6 +239,76 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       background: var(--brand-orange-dark);
     }
 
+    /* Trust signal badges */
+    .card-badges {
+      display: flex;
+      gap: 0.35rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .card-badge.featured {
+      background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+      color: #78350f;
+    }
+
+    .card-badge.new {
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      color: #064e3b;
+    }
+
+    .card-badge.has-skills {
+      background: rgba(217, 119, 87, 0.15);
+      color: var(--brand-orange-dark);
+    }
+
+    /* Bookmark button */
+    .bookmark-btn {
+      position: absolute;
+      top: 0.75rem;
+      left: 0.75rem;
+      width: 28px;
+      height: 28px;
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      opacity: 0;
+      z-index: 2;
+    }
+
+    .result-card:hover .bookmark-btn {
+      opacity: 1;
+    }
+
+    .bookmark-btn:hover {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+
+    .bookmark-btn.active {
+      opacity: 1;
+      background: #fef2f2;
+      border-color: #ef4444;
+      color: #ef4444;
+    }
+
     .result-type-badge {
       position: absolute;
       top: 1rem;
@@ -440,6 +510,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         <button class="type-btn active" data-type="all">All</button>
         <button class="type-btn" data-type="plugin">Plugins</button>
         <button class="type-btn" data-type="skill">Skills</button>
+        <button class="type-btn" data-type="favorites" id="favorites-btn">♡ Favorites</button>
       </div>
 
       <select id="category-filter" class="filter-select">
@@ -486,7 +557,16 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           data-tools={item.type === 'skill' ? JSON.stringify(item.allowedTools) : '[]'}
           data-item-id={item.id || item.name}
           data-item-name={item.displayName || item.name}
+          data-featured={item.isFeatured || false}
+          data-new={item.isNew || false}
+          data-skill-count={item.skillCount || 0}
         >
+          <button
+            class="bookmark-btn"
+            data-bookmark-id={item.id || item.name}
+            title="Add to favorites"
+          >♡</button>
+
           <a
             href={item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`}
             class="result-card-link"
@@ -494,6 +574,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             <span class={`result-type-badge ${item.type}`}>
               {item.type}
             </span>
+
+            {(item.isFeatured || item.skillCount > 0) && (
+              <div class="card-badges">
+                {item.isFeatured && <span class="card-badge featured">★ Featured</span>}
+                {item.skillCount > 0 && <span class="card-badge has-skills">{item.skillCount} skills</span>}
+              </div>
+            )}
 
             <h3 class="result-name">{item.type === 'plugin' && item.displayName ? item.displayName : item.name}</h3>
             <p class="result-description">{item.description}</p>
@@ -566,7 +653,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       }
 
       // Apply type filter
-      if (activeFilters.type !== 'all') {
+      if (activeFilters.type === 'favorites') {
+        // Filter to only bookmarked items
+        const favorites = window.BookmarkManager ? window.BookmarkManager.getAll() : [];
+        filtered = filtered.filter(item => favorites.includes(item.id || item.name));
+      } else if (activeFilters.type !== 'all') {
         filtered = filtered.filter(item => item.type === activeFilters.type);
       }
 
@@ -766,6 +857,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         document.querySelector('.type-btn[data-type="all"]').classList.add('active');
         applyFilters();
       };
+
+      // Listen for reapply-filters event (from BookmarkManager)
+      window.addEventListener('reapply-filters', () => {
+        applyFilters();
+      });
     });
   </script>
 
@@ -798,6 +894,117 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
               window.CompareManager.add({ id, name, type });
             }
           }
+        });
+      });
+    });
+  </script>
+
+  <!-- Bookmark/Favorites functionality -->
+  <script is:inline>
+    window.BookmarkManager = {
+      favorites: new Set(),
+
+      init() {
+        const saved = localStorage.getItem('plugin-favorites');
+        if (saved) {
+          try {
+            this.favorites = new Set(JSON.parse(saved));
+          } catch (e) {
+            this.favorites = new Set();
+          }
+        }
+        this.updateUI();
+        this.updateFavoritesCount();
+      },
+
+      toggle(id) {
+        if (this.favorites.has(id)) {
+          this.favorites.delete(id);
+          this.showToast('Removed from favorites');
+        } else {
+          this.favorites.add(id);
+          this.showToast('Added to favorites');
+        }
+        this.save();
+        this.updateUI();
+        this.updateFavoritesCount();
+
+        // Re-apply filters if favorites filter is active
+        const favBtn = document.querySelector('.type-btn[data-type="favorites"]');
+        if (favBtn && favBtn.classList.contains('active')) {
+          window.dispatchEvent(new CustomEvent('reapply-filters'));
+        }
+      },
+
+      has(id) {
+        return this.favorites.has(id);
+      },
+
+      getAll() {
+        return Array.from(this.favorites);
+      },
+
+      save() {
+        localStorage.setItem('plugin-favorites', JSON.stringify(Array.from(this.favorites)));
+      },
+
+      updateUI() {
+        document.querySelectorAll('.bookmark-btn').forEach(btn => {
+          const id = btn.dataset.bookmarkId;
+          if (this.has(id)) {
+            btn.classList.add('active');
+            btn.textContent = '♥';
+            btn.title = 'Remove from favorites';
+          } else {
+            btn.classList.remove('active');
+            btn.textContent = '♡';
+            btn.title = 'Add to favorites';
+          }
+        });
+      },
+
+      updateFavoritesCount() {
+        const favBtn = document.getElementById('favorites-btn');
+        if (favBtn) {
+          const count = this.favorites.size;
+          favBtn.textContent = count > 0 ? `♥ Favorites (${count})` : '♡ Favorites';
+        }
+      },
+
+      showToast(message) {
+        const existing = document.querySelector('.bookmark-toast');
+        if (existing) existing.remove();
+
+        const toast = document.createElement('div');
+        toast.className = 'bookmark-toast';
+        toast.textContent = message;
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 2rem;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #1a1a1a;
+          color: white;
+          padding: 0.75rem 1.25rem;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          z-index: 1001;
+          animation: fadeInOut 2s ease-in-out forwards;
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2000);
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      BookmarkManager.init();
+
+      // Add click handlers to bookmark buttons
+      document.querySelectorAll('.bookmark-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          BookmarkManager.toggle(btn.dataset.bookmarkId);
         });
       });
     });
