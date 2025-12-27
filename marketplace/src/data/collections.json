@@ -1,0 +1,98 @@
+{
+  "collections": [
+    {
+      "id": "devops-essentials",
+      "name": "DevOps Essentials",
+      "description": "Everything you need for CI/CD, infrastructure, and deployment automation",
+      "icon": "🚀",
+      "color": "#4F46E5",
+      "plugins": [
+        "devops-automation-pack",
+        "kubernetes-operator",
+        "terraform-specialist",
+        "github-actions-orchestrator",
+        "docker-compose-wizard"
+      ],
+      "featured": true
+    },
+    {
+      "id": "security-toolkit",
+      "name": "Security Toolkit",
+      "description": "Comprehensive security scanning, audit, and compliance tools",
+      "icon": "🔒",
+      "color": "#DC2626",
+      "plugins": [
+        "security-pack",
+        "devsecops-guardian",
+        "compliance-auditor",
+        "secret-scanner",
+        "vulnerability-hunter"
+      ],
+      "featured": true
+    },
+    {
+      "id": "ai-ml-starter",
+      "name": "AI/ML Starter",
+      "description": "Get started with machine learning, LLMs, and AI development",
+      "icon": "🤖",
+      "color": "#7C3AED",
+      "plugins": [
+        "ai-ml-pack",
+        "prompt-engineering-pro",
+        "ml-pipeline-builder",
+        "vector-database-expert",
+        "llm-evaluator"
+      ],
+      "featured": true
+    },
+    {
+      "id": "fullstack-developer",
+      "name": "Full-Stack Developer",
+      "description": "Frontend, backend, database, and API development essentials",
+      "icon": "💻",
+      "color": "#059669",
+      "plugins": [
+        "api-development-pack",
+        "database-pack",
+        "react-expert",
+        "nodejs-backend",
+        "graphql-architect"
+      ],
+      "featured": true
+    },
+    {
+      "id": "code-quality",
+      "name": "Code Quality Suite",
+      "description": "Testing, linting, documentation, and code review tools",
+      "icon": "✨",
+      "color": "#F59E0B",
+      "plugins": [
+        "test-automation-suite",
+        "code-reviewer-pro",
+        "documentation-generator",
+        "refactoring-assistant",
+        "performance-profiler"
+      ],
+      "featured": false
+    },
+    {
+      "id": "data-engineering",
+      "name": "Data Engineering",
+      "description": "ETL pipelines, data warehousing, and analytics tools",
+      "icon": "📊",
+      "color": "#0891B2",
+      "plugins": [
+        "data-pipeline-builder",
+        "sql-optimizer",
+        "bigquery-expert",
+        "spark-specialist",
+        "airflow-orchestrator"
+      ],
+      "featured": false
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-12-27"
+  }
+}
