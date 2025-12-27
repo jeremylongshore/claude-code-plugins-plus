@@ -5,6 +5,8 @@ on:
     paths:
       - 'plugins/**'
       - '.claude-plugin/**'
+      - 'marketplace/**'
+      - '.github/workflows/validate-plugins.yml'
   push:
     branches: [ main ]
 
@@ -429,6 +431,9 @@ jobs:
         run: |
           cd marketplace
           npm run build
+
+      - name: Validate Playbook Routes (source + dist)
+        run: node marketplace/scripts/validate-playbook-routes.mjs --dist
 
       - name: Smoke Test - Verify Build Output
         run: |
