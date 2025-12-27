@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import CompareBar from '../components/CompareBar.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 const pageTitle = 'Explore Plugins & Skills';
@@ -183,12 +184,12 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .result-card {
-      display: block;
+      display: flex;
+      flex-direction: column;
       padding: 1.75rem;
       background: white;
       border-radius: 12px;
       border: 2px solid var(--brand-light-gray);
-      text-decoration: none;
       transition: all 0.3s var(--transition-smooth);
       position: relative;
     }
@@ -197,6 +198,45 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border-color: var(--brand-orange);
       transform: translateY(-4px);
       box-shadow: 0 8px 24px rgba(217, 119, 87, 0.15);
+    }
+
+    .result-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      flex: 1;
+    }
+
+    .compare-toggle-btn {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--brand-mid-gray);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .compare-toggle-btn:hover {
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+      background: rgba(217, 119, 87, 0.1);
+    }
+
+    .compare-toggle-btn.active {
+      background: var(--brand-orange);
+      border-color: var(--brand-orange);
+      color: white;
+    }
+
+    .compare-toggle-btn.active:hover {
+      background: var(--brand-orange-dark);
     }
 
     .result-type-badge {
@@ -439,41 +479,57 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
   <div class="results-section">
     <div id="results-grid" class="results-grid">
       {searchIndex.items.map(item => (
-        <a
-          href={item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`}
+        <div
           class="result-card"
           data-type={item.type}
           data-category={item.category}
           data-tools={item.type === 'skill' ? JSON.stringify(item.allowedTools) : '[]'}
+          data-item-id={item.id || item.name}
+          data-item-name={item.displayName || item.name}
         >
-          <span class={`result-type-badge ${item.type}`}>
-            {item.type}
-          </span>
+          <a
+            href={item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`}
+            class="result-card-link"
+          >
+            <span class={`result-type-badge ${item.type}`}>
+              {item.type}
+            </span>
 
-          <h3 class="result-name">{item.type === 'plugin' && item.displayName ? item.displayName : item.name}</h3>
-          <p class="result-description">{item.description}</p>
+            <h3 class="result-name">{item.type === 'plugin' && item.displayName ? item.displayName : item.name}</h3>
+            <p class="result-description">{item.description}</p>
 
-          <div class="result-meta">
-            {item.type === 'skill' && item.parentPlugin && (
-              <div class="parent-plugin">
-                <span>📦</span>
-                <span>Provided by {item.parentPlugin.name}</span>
+            <div class="result-meta">
+              {item.type === 'skill' && item.parentPlugin && (
+                <div class="parent-plugin">
+                  <span>📦</span>
+                  <span>Provided by {item.parentPlugin.name}</span>
+                </div>
+              )}
+              <div class="result-category">{item.category.replace(/-/g, ' ')}</div>
+            </div>
+
+            {item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0 && (
+              <div class="result-tools">
+                {item.allowedTools.slice(0, 4).map(tool => (
+                  <span class="tool-tag">{tool}</span>
+                ))}
+                {item.allowedTools.length > 4 && (
+                  <span class="tool-tag">+{item.allowedTools.length - 4} more</span>
+                )}
               </div>
             )}
-            <div class="result-category">{item.category.replace(/-/g, ' ')}</div>
-          </div>
+          </a>
 
-          {item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0 && (
-            <div class="result-tools">
-              {item.allowedTools.slice(0, 4).map(tool => (
-                <span class="tool-tag">{tool}</span>
-              ))}
-              {item.allowedTools.length > 4 && (
-                <span class="tool-tag">+{item.allowedTools.length - 4} more</span>
-              )}
-            </div>
-          )}
-        </a>
+          <button
+            class="compare-toggle-btn"
+            data-compare-id={item.id || item.name}
+            data-compare-name={item.displayName || item.name}
+            data-compare-type={item.type}
+            title="Add to comparison"
+          >
+            + Compare
+          </button>
+        </div>
       ))}
     </div>
   </div>
@@ -716,4 +772,36 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
   <script define:vars={{ items: searchIndex.items }}>
     window.__SEARCH_INDEX__ = items;
   </script>
+
+  <!-- Compare button event listeners -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize compare button states
+      if (window.CompareManager) {
+        window.CompareManager.updateCardStates();
+      }
+
+      // Add click handlers to compare buttons
+      document.querySelectorAll('.compare-toggle-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const id = btn.dataset.compareId;
+          const name = btn.dataset.compareName;
+          const type = btn.dataset.compareType;
+
+          if (window.CompareManager) {
+            if (window.CompareManager.has(id)) {
+              window.CompareManager.remove(id);
+            } else {
+              window.CompareManager.add({ id, name, type });
+            }
+          }
+        });
+      });
+    });
+  </script>
+
+  <CompareBar />
 </BaseLayout>

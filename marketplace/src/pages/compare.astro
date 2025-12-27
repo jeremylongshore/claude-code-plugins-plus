@@ -1,0 +1,686 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+// Build lookup map for quick access
+const itemsMap = new Map(searchIndex.items.map(item => [item.id || item.name, item]));
+---
+
+<BaseLayout
+  title="Compare Plugins | Claude Code Plugins"
+  description="Compare plugins and skills side-by-side. Evaluate features, categories, and capabilities."
+>
+  <style>
+    .compare-page {
+      padding: 6rem 2rem 4rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      min-height: 80vh;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .page-description {
+      color: var(--brand-mid-gray);
+      font-size: 1rem;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: var(--brand-light);
+      border-radius: 16px;
+      margin: 2rem 0;
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin: 0 0 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .empty-text {
+      color: var(--brand-mid-gray);
+      margin: 0 0 1.5rem;
+    }
+
+    .empty-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: var(--brand-orange);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-family: 'Poppins', Arial, sans-serif;
+      transition: background 0.2s;
+    }
+
+    .empty-cta:hover {
+      background: var(--brand-orange-dark);
+    }
+
+    /* Comparison Table */
+    .compare-container {
+      overflow-x: auto;
+      margin: 2rem 0;
+    }
+
+    .compare-table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .compare-table th,
+    .compare-table td {
+      padding: 1rem 1.25rem;
+      text-align: left;
+      border-bottom: 1px solid var(--brand-light-gray);
+    }
+
+    .compare-table th {
+      background: var(--brand-light);
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      font-family: 'Poppins', Arial, sans-serif;
+      white-space: nowrap;
+    }
+
+    .compare-table th:first-child {
+      width: 140px;
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: var(--brand-light);
+    }
+
+    .compare-table td:first-child {
+      font-weight: 600;
+      color: var(--brand-dark);
+      position: sticky;
+      left: 0;
+      background: white;
+      z-index: 1;
+    }
+
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .compare-header-cell {
+      text-align: center;
+      min-width: 200px;
+    }
+
+    .plugin-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .plugin-type-badge {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .plugin-type-badge.plugin {
+      background: rgba(106, 155, 204, 0.15);
+      color: var(--brand-blue);
+    }
+
+    .plugin-type-badge.skill {
+      background: rgba(217, 119, 87, 0.15);
+      color: var(--brand-orange);
+    }
+
+    .plugin-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      text-decoration: none;
+    }
+
+    .plugin-name:hover {
+      color: var(--brand-orange);
+    }
+
+    .remove-btn {
+      background: none;
+      border: 1px solid var(--brand-light-gray);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      color: var(--brand-mid-gray);
+      transition: all 0.2s;
+    }
+
+    .remove-btn:hover {
+      border-color: #dc2626;
+      color: #dc2626;
+    }
+
+    /* Cell content styles */
+    .cell-category {
+      display: inline-block;
+      padding: 0.3rem 0.75rem;
+      background: var(--brand-light);
+      border-radius: 20px;
+      font-size: 0.85rem;
+      text-transform: capitalize;
+    }
+
+    .cell-description {
+      font-size: 0.9rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.5;
+      max-width: 250px;
+    }
+
+    .cell-tools {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .tool-tag {
+      background: var(--brand-light);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+    }
+
+    .cell-install {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .install-code {
+      background: #1a1a1a;
+      color: #22c55e;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-family: 'Monaco', 'Menlo', monospace;
+      white-space: nowrap;
+      overflow-x: auto;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.35rem 0.6rem;
+      background: var(--brand-orange);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: fit-content;
+    }
+
+    .copy-btn:hover {
+      background: var(--brand-orange-dark);
+    }
+
+    .cell-na {
+      color: var(--brand-mid-gray);
+      font-style: italic;
+      font-size: 0.85rem;
+    }
+
+    .cell-link {
+      color: var(--brand-orange);
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+
+    .cell-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Add more button */
+    .add-column {
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .add-btn {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      background: var(--brand-light);
+      border: 2px dashed var(--brand-light-gray);
+      border-radius: 8px;
+      color: var(--brand-mid-gray);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .add-btn:hover {
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+    }
+
+    .add-icon {
+      font-size: 1.5rem;
+    }
+
+    .add-text {
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    /* Actions row */
+    .compare-actions {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .action-btn.primary {
+      background: var(--brand-orange);
+      border: none;
+      color: white;
+    }
+
+    .action-btn.primary:hover {
+      background: var(--brand-orange-dark);
+    }
+
+    .action-btn.secondary {
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      color: var(--brand-dark);
+    }
+
+    .action-btn.secondary:hover {
+      border-color: var(--brand-orange);
+      color: var(--brand-orange);
+    }
+
+    @media (max-width: 768px) {
+      .compare-page {
+        padding: 4rem 1rem 2rem;
+      }
+
+      .compare-table th,
+      .compare-table td {
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+
+  <div class="compare-page">
+    <header class="page-header">
+      <h1 class="page-title">Compare Plugins</h1>
+      <p class="page-description">Side-by-side comparison of selected plugins and skills</p>
+    </header>
+
+    <div id="empty-state" class="empty-state">
+      <div class="empty-icon">⚖️</div>
+      <h2 class="empty-title">No plugins selected</h2>
+      <p class="empty-text">Browse the explore page and add plugins to compare them side-by-side.</p>
+      <a href="/explore/" class="empty-cta">
+        <span>Browse Plugins</span>
+        <span>→</span>
+      </a>
+    </div>
+
+    <div id="compare-content" class="compare-container" style="display: none;">
+      <table class="compare-table">
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th id="header-1" class="compare-header-cell">—</th>
+            <th id="header-2" class="compare-header-cell">—</th>
+            <th id="header-3" class="compare-header-cell">—</th>
+            <th id="header-4" class="compare-header-cell">—</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Type</td>
+            <td id="type-1">—</td>
+            <td id="type-2">—</td>
+            <td id="type-3">—</td>
+            <td id="type-4">—</td>
+          </tr>
+          <tr>
+            <td>Category</td>
+            <td id="category-1">—</td>
+            <td id="category-2">—</td>
+            <td id="category-3">—</td>
+            <td id="category-4">—</td>
+          </tr>
+          <tr>
+            <td>Description</td>
+            <td id="description-1">—</td>
+            <td id="description-2">—</td>
+            <td id="description-3">—</td>
+            <td id="description-4">—</td>
+          </tr>
+          <tr>
+            <td>Allowed Tools</td>
+            <td id="tools-1">—</td>
+            <td id="tools-2">—</td>
+            <td id="tools-3">—</td>
+            <td id="tools-4">—</td>
+          </tr>
+          <tr>
+            <td>Parent Plugin</td>
+            <td id="parent-1">—</td>
+            <td id="parent-2">—</td>
+            <td id="parent-3">—</td>
+            <td id="parent-4">—</td>
+          </tr>
+          <tr>
+            <td>Install Command</td>
+            <td id="install-1">—</td>
+            <td id="install-2">—</td>
+            <td id="install-3">—</td>
+            <td id="install-4">—</td>
+          </tr>
+          <tr>
+            <td>View Details</td>
+            <td id="link-1">—</td>
+            <td id="link-2">—</td>
+            <td id="link-3">—</td>
+            <td id="link-4">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div id="compare-actions" class="compare-actions" style="display: none;">
+      <button id="share-comparison" class="action-btn secondary">
+        <span>📋</span> Copy Share Link
+      </button>
+      <button id="clear-all" class="action-btn secondary">
+        <span>🗑️</span> Clear All
+      </button>
+      <a href="/explore/" class="action-btn primary">
+        <span>+</span> Add More
+      </a>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ itemsData: JSON.stringify(Object.fromEntries(searchIndex.items.map(item => [item.id || item.name, item]))) }}>
+    const itemsMap = JSON.parse(itemsData);
+
+    function getItemsFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const itemsParam = params.get('items');
+      if (!itemsParam) return [];
+      return itemsParam.split(',').filter(Boolean);
+    }
+
+    function getItemsFromStorage() {
+      try {
+        const saved = localStorage.getItem('compare-items');
+        if (saved) {
+          return JSON.parse(saved).map(item => item.id);
+        }
+      } catch (e) {}
+      return [];
+    }
+
+    function renderComparison() {
+      let itemIds = getItemsFromURL();
+      if (itemIds.length === 0) {
+        itemIds = getItemsFromStorage();
+      }
+
+      const emptyState = document.getElementById('empty-state');
+      const content = document.getElementById('compare-content');
+      const actions = document.getElementById('compare-actions');
+
+      if (itemIds.length === 0) {
+        emptyState.style.display = 'block';
+        content.style.display = 'none';
+        actions.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      content.style.display = 'block';
+      actions.style.display = 'flex';
+
+      // Render each column
+      for (let i = 1; i <= 4; i++) {
+        const id = itemIds[i - 1];
+        const item = id ? itemsMap[id] : null;
+
+        renderColumn(i, item);
+      }
+
+      // Update URL if loaded from storage
+      if (getItemsFromURL().length === 0 && itemIds.length > 0) {
+        const newUrl = `/compare/?items=${encodeURIComponent(itemIds.join(','))}`;
+        window.history.replaceState({}, '', newUrl);
+      }
+    }
+
+    function renderColumn(index, item) {
+      const headerEl = document.getElementById(`header-${index}`);
+      const typeEl = document.getElementById(`type-${index}`);
+      const categoryEl = document.getElementById(`category-${index}`);
+      const descriptionEl = document.getElementById(`description-${index}`);
+      const toolsEl = document.getElementById(`tools-${index}`);
+      const parentEl = document.getElementById(`parent-${index}`);
+      const installEl = document.getElementById(`install-${index}`);
+      const linkEl = document.getElementById(`link-${index}`);
+
+      if (!item) {
+        // Empty column - show add button
+        headerEl.innerHTML = `
+          <a href="/explore/" class="add-btn">
+            <span class="add-icon">+</span>
+            <span class="add-text">Add Plugin</span>
+          </a>
+        `;
+        typeEl.innerHTML = '<span class="cell-na">—</span>';
+        categoryEl.innerHTML = '<span class="cell-na">—</span>';
+        descriptionEl.innerHTML = '<span class="cell-na">—</span>';
+        toolsEl.innerHTML = '<span class="cell-na">—</span>';
+        parentEl.innerHTML = '<span class="cell-na">—</span>';
+        installEl.innerHTML = '<span class="cell-na">—</span>';
+        linkEl.innerHTML = '<span class="cell-na">—</span>';
+        return;
+      }
+
+      const id = item.id || item.name;
+      const displayName = item.displayName || item.name;
+      const detailUrl = item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`;
+
+      // Header
+      headerEl.innerHTML = `
+        <div class="plugin-header">
+          <span class="plugin-type-badge ${item.type}">${item.type}</span>
+          <a href="${detailUrl}" class="plugin-name">${displayName}</a>
+          <button class="remove-btn" onclick="removeItem('${id}')">Remove</button>
+        </div>
+      `;
+
+      // Type
+      typeEl.innerHTML = `<span class="plugin-type-badge ${item.type}">${item.type}</span>`;
+
+      // Category
+      const categoryName = item.category.replace(/-/g, ' ');
+      categoryEl.innerHTML = `<span class="cell-category">${categoryName}</span>`;
+
+      // Description
+      descriptionEl.innerHTML = `<div class="cell-description">${item.description || 'No description'}</div>`;
+
+      // Tools (skills only)
+      if (item.type === 'skill' && item.allowedTools && item.allowedTools.length > 0) {
+        toolsEl.innerHTML = `
+          <div class="cell-tools">
+            ${item.allowedTools.map(t => `<span class="tool-tag">${t}</span>`).join('')}
+          </div>
+        `;
+      } else if (item.type === 'plugin') {
+        toolsEl.innerHTML = '<span class="cell-na">N/A (plugins)</span>';
+      } else {
+        toolsEl.innerHTML = '<span class="cell-na">None specified</span>';
+      }
+
+      // Parent plugin (skills only)
+      if (item.type === 'skill' && item.parentPlugin) {
+        parentEl.innerHTML = `<a href="/plugins/${item.parentPlugin.name}/" class="cell-link">${item.parentPlugin.name}</a>`;
+      } else if (item.type === 'plugin') {
+        parentEl.innerHTML = '<span class="cell-na">N/A (is a plugin)</span>';
+      } else {
+        parentEl.innerHTML = '<span class="cell-na">Standalone</span>';
+      }
+
+      // Install command
+      const installCmd = `/plugin install ${item.name}@claude-code-plugins-plus`;
+      installEl.innerHTML = `
+        <div class="cell-install">
+          <code class="install-code">${installCmd}</code>
+          <button class="copy-btn" onclick="copyToClipboard('${installCmd}')">
+            <span>📋</span> Copy
+          </button>
+        </div>
+      `;
+
+      // Link
+      linkEl.innerHTML = `<a href="${detailUrl}" class="cell-link">View Details →</a>`;
+    }
+
+    function removeItem(id) {
+      // Update localStorage
+      try {
+        const saved = localStorage.getItem('compare-items');
+        if (saved) {
+          const items = JSON.parse(saved).filter(item => item.id !== id);
+          localStorage.setItem('compare-items', JSON.stringify(items));
+        }
+      } catch (e) {}
+
+      // Update URL and re-render
+      let itemIds = getItemsFromURL();
+      if (itemIds.length === 0) {
+        itemIds = getItemsFromStorage();
+      }
+      itemIds = itemIds.filter(i => i !== id);
+
+      if (itemIds.length > 0) {
+        const newUrl = `/compare/?items=${encodeURIComponent(itemIds.join(','))}`;
+        window.history.replaceState({}, '', newUrl);
+      } else {
+        window.history.replaceState({}, '', '/compare/');
+      }
+
+      renderComparison();
+    }
+
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('Copied to clipboard!');
+      });
+    }
+
+    function showToast(message) {
+      const existing = document.querySelector('.compare-toast');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.className = 'compare-toast';
+      toast.textContent = message;
+      toast.style.cssText = `
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #1a1a1a;
+        color: white;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        font-size: 0.9rem;
+        z-index: 1001;
+        animation: fadeInOut 2s ease-in-out forwards;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 2000);
+    }
+
+    // Event listeners
+    document.getElementById('share-comparison')?.addEventListener('click', () => {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        showToast('Share link copied!');
+      });
+    });
+
+    document.getElementById('clear-all')?.addEventListener('click', () => {
+      localStorage.removeItem('compare-items');
+      window.history.replaceState({}, '', '/compare/');
+      renderComparison();
+    });
+
+    // Initialize
+    renderComparison();
+  </script>
+
+  <style is:global>
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+      15% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      85% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+  </style>
+</BaseLayout>
