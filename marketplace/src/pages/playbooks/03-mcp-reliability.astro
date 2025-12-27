@@ -212,7 +212,7 @@ stdio: [&#039;pipe&#039;, &#039;pipe&#039;, &#039;pipe&#039;]
 });
 
 this.process.on(&#039;exit&#039;, (code: number) =&gt; {
-console.error(`MCP server exited with code &#36;{code}`);
+console.error(&#96;MCP server exited with code &#36;{code}&#96;);
 this.handleExit();
 });
 
@@ -241,12 +241,12 @@ t =&gt; now - t &lt; this.restartWindow
 
 if (this.restartTimes.length &gt;= this.maxRestarts) {
 console.error(
-`MCP server crashed &#36;{this.maxRestarts} times in &#36;{this.restartWindow}ms. Giving up.`
+&#96;MCP server crashed &#36;{this.maxRestarts} times in &#36;{this.restartWindow}ms. Giving up.&#96;
 );
 process.exit(1);
 }
 
-console.log(`Restarting MCP server (attempt &#36;{this.restartTimes.length}/&#36;{this.maxRestarts})`);
+console.log(&#96;Restarting MCP server (attempt &#36;{this.restartTimes.length}/&#36;{this.maxRestarts})&#96;);
 setTimeout(() =&gt; this.start(this.process.spawnfile), 1000);
 }
 
@@ -356,7 +356,7 @@ pool.release(db);
   ): Promise&lt;T&gt; {
     const timeout = new Promise&lt;never&gt;((_, reject) =&gt; {
       setTimeout(() =&gt; {
-        reject(new Error(`&#36;{operation} timed out after &#36;{timeoutMs}ms`));
+        reject(new Error(&#96;&#36;{operation} timed out after &#36;{timeoutMs}ms&#96;));
       }, timeoutMs);
     });
 
@@ -418,7 +418,7 @@ const result = await fallback();
 return {
 content: [{
 type: &#039;text&#039;,
-text: `⚠️ Primary method failed. Using cached/fallback data:\n\n&#36;{result}`
+text: &#96;⚠️ Primary method failed. Using cached/fallback data:\n\n&#36;{result}&#96;
 }],
 fallback: true
 };
@@ -426,7 +426,7 @@ fallback: true
 return {
 content: [{
 type: &#039;text&#039;,
-text: `Error: Both primary and fallback methods failed.\nPrimary: &#36;{error.message}\nFallback: &#36;{fallbackError.message}`
+text: &#96;Error: Both primary and fallback methods failed.\nPrimary: &#36;{error.message}\nFallback: &#36;{fallbackError.message}&#96;
 }],
 isError: true
 };
@@ -455,7 +455,7 @@ const cached = cache.get(&#039;latest&#039;);
 if (!cached) throw new Error(&#039;No cache available&#039;);
 
 const age = Date.now() - cached.timestamp;
-return `&#36;{JSON.stringify(cached.data)}\n\n(Cached &#36;{Math.floor(age / 1000)}s ago)`;
+return &#96;&#36;{JSON.stringify(cached.data)}\n\n(Cached &#36;{Math.floor(age / 1000)}s ago)&#96;;
 }
 );
 }
@@ -507,7 +507,7 @@ if (this.state === &#039;half-open&#039;) {
 console.log(&#039;Circuit breaker: Re-opening (recovery failed)&#039;);
 this.state = &#039;open&#039;;
 } else if (this.failures &gt;= this.threshold) {
-console.log(`Circuit breaker: Opening (&#36;{this.failures} failures)`);
+console.log(&#96;Circuit breaker: Opening (&#36;{this.failures} failures)&#96;);
 this.state = &#039;open&#039;;
 }
 
@@ -756,7 +756,7 @@ metrics.recordToolCall(&#039;test-api&#039;, latency);
 return {
 content: [{
 type: &#039;text&#039;,
-text: `✓ API Response (&#36;{latency}ms)\n\n&#36;{JSON.stringify(result, null, 2)}`
+text: &#96;✓ API Response (&#36;{latency}ms)\n\n&#36;{JSON.stringify(result, null, 2)}&#96;
 }]
 };
 } catch (error) {
@@ -767,7 +767,7 @@ if (error.message.includes(&#039;Circuit breaker is OPEN&#039;)) {
 return {
 content: [{
 type: &#039;text&#039;,
-text: `⚠️ API temporarily unavailable (circuit breaker triggered)\n\nThe API has failed &#36;{breaker.getState().failures} times. Waiting 30s before retry.`
+text: &#96;⚠️ API temporarily unavailable (circuit breaker triggered)\n\nThe API has failed &#36;{breaker.getState().failures} times. Waiting 30s before retry.&#96;
 }],
 isError: true
 };
@@ -776,7 +776,7 @@ isError: true
 return {
 content: [{
 type: &#039;text&#039;,
-text: `❌ API Error (&#36;{latency}ms)\n\n&#36;{error.message}`
+text: &#96;❌ API Error (&#36;{latency}ms)\n\n&#36;{error.message}&#96;
 }],
 isError: true
 };
@@ -828,7 +828,7 @@ const cached = cache.get(projectPath);
 
 if (cached &amp;&amp; Date.now() - cached.timestamp &lt; 3600000) {
 // Use cache if less than 1 hour old
-return `&#36;{JSON.stringify(cached.data, null, 2)}\n\n(Cached &#36;{Math.floor((Date.now() - cached.timestamp) / 1000)}s ago)`;
+return &#96;&#36;{JSON.stringify(cached.data, null, 2)}\n\n(Cached &#36;{Math.floor((Date.now() - cached.timestamp) / 1000)}s ago)&#96;;
 }
 
 // Simple grep-based scan
@@ -1045,7 +1045,7 @@ pnpm start
 ws.onmessage = (event) =&gt; {
   const data = JSON.parse(event.data);
   if (data.type === &#039;plugin.activation&#039;) {
-    console.log(`MCP server &#36;{data.pluginName} activated`);
+    console.log(&#96;MCP server &#36;{data.pluginName} activated&#96;);
   }
 };</code></pre>
 

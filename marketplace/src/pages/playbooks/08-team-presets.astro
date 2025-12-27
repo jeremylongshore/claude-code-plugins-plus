@@ -260,7 +260,7 @@ const meta = {
 <li><strong>Create Hotfix Branch</strong></code></pre>bash</li>
 </ul>
 <p>git checkout -b hotfix/issue-description main</p>
-<p>\`\`<code></p>
+<p>\&#96;\&#96;<code></p>
 
 <ul>
 <li><strong>Implement Fix</strong></li>
@@ -304,7 +304,7 @@ const meta = {
 <li>Monitor for 30 minutes post-deploy</li>
 <li>Auto-rollback if error rate > 5%</li>
 </ul>
-</code>\`<code>
+</code>\&#96;<code>
 
 <h3>Feature Development Workflow</h3>
 
@@ -529,7 +529,7 @@ import inquirer from &#039;inquirer&#039;;
 
 <h3>Centralized Configuration Repository</h3>
 
-</code>\`<code>
+</code>\&#96;<code>
 <p>team-configs/</p>
 <p>├── backend/</p>
 <p>│   ├── config.json</p>
@@ -544,7 +544,7 @@ import inquirer from &#039;inquirer&#039;;
 <p>└── devops/</p>
 <p>├── config.json</p>
 <p>└── ...</p>
-</code>\`<code>
+</code>\&#96;<code>
 
 <h3>Configuration Sync</h3>
 
@@ -557,24 +557,24 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 
 <p>async syncFromCentral(team: string): Promise&lt;void&gt; {</p>
 <p>// Clone/pull config repo</p>
-<p>execSync(`git clone &#36;{this.configRepo} /tmp/team-configs || (cd /tmp/team-configs &amp;&amp; git pull)`);</p>
+<p>execSync(&#96;git clone &#36;{this.configRepo} /tmp/team-configs || (cd /tmp/team-configs &amp;&amp; git pull)&#96;);</p>
 
 <p>// Copy team config</p>
-<p>const teamConfig = readFileSync(`/tmp/team-configs/&#36;{team}/config.json`, &#039;utf-8&#039;);</p>
-<p>writeFileSync(`&#36;{process.env.HOME}/.claude/config.json`, teamConfig);</p>
+<p>const teamConfig = readFileSync(&#96;/tmp/team-configs/&#36;{team}/config.json&#96;, &#039;utf-8&#039;);</p>
+<p>writeFileSync(&#96;&#36;{process.env.HOME}/.claude/config.json&#96;, teamConfig);</p>
 
 <p>// Copy workflows</p>
-<p>execSync(`cp -r /tmp/team-configs/&#36;{team}/workflows/* &#36;{process.env.HOME}/.claude/workflows/`);</p>
+<p>execSync(&#96;cp -r /tmp/team-configs/&#36;{team}/workflows/* &#36;{process.env.HOME}/.claude/workflows/&#96;);</p>
 
 <p>// Copy hooks</p>
-<p>execSync(`cp /tmp/team-configs/&#36;{team}/hooks/* .git/hooks/`);</p>
+<p>execSync(&#96;cp /tmp/team-configs/&#36;{team}/hooks/* .git/hooks/&#96;);</p>
 
-<p>console.log(`✓ Synced configuration for &#36;{team} team`);</p>
+<p>console.log(&#96;✓ Synced configuration for &#36;{team} team&#96;);</p>
 <p>}</p>
 
 <p>async pushLocalChanges(team: string, message: string): Promise&lt;void&gt; {</p>
 <p>// Copy local config back to central repo</p>
-<p>execSync(`cp &#36;{process.env.HOME}/.claude/config.json /tmp/team-configs/&#36;{team}/config.json`);</p>
+<p>execSync(&#96;cp &#36;{process.env.HOME}/.claude/config.json /tmp/team-configs/&#36;{team}/config.json&#96;);</p>
 
 <p>// Commit and push</p>
 <p>execSync(</code></p>
@@ -584,7 +584,7 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>git push origin main</p>
 <p><code>);</p>
 
-<p>console.log(`✓ Pushed changes to central repository`);</p>
+<p>console.log(&#96;✓ Pushed changes to central repository&#96;);</p>
 <p>}</p>
 <p>}</p>
 
@@ -616,9 +616,9 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>startTime: Date.now()</p>
 <p>};</p>
 
-<p>console.log(`🎯 Pair Programming Session Started`);</p>
-<p>console.log(`Task: &#36;{task}`);</p>
-<p>console.log(`Navigator: &#36;{session.navigator}`);</p>
+<p>console.log(&#96;🎯 Pair Programming Session Started&#96;);</p>
+<p>console.log(&#96;Task: &#36;{task}&#96;);</p>
+<p>console.log(&#96;Navigator: &#36;{session.navigator}&#96;);</p>
 <p>console.log(&#039;------------------------------------------\n&#039;);</p>
 
 <p>return session;</p>
@@ -628,7 +628,7 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 <p>// AI agent analyzes code and provides real-time feedback</p>
 <p>const response = await callClaude({</p>
 <p>agent: &#039;code-reviewer&#039;,</p>
-<p>prompt: `As a pair programming navigator, review this code:\n\n&#36;{code}\n\nContext: &#36;{context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices`</p>
+<p>prompt: &#96;As a pair programming navigator, review this code:\n\n&#36;{code}\n\nContext: &#36;{context}\n\nProvide:\n1. Immediate feedback\n2. Suggestions for improvement\n3. Potential bugs\n4. Best practices&#96;</p>
 <p>});</p>
 
 <p>return response;</p>
@@ -636,8 +636,8 @@ import { readFileSync, writeFileSync } from &#039;fs&#039;;
 
 <p>async endSession(session: PairSession): Promise&lt;void&gt; {</p>
 <p>const duration = Date.now() - session.startTime;</p>
-<p>console.log(`\n✅ Pair Programming Session Complete`);</p>
-<p>console.log(`Duration: &#36;{Math.floor(duration / 60000)} minutes`);</p>
+<p>console.log(&#96;\n✅ Pair Programming Session Complete&#96;);</p>
+<p>console.log(&#96;Duration: &#36;{Math.floor(duration / 60000)} minutes&#96;);</p>
 <p>}</p>
 <p>}</code></pre></p>
 

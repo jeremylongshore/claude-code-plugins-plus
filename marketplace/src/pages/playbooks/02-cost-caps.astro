@@ -63,7 +63,7 @@ const response = await claude.messages.create({
   max_tokens: 4096,
   messages: [{
     role: &#039;user&#039;,
-    content: `Review this entire codebase: &#36;{fs.readFileSync(&#039;monorepo.txt&#039;)}` // 250K tokens
+    content: &#96;Review this entire codebase: &#36;{fs.readFileSync(&#039;monorepo.txt&#039;)}&#96; // 250K tokens
   }]
 });
 
@@ -146,8 +146,8 @@ messages: [...]
 });
 
 const cost = tracker.track(response.usage, response.model);
-console.log(`Request cost: &#36;&#36;{cost.totalCost.toFixed(4)}`);
-console.log(`Total spent: &#36;&#36;{tracker.getTotalCost().toFixed(2)}`);</code></pre>
+console.log(&#96;Request cost: &#36;&#36;{cost.totalCost.toFixed(4)}&#96;);
+console.log(&#96;Total spent: &#36;&#36;{tracker.getTotalCost().toFixed(2)}&#96;);</code></pre>
 
 <h3>2. Analytics Daemon Integration</h3>
 
@@ -212,7 +212,7 @@ this.lastReset = new Date();
 // Check budget before execution
 if (this.spent &gt;= this.dailyBudget) {
 throw new Error(
-`Daily budget exceeded: &#36;&#36;{this.spent.toFixed(2)} / &#36;&#36;{this.dailyBudget}`
+&#96;Daily budget exceeded: &#36;&#36;{this.spent.toFixed(2)} / &#36;&#36;{this.dailyBudget}&#96;
 );
 }
 
@@ -223,7 +223,7 @@ this.spent += cost;
 // Warn at 80%
 if (this.spent &gt;= this.dailyBudget * 0.8) {
 console.warn(
-`⚠️ 80% of daily budget used: &#36;&#36;{this.spent.toFixed(2)} / &#36;&#36;{this.dailyBudget}`
+&#96;⚠️ 80% of daily budget used: &#36;&#36;{this.spent.toFixed(2)} / &#36;&#36;{this.dailyBudget}&#96;
 );
 }
 
@@ -328,7 +328,7 @@ const spent = this.userSpent.get(userId) || 0;
 
 if (spent &gt;= quota) {
 throw new Error(
-`User &#36;{userId} quota exceeded: &#36;&#36;{spent.toFixed(2)} / &#36;&#36;{quota}`
+&#96;User &#36;{userId} quota exceeded: &#36;&#36;{spent.toFixed(2)} / &#36;&#36;{quota}&#96;
 );
 }
 
@@ -347,7 +347,7 @@ userId,
 quota: &#36;&#36;{quota},
 spent: &#36;&#36;{spent.toFixed(2)},
 remaining: &#36;&#36;{(quota - spent).toFixed(2)},
-percentage: `&#36;{((spent / quota) * 100).toFixed(1)}%`
+percentage: &#96;&#36;{((spent / quota) * 100).toFixed(1)}%&#96;
 };
 }
 }</code></pre>
@@ -402,7 +402,7 @@ async function reviewFile(file: string, codebase: string) {
     model: &#039;claude-3-5-sonnet-20241022&#039;,
     messages: [{
       role: &#039;user&#039;,
-      content: `Codebase context:\n&#36;{codebase}\n\nReview:\n&#36;{file}` // 100K + 5K tokens
+      content: &#96;Codebase context:\n&#36;{codebase}\n\nReview:\n&#36;{file}&#96; // 100K + 5K tokens
     }]
   });
 }
@@ -415,7 +415,7 @@ return await claude.messages.create({
 model: &#039;claude-3-5-sonnet-20241022&#039;,
 messages: [{
 role: &#039;user&#039;,
-content: `Related files:\n&#36;{context}\n\nReview:\n&#36;{file}` // 10K + 5K tokens
+content: &#96;Related files:\n&#36;{context}\n\nReview:\n&#36;{file}&#96; // 10K + 5K tokens
 }]
 });
 }
@@ -434,7 +434,7 @@ fn: () =&gt; Promise&lt;{ result: T; cost: number }&gt;
 const cached = this.cache.get(cacheKey);
 
 if (cached &amp;&amp; Date.now() - cached.timestamp &lt; this.ttl) {
-console.log(`Cache hit: &#36;&#36;{cached.cost.toFixed(4)} saved`);
+console.log(&#96;Cache hit: &#36;&#36;{cached.cost.toFixed(4)} saved&#96;);
 return { result: cached.response, cost: 0, cached: true };
 }
 
@@ -463,7 +463,7 @@ hitRate: 0 // Track separately
 const cache = new ResponseCache();
 
 const { result, cost, cached } = await cache.execute(
-`code-review-&#36;{fileHash}`,
+&#96;code-review-&#36;{fileHash}&#96;,
 async () =&gt; {
 const response = await claude.messages.create(...);
 return { result: response, cost: calculateCost(response.usage) };
@@ -482,7 +482,7 @@ return { result: response, cost: calculateCost(response.usage) };
 async function reviewFiles(files: string[]) {
   for (const file of files) {
     await claude.messages.create({
-      messages: [{ role: &#039;user&#039;, content: `Review: &#36;{file}` }]
+      messages: [{ role: &#039;user&#039;, content: &#96;Review: &#36;{file}&#96; }]
     });
   }
 }
@@ -496,7 +496,7 @@ for (const batch of batches) {
 await claude.messages.create({
 messages: [{
 role: &#039;user&#039;,
-content: `Review these files:\n&#36;{batch.map((f, i) =&gt; \`&#36;{i+1}. &#36;{f}\`).join(&#039;\n&#039;)}`
+content: &#96;Review these files:\n&#36;{batch.map((f, i) =&gt; \&#96;&#36;{i+1}. &#36;{f}\&#96;).join(&#039;\n&#039;)}&#96;
 }]
 });
 }
@@ -525,7 +525,7 @@ for (const plugin of plugins) {
 try {
 await budget.executeWithBudget(async () =&gt; {
 const { result, cost, cached } = await cache.execute(
-`security-review-&#36;{plugin.id}`,
+&#96;security-review-&#36;{plugin.id}&#96;,
 async () =&gt; {
 const response = await claude.messages.create({
 model: &#039;claude-3-5-haiku-20241022&#039;, // Use cheaper model
@@ -545,7 +545,7 @@ results.push({ plugin: plugin.name, review: result, cached });
 return { result, cost };
 });
 } catch (error) {
-console.error(`Budget exceeded at plugin &#36;{plugin.name}`);
+console.error(&#96;Budget exceeded at plugin &#36;{plugin.name}&#96;);
 break;
 }
 }
@@ -583,14 +583,14 @@ userId: string,
 fn: () =&gt; Promise&lt;{ result: T; cost: number }&gt;
 ): Promise&lt;T&gt; {
 const team = this.teams.get(teamName);
-if (!team) throw new Error(`Unknown team: &#36;{teamName}`);
+if (!team) throw new Error(&#96;Unknown team: &#36;{teamName}&#96;);
 if (!team.members.includes(userId)) {
-throw new Error(`User &#36;{userId} not in team &#36;{teamName}`);
+throw new Error(&#96;User &#36;{userId} not in team &#36;{teamName}&#96;);
 }
 
 const spent = this.teamSpend.get(teamName) || 0;
 if (spent &gt;= team.monthlyBudget) {
-throw new Error(`Team &#36;{teamName} budget exceeded`);
+throw new Error(&#96;Team &#36;{teamName} budget exceeded&#96;);
 }
 
 const { result, cost } = await fn();
@@ -609,7 +609,7 @@ members: team.members.length,
 budget: &#36;&#36;{team.monthlyBudget},
 spent: &#36;&#36;{spent.toFixed(2)},
 remaining: &#36;&#36;{(team.monthlyBudget - spent).toFixed(2)},
-percentageUsed: `&#36;{((spent / team.monthlyBudget) * 100).toFixed(1)}%`,
+percentageUsed: &#96;&#36;{((spent / team.monthlyBudget) * 100).toFixed(1)}%&#96;,
 daysRemaining: 30 - new Date().getDate(),
 projectedOverage: spent / new Date().getDate() * 30 &gt; team.monthlyBudget
 };
@@ -689,7 +689,7 @@ const roi = calculateROI(codeReviewMetrics);
 // totalCost: &#36;0.50
 // ROI: ((&#36;350 - &#36;0.50) / &#36;0.50) × 100 = 69,900%
 
-console.log(`ROI: &#36;{roi.toFixed(0)}%`); // 69,900% ROI</code></pre>
+console.log(&#96;ROI: &#36;{roi.toFixed(0)}%&#96;); // 69,900% ROI</code></pre>
 
 <h3>Break-Even Analysis</h3>
 

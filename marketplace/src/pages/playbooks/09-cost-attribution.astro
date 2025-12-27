@@ -308,7 +308,7 @@ const tagger = new CostTagger();
 <p>const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);</p>
 
 <p>if (!budget.allowed) {</p>
-<p>throw new Error(`Budget exceeded for team &#36;{teamId}. Spent: &#36;&#36;{budget.spent.toFixed(2)}, Limit: &#36;&#36;{budget.limit.toFixed(2)}`);</p>
+<p>throw new Error(&#96;Budget exceeded for team &#36;{teamId}. Spent: &#36;&#36;{budget.spent.toFixed(2)}, Limit: &#36;&#36;{budget.limit.toFixed(2)}&#96;);</p>
 <p>}</p>
 
 <p>return await callClaude(prompt);</p>
@@ -335,8 +335,8 @@ const tagger = new CostTagger();
 <p>const costs = await db.costs.find({</p>
 <p>team: teamId,</p>
 <p>timestamp: {</p>
-<p>&#36;gte: new Date(`&#36;{month}-01`).getTime(),</p>
-<p>&#36;lt: new Date(`&#36;{month}-01`).getTime() + 30 * 86400000</p>
+<p>&#36;gte: new Date(&#96;&#36;{month}-01&#96;).getTime(),</p>
+<p>&#36;lt: new Date(&#96;&#36;{month}-01&#96;).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
@@ -448,8 +448,8 @@ const tagger = new CostTagger();
 <p>async generateMonthlyReport(month: string): Promise&lt;UsageMetrics&gt; {</p>
 <p>const costs = await db.costs.find({</p>
 <p>timestamp: {</p>
-<p>&#36;gte: new Date(`&#36;{month}-01`).getTime(),</p>
-<p>&#36;lt: new Date(`&#36;{month}-01`).getTime() + 30 * 86400000</p>
+<p>&#36;gte: new Date(&#96;&#36;{month}-01&#96;).getTime(),</p>
+<p>&#36;lt: new Date(&#96;&#36;{month}-01&#96;).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
@@ -567,7 +567,7 @@ const tagger = new CostTagger();
 
 <p>return {</p>
 <p>category: &#039;model-selection&#039;,</p>
-<p>description: `&#36;{simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.`,</p>
+<p>description: &#96;&#36;{simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.&#96;,</p>
 <p>potentialSavings: monthlySavings,</p>
 <p>effort: &#039;low&#039;,</p>
 <p>implementation: &#039;Update model parameter in simple workflows to claude-3-5-haiku-20241022&#039;</p>
@@ -596,7 +596,7 @@ const tagger = new CostTagger();
 <p>if (duplicateCost &gt; 10) {</p>
 <p>return {</p>
 <p>category: &#039;caching&#039;,</p>
-<p>description: `&#36;{duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.`,</p>
+<p>description: &#96;&#36;{duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.&#96;,</p>
 <p>potentialSavings: duplicateCost * 30,</p>
 <p>effort: &#039;medium&#039;,</p>
 <p>implementation: &#039;Add Redis cache for LLM responses with 1-hour TTL&#039;</p>
@@ -623,7 +623,7 @@ const tagger = new CostTagger();
 
 <p>return {</p>
 <p>category: &#039;batching&#039;,</p>
-<p>description: `&#36;{batchableCount} requests could be batched. Combine multiple prompts into single API call.`,</p>
+<p>description: &#96;&#36;{batchableCount} requests could be batched. Combine multiple prompts into single API call.&#96;,</p>
 <p>potentialSavings: savings <em> 30 </em> 0.3,  // 30% reduction from batching</p>
 <p>effort: &#039;high&#039;,</p>
 <p>implementation: &#039;Implement request batching with 100ms window&#039;</p>
@@ -634,7 +634,7 @@ const tagger = new CostTagger();
 <p>}</p>
 
 <p>private hashPrompt(cost: any): string {</p>
-<p>return `&#36;{cost.workflow}-&#36;{cost.inputTokens}-&#36;{cost.outputTokens}`;</p>
+<p>return &#96;&#36;{cost.workflow}-&#36;{cost.inputTokens}-&#36;{cost.outputTokens}&#96;;</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -660,13 +660,13 @@ const tagger = new CostTagger();
 </ul>
 
 <p>&lt;h2&gt;Top Projects by Cost&lt;/h2&gt;</p>
-<p>&#36;{metrics.topProjects.map((p, i) =&gt; `&#36;{i + 1}. &#36;{p.project}: &#36;&#36;{p.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.topProjects.map((p, i) =&gt; &#96;&#36;{i + 1}. &#36;{p.project}: &#36;&#36;{p.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Top Users by Cost&lt;/h2&gt;</p>
-<p>&#36;{metrics.topUsers.map((u, i) =&gt; `&#36;{i + 1}. &#36;{u.user}: &#36;&#36;{u.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.topUsers.map((u, i) =&gt; &#96;&#36;{i + 1}. &#36;{u.user}: &#36;&#36;{u.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Daily Cost Trend&lt;/h2&gt;</p>
-<p>&#36;{metrics.costTrend.map(d =&gt; `&#36;{d.date}: &#36;&#36;{d.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.costTrend.map(d =&gt; &#96;&#36;{d.date}: &#36;&#36;{d.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Optimization Recommendations&lt;/h2&gt;</p>
 <p>&#36;{await this.getOptimizationRecommendations()}</p>
@@ -683,7 +683,7 @@ const tagger = new CostTagger();
 <p>const recommendations = await optimizer.analyzeAndRecommend(&#039;engineering-backend&#039;);</p>
 
 <p>return recommendations</p>
-<p>.map(r =&gt; `- <strong>&#36;{r.category}</strong>: &#36;{r.description} (Savings: &#36;&#36;{r.potentialSavings.toFixed(2)}/month, Effort: &#36;{r.effort})`)</p>
+<p>.map(r =&gt; &#96;- <strong>&#36;{r.category}</strong>: &#36;{r.description} (Savings: &#36;&#36;{r.potentialSavings.toFixed(2)}/month, Effort: &#36;{r.effort})&#96;)</p>
 <p>.join(&#039;\n&#039;);</p>
 <p>}</p>
 <p>}</code></pre></p>
