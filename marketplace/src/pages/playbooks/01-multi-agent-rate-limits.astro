@@ -144,7 +144,7 @@ const ws = new WebSocket(&#039;ws://localhost:3456&#039;);
 ws.onmessage = (event) =&gt; {
 const data = JSON.parse(event.data);
 if (data.type === &#039;rate_limit.warning&#039;) {
-console.warn(\\`⚠️ Rate limit: \\${data.current}/\\${data.limit}\\`);
+console.warn(&#96;⚠️ Rate limit: &#36;{data.current}/&#36;{data.limit}&#96;);
 // Trigger throttling
 }
 };</code></pre>
@@ -334,7 +334,7 @@ const baseDelay = 1000 * Math.pow(2, attempt);
 const jitter = Math.random() <em> baseDelay </em> 0.3;
 const delay = baseDelay + jitter;
 
-console.log(\\`Rate limited. Retrying in \\${delay}ms (attempt \\${attempt + 1}/\\${maxRetries})\\`);
+console.log(&#96;Rate limited. Retrying in &#36;{delay}ms (attempt &#36;{attempt + 1}/&#36;{maxRetries})&#96;);
 await sleep(delay);
 }
 }
