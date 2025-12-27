@@ -309,6 +309,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: #ef4444;
     }
 
+    /* Keyboard navigation focus state */
+    .result-card.keyboard-focused {
+      outline: 3px solid var(--brand-orange);
+      outline-offset: 2px;
+      box-shadow: 0 0 0 6px rgba(217, 119, 87, 0.2);
+    }
+
     .result-type-badge {
       position: absolute;
       top: 1rem;
@@ -540,8 +547,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         Showing {searchIndex.stats.totalItems} items
       </span>
 
-      <span class="keyboard-hint" title="Press / to focus search">
-        <kbd>/</kbd> to search
+      <span class="keyboard-hint" title="Keyboard shortcuts: / search, j/k navigate, Enter open, c compare, f favorite">
+        <kbd>/</kbd> <kbd>j</kbd><kbd>k</kbd> <kbd>↵</kbd>
       </span>
     </div>
   </div>
@@ -828,20 +835,89 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       }
 
       // Keyboard shortcuts
+      let focusedCardIndex = -1;
+
+      function updateCardFocus(newIndex) {
+        const cards = document.querySelectorAll('.result-card:not([style*="display: none"])');
+        if (cards.length === 0) return;
+
+        // Remove focus from previous card
+        if (focusedCardIndex >= 0 && focusedCardIndex < cards.length) {
+          cards[focusedCardIndex].classList.remove('keyboard-focused');
+        }
+
+        // Clamp to valid range
+        focusedCardIndex = Math.max(0, Math.min(newIndex, cards.length - 1));
+
+        // Add focus to new card
+        const focusedCard = cards[focusedCardIndex];
+        focusedCard.classList.add('keyboard-focused');
+        focusedCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
       document.addEventListener('keydown', (e) => {
+        const inInput = ['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName);
+
         // Focus search on / (unless already in input)
-        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+        if (e.key === '/' && !inInput) {
           e.preventDefault();
           document.getElementById('main-search').focus();
         }
 
         // Clear search on Escape
-        if (e.key === 'Escape' && document.activeElement.id === 'main-search') {
-          document.getElementById('main-search').blur();
-          if (activeFilters.search) {
-            activeFilters.search = '';
-            document.getElementById('main-search').value = '';
-            applyFilters();
+        if (e.key === 'Escape') {
+          if (document.activeElement.id === 'main-search') {
+            document.getElementById('main-search').blur();
+            if (activeFilters.search) {
+              activeFilters.search = '';
+              document.getElementById('main-search').value = '';
+              applyFilters();
+            }
+          }
+          // Clear card focus on Escape
+          const focusedCard = document.querySelector('.result-card.keyboard-focused');
+          if (focusedCard) {
+            focusedCard.classList.remove('keyboard-focused');
+            focusedCardIndex = -1;
+          }
+        }
+
+        // j/k navigation (only when not in input)
+        if (!inInput) {
+          if (e.key === 'j' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            updateCardFocus(focusedCardIndex + 1);
+          }
+          if (e.key === 'k' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            updateCardFocus(focusedCardIndex - 1);
+          }
+          // Enter to open focused card
+          if (e.key === 'Enter') {
+            const focusedCard = document.querySelector('.result-card.keyboard-focused');
+            if (focusedCard) {
+              const link = focusedCard.querySelector('.result-card-link');
+              if (link) {
+                e.preventDefault();
+                window.location.href = link.href;
+              }
+            }
+          }
+          // c to add to compare
+          if (e.key === 'c') {
+            const focusedCard = document.querySelector('.result-card.keyboard-focused');
+            if (focusedCard) {
+              const compareBtn = focusedCard.querySelector('.compare-toggle-btn');
+              if (compareBtn) compareBtn.click();
+            }
+          }
+          // f to toggle favorite
+          if (e.key === 'f') {
+            const focusedCard = document.querySelector('.result-card.keyboard-focused');
+            if (focusedCard) {
+              const bookmarkBtn = focusedCard.querySelector('.bookmark-btn');
+              if (bookmarkBtn) bookmarkBtn.click();
+            }
           }
         }
       });
