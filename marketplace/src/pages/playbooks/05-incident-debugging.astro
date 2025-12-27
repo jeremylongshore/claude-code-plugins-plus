@@ -167,17 +167,17 @@ In 15 minutes or when resolved.</code></pre>
 <h3>1. Rate Limit Exhaustion</h3>
 
 <p><strong>Symptoms</strong>:</p>
-<p>\`\`<code></p>
+<p>\&#96;\&#96;<code></p>
 <p>Error 429: Rate limit exceeded</p>
 <p>anthropic-ratelimit-requests-remaining: 0</p>
 <p>anthropic-ratelimit-requests-reset: 2025-12-24T15:00:00Z</p>
-<code>\`</code>
+<code>\&#96;</code>
 
 <p><strong>Diagnosis</strong>:</p>
 <pre><code class="language-typescript">async function diagnoseRateLimits(): Promise&lt;void&gt; {
   // Check recent API calls
   const recentCalls = await queryLogs(&#039;SELECT COUNT(*) FROM api_calls WHERE timestamp &gt; NOW() - INTERVAL 1 MINUTE&#039;);
-  console.log(`API calls in last minute: &#36;{recentCalls}`);
+  console.log(&#96;API calls in last minute: &#36;{recentCalls}&#96;);
 
 // Check rate limit headers from last successful call
 const lastHeaders = await getLastAPIHeaders();
@@ -212,11 +212,11 @@ this.lastRefill = now;
 <h3>2. Agent Timeout</h3>
 
 <p><strong>Symptoms</strong>:</p>
-<code>\`</code>
+<code>\&#96;</code>
 <p>Error: Agent execution timed out after 300000ms</p>
 <p>Task: code-review</p>
 <p>Conversation: abc-123-def</p>
-<code>\`</code>
+<code>\&#96;</code>
 
 <p><strong>Diagnosis</strong>:</p>
 <pre><code class="language-bash"># Check for hung processes
@@ -239,7 +239,7 @@ class TimeoutManager {
     return Promise.race([
       fn(),
       new Promise&lt;never&gt;((_, reject) =&gt;
-        setTimeout(() =&gt; reject(new Error(`Timeout after &#36;{timeoutMs}ms`)), timeoutMs)
+        setTimeout(() =&gt; reject(new Error(&#96;Timeout after &#36;{timeoutMs}ms&#96;)), timeoutMs)
       )
     ]);
   }
@@ -378,7 +378,7 @@ const byPlugin = groupBy(failures, f =&gt; f.pluginName);
 const suspiciousPlugin = Object.entries(byPlugin)
 .sort((a, b) =&gt; b[1].length - a[1].length)[0];
 
-console.log(`Most failures from plugin: &#36;{suspiciousPlugin[0]} (&#36;{suspiciousPlugin[1].length} errors)`);
+console.log(&#96;Most failures from plugin: &#36;{suspiciousPlugin[0]} (&#36;{suspiciousPlugin[1].length} errors)&#96;);
 }</code></pre>
 
 <h3>3. Distributed Tracing</h3>
@@ -423,7 +423,7 @@ span.end();
 <h3>Parsing Claude Code Logs</h3>
 
 <p><strong>Log Format</strong>:</p>
-<code>\`</code>
+<code>\&#96;</code>
 <p>[2025-12-24T14:35:22.123Z] [ERROR] [agent:code-review] Rate limit exceeded</p>
 <p>conversationId: abc-123-def</p>
 <p>userId: user-456</p>
@@ -431,7 +431,7 @@ span.end();
 <p>retryAfter: 12</p>
 <p>stack: Error: Rate limit exceeded</p>
 <p>at callClaude (/app/src/api.ts:45:11)</p>
-<code>\`</code>
+<code>\&#96;</code>
 
 <p><strong>Analysis Script</strong>:</p>
 <pre><code class="language-typescript">import { readFileSync } from &#039;fs&#039;;
@@ -487,7 +487,7 @@ console.log(&#039;Errors by component:&#039;);
 Object.entries(errorsByComponent)
 .sort((a, b) =&gt; b[1].length - a[1].length)
 .forEach(([component, errors]) =&gt; {
-console.log(`  &#36;{component}: &#36;{errors.length}`);
+console.log(&#96;  &#36;{component}: &#36;{errors.length}&#96;);
 });
 
 // Recent errors (last 5 minutes)
@@ -496,9 +496,9 @@ l.level === &#039;ERROR&#039; &amp;&amp;
 Date.now() - l.timestamp.getTime() &lt; 300000
 );
 
-console.log(`\nRecent errors: &#36;{recentErrors.length}`);
+console.log(&#96;\nRecent errors: &#36;{recentErrors.length}&#96;);
 recentErrors.slice(0, 10).forEach(err =&gt; {
-console.log(`  &#36;{err.timestamp.toISOString()} - &#36;{err.message}`);
+console.log(&#96;  &#36;{err.timestamp.toISOString()} - &#36;{err.message}&#96;);
 });
 }</code></pre>
 
@@ -512,12 +512,12 @@ const data = JSON.parse(event.data);
 
 // Track rate limit warnings
 if (data.type === &#039;rate_limit.warning&#039;) {
-console.warn(`⚠️ Rate limit approaching: &#36;{data.current}/&#36;{data.limit}`);
+console.warn(&#96;⚠️ Rate limit approaching: &#36;{data.current}/&#36;{data.limit}&#96;);
 }
 
 // Track errors
 if (data.type === &#039;llm.call&#039; &amp;&amp; data.error) {
-console.error(`❌ LLM call failed: &#36;{data.error}`);
+console.error(&#96;❌ LLM call failed: &#36;{data.error}&#96;);
 }
 };
 
@@ -526,7 +526,7 @@ const response = await fetch(&#039;http://localhost:3333/api/sessions&#039;);
 const sessions = await response.json();
 const failedSessions = sessions.filter(s =&gt; s.errorCount &gt; 0);
 
-console.log(`Failed sessions: &#36;{failedSessions.length}/&#36;{sessions.length}`);</code></pre>
+console.log(&#96;Failed sessions: &#36;{failedSessions.length}/&#36;{sessions.length}&#96;);</code></pre>
 
 <hr>
 
@@ -644,7 +644,7 @@ const breaker = this.breakers.get(serviceName);
 if (breaker) {
 breaker.state = &#039;closed&#039;;
 breaker.failures = 0;
-console.log(`✓ Reset circuit breaker for &#36;{serviceName}`);
+console.log(&#96;✓ Reset circuit breaker for &#36;{serviceName}&#96;);
 }
 }
 
@@ -772,7 +772,7 @@ console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
      pagerDuty.trigger({
        severity: &#039;critical&#039;,
        title: &#039;High error rate detected&#039;,
-       details: `Error rate: &#36;{(errorRate * 100).toFixed(1)}%`
+       details: &#96;Error rate: &#36;{(errorRate * 100).toFixed(1)}%&#96;
      });
    }</code></pre>
 
@@ -783,7 +783,7 @@ console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
 
 1. Check logs: <code>tail -f /var/log/claude-code.log | grep TIMEOUT</code>
 2. Identify pattern: Which agents are timing out?
-3. Check system resources: <code>top, free -m</code>, </code>df -h\`
+3. Check system resources: <code>top, free -m</code>, </code>df -h\&#96;
 4. If rate limits: Implement emergency throttling
 5. If resource exhaustion: Restart services</code></pre>
 

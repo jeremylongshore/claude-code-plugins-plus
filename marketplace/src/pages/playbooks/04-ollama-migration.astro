@@ -366,14 +366,14 @@ console.log(JSON.stringify(results, null, 2));
 <p><strong>Scenario</strong>: 100,000 requests/month, 500 input + 200 output tokens</p>
 
 <h4>Cloud API Costs (Claude 3.5 Sonnet)</h4>
-<p>\`\`<code></p>
+<p>\&#96;\&#96;<code></p>
 <p>Monthly cost: &#36;450</p>
 <p>Annual cost: &#36;5,400</p>
 <p>3-year cost: &#36;16,200</p>
-<code>\`</code>
+<code>\&#96;</code>
 
 <h4>Self-Hosted Ollama Costs</h4>
-<code>\`</code>
+<code>\&#96;</code>
 <p>Hardware (one-time):</p>
 - NVIDIA RTX 4090 (24GB): &#36;1,600
 - Workstation PC (CPU, RAM, SSD): &#36;2,000
@@ -387,7 +387,7 @@ console.log(JSON.stringify(results, null, 2));
 <p>3-year total: &#36;3,600 + (&#36;600 × 3) = &#36;5,400</p>
 
 <p>Savings vs Claude: &#36;16,200 - &#36;5,400 = &#36;10,800 (67% savings)</p>
-<code>\`</code>
+<code>\&#96;</code>
 
 <p><strong>Break-even point</strong>: 12 months</p>
 
@@ -500,7 +500,7 @@ const response = await anthropic.messages.create({
   model: &#039;claude-3-5-sonnet-20241022&#039;,
   messages: [{
     role: &#039;user&#039;,
-    content: `Analyze patient record: &#36;{patientData}` // ❌ HIPAA violation!
+    content: &#96;Analyze patient record: &#36;{patientData}&#96; // ❌ HIPAA violation!
   }]
 });
 
@@ -509,7 +509,7 @@ const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
 method: &#039;POST&#039;,
 body: JSON.stringify({
 model: &#039;llama3.3:70b&#039;,
-prompt: `Analyze patient record: &#36;{patientData}` // ✅ Never leaves network
+prompt: &#96;Analyze patient record: &#36;{patientData}&#96; // ✅ Never leaves network
 })
 });</code></pre>
 
@@ -734,7 +734,7 @@ async generate(prompt: string, model: string): Promise&lt;string&gt; {
 const instance = this.instances[this.currentIndex];
 this.currentIndex = (this.currentIndex + 1) % this.instances.length;
 
-const response = await fetch(`&#36;{instance}/api/generate`, {
+const response = await fetch(&#96;&#36;{instance}/api/generate&#96;, {
 method: &#039;POST&#039;,
 body: JSON.stringify({ model, prompt, stream: false })
 });
@@ -919,7 +919,7 @@ print(response.json()[&#039;response&#039;])</code></pre>
 <ul>
 <li><code>ai-sdk-agents</code> - Supports Ollama for multi-agent workflows</li>
 <li><code>ollama-local-ai</code> - Ollama integration examples</li>
-<li></code>local-llm-wrapper\` - Generic local model wrapper</li>
+<li></code>local-llm-wrapper\&#96; - Generic local model wrapper</li>
 </ul>
 
 <h3>External Resources</h3>
