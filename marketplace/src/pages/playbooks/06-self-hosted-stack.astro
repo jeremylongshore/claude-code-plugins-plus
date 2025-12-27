@@ -138,7 +138,7 @@ ports:
 - &quot;3456:3456&quot;  # WebSocket
 volumes:
 - analytics_data:/data
-- \${HOME}/.claude:/root/.claude:ro
+- &#36;{HOME}/.claude:/root/.claude:ro
 environment:
 - NODE_ENV=production
 - PORT=3333
@@ -161,7 +161,7 @@ volumes:
 - ./backups/postgres:/backups
 environment:
 - POSTGRES_USER=claude
-- POSTGRES_PASSWORD=\${POSTGRES_PASSWORD}
+- POSTGRES_PASSWORD=&#36;{POSTGRES_PASSWORD}
 - POSTGRES_DB=claude_prod
 restart: unless-stopped
 healthcheck:
@@ -212,7 +212,7 @@ volumes:
 - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
 - ./grafana/datasources:/etc/grafana/provisioning/datasources
 environment:
-- GF_SECURITY_ADMIN_PASSWORD=\${GRAFANA_PASSWORD}
+- GF_SECURITY_ADMIN_PASSWORD=&#36;{GRAFANA_PASSWORD}
 - GF_INSTALL_PLUGINS=redis-datasource
 restart: unless-stopped
 depends_on:
@@ -248,28 +248,28 @@ command: |
 sh -c &#039;
 apk add --no-cache postgresql-client redis
 while true; do
-DATE=\$(date +%Y-%m-%d_%H-%M-%S)
+DATE=&#36;(date +%Y-%m-%d_%H-%M-%S)
 
 # Backup PostgreSQL
-PGPASSWORD=\$\$POSTGRES_PASSWORD pg_dump -h postgres -U claude claude_prod &gt; /backups/postgres/backup_\$\$DATE.sql
+PGPASSWORD=&#36;&#36;POSTGRES_PASSWORD pg_dump -h postgres -U claude claude_prod &gt; /backups/postgres/backup_&#36;&#36;DATE.sql
 
 # Backup Redis
-redis-cli -h redis --rdb /backups/redis/dump_\$\$DATE.rdb
+redis-cli -h redis --rdb /backups/redis/dump_&#36;&#36;DATE.rdb
 
 # Backup Analytics
-tar -czf /backups/analytics/backup_\$\$DATE.tar.gz /source/analytics
+tar -czf /backups/analytics/backup_&#36;&#36;DATE.tar.gz /source/analytics
 
 # Delete old backups (keep 7 days)
 find /backups -name &quot;backup_*.sql&quot; -mtime +7 -delete
 find /backups -name &quot;dump_*.rdb&quot; -mtime +7 -delete
 find /backups -name &quot;backup_*.tar.gz&quot; -mtime +7 -delete
 
-echo &quot;Backup completed: \$\$DATE&quot;
+echo &quot;Backup completed: &#36;&#36;DATE&quot;
 sleep 86400  # Daily backups
 done
 &#039;
 environment:
-- POSTGRES_PASSWORD=\${POSTGRES_PASSWORD}
+- POSTGRES_PASSWORD=&#36;{POSTGRES_PASSWORD}
 restart: unless-stopped
 
 volumes:
@@ -315,7 +315,7 @@ server grafana:3000;
 server {
 listen 80;
 server_name claude.example.com;
-return 301 https://\$server_name\$request_uri;
+return 301 https://&#36;server_name&#36;request_uri;
 }
 
 # HTTPS
@@ -331,29 +331,29 @@ ssl_ciphers HIGH:!aNULL:!MD5;
 # Ollama API
 location /api/ollama/ {
 proxy_pass http://ollama/;
-proxy_set_header Host \$host;
-proxy_set_header X-Real-IP \$remote_addr;
+proxy_set_header Host &#36;host;
+proxy_set_header X-Real-IP &#36;remote_addr;
 }
 
 # Analytics API
 location /api/analytics/ {
 proxy_pass http://analytics/api/;
-proxy_set_header Host \$host;
-proxy_set_header X-Real-IP \$remote_addr;
+proxy_set_header Host &#36;host;
+proxy_set_header X-Real-IP &#36;remote_addr;
 }
 
 # Analytics WebSocket
 location /ws/ {
 proxy_pass http://analytics/;
 proxy_http_version 1.1;
-proxy_set_header Upgrade \$http_upgrade;
+proxy_set_header Upgrade &#36;http_upgrade;
 proxy_set_header Connection &quot;upgrade&quot;;
 }
 
 # Grafana
 location / {
 proxy_pass http://grafana/;
-proxy_set_header Host \$host;
+proxy_set_header Host &#36;host;
 }
 }
 }</code></pre>
@@ -670,7 +670,7 @@ groups:
           severity: critical
         annotations:
           summary: &quot;High LLM error rate&quot;
-          description: &quot;Error rate is {{ \$value | humanizePercentage }}&quot;
+          description: &quot;Error rate is {{ &#36;value | humanizePercentage }}&quot;
 
 # Ollama down
 - alert: OllamaDown
@@ -689,7 +689,7 @@ labels:
 severity: warning
 annotations:
 summary: &quot;High memory usage&quot;
-description: &quot;Memory usage is {{ \$value | humanizePercentage }}&quot;
+description: &quot;Memory usage is {{ &#36;value | humanizePercentage }}&quot;
 
 # Database connection issues
 - alert: PostgreSQLDown
@@ -765,46 +765,46 @@ summary: &quot;PostgreSQL is down&quot;</code></pre>
 <pre><code class="language-bash">#!/bin/bash
 # backup.sh - Automated backup script
 
-DATE=\$(date +%Y-%m-%d_%H-%M-%S)
+DATE=&#36;(date +%Y-%m-%d_%H-%M-%S)
 BACKUP_DIR=&quot;/backups&quot;
 
 # PostgreSQL backup
 echo &quot;Backing up PostgreSQL...&quot;
-PGPASSWORD=\$POSTGRES_PASSWORD pg_dump -h localhost -U claude claude_prod | \
-gzip &gt; \$BACKUP_DIR/postgres/backup_\$DATE.sql.gz
+PGPASSWORD=&#36;POSTGRES_PASSWORD pg_dump -h localhost -U claude claude_prod | \
+gzip &gt; &#36;BACKUP_DIR/postgres/backup_&#36;DATE.sql.gz
 
 # Redis backup
 echo &quot;Backing up Redis...&quot;
-redis-cli --rdb \$BACKUP_DIR/redis/dump_\$DATE.rdb
+redis-cli --rdb &#36;BACKUP_DIR/redis/dump_&#36;DATE.rdb
 
 # Analytics data
 echo &quot;Backing up Analytics...&quot;
-tar -czf \$BACKUP_DIR/analytics/backup_\$DATE.tar.gz /var/lib/analytics
+tar -czf &#36;BACKUP_DIR/analytics/backup_&#36;DATE.tar.gz /var/lib/analytics
 
 # Ollama models (weekly only)
-if [ \$(date +%u) -eq 1 ]; then
+if [ &#36;(date +%u) -eq 1 ]; then
 echo &quot;Backing up Ollama models (weekly)...&quot;
-tar -czf \$BACKUP_DIR/ollama/models_\$DATE.tar.gz /root/.ollama
+tar -czf &#36;BACKUP_DIR/ollama/models_&#36;DATE.tar.gz /root/.ollama
 fi
 
 # Upload to S3 (optional)
-aws s3 sync \$BACKUP_DIR s3://my-backups/claude-stack/
+aws s3 sync &#36;BACKUP_DIR s3://my-backups/claude-stack/
 
 # Delete old local backups (keep 7 days)
-find \$BACKUP_DIR -name &quot;backup_*.sql.gz&quot; -mtime +7 -delete
-find \$BACKUP_DIR -name &quot;dump_*.rdb&quot; -mtime +7 -delete
-find \$BACKUP_DIR -name &quot;backup_*.tar.gz&quot; -mtime +7 -delete
+find &#36;BACKUP_DIR -name &quot;backup_*.sql.gz&quot; -mtime +7 -delete
+find &#36;BACKUP_DIR -name &quot;dump_*.rdb&quot; -mtime +7 -delete
+find &#36;BACKUP_DIR -name &quot;backup_*.tar.gz&quot; -mtime +7 -delete
 
-echo &quot;Backup completed: \$DATE&quot;</code></pre>
+echo &quot;Backup completed: &#36;DATE&quot;</code></pre>
 
 <h3>Restore Procedures</h3>
 
 <pre><code class="language-bash">#!/bin/bash
 # restore.sh - Restore from backup
 
-BACKUP_FILE=\$1
+BACKUP_FILE=&#36;1
 
-if [ -z &quot;\$BACKUP_FILE&quot; ]; then
+if [ -z &quot;&#36;BACKUP_FILE&quot; ]; then
 echo &quot;Usage: ./restore.sh &lt;backup_file&gt;&quot;
 exit 1
 fi
@@ -813,25 +813,25 @@ fi
 docker-compose down
 
 # Restore PostgreSQL
-if [[ \$BACKUP_FILE == <em>&quot;postgres&quot;</em> ]]; then
-gunzip -c \$BACKUP_FILE | \
-PGPASSWORD=\$POSTGRES_PASSWORD psql -h localhost -U claude claude_prod
+if [[ &#36;BACKUP_FILE == <em>&quot;postgres&quot;</em> ]]; then
+gunzip -c &#36;BACKUP_FILE | \
+PGPASSWORD=&#36;POSTGRES_PASSWORD psql -h localhost -U claude claude_prod
 fi
 
 # Restore Redis
-if [[ \$BACKUP_FILE == <em>&quot;redis&quot;</em> ]]; then
-cp \$BACKUP_FILE /var/lib/redis/dump.rdb
+if [[ &#36;BACKUP_FILE == <em>&quot;redis&quot;</em> ]]; then
+cp &#36;BACKUP_FILE /var/lib/redis/dump.rdb
 fi
 
 # Restore Analytics
-if [[ \$BACKUP_FILE == <em>&quot;analytics&quot;</em> ]]; then
-tar -xzf \$BACKUP_FILE -C /
+if [[ &#36;BACKUP_FILE == <em>&quot;analytics&quot;</em> ]]; then
+tar -xzf &#36;BACKUP_FILE -C /
 fi
 
 # Restart services
 docker-compose up -d
 
-echo &quot;Restore completed from: \$BACKUP_FILE&quot;</code></pre>
+echo &quot;Restore completed from: &#36;BACKUP_FILE&quot;</code></pre>
 
 <hr>
 
@@ -1033,7 +1033,7 @@ listen 443 ssl http2;</code></pre>
    POSTGRES_PASSWORD=password
 
 # ✅ Strong random password
-POSTGRES_PASSWORD=\$(openssl rand -base64 32)</code></pre>
+POSTGRES_PASSWORD=&#36;(openssl rand -base64 32)</code></pre>
 
 <hr>
 

@@ -116,12 +116,12 @@ const meta = {
 
 <p>async incrementRollout(flag: FeatureFlag, step: number = 5): Promise&lt;void&gt; {</p>
 <p>const config = this.flags.get(flag);</p>
-<p>if (!config) throw new Error(<code>Flag not found: \${flag}</code>);</p>
+<p>if (!config) throw new Error(<code>Flag not found: &#36;{flag}</code>);</p>
 
 <p>config.rolloutPercentage = Math.min(100, config.rolloutPercentage + step);</p>
 <p>await this.setFlag(flag, config);</p>
 
-<p>console.log(<code>🚀 Increased \${flag} rollout to \${config.rolloutPercentage}%</code>);</p>
+<p>console.log(<code>🚀 Increased &#36;{flag} rollout to &#36;{config.rolloutPercentage}%</code>);</p>
 <p>}</p>
 
 <p>private hashUserId(userId: string): number {</p>
@@ -201,7 +201,7 @@ const meta = {
 
 <p>async assignVariant(testName: string, userId: string): Promise&lt;Variant&gt; {</p>
 <p>const test = this.tests.get(testName);</p>
-<p>if (!test) throw new Error(<code>Test not found: \${testName}</code>);</p>
+<p>if (!test) throw new Error(<code>Test not found: &#36;{testName}</code>);</p>
 
 <p>// Check if test is active</p>
 <p>const now = Date.now();</p>
@@ -319,7 +319,7 @@ const meta = {
 <p>if (variant === Variant.CONTROL) {</p>
 <p>// Control: Claude 3.5 Sonnet</p>
 <p>result = await callClaude(prompt);</p>
-<p>cost = 0.015;  // \$0.015 per request (example)</p>
+<p>cost = 0.015;  // &#36;0.015 per request (example)</p>
 <p>} else {</p>
 <p>// Treatment: Ollama Llama 3.3 70B</p>
 <p>result = await callOllama(prompt, &#039;llama3.3:70b&#039;);</p>
@@ -364,7 +364,7 @@ const meta = {
 
 <p>class CanaryDeployment {</p>
 <p>async deploy(newVersion: string, config: CanaryConfig): Promise&lt;boolean&gt; {</p>
-<p>console.log(<code>🐤 Starting canary deployment: \${newVersion} (\${config.percentage}%)</code>);</p>
+<p>console.log(<code>🐤 Starting canary deployment: &#36;{newVersion} (&#36;{config.percentage}%)</code>);</p>
 
 <p>// Route traffic</p>
 <p>await this.routeTraffic(newVersion, config.percentage);</p>
@@ -378,13 +378,13 @@ const meta = {
 <p>const healthy = this.evaluateHealth(metrics, config.thresholds);</p>
 
 <p>if (healthy) {</p>
-<p>console.log(<code>✅ Canary healthy. Promoting \${newVersion}</code>);</p>
+<p>console.log(<code>✅ Canary healthy. Promoting &#36;{newVersion}</code>);</p>
 <p>if (config.autoPromote) {</p>
 <p>await this.promote(newVersion);</p>
 <p>}</p>
 <p>return true;</p>
 <p>} else {</p>
-<p>console.error(<code>❌ Canary failed. Rolling back \${newVersion}</code>);</p>
+<p>console.error(<code>❌ Canary failed. Rolling back &#36;{newVersion}</code>);</p>
 <p>await this.rollback(newVersion);</p>
 <p>return false;</p>
 <p>}</p>
@@ -403,11 +403,11 @@ const meta = {
 <p>private async collectMetrics(version: string, duration: number): Promise&lt;any&gt; {</p>
 <p>// Query Prometheus for metrics</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;\${version}&quot;}[\${duration / 1000}s])</code></p>
+<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[&#36;{duration / 1000}s])</code></p>
 <p>);</p>
 
 <p>const latencyP95 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;\${version}&quot;}[\${duration / 1000}s]))</code></p>
+<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[&#36;{duration / 1000}s]))</code></p>
 <p>);</p>
 
 <p>return { errorRate, latencyP95 };</p>
@@ -415,12 +415,12 @@ const meta = {
 
 <p>private evaluateHealth(metrics: any, thresholds: any): boolean {</p>
 <p>if (metrics.errorRate &gt; thresholds.errorRate) {</p>
-<p>console.warn(<code>Error rate too high: \${metrics.errorRate} &gt; \${thresholds.errorRate}</code>);</p>
+<p>console.warn(<code>Error rate too high: &#36;{metrics.errorRate} &gt; &#36;{thresholds.errorRate}</code>);</p>
 <p>return false;</p>
 <p>}</p>
 
 <p>if (metrics.latencyP95 &gt; thresholds.latencyP95) {</p>
-<p>console.warn(<code>Latency too high: \${metrics.latencyP95}ms &gt; \${thresholds.latencyP95}ms</code>);</p>
+<p>console.warn(<code>Latency too high: &#36;{metrics.latencyP95}ms &gt; &#36;{thresholds.latencyP95}ms</code>);</p>
 <p>return false;</p>
 <p>}</p>
 
@@ -430,13 +430,13 @@ const meta = {
 <p>private async promote(version: string): Promise&lt;void&gt; {</p>
 <p>// Gradually increase traffic to 100%</p>
 <p>await this.routeTraffic(version, 100);</p>
-<p>console.log(<code>🚀 Promoted \${version} to 100%</code>);</p>
+<p>console.log(<code>🚀 Promoted &#36;{version} to 100%</code>);</p>
 <p>}</p>
 
 <p>private async rollback(version: string): Promise&lt;void&gt; {</p>
 <p>// Route all traffic back to stable</p>
 <p>await this.routeTraffic(&#039;stable&#039;, 100);</p>
-<p>console.log(<code>⏪ Rolled back \${version}</code>);</p>
+<p>console.log(<code>⏪ Rolled back &#36;{version}</code>);</p>
 <p>}</p>
 <p>}</p>
 
@@ -475,8 +475,8 @@ const meta = {
 <p>const result = await primary();</p>
 <p>return { result, usedFallback: false };</p>
 <p>} catch (error) {</p>
-<p>console.warn(<code>Primary method failed: \${error.message}</code>);</p>
-<p>console.log(<code>Using fallback strategy: \${strategy}</code>);</p>
+<p>console.warn(<code>Primary method failed: &#36;{error.message}</code>);</p>
+<p>console.log(<code>Using fallback strategy: &#36;{strategy}</code>);</p>
 
 <p>const result = await fallback();</p>
 <p>return { result, usedFallback: true };</p>
@@ -530,7 +530,7 @@ const meta = {
 <p>return (await degradation.executeWithFallback(</p>
 <p>// Primary: AI-powered formatting with context awareness</p>
 <p>async () =&gt; {</p>
-<p>return await callClaude(<code>Format this code:\n\${code}</code>, &#039;claude-3-5-haiku-20241022&#039;);</p>
+<p>return await callClaude(<code>Format this code:\n&#36;{code}</code>, &#039;claude-3-5-haiku-20241022&#039;);</p>
 <p>},</p>
 <p>// Fallback: Traditional Prettier</p>
 <p>async () =&gt; {</p>
@@ -558,17 +558,17 @@ const meta = {
 
 <p>// Check error rate</p>
 <p>if (metrics.errorRate &gt; this.errorRateThreshold) {</p>
-<p>console.error(<code>🚨 Error rate \${metrics.errorRate} &gt; threshold \${this.errorRateThreshold}</code>);</p>
-<p>console.error(<code>⏪ Auto-rolling back \${version}</code>);</p>
+<p>console.error(<code>🚨 Error rate &#36;{metrics.errorRate} &gt; threshold &#36;{this.errorRateThreshold}</code>);</p>
+<p>console.error(<code>⏪ Auto-rolling back &#36;{version}</code>);</p>
 
 <p>clearInterval(monitor);</p>
 <p>await this.rollback(version);</p>
-<p>await this.alertTeam(<code>Auto-rollback triggered for \${version}: error rate \${metrics.errorRate}</code>);</p>
+<p>await this.alertTeam(<code>Auto-rollback triggered for &#36;{version}: error rate &#36;{metrics.errorRate}</code>);</p>
 <p>}</p>
 
 <p>// Stop monitoring after 1 hour if healthy</p>
 <p>if (Date.now() - startTime &gt; 3600000) {</p>
-<p>console.log(<code>✅ \${version} stable after 1 hour. Stopping auto-rollback monitor.</code>);</p>
+<p>console.log(<code>✅ &#36;{version} stable after 1 hour. Stopping auto-rollback monitor.</code>);</p>
 <p>clearInterval(monitor);</p>
 <p>}</p>
 <p>}, this.checkInterval);</p>
@@ -576,7 +576,7 @@ const meta = {
 
 <p>private async collectMetrics(version: string, window: number): Promise&lt;any&gt; {</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;\${version}&quot;}[\${window / 1000}s])</code></p>
+<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[&#36;{window / 1000}s])</code></p>
 <p>);</p>
 
 <p>return { errorRate };</p>
@@ -591,7 +591,7 @@ const meta = {
 
 <p>private async alertTeam(message: string): Promise&lt;void&gt; {</p>
 <p>// Send to PagerDuty, Slack, etc.</p>
-<p>console.log(<code>ALERT: \${message}</code>);</p>
+<p>console.log(<code>ALERT: &#36;{message}</code>);</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -615,23 +615,23 @@ const meta = {
 <p>class RolloutMonitor {</p>
 <p>async getMetrics(version: string): Promise&lt;RolloutMetrics&gt; {</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;\${version}&quot;}[5m])</code></p>
+<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[5m])</code></p>
 <p>);</p>
 
 <p>const latencyP50 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{version=&quot;\${version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
 <p>);</p>
 
 <p>const latencyP95 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;\${version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
 <p>);</p>
 
 <p>const latencyP99 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=&quot;\${version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
 <p>);</p>
 
 <p>const requestCount = await prometheus.query(</p>
-<p><code>sum(rate(http_requests_total{version=&quot;\${version}&quot;}[5m]))</code></p>
+<p><code>sum(rate(http_requests_total{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
 <p>);</p>
 
 <p>const userSatisfaction = await this.calculateSatisfaction(version);</p>

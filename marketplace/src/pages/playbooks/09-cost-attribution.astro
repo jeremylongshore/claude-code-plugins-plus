@@ -52,12 +52,12 @@ const meta = {
 
 <p><strong>Roll-up Example</strong>:</p>
 <ul>
-<li><strong>API Call</strong>: \$0.015 (Claude API call)</li>
-<li><strong>Workflow</strong> (code-review): \$0.045 (3 API calls)</li>
-<li><strong>User</strong> (alice): \$2.50/day (multiple workflows)</li>
-<li><strong>Project</strong> (api-server): \$75/day (multiple users)</li>
-<li><strong>Team</strong> (backend): \$300/day (4 projects)</li>
-<li><strong>Cost Center</strong> (eng-001): \$1,200/day (4 teams)</li>
+<li><strong>API Call</strong>: &#36;0.015 (Claude API call)</li>
+<li><strong>Workflow</strong> (code-review): &#36;0.045 (3 API calls)</li>
+<li><strong>User</strong> (alice): &#36;2.50/day (multiple workflows)</li>
+<li><strong>Project</strong> (api-server): &#36;75/day (multiple users)</li>
+<li><strong>Team</strong> (backend): &#36;300/day (4 projects)</li>
+<li><strong>Cost Center</strong> (eng-001): &#36;1,200/day (4 teams)</li>
 </ul>
 
 <hr>
@@ -77,8 +77,8 @@ const meta = {
     }
   ): Promise&lt;CostAttribution&gt; {
     // Calculate cost
-    const inputCost = (request.inputTokens / 1_000_000) * 3.00;  // \$3/1M
-    const outputCost = (request.outputTokens / 1_000_000) * 15.00; // \$15/1M
+    const inputCost = (request.inputTokens / 1_000_000) * 3.00;  // &#36;3/1M
+    const outputCost = (request.outputTokens / 1_000_000) * 15.00; // &#36;15/1M
     const totalCost = inputCost + outputCost;
 
 <p>// Create attribution record</p>
@@ -260,7 +260,7 @@ const tagger = new CostTagger();
 <p>): Promise&lt;number&gt; {</p>
 <p>const costs = await db.costs.find({</p>
 <p>[entityType]: entityId,</p>
-<p>timestamp: { \$gte: since }</p>
+<p>timestamp: { &#36;gte: since }</p>
 <p>});</p>
 
 <p>return costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
@@ -275,13 +275,13 @@ const tagger = new CostTagger();
 
 <p>private async sendBudgetAlert(budget: Budget, spent: number, rate: number): Promise&lt;void&gt; {</p>
 <p>const message = <code></p>
-<p>Budget Alert: \${budget.entity.type} \${budget.entity.id}</p>
+<p>Budget Alert: &#36;{budget.entity.type} &#36;{budget.entity.id}</p>
 
-<p>Current spend: \$\${spent.toFixed(2)}</p>
-<p>Budget limit: \$\${budget.limit.toFixed(2)}</p>
-<p>Utilization: \${(rate * 100).toFixed(1)}%</p>
+<p>Current spend: &#36;&#36;{spent.toFixed(2)}</p>
+<p>Budget limit: &#36;&#36;{budget.limit.toFixed(2)}</p>
+<p>Utilization: &#36;{(rate * 100).toFixed(1)}%</p>
 
-<p>Period: \${budget.period}</p>
+<p>Period: &#36;{budget.period}</p>
     </code>.trim();
 
 <p>// Send to Slack, email, PagerDuty, etc.</p>
@@ -293,7 +293,7 @@ const tagger = new CostTagger();
 
 <pre><code class="language-typescript">const budgetManager = new BudgetManager();
 
-<p>// Set team budget: \$500/month</p>
+<p>// Set team budget: &#36;500/month</p>
 <p>await budgetManager.setBudget({</p>
 <p>id: &#039;budget-backend-monthly&#039;,</p>
 <p>entity: { type: &#039;team&#039;, id: &#039;engineering-backend&#039; },</p>
@@ -308,7 +308,7 @@ const tagger = new CostTagger();
 <p>const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);</p>
 
 <p>if (!budget.allowed) {</p>
-<p>throw new Error(`Budget exceeded for team \${teamId}. Spent: \$\${budget.spent.toFixed(2)}, Limit: \$\${budget.limit.toFixed(2)}`);</p>
+<p>throw new Error(`Budget exceeded for team &#36;{teamId}. Spent: &#36;&#36;{budget.spent.toFixed(2)}, Limit: &#36;&#36;{budget.limit.toFixed(2)}`);</p>
 <p>}</p>
 
 <p>return await callClaude(prompt);</p>
@@ -323,8 +323,8 @@ const tagger = new CostTagger();
 <pre><code class="language-typescript">interface ChargebackModel {
   type: &#039;direct&#039; | &#039;allocated&#039; | &#039;tiered&#039;;
   rates: {
-    inputTokens: number;   // \$/1M tokens
-    outputTokens: number;  // \$/1M tokens
+    inputTokens: number;   // &#36;/1M tokens
+    outputTokens: number;  // &#36;/1M tokens
   };
   markup?: number;  // e.g., 1.2 for 20% markup
 }
@@ -335,8 +335,8 @@ const tagger = new CostTagger();
 <p>const costs = await db.costs.find({</p>
 <p>team: teamId,</p>
 <p>timestamp: {</p>
-<p>\$gte: new Date(`\${month}-01`).getTime(),</p>
-<p>\$lt: new Date(`\${month}-01`).getTime() + 30 * 86400000</p>
+<p>&#36;gte: new Date(`&#36;{month}-01`).getTime(),</p>
+<p>&#36;lt: new Date(`&#36;{month}-01`).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
@@ -396,9 +396,9 @@ const tagger = new CostTagger();
 
 <p>class TieredChargeback {</p>
 <p>private tiers: PricingTier[] = [</p>
-<p>{ minTokens: 0, maxTokens: 1_000_000, pricePerMillion: 15 },        // 0-1M: \$15/M</p>
-<p>{ minTokens: 1_000_000, maxTokens: 10_000_000, pricePerMillion: 12 }, // 1M-10M: \$12/M</p>
-<p>{ minTokens: 10_000_000, maxTokens: Infinity, pricePerMillion: 10 }   // 10M+: \$10/M</p>
+<p>{ minTokens: 0, maxTokens: 1_000_000, pricePerMillion: 15 },        // 0-1M: &#36;15/M</p>
+<p>{ minTokens: 1_000_000, maxTokens: 10_000_000, pricePerMillion: 12 }, // 1M-10M: &#36;12/M</p>
+<p>{ minTokens: 10_000_000, maxTokens: Infinity, pricePerMillion: 10 }   // 10M+: &#36;10/M</p>
 <p>];</p>
 
 <p>calculateCost(tokens: number): number {</p>
@@ -424,10 +424,10 @@ const tagger = new CostTagger();
 <p>// Example</p>
 <p>const tiered = new TieredChargeback();</p>
 <p>console.log(tiered.calculateCost(15_000_000));</p>
-<p>// 0-1M: \$15</p>
-<p>// 1M-10M: \$108 (9M × \$12)</p>
-<p>// 10M-15M: \$50 (5M × \$10)</p>
-<p>// Total: \$173</code></pre></p>
+<p>// 0-1M: &#36;15</p>
+<p>// 1M-10M: &#36;108 (9M × &#36;12)</p>
+<p>// 10M-15M: &#36;50 (5M × &#36;10)</p>
+<p>// Total: &#36;173</code></pre></p>
 
 <hr>
 
@@ -448,8 +448,8 @@ const tagger = new CostTagger();
 <p>async generateMonthlyReport(month: string): Promise&lt;UsageMetrics&gt; {</p>
 <p>const costs = await db.costs.find({</p>
 <p>timestamp: {</p>
-<p>\$gte: new Date(`\${month}-01`).getTime(),</p>
-<p>\$lt: new Date(`\${month}-01`).getTime() + 30 * 86400000</p>
+<p>&#36;gte: new Date(`&#36;{month}-01`).getTime(),</p>
+<p>&#36;lt: new Date(`&#36;{month}-01`).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
@@ -567,7 +567,7 @@ const tagger = new CostTagger();
 
 <p>return {</p>
 <p>category: &#039;model-selection&#039;,</p>
-<p>description: `\${simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.`,</p>
+<p>description: `&#36;{simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.`,</p>
 <p>potentialSavings: monthlySavings,</p>
 <p>effort: &#039;low&#039;,</p>
 <p>implementation: &#039;Update model parameter in simple workflows to claude-3-5-haiku-20241022&#039;</p>
@@ -596,7 +596,7 @@ const tagger = new CostTagger();
 <p>if (duplicateCost &gt; 10) {</p>
 <p>return {</p>
 <p>category: &#039;caching&#039;,</p>
-<p>description: `\${duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.`,</p>
+<p>description: `&#36;{duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.`,</p>
 <p>potentialSavings: duplicateCost * 30,</p>
 <p>effort: &#039;medium&#039;,</p>
 <p>implementation: &#039;Add Redis cache for LLM responses with 1-hour TTL&#039;</p>
@@ -623,7 +623,7 @@ const tagger = new CostTagger();
 
 <p>return {</p>
 <p>category: &#039;batching&#039;,</p>
-<p>description: `\${batchableCount} requests could be batched. Combine multiple prompts into single API call.`,</p>
+<p>description: `&#36;{batchableCount} requests could be batched. Combine multiple prompts into single API call.`,</p>
 <p>potentialSavings: savings <em> 30 </em> 0.3,  // 30% reduction from batching</p>
 <p>effort: &#039;high&#039;,</p>
 <p>implementation: &#039;Implement request batching with 100ms window&#039;</p>
@@ -634,7 +634,7 @@ const tagger = new CostTagger();
 <p>}</p>
 
 <p>private hashPrompt(cost: any): string {</p>
-<p>return `\${cost.workflow}-\${cost.inputTokens}-\${cost.outputTokens}`;</p>
+<p>return `&#36;{cost.workflow}-&#36;{cost.inputTokens}-&#36;{cost.outputTokens}`;</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -650,29 +650,29 @@ const tagger = new CostTagger();
     const metrics = await analytics.generateMonthlyReport(month);
 
 <p>const report = <code></p>
-<p># Cost Report - \${month}</p>
+<p># Cost Report - &#36;{month}</p>
 
 <p>&lt;h2&gt;Summary&lt;/h2&gt;</p>
 <ul>
-<li><strong>Total Cost</strong>: \$\${metrics.totalCost.toFixed(2)}</li>
-<li><strong>Total Tokens</strong>: \${metrics.totalTokens.toLocaleString()}</li>
-<li><strong>Avg Cost/Request</strong>: \$\${metrics.avgCostPerRequest.toFixed(4)}</li>
+<li><strong>Total Cost</strong>: &#36;&#36;{metrics.totalCost.toFixed(2)}</li>
+<li><strong>Total Tokens</strong>: &#36;{metrics.totalTokens.toLocaleString()}</li>
+<li><strong>Avg Cost/Request</strong>: &#36;&#36;{metrics.avgCostPerRequest.toFixed(4)}</li>
 </ul>
 
 <p>&lt;h2&gt;Top Projects by Cost&lt;/h2&gt;</p>
-<p>\${metrics.topProjects.map((p, i) =&gt; `\${i + 1}. \${p.project}: \$\${p.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.topProjects.map((p, i) =&gt; `&#36;{i + 1}. &#36;{p.project}: &#36;&#36;{p.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Top Users by Cost&lt;/h2&gt;</p>
-<p>\${metrics.topUsers.map((u, i) =&gt; `\${i + 1}. \${u.user}: \$\${u.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.topUsers.map((u, i) =&gt; `&#36;{i + 1}. &#36;{u.user}: &#36;&#36;{u.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Daily Cost Trend&lt;/h2&gt;</p>
-<p>\${metrics.costTrend.map(d =&gt; `\${d.date}: \$\${d.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
+<p>&#36;{metrics.costTrend.map(d =&gt; `&#36;{d.date}: &#36;&#36;{d.cost.toFixed(2)}`).join(&#039;\n&#039;)}</p>
 
 <p>&lt;h2&gt;Optimization Recommendations&lt;/h2&gt;</p>
-<p>\${await this.getOptimizationRecommendations()}</p>
+<p>&#36;{await this.getOptimizationRecommendations()}</p>
 
 <hr>
-<p>Generated: \${new Date().toISOString()}</p>
+<p>Generated: &#36;{new Date().toISOString()}</p>
     </code>.trim();
 
 <p>return report;</p>
@@ -683,7 +683,7 @@ const tagger = new CostTagger();
 <p>const recommendations = await optimizer.analyzeAndRecommend(&#039;engineering-backend&#039;);</p>
 
 <p>return recommendations</p>
-<p>.map(r =&gt; `- <strong>\${r.category}</strong>: \${r.description} (Savings: \$\${r.potentialSavings.toFixed(2)}/month, Effort: \${r.effort})`)</p>
+<p>.map(r =&gt; `- <strong>&#36;{r.category}</strong>: &#36;{r.description} (Savings: &#36;&#36;{r.potentialSavings.toFixed(2)}/month, Effort: &#36;{r.effort})`)</p>
 <p>.join(&#039;\n&#039;);</p>
 <p>}</p>
 <p>}</code></pre></p>
