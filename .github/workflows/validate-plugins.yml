@@ -5,6 +5,8 @@ on:
     paths:
       - 'plugins/**'
       - '.claude-plugin/**'
+      - 'marketplace/**'
+      - '.github/workflows/validate-plugins.yml'
   push:
     branches: [ main ]
 
