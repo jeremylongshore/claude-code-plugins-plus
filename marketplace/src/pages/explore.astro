@@ -145,6 +145,30 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--brand-mid-gray);
     }
 
+    .keyboard-hint {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.75rem;
+      color: var(--brand-mid-gray);
+      opacity: 0.7;
+    }
+
+    .keyboard-hint kbd {
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      font-family: monospace;
+      font-size: 0.7rem;
+    }
+
+    @media (max-width: 768px) {
+      .keyboard-hint {
+        display: none;
+      }
+    }
+
     /* Results Grid */
     .results-section {
       max-width: 1400px;
@@ -394,8 +418,19 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         ))}
       </select>
 
+      <select id="sort-filter" class="filter-select">
+        <option value="relevance">Sort: Relevance</option>
+        <option value="a-z">Sort: A → Z</option>
+        <option value="z-a">Sort: Z → A</option>
+        <option value="category">Sort: Category</option>
+      </select>
+
       <span id="results-info" class="results-info">
         Showing {searchIndex.stats.totalItems} items
+      </span>
+
+      <span class="keyboard-hint" title="Press / to focus search">
+        <kbd>/</kbd> to search
       </span>
     </div>
   </div>
@@ -461,7 +496,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       type: 'all',
       category: null,
       tool: null,
-      search: ''
+      search: '',
+      sort: 'relevance'
     };
 
     function applyFilters() {
@@ -490,8 +526,42 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         );
       }
 
+      // Apply sorting
+      if (activeFilters.sort !== 'relevance' || !activeFilters.search) {
+        filtered = [...filtered].sort((a, b) => {
+          const nameA = (a.displayName || a.name).toLowerCase();
+          const nameB = (b.displayName || b.name).toLowerCase();
+
+          switch (activeFilters.sort) {
+            case 'a-z':
+              return nameA.localeCompare(nameB);
+            case 'z-a':
+              return nameB.localeCompare(nameA);
+            case 'category':
+              const catCompare = a.category.localeCompare(b.category);
+              return catCompare !== 0 ? catCompare : nameA.localeCompare(nameB);
+            default:
+              return 0; // relevance - keep Fuse.js order
+          }
+        });
+      }
+
       renderResults(filtered);
       updateResultsInfo(filtered.length);
+      updateURL();
+    }
+
+    function updateURL() {
+      const params = new URLSearchParams();
+      if (activeFilters.search) params.set('q', activeFilters.search);
+      if (activeFilters.type !== 'all') params.set('type', activeFilters.type);
+      if (activeFilters.category) params.set('category', activeFilters.category);
+      if (activeFilters.sort !== 'relevance') params.set('sort', activeFilters.sort);
+
+      const newURL = params.toString()
+        ? `${window.location.pathname}?${params.toString()}`
+        : window.location.pathname;
+      window.history.replaceState({}, '', newURL);
     }
 
     function renderResults(items) {
@@ -590,12 +660,52 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         applyFilters();
       });
 
+      // Sort filter
+      document.getElementById('sort-filter').addEventListener('change', (e) => {
+        activeFilters.sort = e.target.value;
+        applyFilters();
+      });
+
+      // Read additional URL params (category, sort)
+      const categoryParam = urlParams.get('category');
+      const sortParam = urlParams.get('sort');
+
+      if (categoryParam) {
+        activeFilters.category = categoryParam;
+        document.getElementById('category-filter').value = categoryParam;
+      }
+
+      if (sortParam && ['relevance', 'a-z', 'z-a', 'category'].includes(sortParam)) {
+        activeFilters.sort = sortParam;
+        document.getElementById('sort-filter').value = sortParam;
+      }
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Focus search on / (unless already in input)
+        if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) {
+          e.preventDefault();
+          document.getElementById('main-search').focus();
+        }
+
+        // Clear search on Escape
+        if (e.key === 'Escape' && document.activeElement.id === 'main-search') {
+          document.getElementById('main-search').blur();
+          if (activeFilters.search) {
+            activeFilters.search = '';
+            document.getElementById('main-search').value = '';
+            applyFilters();
+          }
+        }
+      });
+
       // Clear all filters function
       window.clearAllFilters = () => {
-        activeFilters = { type: 'all', category: null, tool: null, search: '' };
+        activeFilters = { type: 'all', category: null, tool: null, search: '', sort: 'relevance' };
         document.getElementById('main-search').value = '';
         document.getElementById('category-filter').value = '';
         document.getElementById('tool-filter').value = '';
+        document.getElementById('sort-filter').value = 'relevance';
         document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
         document.querySelector('.type-btn[data-type="all"]').classList.add('active');
         applyFilters();
