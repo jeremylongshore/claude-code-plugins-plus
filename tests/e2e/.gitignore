@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Test output
+coverage/
+test-results/
+
+# Temporary test files
+/tmp/
+*.log
+
+# Build output
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

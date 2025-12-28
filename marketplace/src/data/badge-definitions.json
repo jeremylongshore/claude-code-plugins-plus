@@ -1,0 +1,392 @@
+{
+  "version": "1.0.0",
+  "description": "Badge definitions for Claude Code plugins marketplace verification system",
+  "lastUpdated": "2025-12-27",
+  "badges": [
+    {
+      "id": "verified",
+      "name": "Verified",
+      "icon": "✓",
+      "color": "#22c55e",
+      "category": "quality",
+      "criteria": "Passed core validation (Score >= 60)",
+      "detailedCriteria": {
+        "minScore": 60,
+        "requiredChecks": [
+          "no-secrets",
+          "no-dangerous",
+          "plugin-json-valid",
+          "readme-complete",
+          "license-present"
+        ]
+      },
+      "automationLevel": "automated",
+      "displayPriority": 1,
+      "tooltip": "This plugin has passed core security and quality validation checks"
+    },
+    {
+      "id": "secure",
+      "name": "Security Audited",
+      "icon": "🔒",
+      "color": "#3b82f6",
+      "category": "security",
+      "criteria": "Security score >= 90% (22.5+ out of 25 points)",
+      "detailedCriteria": {
+        "categoryScore": "security",
+        "minPoints": 22.5,
+        "requiredChecks": [
+          "no-secrets",
+          "no-dangerous",
+          "input-validation",
+          "permissions-scoped"
+        ]
+      },
+      "automationLevel": "automated",
+      "displayPriority": 2,
+      "tooltip": "This plugin has passed rigorous security validation with minimal permissions and no vulnerabilities"
+    },
+    {
+      "id": "documented",
+      "name": "Well Documented",
+      "icon": "📚",
+      "color": "#8b5cf6",
+      "category": "documentation",
+      "criteria": "Documentation score >= 90% (22.5+ out of 25 points)",
+      "detailedCriteria": {
+        "categoryScore": "documentation",
+        "minPoints": 22.5,
+        "requiredChecks": [
+          "readme-complete",
+          "plugin-json-valid",
+          "examples-provided",
+          "license-present"
+        ]
+      },
+      "automationLevel": "automated",
+      "displayPriority": 4,
+      "tooltip": "This plugin has comprehensive documentation with clear examples and usage instructions"
+    },
+    {
+      "id": "popular",
+      "name": "Popular",
+      "icon": "⭐",
+      "color": "#f59e0b",
+      "category": "community",
+      "criteria": "Top 10% by usage metrics (install count + active users)",
+      "detailedCriteria": {
+        "metric": "usage",
+        "threshold": "top_10_percent",
+        "calculationMethod": "weighted_score",
+        "factors": {
+          "installCount": 0.6,
+          "activeUsers30d": 0.3,
+          "githubStars": 0.1
+        }
+      },
+      "automationLevel": "manual",
+      "reviewFrequency": "quarterly",
+      "displayPriority": 3,
+      "tooltip": "This plugin is among the most popular in the marketplace"
+    },
+    {
+      "id": "tested",
+      "name": "Tested",
+      "icon": "🧪",
+      "color": "#06b6d4",
+      "category": "quality",
+      "criteria": "Full test coverage with passing status (MCP plugins only)",
+      "detailedCriteria": {
+        "applicability": "mcp_plugins_only",
+        "requiredChecks": [
+          "tests-passing"
+        ],
+        "testCoverageMin": 80,
+        "ciStatusRequired": true
+      },
+      "automationLevel": "automated",
+      "displayPriority": 6,
+      "tooltip": "This plugin has comprehensive test coverage with all tests passing"
+    },
+    {
+      "id": "enterprise",
+      "name": "Enterprise Ready",
+      "icon": "🏆",
+      "color": "#ec4899",
+      "category": "quality",
+      "criteria": "Score >= 90 + active maintenance (updated within 30 days)",
+      "detailedCriteria": {
+        "minScore": 90,
+        "requiredChecks": [
+          "updated-recently",
+          "deps-current",
+          "ci-cd-present",
+          "tests-passing",
+          "input-validation"
+        ],
+        "updateThreshold": "30_days",
+        "additionalRequirements": [
+          "No open critical issues",
+          "Active maintainer response"
+        ]
+      },
+      "automationLevel": "automated",
+      "displayPriority": 5,
+      "tooltip": "This plugin meets enterprise-grade quality standards with active maintenance and comprehensive testing"
+    },
+    {
+      "id": "maintained",
+      "name": "Maintained",
+      "icon": "🔧",
+      "color": "#10b981",
+      "category": "maintenance",
+      "criteria": "Updated within 30 days with responsive issue handling",
+      "detailedCriteria": {
+        "requiredChecks": [
+          "updated-recently"
+        ],
+        "updateThreshold": "30_days",
+        "issueResponseTime": "7_days",
+        "openIssuesMax": 10
+      },
+      "automationLevel": "automated",
+      "displayPriority": 7,
+      "tooltip": "This plugin is actively maintained with recent updates and responsive support"
+    },
+    {
+      "id": "performance",
+      "name": "Fast",
+      "icon": "🚀",
+      "color": "#6366f1",
+      "category": "performance",
+      "criteria": "Execution time < 1s for commands, < 5s for skills",
+      "detailedCriteria": {
+        "requiredChecks": [
+          "performance-baseline"
+        ],
+        "benchmarks": {
+          "commands": "< 1s",
+          "skills": "< 5s",
+          "agents": "< 10s"
+        },
+        "measurementMethod": "automated_benchmarking",
+        "testEnvironment": "standard_linux_vm"
+      },
+      "automationLevel": "manual",
+      "reviewFrequency": "quarterly",
+      "displayPriority": 8,
+      "tooltip": "This plugin has been benchmarked and meets performance standards for fast execution"
+    },
+    {
+      "id": "compliant",
+      "name": "Schema Compliant",
+      "icon": "✔️",
+      "color": "#a855f7",
+      "category": "quality",
+      "criteria": "100% compliant with 2025 schema standards",
+      "detailedCriteria": {
+        "requiredChecks": [
+          "schema-compliant",
+          "plugin-json-valid"
+        ],
+        "schemaVersion": "2025",
+        "validations": [
+          "YAML frontmatter present",
+          "Required fields complete",
+          "No deprecated model IDs",
+          "Skill allowed-tools declared"
+        ]
+      },
+      "automationLevel": "automated",
+      "displayPriority": 9,
+      "tooltip": "This plugin fully complies with 2025 Claude Code schema standards"
+    },
+    {
+      "id": "featured",
+      "name": "Featured",
+      "icon": "🌟",
+      "color": "#fbbf24",
+      "category": "editorial",
+      "criteria": "Manually selected by marketplace editors for exceptional quality",
+      "detailedCriteria": {
+        "selectionMethod": "manual_editorial_review",
+        "minScore": 85,
+        "considerations": [
+          "Unique value proposition",
+          "Exceptional documentation",
+          "Active community engagement",
+          "Innovative use cases"
+        ],
+        "reviewProcess": "Quarterly editorial board review"
+      },
+      "automationLevel": "manual",
+      "reviewFrequency": "quarterly",
+      "displayPriority": 10,
+      "tooltip": "This plugin has been selected by the editorial team for its exceptional quality and value"
+    },
+    {
+      "id": "beginner-friendly",
+      "name": "Beginner Friendly",
+      "icon": "📖",
+      "color": "#34d399",
+      "category": "usability",
+      "criteria": "Clear documentation, simple setup, minimal prerequisites",
+      "detailedCriteria": {
+        "requiredChecks": [
+          "readme-complete",
+          "examples-provided"
+        ],
+        "documentation": {
+          "hasQuickStart": true,
+          "hasStepByStepGuide": true,
+          "hasCommonIssuesTroubleshooting": true
+        },
+        "complexity": "low",
+        "prerequisites": "minimal"
+      },
+      "automationLevel": "manual",
+      "reviewFrequency": "quarterly",
+      "displayPriority": 11,
+      "tooltip": "This plugin is easy to set up and use, perfect for beginners"
+    },
+    {
+      "id": "power-user",
+      "name": "Power User",
+      "icon": "⚡",
+      "color": "#f472b6",
+      "category": "usability",
+      "criteria": "Advanced features, extensive customization, complex workflows",
+      "detailedCriteria": {
+        "featureCount": "> 10",
+        "configurability": "high",
+        "targetAudience": "advanced_users",
+        "complexity": "high",
+        "documentation": {
+          "hasAdvancedExamples": true,
+          "hasAPIReference": true,
+          "hasArchitectureDocs": true
+        }
+      },
+      "automationLevel": "manual",
+      "reviewFrequency": "quarterly",
+      "displayPriority": 12,
+      "tooltip": "This plugin offers advanced features and extensive customization for power users"
+    }
+  ],
+  "badgeCategories": {
+    "quality": {
+      "name": "Quality",
+      "description": "Badges indicating overall plugin quality and standards compliance",
+      "badges": ["verified", "tested", "compliant", "enterprise"]
+    },
+    "security": {
+      "name": "Security",
+      "description": "Badges indicating security validation and best practices",
+      "badges": ["secure"]
+    },
+    "documentation": {
+      "name": "Documentation",
+      "description": "Badges indicating documentation quality and completeness",
+      "badges": ["documented"]
+    },
+    "maintenance": {
+      "name": "Maintenance",
+      "description": "Badges indicating active maintenance and support",
+      "badges": ["maintained"]
+    },
+    "community": {
+      "name": "Community",
+      "description": "Badges indicating community engagement and popularity",
+      "badges": ["popular", "featured"]
+    },
+    "performance": {
+      "name": "Performance",
+      "description": "Badges indicating performance benchmarks and optimization",
+      "badges": ["performance"]
+    },
+    "usability": {
+      "name": "Usability",
+      "description": "Badges indicating user experience and ease of use",
+      "badges": ["beginner-friendly", "power-user"]
+    },
+    "editorial": {
+      "name": "Editorial",
+      "description": "Badges assigned through manual editorial review",
+      "badges": ["featured"]
+    }
+  },
+  "badgeDisplay": {
+    "maxVisibleBadges": 4,
+    "displayOrder": "priorityDescending",
+    "overflowBehavior": "show_count",
+    "tooltipBehavior": "hover",
+    "layout": {
+      "desktop": "horizontal_inline",
+      "mobile": "stacked"
+    }
+  },
+  "automationConfig": {
+    "automatedBadges": [
+      "verified",
+      "secure",
+      "documented",
+      "tested",
+      "enterprise",
+      "maintained",
+      "compliant"
+    ],
+    "manualBadges": [
+      "popular",
+      "performance",
+      "featured",
+      "beginner-friendly",
+      "power-user"
+    ],
+    "validationFrequency": {
+      "automated": "on_every_commit",
+      "manual": "quarterly"
+    },
+    "badgeRevocation": {
+      "automated": "immediate_on_failure",
+      "manual": "quarterly_review",
+      "grace_period": "7_days_for_critical_failures"
+    }
+  },
+  "badgeAcquisition": {
+    "automaticEligibility": "Plugins meeting criteria automatically receive badges",
+    "manualEligibility": "Plugins must be reviewed by editorial board or benchmarking team",
+    "appealProcess": "Maintainers can request manual review for disputed automated decisions",
+    "revocationAppeal": "7-day appeal window for badge revocations"
+  },
+  "displayGuidelines": {
+    "iconRendering": {
+      "format": "Unicode emoji",
+      "fallback": "SVG icon set",
+      "size": "16x16px default, 24x24px large"
+    },
+    "colorUsage": {
+      "background": "Use color as badge background with white text",
+      "border": "Optional 1px border in darker shade",
+      "accessibility": "Ensure WCAG AA contrast ratio (4.5:1 minimum)"
+    },
+    "spacing": {
+      "badgeGap": "8px horizontal",
+      "marginTop": "4px",
+      "marginBottom": "4px"
+    },
+    "responsiveness": {
+      "desktop": "Show all badges inline",
+      "tablet": "Show top 4 badges + overflow count",
+      "mobile": "Show top 2 badges + overflow count"
+    }
+  },
+  "integration": {
+    "verificationRubric": "verification-rubric.json",
+    "pluginMetadata": ".claude-plugin/marketplace.extended.json",
+    "validationScripts": [
+      "scripts/validate-all-plugins.sh",
+      "scripts/validate-skills-schema.py",
+      "scripts/validate-frontmatter.py"
+    ],
+    "ciWorkflow": ".github/workflows/validate-plugins.yml"
+  }
+}
