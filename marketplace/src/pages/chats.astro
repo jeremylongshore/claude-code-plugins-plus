@@ -332,7 +332,39 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         let isConnected = false;
         let reconnectAttempts = 0;
         const MAX_RECONNECT_ATTEMPTS = 5;
-        const RECONNECT_DELAY = 3000;
+        const INITIAL_RECONNECT_DELAY = 1000;
+        const MAX_RECONNECT_DELAY = 30000;
+        let currentReconnectDelay = INITIAL_RECONNECT_DELAY;
+
+        /**
+         * Escape HTML entities to prevent XSS attacks
+         * Handles all dangerous characters that could break out of HTML context
+         */
+        function escapeHtml(unsafe: unknown): string {
+            if (unsafe === null || unsafe === undefined) {
+                return '';
+            }
+            const str = String(unsafe);
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        /**
+         * Validate WebSocket URL format
+         * Only allows ws:// or wss:// protocols
+         */
+        function isValidWebSocketUrl(url: string): boolean {
+            try {
+                const parsed = new URL(url);
+                return parsed.protocol === 'ws:' || parsed.protocol === 'wss:';
+            } catch {
+                return false;
+            }
+        }
 
         // DOM elements
         const statusIndicator = document.getElementById('statusIndicator') as HTMLElement;
@@ -373,30 +405,32 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         }
 
         // Create event card HTML
+        // All user-controllable data is escaped to prevent XSS
         function createEventCard(event: any): string {
             const config = EVENT_CONFIG[event.type] || { icon: '📊', type: 'conversation' };
             const time = formatTime(event.timestamp);
+            const safeType = escapeHtml(event.type);
 
             let detailsHtml = '';
 
             switch (event.type) {
                 case 'server.connected':
-                    detailsHtml = `<div class="detail-row"><span class="detail-value">${event.message}</span></div>`;
+                    detailsHtml = `<div class="detail-row"><span class="detail-value">${escapeHtml(event.message)}</span></div>`;
                     break;
 
                 case 'plugin.activation':
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Plugin:</span>
-                            <span class="detail-value">${event.pluginName}</span>
+                            <span class="detail-value">${escapeHtml(event.pluginName)}</span>
                         </div>
                         ${event.pluginVersion ? `<div class="detail-row">
                             <span class="detail-label">Version:</span>
-                            <span class="detail-value">${event.pluginVersion}</span>
+                            <span class="detail-value">${escapeHtml(event.pluginVersion)}</span>
                         </div>` : ''}
                         ${event.marketplace ? `<div class="detail-row">
                             <span class="detail-label">Marketplace:</span>
-                            <span class="detail-value">${event.marketplace}</span>
+                            <span class="detail-value">${escapeHtml(event.marketplace)}</span>
                         </div>` : ''}
                     `;
                     break;
@@ -405,15 +439,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Skill:</span>
-                            <span class="detail-value">${event.skillName}</span>
+                            <span class="detail-value">${escapeHtml(event.skillName)}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Plugin:</span>
-                            <span class="detail-value">${event.pluginName}</span>
+                            <span class="detail-value">${escapeHtml(event.pluginName)}</span>
                         </div>
                         ${event.triggerPhrase ? `<div class="detail-row">
                             <span class="detail-label">Trigger:</span>
-                            <span class="detail-value">"${event.triggerPhrase}"</span>
+                            <span class="detail-value">"${escapeHtml(event.triggerPhrase)}"</span>
                         </div>` : ''}
                     `;
                     break;
@@ -422,98 +456,108 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Model:</span>
-                            <span class="detail-value">${event.model}</span>
+                            <span class="detail-value">${escapeHtml(event.model)}</span>
                         </div>
                         ${event.totalTokens ? `<div class="detail-row">
                             <span class="detail-label">Tokens:</span>
-                            <span class="detail-value">${event.totalTokens.toLocaleString()}</span>
+                            <span class="detail-value">${escapeHtml(Number(event.totalTokens).toLocaleString())}</span>
                         </div>` : ''}
                         ${event.inputTokens && event.outputTokens ? `
                         <div class="detail-row">
                             <span class="detail-label">Input:</span>
-                            <span class="detail-value">${event.inputTokens.toLocaleString()}</span>
+                            <span class="detail-value">${escapeHtml(Number(event.inputTokens).toLocaleString())}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Output:</span>
-                            <span class="detail-value">${event.outputTokens.toLocaleString()}</span>
+                            <span class="detail-value">${escapeHtml(Number(event.outputTokens).toLocaleString())}</span>
                         </div>` : ''}
                     `;
                     break;
 
-                case 'cost.update':
+                case 'cost.update': {
+                    const totalCost = Number(event.totalCost) || 0;
+                    const inputCost = Number(event.inputCost) || 0;
+                    const outputCost = Number(event.outputCost) || 0;
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Model:</span>
-                            <span class="detail-value">${event.model}</span>
+                            <span class="detail-value">${escapeHtml(event.model)}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Total Cost:</span>
-                            <span class="detail-value">$${event.totalCost.toFixed(4)} ${event.currency}</span>
+                            <span class="detail-value">$${escapeHtml(totalCost.toFixed(4))} ${escapeHtml(event.currency)}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Input:</span>
-                            <span class="detail-value">$${event.inputCost.toFixed(4)}</span>
+                            <span class="detail-value">$${escapeHtml(inputCost.toFixed(4))}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Output:</span>
-                            <span class="detail-value">$${event.outputCost.toFixed(4)}</span>
+                            <span class="detail-value">$${escapeHtml(outputCost.toFixed(4))}</span>
                         </div>
                     `;
                     break;
+                }
 
-                case 'rate_limit.warning':
-                    const percentage = ((event.current / event.limit) * 100).toFixed(1);
+                case 'rate_limit.warning': {
+                    const current = Number(event.current) || 0;
+                    const limit = Number(event.limit) || 1;
+                    const percentage = ((current / limit) * 100).toFixed(1);
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Service:</span>
-                            <span class="detail-value">${event.service}</span>
+                            <span class="detail-value">${escapeHtml(event.service)}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Usage:</span>
-                            <span class="detail-value">${event.current}/${event.limit} (${percentage}%)</span>
+                            <span class="detail-value">${escapeHtml(current)}/${escapeHtml(limit)} (${escapeHtml(percentage)}%)</span>
                         </div>
                         ${event.resetAt ? `<div class="detail-row">
                             <span class="detail-label">Resets:</span>
-                            <span class="detail-value">${new Date(event.resetAt).toLocaleString()}</span>
+                            <span class="detail-value">${escapeHtml(new Date(event.resetAt).toLocaleString())}</span>
                         </div>` : ''}
                     `;
                     break;
+                }
 
                 case 'conversation.created':
                     detailsHtml = `
                         ${event.title ? `<div class="detail-row">
                             <span class="detail-label">Title:</span>
-                            <span class="detail-value">${event.title}</span>
+                            <span class="detail-value">${escapeHtml(event.title)}</span>
                         </div>` : ''}
                     `;
                     break;
 
-                case 'conversation.updated':
+                case 'conversation.updated': {
+                    const messageCount = Number(event.messageCount) || 0;
                     detailsHtml = `
                         <div class="detail-row">
                             <span class="detail-label">Messages:</span>
-                            <span class="detail-value">${event.messageCount}</span>
+                            <span class="detail-value">${escapeHtml(messageCount)}</span>
                         </div>
                     `;
                     break;
+                }
 
                 default:
-                    detailsHtml = `<div class="detail-row"><span class="detail-value">${JSON.stringify(event, null, 2)}</span></div>`;
+                    // Escape the entire JSON output for unknown event types
+                    detailsHtml = `<div class="detail-row"><pre class="detail-value" style="white-space: pre-wrap; font-size: 0.75rem;">${escapeHtml(JSON.stringify(event, null, 2))}</pre></div>`;
             }
 
             return `
-                <div class="event-card ${config.type}">
+                <div class="event-card ${escapeHtml(config.type)}">
                     <div class="event-header">
                         <div class="event-type">
                             <span class="event-icon">${config.icon}</span>
-                            ${event.type}
+                            ${safeType}
                         </div>
-                        <div class="event-time">${time}</div>
+                        <div class="event-time">${escapeHtml(time)}</div>
                     </div>
                     <div class="event-details">
                         ${detailsHtml}
                     </div>
-                    ${event.conversationId ? `<div class="conversation-id">ID: ${event.conversationId}</div>` : ''}
+                    ${event.conversationId ? `<div class="conversation-id">ID: ${escapeHtml(event.conversationId)}</div>` : ''}
                 </div>
             `;
         }
@@ -558,18 +602,27 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
             const url = wsUrlInput.value.trim();
             if (!url) {
-                alert('Please enter a WebSocket URL');
+                updateStatus(false, 'Please enter a WebSocket URL');
+                return;
+            }
+
+            // Validate WebSocket URL format
+            if (!isValidWebSocketUrl(url)) {
+                updateStatus(false, 'Invalid URL: must start with ws:// or wss://');
                 return;
             }
 
             updateStatus(false, 'Connecting...');
+            connectBtn.disabled = true;
 
             try {
                 ws = new WebSocket(url);
 
                 ws.onopen = () => {
-                    updateStatus(true, `Connected to ${url}`);
+                    updateStatus(true, `Connected to ${escapeHtml(url)}`);
                     reconnectAttempts = 0;
+                    currentReconnectDelay = INITIAL_RECONNECT_DELAY; // Reset backoff on success
+                    connectBtn.disabled = false;
                 };
 
                 ws.onmessage = (event) => {
@@ -583,23 +636,31 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
                 ws.onerror = (error) => {
                     console.error('WebSocket error:', error);
-                    updateStatus(false, 'Connection error');
+                    updateStatus(false, 'Connection error - check console for details');
+                    connectBtn.disabled = false;
                 };
 
                 ws.onclose = () => {
                     updateStatus(false, 'Disconnected');
                     ws = null;
+                    connectBtn.disabled = false;
 
-                    // Auto-reconnect logic
+                    // Auto-reconnect with exponential backoff
                     if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                         reconnectAttempts++;
-                        updateStatus(false, `Reconnecting in ${RECONNECT_DELAY / 1000}s... (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
-                        setTimeout(connect, RECONNECT_DELAY);
+                        const delaySeconds = (currentReconnectDelay / 1000).toFixed(1);
+                        updateStatus(false, `Reconnecting in ${delaySeconds}s... (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+                        setTimeout(connect, currentReconnectDelay);
+                        // Exponential backoff: double delay, cap at max
+                        currentReconnectDelay = Math.min(currentReconnectDelay * 2, MAX_RECONNECT_DELAY);
+                    } else {
+                        updateStatus(false, 'Connection failed after maximum retries');
                     }
                 };
             } catch (error) {
                 console.error('Connection error:', error);
-                updateStatus(false, 'Failed to connect');
+                updateStatus(false, 'Failed to connect - invalid URL or network error');
+                connectBtn.disabled = false;
             }
         }
 
