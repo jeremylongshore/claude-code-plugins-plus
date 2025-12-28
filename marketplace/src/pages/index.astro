@@ -597,6 +597,19 @@ const totalCategories = searchIndex.stats.categories.length;
             margin-bottom: 2rem;
         }
 
+        .client-showcase-link,
+        .client-marquee-link {
+            display: block;
+            text-decoration: none;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .client-showcase-link:hover,
+        .client-marquee-link:hover {
+            opacity: 0.8;
+        }
+
         .client-marquee {
             display: flex;
             gap: 4rem;
@@ -871,7 +884,10 @@ const totalCategories = searchIndex.stats.categories.length;
 
     <!-- Client Showcase -->
     <section class="client-showcase">
-        <div class="client-showcase-label">strategic partners funding plugin innovation</div>
+        <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="client-showcase-link" title="Visit Nixtla - Our Strategic Partner">
+            <div class="client-showcase-label">strategic partners funding plugin innovation</div>
+        </a>
+        <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" class="client-marquee-link">
         <div class="client-marquee">
             <!-- Nixtla logo repeated 6 times for seamless scroll -->
             <div class="client-item">
@@ -946,6 +962,7 @@ const totalCategories = searchIndex.stats.categories.length;
                 </svg>
             </div>
         </div>
+        </a>
     </section>
 
     <!-- What's Live Now Section -->
