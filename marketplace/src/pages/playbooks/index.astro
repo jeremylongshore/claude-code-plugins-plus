@@ -138,6 +138,10 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
     <!-- Filter & Search -->
     <section class="filter-section">
       <div class="container">
+        <div class="filter-header">
+          <h2 class="filter-cta">Choose Your Focus Area</h2>
+          <p class="filter-subtitle">Select a category to explore production-ready guides</p>
+        </div>
         <div class="filter-controls">
           <button class="filter-btn active" data-category="all">All Playbooks</button>
           {categories.map(category => (
@@ -205,8 +209,34 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
   </div>
 
   <style>
+    /* Define dark theme variables for playbooks */
+    :root {
+      --slate-100: #f1f5f9;
+      --slate-400: #94a3b8;
+      --slate-500: #64748b;
+      --slate-700: #334155;
+      --slate-800: #1e293b;
+      --slate-850: #172033;
+      --slate-900: #0f172a;
+      --slate-950: #020617;
+      --green-300: #86efac;
+      --green-400: #4ade80;
+      --green-500: #22c55e;
+      --transition-base: 0.2s ease;
+      --transition-fast: 0.15s ease;
+      --font-sans: 'Poppins', Arial, sans-serif;
+    }
+
     .playbooks-index {
       min-height: 100vh;
+      background: var(--slate-950);
+      color: var(--slate-100);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
 
     /* Hero Section */
@@ -256,6 +286,13 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
       letter-spacing: -0.025em;
       margin-bottom: 1.5rem;
       line-height: 1.1;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--green-400) 0%, var(--green-300) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
     .hero-subtitle {
@@ -308,10 +345,27 @@ const featuredPlaybooks = playbooks.filter(p => p.featured);
 
     /* Filter Section */
     .filter-section {
-      padding: 2rem 0;
+      padding: 3rem 0;
       background: var(--slate-900);
       border-top: 1px solid var(--slate-800);
       border-bottom: 1px solid var(--slate-800);
+    }
+
+    .filter-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .filter-cta {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--slate-100);
+      margin-bottom: 0.5rem;
+    }
+
+    .filter-subtitle {
+      font-size: 1rem;
+      color: var(--slate-400);
     }
 
     .filter-controls {
