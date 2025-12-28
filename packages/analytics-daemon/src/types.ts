@@ -89,6 +89,16 @@ export interface ConversationUpdatedEvent extends BaseEvent {
 }
 
 /**
+ * MCP tool call event
+ * Emitted when an MCP tool is invoked
+ */
+export interface MCPToolCallEvent extends BaseEvent {
+  type: 'mcp.tool_call';
+  toolName: string;
+  mcpServer?: string;
+}
+
+/**
  * Union type of all possible events
  */
 export type AnalyticsEvent =
@@ -98,7 +108,8 @@ export type AnalyticsEvent =
   | CostUpdateEvent
   | RateLimitWarningEvent
   | ConversationCreatedEvent
-  | ConversationUpdatedEvent;
+  | ConversationUpdatedEvent
+  | MCPToolCallEvent;
 
 /**
  * Conversation file structure (subset of actual conversation JSON)
