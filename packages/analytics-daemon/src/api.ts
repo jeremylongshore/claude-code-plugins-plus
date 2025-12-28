@@ -396,12 +396,35 @@ export class AnalyticsAPI {
   }
 
   /**
+   * Validate and sanitize limit parameter
+   * Returns a safe limit value between 1 and MAX_LIMIT
+   */
+  private validateLimit(limitParam: unknown): number {
+    const MAX_LIMIT = 1000;
+    const DEFAULT_LIMIT = 10;
+
+    if (limitParam === undefined || limitParam === null || limitParam === '') {
+      return DEFAULT_LIMIT;
+    }
+
+    const parsed = parseInt(String(limitParam), 10);
+
+    // Handle NaN, negative, zero, or non-integer values
+    if (!Number.isInteger(parsed) || parsed < 1) {
+      return DEFAULT_LIMIT;
+    }
+
+    // Cap at maximum to prevent DoS
+    return Math.min(parsed, MAX_LIMIT);
+  }
+
+  /**
    * Handle GET /api/attribution/top/:type
    */
   private handleGetTopUsed(req: Request, res: Response): void {
     try {
       const { type } = req.params;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = this.validateLimit(req.query.limit);
 
       if (!['plugin', 'skill', 'mcp'].includes(type)) {
         res.status(400).json({
@@ -440,7 +463,7 @@ export class AnalyticsAPI {
   private handleGetRecentlyUsed(req: Request, res: Response): void {
     try {
       const { type } = req.params;
-      const limit = parseInt(req.query.limit as string) || 10;
+      const limit = this.validateLimit(req.query.limit);
 
       if (!['plugin', 'skill', 'mcp'].includes(type)) {
         res.status(400).json({

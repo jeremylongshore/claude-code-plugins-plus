@@ -161,34 +161,45 @@ export class AttributionEngine {
 
   /**
    * Detect usage patterns in message content (best-effort heuristics)
+   *
+   * Security Note: All regex patterns are designed to be ReDoS-safe:
+   * - No nested quantifiers (e.g., no (a+)+ patterns)
+   * - Simple character classes [a-z0-9-] with single quantifiers
+   * - Linear time complexity O(n) where n is input length
    */
   private detectPatternsInContent(content: string, conversationId: string): void {
+    // Limit content size to prevent DoS on extremely large messages
+    const MAX_CONTENT_LENGTH = 100000; // 100KB
+    const safeContent = content.length > MAX_CONTENT_LENGTH
+      ? content.slice(0, MAX_CONTENT_LENGTH)
+      : content;
+
     // Detect plugin references
     // Pattern: /plugin install <plugin-name>
     const pluginInstallPattern = /\/plugin\s+install\s+([a-z0-9-]+)/gi;
     let match;
-    while ((match = pluginInstallPattern.exec(content)) !== null) {
+    while ((match = pluginInstallPattern.exec(safeContent)) !== null) {
       this.trackPlugin(match[1], conversationId);
     }
 
     // Detect skill triggers
     // Pattern: Invoking skill "<skill-name>" or "Using skill: <skill-name>"
     const skillTriggerPattern = /(?:invoking|using|activating)\s+skill[:\s]+["\']?([a-z0-9-]+)["\']?/gi;
-    while ((match = skillTriggerPattern.exec(content)) !== null) {
+    while ((match = skillTriggerPattern.exec(safeContent)) !== null) {
       this.trackSkill(match[1], conversationId);
     }
 
     // Detect MCP tool calls
     // Pattern: MCP tool "tool_name" or Using MCP: tool_name
     const mcpToolPattern = /(?:MCP\s+tool|Using\s+MCP)[:\s]+["\']?([a-z0-9_-]+)["\']?/gi;
-    while ((match = mcpToolPattern.exec(content)) !== null) {
+    while ((match = mcpToolPattern.exec(safeContent)) !== null) {
       this.trackMCPTool(match[1], conversationId);
     }
 
     // Detect MCP server references
     // Pattern: @server/tool_name (MCP protocol format)
     const mcpServerPattern = /@([a-z0-9-]+)\/([a-z0-9_-]+)/gi;
-    while ((match = mcpServerPattern.exec(content)) !== null) {
+    while ((match = mcpServerPattern.exec(safeContent)) !== null) {
       const serverName = match[1];
       const toolName = match[2];
       this.trackMCPTool(toolName, conversationId, serverName);
