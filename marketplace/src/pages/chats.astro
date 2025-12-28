@@ -1,0 +1,696 @@
+---
+// CCP Chats - Live Conversation Monitor
+// Mobile-first view for Claude Code Analytics Daemon
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+    title="Live Chats | Claude Code Analytics"
+    description="Monitor Claude Code conversations in real-time with mobile-friendly interface"
+>
+    <style>
+        /* Mobile-first responsive design */
+        .chat-container {
+            min-height: 100vh;
+            padding-top: 80px;
+            background: var(--brand-light);
+        }
+
+        .chat-header {
+            padding: 1.5rem 1rem;
+            background: var(--brand-dark);
+            color: var(--brand-light);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            box-shadow: 0 2px 8px rgba(20, 20, 19, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-title {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--brand-mid-gray);
+            transition: background 0.3s var(--transition-smooth);
+        }
+
+        .status-indicator.connected {
+            background: var(--brand-green);
+            box-shadow: 0 0 8px var(--brand-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .header-subtitle {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.875rem;
+            color: var(--brand-mid-gray);
+        }
+
+        .connection-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s var(--transition-smooth);
+        }
+
+        .btn-primary {
+            background: var(--brand-orange);
+            color: var(--brand-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--brand-orange-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: var(--brand-mid-gray);
+            color: var(--brand-dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--brand-light-gray);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid var(--brand-light-gray);
+            background: var(--brand-light);
+            color: var(--brand-dark);
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.875rem;
+        }
+
+        .events-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 1rem;
+            color: var(--brand-mid-gray);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .empty-state-title {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--brand-dark);
+        }
+
+        .event-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(20, 20, 19, 0.1);
+            border-left: 4px solid var(--brand-light-gray);
+            transition: all 0.2s var(--transition-smooth);
+            animation: slideIn 0.3s var(--transition-smooth);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .event-card:hover {
+            box-shadow: 0 4px 12px rgba(20, 20, 19, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .event-card.plugin-activation {
+            border-left-color: var(--brand-blue);
+        }
+
+        .event-card.skill-trigger {
+            border-left-color: var(--brand-orange);
+        }
+
+        .event-card.llm-call {
+            border-left-color: var(--brand-green);
+        }
+
+        .event-card.conversation {
+            border-left-color: var(--brand-mid-gray);
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+            gap: 1rem;
+        }
+
+        .event-type {
+            font-family: 'Poppins', Arial, sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--brand-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .event-icon {
+            font-size: 1.25rem;
+        }
+
+        .event-time {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.75rem;
+            color: var(--brand-mid-gray);
+            white-space: nowrap;
+        }
+
+        .event-details {
+            font-family: 'Lora', Georgia, serif;
+            font-size: 0.875rem;
+            color: var(--brand-dark);
+        }
+
+        .detail-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            min-width: 80px;
+            color: var(--brand-mid-gray);
+        }
+
+        .detail-value {
+            color: var(--brand-dark);
+            word-break: break-word;
+        }
+
+        .conversation-id {
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            color: var(--brand-mid-gray);
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid var(--brand-light-gray);
+        }
+
+        /* Tablet breakpoint */
+        @media (min-width: 768px) {
+            .chat-header {
+                padding: 2rem;
+            }
+
+            .header-title {
+                font-size: 1.5rem;
+            }
+
+            .header-subtitle {
+                font-size: 1rem;
+            }
+
+            .events-container {
+                padding: 2rem;
+            }
+
+            .event-card {
+                padding: 1.5rem;
+            }
+
+            .connection-controls {
+                flex-wrap: nowrap;
+            }
+        }
+
+        /* Desktop breakpoint */
+        @media (min-width: 1024px) {
+            .event-card {
+                display: grid;
+                grid-template-columns: 1fr 200px;
+                gap: 1rem;
+            }
+
+            .event-header {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+
+    <div class="chat-container">
+        <!-- Header with connection controls -->
+        <div class="chat-header">
+            <div class="header-content">
+                <h1 class="header-title">
+                    <span class="status-indicator" id="statusIndicator"></span>
+                    Live Conversations
+                </h1>
+                <p class="header-subtitle" id="statusText">Waiting to connect...</p>
+
+                <div class="connection-controls">
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            id="wsUrl"
+                            placeholder="ws://localhost:3456"
+                            value="ws://localhost:3456"
+                        />
+                        <button class="btn btn-primary" id="connectBtn">Connect</button>
+                    </div>
+                    <button class="btn btn-secondary" id="clearBtn">Clear Events</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events stream -->
+        <div class="events-container" id="eventsContainer">
+            <div class="empty-state">
+                <div class="empty-state-icon">💬</div>
+                <h2 class="empty-state-title">No events yet</h2>
+                <p>Connect to the analytics daemon to see live conversation events</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // WebSocket connection state
+        let ws: WebSocket | null = null;
+        let isConnected = false;
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT_ATTEMPTS = 5;
+        const INITIAL_RECONNECT_DELAY = 1000;
+        const MAX_RECONNECT_DELAY = 30000;
+        let currentReconnectDelay = INITIAL_RECONNECT_DELAY;
+
+        /**
+         * Escape HTML entities to prevent XSS attacks
+         * Handles all dangerous characters that could break out of HTML context
+         */
+        function escapeHtml(unsafe: unknown): string {
+            if (unsafe === null || unsafe === undefined) {
+                return '';
+            }
+            const str = String(unsafe);
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        /**
+         * Validate WebSocket URL format
+         * Only allows ws:// or wss:// protocols
+         */
+        function isValidWebSocketUrl(url: string): boolean {
+            try {
+                const parsed = new URL(url);
+                return parsed.protocol === 'ws:' || parsed.protocol === 'wss:';
+            } catch {
+                return false;
+            }
+        }
+
+        // DOM elements
+        const statusIndicator = document.getElementById('statusIndicator') as HTMLElement;
+        const statusText = document.getElementById('statusText') as HTMLElement;
+        const eventsContainer = document.getElementById('eventsContainer') as HTMLElement;
+        const connectBtn = document.getElementById('connectBtn') as HTMLButtonElement;
+        const clearBtn = document.getElementById('clearBtn') as HTMLButtonElement;
+        const wsUrlInput = document.getElementById('wsUrl') as HTMLInputElement;
+
+        // Event type icons and colors
+        const EVENT_CONFIG: Record<string, { icon: string; type: string }> = {
+            'server.connected': { icon: '✓', type: 'conversation' },
+            'plugin.activation': { icon: '🔌', type: 'plugin-activation' },
+            'skill.trigger': { icon: '⚡', type: 'skill-trigger' },
+            'llm.call': { icon: '🤖', type: 'llm-call' },
+            'cost.update': { icon: '💰', type: 'llm-call' },
+            'rate_limit.warning': { icon: '⚠️', type: 'conversation' },
+            'conversation.created': { icon: '📝', type: 'conversation' },
+            'conversation.updated': { icon: '💬', type: 'conversation' },
+        };
+
+        // Update connection status
+        function updateStatus(connected: boolean, message: string) {
+            isConnected = connected;
+            statusIndicator.className = `status-indicator ${connected ? 'connected' : ''}`;
+            statusText.textContent = message;
+            connectBtn.textContent = connected ? 'Disconnect' : 'Connect';
+            connectBtn.className = connected ? 'btn btn-secondary' : 'btn btn-primary';
+        }
+
+        // Format timestamp
+        function formatTime(timestamp: number): string {
+            return new Date(timestamp).toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        // Create event card HTML
+        // All user-controllable data is escaped to prevent XSS
+        function createEventCard(event: any): string {
+            const config = EVENT_CONFIG[event.type] || { icon: '📊', type: 'conversation' };
+            const time = formatTime(event.timestamp);
+            const safeType = escapeHtml(event.type);
+
+            let detailsHtml = '';
+
+            switch (event.type) {
+                case 'server.connected':
+                    detailsHtml = `<div class="detail-row"><span class="detail-value">${escapeHtml(event.message)}</span></div>`;
+                    break;
+
+                case 'plugin.activation':
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Plugin:</span>
+                            <span class="detail-value">${escapeHtml(event.pluginName)}</span>
+                        </div>
+                        ${event.pluginVersion ? `<div class="detail-row">
+                            <span class="detail-label">Version:</span>
+                            <span class="detail-value">${escapeHtml(event.pluginVersion)}</span>
+                        </div>` : ''}
+                        ${event.marketplace ? `<div class="detail-row">
+                            <span class="detail-label">Marketplace:</span>
+                            <span class="detail-value">${escapeHtml(event.marketplace)}</span>
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'skill.trigger':
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Skill:</span>
+                            <span class="detail-value">${escapeHtml(event.skillName)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Plugin:</span>
+                            <span class="detail-value">${escapeHtml(event.pluginName)}</span>
+                        </div>
+                        ${event.triggerPhrase ? `<div class="detail-row">
+                            <span class="detail-label">Trigger:</span>
+                            <span class="detail-value">"${escapeHtml(event.triggerPhrase)}"</span>
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'llm.call':
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Model:</span>
+                            <span class="detail-value">${escapeHtml(event.model)}</span>
+                        </div>
+                        ${event.totalTokens ? `<div class="detail-row">
+                            <span class="detail-label">Tokens:</span>
+                            <span class="detail-value">${escapeHtml(Number(event.totalTokens).toLocaleString())}</span>
+                        </div>` : ''}
+                        ${event.inputTokens && event.outputTokens ? `
+                        <div class="detail-row">
+                            <span class="detail-label">Input:</span>
+                            <span class="detail-value">${escapeHtml(Number(event.inputTokens).toLocaleString())}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Output:</span>
+                            <span class="detail-value">${escapeHtml(Number(event.outputTokens).toLocaleString())}</span>
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'cost.update': {
+                    const totalCost = Number(event.totalCost) || 0;
+                    const inputCost = Number(event.inputCost) || 0;
+                    const outputCost = Number(event.outputCost) || 0;
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Model:</span>
+                            <span class="detail-value">${escapeHtml(event.model)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Total Cost:</span>
+                            <span class="detail-value">$${escapeHtml(totalCost.toFixed(4))} ${escapeHtml(event.currency)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Input:</span>
+                            <span class="detail-value">$${escapeHtml(inputCost.toFixed(4))}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Output:</span>
+                            <span class="detail-value">$${escapeHtml(outputCost.toFixed(4))}</span>
+                        </div>
+                    `;
+                    break;
+                }
+
+                case 'rate_limit.warning': {
+                    const current = Number(event.current) || 0;
+                    const limit = Number(event.limit) || 1;
+                    const percentage = ((current / limit) * 100).toFixed(1);
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Service:</span>
+                            <span class="detail-value">${escapeHtml(event.service)}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Usage:</span>
+                            <span class="detail-value">${escapeHtml(current)}/${escapeHtml(limit)} (${escapeHtml(percentage)}%)</span>
+                        </div>
+                        ${event.resetAt ? `<div class="detail-row">
+                            <span class="detail-label">Resets:</span>
+                            <span class="detail-value">${escapeHtml(new Date(event.resetAt).toLocaleString())}</span>
+                        </div>` : ''}
+                    `;
+                    break;
+                }
+
+                case 'conversation.created':
+                    detailsHtml = `
+                        ${event.title ? `<div class="detail-row">
+                            <span class="detail-label">Title:</span>
+                            <span class="detail-value">${escapeHtml(event.title)}</span>
+                        </div>` : ''}
+                    `;
+                    break;
+
+                case 'conversation.updated': {
+                    const messageCount = Number(event.messageCount) || 0;
+                    detailsHtml = `
+                        <div class="detail-row">
+                            <span class="detail-label">Messages:</span>
+                            <span class="detail-value">${escapeHtml(messageCount)}</span>
+                        </div>
+                    `;
+                    break;
+                }
+
+                default:
+                    // Escape the entire JSON output for unknown event types
+                    detailsHtml = `<div class="detail-row"><pre class="detail-value" style="white-space: pre-wrap; font-size: 0.75rem;">${escapeHtml(JSON.stringify(event, null, 2))}</pre></div>`;
+            }
+
+            return `
+                <div class="event-card ${escapeHtml(config.type)}">
+                    <div class="event-header">
+                        <div class="event-type">
+                            <span class="event-icon">${config.icon}</span>
+                            ${safeType}
+                        </div>
+                        <div class="event-time">${escapeHtml(time)}</div>
+                    </div>
+                    <div class="event-details">
+                        ${detailsHtml}
+                    </div>
+                    ${event.conversationId ? `<div class="conversation-id">ID: ${escapeHtml(event.conversationId)}</div>` : ''}
+                </div>
+            `;
+        }
+
+        // Add event to UI
+        function addEvent(event: any) {
+            // Remove empty state if present
+            const emptyState = eventsContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+
+            // Create and prepend new event card
+            const eventCard = document.createElement('div');
+            eventCard.innerHTML = createEventCard(event);
+            eventsContainer.insertBefore(eventCard.firstElementChild!, eventsContainer.firstChild);
+
+            // Limit to last 50 events
+            const eventCards = eventsContainer.querySelectorAll('.event-card');
+            if (eventCards.length > 50) {
+                eventCards[eventCards.length - 1].remove();
+            }
+        }
+
+        // Clear all events
+        function clearEvents() {
+            eventsContainer.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <h2 class="empty-state-title">No events yet</h2>
+                    <p>Connect to the analytics daemon to see live conversation events</p>
+                </div>
+            `;
+        }
+
+        // Connect to WebSocket
+        function connect() {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                disconnect();
+                return;
+            }
+
+            const url = wsUrlInput.value.trim();
+            if (!url) {
+                updateStatus(false, 'Please enter a WebSocket URL');
+                return;
+            }
+
+            // Validate WebSocket URL format
+            if (!isValidWebSocketUrl(url)) {
+                updateStatus(false, 'Invalid URL: must start with ws:// or wss://');
+                return;
+            }
+
+            updateStatus(false, 'Connecting...');
+            connectBtn.disabled = true;
+
+            try {
+                ws = new WebSocket(url);
+
+                ws.onopen = () => {
+                    updateStatus(true, `Connected to ${escapeHtml(url)}`);
+                    reconnectAttempts = 0;
+                    currentReconnectDelay = INITIAL_RECONNECT_DELAY; // Reset backoff on success
+                    connectBtn.disabled = false;
+                };
+
+                ws.onmessage = (event) => {
+                    try {
+                        const data = JSON.parse(event.data);
+                        addEvent(data);
+                    } catch (error) {
+                        console.error('Error parsing event:', error);
+                    }
+                };
+
+                ws.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    updateStatus(false, 'Connection error - check console for details');
+                    connectBtn.disabled = false;
+                };
+
+                ws.onclose = () => {
+                    updateStatus(false, 'Disconnected');
+                    ws = null;
+                    connectBtn.disabled = false;
+
+                    // Auto-reconnect with exponential backoff
+                    if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                        reconnectAttempts++;
+                        const delaySeconds = (currentReconnectDelay / 1000).toFixed(1);
+                        updateStatus(false, `Reconnecting in ${delaySeconds}s... (attempt ${reconnectAttempts}/${MAX_RECONNECT_ATTEMPTS})`);
+                        setTimeout(connect, currentReconnectDelay);
+                        // Exponential backoff: double delay, cap at max
+                        currentReconnectDelay = Math.min(currentReconnectDelay * 2, MAX_RECONNECT_DELAY);
+                    } else {
+                        updateStatus(false, 'Connection failed after maximum retries');
+                    }
+                };
+            } catch (error) {
+                console.error('Connection error:', error);
+                updateStatus(false, 'Failed to connect - invalid URL or network error');
+                connectBtn.disabled = false;
+            }
+        }
+
+        // Disconnect from WebSocket
+        function disconnect() {
+            if (ws) {
+                reconnectAttempts = MAX_RECONNECT_ATTEMPTS; // Prevent auto-reconnect
+                ws.close();
+                ws = null;
+            }
+            updateStatus(false, 'Disconnected');
+        }
+
+        // Event listeners
+        connectBtn.addEventListener('click', connect);
+        clearBtn.addEventListener('click', clearEvents);
+        wsUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                connect();
+            }
+        });
+
+        // Auto-connect on page load
+        window.addEventListener('load', () => {
+            setTimeout(connect, 500);
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            disconnect();
+        });
+    </script>
+</BaseLayout>
