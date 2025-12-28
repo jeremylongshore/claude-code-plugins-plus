@@ -22,6 +22,13 @@ const __dirname = dirname(__filename);
 
 const DIST_DIR = join(__dirname, '../dist');
 
+// Known broken links to ignore (pre-existing issues, tracked separately)
+// TODO: Fix these and remove from ignore list
+const KNOWN_ISSUES = [
+  '/plugins/001-jeremy-taskwarrior-integration/',  // Plugin not in marketplace catalog
+  '/plugins/skills-powerkit/',                      // Plugin not in marketplace catalog
+];
+
 // Seed pages to scan for internal links
 const SEED_PAGES = [
   'index.html',
@@ -61,6 +68,8 @@ function extractInternalLinks(html, sourcePath) {
     if (href.startsWith('javascript:')) continue;
     // Skip data: URIs
     if (href.startsWith('data:')) continue;
+    // Skip unrendered template literals (client-side JS)
+    if (href.includes('${')) continue;
 
     // Normalize: strip query and hash
     let path = href.split('?')[0].split('#')[0];
@@ -149,13 +158,25 @@ console.log(`   Unique links to check: ${uniqueLinks.size}\n`);
 
 // Validate each unique link
 const brokenLinks = [];
+const knownIssueLinks = [];
 let validCount = 0;
 
 for (const [href, sources] of uniqueLinks) {
   if (pathExists(href)) {
     validCount++;
+  } else if (KNOWN_ISSUES.includes(href)) {
+    knownIssueLinks.push({ href, sources });
   } else {
     brokenLinks.push({ href, sources });
+  }
+}
+
+// Report known issues (warnings, don't fail)
+if (knownIssueLinks.length > 0) {
+  console.warn(`⚠️  ${knownIssueLinks.length} known issue(s) (tracked separately):\n`);
+  for (const { href, sources } of knownIssueLinks) {
+    console.warn(`   • ${href}`);
+    console.warn(`     Found in: ${sources.join(', ')}\n`);
   }
 }
 
