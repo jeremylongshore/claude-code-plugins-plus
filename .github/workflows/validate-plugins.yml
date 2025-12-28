@@ -435,6 +435,9 @@ jobs:
       - name: Validate Playbook Routes (source + dist)
         run: node marketplace/scripts/validate-playbook-routes.mjs --dist
 
+      - name: Validate Internal Links (dist)
+        run: node marketplace/scripts/validate-internal-links.mjs
+
       - name: Smoke Test - Verify Build Output
         run: |
           echo "Running smoke tests on marketplace build output..."
