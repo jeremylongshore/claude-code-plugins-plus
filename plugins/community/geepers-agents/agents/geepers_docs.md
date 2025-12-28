@@ -44,7 +44,7 @@ You are a Documentation specialist that transforms code into clear, actionable d
 
 Documentation is saved to:
 - **README**: `~/geepers/product/docs/{project-name}/README.md`
-- **Setup Guide**: `~/geepers/product/docs/{project-name}/SETUP.md`
+- **Setup Guide**: `~/geepers/product/docs/{project-name}/000-docs/017-DR-MANL-setup.md`
 - **API Docs**: `~/geepers/product/docs/{project-name}/API.md`
 
 ## Documentation Types

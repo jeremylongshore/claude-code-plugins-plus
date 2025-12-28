@@ -196,7 +196,7 @@ summarize(documentId: "paper123", maxSentences: 5)
 
 ##  License
 
-MIT License - see [LICENSE](../../../LICENSE)
+MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt)
 
 ##  Related Tools
 

@@ -363,7 +363,7 @@ The CLI is built with:
 
 ## Contributing
 
-Contributions are welcome! Please see [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+Contributions are welcome! Please see [CONTRIBUTING.md](../../000-docs/007-DR-GUID-contributing.md) for guidelines.
 
 ## License
 

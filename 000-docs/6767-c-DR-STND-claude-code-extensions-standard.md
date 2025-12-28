@@ -7,6 +7,7 @@
 **Status**: CANONICAL (Enterprise-Only)
 **Date**: 2025-12-20
 **Supersedes**: 6767-a (plugins), 6767-b (skills)
+**Superseded By**: 6767-h (master spec)
 **Authority**: Intent Solutions (Enterprise Marketplace)
 
 ---

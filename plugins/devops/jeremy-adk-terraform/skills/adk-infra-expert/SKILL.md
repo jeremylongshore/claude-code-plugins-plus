@@ -7,6 +7,14 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Adk Infra Expert
+
+This skill provides automated assistance for adk infra expert tasks.
+
+## Overview
+
+Provision production-grade Vertex AI ADK infrastructure with Terraform: secure networking, least-privilege IAM, Agent Engine runtime, Code Execution sandbox defaults, and Memory Bank configuration. Use this skill to generate/validate Terraform modules and a deployment checklist that matches enterprise security constraints (including VPC Service Controls when required).
+
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -28,20 +36,17 @@ Before using this skill, ensure:
 7. **Configure Monitoring**: Set up Cloud Monitoring dashboards and alerts
 8. **Validate Deployment**: Test agent endpoint and verify all components
 
+## Examples
+
+**Example: Stand up an ADK Agent Engine runtime**
+- Inputs: `project_id`, `region`, desired model, and whether Code Execution + Memory Bank are enabled.
+- Outputs: Terraform resources for the runtime + IAM + VPC/PSC, plus validation commands to confirm the agent is reachable and permissions are correct.
+
 ## Output
 
 **Agent Engine Deployment:**
 ```hcl
 # {baseDir}/terraform/main.tf
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
 resource "google_vertex_ai_agent_runtime" "adk_agent" {
   project  = var.project_id
   location = var.region

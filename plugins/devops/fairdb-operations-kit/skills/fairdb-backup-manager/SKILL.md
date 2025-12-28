@@ -11,6 +11,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Fairdb Backup Manager
+
+This skill provides automated assistance for fairdb backup manager tasks.
+
 ## Prerequisites
 
 Before using this skill, ensure:

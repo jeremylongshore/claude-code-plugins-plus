@@ -289,7 +289,7 @@ Install only what you need for the commands you'll use.
 
 - **Quick Start Guide:** `docs/QUICK_START.md` - Your first 5 minutes with the pack
 - **Use Cases:** `docs/USE_CASES.md` - Real-world examples
-- **Troubleshooting:** `docs/TROUBLESHOOTING.md` - Detailed problem solutions
+- **Troubleshooting:** `docs/000-docs/157-DR-FAQS-troubleshooting.md` - Detailed problem solutions
 
 ### Support
 
@@ -364,7 +364,7 @@ Just ask Claude naturally, and the right expert will help!
 
 You're all set. Start using the DevOps Automation Pack to save hours every week.
 
-Need help? See `docs/TROUBLESHOOTING.md` or email mandy@intentsolutions.io
+Need help? See `docs/000-docs/157-DR-FAQS-troubleshooting.md` or email mandy@intentsolutions.io
 
 ---
 

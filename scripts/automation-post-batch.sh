@@ -269,7 +269,7 @@ CHANGELOG_EOF
 
 echo "## CHANGELOG ENTRY" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
-echo "Ready to prepend to CHANGELOG.md:" >> "$REPORT_FILE"
+echo "Ready to prepend to 000-docs/247-OD-CHNG-changelog.md:" >> "$REPORT_FILE"
 echo "" >> "$REPORT_FILE"
 echo "\`\`\`markdown" >> "$REPORT_FILE"
 echo "$CHANGELOG_ENTRY" >> "$REPORT_FILE"
@@ -391,14 +391,14 @@ cat >> "$REPORT_FILE" << 'CHECKLIST_EOF'
    ```
    - [ ] All version files updated to 1.2.0
 
-5. **Update CHANGELOG.md**
+5. **Update 000-docs/247-OD-CHNG-changelog.md**
    ```bash
    # Prepend changelog entry (already generated above)
    cat > CHANGELOG.tmp << 'EOF'
    <paste changelog entry from above>
    EOF
-   cat CHANGELOG.md >> CHANGELOG.tmp
-   mv CHANGELOG.tmp CHANGELOG.md
+   cat 000-docs/247-OD-CHNG-changelog.md >> CHANGELOG.tmp
+   mv CHANGELOG.tmp 000-docs/247-OD-CHNG-changelog.md
    ```
    - [ ] Changelog updated with v1.2.0 entry
 

@@ -11,67 +11,106 @@ from pathlib import Path
 
 
 def add_purpose_statement(content: str, skill_name: str) -> tuple:
-    """Add purpose statement if missing."""
+    """Add a markdown H1 title + purpose statement if missing."""
     changes = []
 
-    # Check if there's already a purpose statement (paragraph after title or ## Overview)
-    # Look for patterns that indicate existing purpose
-    has_purpose = False
+    def extract_frontmatter_and_body(text: str) -> tuple[str, str]:
+        if not text.startswith('---'):
+            return "", text
+        parts = text.split('---', 2)
+        if len(parts) < 3:
+            return "", text
+        frontmatter = parts[1]
+        body = parts[2]
+        if body.startswith('\n'):
+            body = body[1:]
+        return frontmatter, body
 
-    # Check for ## Purpose section
-    if '## Purpose' in content or '## purpose' in content:
-        has_purpose = True
+    def build_title_from_name(name: str) -> str:
+        return name.replace('_', '-').replace('-', ' ').strip().title()
 
-    # Check for paragraph after # title (not a list, not a heading)
-    lines = content.split('\n')
-    title_idx = -1
-    for i, line in enumerate(lines):
-        if line.startswith('# ') and not line.startswith('## '):
-            title_idx = i
-            break
+    def iter_body_lines(body_text: str):
+        return body_text.splitlines()
 
-    if title_idx >= 0:
-        # Check next non-empty lines
-        for i in range(title_idx + 1, min(title_idx + 10, len(lines))):
-            line = lines[i].strip()
+    def find_markdown_h1_index(body_text: str) -> int:
+        in_code = False
+        for idx, raw in enumerate(iter_body_lines(body_text)):
+            if re.match(r'^\s*(```|~~~)', raw):
+                in_code = not in_code
+                continue
+            if in_code:
+                continue
+            if re.match(r'^#\s+\S', raw) and not raw.startswith('## '):
+                return idx
+        return -1
+
+    def find_purpose_paragraph_after_h1(body_text: str, h1_idx: int, max_scan: int = 60) -> str:
+        lines = iter_body_lines(body_text)
+        in_code = False
+        paragraph = []
+        scan_end = min(len(lines), h1_idx + 1 + max_scan)
+
+        for raw in lines[h1_idx + 1:scan_end]:
+            if re.match(r'^\s*(```|~~~)', raw):
+                in_code = not in_code
+                continue
+            if in_code:
+                continue
+
+            line = raw.strip()
             if not line:
+                if paragraph:
+                    break
                 continue
             if line.startswith('#'):
-                # Hit a heading, no purpose statement yet
                 break
-            if line.startswith('-') or line.startswith('*') or line.startswith('1.'):
-                # It's a list, not a purpose
-                break
-            # Found a paragraph - assume it's purpose
-            if len(line) > 30:
-                has_purpose = True
-                break
+            if line.startswith(('-', '*', '+')) or re.match(r'^\d+\.\s', line):
+                if paragraph:
+                    break
+                continue
+            paragraph.append(line)
 
-    if has_purpose:
+        return ' '.join(paragraph).strip()
+
+    frontmatter, body = extract_frontmatter_and_body(content)
+    if not body:
         return content, changes
 
-    # Generate purpose statement
-    name_readable = skill_name.replace('-', ' ').replace('_', ' ').title()
+    h1_idx = find_markdown_h1_index(body)
 
-    purpose = f"This skill provides automated assistance for {name_readable.lower()} tasks."
+    # Generate a conservative, single-sentence purpose (matches validator constraints)
+    purpose = f"This skill provides automated assistance for {skill_name.replace('-', ' ').strip()} tasks."
 
-    # Insert after ## Overview if exists, else after title
-    if '## Overview' in content:
-        # Insert after ## Overview heading
-        pattern = r'(## Overview\s*\n)'
-        replacement = r'\1\n' + purpose + '\n'
-        new_content = re.sub(pattern, replacement, content, count=1)
-        if new_content != content:
-            changes.append("Added purpose statement after ## Overview")
-            return new_content, changes
-    elif title_idx >= 0:
-        # Insert after title
-        lines.insert(title_idx + 1, '\n' + purpose + '\n')
-        new_content = '\n'.join(lines)
-        changes.append("Added purpose statement after title")
+    if h1_idx == -1:
+        title = build_title_from_name(skill_name)
+        new_body = f"# {title}\n\n{purpose}\n\n{body.lstrip()}"
+        if frontmatter:
+            new_content = f"---{frontmatter}---\n{new_body}"
+        else:
+            new_content = new_body
+        changes.append("Inserted missing H1 title + purpose near top")
         return new_content, changes
 
-    return content, changes
+    # H1 exists; ensure purpose paragraph exists right after it
+    existing_purpose = find_purpose_paragraph_after_h1(body, h1_idx)
+    if existing_purpose:
+        return content, changes
+
+    body_lines = iter_body_lines(body)
+    insert_at = h1_idx + 1
+    while insert_at < len(body_lines) and not body_lines[insert_at].strip():
+        insert_at += 1
+    body_lines.insert(insert_at, purpose)
+    body_lines.insert(insert_at + 1, "")
+    new_body = "\n".join(body_lines)
+
+    if frontmatter:
+        new_content = f"---{frontmatter}---\n{new_body}"
+    else:
+        new_content = new_body
+
+    changes.append("Inserted missing purpose paragraph after existing H1 title")
+    return new_content, changes
 
 
 def process_file(filepath: Path, dry_run: bool = False) -> dict:

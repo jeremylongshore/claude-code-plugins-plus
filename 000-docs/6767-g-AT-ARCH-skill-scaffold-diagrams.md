@@ -258,7 +258,7 @@ skills/my-skill/
 
 ### 3.1 Skill Scaffold Anatomy
 
-**See diagram**: [6767-g-diagram-1-skill-scaffold.mmd](6767-g-diagram-1-skill-scaffold.mmd) ([PNG version](6767-g-diagram-1-skill-scaffold.png))
+**See diagram**: [6767-g-AT-DIAG-skill-scaffold-1.mmd](6767-g-AT-DIAG-skill-scaffold-1.mmd) ([PNG version](6767-g-AT-DIAG-skill-scaffold-1.png))
 
 **Diagram Node → Validator Mapping**:
 
@@ -274,7 +274,7 @@ skills/my-skill/
 
 ### 3.2 Discovery → Activation State Machine (Progressive Disclosure)
 
-**See diagram**: [6767-g-diagram-2-discovery-activation.mmd](6767-g-diagram-2-discovery-activation.mmd) ([PNG version](6767-g-diagram-2-discovery-activation.png))
+**See diagram**: [6767-g-AT-DIAG-discovery-activation-2.mmd](6767-g-AT-DIAG-discovery-activation-2.mmd) ([PNG version](6767-g-AT-DIAG-discovery-activation-2.png))
 
 **Diagram State → Validator Mapping**:
 
@@ -289,7 +289,7 @@ skills/my-skill/
 
 ### 3.3 Read → Process → Write Workflow Diagram
 
-**See diagram**: [6767-g-diagram-3-read-process-write.mmd](6767-g-diagram-3-read-process-write.mmd) ([PNG version](6767-g-diagram-3-read-process-write.png))
+**See diagram**: [6767-g-AT-DIAG-read-process-write-3.mmd](6767-g-AT-DIAG-read-process-write-3.mmd) ([PNG version](6767-g-AT-DIAG-read-process-write-3.png))
 
 **Diagram Step → Validator Mapping**:
 
@@ -304,7 +304,7 @@ skills/my-skill/
 
 ### 3.4 Security Boundary Diagram (Redact/Encrypt Before Durable Store)
 
-**See diagram**: [6767-g-diagram-4-security-boundary.mmd](6767-g-diagram-4-security-boundary.mmd) ([PNG version](6767-g-diagram-4-security-boundary.png))
+**See diagram**: [6767-g-AT-DIAG-security-boundary-4.mmd](6767-g-AT-DIAG-security-boundary-4.mmd) ([PNG version](6767-g-AT-DIAG-security-boundary-4.png))
 
 **Diagram Step → Validator Mapping (Security Focus)**:
 

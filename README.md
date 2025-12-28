@@ -1,12 +1,12 @@
 # Claude Code Skills & Plugins Hub
 
-[![Version](https://img.shields.io/badge/version-4.4.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.4.0-brightgreen)](000-docs/247-OD-CHNG-changelog.md)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-239%20Skills-orange?logo=sparkles)](CHANGELOG.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-239%20Skills-orange?logo=sparkles)](000-docs/247-OD-CHNG-changelog.md)
 [![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
 [![Tool Permissions](https://img.shields.io/badge/Tool%20Permissions-Secured-blueviolet?logo=shield)](tutorials/skills/02-skill-anatomy.ipynb)
-[![Interactive Tutorials](https://img.shields.io/badge/Tutorials-11%20Notebooks-yellow?logo=jupyter)](tutorials/README.md)
+[![Interactive Tutorials](https://img.shields.io/badge/Tutorials-11%20Notebooks-yellow?logo=jupyter)](000-docs/185-MS-INDX-tutorials.md)
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![Powered by Anthropic](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-5436DA?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://www.anthropic.com/)
@@ -34,9 +34,9 @@
 - [**Orchestration Pattern** (60 min)](workspace/lab/ORCHESTRATION-PATTERN.md) ⭐
 
 **Interactive Tutorials** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
-- [Skills Tutorials (5 notebooks)](tutorials/README.md#skills-tutorials-5-notebooks)
-- [Plugins Tutorials (4 notebooks)](tutorials/README.md#plugins-tutorials-4-notebooks)
-- [Orchestration Tutorials (2 notebooks)](tutorials/README.md#orchestration-tutorials-2-notebooks)
+- [Skills Tutorials (5 notebooks)](000-docs/185-MS-INDX-tutorials.md#skills-tutorials-5-notebooks)
+- [Plugins Tutorials (4 notebooks)](000-docs/185-MS-INDX-tutorials.md#plugins-tutorials-4-notebooks)
+- [Orchestration Tutorials (2 notebooks)](000-docs/185-MS-INDX-tutorials.md#orchestration-tutorials-2-notebooks)
 
 </td>
 <td width="50%">
@@ -142,7 +142,7 @@ ccpi validate ./my-plugin
 - **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with zero-config markdown formatting and comprehensive documentation ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
 - **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported mobile horizontal scrolling bug, improving website UX ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
 
-**Want to contribute?** See [CONTRIBUTING.md](./CONTRIBUTING.md) or reach out to **jeremy@intentsolutions.io**
+**Want to contribute?** See [000-docs/007-DR-GUID-contributing.md](./000-docs/007-DR-GUID-contributing.md) or reach out to **jeremy@intentsolutions.io**
 
 ---
 
@@ -205,11 +205,11 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
   
   | Document | Purpose |
   |----------|---------|
-  | **[User Security Guide](./docs/USER_SECURITY_GUIDE.md)** | 🛡️ How to safely evaluate and install plugins |
-  | **[Code of Conduct](./CODE_OF_CONDUCT.md)** | Community standards and reporting |
-  | **[SECURITY.md](./SECURITY.md)** | Security policy, threat model, vulnerability reporting |
-  | **[CHANGELOG.md](./CHANGELOG.md)** | Release history & version updates |
-  | **[CONTRIBUTING.md](./CONTRIBUTING.md)** | How to submit plugins |
+  | **[User Security Guide](./000-docs/071-DR-GUID-user-security.md)** | 🛡️ How to safely evaluate and install plugins |
+  | **[Code of Conduct](./000-docs/006-BL-POLI-code-of-conduct.md)** | Community standards and reporting |
+  | **[000-docs/008-TQ-SECU-security.md](./000-docs/008-TQ-SECU-security.md)** | Security policy, threat model, vulnerability reporting |
+  | **[000-docs/247-OD-CHNG-changelog.md](./000-docs/247-OD-CHNG-changelog.md)** | Release history & version updates |
+  | **[000-docs/007-DR-GUID-contributing.md](./000-docs/007-DR-GUID-contributing.md)** | How to submit plugins |
   | **[Learning Paths](#-learning-paths)** | Structured guides from beginner to expert |
 
 </details>
@@ -451,18 +451,18 @@ ccpi validate ./my-awesome-plugin
 - [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
 
 ### Production Playbooks
-- [Production Playbooks Index](playbooks/README.md) - 11 comprehensive guides (~53,500 words)
-- [Advanced Tool Use](playbooks/11-advanced-tool-use.md) - Dynamic discovery & programmatic orchestration ⭐ NEW
-- [Multi-Agent Rate Limits](playbooks/01-multi-agent-rate-limits.md) - Prevent API throttling
-- [Cost Caps & Budget Management](playbooks/02-cost-caps.md) - Control AI spending
-- [MCP Server Reliability](playbooks/03-mcp-reliability.md) - Self-healing MCP servers
-- [Ollama Migration Guide](playbooks/04-ollama-migration.md) - Switch to self-hosted LLMs
-- [Incident Debugging](playbooks/05-incident-debugging.md) - SEV-1/2/3/4 response protocols
-- [Self-Hosted Stack Setup](playbooks/06-self-hosted-stack.md) - Full infrastructure deployment
-- [Compliance & Audit](playbooks/07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
-- [Team Presets & Workflows](playbooks/08-team-presets.md) - Team standardization
-- [Cost Attribution System](playbooks/09-cost-attribution.md) - Multi-dimensional cost tracking
-- [Progressive Enhancement](playbooks/10-progressive-enhancement.md) - Safe feature rollout
+- [Production Playbooks Index](000-docs/206-DR-SOPS-readme.md) - 11 comprehensive guides (~53,500 words)
+- [Advanced Tool Use](000-docs/207-DR-SOPS-11-advanced-tool-use.md) - Dynamic discovery & programmatic orchestration ⭐ NEW
+- [Multi-Agent Rate Limits](000-docs/204-DR-SOPS-01-multi-agent-rate.md) - Prevent API throttling
+- [Cost Caps & Budget Management](000-docs/196-DR-SOPS-02-cost-caps.md) - Control AI spending
+- [MCP Server Reliability](000-docs/198-DR-SOPS-03-mcp-reliability.md) - Self-healing MCP servers
+- [Ollama Migration Guide](000-docs/199-DR-SOPS-04-ollama-migration.md) - Switch to self-hosted LLMs
+- [Incident Debugging](000-docs/203-DR-SOPS-05-incident-debugging.md) - SEV-1/2/3/4 response protocols
+- [Self-Hosted Stack Setup](000-docs/202-DR-SOPS-06-self-hosted-stack.md) - Full infrastructure deployment
+- [Compliance & Audit](000-docs/200-DR-SOPS-07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
+- [Team Presets & Workflows](000-docs/197-DR-SOPS-08-team-presets.md) - Team standardization
+- [Cost Attribution System](000-docs/201-DR-SOPS-09-cost-attribution.md) - Multi-dimensional cost tracking
+- [Progressive Enhancement](000-docs/205-DR-SOPS-10-progressive-enhancement.md) - Safe feature rollout
 
 ---
 
@@ -478,13 +478,13 @@ We welcome community plugin submissions! This ecosystem thrives on shared knowle
 4. **Run** `pnpm run sync-marketplace` (or `npm run sync-marketplace`) to regenerate `.claude-plugin/marketplace.json`
 5. **Submit** a pull request using our plugin submission template
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+See [000-docs/007-DR-GUID-contributing.md](000-docs/007-DR-GUID-contributing.md) for detailed guidelines.
 
 ### Plugin Requirements
 
 - Valid `.claude-plugin/plugin.json`
 - Comprehensive README.md with examples
-- LICENSE file (MIT or Apache-2.0 recommended)
+- 000-docs/001-BL-LICN-license.txt file (MIT or Apache-2.0 recommended)
 - Tested locally and working
 - No hardcoded secrets or credentials
 - All scripts executable (`chmod +x`)
@@ -582,7 +582,7 @@ To be **THE definitive resource** for Claude Code plugins by:
 
 ## License
 
-MIT License - See [LICENSE](LICENSE) file for details.
+MIT License - See [000-docs/001-BL-LICN-license.txt](000-docs/001-BL-LICN-license.txt) file for details.
 
 ---
 

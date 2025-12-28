@@ -11,6 +11,8 @@ license: MIT
 
 
 
+This skill provides automated assistance for plugin creator tasks.
+
 ## Overview
 
 This skill provides automated assistance for the described functionality.
@@ -19,6 +21,15 @@ This skill provides automated assistance for the described functionality.
 
 - Appropriate file access permissions
 - Required dependencies installed
+
+## Instructions
+
+1. Confirm the desired plugin `name` (kebab-case), category, and what the plugin contains (commands/agents/skills/hooks/mcp).
+2. Scaffold the plugin directory under `plugins/<category>/<plugin-name>/` with required files and minimal working examples.
+3. Populate `.claude-plugin/plugin.json` and the plugin `README.md` with accurate metadata and usage.
+4. Add the plugin entry to `.claude-plugin/marketplace.extended.json` and regenerate the catalog (e.g., `npm run sync-marketplace`).
+5. Run repo validators (frontmatter/schema, catalogs, basic lint/test if applicable) and fix failures.
+6. Report a concise summary with paths created/changed and next steps.
 
 ## Error Handling
 
@@ -190,7 +201,7 @@ After creation:
 
 ## Output
 
-I provide:
+I provide a deterministic scaffold summary (what was created/changed) plus the exact follow-up commands to run to validate and commit the new plugin.
 ```
 ✅ Created plugin: plugin-name
 📁 Location: plugins/category/plugin-name/

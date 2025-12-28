@@ -32,6 +32,12 @@ Example usage patterns will be demonstrated in context.
 
 ## Instructions
 
+1. Analyze current formatting (`prettier --check`) and identify files to update.
+2. Configure formatting rules (`.prettierrc`, `.editorconfig`) for the project.
+3. Apply formatting (`prettier --write`) to the target files/directories.
+4. Add ignore patterns (`.prettierignore`) for generated/vendor outputs.
+5. Optionally enforce formatting via git hooks (husky/lint-staged).
+
 ### 1. Analyze Current Formatting
 
 First, check the current formatting state of files:

@@ -157,7 +157,7 @@ sugar:
 
 ## License
 
-MIT License - see [LICENSE](https://github.com/cdnsteve/sugar/blob/main/LICENSE)
+MIT License - see [LICENSE](https://github.com/cdnsteve/sugar/blob/main/000-docs/001-BL-LICN-license.txt)
 
 ---
 

@@ -7,6 +7,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Vertex Engine Inspector
+
+This skill provides automated assistance for vertex engine inspector tasks.
+
 ## What This Skill Does
 
 Expert inspector for the Vertex AI Agent Engine managed runtime. Performs comprehensive validation of deployed agents including runtime configuration, security posture, performance settings, A2A protocol compliance, and production readiness scoring.

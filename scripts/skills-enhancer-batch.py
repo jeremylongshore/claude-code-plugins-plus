@@ -359,13 +359,13 @@ Metadata:
 
 Create a comprehensive SKILL.md file following Anthropic's standards:
 
-## Requirements:
-1. **Frontmatter** (YAML):
-   - name: {plugin['name'].lower().replace(' ', '-')}  # hyphen-case
-   - description: Multi-line with trigger phrases
-   - license: MIT
-   - allowed-tools: [appropriate tools]
-   - metadata: author, version, category
+	## Requirements:
+	1. **Frontmatter** (YAML):
+	   - name: {plugin['name'].lower().replace(' ', '-')}  # hyphen-case
+	   - description: Multi-line with trigger phrases
+	   - license: MIT
+	   - allowed-tools: "Read, Grep, Glob, Edit, Write, Bash(git:*)"  # CSV string
+	   - metadata: author, version, category
 
 2. **Content Structure**:
    - Overview (2-3 sentences)

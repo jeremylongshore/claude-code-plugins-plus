@@ -41,6 +41,23 @@ const pluginsCollection = defineCollection({
   })
 });
 
+const playbooksCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    category: z.string(),
+    wordCount: z.number().int().nonnegative().optional(),
+    readTime: z.number().int().nonnegative().optional(),
+    featured: z.boolean().optional().default(false),
+    order: z.number().int().nonnegative().optional(),
+    tags: z.array(z.string()).optional().default([]),
+    prerequisites: z.array(z.string()).optional().default([]),
+    relatedPlaybooks: z.array(z.string()).optional().default([])
+  })
+});
+
 export const collections = {
-  'plugins': pluginsCollection
+  'plugins': pluginsCollection,
+  'playbooks': playbooksCollection
 };

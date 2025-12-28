@@ -1,0 +1,216 @@
+# OpenAPI Specification for Example API
+
+openapi: 3.0.0
+info:
+  title: Example API
+  version: 1.0.0
+  description: A sample API for demonstration purposes.
+  termsOfService: REPLACE_ME # Add your terms of service URL here
+  contact:
+    name: API Support
+    url: REPLACE_ME # Add your support URL here
+    email: support@example.com
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/000-docs/001-BL-LICN-license.txt-2.0.html
+
+servers:
+  - url: https://api.example.com/v1
+    description: Production server
+
+paths:
+  /users:
+    get:
+      summary: Get all users
+      description: Retrieves a list of all users.
+      operationId: getUsers
+      tags:
+        - users
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal server error
+    post:
+      summary: Create a new user
+      description: Creates a new user in the system.
+      operationId: createUser
+      tags:
+        - users
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '500':
+          description: Internal server error
+
+  /users/{userId}:
+    get:
+      summary: Get user by ID
+      description: Retrieves a user by their ID.
+      operationId: getUserById
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to retrieve.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    put:
+      summary: Update user by ID
+      description: Updates an existing user.
+      operationId: updateUser
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to update.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdate'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+    delete:
+      summary: Delete user by ID
+      description: Deletes a user by their ID.
+      operationId: deleteUser
+      tags:
+        - users
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to delete.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: User deleted successfully (No Content)
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: Unique identifier for the user
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          format: email
+          description: User's email address
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+      required:
+        - id
+        - username
+        - email
+
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          format: email
+          description: User's email address
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+      required:
+        - username
+        - email
+
+    UserUpdate:
+      type: object
+      properties:
+        username:
+          type: string
+          description: User's username
+        email:
+          type: string
+          format: email
+          description: User's email address
+        firstName:
+          type: string
+          description: User's first name
+        lastName:
+          type: string
+          description: User's last name
+
+  securitySchemes:
+    bearerAuth:            # Define security scheme name
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []       # Apply the security scheme to all endpoints (globally)

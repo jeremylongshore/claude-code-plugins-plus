@@ -120,10 +120,17 @@ class SkillProcessor:
 
         # Ensure allowed-tools is present and valid
         if 'allowed-tools' not in cleaned:
-            cleaned['allowed-tools'] = ['Read', 'Write', 'Edit', 'Grep', 'Bash']
+            cleaned['allowed-tools'] = 'Read, Write, Edit, Grep, Glob'
+        elif isinstance(cleaned['allowed-tools'], list):
+            # Convert YAML array to CSV string (Claude Code standard)
+            tools = [str(t).strip() for t in cleaned['allowed-tools'] if str(t).strip()]
+            cleaned['allowed-tools'] = ', '.join(tools)
         elif isinstance(cleaned['allowed-tools'], str):
-            # Convert comma-separated string to list
-            cleaned['allowed-tools'] = [t.strip() for t in cleaned['allowed-tools'].split(',')]
+            # Normalize CSV spacing
+            tools = [t.strip() for t in cleaned['allowed-tools'].split(',') if t.strip()]
+            cleaned['allowed-tools'] = ', '.join(tools)
+        else:
+            cleaned['allowed-tools'] = 'Read, Write, Edit, Grep, Glob'
 
         # Add default license if missing
         if 'license' not in cleaned:
@@ -321,7 +328,7 @@ class SkillProcessor:
         report.append("SPEC-COMPLIANT FIELDS:")
         report.append("  - name: Skill identifier")
         report.append("  - description: 50-250 chars, action verb start")
-        report.append("  - allowed-tools: List of permitted tools")
+        report.append("  - allowed-tools: CSV string of permitted tools")
         report.append("  - license: MIT (default)")
         report.append("="*70)
 

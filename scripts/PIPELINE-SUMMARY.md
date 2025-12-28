@@ -315,7 +315,7 @@ $ node scripts/update-readme-badges.mjs --dry-run
 DRY RUN - Would update badges:
 
 Current badges (16 lines):
-[![Version](https://img.shields.io/badge/version-4.4.0-brightgreen)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-4.4.0-brightgreen)](../000-docs/247-OD-CHNG-changelog.md)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](...)
 ...
 

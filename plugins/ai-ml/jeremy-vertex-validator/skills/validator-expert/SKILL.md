@@ -7,6 +7,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Validator Expert
+
+This skill provides automated assistance for validator expert tasks.
+
 ## What This Skill Does
 
 Production validator for Vertex AI deployments. Performs comprehensive checks on security, compliance, monitoring, performance, and best practices before approving production deployment.

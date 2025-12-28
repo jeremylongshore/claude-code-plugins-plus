@@ -269,7 +269,7 @@ Would you like me to adjust any assumptions or add additional analysis?
 
 **Response:**
 ```
-No problem! I can build a DCF model with industry-average assumptions, and you can adjust later.
+No problem! Build a DCF model with industry-average assumptions, then adjust later.
 
 What company are you valuing?
 
@@ -283,7 +283,7 @@ I'll use industry-standard assumptions for a large-cap tech company:
 - WACC: 9%
 - Terminal growth: 2.5%
 
-I'll build the model with these defaults, and you can easily adjust the assumptions in the "Assumptions" sheet.
+Build the model with these defaults, then adjust the assumptions in the "Assumptions" sheet.
 ```
 
 ### Request: "Explain the DCF model you built"
@@ -371,7 +371,7 @@ This Skill creates a simplified DCF model suitable for:
 - Academic exercises
 - Quick "back of envelope" valuations
 
-For detailed investment committee presentations or official fairness opinions, you should:
+For detailed investment committee presentations or official fairness opinions:
 - Add detailed debt schedules
 - Include multiple scenarios (base, bull, bear)
 - Add more granular operating assumptions

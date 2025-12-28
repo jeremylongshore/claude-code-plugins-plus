@@ -149,7 +149,7 @@ See [`docs/USE_CASES.md`](docs/USE_CASES.md) for 7 detailed real-world scenarios
 - **[Use Cases](docs/USE_CASES.md)** - 7 real-world scenarios with before/after
 
 ### Reference
-- **[Troubleshooting](docs/TROUBLESHOOTING.md)** - Solutions to 20 common problems
+- **[Troubleshooting](docs/000-docs/157-DR-FAQS-troubleshooting.md)** - Solutions to 20 common problems
 - **Plugin Reference** - Complete command documentation (see each plugin's help)
 
 ### Support
@@ -270,7 +270,7 @@ The pack is tech-agnostic for most commands. It detects your stack and adapts.
 ### What if I have issues?
 
 **Support channels:**
-1. **Documentation:** Check `docs/TROUBLESHOOTING.md` (covers 20 common issues)
+1. **Documentation:** Check `docs/000-docs/157-DR-FAQS-troubleshooting.md` (covers 20 common issues)
 2. **Email:** mandy@intentsolutions.io (response within 24 hours)
 3. **Refund:** 30-day money-back guarantee
 
@@ -288,7 +288,7 @@ Follow [`docs/QUICK_START.md`](docs/QUICK_START.md) - takes 5 minutes.
 Read [`docs/USE_CASES.md`](docs/USE_CASES.md) to see how others use it.
 
 ### 4. Get Help If Needed
-Check [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md) or email support.
+Check [`docs/000-docs/157-DR-FAQS-troubleshooting.md`](docs/000-docs/157-DR-FAQS-troubleshooting.md) or email support.
 
 ---
 
@@ -332,4 +332,4 @@ Start with the [Quick Start Guide](docs/QUICK_START.md) →
 
 **Need help?** Email mandy@intentsolutions.io
 
-**Have questions?** See [Troubleshooting](docs/TROUBLESHOOTING.md) →
+**Have questions?** See [Troubleshooting](docs/000-docs/157-DR-FAQS-troubleshooting.md) →

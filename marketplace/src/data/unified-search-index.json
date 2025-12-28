@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2025-12-27T06:05:46.000Z",
+    "generated": "2025-12-28T22:22:54.685Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 258,
-    "totalSkills": 239,
-    "totalItems": 497,
+    "totalPlugins": 265,
+    "totalSkills": 245,
+    "totalItems": 510,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -20,11 +20,14 @@
       "database",
       "debugging",
       "design",
+      "development",
       "devops",
       "example",
       "examples",
       "finance",
       "fullstack",
+      "jeremy-google-adk",
+      "jeremy-vertex-ai",
       "packages",
       "performance",
       "productivity",
@@ -33,42 +36,51 @@
       "testing"
     ],
     "skillTools": [
-      "Bash(analysis:*)",
+      "\"Read",
+      "Bash(analysis:*)\"",
       "Bash(artillery:*)",
-      "Bash(audit:*)",
+      "Bash(audit:*)\"",
       "Bash(awk:*)",
       "Bash(ci:*)",
       "Bash(curl:*)",
+      "Bash(date:*)\"",
       "Bash(general:*)",
+      "Bash(gh:*)",
+      "Bash(git:*)",
       "Bash(grep:*)",
       "Bash(iostat:*)",
       "Bash(jmeter:*)",
       "Bash(k6:*)",
       "Bash(lighthouse:*)",
       "Bash(logs:*)",
-      "Bash(memory:*)",
+      "Bash(memory:*)\"",
       "Bash(metrics:*)",
+      "Bash(metrics:*)\"",
       "Bash(monitoring:*)",
+      "Bash(monitoring:*)\"",
       "Bash(npm:*)",
       "Bash(performance:*)",
+      "Bash(performance:*)\"",
       "Bash(ping:*)",
       "Bash(profiling:*)",
       "Bash(prometheus:*)",
       "Bash(ps:*)",
-      "Bash(rum:*)",
+      "Bash(python:*)",
+      "Bash(rum:*)\"",
       "Bash(scan:*)",
       "Bash(security:*)",
-      "Bash(system:*)",
-      "Bash(testing:*)",
+      "Bash(system:*)\"",
+      "Bash(testing:*)\"",
       "Bash(top:*)",
       "Bash(traceroute:*)",
-      "Bash(util:*)",
+      "Bash(util:*)\"",
       "Bash(vmstat:*)",
       "Bash(webpack:*)",
       "Edit",
       "Glob",
+      "Glob\"",
       "Grep",
-      "Read",
+      "Grep\"",
       "WebFetch",
       "WebSearch",
       "Write"
@@ -96,28 +108,6 @@
       ],
       "skillCount": 1,
       "searchText": "content consistency validator read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across any html-based website (wordpress, hugo, next.js, react, vue, static html, etc.), github repositories, and local documentation. detects mixed messaging without making changes. productivity "
-    },
-    {
-      "type": "plugin",
-      "id": "taskwarrior-integration",
-      "slug": "taskwarrior-integration",
-      "name": "001-jeremy-taskwarrior-integration",
-      "displayName": "taskwarrior integration",
-      "description": "Enforces complete Taskwarrior integration protocol for ALL coding tasks with automatic task lifecycle management and time tracking via Timewarrior",
-      "category": "productivity",
-      "tags": [],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 1,
-      "searchText": "taskwarrior integration enforces complete taskwarrior integration protocol for all coding tasks with automatic task lifecycle management and time tracking via timewarrior productivity "
     },
     {
       "type": "plugin",
@@ -235,11 +225,12 @@
       "slug": "agent-context-manager",
       "name": "agent-context-manager",
       "displayName": "agent context manager",
-      "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions",
+      "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions alongside CLAUDE.md. Enables specialized agent behaviors without manual intervention.",
       "category": "productivity",
       "tags": [],
       "author": {
-        "name": "Jeremy Longshore"
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
       },
       "version": "1.0.0",
       "isFeatured": false,
@@ -247,8 +238,8 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
-      "searchText": "agent context manager automatically detects and loads agents.md files to provide agent-specific instructions productivity "
+      "skillCount": 1,
+      "searchText": "agent context manager automatically detects and loads agents.md files to provide agent-specific instructions alongside claude.md. enables specialized agent behaviors without manual intervention. productivity "
     },
     {
       "type": "plugin",
@@ -4560,28 +4551,6 @@
     },
     {
       "type": "plugin",
-      "id": "skills-powerkit",
-      "slug": "skills-powerkit",
-      "name": "skills-powerkit",
-      "displayName": "skills powerkit",
-      "description": "Ultimate plugin management toolkit with 5 Agent Skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace",
-      "category": "example",
-      "tags": [],
-      "author": {
-        "name": "Claude Code Plugins",
-        "email": "[email protected]"
-      },
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 0,
-      "searchText": "skills powerkit ultimate plugin management toolkit with 5 agent skills - automates creating, validating, auditing, and managing plugins in the claude-code-plugins marketplace example "
-    },
-    {
-      "type": "plugin",
       "id": "sla-sli-tracker",
       "slug": "sla-sli-tracker",
       "name": "sla-sli-tracker",
@@ -5585,28 +5554,6 @@
     },
     {
       "type": "plugin",
-      "id": "agent-context-manager",
-      "slug": "agent-context-manager",
-      "name": "agent-context-manager",
-      "displayName": "agent context manager",
-      "description": "Automatically detects and loads AGENTS.md files to provide agent-specific instructions alongside CLAUDE.md. Enables specialized agent behaviors without manual intervention.",
-      "category": "productivity",
-      "tags": [],
-      "author": {
-        "name": "Jeremy Longshore",
-        "email": "jeremy@intentsolutions.io"
-      },
-      "version": "1.0.0",
-      "isFeatured": false,
-      "isNew": true,
-      "badges": [
-        "new"
-      ],
-      "skillCount": 1,
-      "searchText": "agent context manager automatically detects and loads agents.md files to provide agent-specific instructions alongside claude.md. enables specialized agent behaviors without manual intervention. productivity "
-    },
-    {
-      "type": "plugin",
       "id": "prettier-markdown-hook",
       "slug": "prettier-markdown-hook",
       "name": "prettier-markdown-hook",
@@ -5693,6 +5640,230 @@
       "searchText": "geepers agents multi-agent orchestration system with 51 specialized agents for development workflows, code quality, deployment, research, games, and more. includes orchestrators for checkpoint, deploy, quality, fullstack, research, games, corpus, web, and python workflows. ai-ml "
     },
     {
+      "type": "plugin",
+      "id": "jeremy-adk-software-engineer",
+      "slug": "jeremy-adk-software-engineer",
+      "name": "jeremy-adk-software-engineer",
+      "displayName": "jeremy adk software engineer",
+      "description": "ADK software engineer for creating production-ready agents (placeholder - to be implemented)",
+      "category": "ai-ml",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "jeremy adk software engineer adk software engineer for creating production-ready agents (placeholder - to be implemented) ai-ml "
+    },
+    {
+      "type": "plugin",
+      "id": "jeremy-firebase",
+      "slug": "jeremy-firebase",
+      "name": "jeremy-firebase",
+      "displayName": "jeremy firebase",
+      "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
+      "category": "community",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "jeremy firebase firebase platform expert for firestore, auth, functions, and vertex ai integration community "
+    },
+    {
+      "type": "plugin",
+      "id": "jeremy-google-adk",
+      "slug": "jeremy-google-adk",
+      "name": "jeremy-google-adk",
+      "displayName": "jeremy google adk",
+      "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration",
+      "category": "ai-ml",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@claudecodeplugins.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "jeremy google adk google agent development kit (adk) sdk starter kit for building claude-powered ai agents with react patterns, multi-agent orchestration, and tool integration ai-ml "
+    },
+    {
+      "type": "plugin",
+      "id": "jeremy-plugin-tool",
+      "slug": "jeremy-plugin-tool",
+      "name": "jeremy-plugin-tool",
+      "displayName": "jeremy plugin tool",
+      "description": "Production-grade plugin creator with nixtla-validated quality standards. 4 Agent Skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace",
+      "category": "example",
+      "tags": [],
+      "author": {
+        "name": "Claude Code Plugins",
+        "email": "[email protected]"
+      },
+      "version": "2.0.0",
+      "isFeatured": true,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
+      "searchText": "jeremy plugin tool production-grade plugin creator with nixtla-validated quality standards. 4 agent skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace example "
+    },
+    {
+      "type": "plugin",
+      "id": "jeremy-vertex-ai",
+      "slug": "jeremy-vertex-ai",
+      "name": "jeremy-vertex-ai",
+      "displayName": "jeremy vertex ai",
+      "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud",
+      "category": "ai-ml",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@claudecodeplugins.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "jeremy vertex ai comprehensive vertex ai integration plugin for building generative ai agents with gemini, vertex ai studio, and production deployment on google cloud ai-ml "
+    },
+    {
+      "type": "plugin",
+      "id": "ollama-local-ai",
+      "slug": "ollama-local-ai",
+      "name": "ollama-local-ai",
+      "displayName": "ollama local ai",
+      "description": "Run AI models locally with Ollama - free alternative to OpenAI, Anthropic, and other paid LLM APIs. Zero-cost, privacy-first AI infrastructure.",
+      "category": "ai-ml",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "ollama local ai run ai models locally with ollama - free alternative to openai, anthropic, and other paid llm apis. zero-cost, privacy-first ai infrastructure. ai-ml "
+    },
+    {
+      "type": "plugin",
+      "id": "sprint",
+      "slug": "sprint",
+      "name": "sprint",
+      "displayName": "sprint",
+      "description": "Autonomous multi-agent development framework with spec-driven sprints. Write specs, run /sprint, and let coordinated agents (backend, frontend, QA, UI testing) handle implementation through self-iterating convergent loops.",
+      "category": "development",
+      "tags": [],
+      "author": {
+        "name": "Damien Laine",
+        "email": "damien.laine@gmail.com",
+        "url": "https://github.com/damienlaine"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 4,
+      "searchText": "sprint autonomous multi-agent development framework with spec-driven sprints. write specs, run /sprint, and let coordinated agents (backend, frontend, qa, ui testing) handle implementation through self-iterating convergent loops. development "
+    },
+    {
+      "type": "plugin",
+      "id": "vibe-guide",
+      "slug": "vibe-guide",
+      "name": "vibe-guide",
+      "displayName": "vibe guide",
+      "description": "Non-technical progress summaries for Claude Code work (hides diffs/log noise).",
+      "category": "productivity",
+      "tags": [],
+      "author": {
+        "name": "Intent Solutions",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 0,
+      "searchText": "vibe guide non-technical progress summaries for claude code work (hides diffs/log noise). productivity "
+    },
+    {
+      "type": "plugin",
+      "id": "wallet-security-auditor",
+      "slug": "wallet-security-auditor",
+      "name": "wallet-security-auditor",
+      "displayName": "wallet security auditor",
+      "description": "Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns.",
+      "category": "crypto",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wallet security auditor crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns. crypto "
+    },
+    {
+      "type": "plugin",
+      "id": "mattyp-changelog",
+      "slug": "mattyp-changelog",
+      "name": "mattyp-changelog",
+      "displayName": "mattyp changelog",
+      "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
+      "category": "automation",
+      "tags": [],
+      "author": {
+        "name": "Mattyp",
+        "email": "mattyp@claudecodeplugins.io",
+        "url": "https://claudecodeplugins.io"
+      },
+      "version": "0.1.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "mattyp changelog automates changelog generation from git history with config validation and quality scoring. use when publishing weekly updates, release notes, or pr summaries. trigger with /changelog-weekly, /changelog-custom, or /changelog-validate. automation "
+    },
+    {
       "type": "skill",
       "id": "000-jeremy-content-consistency-validator",
       "slug": "000-jeremy-content-consistency-validator",
@@ -5724,6 +5895,21 @@
     },
     {
       "type": "skill",
+      "id": "adk-agent-builder",
+      "slug": "adk-agent-builder",
+      "name": "adk-agent-builder",
+      "description": "Build production-ready AI agents using Google's Agent Development Kit with AI assistant integration, React patterns, multi-agent orchestration, and comprehensive tool libraries. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "category": "jeremy-google-adk",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "jeremy-google-adk",
+        "category": "jeremy-google-adk"
+      },
+      "searchText": "adk-agent-builder build production-ready ai agents using google's agent development kit with ai assistant integration, react patterns, multi-agent orchestration, and comprehensive tool libraries. use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit jeremy-google-adk "
+    },
+    {
+      "type": "skill",
       "id": "adk-deployment-specialist",
       "slug": "adk-deployment-specialist",
       "name": "adk-deployment-specialist",
@@ -5736,6 +5922,21 @@
         "category": "ai-ml"
       },
       "searchText": "adk-deployment-specialist deploy and orchestrate vertex ai adk agents using a2a protocol. manages agentcard discovery, task submission, code execution sandbox, and memory bank. use when asked to \"deploy adk agent\" or \"orchestrate agents\". trigger with phrases like 'deploy', 'infrastructure', or 'ci/cd'. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+    },
+    {
+      "type": "skill",
+      "id": "adk-engineer",
+      "slug": "adk-engineer",
+      "name": "adk-engineer",
+      "description": "Software engineer specializing in creating production-ready ADK agents with best practices, code structure, testing, and deployment automation. Use when asked to \"build ADK agent\", \"create agent code\", or \"engineer ADK application\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "category": "ai-ml",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "jeremy-adk-software-engineer",
+        "category": "ai-ml"
+      },
+      "searchText": "adk-engineer software engineer specializing in creating production-ready adk agents with best practices, code structure, testing, and deployment automation. use when asked to \"build adk agent\", \"create agent code\", or \"engineer adk application\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
     },
     {
       "type": "skill",
@@ -5805,19 +6006,19 @@
       "description": "Aggregate and centralize performance metrics from applications, systems, databases, caches, and services. Use when consolidating monitoring data from multiple sources. Trigger with phrases like \"aggregate metrics\", \"centralize monitoring\", or \"collect performance data\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Bash(prometheus:*)",
         "Bash(metrics:*)",
         "Bash(monitoring:*)",
-        "Grep"
+        "Grep\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "metrics-aggregator",
         "category": "performance"
       },
-      "searchText": "aggregating-performance-metrics aggregate and centralize performance metrics from applications, systems, databases, caches, and services. use when consolidating monitoring data from multiple sources. trigger with phrases like \"aggregate metrics\", \"centralize monitoring\", or \"collect performance data\". performance read write bash(prometheus:*) bash(metrics:*) bash(monitoring:*) grep"
+      "searchText": "aggregating-performance-metrics aggregate and centralize performance metrics from applications, systems, databases, caches, and services. use when consolidating monitoring data from multiple sources. trigger with phrases like \"aggregate metrics\", \"centralize monitoring\", or \"collect performance data\". performance \"read write bash(prometheus:*) bash(metrics:*) bash(monitoring:*) grep\""
     },
     {
       "type": "skill",
@@ -5854,24 +6055,24 @@
       "id": "analyzing-dependencies",
       "slug": "analyzing-dependencies",
       "name": "analyzing-dependencies",
-      "description": "Check dependencies for known security vulnerabilities and outdated versions. Use when auditing third-party libraries. Trigger with 'check dependencies', 'scan for vulnerabilities', or 'audit packages'.",
+      "description": "Analyze dependencies for known security vulnerabilities and outdated versions. Use when auditing third-party libraries. Trigger with 'check dependencies', 'scan for vulnerabilities', or 'audit packages'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "dependency-checker",
         "category": "security"
       },
-      "searchText": "analyzing-dependencies check dependencies for known security vulnerabilities and outdated versions. use when auditing third-party libraries. trigger with 'check dependencies', 'scan for vulnerabilities', or 'audit packages'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "analyzing-dependencies analyze dependencies for known security vulnerabilities and outdated versions. use when auditing third-party libraries. trigger with 'check dependencies', 'scan for vulnerabilities', or 'audit packages'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -5896,19 +6097,19 @@
       "description": "Analyze application logs for performance insights and issue detection including slow requests, error patterns, and resource usage. Use when troubleshooting performance issues or debugging errors. Trigger with phrases like \"analyze logs\", \"find slow requests\", or \"detect error patterns\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Bash(logs:*)",
         "Bash(grep:*)",
         "Bash(awk:*)",
-        "Grep"
+        "Grep\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "log-analysis-tool",
         "category": "performance"
       },
-      "searchText": "analyzing-logs analyze application logs for performance insights and issue detection including slow requests, error patterns, and resource usage. use when troubleshooting performance issues or debugging errors. trigger with phrases like \"analyze logs\", \"find slow requests\", or \"detect error patterns\". performance read write bash(logs:*) bash(grep:*) bash(awk:*) grep"
+      "searchText": "analyzing-logs analyze application logs for performance insights and issue detection including slow requests, error patterns, and resource usage. use when troubleshooting performance issues or debugging errors. trigger with phrases like \"analyze logs\", \"find slow requests\", or \"detect error patterns\". performance \"read write bash(logs:*) bash(grep:*) bash(awk:*) grep\""
     },
     {
       "type": "skill",
@@ -5948,19 +6149,19 @@
       "description": "Analyze network latency and optimize request patterns for faster communication. Use when diagnosing slow network performance or optimizing API calls. Trigger with phrases like \"analyze network latency\", \"optimize API calls\", or \"reduce network delays\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Bash(curl:*)",
         "Bash(ping:*)",
         "Bash(traceroute:*)",
-        "Grep"
+        "Grep\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "network-latency-analyzer",
         "category": "performance"
       },
-      "searchText": "analyzing-network-latency analyze network latency and optimize request patterns for faster communication. use when diagnosing slow network performance or optimizing api calls. trigger with phrases like \"analyze network latency\", \"optimize api calls\", or \"reduce network delays\". performance read write bash(curl:*) bash(ping:*) bash(traceroute:*) grep"
+      "searchText": "analyzing-network-latency analyze network latency and optimize request patterns for faster communication. use when diagnosing slow network performance or optimizing api calls. trigger with phrases like \"analyze network latency\", \"optimize api calls\", or \"reduce network delays\". performance \"read write bash(curl:*) bash(ping:*) bash(traceroute:*) grep\""
     },
     {
       "type": "skill",
@@ -6045,18 +6246,18 @@
       "description": "Analyze and optimize system throughput including request handling, data processing, and resource utilization. Use when identifying capacity limits or evaluating scaling strategies. Trigger with phrases like \"analyze throughput\", \"optimize capacity\", or \"identify bottlenecks\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Bash(performance:*)",
         "Bash(monitoring:*)",
-        "Grep"
+        "Grep\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "throughput-analyzer",
         "category": "performance"
       },
-      "searchText": "analyzing-system-throughput analyze and optimize system throughput including request handling, data processing, and resource utilization. use when identifying capacity limits or evaluating scaling strategies. trigger with phrases like \"analyze throughput\", \"optimize capacity\", or \"identify bottlenecks\". performance read write bash(performance:*) bash(monitoring:*) grep"
+      "searchText": "analyzing-system-throughput analyze and optimize system throughput including request handling, data processing, and resource utilization. use when identifying capacity limits or evaluating scaling strategies. trigger with phrases like \"analyze throughput\", \"optimize capacity\", or \"identify bottlenecks\". performance \"read write bash(performance:*) bash(monitoring:*) grep\""
     },
     {
       "type": "skill",
@@ -6156,21 +6357,36 @@
       "description": "Audit access control implementations for security vulnerabilities and misconfigurations. Use when reviewing authentication and authorization. Trigger with 'audit access control', 'check permissions', or 'validate authorization'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "access-control-auditor",
         "category": "security"
       },
-      "searchText": "auditing-access-control audit access control implementations for security vulnerabilities and misconfigurations. use when reviewing authentication and authorization. trigger with 'audit access control', 'check permissions', or 'validate authorization'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "auditing-access-control audit access control implementations for security vulnerabilities and misconfigurations. use when reviewing authentication and authorization. trigger with 'audit access control', 'check permissions', or 'validate authorization'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
+    },
+    {
+      "type": "skill",
+      "id": "auditing-wallet-security",
+      "slug": "auditing-wallet-security",
+      "name": "auditing-wallet-security",
+      "description": "Review crypto wallet security including private key management and transaction signing. Use when auditing wallet security practices. Trigger with phrases like \"audit wallet\", \"check security\", or \"verify signatures\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:wallet-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "category": "crypto",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "wallet-security-auditor",
+        "category": "crypto"
+      },
+      "searchText": "auditing-wallet-security review crypto wallet security including private key management and transaction signing. use when auditing wallet security practices. trigger with phrases like \"audit wallet\", \"check security\", or \"verify signatures\". allowed-tools: read, write, edit, grep, glob, bash(crypto:wallet-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -6399,27 +6615,52 @@
     },
     {
       "type": "skill",
+      "id": "changelog-orchestrator",
+      "slug": "changelog-orchestrator",
+      "name": "changelog-orchestrator",
+      "description": "Draft changelog PRs by collecting GitHub/Slack/Git changes, formatting with templates, running quality gates, and preparing a branch/PR. Use when generating weekly/monthly release notes or when the user asks to create a changelog from recent merges. Trigger with \"changelog weekly\", \"generate release notes\", \"draft changelog\", \"create changelog PR\".",
+      "category": "automation",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob",
+        "Bash(git:*)",
+        "Bash(gh:*)",
+        "Bash(python:*)",
+        "Bash(date:*)\""
+      ],
+      "version": "\"0.1.0\"",
+      "parentPlugin": {
+        "name": "mattyp-changelog",
+        "category": "automation"
+      },
+      "searchText": "changelog-orchestrator draft changelog prs by collecting github/slack/git changes, formatting with templates, running quality gates, and preparing a branch/pr. use when generating weekly/monthly release notes or when the user asks to create a changelog from recent merges. trigger with \"changelog weekly\", \"generate release notes\", \"draft changelog\", \"create changelog pr\". automation \"read write edit grep glob bash(git:*) bash(gh:*) bash(python:*) bash(date:*)\""
+    },
+    {
+      "type": "skill",
       "id": "checking-hipaa-compliance",
       "slug": "checking-hipaa-compliance",
       "name": "checking-hipaa-compliance",
       "description": "Check HIPAA compliance for healthcare data security requirements. Use when auditing healthcare applications. Trigger with 'check HIPAA compliance', 'validate health data security', or 'audit PHI protection'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "hipaa-compliance-checker",
         "category": "security"
       },
-      "searchText": "checking-hipaa-compliance check hipaa compliance for healthcare data security requirements. use when auditing healthcare applications. trigger with 'check hipaa compliance', 'validate health data security', or 'audit phi protection'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "checking-hipaa-compliance check hipaa compliance for healthcare data security requirements. use when auditing healthcare applications. trigger with 'check hipaa compliance', 'validate health data security', or 'audit phi protection'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -6444,21 +6685,21 @@
       "description": "Check compliance with OWASP Top 10 security risks and best practices. Use when performing comprehensive security audits. Trigger with 'check OWASP compliance', 'audit web security', or 'validate OWASP'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "owasp-compliance-checker",
         "category": "security"
       },
-      "searchText": "checking-owasp-compliance check compliance with owasp top 10 security risks and best practices. use when performing comprehensive security audits. trigger with 'check owasp compliance', 'audit web security', or 'validate owasp'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "checking-owasp-compliance check compliance with owasp top 10 security risks and best practices. use when performing comprehensive security audits. trigger with 'check owasp compliance', 'audit web security', or 'validate owasp'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -6498,21 +6739,21 @@
       "description": "Collect comprehensive infrastructure performance metrics across compute, storage, network, containers, load balancers, and databases. Use when monitoring system performance or troubleshooting infrastructure issues. Trigger with phrases like \"collect infrastructure metrics\", \"monitor server performance\", or \"track system resources\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(metrics:*)",
         "Bash(monitoring:*)",
-        "Bash(system:*)"
+        "Bash(system:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "infrastructure-metrics-collector",
         "category": "performance"
       },
-      "searchText": "collecting-infrastructure-metrics collect comprehensive infrastructure performance metrics across compute, storage, network, containers, load balancers, and databases. use when monitoring system performance or troubleshooting infrastructure issues. trigger with phrases like \"collect infrastructure metrics\", \"monitor server performance\", or \"track system resources\". performance read write edit grep glob bash(metrics:*) bash(monitoring:*) bash(system:*)"
+      "searchText": "collecting-infrastructure-metrics collect comprehensive infrastructure performance metrics across compute, storage, network, containers, load balancers, and databases. use when monitoring system performance or troubleshooting infrastructure issues. trigger with phrases like \"collect infrastructure metrics\", \"monitor server performance\", or \"track system resources\". performance \"read write edit grep glob bash(metrics:*) bash(monitoring:*) bash(system:*)\""
     },
     {
       "type": "skill",
@@ -6792,20 +7033,20 @@
       "description": "Detect potential memory leaks and analyze memory usage patterns in code. Use when troubleshooting performance issues related to memory growth or identifying leak sources. Trigger with phrases like \"detect memory leaks\", \"analyze memory usage\", or \"find memory issues\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(profiling:*)",
-        "Bash(memory:*)"
+        "Bash(memory:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "memory-leak-detector",
         "category": "performance"
       },
-      "searchText": "detecting-memory-leaks detect potential memory leaks and analyze memory usage patterns in code. use when troubleshooting performance issues related to memory growth or identifying leak sources. trigger with phrases like \"detect memory leaks\", \"analyze memory usage\", or \"find memory issues\". performance read write edit grep glob bash(profiling:*) bash(memory:*)"
+      "searchText": "detecting-memory-leaks detect potential memory leaks and analyze memory usage patterns in code. use when troubleshooting performance issues related to memory growth or identifying leak sources. trigger with phrases like \"detect memory leaks\", \"analyze memory usage\", or \"find memory issues\". performance \"read write edit grep glob bash(profiling:*) bash(memory:*)\""
     },
     {
       "type": "skill",
@@ -6830,21 +7071,21 @@
       "description": "Automatically detect performance regressions in CI/CD pipelines by comparing metrics against baselines. Use when validating builds or analyzing performance trends. Trigger with phrases like \"detect performance regression\", \"compare performance metrics\", or \"analyze performance degradation\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(ci:*)",
         "Bash(metrics:*)",
-        "Bash(testing:*)"
+        "Bash(testing:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "performance-regression-detector",
         "category": "performance"
       },
-      "searchText": "detecting-performance-regressions automatically detect performance regressions in ci/cd pipelines by comparing metrics against baselines. use when validating builds or analyzing performance trends. trigger with phrases like \"detect performance regression\", \"compare performance metrics\", or \"analyze performance degradation\". performance read write edit grep glob bash(ci:*) bash(metrics:*) bash(testing:*)"
+      "searchText": "detecting-performance-regressions automatically detect performance regressions in ci/cd pipelines by comparing metrics against baselines. use when validating builds or analyzing performance trends. trigger with phrases like \"detect performance regression\", \"compare performance metrics\", or \"analyze performance degradation\". performance \"read write edit grep glob bash(ci:*) bash(metrics:*) bash(testing:*)\""
     },
     {
       "type": "skill",
@@ -6884,21 +7125,21 @@
       "description": "Validate encryption implementations and cryptographic practices. Use when reviewing data security measures. Trigger with 'check encryption', 'validate crypto', or 'review security keys'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "encryption-tool",
         "category": "security"
       },
-      "searchText": "encrypting-and-decrypting-data validate encryption implementations and cryptographic practices. use when reviewing data security measures. trigger with 'check encryption', 'validate crypto', or 'review security keys'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "encrypting-and-decrypting-data validate encryption implementations and cryptographic practices. use when reviewing data security measures. trigger with 'check encryption', 'validate crypto', or 'review security keys'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -7040,7 +7281,7 @@
       "id": "finding-arbitrage-opportunities",
       "slug": "finding-arbitrage-opportunities",
       "name": "finding-arbitrage-opportunities",
-      "description": "Identify profitable arbitrage opportunities across exchanges and DEXs in real-time. Use when discovering profitable arbitrage across exchanges. Trigger with phrases like \"find arbitrage\", \"scan for arb opportunities\", or \"check arbitrage\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:arbitrage-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Detect profitable arbitrage opportunities across exchanges and DEXs in real-time. Use when discovering profitable arbitrage across exchanges. Trigger with phrases like \"find arbitrage\", \"scan for arb opportunities\", or \"check arbitrage\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:arbitrage-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7048,7 +7289,7 @@
         "name": "arbitrage-opportunity-finder",
         "category": "crypto"
       },
-      "searchText": "finding-arbitrage-opportunities identify profitable arbitrage opportunities across exchanges and dexs in real-time. use when discovering profitable arbitrage across exchanges. trigger with phrases like \"find arbitrage\", \"scan for arb opportunities\", or \"check arbitrage\". allowed-tools: read, write, edit, grep, glob, bash(crypto:arbitrage-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "finding-arbitrage-opportunities detect profitable arbitrage opportunities across exchanges and dexs in real-time. use when discovering profitable arbitrage across exchanges. trigger with phrases like \"find arbitrage\", \"scan for arb opportunities\", or \"check arbitrage\". allowed-tools: read, write, edit, grep, glob, bash(crypto:arbitrage-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -7067,10 +7308,25 @@
     },
     {
       "type": "skill",
+      "id": "firebase-vertex-ai",
+      "slug": "firebase-vertex-ai",
+      "name": "firebase-vertex-ai",
+      "description": "Firebase platform expert with Vertex AI Gemini integration for Authentication, Firestore, Storage, Functions, Hosting, and AI-powered features. Use when asked to \"setup firebase\", \"deploy to firebase\", or \"integrate vertex ai with firebase\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "category": "community",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "jeremy-firebase",
+        "category": "community"
+      },
+      "searchText": "firebase-vertex-ai firebase platform expert with vertex ai gemini integration for authentication, firestore, storage, functions, hosting, and ai-powered features. use when asked to \"setup firebase\", \"deploy to firebase\", or \"integrate vertex ai with firebase\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit community "
+    },
+    {
+      "type": "skill",
       "id": "firestore-operations-manager",
       "slug": "firestore-operations-manager",
       "name": "firestore-operations-manager",
-      "description": "Manages Firebase/Firestore operations including CRUD, queries, batch processing, A2A agent communication, MCP server integration, and Cloud Run service coordination. Activates when you request \"firestore operations\", \"create firestore document\", \"... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Manage Firebase/Firestore operations including CRUD, queries, batch processing, and index/rule guidance. Use when you need to create/update/query Firestore documents, run batch writes, troubleshoot missing indexes, or plan migrations. Trigger with phrases like \"firestore operations\", \"create firestore document\", \"batch write\", \"missing index\", or \"fix firestore query\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "community",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7078,7 +7334,7 @@
         "name": "jeremy-firestore",
         "category": "community"
       },
-      "searchText": "firestore-operations-manager manages firebase/firestore operations including crud, queries, batch processing, a2a agent communication, mcp server integration, and cloud run service coordination. activates when you request \"firestore operations\", \"create firestore document\", \"... use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit community "
+      "searchText": "firestore-operations-manager manage firebase/firestore operations including crud, queries, batch processing, and index/rule guidance. use when you need to create/update/query firestore documents, run batch writes, troubleshoot missing indexes, or plan migrations. trigger with phrases like \"firestore operations\", \"create firestore document\", \"batch write\", \"missing index\", or \"fix firestore query\". allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit community "
     },
     {
       "type": "skill",
@@ -7115,7 +7371,7 @@
       "id": "gcp-examples-expert",
       "slug": "gcp-examples-expert",
       "name": "gcp-examples-expert",
-      "description": "Provide production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to \"show ADK example\" or \"provide GCP starter kit\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Generate production-ready Google Cloud code examples from official repositories including ADK samples, Genkit templates, Vertex AI notebooks, and Gemini patterns. Use when asked to \"show ADK example\" or \"provide GCP starter kit\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "ai-ml",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7123,7 +7379,7 @@
         "name": "jeremy-gcp-starter-examples",
         "category": "ai-ml"
       },
-      "searchText": "gcp-examples-expert provide production-ready google cloud code examples from official repositories including adk samples, genkit templates, vertex ai notebooks, and gemini patterns. use when asked to \"show adk example\" or \"provide gcp starter kit\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+      "searchText": "gcp-examples-expert generate production-ready google cloud code examples from official repositories including adk samples, genkit templates, vertex ai notebooks, and gemini patterns. use when asked to \"show adk example\" or \"provide gcp starter kit\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
     },
     {
       "type": "skill",
@@ -7178,21 +7434,21 @@
       "description": "Generate comprehensive compliance reports for security standards. Use when creating compliance documentation. Trigger with 'generate compliance report', 'compliance status', or 'audit compliance'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "compliance-report-generator",
         "category": "security"
       },
-      "searchText": "generating-compliance-reports generate comprehensive compliance reports for security standards. use when creating compliance documentation. trigger with 'generate compliance report', 'compliance status', or 'audit compliance'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "generating-compliance-reports generate comprehensive compliance reports for security standards. use when creating compliance documentation. trigger with 'generate compliance report', 'compliance status', or 'audit compliance'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -7483,7 +7739,7 @@
       "type": "skill",
       "id": "google-cloud-agent-sdk-master",
       "slug": "google-cloud-agent-sdk-master",
-      "name": "Google Cloud Agent SDK Master",
+      "name": "google-cloud-agent-sdk-master",
       "description": "Automatic activation for all google cloud agent development kit (adk) Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, WebFetch, WebSearch, Grep version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "productivity",
       "allowedTools": [],
@@ -7492,7 +7748,7 @@
         "name": "004-jeremy-google-cloud-agent-sdk",
         "category": "productivity"
       },
-      "searchText": "google cloud agent sdk master automatic activation for all google cloud agent development kit (adk) use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, webfetch, websearch, grep version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit productivity "
+      "searchText": "google-cloud-agent-sdk-master automatic activation for all google cloud agent development kit (adk) use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, webfetch, websearch, grep version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit productivity "
     },
     {
       "type": "skill",
@@ -7562,20 +7818,20 @@
       "description": "Implement Real User Monitoring (RUM) to capture actual user performance data including Core Web Vitals and page load times. Use when setting up user experience monitoring or tracking custom performance events. Trigger with phrases like \"setup RUM\", \"track Core Web Vitals\", or \"monitor real user performance\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(npm:*)",
-        "Bash(rum:*)"
+        "Bash(rum:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "real-user-monitoring",
         "category": "performance"
       },
-      "searchText": "implementing-real-user-monitoring implement real user monitoring (rum) to capture actual user performance data including core web vitals and page load times. use when setting up user experience monitoring or tracking custom performance events. trigger with phrases like \"setup rum\", \"track core web vitals\", or \"monitor real user performance\". performance read write edit grep glob bash(npm:*) bash(rum:*)"
+      "searchText": "implementing-real-user-monitoring implement real user monitoring (rum) to capture actual user performance data including core web vitals and page load times. use when setting up user experience monitoring or tracking custom performance events. trigger with phrases like \"setup rum\", \"track core web vitals\", or \"monitor real user performance\". performance \"read write edit grep glob bash(npm:*) bash(rum:*)\""
     },
     {
       "type": "skill",
@@ -7612,7 +7868,7 @@
       "id": "logging-api-requests",
       "slug": "logging-api-requests",
       "name": "logging-api-requests",
-      "description": "Log API requests with correlation IDs, performance metrics, and security audit trails. Use when auditing API requests and responses. Trigger with phrases like \"log API requests\", \"add API logging\", or \"track API calls\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:log-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Monitor and log API requests with correlation IDs, performance metrics, and security audit trails. Use when auditing API requests and responses. Trigger with phrases like \"log API requests\", \"add API logging\", or \"track API calls\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:log-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7620,7 +7876,7 @@
         "name": "api-request-logger",
         "category": "api-development"
       },
-      "searchText": "logging-api-requests log api requests with correlation ids, performance metrics, and security audit trails. use when auditing api requests and responses. trigger with phrases like \"log api requests\", \"add api logging\", or \"track api calls\". allowed-tools: read, write, edit, grep, glob, bash(api:log-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "logging-api-requests monitor and log api requests with correlation ids, performance metrics, and security audit trails. use when auditing api requests and responses. trigger with phrases like \"log api requests\", \"add api logging\", or \"track api calls\". allowed-tools: read, write, edit, grep, glob, bash(api:log-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
     },
     {
       "type": "skill",
@@ -7777,7 +8033,7 @@
       "id": "managing-environment-configurations",
       "slug": "managing-environment-configurations",
       "name": "managing-environment-configurations",
-      "description": "Use when you need to work with environment configuration. This skill provides environment and configuration management with comprehensive guidance and automation. Trigger with phrases like \"manage environments\", \"configure environments\", or \"sync configurations\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Implement environment and configuration management with comprehensive guidance and automation. Use when you need to work with environment configuration. Trigger with phrases like \"manage environments\", \"configure environments\", or \"sync configurations\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "devops",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7785,7 +8041,7 @@
         "name": "environment-config-manager",
         "category": "devops"
       },
-      "searchText": "managing-environment-configurations use when you need to work with environment configuration. this skill provides environment and configuration management with comprehensive guidance and automation. trigger with phrases like \"manage environments\", \"configure environments\", or \"sync configurations\". allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit devops "
+      "searchText": "managing-environment-configurations implement environment and configuration management with comprehensive guidance and automation. use when you need to work with environment configuration. trigger with phrases like \"manage environments\", \"configure environments\", or \"sync configurations\". allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit devops "
     },
     {
       "type": "skill",
@@ -7852,7 +8108,7 @@
       "id": "memory",
       "slug": "memory",
       "name": "memory",
-      "description": "Access and use project memories from previous sessions for context-aware assistance. Use when recalling past decisions, checking project conventions, or understanding user preferences. Trigger with phrases like \"remember when\", \"like before\", or \"what was our decision about\". allowed-tools: Read, Write version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Extract and use project memories from previous sessions for context-aware assistance. Use when recalling past decisions, checking project conventions, or understanding user preferences. Trigger with phrases like \"remember when\", \"like before\", or \"what was our decision about\". allowed-tools: Read, Write version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "community",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7860,14 +8116,14 @@
         "name": "claude-never-forgets",
         "category": "community"
       },
-      "searchText": "memory access and use project memories from previous sessions for context-aware assistance. use when recalling past decisions, checking project conventions, or understanding user preferences. trigger with phrases like \"remember when\", \"like before\", or \"what was our decision about\". allowed-tools: read, write version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit community "
+      "searchText": "memory extract and use project memories from previous sessions for context-aware assistance. use when recalling past decisions, checking project conventions, or understanding user preferences. trigger with phrases like \"remember when\", \"like before\", or \"what was our decision about\". allowed-tools: read, write version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit community "
     },
     {
       "type": "skill",
       "id": "migrating-apis",
       "slug": "migrating-apis",
       "name": "migrating-apis",
-      "description": "Migrate APIs between versions, platforms, or frameworks with minimal downtime. Use when upgrading APIs between versions. Trigger with phrases like \"migrate the API\", \"upgrade API version\", or \"migrate to new API\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:migrate-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Implement API migrations between versions, platforms, or frameworks with minimal downtime. Use when upgrading APIs between versions. Trigger with phrases like \"migrate the API\", \"upgrade API version\", or \"migrate to new API\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:migrate-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7875,7 +8131,7 @@
         "name": "api-migration-tool",
         "category": "api-development"
       },
-      "searchText": "migrating-apis migrate apis between versions, platforms, or frameworks with minimal downtime. use when upgrading apis between versions. trigger with phrases like \"migrate the api\", \"upgrade api version\", or \"migrate to new api\". allowed-tools: read, write, edit, grep, glob, bash(api:migrate-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "migrating-apis implement api migrations between versions, platforms, or frameworks with minimal downtime. use when upgrading apis between versions. trigger with phrases like \"migrate the api\", \"upgrade api version\", or \"migrate to new api\". allowed-tools: read, write, edit, grep, glob, bash(api:migrate-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
     },
     {
       "type": "skill",
@@ -7990,19 +8246,19 @@
       "description": "Monitor and analyze application error rates to improve reliability. Use when tracking errors in applications including HTTP errors, exceptions, and database issues. Trigger with phrases like \"monitor error rates\", \"track application errors\", or \"analyze error patterns\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Bash(monitoring:*)",
         "Bash(metrics:*)",
         "Bash(logs:*)",
         "Grep",
-        "Glob"
+        "Glob\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "error-rate-monitor",
         "category": "performance"
       },
-      "searchText": "monitoring-error-rates monitor and analyze application error rates to improve reliability. use when tracking errors in applications including http errors, exceptions, and database issues. trigger with phrases like \"monitor error rates\", \"track application errors\", or \"analyze error patterns\". performance read bash(monitoring:*) bash(metrics:*) bash(logs:*) grep glob"
+      "searchText": "monitoring-error-rates monitor and analyze application error rates to improve reliability. use when tracking errors in applications including http errors, exceptions, and database issues. trigger with phrases like \"monitor error rates\", \"track application errors\", or \"analyze error patterns\". performance \"read bash(monitoring:*) bash(metrics:*) bash(logs:*) grep glob\""
     },
     {
       "type": "skill",
@@ -8024,7 +8280,7 @@
       "id": "ollama-setup",
       "slug": "ollama-setup",
       "name": "ollama-setup",
-      "description": "Auto-configure Ollama when user needs local LLM deployment, free AI alternatives, or wants to eliminate OpenAI/Anthropic API costs. Trigger phrases: \"install ollama\", \"local AI\", \"free LLM\", \"self-hosted AI\", \"replace OpenAI\", \"no API costs\". Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Auto-configure Ollama when user needs local LLM deployment, free AI alternatives, or wants to eliminate hosted API costs. Trigger phrases: \"install ollama\", \"local AI\", \"free LLM\", \"self-hosted AI\", \"replace OpenAI\", \"no API costs\". Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "ai-ml",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8032,7 +8288,7 @@
         "name": "ollama-local-ai",
         "category": "ai-ml"
       },
-      "searchText": "ollama-setup auto-configure ollama when user needs local llm deployment, free ai alternatives, or wants to eliminate openai/anthropic api costs. trigger phrases: \"install ollama\", \"local ai\", \"free llm\", \"self-hosted ai\", \"replace openai\", \"no api costs\". use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+      "searchText": "ollama-setup auto-configure ollama when user needs local llm deployment, free ai alternatives, or wants to eliminate hosted api costs. trigger phrases: \"install ollama\", \"local ai\", \"free llm\", \"self-hosted ai\", \"replace openai\", \"no api costs\". use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
     },
     {
       "type": "skill",
@@ -8222,20 +8478,20 @@
       "description": "Automates software development overnight using git hooks to enforce test-driven Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.",
       "category": "productivity",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(general:*)",
-        "Bash(util:*)"
+        "Bash(util:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "overnight-dev",
         "category": "productivity"
       },
-      "searchText": "overnight-development automates software development overnight using git hooks to enforce test-driven use when appropriate context detected. trigger with relevant phrases based on skill purpose. productivity read write edit grep glob bash(general:*) bash(util:*)"
+      "searchText": "overnight-development automates software development overnight using git hooks to enforce test-driven use when appropriate context detected. trigger with relevant phrases based on skill purpose. productivity \"read write edit grep glob bash(general:*) bash(util:*)\""
     },
     {
       "type": "skill",
@@ -8245,21 +8501,21 @@
       "description": "Perform security penetration testing to identify vulnerabilities. Use when conducting security assessments. Trigger with 'run pentest', 'security testing', or 'find vulnerabilities'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "penetration-tester",
         "category": "security"
       },
-      "searchText": "performing-penetration-testing perform security penetration testing to identify vulnerabilities. use when conducting security assessments. trigger with 'run pentest', 'security testing', or 'find vulnerabilities'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "performing-penetration-testing perform security penetration testing to identify vulnerabilities. use when conducting security assessments. trigger with 'run pentest', 'security testing', or 'find vulnerabilities'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -8281,7 +8537,7 @@
       "id": "performing-security-audits",
       "slug": "performing-security-audits",
       "name": "performing-security-audits",
-      "description": "This skill allows AI assistant to conduct comprehensive security audits of code, infrastructure, and configurations. it leverages various tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, cryptography revi... Use when assessing security or running audits. Trigger with phrases like 'security scan', 'audit', or 'vulnerability'. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Analyze code, infrastructure, and configurations by conducting comprehensive security audits. It leverages tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, and cryptography review. Use when assessing security or running audits. Trigger with phrases like 'security scan', 'audit', or 'vulnerability'. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "packages",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8289,7 +8545,7 @@
         "name": "security-pro-pack",
         "category": "packages"
       },
-      "searchText": "performing-security-audits this skill allows ai assistant to conduct comprehensive security audits of code, infrastructure, and configurations. it leverages various tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, cryptography revi... use when assessing security or running audits. trigger with phrases like 'security scan', 'audit', or 'vulnerability'. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit packages "
+      "searchText": "performing-security-audits analyze code, infrastructure, and configurations by conducting comprehensive security audits. it leverages tools within the security-pro-pack plugin, including vulnerability scanning, compliance checking, and cryptography review. use when assessing security or running audits. trigger with phrases like 'security scan', 'audit', or 'vulnerability'. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit packages "
     },
     {
       "type": "skill",
@@ -8401,7 +8657,7 @@
       "id": "processing-api-batches",
       "slug": "processing-api-batches",
       "name": "processing-api-batches",
-      "description": "Process bulk API requests efficiently with batching, throttling, and parallel execution. Use when processing bulk API operations efficiently. Trigger with phrases like \"process bulk requests\", \"batch API calls\", or \"handle batch operations\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:batch-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Optimize bulk API requests with batching, throttling, and parallel execution. Use when processing bulk API operations efficiently. Trigger with phrases like \"process bulk requests\", \"batch API calls\", or \"handle batch operations\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:batch-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8409,7 +8665,7 @@
         "name": "api-batch-processor",
         "category": "api-development"
       },
-      "searchText": "processing-api-batches process bulk api requests efficiently with batching, throttling, and parallel execution. use when processing bulk api operations efficiently. trigger with phrases like \"process bulk requests\", \"batch api calls\", or \"handle batch operations\". allowed-tools: read, write, edit, grep, glob, bash(api:batch-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "processing-api-batches optimize bulk api requests with batching, throttling, and parallel execution. use when processing bulk api operations efficiently. trigger with phrases like \"process bulk requests\", \"batch api calls\", or \"handle batch operations\". allowed-tools: read, write, edit, grep, glob, bash(api:batch-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
     },
     {
       "type": "skill",
@@ -8449,20 +8705,20 @@
       "description": "Provide comprehensive prioritized performance optimization recommendations for frontend, backend, and infrastructure. Use when analyzing bottlenecks or seeking improvement strategies. Trigger with phrases like \"optimize performance\", \"improve speed\", or \"performance recommendations\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(profiling:*)",
-        "Bash(analysis:*)"
+        "Bash(analysis:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "performance-optimization-advisor",
         "category": "performance"
       },
-      "searchText": "providing-performance-optimization-advice provide comprehensive prioritized performance optimization recommendations for frontend, backend, and infrastructure. use when analyzing bottlenecks or seeking improvement strategies. trigger with phrases like \"optimize performance\", \"improve speed\", or \"performance recommendations\". performance read write edit grep glob bash(profiling:*) bash(analysis:*)"
+      "searchText": "providing-performance-optimization-advice provide comprehensive prioritized performance optimization recommendations for frontend, backend, and infrastructure. use when analyzing bottlenecks or seeking improvement strategies. trigger with phrases like \"optimize performance\", \"improve speed\", or \"performance recommendations\". performance \"read write edit grep glob bash(profiling:*) bash(analysis:*)\""
     },
     {
       "type": "skill",
@@ -8484,7 +8740,7 @@
       "id": "responding-to-security-incidents",
       "slug": "responding-to-security-incidents",
       "name": "responding-to-security-incidents",
-      "description": "Guide security incident response, investigation, and remediation processes. Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. Trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*), Bash(forensics:*), Bash(network-trace:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Analyze and guide security incident response, investigation, and remediation processes. Use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. Trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(log-analysis:*), Bash(forensics:*), Bash(network-trace:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "security",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8492,14 +8748,14 @@
         "name": "security-incident-responder",
         "category": "security"
       },
-      "searchText": "responding-to-security-incidents guide security incident response, investigation, and remediation processes. use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: read, write, edit, grep, glob, bash(log-analysis:*), bash(forensics:*), bash(network-trace:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit security "
+      "searchText": "responding-to-security-incidents analyze and guide security incident response, investigation, and remediation processes. use when you need to handle security breaches, classify incidents, develop response playbooks, gather forensic evidence, or coordinate remediation efforts. trigger with phrases like \"security incident response\", \"ransomware attack response\", \"data breach investigation\", \"incident playbook\", or \"security forensics\". allowed-tools: read, write, edit, grep, glob, bash(log-analysis:*), bash(forensics:*), bash(network-trace:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit security "
     },
     {
       "type": "skill",
       "id": "routing-dex-trades",
       "slug": "routing-dex-trades",
       "name": "routing-dex-trades",
-      "description": "Route trades across multiple DEXs to find optimal prices and minimize slippage. Use when routing trades for best execution. Trigger with phrases like \"find best price\", \"route trade\", or \"check DEX prices\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Optimize trade routing across multiple DEXs to find optimal prices and minimize slippage. Use when routing trades for best execution. Trigger with phrases like \"find best price\", \"route trade\", or \"check DEX prices\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:dex-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8507,7 +8763,7 @@
         "name": "dex-aggregator-router",
         "category": "crypto"
       },
-      "searchText": "routing-dex-trades route trades across multiple dexs to find optimal prices and minimize slippage. use when routing trades for best execution. trigger with phrases like \"find best price\", \"route trade\", or \"check dex prices\". allowed-tools: read, write, edit, grep, glob, bash(crypto:dex-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "routing-dex-trades optimize trade routing across multiple dexs to find optimal prices and minimize slippage. use when routing trades for best execution. trigger with phrases like \"find best price\", \"route trade\", or \"check dex prices\". allowed-tools: read, write, edit, grep, glob, bash(crypto:dex-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -8529,7 +8785,7 @@
       "id": "running-clustering-algorithms",
       "slug": "running-clustering-algorithms",
       "name": "running-clustering-algorithms",
-      "description": "Execute clustering algorithms (K-means, DBSCAN, hierarchical) to identify data groups. Use when requesting \"run clustering\", \"cluster analysis\", or \"group data points\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Analyze datasets by running clustering algorithms (K-means, DBSCAN, hierarchical) to identify data groups. Use when requesting \"run clustering\", \"cluster analysis\", or \"group data points\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "ai-ml",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8537,7 +8793,7 @@
         "name": "clustering-algorithm-runner",
         "category": "ai-ml"
       },
-      "searchText": "running-clustering-algorithms execute clustering algorithms (k-means, dbscan, hierarchical) to identify data groups. use when requesting \"run clustering\", \"cluster analysis\", or \"group data points\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+      "searchText": "running-clustering-algorithms analyze datasets by running clustering algorithms (k-means, dbscan, hierarchical) to identify data groups. use when requesting \"run clustering\", \"cluster analysis\", or \"group data points\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
     },
     {
       "type": "skill",
@@ -8577,7 +8833,7 @@
       "description": "Create and execute load tests for performance validation using k6, JMeter, and Artillery. Use when validating application performance under load conditions or identifying bottlenecks. Trigger with phrases like \"run load test\", \"create stress test\", or \"validate performance under load\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
@@ -8585,14 +8841,14 @@
         "Bash(k6:*)",
         "Bash(jmeter:*)",
         "Bash(artillery:*)",
-        "Bash(performance:*)"
+        "Bash(performance:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "load-test-runner",
         "category": "performance"
       },
-      "searchText": "running-load-tests create and execute load tests for performance validation using k6, jmeter, and artillery. use when validating application performance under load conditions or identifying bottlenecks. trigger with phrases like \"run load test\", \"create stress test\", or \"validate performance under load\". performance read write edit grep glob bash(k6:*) bash(jmeter:*) bash(artillery:*) bash(performance:*)"
+      "searchText": "running-load-tests create and execute load tests for performance validation using k6, jmeter, and artillery. use when validating application performance under load conditions or identifying bottlenecks. trigger with phrases like \"run load test\", \"create stress test\", or \"validate performance under load\". performance \"read write edit grep glob bash(k6:*) bash(jmeter:*) bash(artillery:*) bash(performance:*)\""
     },
     {
       "type": "skill",
@@ -8659,7 +8915,7 @@
       "id": "scanning-api-security",
       "slug": "scanning-api-security",
       "name": "scanning-api-security",
-      "description": "Scan APIs for security vulnerabilities including injection, broken auth, and data exposure. Use when scanning APIs for security vulnerabilities. Trigger with phrases like \"scan API security\", \"check for vulnerabilities\", or \"audit API security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:security-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Detect API security vulnerabilities including injection, broken auth, and data exposure. Use when scanning APIs for security vulnerabilities. Trigger with phrases like \"scan API security\", \"check for vulnerabilities\", or \"audit API security\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:security-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8667,7 +8923,7 @@
         "name": "api-security-scanner",
         "category": "api-development"
       },
-      "searchText": "scanning-api-security scan apis for security vulnerabilities including injection, broken auth, and data exposure. use when scanning apis for security vulnerabilities. trigger with phrases like \"scan api security\", \"check for vulnerabilities\", or \"audit api security\". allowed-tools: read, write, edit, grep, glob, bash(api:security-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "scanning-api-security detect api security vulnerabilities including injection, broken auth, and data exposure. use when scanning apis for security vulnerabilities. trigger with phrases like \"scan api security\", \"check for vulnerabilities\", or \"audit api security\". allowed-tools: read, write, edit, grep, glob, bash(api:security-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
     },
     {
       "type": "skill",
@@ -8707,21 +8963,21 @@
       "description": "Scan for data privacy issues and sensitive information exposure. Use when reviewing data handling practices. Trigger with 'scan privacy issues', 'check sensitive data', or 'validate data protection'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "data-privacy-scanner",
         "category": "security"
       },
-      "searchText": "scanning-for-data-privacy-issues scan for data privacy issues and sensitive information exposure. use when reviewing data handling practices. trigger with 'scan privacy issues', 'check sensitive data', or 'validate data protection'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "scanning-for-data-privacy-issues scan for data privacy issues and sensitive information exposure. use when reviewing data handling practices. trigger with 'scan privacy issues', 'check sensitive data', or 'validate data protection'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -8731,45 +8987,45 @@
       "description": "Scan for GDPR compliance issues in data handling and privacy practices. Use when ensuring EU data protection compliance. Trigger with 'scan GDPR compliance', 'check data privacy', or 'validate GDPR'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "gdpr-compliance-scanner",
         "category": "security"
       },
-      "searchText": "scanning-for-gdpr-compliance scan for gdpr compliance issues in data handling and privacy practices. use when ensuring eu data protection compliance. trigger with 'scan gdpr compliance', 'check data privacy', or 'validate gdpr'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "scanning-for-gdpr-compliance scan for gdpr compliance issues in data handling and privacy practices. use when ensuring eu data protection compliance. trigger with 'scan gdpr compliance', 'check data privacy', or 'validate gdpr'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
       "id": "scanning-for-secrets",
       "slug": "scanning-for-secrets",
       "name": "scanning-for-secrets",
-      "description": "Scan for exposed secrets, API keys, and credentials in code. Use when auditing for secret leaks. Trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'.",
+      "description": "Detect exposed secrets, API keys, and credentials in code. Use when auditing for secret leaks. Trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "secret-scanner",
         "category": "security"
       },
-      "searchText": "scanning-for-secrets scan for exposed secrets, api keys, and credentials in code. use when auditing for secret leaks. trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "scanning-for-secrets detect exposed secrets, api keys, and credentials in code. use when auditing for secret leaks. trigger with 'scan for secrets', 'find exposed keys', or 'check credentials'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -8809,28 +9065,28 @@
       "description": "Scan for input validation vulnerabilities and injection risks. Use when reviewing user input handling. Trigger with 'scan input validation', 'check injection vulnerabilities', or 'validate sanitization'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "input-validation-scanner",
         "category": "security"
       },
-      "searchText": "scanning-input-validation-practices scan for input validation vulnerabilities and injection risks. use when reviewing user input handling. trigger with 'scan input validation', 'check injection vulnerabilities', or 'validate sanitization'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "scanning-input-validation-practices scan for input validation vulnerabilities and injection risks. use when reviewing user input handling. trigger with 'scan input validation', 'check injection vulnerabilities', or 'validate sanitization'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
       "id": "scanning-market-movers",
       "slug": "scanning-market-movers",
       "name": "scanning-market-movers",
-      "description": "Identify significant price movements and unusual volume across crypto markets. Use when tracking significant price movements. Trigger with phrases like \"scan market movers\", \"check biggest gainers\", or \"find pumps\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:movers-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Detect significant price movements and unusual volume across crypto markets. Use when tracking significant price movements. Trigger with phrases like \"scan market movers\", \"check biggest gainers\", or \"find pumps\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(crypto:movers-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8838,7 +9094,7 @@
         "name": "market-movers-scanner",
         "category": "crypto"
       },
-      "searchText": "scanning-market-movers identify significant price movements and unusual volume across crypto markets. use when tracking significant price movements. trigger with phrases like \"scan market movers\", \"check biggest gainers\", or \"find pumps\". allowed-tools: read, write, edit, grep, glob, bash(crypto:movers-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "scanning-market-movers detect significant price movements and unusual volume across crypto markets. use when tracking significant price movements. trigger with phrases like \"scan market movers\", \"check biggest gainers\", or \"find pumps\". allowed-tools: read, write, edit, grep, glob, bash(crypto:movers-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -8860,7 +9116,7 @@
       "id": "setting-up-experiment-tracking",
       "slug": "setting-up-experiment-tracking",
       "name": "setting-up-experiment-tracking",
-      "description": "Setup machine learning experiment tracking using MLflow or Weights & Biases. Configures environment and provides code for logging parameters, metrics, and artifacts. Use when asked to \"setup experiment tracking\" or \"initialize MLflow\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Implement machine learning experiment tracking using MLflow or Weights & Biases. Configures environment and provides code for logging parameters, metrics, and artifacts. Use when asked to \"setup experiment tracking\" or \"initialize MLflow\". Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "ai-ml",
       "allowedTools": [],
       "version": "1.0.0",
@@ -8868,7 +9124,7 @@
         "name": "experiment-tracking-setup",
         "category": "ai-ml"
       },
-      "searchText": "setting-up-experiment-tracking setup machine learning experiment tracking using mlflow or weights & biases. configures environment and provides code for logging parameters, metrics, and artifacts. use when asked to \"setup experiment tracking\" or \"initialize mlflow\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+      "searchText": "setting-up-experiment-tracking implement machine learning experiment tracking using mlflow or weights & biases. configures environment and provides code for logging parameters, metrics, and artifacts. use when asked to \"setup experiment tracking\" or \"initialize mlflow\". trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
     },
     {
       "type": "skill",
@@ -8893,20 +9149,20 @@
       "description": "Setup synthetic monitoring for proactive performance tracking including uptime checks, transaction monitoring, and API health. Use when implementing availability monitoring or tracking critical user journeys. Trigger with phrases like \"setup synthetic monitoring\", \"monitor uptime\", or \"configure health checks\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(curl:*)",
-        "Bash(monitoring:*)"
+        "Bash(monitoring:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "synthetic-monitoring-setup",
         "category": "performance"
       },
-      "searchText": "setting-up-synthetic-monitoring setup synthetic monitoring for proactive performance tracking including uptime checks, transaction monitoring, and api health. use when implementing availability monitoring or tracking critical user journeys. trigger with phrases like \"setup synthetic monitoring\", \"monitor uptime\", or \"configure health checks\". performance read write edit grep glob bash(curl:*) bash(monitoring:*)"
+      "searchText": "setting-up-synthetic-monitoring setup synthetic monitoring for proactive performance tracking including uptime checks, transaction monitoring, and api health. use when implementing availability monitoring or tracking critical user journeys. trigger with phrases like \"setup synthetic monitoring\", \"monitor uptime\", or \"configure health checks\". performance \"read write edit grep glob bash(curl:*) bash(monitoring:*)\""
     },
     {
       "type": "skill",
@@ -9048,7 +9304,7 @@
       "id": "throttling-apis",
       "slug": "throttling-apis",
       "name": "throttling-apis",
-      "description": "Manage API throttling policies to protect backend services from overload. Use when controlling API request rates. Trigger with phrases like \"throttle API\", \"control request rate\", or \"add throttling\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Implement API throttling policies to protect backend services from overload. Use when controlling API request rates. Trigger with phrases like \"throttle API\", \"control request rate\", or \"add throttling\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:throttle-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -9056,7 +9312,7 @@
         "name": "api-throttling-manager",
         "category": "api-development"
       },
-      "searchText": "throttling-apis manage api throttling policies to protect backend services from overload. use when controlling api request rates. trigger with phrases like \"throttle api\", \"control request rate\", or \"add throttling\". allowed-tools: read, write, edit, grep, glob, bash(api:throttle-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "throttling-apis implement api throttling policies to protect backend services from overload. use when controlling api request rates. trigger with phrases like \"throttle api\", \"control request rate\", or \"add throttling\". allowed-tools: read, write, edit, grep, glob, bash(api:throttle-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
     },
     {
       "type": "skill",
@@ -9066,20 +9322,20 @@
       "description": "Track and optimize application response times across API endpoints, database queries, and service calls. Use when monitoring performance or identifying bottlenecks. Trigger with phrases like \"track response times\", \"monitor API performance\", or \"analyze latency\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(monitoring:*)",
-        "Bash(metrics:*)"
+        "Bash(metrics:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "response-time-tracker",
         "category": "performance"
       },
-      "searchText": "tracking-application-response-times track and optimize application response times across api endpoints, database queries, and service calls. use when monitoring performance or identifying bottlenecks. trigger with phrases like \"track response times\", \"monitor api performance\", or \"analyze latency\". performance read write edit grep glob bash(monitoring:*) bash(metrics:*)"
+      "searchText": "tracking-application-response-times track and optimize application response times across api endpoints, database queries, and service calls. use when monitoring performance or identifying bottlenecks. trigger with phrases like \"track response times\", \"monitor api performance\", or \"analyze latency\". performance \"read write edit grep glob bash(monitoring:*) bash(metrics:*)\""
     },
     {
       "type": "skill",
@@ -9164,20 +9420,20 @@
       "description": "Track and optimize resource usage across application stack including CPU, memory, disk, and network I/O. Use when identifying bottlenecks or optimizing costs. Trigger with phrases like \"track resource usage\", \"monitor CPU and memory\", or \"optimize resource allocation\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Bash(top:*)",
         "Bash(ps:*)",
         "Bash(vmstat:*)",
         "Bash(iostat:*)",
         "Grep",
-        "Glob"
+        "Glob\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "resource-usage-tracker",
         "category": "performance"
       },
-      "searchText": "tracking-resource-usage track and optimize resource usage across application stack including cpu, memory, disk, and network i/o. use when identifying bottlenecks or optimizing costs. trigger with phrases like \"track resource usage\", \"monitor cpu and memory\", or \"optimize resource allocation\". performance read bash(top:*) bash(ps:*) bash(vmstat:*) bash(iostat:*) grep glob"
+      "searchText": "tracking-resource-usage track and optimize resource usage across application stack including cpu, memory, disk, and network i/o. use when identifying bottlenecks or optimizing costs. trigger with phrases like \"track resource usage\", \"monitor cpu and memory\", or \"optimize resource allocation\". performance \"read bash(top:*) bash(ps:*) bash(vmstat:*) bash(iostat:*) grep glob\""
     },
     {
       "type": "skill",
@@ -9187,20 +9443,20 @@
       "description": "Define and track SLAs, SLIs, and SLOs for service reliability including availability, latency, and error rates. Use when establishing reliability targets or monitoring service health. Trigger with phrases like \"define SLOs\", \"track SLI metrics\", or \"calculate error budget\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(monitoring:*)",
-        "Bash(metrics:*)"
+        "Bash(metrics:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "sla-sli-tracker",
         "category": "performance"
       },
-      "searchText": "tracking-service-reliability define and track slas, slis, and slos for service reliability including availability, latency, and error rates. use when establishing reliability targets or monitoring service health. trigger with phrases like \"define slos\", \"track sli metrics\", or \"calculate error budget\". performance read write edit grep glob bash(monitoring:*) bash(metrics:*)"
+      "searchText": "tracking-service-reliability define and track slas, slis, and slos for service reliability including availability, latency, and error rates. use when establishing reliability targets or monitoring service health. trigger with phrases like \"define slos\", \"track sli metrics\", or \"calculate error budget\". performance \"read write edit grep glob bash(monitoring:*) bash(metrics:*)\""
     },
     {
       "type": "skill",
@@ -9315,21 +9571,21 @@
       "description": "Validate authentication mechanisms for security weaknesses and compliance. Use when reviewing login systems or auth flows. Trigger with 'validate authentication', 'check auth security', or 'review login'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "authentication-validator",
         "category": "security"
       },
-      "searchText": "validating-authentication-implementations validate authentication mechanisms for security weaknesses and compliance. use when reviewing login systems or auth flows. trigger with 'validate authentication', 'check auth security', or 'review login'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "validating-authentication-implementations validate authentication mechanisms for security weaknesses and compliance. use when reviewing login systems or auth flows. trigger with 'validate authentication', 'check auth security', or 'review login'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -9339,17 +9595,17 @@
       "description": "Validate CORS policies for security issues and misconfigurations. Use when reviewing cross-origin resource sharing. Trigger with 'validate CORS', 'check CORS policy', or 'review cross-origin'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "WebFetch",
         "WebSearch",
-        "Grep"
+        "Grep\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "cors-policy-validator",
         "category": "security"
       },
-      "searchText": "validating-cors-policies validate cors policies for security issues and misconfigurations. use when reviewing cross-origin resource sharing. trigger with 'validate cors', 'check cors policy', or 'review cross-origin'. security read webfetch websearch grep"
+      "searchText": "validating-cors-policies validate cors policies for security issues and misconfigurations. use when reviewing cross-origin resource sharing. trigger with 'validate cors', 'check cors policy', or 'review cross-origin'. security \"read webfetch websearch grep\""
     },
     {
       "type": "skill",
@@ -9359,21 +9615,21 @@
       "description": "Validate CSRF protection implementations for security gaps. Use when reviewing form security or state-changing operations. Trigger with 'validate CSRF', 'check CSRF protection', or 'review token security'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "csrf-protection-validator",
         "category": "security"
       },
-      "searchText": "validating-csrf-protection validate csrf protection implementations for security gaps. use when reviewing form security or state-changing operations. trigger with 'validate csrf', 'check csrf protection', or 'review token security'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "validating-csrf-protection validate csrf protection implementations for security gaps. use when reviewing form security or state-changing operations. trigger with 'validate csrf', 'check csrf protection', or 'review token security'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -9398,21 +9654,21 @@
       "description": "Validate PCI-DSS compliance for payment card data security. Use when auditing payment systems. Trigger with 'validate PCI-DSS', 'check payment security', or 'audit card data'.",
       "category": "security",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(security:*)",
         "Bash(scan:*)",
-        "Bash(audit:*)"
+        "Bash(audit:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "pci-dss-validator",
         "category": "security"
       },
-      "searchText": "validating-pci-dss-compliance validate pci-dss compliance for payment card data security. use when auditing payment systems. trigger with 'validate pci-dss', 'check payment security', or 'audit card data'. security read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)"
+      "searchText": "validating-pci-dss-compliance validate pci-dss compliance for payment card data security. use when auditing payment systems. trigger with 'validate pci-dss', 'check payment security', or 'audit card data'. security \"read write edit grep glob bash(security:*) bash(scan:*) bash(audit:*)\""
     },
     {
       "type": "skill",
@@ -9422,21 +9678,21 @@
       "description": "Validate application performance against defined budgets to identify regressions early. Use when checking page load times, bundle sizes, or API response times against thresholds. Trigger with phrases like \"validate performance budget\", \"check performance metrics\", or \"detect performance regression\".",
       "category": "performance",
       "allowedTools": [
-        "Read",
+        "\"Read",
         "Write",
         "Edit",
         "Grep",
         "Glob",
         "Bash(lighthouse:*)",
         "Bash(webpack:*)",
-        "Bash(performance:*)"
+        "Bash(performance:*)\""
       ],
       "version": "1.0.0",
       "parentPlugin": {
         "name": "performance-budget-validator",
         "category": "performance"
       },
-      "searchText": "validating-performance-budgets validate application performance against defined budgets to identify regressions early. use when checking page load times, bundle sizes, or api response times against thresholds. trigger with phrases like \"validate performance budget\", \"check performance metrics\", or \"detect performance regression\". performance read write edit grep glob bash(lighthouse:*) bash(webpack:*) bash(performance:*)"
+      "searchText": "validating-performance-budgets validate application performance against defined budgets to identify regressions early. use when checking page load times, bundle sizes, or api response times against thresholds. trigger with phrases like \"validate performance budget\", \"check performance metrics\", or \"detect performance regression\". performance \"read write edit grep glob bash(lighthouse:*) bash(webpack:*) bash(performance:*)\""
     },
     {
       "type": "skill",
@@ -9473,7 +9729,7 @@
       "id": "versioning-apis",
       "slug": "versioning-apis",
       "name": "versioning-apis",
-      "description": "Manage API versions with backward compatibility, deprecation notices, and migration paths. Use when managing API versions and backward compatibility. Trigger with phrases like \"version the API\", \"manage API versions\", or \"handle API versioning\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:version-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Implement API versioning with backward compatibility, deprecation notices, and migration paths. Use when managing API versions and backward compatibility. Trigger with phrases like \"version the API\", \"manage API versions\", or \"handle API versioning\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(api:version-*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "api-development",
       "allowedTools": [],
       "version": "1.0.0",
@@ -9481,13 +9737,28 @@
         "name": "api-versioning-manager",
         "category": "api-development"
       },
-      "searchText": "versioning-apis manage api versions with backward compatibility, deprecation notices, and migration paths. use when managing api versions and backward compatibility. trigger with phrases like \"version the api\", \"manage api versions\", or \"handle api versioning\". allowed-tools: read, write, edit, grep, glob, bash(api:version-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+      "searchText": "versioning-apis implement api versioning with backward compatibility, deprecation notices, and migration paths. use when managing api versions and backward compatibility. trigger with phrases like \"version the api\", \"manage api versions\", or \"handle api versioning\". allowed-tools: read, write, edit, grep, glob, bash(api:version-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+    },
+    {
+      "type": "skill",
+      "id": "vertex-agent-builder",
+      "slug": "vertex-agent-builder",
+      "name": "vertex-agent-builder",
+      "description": "Build and deploy production-ready generative AI agents using Vertex AI, Gemini models, and Google Cloud infrastructure with RAG, function calling, and multi-modal capabilities. Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Bash(cmd:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "category": "jeremy-vertex-ai",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "jeremy-vertex-ai",
+        "category": "jeremy-vertex-ai"
+      },
+      "searchText": "vertex-agent-builder build and deploy production-ready generative ai agents using vertex ai, gemini models, and google cloud infrastructure with rag, function calling, and multi-modal capabilities. use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit jeremy-vertex-ai "
     },
     {
       "type": "skill",
       "id": "vertex-ai-media-master",
       "slug": "vertex-ai-media-master",
-      "name": "Vertex AI Media Master",
+      "name": "vertex-ai-media-master",
       "description": "Automatic activation for all google vertex ai multimodal operations - Use when appropriate context detected. Trigger with relevant phrases based on skill purpose. allowed-tools: Read, Write, Edit, Grep, Glob, Bash(general:*), Bash(util:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "productivity",
       "allowedTools": [],
@@ -9496,7 +9767,7 @@
         "name": "003-jeremy-vertex-ai-media-master",
         "category": "productivity"
       },
-      "searchText": "vertex ai media master automatic activation for all google vertex ai multimodal operations - use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(general:*), bash(util:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit productivity "
+      "searchText": "vertex-ai-media-master automatic activation for all google vertex ai multimodal operations - use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(general:*), bash(util:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit productivity "
     },
     {
       "type": "skill",

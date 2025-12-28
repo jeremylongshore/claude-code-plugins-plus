@@ -473,7 +473,7 @@ See [USE_CASES.md](./USE_CASES.md) for:
 
 ### Troubleshooting
 
-Having issues? See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for:
+Having issues? See [TROUBLESHOOTING.md](./000-docs/157-DR-FAQS-troubleshooting.md) for:
 - API key configuration
 - Rate limiting errors
 - Vector database connection issues

@@ -7,6 +7,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Genkit Production Expert
+
+This skill provides automated assistance for genkit production expert tasks.
+
 ## What This Skill Does
 
 This skill provides comprehensive expertise in building production-ready Firebase Genkit applications across Node.js (1.0), Python (Alpha), and Go (1.0). It handles the complete lifecycle from initialization to deployment with AI monitoring.

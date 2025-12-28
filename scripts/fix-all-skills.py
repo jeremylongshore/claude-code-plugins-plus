@@ -194,11 +194,8 @@ def fix_allowed_tools(fm: dict) -> Tuple[dict, List[str]]:
         else:
             new_tools.append(tool)
 
-    # Update in original format
-    if isinstance(fm['allowed-tools'], str):
-        fm['allowed-tools'] = ', '.join(new_tools)
-    else:
-        fm['allowed-tools'] = new_tools
+    # Standardize to CSV string (Claude Code standard)
+    fm['allowed-tools'] = ', '.join(new_tools)
 
     return fm, changes
 

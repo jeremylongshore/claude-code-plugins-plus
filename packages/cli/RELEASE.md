@@ -14,7 +14,7 @@ This document describes how to release new versions of `@claude-code-plugins/ccp
 ### 1. Prepare Release
 
 - [ ] Update version in `packages/cli/package.json`
-- [ ] Update `CHANGELOG.md` with changes
+- [ ] Update `000-docs/247-OD-CHNG-changelog.md` with changes
 - [ ] Test locally: `npm run build && node dist/index.js doctor`
 - [ ] Commit changes: `git commit -am "chore(cli): bump version to X.Y.Z"`
 - [ ] Push to main: `git push origin main`

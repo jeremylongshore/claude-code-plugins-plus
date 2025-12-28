@@ -87,15 +87,15 @@ PLUGIN FILES:
 
 TASK: Generate a complete SKILL.md file that follows this EXACT format:
 
----
-name: [Descriptive Skill Name - make it action-oriented]
-description: |
-  [Write 2-3 sentences explaining:
-   - WHEN this skill automatically activates (what triggers it)
-   - WHAT value it provides to the user
-   - WHY it's useful for this plugin's purpose]
-allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
----
+	---
+	name: [Descriptive Skill Name - make it action-oriented]
+	description: |
+	  [Write 2-3 sentences explaining:
+	   - WHEN this skill automatically activates (what triggers it)
+	   - WHAT value it provides to the user
+	   - WHY it's useful for this plugin's purpose]
+	allowed-tools: "Read, Grep, Glob, Edit, Write, Bash(git:*), Bash(python:*)"
+	---
 
 ## How It Works
 

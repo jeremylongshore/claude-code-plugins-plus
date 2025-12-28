@@ -124,7 +124,7 @@
     "installation": "docs/INSTALLATION.md",
     "quickstart": "docs/QUICK_START.md",
     "useCases": "docs/USE_CASES.md",
-    "troubleshooting": "docs/TROUBLESHOOTING.md",
+    "troubleshooting": "docs/000-docs/157-DR-FAQS-troubleshooting.md",
     "readme": "docs/README.md"
   },
   "requirements": {

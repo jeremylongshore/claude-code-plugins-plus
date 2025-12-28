@@ -153,11 +153,11 @@ Clients must update their authentication calls:
 
 ## License
 
-MIT License - see [LICENSE](../../../LICENSE) for details
+MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt) for details
 
 ## Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](../../../CONTRIBUTING.md) for guidelines.
+Contributions welcome! See [CONTRIBUTING.md](../../../000-docs/007-DR-GUID-contributing.md) for guidelines.
 
 ## Support
 

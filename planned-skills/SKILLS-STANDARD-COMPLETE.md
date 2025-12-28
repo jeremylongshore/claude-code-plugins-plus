@@ -1553,7 +1553,7 @@ See: `{baseDir}/references/TIMEGPT_API.md` for complete API documentation.
 Quick examples:
 - [2-3 minimal examples, 200 words total]
 
-For troubleshooting: `{baseDir}/references/TROUBLESHOOTING.md`
+For troubleshooting: `{baseDir}/references/000-docs/157-DR-FAQS-troubleshooting.md`
 ```
 
 **Why this fails**: Context saturation, partial instruction execution, increased costs.

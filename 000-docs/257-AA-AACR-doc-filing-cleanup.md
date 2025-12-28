@@ -1,0 +1,646 @@
+# Doc Filing Cleanup AAR (v4.2)
+
+- Date: 2025-12-28
+- Repo: claude-code-plugins
+- Branch: chore/docs-filing-v4_2
+
+## 1) Definition of Success Checklist
+
+- Root contains only allowed loose docs: PASS
+- `000-docs/` exists: PASS
+- `000-docs/` is flat (no subdirectories): PASS
+- `000-docs/` filenames match v4.2 patterns: PASS
+- No numeric ID directly after `6767-`: PASS
+
+## 2) Subdirectory Inventory (000-docs)
+
+- None found under `000-docs/` at start; nothing to flatten.
+
+## 3) Timeline Audit Method
+
+Audited timestamp priority:
+1. Git tracked docs: last commit timestamp (`git log -1 --format=%cI -- <file>`)
+2. Untracked docs: filesystem modified time (`stat` mtime, UTC)
+3. Header date hints were not used unless non-contradictory (none required for this pass)
+
+Stable sort tie-breakers (oldest first):
+- audited timestamp
+- tracked before untracked
+- shorter path length
+- lexicographic path
+
+## 4) Before/After Summary
+
+Before:
+- Root doc candidates beyond allowed set: 17
+- `000-docs/` contained 210 files (flat)
+
+After:
+- All audited doc candidates consolidated into flat `000-docs/` (now 277 files, plus this AAR)
+- Root `.md` docs now limited to: AGENTS.md, CLAUDE.md, README.md
+
+Move sources (candidate counts):
+- `000-docs`: 210
+- `CHANGELOG.md`: 1
+- `CODE_OF_CONDUCT.md`: 1
+- `CONTRIBUTING.md`: 1
+- `EPIC-B-COMPLETE-EVIDENCE.md`: 1
+- `EPIC-C-COMPLETE-EVIDENCE.md`: 1
+- `INTENT_SOLUTIONS_ENHANCEMENT_REPORT.md`: 1
+- `INTERACTIVE-LAB-PLAN.md`: 1
+- `LICENSE`: 1
+- `P0-IMPLEMENTATION-REPORT.md`: 1
+- `P0-STABILIZATION-COMPLETE.md`: 1
+- `PHASE0-AUDIT.md`: 1
+- `SECURITY.md`: 1
+- `SETUP.md`: 1
+- `TESTING.md`: 1
+- `TESTING_QUICK_REFERENCE.md`: 1
+- `TROUBLESHOOTING.md`: 1
+- `archive`: 21
+- `asset-audit-report-20251115.txt`: 1
+- `audit-reports`: 1
+- `docs`: 1
+- `marketplace`: 13
+- `notebooks`: 1
+- `playbooks`: 12
+- `tutorials`: 1
+
+## 5) Move/Rename Map (old → new)
+
+- `000-docs/000-DR-REFF-filing-system-standard-v2.md` → `000-docs/091-DR-REFF-filing-system-standard-v2.md`
+- `000-docs/001-AA-ARCH-cleanup-2025-10-27.md` → `000-docs/140-AT-ARCH-cleanup-2025-10-27.md`
+- `000-docs/001-AA-REPT-phase-4-aar.md` → `000-docs/243-AA-AACR-phase-4-aar.md`
+- `000-docs/001-AT-DSGN-marketplace-vnext-world-class-plan.md` → `000-docs/181-AT-DSGN-marketplace-vnext-world-class.md`
+- `000-docs/001-LS-HAND-v1-3-2-release-handoff.md` → `000-docs/143-MS-DRFT-v1-3-2-release.md`
+- `000-docs/001-MS-INDX-master-index.md` → `000-docs/092-MS-INDX-master-index.md`
+- `000-docs/001-OD-REPT-ci-cd-pipeline-audit.md` → `000-docs/174-RA-REPT-ci-cd-pipeline-audit.md`
+- `000-docs/001-RA-INDX-master-index.md` → `000-docs/039-MS-INDX-master-index.md`
+- `000-docs/001-SKILLS-GROUP-5-SCRIPTS-GENERATED.md` → `000-docs/167-MS-DRFT-001-skills-group-5.md`
+- `000-docs/001-SR-STAT-cto-repository-status.md` → `000-docs/163-LS-STAT-cto-repository-status.md`
+- `000-docs/002-AA-ARCH-marketplace-consolidation-2025-10-27.md` → `000-docs/141-AT-ARCH-marketplace-consolidation-2025-10.md`
+- `000-docs/002-RA-AUDT-anthropic-quality-audit.md` → `000-docs/037-RA-AUDT-anthropic-quality-audit.md`
+- `000-docs/002-SKILL-GROUP-5-QUICK-START.md` → `000-docs/168-MS-DRFT-002-skill-group-5.md`
+- `000-docs/002-SR-STAT-cto-automated-fixes.md` → `000-docs/164-LS-STAT-cto-automated-fixes.md`
+- `000-docs/003-RA-AUDT-compliance-audit.md` → `000-docs/047-RA-AUDT-compliance-audit.md`
+- `000-docs/003-SR-STAT-cto-final-completion-report.md` → `000-docs/165-LS-STAT-cto-final-completion.md`
+- `000-docs/004-RL-RSRC-anthropic-updates-oct-2025.md` → `000-docs/051-RL-RSRC-anthropic-updates-oct-2025.md`
+- `000-docs/004-SR-RECOV-star-recovery-strategy.md` → `000-docs/166-MS-DRFT-004-sr-recov-star.md`
+- `000-docs/005-AT-DIAG-architecture-diagrams.md` → `000-docs/066-AT-DIAG-architecture-diagrams.md`
+- `000-docs/006-RA-SUMM-audit-summary.md` → `000-docs/058-MC-SUMM-audit.md`
+- `000-docs/007-LS-STAT-autonomous-impl-complete.md` → `000-docs/055-LS-STAT-autonomous-impl-complete.md`
+- `000-docs/008-PM-TASK-quality-master-tasks.md` → `000-docs/041-PM-TASK-quality-master-tasks.md`
+- `000-docs/009-LS-SUMM-session-summary.md` → `000-docs/042-MC-SUMM-session.md`
+- `000-docs/010-DR-REFF-compliance-fixes.md` → `000-docs/050-DR-REFF-compliance-fixes.md`
+- `000-docs/011-OD-CHKL-deployment-v1-0-42.md` → `000-docs/061-DR-CHKL-deployment-v1-0-42.md`
+- `000-docs/012-MC-SUMM-exec-summary-oct-2025.md` → `000-docs/063-MC-SUMM-exec-oct-2025.md`
+- `000-docs/013-MC-MEMO-github-discussions.md` → `000-docs/057-MC-MEMO-github-discussions.md`
+- `000-docs/014-OD-RELS-github-v1-0-40.md` → `000-docs/056-OD-RELS-github-v1-0-40.md`
+- `000-docs/015-LS-STAT-v1-0-42-complete.md` → `000-docs/038-LS-STAT-v1-0-42-complete.md`
+- `000-docs/016-MC-MEMO-launch-v1-0-42.md` → `000-docs/043-MC-MEMO-launch-v1-0-42.md`
+- `000-docs/017-RA-SUMM-quality-exec-summary.md` → `000-docs/046-MC-SUMM-quality-exec.md`
+- `000-docs/018-PM-TASK-quality-improvements.md` → `000-docs/064-PM-TASK-quality-improvements.md`
+- `000-docs/019-DR-TMPL-quality-template.md` → `000-docs/067-DR-TMPL-quality-template.md`
+- `000-docs/020-DR-GUID-quick-reference.md` → `000-docs/045-DR-GUID-quick.md`
+- `000-docs/021-MC-MEMO-release-v1-0-40.md` → `000-docs/059-MC-MEMO-release-v1-0-40.md`
+- `000-docs/022-MC-MEMO-release-v2-0-0.md` → `000-docs/052-MC-MEMO-release-v2-0-0.md`
+- `000-docs/023-OD-RELS-v1-0-40-complete.md` → `000-docs/062-OD-RELS-v1-0-40-complete.md`
+- `000-docs/024-RA-ANLY-architecture-analysis.md` → `000-docs/044-RA-ANLY-architecture-analysis.md`
+- `000-docs/025-RA-AUDT-repo-audit-oct-2025.md` → `000-docs/048-RA-AUDT-repo-audit-oct-2025.md`
+- `000-docs/026-PM-PLAN-skills-implementation.md` → `000-docs/053-PP-PLAN-skills-implementation.md`
+- `000-docs/027-RA-AUDT-skills-powerkit-audit.md` → `000-docs/049-RA-AUDT-skills-powerkit-audit.md`
+- `000-docs/028-LS-STAT-skills-powerkit-release.md` → `000-docs/084-LS-STAT-skills-powerkit-release.md`
+- `000-docs/029-MC-MEMO-social-media.md` → `000-docs/060-MC-MEMO-social-media.md`
+- `000-docs/030-RL-RSRC-market-intelligence-oct-2025.md` → `000-docs/065-RL-RSRC-market-intelligence-oct-2025.md`
+- `000-docs/031-RL-PROP-monetization-strategy.md` → `000-docs/054-RL-PROP-monetization-strategy.md`
+- `000-docs/032-MC-MEMO-twitter-thread.md` → `000-docs/040-MC-MEMO-twitter-thread.md`
+- `000-docs/033-LS-LOGS-batch-processing-status.md` → `000-docs/089-LS-LOGS-batch-processing-status.md`
+- `000-docs/034-DR-GUID-agent-skills-guide.md` → `000-docs/087-DR-GUID-agent-skills.md`
+- `000-docs/035-AT-ADEC-safety-improvements.md` → `000-docs/085-AT-ADEC-safety-improvements.md`
+- `000-docs/036-TQ-TEST-skills-testing-plan.md` → `000-docs/090-TQ-TEST-skills-testing.md`
+- `000-docs/037-LS-LOGS-test-run-success.md` → `000-docs/086-LS-LOGS-test-run-success.md`
+- `000-docs/038-DR-GUID-vertex-quota-instructions.md` → `000-docs/088-DR-GUID-vertex-quota-instructions.md`
+- `000-docs/039-MS-INDX-research-index.md` → `000-docs/095-MS-INDX-research-index.md`
+- `000-docs/040-RA-ANLY-anthropic-skills-comparison.md` → `000-docs/097-RA-ANLY-anthropic-skills-comparison.md`
+- `000-docs/041-LS-SUMM-overnight-enhancement-system.md` → `000-docs/099-MC-SUMM-overnight-enhancement-system.md`
+- `000-docs/042-LS-STAT-credential-migration.md` → `000-docs/102-LS-STAT-credential-migration.md`
+- `000-docs/043-RA-SUMM-research-summary.md` → `000-docs/094-MC-SUMM-research.md`
+- `000-docs/044-DR-REFF-anthropic-agent-skills.md` → `000-docs/098-DR-REFF-anthropic-agent-skills.md`
+- `000-docs/045-RA-ANLY-competitive-analysis.md` → `000-docs/101-RA-ANLY-competitive-analysis.md`
+- `000-docs/046-DR-GUID-vertex-ai-batch-processing.md` → `000-docs/117-DR-GUID-vertex-ai-batch-processing.md`
+- `000-docs/047-RL-RSRC-plugin-installation-research.md` → `000-docs/093-RL-RSRC-plugin-installation-research.md`
+- `000-docs/048-RA-INDX-audit-index.md` → `000-docs/122-MS-INDX-audit-index.md`
+- `000-docs/049-RA-ANLY-batch-metrics-analysis.md` → `000-docs/112-RA-ANLY-batch-metrics-analysis.md`
+- `000-docs/050-RA-METR-batch-processing-metrics.md` → `000-docs/114-RA-METR-batch-processing-metrics.md`
+- `000-docs/051-DR-GUID-implementation-guide.md` → `000-docs/113-DR-GUID-implementation.md`
+- `000-docs/052-PM-BKLG-missing-skills-list.md` → `000-docs/119-PM-BKLG-missing-skills-list.md`
+- `000-docs/053-PM-BKLG-plugin-pack-requests.md` → `000-docs/069-PM-BKLG-plugin-pack-requests.md`
+- `000-docs/054-PM-TASK-priority-skills-todo.md` → `000-docs/121-PM-TASK-priority-skills-todo.md`
+- `000-docs/055-RA-REPT-proof-of-work.md` → `000-docs/116-RA-REPT-proof-work.md`
+- `000-docs/056-DR-GUID-seo-implementation.md` → `000-docs/072-DR-GUID-seo-implementation.md`
+- `000-docs/057-RA-SUMM-skills-audit-executive.md` → `000-docs/120-MC-SUMM-skills-audit-executive.md`
+- `000-docs/058-RA-AUDT-skills-audit-report.md` → `000-docs/118-RA-AUDT-skills-audit.md`
+- `000-docs/059-AT-ARCH-skills-generation.md` → `000-docs/115-AT-ARCH-skills-generation.md`
+- `000-docs/060-UC-GUID-user-security.md` → `000-docs/071-DR-GUID-user-security.md`
+- `000-docs/061-DR-REFF-vertex-ai-gemini-tiers.md` → `000-docs/130-DR-REFF-vertex-ai-gemini-tiers.md`
+- `000-docs/062-AT-DSGN-anthropic-design-tokens.md` → `000-docs/096-AT-DSGN-anthropic-design-tokens.md`
+- `000-docs/063-DR-GUID-creating-plugins.md` → `000-docs/068-DR-GUID-creating-plugins.md`
+- `000-docs/064-DR-GUID-getting-started.md` → `000-docs/073-DR-GUID-getting-started.md`
+- `000-docs/065-RL-PROP-monetization-alternatives.md` → `000-docs/070-RL-PROP-monetization-alternatives.md`
+- `000-docs/066-UC-GUID-quick-start-path.md` → `000-docs/081-DR-GUID-quick-start-path.md`
+- `000-docs/067-UC-GUID-plugin-creator-path.md` → `000-docs/076-DR-GUID-plugin-creator-path.md`
+- `000-docs/068-UC-GUID-advanced-developer-path.md` → `000-docs/082-DR-GUID-advanced-developer-path.md`
+- `000-docs/069-UC-PERS-ai-ml-developer.md` → `000-docs/078-UC-PERS-ai-ml-developer.md`
+- `000-docs/070-UC-PERS-crypto-trader.md` → `000-docs/080-UC-PERS-crypto-trader.md`
+- `000-docs/071-UC-PERS-devops-engineer.md` → `000-docs/077-UC-PERS-devops-engineer.md`
+- `000-docs/072-UC-PERS-security-specialist.md` → `000-docs/079-UC-PERS-security-specialist.md`
+- `000-docs/073-BL-POLI-sponsorship-info.md` → `000-docs/074-BL-POLI-sponsorship-info.md`
+- `000-docs/074-DR-REFF-seo-meta-tags.md` → `000-docs/075-DR-REFF-seo-meta-tags.md`
+- `000-docs/075-OD-RELS-changelog-v1-2-0.md` → `000-docs/127-OD-RELS-changelog-v1-2-0.md`
+- `000-docs/076-LS-STAT-credential-migration-ready.md` → `000-docs/104-LS-STAT-credential-migration-ready.md`
+- `000-docs/077-OD-CHKL-deployment-checklist.md` → `000-docs/028-DR-CHKL-deployment-checklist.md`
+- `000-docs/078-OD-REPT-deployment-report.md` → `000-docs/083-RA-REPT-deployment.md`
+- `000-docs/079-OD-CHKL-pre-release-check.md` → `000-docs/126-DR-CHKL-pre-release-check.md`
+- `000-docs/080-TQ-BUGR-fix-admincostplus-browser.md` → `000-docs/105-TQ-BUGR-fix-admincostplus-browser.md`
+- `000-docs/081-TQ-BUGR-fix-gh-auth-browser.md` → `000-docs/106-TQ-BUGR-fix-gh-auth-browser.md`
+- `000-docs/082-RL-PROP-life-sciences-plugins.md` → `000-docs/129-RL-PROP-life-sciences-plugins.md`
+- `000-docs/083-OD-RELS-github-release-v1-2-0.md` → `000-docs/128-OD-RELS-github-release-v1-2.md`
+- `000-docs/084-MC-SUMM-morning-review.md` → `000-docs/124-MC-SUMM-morning-review.md`
+- `000-docs/085-DR-SOPS-morning-workflow.md` → `000-docs/111-DR-SOPS-morning-workflow.md`
+- `000-docs/086-AA-AACR-lumera-agent-memory-implementation.md` → `000-docs/182-AA-AACR-lumera-agent-memory-implementation.md`
+- `000-docs/086-PP-PLAN-release-v1-2-0.md` → `000-docs/110-PP-PLAN-release-v1-2-0.md`
+- `000-docs/087-AA-REPT-jeremy-plugins-adk-audit.md` → `000-docs/144-RA-REPT-jeremy-plugins-adk-audit.md`
+- `000-docs/087-DR-SOPS-overnight-enhancement.md` → `000-docs/100-DR-SOPS-overnight-enhancement.md`
+- `000-docs/088-DR-SOPS-credential-migration.md` → `000-docs/103-DR-SOPS-credential-migration.md`
+- `000-docs/088-PP-PLAN-jeremy-plugins-update-roadmap.md` → `000-docs/145-PP-PLAN-jeremy-plugins-update-roadmap.md`
+- `000-docs/089-DR-CHKL-jeremy-plugins-quick-reference.md` → `000-docs/146-DR-CHKL-jeremy-plugins-quick.md`
+- `000-docs/089-RA-REPT-v1-0-42-verification.md` → `000-docs/029-RA-REPT-v1-0-42-verification.md`
+- `000-docs/090-AI-AUTOMATION-playbooks-generation.md` → `000-docs/194-MS-DRFT-090-ai-automation-playbooks.md`
+- `000-docs/090-AT-ADEC-adk-plugin-architecture-patterns.md` → `000-docs/147-AT-ADEC-adk-plugin-architecture-patterns.md`
+- `000-docs/090-LS-REPT-documentation-migration-2025-10-20.md` → `000-docs/131-RA-REPT-migration-2025-10-20.md`
+- `000-docs/091-DR-SOPS-read-me-first-morning.txt` → `000-docs/125-DR-SOPS-read-me-first-morning.txt`
+- `000-docs/091-SR-REPT-beads-aar-2025-12-24.md` → `000-docs/208-AA-AACR-beads-aar-2025-12.md`
+- `000-docs/092-AA-AMAP-current-state-map-2025-12-24.md` → `000-docs/209-MS-DRFT-current-state-map-2025.md`
+- `000-docs/092-LS-LOGS-test-enhancement.txt` → `000-docs/108-LS-LOGS-test-enhancement.txt`
+- `000-docs/093-AA-AMAP-target-state-map-2025-12-24.md` → `000-docs/210-MS-DRFT-target-state-map-2025.md`
+- `000-docs/093-LS-LOGS-overnight-enhancement-all.log` → `000-docs/123-LS-LOGS-overnight-enhancement-all.log`
+- `000-docs/094-LS-LOGS-test-10-plugins-complete.log` → `000-docs/109-LS-LOGS-test-10-plugins-complete.log`
+- `000-docs/094-OD-GUID-deployment-pipeline-2025-12-24.md` → `000-docs/211-DR-GUID-deployment-pipeline-2025-12.md`
+- `000-docs/095-LS-LOGS-test-10-plugins.log` → `000-docs/107-LS-LOGS-test-10-plugins.log`
+- `000-docs/095-OD-REPT-deployment-verification-2025-12-24.md` → `000-docs/212-RA-REPT-deployment-verification-2025-12.md`
+- `000-docs/096-SR-EXEC-deploy-blocker-resolution-2025-12-24.md` → `000-docs/213-MS-DRFT-deploy-blocker-resolution-2025.md`
+- `000-docs/097-DR-GUID-enterprise-customer-onboarding.md` → `000-docs/149-DR-GUID-enterprise-customer-onboarding.md`
+- `000-docs/098-PP-PLAN-nixtla-repository-rollout.md` → `000-docs/151-PP-PLAN-nixtla-repository-rollout.md`
+- `000-docs/098-RA-ANLY-life-sciences-mcp-research-2025-10-20.md` → `000-docs/132-RA-ANLY-life-sciences-mcp-research.md`
+- `000-docs/099-PM-TASK-generate-life-sciences-plugins.md` → `000-docs/133-PM-TASK-generate-life-sciences-plugins.md`
+- `000-docs/099-RA-INTL-nixtla-intelligence-briefing.md` → `000-docs/152-MS-DRFT-nixtla-intelligence-briefing.md`
+- `000-docs/100-AT-ARCH-nixtla-github-repository-structure.md` → `000-docs/153-AT-ARCH-nixtla-github-repository-structure.md`
+- `000-docs/100-SR-REPT-cli-v2-aar-2025-12-25.md` → `000-docs/242-AA-AACR-cli-v2-aar-2025.md`
+- `000-docs/103-AT-ARCH-search-to-slack-plugin-construction.md` → `000-docs/154-AT-ARCH-search-slack-plugin-construction.md`
+- `000-docs/104-AA-REPT-release-v1-4-1-website-accuracy.md` → `000-docs/155-RA-REPT-release-v1-4-1.md`
+- `000-docs/105-RA-AUDT-aitmpl-competitive-audit.md` → `000-docs/180-RA-AUDT-aitmpl-competitive-audit.md`
+- `000-docs/106-RA-AUDT-master-cumulative.md` → `000-docs/225-RA-AUDT-master-cumulative.md`
+- `000-docs/106a-RA-AUDT-data-model-technical.md` → `000-docs/220-RA-AUDT-data-model-technical.md`
+- `000-docs/106b-RA-AUDT-quick-reference.md` → `000-docs/221-RA-AUDT-quick.md`
+- `000-docs/106c-RA-AUDT-mobile-ux-findings.md` → `000-docs/223-RA-AUDT-mobile-ux-findings.md`
+- `000-docs/106d-RA-AUDT-validation-commands.sh` → `000-docs/222-RA-AUDT-validation-commands.sh`
+- `000-docs/106e-RA-AUDT-index.md` → `000-docs/224-RA-AUDT-index.md`
+- `000-docs/107-OP-STAT-phase-1-state-capture.md` → `000-docs/233-LS-STAT-phase-1-state-capture.md`
+- `000-docs/108-OP-EPIC-current-epics-and-beads.md` → `000-docs/234-MS-DRFT-current-epics-beads.md`
+- `000-docs/109-AT-GUID-ci-test-execution-enhancement.md` → `000-docs/176-DR-GUID-ci-test-execution-enhancement.md`
+- `000-docs/110-AT-REFF-ci-test-quick-reference.md` → `000-docs/177-DR-REFF-ci-test-quick.md`
+- `000-docs/111-AA-AACR-phase-1-ci-green-and-repo-hygiene.md` → `000-docs/236-AA-AACR-phase-1-ci-green.md`
+- `000-docs/112-AA-AACR-phase-2-foundation-clean-ops.md` → `000-docs/237-AA-AACR-phase-2-foundation-clean.md`
+- `000-docs/112-OP-PLAN-phase-1-recovery-plan.md` → `000-docs/235-PP-PLAN-phase-1-recovery.md`
+- `000-docs/113-PP-PLAN-phase-3-product-ready.md` → `000-docs/238-PP-PLAN-phase-3-product-ready.md`
+- `000-docs/115-RA-PH3A-analytics-dashboard-status.md` → `000-docs/239-MS-DRFT-115-ra-ph3a-analytics.md`
+- `000-docs/116-AA-REPT-phase-3.md` → `000-docs/240-RA-REPT-phase-3.md`
+- `000-docs/117-LS-HAND-phase-3-handoff.md` → `000-docs/241-MS-DRFT-phase-3-handoff.md`
+- `000-docs/118-AA-REPT-phase-5-aar.md` → `000-docs/244-AA-AACR-phase-5-aar.md`
+- `000-docs/120-RA-PH6A-state-snapshot.md` → `000-docs/245-MS-DRFT-120-ra-ph6a-state.md`
+- `000-docs/121-AA-REPT-phase-6-aar.md` → `000-docs/246-AA-AACR-phase-6-aar.md`
+- `000-docs/122-AA-AUDT-appaudit-devops-playbook.md` → `000-docs/248-RA-AUDT-appaudit-devops-playbook.md`
+- `000-docs/123-SR-STAT-session-accomplishments.md` → `000-docs/250-LS-STAT-session-accomplishments.md`
+- `000-docs/124-AA-REPT-metrics-canonicalization-aar.md` → `000-docs/251-AA-AACR-metrics-canonicalization-aar.md`
+- `000-docs/125-AA-REPT-playbooks-404s-fix.md` → `000-docs/254-RA-REPT-playbooks-404s-fix.md`
+- `000-docs/126-AA-AUDT-appaudit-devops-playbook.md` → `000-docs/252-RA-AUDT-appaudit-devops-playbook.md`
+- `000-docs/127-PP-STAT-beads-epics-status-report.md` → `000-docs/253-LS-STAT-beads-epics-status.md`
+- `000-docs/128-AA-REPT-0kh10-real-world-tests.md` → `000-docs/255-RA-REPT-0kh10-real-world-tests.md`
+- `000-docs/129-AA-REPT-link-integrity-guardrails.md` → `000-docs/256-RA-REPT-link-integrity-guardrails.md`
+- `000-docs/500-skills-engineering-analysis.md` → `000-docs/186-RA-ANLY-500-skills-engineering-analysis.md`
+- `000-docs/6767-a-SPEC-MASTER-claude-code-plugins-standard.md` → `000-docs/6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
+- `000-docs/6767-b-SPEC-MASTER-claude-skills-standard.md` → `000-docs/6767-b-SPEC-DR-STND-claude-skills-standard.md`
+- `000-docs/6767-c-DR-STND-claude-code-extensions-standard.md` → `000-docs/6767-c-DR-STND-claude-code-extensions-standard.md`
+- `000-docs/6767-d-AT-STND-claude-code-extensions-schema.md` → `000-docs/6767-d-AT-APIS-claude-code-extensions-schema.md`
+- `000-docs/6767-e-WA-STND-extensions-validation-and-ci-gates.md` → `000-docs/6767-e-WA-WFLW-extensions-validation-ci-gates.md`
+- `000-docs/6767-f-AT-ARCH-plugin-scaffold-diagrams.md` → `000-docs/6767-f-AT-ARCH-plugin-scaffold-diagrams.md`
+- `000-docs/6767-f-diagram-1-plugin-anatomy.mmd` → `000-docs/6767-f-AT-DIAG-plugin-anatomy-1.mmd`
+- `000-docs/6767-f-diagram-1-plugin-anatomy.png` → `000-docs/6767-f-AT-DIAG-plugin-anatomy-1.png`
+- `000-docs/6767-f-diagram-2-router-skill-script.mmd` → `000-docs/6767-f-AT-DIAG-router-skill-script-2.mmd`
+- `000-docs/6767-f-diagram-2-router-skill-script.png` → `000-docs/6767-f-AT-DIAG-router-skill-script-2.png`
+- `000-docs/6767-f-diagram-3-path-resolution.mmd` → `000-docs/6767-f-AT-DIAG-path-resolution-3.mmd`
+- `000-docs/6767-f-diagram-3-path-resolution.png` → `000-docs/6767-f-AT-DIAG-path-resolution-3.png`
+- `000-docs/6767-g-AT-ARCH-skill-scaffold-diagrams.md` → `000-docs/6767-g-AT-ARCH-skill-scaffold-diagrams.md`
+- `000-docs/6767-g-diagram-1-skill-scaffold.mmd` → `000-docs/6767-g-AT-DIAG-skill-scaffold-1.mmd`
+- `000-docs/6767-g-diagram-1-skill-scaffold.png` → `000-docs/6767-g-AT-DIAG-skill-scaffold-1.png`
+- `000-docs/6767-g-diagram-2-discovery-activation.mmd` → `000-docs/6767-g-AT-DIAG-discovery-activation-2.mmd`
+- `000-docs/6767-g-diagram-2-discovery-activation.png` → `000-docs/6767-g-AT-DIAG-discovery-activation-2.png`
+- `000-docs/6767-g-diagram-3-read-process-write.mmd` → `000-docs/6767-g-AT-DIAG-read-process-write-3.mmd`
+- `000-docs/6767-g-diagram-3-read-process-write.png` → `000-docs/6767-g-AT-DIAG-read-process-write-3.png`
+- `000-docs/6767-g-diagram-4-security-boundary.mmd` → `000-docs/6767-g-AT-DIAG-security-boundary-4.mmd`
+- `000-docs/6767-g-diagram-4-security-boundary.png` → `000-docs/6767-g-AT-DIAG-security-boundary-4.png`
+- `000-docs/998-OD-RPRT-intent-solutions-standard-enhancements.md` → `000-docs/173-MS-DRFT-intent-solutions-standard-enhancements.md`
+- `000-docs/999-OD-RPRT-overnight-skills-fix-final-report.md` → `000-docs/172-RA-REPT-overnight-skills-fix-final.md`
+- `000-docs/AGENT_SKILLS_STRUCTURE_AUDIT.md` → `000-docs/135-RA-AUDT-agent-skills-structure-audit.md`
+- `000-docs/ANTHROPIC_SKILLS_COMPARISON.md` → `000-docs/134-MS-DRFT-anthropic-skills-comparison.md`
+- `000-docs/IMG_1522.JPG` → `000-docs/156-MS-DRFT-img-1522.jpg`
+- `000-docs/MANIFEST-SKILL-GROUP-5.json` → `000-docs/170-MS-DRFT-manifest-skill-group-5.json`
+- `000-docs/MCP_PLUGINS_AUDIT_REPORT_2025-12-10.md` → `000-docs/175-RA-AUDT-mcp-plugins-audit-2025.md`
+- `000-docs/PLAN-500-skills-generation.md` → `000-docs/179-MS-DRFT-500-skills-generation.md`
+- `000-docs/POST-MORTEM-P0-SYSTEM-OVERHAUL-2025-12-24.md` → `000-docs/218-MS-DRFT-post-mortem-p0-system.md`
+- `000-docs/Package-Policy.md` → `000-docs/193-MS-DRFT-package-policy.md`
+- `000-docs/SKILL-GROUP-2-GENERATION-REPORT.md` → `000-docs/169-RA-REPT-skill-group-2-generation.md`
+- `000-docs/SKILL-GROUP-2-SCRIPTS-INDEX.md` → `000-docs/171-MS-DRFT-skill-group-2-scripts.md`
+- `000-docs/SKILLS_MIGRATION_SUMMARY.md` → `000-docs/139-MS-DRFT-skills-migration.md`
+- `000-docs/SKILLS_MIGRATION_ULTRATHINK.md` → `000-docs/137-MS-DRFT-skills-migration-ultrathink.md`
+- `000-docs/SKILLS_STRUCTURE_COMPARISON.md` → `000-docs/136-MS-DRFT-skills-structure-comparison.md`
+- `000-docs/SPONSOR-POSITIONING-FRAMEWORK.md` → `000-docs/158-MS-DRFT-sponsor-positioning-framework.md`
+- `000-docs/TASKWARRIOR_MIGRATION_PLAN.md` → `000-docs/138-MS-DRFT-taskwarrior-migration.md`
+- `000-docs/awesome-claude-skills-audit.md` → `000-docs/161-RA-AUDT-awesome-claude-skills-audit.md`
+- `000-docs/enterprise-marketplace-template.json` → `000-docs/148-DR-TMPL-enterprise-marketplace-template.json`
+- `000-docs/enterprise-repo-setup.sh` → `000-docs/150-MS-DRFT-enterprise-repo-setup.sh`
+- `000-docs/epic-500-skills-complete-plan.md` → `000-docs/188-MS-DRFT-epic-500-skills-complete.md`
+- `000-docs/gemini-testing-cicd-plan.md` → `000-docs/187-MS-DRFT-gemini-testing-cicd.md`
+- `000-docs/jeremy-plugin-tool-audit.md` → `000-docs/191-RA-AUDT-jeremy-plugin-tool-audit.md`
+- `000-docs/paid-services-audit.md` → `000-docs/190-RA-AUDT-paid-services-audit.md`
+- `000-docs/release-commands-upgrade-report.md` → `000-docs/162-RA-REPT-release-commands-upgrade.md`
+- `000-docs/review-pipeline-user-guide.md` → `000-docs/189-DR-GUID-review-pipeline-user.md`
+- `000-docs/skills-audit-report-2024-12.md` → `000-docs/159-RA-AUDT-skills-audit-2024-12.md`
+- `000-docs/skills-fix-orchestration-plan.md` → `000-docs/160-MS-DRFT-skills-fix-orchestration.md`
+- `000-docs/sponsorship-outreach-template.md` → `000-docs/195-DR-TMPL-sponsorship-outreach-template.md`
+- `CHANGELOG.md` → `000-docs/247-OD-CHNG-changelog.md`
+- `CODE_OF_CONDUCT.md` → `000-docs/006-BL-POLI-code-of-conduct.md`
+- `CONTRIBUTING.md` → `000-docs/007-DR-GUID-contributing.md`
+- `EPIC-B-COMPLETE-EVIDENCE.md` → `000-docs/227-RA-REPT-epic-b-evidence.md`
+- `EPIC-C-COMPLETE-EVIDENCE.md` → `000-docs/230-RA-REPT-epic-c-evidence.md`
+- `INTENT_SOLUTIONS_ENHANCEMENT_REPORT.md` → `000-docs/178-RA-REPT-intent-solutions.md`
+- `INTERACTIVE-LAB-PLAN.md` → `000-docs/183-PP-PLAN-interactive-lab.md`
+- `LICENSE` → `000-docs/001-BL-LICN-license.txt`
+- `P0-IMPLEMENTATION-REPORT.md` → `000-docs/219-RA-REPT-p0-implementation.md`
+- `P0-STABILIZATION-COMPLETE.md` → `000-docs/231-RA-REPT-p0-stabilization.md`
+- `PHASE0-AUDIT.md` → `000-docs/232-RA-AUDT-phase0-audit.md`
+- `SECURITY.md` → `000-docs/008-TQ-SECU-security.md`
+- `SETUP.md` → `000-docs/017-DR-MANL-setup.md`
+- `TESTING.md` → `000-docs/215-TQ-TEST-testing.md`
+- `TESTING_QUICK_REFERENCE.md` → `000-docs/216-DR-REFF-testing-quickref.md`
+- `TROUBLESHOOTING.md` → `000-docs/157-DR-FAQS-troubleshooting.md`
+- `archive/development-docs/200_PLUGIN_MISSION_COMPLETE.md` → `000-docs/015-MS-OLDV-200-plugin-mission-complete.md`
+- `archive/development-docs/AI_ML_PLUGINS_COMPLETE.md` → `000-docs/014-MS-OLDV-ai-ml-plugins-complete.md`
+- `archive/development-docs/EXECUTIVE-SUMMARY.md` → `000-docs/036-MS-OLDV-executive.md`
+- `archive/development-docs/FIRST_MOVER_REPORT.md` → `000-docs/022-MS-OLDV-first-mover.md`
+- `archive/development-docs/IMPLEMENTATION_STATUS.md` → `000-docs/003-MS-OLDV-implementation-status.md`
+- `archive/development-docs/MARKETPLACE-AUDIT.md` → `000-docs/021-MS-OLDV-marketplace-audit.md`
+- `archive/development-docs/MARKETPLACE-READY.md` → `000-docs/030-MS-OLDV-marketplace-ready.md`
+- `archive/development-docs/MARKETPLACE_GENERATION_COMPLETE.md` → `000-docs/016-MS-OLDV-marketplace-generation-complete.md`
+- `archive/development-docs/MCP-SERVERS-STATUS.md` → `000-docs/012-MS-OLDV-mcp-servers-status.md`
+- `archive/development-docs/PHASE-1-COMPLETION-REPORT.md` → `000-docs/004-MS-OLDV-phase-1-completion.md`
+- `archive/development-docs/PHASE-1-STATUS.md` → `000-docs/033-MS-OLDV-phase-1-status.md`
+- `archive/development-docs/PHASED-DEVELOPMENT-PLAN.md` → `000-docs/031-MS-OLDV-phased-development.md`
+- `archive/development-docs/PLUGIN-CATEGORIZATION-MATRIX.md` → `000-docs/032-MS-OLDV-plugin-categorization-matrix.md`
+- `archive/development-docs/PLUGIN_CATALOG.md` → `000-docs/010-MS-OLDV-plugin-catalog.md`
+- `archive/development-docs/PLUGIN_REPO_REPORT.md` → `000-docs/023-MS-OLDV-plugin-repo.md`
+- `archive/development-docs/RELEASE-PLAN.md` → `000-docs/020-MS-OLDV-release.md`
+- `archive/development-docs/RELEASE_v1.0.0.md` → `000-docs/011-MS-OLDV-release-v1-0-0.md`
+- `archive/development-docs/RESEARCH-FINDINGS.md` → `000-docs/035-MS-OLDV-research-findings.md`
+- `archive/development-docs/RESTRUCTURE_COMPLETE.md` → `000-docs/013-MS-OLDV-restructure-complete.md`
+- `archive/development-docs/TASK_COMPLETE.md` → `000-docs/009-MS-OLDV-task-complete.md`
+- `archive/development-docs/TOP-TIER-PLUGIN-IDEAS.md` → `000-docs/034-MS-OLDV-top-tier-plugin-ideas.md`
+- `asset-audit-report-20251115.txt` → `000-docs/142-RA-AUDT-asset-audit.txt`
+- `audit-reports/SECURITY-STATUS.md` → `000-docs/005-TQ-SECU-security-status.md`
+- `docs/announcements/2025-12-26-all-plugins-free.md` → `000-docs/249-MC-MEMO-2025-12-26-all.md`
+- `marketplace/DEPLOYMENT_GUIDE.md` → `000-docs/018-DR-GUID-marketplace-deployment.md`
+- `marketplace/DEPLOYMENT_STATUS.md` → `000-docs/024-LS-STAT-marketplace-deployment-status.md`
+- `marketplace/DEPLOYMENT_SUMMARY.md` → `000-docs/025-RA-REPT-marketplace-deployment.md`
+- `marketplace/GENERATION_REPORT.md` → `000-docs/002-RA-REPT-marketplace-generation.md`
+- `marketplace/INTENT_SOLUTIONS_THEME_GUIDE.md` → `000-docs/027-DR-GUID-marketplace-theme.md`
+- `marketplace/PROOF_GATE_EVIDENCE.md` → `000-docs/228-RA-REPT-proof-gate-evidence.md`
+- `marketplace/QUICK_DEPLOY_GUIDE.md` → `000-docs/026-DR-GUID-marketplace-deployment.md`
+- `marketplace/README.md` → `000-docs/217-DR-GUID-marketplace.md`
+- `marketplace/REDESIGN_SUMMARY.md` → `000-docs/019-MS-DRFT-redesign.md`
+- `marketplace/SEO_SETUP.md` → `000-docs/192-DR-GUID-marketplace-seo.md`
+- `marketplace/SKILLS-PAGES-IMPLEMENTATION.md` → `000-docs/214-MS-DRFT-skills-pages-implementation.md`
+- `marketplace/TESTING.md` → `000-docs/226-TQ-TEST-marketplace-testing.md`
+- `marketplace/TESTING_QUICK_REFERENCE.md` → `000-docs/229-DR-REFF-marketplace-testing-quickref.md`
+- `notebooks/README.md` → `000-docs/184-MS-INDX-notebooks.md`
+- `playbooks/01-multi-agent-rate-limits.md` → `000-docs/204-DR-SOPS-01-multi-agent-rate.md`
+- `playbooks/02-cost-caps.md` → `000-docs/196-DR-SOPS-02-cost-caps.md`
+- `playbooks/03-mcp-reliability.md` → `000-docs/198-DR-SOPS-03-mcp-reliability.md`
+- `playbooks/04-ollama-migration.md` → `000-docs/199-DR-SOPS-04-ollama-migration.md`
+- `playbooks/05-incident-debugging.md` → `000-docs/203-DR-SOPS-05-incident-debugging.md`
+- `playbooks/06-self-hosted-stack.md` → `000-docs/202-DR-SOPS-06-self-hosted-stack.md`
+- `playbooks/07-compliance-audit.md` → `000-docs/200-DR-SOPS-07-compliance-audit.md`
+- `playbooks/08-team-presets.md` → `000-docs/197-DR-SOPS-08-team-presets.md`
+- `playbooks/09-cost-attribution.md` → `000-docs/201-DR-SOPS-09-cost-attribution.md`
+- `playbooks/10-progressive-enhancement.md` → `000-docs/205-DR-SOPS-10-progressive-enhancement.md`
+- `playbooks/11-advanced-tool-use.md` → `000-docs/207-DR-SOPS-11-advanced-tool-use.md`
+- `playbooks/README.md` → `000-docs/206-DR-SOPS-readme.md`
+- `tutorials/README.md` → `000-docs/185-MS-INDX-tutorials.md`
+
+## 6) Link Fixes
+
+Updated internal references to moved docs in key places:
+- `README.md` (badges + doc links)
+- `CLAUDE.md`, `AGENTS.md` (where applicable)
+- scripts and release docs referencing moved files
+
+## 7) Open Questions / Ambiguities
+
+- This repo currently ignores `000-docs/` by default in `.gitignore` (except `6767*.md`). If more docs should be versioned, consider adjusting ignore rules intentionally.
+
+## 8) Final Compliance Snapshot
+
+Root docs:
+- `AGENTS.md`
+- `CLAUDE.md`
+- `README.md`
+
+`000-docs/` files:
+- `001-BL-LICN-license.txt`
+- `002-RA-REPT-marketplace-generation.md`
+- `003-MS-OLDV-implementation-status.md`
+- `004-MS-OLDV-phase-1-completion.md`
+- `005-TQ-SECU-security-status.md`
+- `006-BL-POLI-code-of-conduct.md`
+- `007-DR-GUID-contributing.md`
+- `008-TQ-SECU-security.md`
+- `009-MS-OLDV-task-complete.md`
+- `010-MS-OLDV-plugin-catalog.md`
+- `011-MS-OLDV-release-v1-0-0.md`
+- `012-MS-OLDV-mcp-servers-status.md`
+- `013-MS-OLDV-restructure-complete.md`
+- `014-MS-OLDV-ai-ml-plugins-complete.md`
+- `015-MS-OLDV-200-plugin-mission-complete.md`
+- `016-MS-OLDV-marketplace-generation-complete.md`
+- `017-DR-MANL-setup.md`
+- `018-DR-GUID-marketplace-deployment.md`
+- `019-MS-DRFT-redesign.md`
+- `020-MS-OLDV-release.md`
+- `021-MS-OLDV-marketplace-audit.md`
+- `022-MS-OLDV-first-mover.md`
+- `023-MS-OLDV-plugin-repo.md`
+- `024-LS-STAT-marketplace-deployment-status.md`
+- `025-RA-REPT-marketplace-deployment.md`
+- `026-DR-GUID-marketplace-deployment.md`
+- `027-DR-GUID-marketplace-theme.md`
+- `028-DR-CHKL-deployment-checklist.md`
+- `029-RA-REPT-v1-0-42-verification.md`
+- `030-MS-OLDV-marketplace-ready.md`
+- `031-MS-OLDV-phased-development.md`
+- `032-MS-OLDV-plugin-categorization-matrix.md`
+- `033-MS-OLDV-phase-1-status.md`
+- `034-MS-OLDV-top-tier-plugin-ideas.md`
+- `035-MS-OLDV-research-findings.md`
+- `036-MS-OLDV-executive.md`
+- `037-RA-AUDT-anthropic-quality-audit.md`
+- `038-LS-STAT-v1-0-42-complete.md`
+- `039-MS-INDX-master-index.md`
+- `040-MC-MEMO-twitter-thread.md`
+- `041-PM-TASK-quality-master-tasks.md`
+- `042-MC-SUMM-session.md`
+- `043-MC-MEMO-launch-v1-0-42.md`
+- `044-RA-ANLY-architecture-analysis.md`
+- `045-DR-GUID-quick.md`
+- `046-MC-SUMM-quality-exec.md`
+- `047-RA-AUDT-compliance-audit.md`
+- `048-RA-AUDT-repo-audit-oct-2025.md`
+- `049-RA-AUDT-skills-powerkit-audit.md`
+- `050-DR-REFF-compliance-fixes.md`
+- `051-RL-RSRC-anthropic-updates-oct-2025.md`
+- `052-MC-MEMO-release-v2-0-0.md`
+- `053-PP-PLAN-skills-implementation.md`
+- `054-RL-PROP-monetization-strategy.md`
+- `055-LS-STAT-autonomous-impl-complete.md`
+- `056-OD-RELS-github-v1-0-40.md`
+- `057-MC-MEMO-github-discussions.md`
+- `058-MC-SUMM-audit.md`
+- `059-MC-MEMO-release-v1-0-40.md`
+- `060-MC-MEMO-social-media.md`
+- `061-DR-CHKL-deployment-v1-0-42.md`
+- `062-OD-RELS-v1-0-40-complete.md`
+- `063-MC-SUMM-exec-oct-2025.md`
+- `064-PM-TASK-quality-improvements.md`
+- `065-RL-RSRC-market-intelligence-oct-2025.md`
+- `066-AT-DIAG-architecture-diagrams.md`
+- `067-DR-TMPL-quality-template.md`
+- `068-DR-GUID-creating-plugins.md`
+- `069-PM-BKLG-plugin-pack-requests.md`
+- `070-RL-PROP-monetization-alternatives.md`
+- `071-DR-GUID-user-security.md`
+- `072-DR-GUID-seo-implementation.md`
+- `073-DR-GUID-getting-started.md`
+- `074-BL-POLI-sponsorship-info.md`
+- `075-DR-REFF-seo-meta-tags.md`
+- `076-DR-GUID-plugin-creator-path.md`
+- `077-UC-PERS-devops-engineer.md`
+- `078-UC-PERS-ai-ml-developer.md`
+- `079-UC-PERS-security-specialist.md`
+- `080-UC-PERS-crypto-trader.md`
+- `081-DR-GUID-quick-start-path.md`
+- `082-DR-GUID-advanced-developer-path.md`
+- `083-RA-REPT-deployment.md`
+- `084-LS-STAT-skills-powerkit-release.md`
+- `085-AT-ADEC-safety-improvements.md`
+- `086-LS-LOGS-test-run-success.md`
+- `087-DR-GUID-agent-skills.md`
+- `088-DR-GUID-vertex-quota-instructions.md`
+- `089-LS-LOGS-batch-processing-status.md`
+- `090-TQ-TEST-skills-testing.md`
+- `091-DR-REFF-filing-system-standard-v2.md`
+- `092-MS-INDX-master-index.md`
+- `093-RL-RSRC-plugin-installation-research.md`
+- `094-MC-SUMM-research.md`
+- `095-MS-INDX-research-index.md`
+- `096-AT-DSGN-anthropic-design-tokens.md`
+- `097-RA-ANLY-anthropic-skills-comparison.md`
+- `098-DR-REFF-anthropic-agent-skills.md`
+- `099-MC-SUMM-overnight-enhancement-system.md`
+- `100-DR-SOPS-overnight-enhancement.md`
+- `101-RA-ANLY-competitive-analysis.md`
+- `102-LS-STAT-credential-migration.md`
+- `103-DR-SOPS-credential-migration.md`
+- `104-LS-STAT-credential-migration-ready.md`
+- `105-TQ-BUGR-fix-admincostplus-browser.md`
+- `106-TQ-BUGR-fix-gh-auth-browser.md`
+- `107-LS-LOGS-test-10-plugins.log`
+- `108-LS-LOGS-test-enhancement.txt`
+- `109-LS-LOGS-test-10-plugins-complete.log`
+- `110-PP-PLAN-release-v1-2-0.md`
+- `111-DR-SOPS-morning-workflow.md`
+- `112-RA-ANLY-batch-metrics-analysis.md`
+- `113-DR-GUID-implementation.md`
+- `114-RA-METR-batch-processing-metrics.md`
+- `115-AT-ARCH-skills-generation.md`
+- `116-RA-REPT-proof-work.md`
+- `117-DR-GUID-vertex-ai-batch-processing.md`
+- `118-RA-AUDT-skills-audit.md`
+- `119-PM-BKLG-missing-skills-list.md`
+- `120-MC-SUMM-skills-audit-executive.md`
+- `121-PM-TASK-priority-skills-todo.md`
+- `122-MS-INDX-audit-index.md`
+- `123-LS-LOGS-overnight-enhancement-all.log`
+- `124-MC-SUMM-morning-review.md`
+- `125-DR-SOPS-read-me-first-morning.txt`
+- `126-DR-CHKL-pre-release-check.md`
+- `127-OD-RELS-changelog-v1-2-0.md`
+- `128-OD-RELS-github-release-v1-2.md`
+- `129-RL-PROP-life-sciences-plugins.md`
+- `130-DR-REFF-vertex-ai-gemini-tiers.md`
+- `131-RA-REPT-migration-2025-10-20.md`
+- `132-RA-ANLY-life-sciences-mcp-research.md`
+- `133-PM-TASK-generate-life-sciences-plugins.md`
+- `134-MS-DRFT-anthropic-skills-comparison.md`
+- `135-RA-AUDT-agent-skills-structure-audit.md`
+- `136-MS-DRFT-skills-structure-comparison.md`
+- `137-MS-DRFT-skills-migration-ultrathink.md`
+- `138-MS-DRFT-taskwarrior-migration.md`
+- `139-MS-DRFT-skills-migration.md`
+- `140-AT-ARCH-cleanup-2025-10-27.md`
+- `141-AT-ARCH-marketplace-consolidation-2025-10.md`
+- `142-RA-AUDT-asset-audit.txt`
+- `143-MS-DRFT-v1-3-2-release.md`
+- `144-RA-REPT-jeremy-plugins-adk-audit.md`
+- `145-PP-PLAN-jeremy-plugins-update-roadmap.md`
+- `146-DR-CHKL-jeremy-plugins-quick.md`
+- `147-AT-ADEC-adk-plugin-architecture-patterns.md`
+- `148-DR-TMPL-enterprise-marketplace-template.json`
+- `149-DR-GUID-enterprise-customer-onboarding.md`
+- `150-MS-DRFT-enterprise-repo-setup.sh`
+- `151-PP-PLAN-nixtla-repository-rollout.md`
+- `152-MS-DRFT-nixtla-intelligence-briefing.md`
+- `153-AT-ARCH-nixtla-github-repository-structure.md`
+- `154-AT-ARCH-search-slack-plugin-construction.md`
+- `155-RA-REPT-release-v1-4-1.md`
+- `156-MS-DRFT-img-1522.jpg`
+- `157-DR-FAQS-troubleshooting.md`
+- `158-MS-DRFT-sponsor-positioning-framework.md`
+- `159-RA-AUDT-skills-audit-2024-12.md`
+- `160-MS-DRFT-skills-fix-orchestration.md`
+- `161-RA-AUDT-awesome-claude-skills-audit.md`
+- `162-RA-REPT-release-commands-upgrade.md`
+- `163-LS-STAT-cto-repository-status.md`
+- `164-LS-STAT-cto-automated-fixes.md`
+- `165-LS-STAT-cto-final-completion.md`
+- `166-MS-DRFT-004-sr-recov-star.md`
+- `167-MS-DRFT-001-skills-group-5.md`
+- `168-MS-DRFT-002-skill-group-5.md`
+- `169-RA-REPT-skill-group-2-generation.md`
+- `170-MS-DRFT-manifest-skill-group-5.json`
+- `171-MS-DRFT-skill-group-2-scripts.md`
+- `172-RA-REPT-overnight-skills-fix-final.md`
+- `173-MS-DRFT-intent-solutions-standard-enhancements.md`
+- `174-RA-REPT-ci-cd-pipeline-audit.md`
+- `175-RA-AUDT-mcp-plugins-audit-2025.md`
+- `176-DR-GUID-ci-test-execution-enhancement.md`
+- `177-DR-REFF-ci-test-quick.md`
+- `178-RA-REPT-intent-solutions.md`
+- `179-MS-DRFT-500-skills-generation.md`
+- `180-RA-AUDT-aitmpl-competitive-audit.md`
+- `181-AT-DSGN-marketplace-vnext-world-class.md`
+- `182-AA-AACR-lumera-agent-memory-implementation.md`
+- `183-PP-PLAN-interactive-lab.md`
+- `184-MS-INDX-notebooks.md`
+- `185-MS-INDX-tutorials.md`
+- `186-RA-ANLY-500-skills-engineering-analysis.md`
+- `187-MS-DRFT-gemini-testing-cicd.md`
+- `188-MS-DRFT-epic-500-skills-complete.md`
+- `189-DR-GUID-review-pipeline-user.md`
+- `190-RA-AUDT-paid-services-audit.md`
+- `191-RA-AUDT-jeremy-plugin-tool-audit.md`
+- `192-DR-GUID-marketplace-seo.md`
+- `193-MS-DRFT-package-policy.md`
+- `194-MS-DRFT-090-ai-automation-playbooks.md`
+- `195-DR-TMPL-sponsorship-outreach-template.md`
+- `196-DR-SOPS-02-cost-caps.md`
+- `197-DR-SOPS-08-team-presets.md`
+- `198-DR-SOPS-03-mcp-reliability.md`
+- `199-DR-SOPS-04-ollama-migration.md`
+- `200-DR-SOPS-07-compliance-audit.md`
+- `201-DR-SOPS-09-cost-attribution.md`
+- `202-DR-SOPS-06-self-hosted-stack.md`
+- `203-DR-SOPS-05-incident-debugging.md`
+- `204-DR-SOPS-01-multi-agent-rate.md`
+- `205-DR-SOPS-10-progressive-enhancement.md`
+- `206-DR-SOPS-readme.md`
+- `207-DR-SOPS-11-advanced-tool-use.md`
+- `208-AA-AACR-beads-aar-2025-12.md`
+- `209-MS-DRFT-current-state-map-2025.md`
+- `210-MS-DRFT-target-state-map-2025.md`
+- `211-DR-GUID-deployment-pipeline-2025-12.md`
+- `212-RA-REPT-deployment-verification-2025-12.md`
+- `213-MS-DRFT-deploy-blocker-resolution-2025.md`
+- `214-MS-DRFT-skills-pages-implementation.md`
+- `215-TQ-TEST-testing.md`
+- `216-DR-REFF-testing-quickref.md`
+- `217-DR-GUID-marketplace.md`
+- `218-MS-DRFT-post-mortem-p0-system.md`
+- `219-RA-REPT-p0-implementation.md`
+- `220-RA-AUDT-data-model-technical.md`
+- `221-RA-AUDT-quick.md`
+- `222-RA-AUDT-validation-commands.sh`
+- `223-RA-AUDT-mobile-ux-findings.md`
+- `224-RA-AUDT-index.md`
+- `225-RA-AUDT-master-cumulative.md`
+- `226-TQ-TEST-marketplace-testing.md`
+- `227-RA-REPT-epic-b-evidence.md`
+- `228-RA-REPT-proof-gate-evidence.md`
+- `229-DR-REFF-marketplace-testing-quickref.md`
+- `230-RA-REPT-epic-c-evidence.md`
+- `231-RA-REPT-p0-stabilization.md`
+- `232-RA-AUDT-phase0-audit.md`
+- `233-LS-STAT-phase-1-state-capture.md`
+- `234-MS-DRFT-current-epics-beads.md`
+- `235-PP-PLAN-phase-1-recovery.md`
+- `236-AA-AACR-phase-1-ci-green.md`
+- `237-AA-AACR-phase-2-foundation-clean.md`
+- `238-PP-PLAN-phase-3-product-ready.md`
+- `239-MS-DRFT-115-ra-ph3a-analytics.md`
+- `240-RA-REPT-phase-3.md`
+- `241-MS-DRFT-phase-3-handoff.md`
+- `242-AA-AACR-cli-v2-aar-2025.md`
+- `243-AA-AACR-phase-4-aar.md`
+- `244-AA-AACR-phase-5-aar.md`
+- `245-MS-DRFT-120-ra-ph6a-state.md`
+- `246-AA-AACR-phase-6-aar.md`
+- `247-OD-CHNG-changelog.md`
+- `248-RA-AUDT-appaudit-devops-playbook.md`
+- `249-MC-MEMO-2025-12-26-all.md`
+- `250-LS-STAT-session-accomplishments.md`
+- `251-AA-AACR-metrics-canonicalization-aar.md`
+- `252-RA-AUDT-appaudit-devops-playbook.md`
+- `253-LS-STAT-beads-epics-status.md`
+- `254-RA-REPT-playbooks-404s-fix.md`
+- `255-RA-REPT-0kh10-real-world-tests.md`
+- `256-RA-REPT-link-integrity-guardrails.md`
+- `6767-a-SPEC-DR-STND-claude-code-plugins-standard.md`
+- `6767-b-SPEC-DR-STND-claude-skills-standard.md`
+- `6767-c-DR-STND-claude-code-extensions-standard.md`
+- `6767-d-AT-APIS-claude-code-extensions-schema.md`
+- `6767-e-WA-WFLW-extensions-validation-ci-gates.md`
+- `6767-f-AT-ARCH-plugin-scaffold-diagrams.md`
+- `6767-f-AT-DIAG-path-resolution-3.mmd`
+- `6767-f-AT-DIAG-path-resolution-3.png`
+- `6767-f-AT-DIAG-plugin-anatomy-1.mmd`
+- `6767-f-AT-DIAG-plugin-anatomy-1.png`
+- `6767-f-AT-DIAG-router-skill-script-2.mmd`
+- `6767-f-AT-DIAG-router-skill-script-2.png`
+- `6767-g-AT-ARCH-skill-scaffold-diagrams.md`
+- `6767-g-AT-DIAG-discovery-activation-2.mmd`
+- `6767-g-AT-DIAG-discovery-activation-2.png`
+- `6767-g-AT-DIAG-read-process-write-3.mmd`
+- `6767-g-AT-DIAG-read-process-write-3.png`
+- `6767-g-AT-DIAG-security-boundary-4.mmd`
+- `6767-g-AT-DIAG-security-boundary-4.png`
+- `6767-g-AT-DIAG-skill-scaffold-1.mmd`
+- `6767-g-AT-DIAG-skill-scaffold-1.png`
+- `257-AA-AACR-doc-filing-cleanup.md`
+

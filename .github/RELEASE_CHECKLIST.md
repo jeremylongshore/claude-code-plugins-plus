@@ -178,7 +178,7 @@ Use this checklist for all future releases of the Claude Code Plugins Marketplac
   - [Improvement 2]
 
   ##  Full Changelog
-  See the [complete changelog](https://github.com/jeremylongshore/claude-code-plugins/blob/main/CHANGELOG.md#xyz---yyyy-mm-dd) for all details.
+  See the [complete changelog](https://github.com/jeremylongshore/claude-code-plugins/blob/main/000-docs/247-OD-CHNG-changelog.md#xyz---yyyy-mm-dd) for all details.
 
   ##  Upgrade
   \`\`\`bash

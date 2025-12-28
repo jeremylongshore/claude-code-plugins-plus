@@ -9,7 +9,7 @@ license: MIT
 ---
 # Spec Writing
 
-Specifications drive the entire sprint workflow. Well-written specs lead to focused implementations; vague specs cause wasted iterations. This skill covers writing effective `specs.md` files that guide autonomous agents toward successful outcomes.
+Write clear `specs.md` sprint specifications that drive autonomous agent execution. Use this when defining scope, requirements, and testing expectations for a sprint.
 
 
 

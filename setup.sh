@@ -41,7 +41,7 @@ git commit -m "Initial commit: Claude Code Plugin Marketplace
 - 4 plugin templates for developers
 - Comprehensive documentation (6 docs files)
 - GitHub workflows and issue templates
-- CONTRIBUTING.md with submission guidelines
+- 000-docs/007-DR-GUID-contributing.md with submission guidelines
 - Professional README with badges and clear structure
 
 🚀 Generated with Claude Code" || echo "ℹ️  Commit already exists or nothing to commit"
@@ -70,5 +70,5 @@ echo "   /hello"
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "📖 See SETUP.md for detailed instructions"
+echo "📖 See 000-docs/017-DR-MANL-setup.md for detailed instructions"
 echo ""

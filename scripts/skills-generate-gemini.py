@@ -64,13 +64,13 @@ Plugin Files Context:
 
 Generate a SKILL.md file that follows this EXACT format:
 
----
-name: [Descriptive Skill Name]
-description: |
-  [2-3 sentences explaining WHEN this skill activates automatically and WHAT it does.
-  Focus on the trigger conditions and the value it provides.]
-allowed-tools: [Read, Grep, Glob, Bash, Edit, Write]
----
+	---
+	name: [Descriptive Skill Name]
+	description: |
+	  [2-3 sentences explaining WHEN this skill activates automatically and WHAT it does.
+	  Focus on the trigger conditions and the value it provides.]
+	allowed-tools: "Read, Grep, Glob, Edit, Write, Bash(git:*), Bash(python:*)"
+	---
 
 ## How It Works
 

@@ -89,7 +89,8 @@ DEFAULT_AUTHOR = "Jeremy Longshore <jeremy@intentsolutions.io>"
 DEFAULT_LICENSE = "MIT"
 
 # Skill list token budget (Lee Han Chung deep dive): total descriptions are aggregated.
-# Enforce a hard cap and warn when approaching.
+# NOTE: This repo hosts many skills; the "installed set" varies by user/workflow.
+# This check is optional via --check-description-budget.
 TOTAL_DESCRIPTION_BUDGET_WARN = 12_000
 TOTAL_DESCRIPTION_BUDGET_ERROR = 15_000
 
@@ -153,11 +154,9 @@ def parse_frontmatter(content: str) -> Tuple[dict, str]:
 
 
 def parse_allowed_tools(tools_value: Any) -> List[str]:
-    """Parse allowed-tools which can be CSV string or YAML array."""
-    if isinstance(tools_value, list):
-        return tools_value
-    elif isinstance(tools_value, str):
-        return [t.strip() for t in tools_value.split(',')]
+    """Parse allowed-tools as a CSV string (Anthropic + enterprise standard)."""
+    if isinstance(tools_value, str):
+        return [t.strip() for t in tools_value.split(',') if t.strip()]
     return []
 
 
@@ -216,7 +215,7 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             errors.append("[frontmatter] 'name' must be non-empty")
         else:
             # Kebab-case check (WARN for now - some skills use human-readable names)
-            if not re.match(r'^[a-z][a-z0-9-]*[a-z0-9]$', name) and len(name) > 1:
+            if not re.match(r'^[a-z0-9][a-z0-9-]*[a-z0-9]$', name) and len(name) > 1:
                 warnings.append(f"[frontmatter] 'name' should be kebab-case (lowercase + hyphens): {name}")
 
             # Length check
@@ -267,19 +266,39 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
                     warnings.append(f"[frontmatter] 'description' contains reserved word: '{bad}' (ok for Claude/AI context)")
 
             # Imperative language check (best practice)
-            imperative_starts = ['analyze', 'create', 'generate', 'build', 'debug',
-                               'optimize', 'validate', 'test', 'deploy', 'monitor',
-                               'fix', 'review', 'extract', 'convert', 'implement',
-                               'detect', 'forecast', 'transform', 'compare']
+            imperative_starts = [
+                'analyze', 'audit', 'build', 'compare', 'configure', 'convert', 'create',
+                'debug', 'deploy', 'detect', 'extract', 'fix', 'forecast', 'generate',
+                'implement', 'log', 'manage', 'migrate', 'monitor', 'optimize',
+                'process', 'review', 'route', 'scan', 'set up', 'setup', 'test',
+                'track', 'transform', 'validate',
+            ]
             has_imperative = any(v in desc_lower for v in imperative_starts)
             if not has_imperative:
                 warnings.append("[frontmatter] Consider using action verbs (analyze, detect, forecast, etc.)")
 
     # allowed-tools field
     if 'allowed-tools' in fm:
-        tools = parse_allowed_tools(fm['allowed-tools'])
+        raw_tools = fm['allowed-tools']
+        tools_type_error = False
+        if isinstance(raw_tools, list):
+            errors.append(
+                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV), not a YAML array "
+                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
+            )
+            tools_type_error = True
+            tools: List[str] = []
+        elif isinstance(raw_tools, str):
+            tools = parse_allowed_tools(raw_tools)
+        else:
+            errors.append(
+                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV) "
+                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
+            )
+            tools_type_error = True
+            tools = []
 
-        if not tools:
+        if not tools and not tools_type_error:
             errors.append("[frontmatter] 'allowed-tools' is empty - must list at least one tool")
 
         for tool in tools:
@@ -292,8 +311,18 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             warnings.append("[frontmatter] allowed-tools: unscoped 'Bash' should use scoped Bash(git:*) or Bash(npm:*)")
 
         # Info about over-permissioning
-        if len(tools) > 6:
-            warnings.append(f"[frontmatter] Many tools permitted ({len(tools)}) - consider limiting for security")
+        # Count unique base tools (Bash scopes like Bash(git:*) should not inflate the tool count).
+        def _base_tool(tool: str) -> str:
+            base = tool.split('(')[0].strip()
+            if ':' in base:
+                base = base.split(':')[0].strip()
+            return base
+
+        unique_tool_count = len({_base_tool(t) for t in tools})
+        if unique_tool_count > 6:
+            warnings.append(
+                f"[frontmatter] Many tools permitted ({unique_tool_count}) - consider limiting for security"
+            )
 
     # version field
     if 'version' in fm:
@@ -384,37 +413,77 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
         warnings.append(f"[body] Content is lengthy ({word_count} words) - consider references/ directory")
 
     # === REQUIRED SECTIONS (Nixtla strict mode - WARN for now) ===
+    # IMPORTANT: Detect headings outside fenced code blocks to avoid false positives from examples.
+
+    def iter_non_code_lines(text: str):
+        in_code_block = False
+        for raw in text.splitlines():
+            if CODE_FENCE_PATTERN.match(raw):
+                in_code_block = not in_code_block
+                continue
+            if in_code_block:
+                continue
+            yield raw
+
+    def has_markdown_h1(text: str) -> bool:
+        for raw in iter_non_code_lines(text):
+            if re.match(r"^#\s+\S", raw) and not raw.startswith("## "):
+                return True
+        return False
+
+    def has_heading_line(text: str, heading: str) -> bool:
+        target = heading.strip().lower()
+        for raw in iter_non_code_lines(text):
+            if raw.strip().lower() == target:
+                return True
+        return False
 
     for sec in REQUIRED_SECTIONS:
-        if sec not in body:
-            warnings.append(f"[body] Recommended section missing: '{sec}' (nixtla quality standard)")
+        if sec == "# ":
+            if not has_markdown_h1(body):
+                warnings.append(f"[body] Recommended section missing: '{sec}' (nixtla quality standard)")
+        else:
+            if not has_heading_line(body, sec):
+                warnings.append(f"[body] Recommended section missing: '{sec}' (nixtla quality standard)")
 
     # === LEE HAN CHUNG: SECTION CONTENT MUST BE NON-EMPTY ===
 
     def _section_body(section_heading: str) -> str:
-        # Grab content between this heading and the next heading of same or higher level.
+        """
+        Grab content between this heading and the next heading of same or higher level.
+        Headings inside code fences are ignored.
+        """
         m_heading = re.match(r"^(#+)\s+", section_heading.strip())
         if not m_heading:
             return ""
         level = len(m_heading.group(1))
+        target = section_heading.strip().lower()
 
-        lower = body.lower()
-        idx = lower.find(section_heading.lower())
-        if idx == -1:
-            return ""
+        found = False
+        collected: List[str] = []
 
-        after = body[idx + len(section_heading):]
-        stop = None
-        for m in re.finditer(r"^\s*(#{1,6})\s+", after, flags=re.M):
-            next_level = len(m.group(1))
-            if next_level <= level:
-                stop = m.start()
-                break
+        in_code = False
+        for raw in body.splitlines():
+            if CODE_FENCE_PATTERN.match(raw):
+                in_code = not in_code
+                continue
+            if in_code:
+                continue
 
-        if stop is not None:
-            after = after[:stop]
+            if not found:
+                if raw.strip().lower() == target:
+                    found = True
+                continue
 
-        return after.strip()
+            m_next = re.match(r"^\s*(#{1,6})\s+", raw)
+            if m_next:
+                next_level = len(m_next.group(1))
+                if next_level <= level:
+                    break
+
+            collected.append(raw)
+
+        return "\n".join(collected).strip()
 
     for section, min_chars, level in [
         ("## Instructions", 40, "WARN"),
@@ -706,6 +775,11 @@ def main() -> int:
         action="store_true",
         help="Treat warnings as errors (enterprise strict mode).",
     )
+    parser.add_argument(
+        "--check-description-budget",
+        action="store_true",
+        help="Warn if total skill description chars exceed token budget guidance.",
+    )
     args, _unknown = parser.parse_known_args()
     verbose = args.verbose
 
@@ -774,7 +848,7 @@ def main() -> int:
     compliant_pct = (len(files_compliant) / len(skills) * 100) if skills else 0
     print(f"\n📈 Compliance rate: {compliant_pct:.1f}%")
 
-    if total_description_chars >= TOTAL_DESCRIPTION_BUDGET_WARN:
+    if args.check_description_budget and total_description_chars >= TOTAL_DESCRIPTION_BUDGET_WARN:
         msg = (
             f"\n⚠️  Skill description budget: {total_description_chars} chars "
             f"(warn at {TOTAL_DESCRIPTION_BUDGET_WARN}, cap {TOTAL_DESCRIPTION_BUDGET_ERROR})"

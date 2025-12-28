@@ -840,7 +840,7 @@ Ready to build your use case? Start with:
 
 1. [Quick Start Guide](./QUICK_START.md) - Build your first AI feature in 10 minutes
 2. [Installation Guide](./INSTALLATION.md) - Set up the pack
-3. [Troubleshooting](./TROUBLESHOOTING.md) - Common issues
+3. [Troubleshooting](./000-docs/157-DR-FAQS-troubleshooting.md) - Common issues
 
 ## Questions?
 

@@ -146,7 +146,7 @@ jobs:
           if [ ! -s release-notes.txt ]; then
             echo "# Release v$NEW_VERSION" > release-notes.txt
             echo "" >> release-notes.txt
-            echo "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md) for details." >> release-notes.txt
+            echo "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/000-docs/247-OD-CHNG-changelog.md) for details." >> release-notes.txt
           fi
 
           gh release create "v$NEW_VERSION" \
@@ -165,7 +165,7 @@ jobs:
             --body "We're excited to announce v$NEW_VERSION!
 
           ##  What's New
-          See the [full changelog](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md#${NEW_VERSION//.}-$(date +%Y-%m-%d)) for all details.
+          See the [full changelog](https://github.com/${{ github.repository }}/blob/main/000-docs/247-OD-CHNG-changelog.md#${NEW_VERSION//.}-$(date +%Y-%m-%d)) for all details.
 
           ##  Installation
           \`\`\`bash

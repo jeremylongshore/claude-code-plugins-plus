@@ -339,11 +339,11 @@ pnpm build
 
 ##  Contributing
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md) for development guidelines.
+See [CONTRIBUTING.md](../../../000-docs/007-DR-GUID-contributing.md) for development guidelines.
 
 ##  License
 
-MIT License - see [LICENSE](../../../LICENSE)
+MIT License - see [LICENSE](../../../000-docs/001-BL-LICN-license.txt)
 
 ##  Related Tools
 

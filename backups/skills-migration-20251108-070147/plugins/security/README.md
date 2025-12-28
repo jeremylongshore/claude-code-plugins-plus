@@ -331,7 +331,7 @@ When vulnerabilities are found:
 
 ## Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](../../CONTRIBUTING.md) for guidelines.
+Contributions welcome! See [CONTRIBUTING.md](../../000-docs/007-DR-GUID-contributing.md) for guidelines.
 
 ## License
 

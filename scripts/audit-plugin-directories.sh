@@ -174,7 +174,7 @@ for plugin_json in $(find ./plugins -name "plugin.json" -path "*/.claude-plugin/
         echo "ℹ No README.md"
     fi
 
-    if [[ -f "$plugin_dir/LICENSE" ]]; then
+    if [[ -f "$plugin_dir/000-docs/001-BL-LICN-license.txt" ]]; then
         echo "✓ LICENSE file exists"
     else
         echo "ℹ No LICENSE file"

@@ -147,11 +147,9 @@ def parse_frontmatter(content: str) -> Tuple[dict, str]:
 
 
 def parse_allowed_tools(tools_value: Any) -> List[str]:
-    """Parse allowed-tools which can be CSV string or YAML array."""
-    if isinstance(tools_value, list):
-        return tools_value
-    elif isinstance(tools_value, str):
-        return [t.strip() for t in tools_value.split(',')]
+    """Parse allowed-tools as a CSV string (Claude Code standard)."""
+    if isinstance(tools_value, str):
+        return [t.strip() for t in tools_value.split(',') if t.strip()]
     return []
 
 
@@ -266,9 +264,26 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
 
     # allowed-tools field
     if 'allowed-tools' in fm:
-        tools = parse_allowed_tools(fm['allowed-tools'])
+        raw_tools = fm['allowed-tools']
+        tools_type_error = False
+        if isinstance(raw_tools, list):
+            errors.append(
+                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV), not a YAML array "
+                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
+            )
+            tools_type_error = True
+            tools: List[str] = []
+        elif isinstance(raw_tools, str):
+            tools = parse_allowed_tools(raw_tools)
+        else:
+            errors.append(
+                "[frontmatter] 'allowed-tools' must be a comma-separated string (CSV) "
+                '(example: allowed-tools: "Read, Write, Bash(git:*)")'
+            )
+            tools_type_error = True
+            tools = []
 
-        if not tools:
+        if not tools and not tools_type_error:
             errors.append("[frontmatter] 'allowed-tools' is empty - must list at least one tool")
 
         for tool in tools:

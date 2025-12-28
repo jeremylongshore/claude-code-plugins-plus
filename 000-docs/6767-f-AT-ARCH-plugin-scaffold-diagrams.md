@@ -186,7 +186,7 @@ my-plugin/                              ← Plugin root
 
 ### 3.1 Plugin Anatomy Tree (Allowed/Forbidden Callouts)
 
-**See diagram**: [6767-f-diagram-1-plugin-anatomy.mmd](6767-f-diagram-1-plugin-anatomy.mmd) ([PNG version](6767-f-diagram-1-plugin-anatomy.png))
+**See diagram**: [6767-f-AT-DIAG-plugin-anatomy-1.mmd](6767-f-AT-DIAG-plugin-anatomy-1.mmd) ([PNG version](6767-f-AT-DIAG-plugin-anatomy-1.png))
 
 **Diagram Node → Validator Mapping**:
 
@@ -208,7 +208,7 @@ my-plugin/                              ← Plugin root
 
 ### 3.2 Router → Skill → Script Control Loop
 
-**See diagram**: [6767-f-diagram-2-router-skill-script.mmd](6767-f-diagram-2-router-skill-script.mmd) ([PNG version](6767-f-diagram-2-router-skill-script.png))
+**See diagram**: [6767-f-AT-DIAG-router-skill-script-2.mmd](6767-f-AT-DIAG-router-skill-script-2.mmd) ([PNG version](6767-f-AT-DIAG-router-skill-script-2.png))
 
 **Diagram Step → Validator Mapping**:
 
@@ -222,7 +222,7 @@ my-plugin/                              ← Plugin root
 
 ### 3.3 Path Resolution Diagram (Portable vs Broken)
 
-**See diagram**: [6767-f-diagram-3-path-resolution.mmd](6767-f-diagram-3-path-resolution.mmd) ([PNG version](6767-f-diagram-3-path-resolution.png))
+**See diagram**: [6767-f-AT-DIAG-path-resolution-3.mmd](6767-f-AT-DIAG-path-resolution-3.mmd) ([PNG version](6767-f-AT-DIAG-path-resolution-3.png))
 
 **Diagram Path → Validator Mapping**:
 

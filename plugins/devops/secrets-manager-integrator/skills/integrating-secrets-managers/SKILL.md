@@ -1,0 +1,87 @@
+---
+name: integrating-secrets-managers
+description: |
+  This skill enables AI assistant to seamlessly integrate with various secrets managers like hashicorp vault and aws secrets manager. it generates configurations and setup code, ensuring best practices for secure credential management. use this skill when... Use when appropriate context detected. Trigger with relevant phrases based on skill purpose.
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
+version: 1.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
+---
+# Secrets Manager Integrator
+
+This skill provides automated assistance for secrets manager integrator tasks.
+
+## Overview
+
+This skill empowers Claude to automate the integration of secrets managers into your infrastructure. It generates the necessary configuration files and setup code, ensuring a secure and efficient workflow for managing sensitive credentials.
+
+## How It Works
+
+1. **Identify Requirements**: Claude analyzes the user's request to determine the specific secrets manager and desired configurations.
+2. **Generate Configuration**: Based on the identified requirements, Claude generates the appropriate configuration files (e.g., Vault policies, AWS IAM roles) and setup code.
+3. **Provide Instructions**: Claude provides clear instructions on how to deploy and configure the generated code and integrate it into the existing infrastructure.
+
+## When to Use This Skill
+
+This skill activates when you need to:
+- Integrate HashiCorp Vault into your infrastructure.
+- Set up AWS Secrets Manager for secure credential storage.
+- Generate configuration files for managing secrets.
+- Implement best practices for secrets management.
+
+## Examples
+
+### Example 1: Integrating Vault with a Kubernetes Cluster
+
+User request: "Integrate Vault with my Kubernetes cluster for managing database credentials."
+
+The skill will:
+1. Generate Vault policies for accessing database credentials.
+2. Create Kubernetes service accounts with appropriate annotations for Vault integration.
+3. Provide instructions for deploying the Vault agent injector to the Kubernetes cluster.
+
+### Example 2: Setting up AWS Secrets Manager for API Keys
+
+User request: "Set up AWS Secrets Manager to securely store API keys for my application."
+
+The skill will:
+1. Generate an IAM role with permissions to access AWS Secrets Manager.
+2. Create a Secrets Manager secret containing the API keys.
+3. Provide code snippets for retrieving the API keys from Secrets Manager within the application.
+
+## Best Practices
+
+- **Least Privilege**: Generate configurations that grant only the necessary permissions for accessing secrets.
+- **Secure Storage**: Ensure that secrets are stored securely within the chosen secrets manager.
+- **Regular Rotation**: Implement a strategy for regularly rotating secrets to minimize the impact of potential breaches.
+
+## Integration
+
+This skill can be used in conjunction with other skills for deploying applications, configuring infrastructure, and automating DevOps workflows. It provides a secure foundation for managing sensitive information across your entire infrastructure.
+
+## Prerequisites
+
+- Appropriate file access permissions
+- Required dependencies installed
+
+## Instructions
+
+1. Invoke this skill when the trigger conditions are met
+2. Provide necessary context and parameters
+3. Review the generated output
+4. Apply modifications as needed
+
+## Output
+
+The skill produces structured output relevant to the task.
+
+## Error Handling
+
+- Invalid input: Prompts for correction
+- Missing dependencies: Lists required components
+- Permission errors: Suggests remediation steps
+
+## Resources
+
+- Project documentation
+- Related skills and commands

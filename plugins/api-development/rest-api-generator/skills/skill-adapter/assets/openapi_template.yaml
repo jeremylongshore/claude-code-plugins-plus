@@ -12,7 +12,7 @@ info:
     email: support@example.com
   license:
     name: Apache 2.0
-    url: https://www.apache.org/licenses/LICENSE-2.0.html
+    url: https://www.apache.org/licenses/000-docs/001-BL-LICN-license.txt-2.0.html
 
 servers:
   - url: http://localhost:8080 # Default local development server

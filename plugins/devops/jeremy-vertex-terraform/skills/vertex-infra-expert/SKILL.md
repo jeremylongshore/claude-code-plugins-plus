@@ -7,6 +7,14 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Vertex Infra Expert
+
+This skill provides automated assistance for vertex infra expert tasks.
+
+## Overview
+
+Provision Vertex AI infrastructure with Terraform (endpoints, deployed models, vector search indices, pipelines) with production guardrails: encryption, autoscaling, IAM least privilege, and operational validation steps. Use this skill to generate a minimal working Terraform baseline and iterate toward enterprise-ready deployments.
+
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -28,20 +36,17 @@ Before using this skill, ensure:
 7. **Apply IAM Policies**: Grant least privilege access to AI services
 8. **Validate Deployment**: Test endpoints and verify model availability
 
+## Examples
+
+**Example: Deploy a Gemini endpoint + vector search index**
+- Inputs: `project_id`, `region`, KMS key (optional), embedding dimensions, and autoscaling bounds.
+- Outputs: Terraform for endpoint + deployed model + index, and a smoke test that queries the endpoint and verifies index build status.
+
 ## Output
 
 **Gemini Model Endpoint:**
 ```hcl
 # {baseDir}/terraform/vertex-endpoints.tf
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
 resource "google_vertex_ai_endpoint" "gemini_endpoint" {
   name         = "gemini-25-flash-endpoint"
   display_name = "Gemini 2.5 Flash Production"

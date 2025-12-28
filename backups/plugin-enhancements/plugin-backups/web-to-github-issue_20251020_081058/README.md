@@ -303,7 +303,7 @@ gh repo view owner/repo
 
 ## 🤝 Contributing
 
-Contributions welcome! See [CONTRIBUTING.md](../../CONTRIBUTING.md)
+Contributions welcome! See [CONTRIBUTING.md](../../000-docs/007-DR-GUID-contributing.md)
 
 ## 📄 License
 

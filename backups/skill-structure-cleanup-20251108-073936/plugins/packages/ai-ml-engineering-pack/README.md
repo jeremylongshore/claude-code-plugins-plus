@@ -534,7 +534,7 @@ monitoring/
 - **[Installation Guide](./INSTALLATION.md)** - Prerequisites, setup, verification
 - **[Quick Start](./QUICK_START.md)** - 10-minute tutorial with examples
 - **[Use Cases](./USE_CASES.md)** - Real-world applications with ROI
-- **[Troubleshooting](./TROUBLESHOOTING.md)** - Common issues and solutions
+- **[Troubleshooting](./000-docs/157-DR-FAQS-troubleshooting.md)** - Common issues and solutions
 
 ##  Example Workflows
 
@@ -671,7 +671,7 @@ claude plugin update ai-ml-engineering-pack
 
 ##  License
 
-MIT License - See [LICENSE](./LICENSE) for details
+MIT License - See [LICENSE](./000-docs/001-BL-LICN-license.txt) for details
 
 **Commercial use permitted** - Use in commercial projects, redistribute, modify
 

@@ -7,6 +7,14 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Genkit Infra Expert
+
+This skill provides automated assistance for genkit infra expert tasks.
+
+## Overview
+
+Deploy Genkit applications to production with Terraform (Firebase Functions, Cloud Run, or GKE) with secure secrets handling and observability. Use this skill to choose a target, generate the Terraform baseline, wire up Secret Manager, and provide a validation checklist for your Genkit flows.
+
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -28,20 +36,17 @@ Before using this skill, ensure:
 7. **Enable Auto-scaling**: Configure min/max instances
 8. **Validate Deployment**: Test Genkit flows via HTTP endpoints
 
+## Examples
+
+**Example: Cloud Run deployment for a Genkit API**
+- Inputs: container image, region, min/max instances, and required model API keys.
+- Outputs: Terraform for Cloud Run + Secret Manager bindings and a smoke test curl command that hits a health endpoint / flow route.
+
 ## Output
 
 **Firebase Functions:**
 ```hcl
 # {baseDir}/terraform/functions.tf
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
 resource "google_cloudfunctions2_function" "genkit_function" {
   name     = "genkit-ai-flow"
   location = var.region

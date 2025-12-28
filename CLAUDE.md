@@ -307,7 +307,7 @@ mkdir -p plugins/[category]/your-plugin/skills/skill-adapter
 # 2. Create required files:
 #    - .claude-plugin/plugin.json (see templates/)
 #    - README.md
-#    - LICENSE (MIT or Apache-2.0 recommended)
+#    - 000-docs/001-BL-LICN-license.txt (MIT or Apache-2.0 recommended)
 
 # 3. Add to marketplace.extended.json
 # Edit .claude-plugin/marketplace.extended.json and add entry
@@ -390,7 +390,7 @@ author: Name <email>
 
 6. **Required Documentation**
    - README.md presence and minimum content
-   - LICENSE file exists
+   - 000-docs/001-BL-LICN-license.txt file exists
    - Basic documentation standards
 
 **Security Scans (Automatic):**
@@ -638,7 +638,7 @@ pnpm run sync-marketplace
 1. Copy appropriate template from `templates/`
 2. Edit `.claude-plugin/plugin.json` with plugin details
 3. Create README.md with examples and documentation
-4. Add LICENSE file (MIT recommended)
+4. Add 000-docs/001-BL-LICN-license.txt file (MIT recommended)
 5. Add entry to `.claude-plugin/marketplace.extended.json`
 6. Run `pnpm run sync-marketplace`
 7. Validate: `./scripts/validate-all-plugins.sh plugins/[category]/[name]/`
@@ -649,7 +649,7 @@ pnpm run sync-marketplace
 2. Update `VERSION` file if present
 3. Update version in `.claude-plugin/marketplace.extended.json`
 4. Run `pnpm run sync-marketplace`
-5. Update CHANGELOG.md with changes
+5. Update 000-docs/247-OD-CHNG-changelog.md with changes
 6. Commit all version changes together
 
 ### Add Agent Skill to Plugin

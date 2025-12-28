@@ -11,6 +11,8 @@ license: MIT
 
 
 
+This skill provides automated assistance for plugin auditor tasks.
+
 ## Overview
 
 This skill provides automated assistance for the described functionality.

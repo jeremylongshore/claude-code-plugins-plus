@@ -7,6 +7,14 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Gh Actions Validator
+
+This skill provides automated assistance for gh actions validator tasks.
+
+## Overview
+
+Validate and harden GitHub Actions workflows that deploy to Google Cloud (especially Vertex AI) using Workload Identity Federation (OIDC) instead of long-lived service account keys. Use this to audit existing workflows, propose a secure replacement, and add CI checks that prevent common credential and permission mistakes.
+
 ## Prerequisites
 
 Before using this skill, ensure:
@@ -28,20 +36,17 @@ Before using this skill, ensure:
 7. **Configure Monitoring**: Set up alerts for deployment failures
 8. **Document WIF Setup**: Provide one-time WIF configuration commands
 
+## Examples
+
+**Example: Harden an existing deployment workflow**
+- Input: `.github/workflows/deploy.yml` that uses `credentials_json` or a downloaded service account key.
+- Output: a WIF-based workflow using `google-github-actions/auth@v2`, minimal IAM roles, and a guardrail job that fails PRs when JSON keys appear in workflows.
+
 ## Output
 
 **Secure Workflow Template:**
 ```yaml
 # {baseDir}/.github/workflows/deploy-vertex-ai.yml
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
 name: Deploy Vertex AI Agent
 
 on:

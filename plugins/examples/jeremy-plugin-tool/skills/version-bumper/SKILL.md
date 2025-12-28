@@ -11,6 +11,8 @@ license: MIT
 
 
 
+This skill provides automated assistance for version bumper tasks.
+
 ## Overview
 
 This skill provides automated assistance for the described functionality.
@@ -26,6 +28,10 @@ This skill provides automated assistance for the described functionality.
 2. Provide necessary context and parameters
 3. Review the generated output
 4. Apply modifications as needed
+
+## Output
+
+The output is a concrete, repo-ready version bump plan and execution summary, including the computed `old_version → new_version`, the exact files updated (plugin `.claude-plugin/plugin.json`, `.claude-plugin/marketplace.extended.json`, regenerated `.claude-plugin/marketplace.json` when applicable), and the next validation commands to run.
 
 ## Error Handling
 

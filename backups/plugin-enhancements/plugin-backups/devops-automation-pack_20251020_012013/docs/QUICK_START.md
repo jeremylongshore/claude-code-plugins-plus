@@ -330,7 +330,7 @@ See `docs/USE_CASES.md` for:
 
 ### Get Advanced:
 
-See `docs/TROUBLESHOOTING.md` for:
+See `docs/000-docs/157-DR-FAQS-troubleshooting.md` for:
 - Common issues and fixes
 - Advanced configurations
 - Performance tips

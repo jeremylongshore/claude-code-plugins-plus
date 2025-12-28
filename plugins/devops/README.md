@@ -194,7 +194,7 @@ These plugins are marked as featured in the marketplace:
 
 ## Contributing
 
-Found a bug or want to add a feature to a plugin? See our [Contributing Guide](../../CONTRIBUTING.md).
+Found a bug or want to add a feature to a plugin? See our [Contributing Guide](../../000-docs/007-DR-GUID-contributing.md).
 
 ## License
 

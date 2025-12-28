@@ -7,6 +7,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# 000 Jeremy Content Consistency Validator
+
+This skill provides automated assistance for 000 jeremy content consistency validator tasks.
+
 **CRITICAL OPERATING PARAMETERS:**
 - **Temperature: 0.0** - ZERO creativity. Pure factual analysis only.
 - **Read-only** - Report discrepancies, never suggest creative fixes

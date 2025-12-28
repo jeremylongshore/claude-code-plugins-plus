@@ -304,7 +304,7 @@ test-code
 name: skill-name
 description: |
   Description here.
-allowed-tools: [Read, Write, Bash]
+allowed-tools: "Read, Write, Bash(git:*)"
 version: 1.0.0
 author: Name <email>
 license: MIT

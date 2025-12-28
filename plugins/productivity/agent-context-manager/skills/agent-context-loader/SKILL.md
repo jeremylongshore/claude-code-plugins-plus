@@ -11,6 +11,8 @@ license: MIT
 ---
 # Agent Context Auto-Loader
 
+This skill provides automated assistance for agent context loader tasks.
+
 **⚡ This skill activates AUTOMATICALLY - no user action required!**
 
 

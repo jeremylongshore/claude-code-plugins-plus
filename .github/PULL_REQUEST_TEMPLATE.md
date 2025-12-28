@@ -55,7 +55,7 @@
 ## Checklist
 
 ### For All PRs
-- [ ] I have read the [CONTRIBUTING.md](../CONTRIBUTING.md) guidelines
+- [ ] I have read the [CONTRIBUTING.md](../000-docs/007-DR-GUID-contributing.md) guidelines
 - [ ] My code follows the project's style and conventions
 - [ ] I have performed a self-review of my code
 - [ ] I have commented my code where necessary
@@ -194,4 +194,4 @@
 **By submitting this PR, I confirm:**
 - [ ] I have the right to submit this code under the project's license
 - [ ] I understand my contributions will be publicly available
-- [ ] I agree to the project's [Code of Conduct](../CODE_OF_CONDUCT.md) (if exists)
+- [ ] I agree to the project's [Code of Conduct](../000-docs/006-BL-POLI-code-of-conduct.md) (if exists)

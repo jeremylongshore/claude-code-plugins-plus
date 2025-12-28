@@ -11,6 +11,10 @@ version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 ---
+# Database Documentation Gen
+
+This skill provides automated assistance for database documentation gen tasks.
+
 ## Prerequisites
 
 Before using this skill, ensure:

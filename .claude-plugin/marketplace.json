@@ -4815,6 +4815,142 @@
         "noise-filtering"
       ],
       "strict": true
+    },
+    {
+      "name": "jeremy-adk-software-engineer",
+      "source": "./plugins/ai-ml/jeremy-adk-software-engineer",
+      "description": "ADK software engineer for creating production-ready agents (placeholder - to be implemented)",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "adk",
+        "software-engineer",
+        "agent-development",
+        "vertex-ai"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "jeremy-firebase",
+      "source": "./plugins/community/jeremy-firebase",
+      "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "firebase",
+        "vertex-ai",
+        "gemini",
+        "authentication",
+        "storage",
+        "hosting",
+        "cloud-functions",
+        "analytics",
+        "ai-integration",
+        "google-cloud",
+        "embeddings",
+        "model-deployment",
+        "ai-powered",
+        "production-ready"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "wallet-security-auditor",
+      "source": "./plugins/crypto/wallet-security-auditor",
+      "description": "Crypto wallet security auditor for reviewing wallet implementations, key management, signing flows, and common vulnerability patterns.",
+      "version": "1.0.0",
+      "category": "crypto",
+      "keywords": [
+        "crypto",
+        "wallet",
+        "security",
+        "audit",
+        "web3"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      }
+    },
+    {
+      "name": "jeremy-google-adk",
+      "source": "./plugins/jeremy-google-adk",
+      "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "google",
+        "adk",
+        "agent-development-kit",
+        "sdk",
+        "ai-agents",
+        "claude",
+        "react-pattern",
+        "multi-agent",
+        "orchestration",
+        "tools",
+        "framework",
+        "scaffolding",
+        "starter-kit"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@claudecodeplugins.io",
+        "url": "https://github.com/jeremylongshore"
+      }
+    },
+    {
+      "name": "jeremy-vertex-ai",
+      "source": "./plugins/jeremy-vertex-ai",
+      "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vertex-ai",
+        "google-cloud",
+        "gemini",
+        "generative-ai",
+        "agent-builder",
+        "ai-studio",
+        "mlops",
+        "llm",
+        "embedding",
+        "rag",
+        "vector-search",
+        "cloud-run",
+        "gcp"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@claudecodeplugins.io",
+        "url": "https://github.com/jeremylongshore"
+      }
+    },
+    {
+      "name": "mattyp-changelog",
+      "source": "./plugins/automation/mattyp-changelog",
+      "description": "Automates changelog generation from git history with config validation and quality scoring. Use when publishing weekly updates, release notes, or PR summaries. Trigger with /changelog-weekly, /changelog-custom, or /changelog-validate.",
+      "version": "0.1.0",
+      "category": "automation",
+      "keywords": [
+        "changelog",
+        "release-notes",
+        "weekly-update",
+        "git",
+        "github",
+        "automation"
+      ],
+      "author": {
+        "name": "Mattyp",
+        "email": "mattyp@claudecodeplugins.io",
+        "url": "https://claudecodeplugins.io"
+      }
     }
   ]
 }
