@@ -37,26 +37,28 @@ const learningPaths = [
   }
 ];
 
-// Note: Jupyter notebooks mentioned in CLAUDE.md but not found in workspace/lab/tutorials/
-// The task description mentions 11 notebooks but the directory doesn't exist
-// For now, we'll create placeholders that can be filled when notebooks are added
+// Repository and path configuration for notebooks
+const GITHUB_REPO = 'jeremylongshore/claude-code-plugins-plus-skills';
+const NOTEBOOKS_PATH = 'tutorials';
+
+// Actual notebook files from the tutorials directory
 const notebooks = {
   skills: [
-    { name: 'skills-101-basics', title: 'Agent Skills 101: Basics' },
-    { name: 'skills-102-triggers', title: 'Agent Skills 102: Trigger Phrases' },
-    { name: 'skills-103-tools', title: 'Agent Skills 103: Allowed Tools' },
-    { name: 'skills-104-composition', title: 'Agent Skills 104: Composition' },
-    { name: 'skills-105-production', title: 'Agent Skills 105: Production' }
+    { name: 'skills/01-what-is-skill', title: 'What is SKILL.md?' },
+    { name: 'skills/02-skill-anatomy', title: 'Skill Anatomy' },
+    { name: 'skills/03-build-your-first-skill', title: 'Build Your First Skill' },
+    { name: 'skills/04-advanced-patterns', title: 'Advanced Skill Patterns' },
+    { name: 'skills/05-skill-validation', title: 'Skill Validation' }
   ],
   plugins: [
-    { name: 'plugins-101-structure', title: 'Plugin Development 101: Structure' },
-    { name: 'plugins-102-manifests', title: 'Plugin Development 102: Manifests' },
-    { name: 'plugins-103-commands', title: 'Plugin Development 103: Commands' },
-    { name: 'plugins-104-validation', title: 'Plugin Development 104: Validation' }
+    { name: 'plugins/01-what-is-plugin', title: 'What is a Plugin?' },
+    { name: 'plugins/02-plugin-structure', title: 'Plugin Structure' },
+    { name: 'plugins/03-build-your-first-plugin', title: 'Build Your First Plugin' },
+    { name: 'plugins/04-mcp-server-plugins', title: 'MCP Server Plugins' }
   ],
   orchestration: [
-    { name: 'orchestration-101-phases', title: 'Orchestration 101: Multi-Phase Workflows' },
-    { name: 'orchestration-102-verification', title: 'Orchestration 102: Empirical Verification' }
+    { name: 'orchestration/01-mental-model', title: 'Mental Model' },
+    { name: 'orchestration/02-orchestration-pattern', title: 'Orchestration Pattern' }
   ]
 };
 ---
@@ -172,7 +174,7 @@ const notebooks = {
                 </div>
                 <div class="notebook-actions">
                   <a
-                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://colab.research.google.com/github/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="colab-button"
@@ -183,7 +185,7 @@ const notebooks = {
                     Open in Colab
                   </a>
                   <a
-                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://github.com/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="github-button"
@@ -210,7 +212,7 @@ const notebooks = {
                 </div>
                 <div class="notebook-actions">
                   <a
-                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://colab.research.google.com/github/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="colab-button"
@@ -221,7 +223,7 @@ const notebooks = {
                     Open in Colab
                   </a>
                   <a
-                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://github.com/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="github-button"
@@ -248,7 +250,7 @@ const notebooks = {
                 </div>
                 <div class="notebook-actions">
                   <a
-                    href={`https://colab.research.google.com/github/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://colab.research.google.com/github/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="colab-button"
@@ -259,7 +261,7 @@ const notebooks = {
                     Open in Colab
                   </a>
                   <a
-                    href={`https://github.com/jeremylongshore/claude-code-plugins/blob/main/workspace/lab/tutorials/${notebook.name}.ipynb`}
+                    href={`https://github.com/${GITHUB_REPO}/blob/main/${NOTEBOOKS_PATH}/${notebook.name}.ipynb`}
                     target="_blank"
                     rel="noopener noreferrer"
                     class="github-button"
