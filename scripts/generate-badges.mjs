@@ -21,6 +21,47 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 /**
+ * Safe expression evaluator for badge requirements
+ * Only handles simple comparisons: ===, >=, <=, >, <
+ * Avoids security risks of new Function() or eval()
+ */
+function safeEvaluateRequirement(requirement, context) {
+  // Parse simple comparison expressions
+  const patterns = [
+    /^(\w+)\s*===\s*(\d+)$/,   // variable === number
+    /^(\w+)\s*>=\s*(\d+)$/,    // variable >= number
+    /^(\w+)\s*<=\s*(\d+)$/,    // variable <= number
+    /^(\w+)\s*>\s*(\d+)$/,     // variable > number
+    /^(\w+)\s*<\s*(\d+)$/,     // variable < number
+  ];
+
+  const trimmed = requirement.trim();
+
+  for (const pattern of patterns) {
+    const match = trimmed.match(pattern);
+    if (match) {
+      const [, variable, value] = match;
+      const contextValue = context[variable];
+      const numValue = parseInt(value, 10);
+
+      if (contextValue === undefined) {
+        console.warn(`Unknown variable in requirement: ${variable}`);
+        return false;
+      }
+
+      if (trimmed.includes('===')) return contextValue === numValue;
+      if (trimmed.includes('>=')) return contextValue >= numValue;
+      if (trimmed.includes('<=')) return contextValue <= numValue;
+      if (trimmed.includes('>')) return contextValue > numValue;
+      if (trimmed.includes('<')) return contextValue < numValue;
+    }
+  }
+
+  console.warn(`Unsupported requirement expression: ${requirement}`);
+  return false;
+}
+
+/**
  * Badge definitions with requirements
  */
 const BADGE_DEFINITIONS = {
@@ -214,13 +255,8 @@ function calculateBadges(validationResult) {
     let earned = false;
 
     try {
-      // Create a safe eval context
-      const requirementCheck = new Function(
-        ...Object.keys(context),
-        `return ${definition.requirement};`
-      );
-
-      earned = requirementCheck(...Object.values(context));
+      // Use safe expression evaluator (no dynamic code execution)
+      earned = safeEvaluateRequirement(definition.requirement, context);
     } catch (error) {
       console.error(`Warning: Failed to evaluate badge requirement for ${badgeId}`);
       console.error(error.message);
