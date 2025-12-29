@@ -32,6 +32,36 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - After upgrading `bd`, run: `bd info --whats-new`
 - If `bd info` warns about hooks, run: `bd hooks install`
 
+---
+
+## ACTIVE PROJECT: 50-Vendor SaaS Skill Packs
+
+**STATUS: In Progress (Dec 2025)**
+
+**If working on SaaS packs, READ THIS FIRST:**
+```bash
+cat plugins/saas-packs/SAAS-PACKS-CONTEXT.md
+```
+
+**Quick Recovery:**
+```bash
+bd sync && bd list --status in_progress  # What was I doing?
+cat plugins/saas-packs/TRACKER.csv | head -20  # Progress check
+bd ready | head -10  # What's available?
+```
+
+**Key Files:**
+- `plugins/saas-packs/SAAS-PACKS-CONTEXT.md` - Post-compaction recovery guide
+- `plugins/saas-packs/TRACKER.csv` - Master progress tracking (50 companies)
+- `/home/jeremy/.claude/plans/velvet-roaming-crown.md` - Full implementation plan
+
+**Beads Epics:**
+- `ccpi-saas` - Master epic (50-Vendor SaaS Skill Packs)
+- `ccpi-saas-infra` - Infrastructure epic
+- `ccpi-[vendor]` - Per-vendor epics (supabase, vercel, etc.)
+
+---
+
 ## Repository Overview
 
 Claude Code plugins marketplace and learning hub. 258 plugins across 22 categories with 239 Agent Skills. Live at https://claudecodeplugins.io/
