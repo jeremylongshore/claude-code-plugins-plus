@@ -14,7 +14,7 @@ jobs:
   validate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Sync CLI marketplace catalog
         run: |
@@ -221,11 +221,11 @@ jobs:
         test-type: [mcp-plugins, python-tests, validation-scripts]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
         if: matrix.test-type == 'mcp-plugins'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -299,7 +299,7 @@ jobs:
 
       - name: Setup Python
         if: matrix.test-type == 'python-tests'
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
@@ -346,7 +346,7 @@ jobs:
 
       - name: Setup Node.js for validation
         if: matrix.test-type == 'validation-scripts'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '20'
 
@@ -391,7 +391,7 @@ jobs:
 
       - name: Upload test coverage
         if: matrix.test-type == 'python-tests' && always()
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         with:
           file: ./coverage.xml
           flags: python
@@ -401,10 +401,10 @@ jobs:
   check-package-manager:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
@@ -415,10 +415,10 @@ jobs:
   marketplace-validation:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
@@ -506,10 +506,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: marketplace-validation
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
@@ -541,7 +541,7 @@ jobs:
           CI: true
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: playwright-report
@@ -549,7 +549,7 @@ jobs:
           retention-days: 30
 
       - name: Upload test screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: test-screenshots
@@ -557,7 +557,7 @@ jobs:
           retention-days: 30
 
       - name: Upload test videos
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: test-videos
@@ -569,10 +569,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: marketplace-validation
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
 
