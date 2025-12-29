@@ -267,16 +267,12 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
           <span class="category-badge">{category.skills.length} skills</span>
         </h2>
         <div class="skills-grid">
-          {category.skills.map((skill, skillIdx) => {
-            const slotNum = idx * 6 + skillIdx + 1;
-            const slotPrefix = slotNum <= 6 ? 'S' : slotNum <= 12 ? 'S' : slotNum <= 18 ? 'P' : slotNum <= 24 ? 'F' : 'X';
-            return (
-              <div class="skill-card">
-                <div class="skill-name">{skill.replace('supabase-', '').replace(/-/g, ' ')}</div>
-                <div class="skill-slot">{skill}</div>
-              </div>
-            );
-          })}
+          {category.skills.map((skill) => (
+            <div class="skill-card">
+              <div class="skill-name">{skill.replace('supabase-', '').replace(/-/g, ' ')}</div>
+              <div class="skill-slot">{skill}</div>
+            </div>
+          ))}
         </div>
       </div>
     ))}

@@ -268,14 +268,12 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
           <span class="category-badge">{category.skills.length} skills</span>
         </h2>
         <div class="skills-grid">
-          {category.skills.map((skill, skillIdx) => {
-            return (
-              <div class="skill-card">
-                <div class="skill-name">{skill.replace('vercel-', '').replace(/-/g, ' ')}</div>
-                <div class="skill-slot">{skill}</div>
-              </div>
-            );
-          })}
+          {category.skills.map((skill) => (
+            <div class="skill-card">
+              <div class="skill-name">{skill.replace('vercel-', '').replace(/-/g, ' ')}</div>
+              <div class="skill-slot">{skill}</div>
+            </div>
+          ))}
         </div>
       </div>
     ))}
