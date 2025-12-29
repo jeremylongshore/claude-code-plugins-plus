@@ -1,0 +1,58 @@
+---
+name: {{ company }}-{{ workflow_b_slug | default('core-workflow-b') }}
+description: |
+  {{ display_name }} secondary workflow: {{ workflow_b_name | default('Core Workflow B') }}.
+  Trigger phrases: "{{ company }} {{ workflow_b_trigger | default('secondary workflow') }}",
+  "{{ workflow_b_action | default('secondary task') }} with {{ company }}".
+allowed-tools: Read, Write, Edit, Bash, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} {{ workflow_b_name | default('Core Workflow B') }}
+
+## Overview
+{{ workflow_b_description | default('Secondary workflow for ' + display_name + '. Complements the primary workflow.') }}
+
+## When to Use
+- {{ workflow_b_use_case_1 | default('Use case scenario 1') }}
+- {{ workflow_b_use_case_2 | default('Use case scenario 2') }}
+
+## Implementation
+
+### Step 1: {{ workflow_b_step1_name | default('Setup') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_b_step1_code | default('// Step 1 implementation') }}
+```
+
+### Step 2: {{ workflow_b_step2_name | default('Process') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_b_step2_code | default('// Step 2 implementation') }}
+```
+
+### Step 3: {{ workflow_b_step3_name | default('Complete') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_b_step3_code | default('// Step 3 implementation') }}
+```
+
+## Complete Example
+```{{ primary_language | default('typescript') }}
+{{ workflow_b_complete_example | default('// Complete workflow example') }}
+```
+
+## Comparison with {{ workflow_a_name | default('Core Workflow A') }}
+
+| Aspect | {{ workflow_a_name | default('Workflow A') }} | {{ workflow_b_name | default('Workflow B') }} |
+|--------|------------|------------|
+| Use Case | {{ workflow_a_use_case_1 | default('Primary') }} | {{ workflow_b_use_case_1 | default('Secondary') }} |
+| Complexity | {{ workflow_a_complexity | default('Medium') }} | {{ workflow_b_complexity | default('Lower') }} |
+| Performance | {{ workflow_a_perf | default('Standard') }} | {{ workflow_b_perf | default('Optimized') }} |
+
+## Error Handling
+```{{ primary_language | default('typescript') }}
+{{ workflow_b_error_handling | default('// Error handling code') }}
+```
+
+## Next Steps
+For common errors, see `{{ company }}-common-errors`.

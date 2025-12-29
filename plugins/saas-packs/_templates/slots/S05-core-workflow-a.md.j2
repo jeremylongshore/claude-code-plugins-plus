@@ -1,0 +1,55 @@
+---
+name: {{ company }}-{{ workflow_a_slug | default('core-workflow-a') }}
+description: |
+  {{ display_name }} primary workflow: {{ workflow_a_name | default('Core Workflow A') }}.
+  Trigger phrases: "{{ company }} {{ workflow_a_trigger | default('main workflow') }}",
+  "{{ workflow_a_action | default('primary task') }} with {{ company }}".
+allowed-tools: Read, Write, Edit, Bash, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} {{ workflow_a_name | default('Core Workflow A') }}
+
+## Overview
+{{ workflow_a_description | default('Primary money-path workflow for ' + display_name + '. This is the most common use case.') }}
+
+## When to Use
+- {{ workflow_a_use_case_1 | default('Primary use case scenario') }}
+- {{ workflow_a_use_case_2 | default('Secondary use case scenario') }}
+- {{ workflow_a_use_case_3 | default('Third use case scenario') }}
+
+## Implementation
+
+### Step 1: {{ workflow_a_step1_name | default('Initialize') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_step1_code | default('// Step 1 implementation') }}
+```
+
+### Step 2: {{ workflow_a_step2_name | default('Execute') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_step2_code | default('// Step 2 implementation') }}
+```
+
+### Step 3: {{ workflow_a_step3_name | default('Finalize') }}
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_step3_code | default('// Step 3 implementation') }}
+```
+
+## Complete Example
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_complete_example | default('// Complete workflow example') }}
+```
+
+## Common Variations
+{{ workflow_a_variations | default('- Variation 1: Description\n- Variation 2: Description') }}
+
+## Error Scenarios
+| Error | Cause | Solution |
+|-------|-------|----------|
+| {{ workflow_a_error1_name | default('Error 1') }} | {{ workflow_a_error1_cause | default('Cause') }} | {{ workflow_a_error1_solution | default('Solution') }} |
+| {{ workflow_a_error2_name | default('Error 2') }} | {{ workflow_a_error2_cause | default('Cause') }} | {{ workflow_a_error2_solution | default('Solution') }} |
+
+## Next Steps
+For secondary workflow, see `{{ company }}-{{ workflow_b_slug | default('core-workflow-b') }}`.

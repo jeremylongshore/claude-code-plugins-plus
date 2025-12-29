@@ -1,0 +1,188 @@
+---
+name: {{ company }}-reference-architecture
+description: |
+  {{ display_name }} reference architecture and best-practice layout.
+  Trigger phrases: "{{ company }} architecture", "{{ company }} best practices",
+  "{{ company }} project structure", "how to organize {{ company }}".
+allowed-tools: Read, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Reference Architecture
+
+## Overview
+Production-ready architecture patterns for {{ display_name }} integrations.
+
+## Project Structure
+
+```
+my-{{ company }}-project/
+├── src/
+│   ├── {{ company }}/
+│   │   ├── client.ts           # Singleton client wrapper
+│   │   ├── config.ts           # Environment configuration
+│   │   ├── types.ts            # TypeScript types
+│   │   ├── errors.ts           # Custom error classes
+│   │   └── handlers/
+│   │       ├── webhooks.ts     # Webhook handlers
+│   │       └── events.ts       # Event processing
+│   ├── services/
+│   │   └── {{ company }}/
+│   │       ├── index.ts        # Service facade
+│   │       ├── sync.ts         # Data synchronization
+│   │       └── cache.ts        # Caching layer
+│   ├── api/
+│   │   └── {{ company }}/
+│   │       └── webhook.ts      # Webhook endpoint
+│   └── jobs/
+│       └── {{ company }}/
+│           └── sync.ts         # Background sync job
+├── tests/
+│   ├── unit/
+│   │   └── {{ company }}/
+│   └── integration/
+│       └── {{ company }}/
+├── config/
+│   ├── {{ company }}.development.json
+│   ├── {{ company }}.staging.json
+│   └── {{ company }}.production.json
+└── docs/
+    └── {{ company }}/
+        ├── SETUP.md
+        └── RUNBOOK.md
+```
+
+## Layer Architecture
+
+```
+┌─────────────────────────────────────────┐
+│             API Layer                    │
+│   (Controllers, Routes, Webhooks)        │
+├─────────────────────────────────────────┤
+│           Service Layer                  │
+│  (Business Logic, Orchestration)         │
+├─────────────────────────────────────────┤
+│          {{ display_name }} Layer        │
+│   (Client, Types, Error Handling)        │
+├─────────────────────────────────────────┤
+│         Infrastructure Layer             │
+│    (Cache, Queue, Monitoring)            │
+└─────────────────────────────────────────┘
+```
+
+## Key Components
+
+### 1. Client Wrapper
+```typescript
+// src/{{ company }}/client.ts
+export class {{ display_name }}Service {
+  private client: {{ client_class | default(display_name + 'Client') }};
+  private cache: Cache;
+  private monitor: Monitor;
+
+  constructor(config: {{ display_name }}Config) {
+    this.client = new {{ client_class | default(display_name + 'Client') }}(config);
+    this.cache = new Cache(config.cacheOptions);
+    this.monitor = new Monitor('{{ company }}');
+  }
+
+  async get(id: string): Promise<Resource> {
+    return this.cache.getOrFetch(id, () =>
+      this.monitor.track('get', () => this.client.get(id))
+    );
+  }
+}
+```
+
+### 2. Error Boundary
+```typescript
+// src/{{ company }}/errors.ts
+export class {{ display_name }}ServiceError extends Error {
+  constructor(
+    message: string,
+    public readonly code: string,
+    public readonly retryable: boolean,
+    public readonly originalError?: Error
+  ) {
+    super(message);
+    this.name = '{{ display_name }}ServiceError';
+  }
+}
+
+export function wrap{{ display_name }}Error(error: unknown): {{ display_name }}ServiceError {
+  // Transform SDK errors to application errors
+}
+```
+
+### 3. Health Check
+```typescript
+// src/{{ company }}/health.ts
+export async function check{{ display_name }}Health(): Promise<HealthStatus> {
+  try {
+    const start = Date.now();
+    await {{ company }}Client.ping();
+    return {
+      status: 'healthy',
+      latencyMs: Date.now() - start,
+    };
+  } catch (error) {
+    return { status: 'unhealthy', error: error.message };
+  }
+}
+```
+
+## Data Flow Diagram
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐
+│   API       │
+│   Gateway   │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐    ┌─────────────┐
+│   Service   │───▶│   Cache     │
+│   Layer     │    │   (Redis)   │
+└──────┬──────┘    └─────────────┘
+       │
+       ▼
+┌─────────────┐
+│ {{ display_name }}    │
+│   Client    │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────┐
+│ {{ display_name }}    │
+│   API       │
+└─────────────┘
+```
+
+## Configuration Management
+
+```typescript
+// config/{{ company }}.ts
+export interface {{ display_name }}Config {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  timeout: number;
+  retries: number;
+  cache: {
+    enabled: boolean;
+    ttlSeconds: number;
+  };
+}
+
+export function load{{ display_name }}Config(): {{ display_name }}Config {
+  const env = process.env.NODE_ENV || 'development';
+  return require(`./{{ company }}.${env}.json`);
+}
+```
+
+## Flagship Skills
+For multi-environment setup, see `{{ company }}-multi-env-setup`.

@@ -1,0 +1,163 @@
+---
+name: {{ company }}-performance-tuning
+description: |
+  {{ display_name }} latency optimization, caching, and batching patterns.
+  Trigger phrases: "{{ company }} performance", "optimize {{ company }}",
+  "{{ company }} latency", "{{ company }} caching", "{{ company }} slow".
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Performance Tuning
+
+## Overview
+Optimize {{ display_name }} API performance with caching, batching, and connection pooling.
+
+## Latency Benchmarks
+
+| Operation | P50 | P95 | P99 |
+|-----------|-----|-----|-----|
+| {{ op_1_name | default('Read') }} | {{ op_1_p50 | default('50ms') }} | {{ op_1_p95 | default('150ms') }} | {{ op_1_p99 | default('300ms') }} |
+| {{ op_2_name | default('Write') }} | {{ op_2_p50 | default('100ms') }} | {{ op_2_p95 | default('250ms') }} | {{ op_2_p99 | default('500ms') }} |
+| {{ op_3_name | default('List') }} | {{ op_3_p50 | default('75ms') }} | {{ op_3_p95 | default('200ms') }} | {{ op_3_p99 | default('400ms') }} |
+
+## Caching Strategy
+
+### Response Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const cache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: {{ cache_ttl_ms | default('60000') }}, // 1 minute
+  updateAgeOnGet: true,
+});
+
+async function cached{{ display_name }}Request<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttl?: number
+): Promise<T> {
+  const cached = cache.get(key);
+  if (cached) return cached as T;
+
+  const result = await fetcher();
+  cache.set(key, result, { ttl });
+  return result;
+}
+```
+
+### Redis Caching (Distributed)
+```typescript
+import Redis from 'ioredis';
+
+const redis = new Redis(process.env.REDIS_URL);
+
+async function cachedWithRedis<T>(
+  key: string,
+  fetcher: () => Promise<T>,
+  ttlSeconds = 60
+): Promise<T> {
+  const cached = await redis.get(key);
+  if (cached) return JSON.parse(cached);
+
+  const result = await fetcher();
+  await redis.setex(key, ttlSeconds, JSON.stringify(result));
+  return result;
+}
+```
+
+## Request Batching
+
+```typescript
+import DataLoader from 'dataloader';
+
+const {{ company }}Loader = new DataLoader<string, any>(
+  async (ids) => {
+    // Batch fetch from {{ display_name }}
+    const results = await {{ company }}Client.batchGet(ids);
+    return ids.map(id => results.find(r => r.id === id) || null);
+  },
+  {
+    maxBatchSize: {{ batch_size | default('100') }},
+    batchScheduleFn: callback => setTimeout(callback, 10),
+  }
+);
+
+// Usage - automatically batched
+const [item1, item2, item3] = await Promise.all([
+  {{ company }}Loader.load('id-1'),
+  {{ company }}Loader.load('id-2'),
+  {{ company }}Loader.load('id-3'),
+]);
+```
+
+## Connection Optimization
+
+```typescript
+import { Agent } from 'https';
+
+// Keep-alive connection pooling
+const agent = new Agent({
+  keepAlive: true,
+  maxSockets: {{ max_sockets | default('10') }},
+  maxFreeSockets: {{ max_free_sockets | default('5') }},
+  timeout: {{ timeout_ms | default('30000') }},
+});
+
+const client = new {{ client_class | default(display_name + 'Client') }}({
+  apiKey: process.env.{{ company | upper }}_API_KEY!,
+  httpAgent: agent,
+});
+```
+
+## Pagination Optimization
+
+```typescript
+async function* paginated{{ display_name }}List<T>(
+  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
+): AsyncGenerator<T> {
+  let cursor: string | undefined;
+
+  do {
+    const { data, nextCursor } = await fetcher(cursor);
+    for (const item of data) {
+      yield item;
+    }
+    cursor = nextCursor;
+  } while (cursor);
+}
+
+// Usage
+for await (const item of paginated{{ display_name }}List(cursor =>
+  {{ company }}Client.list({ cursor, limit: 100 })
+)) {
+  await process(item);
+}
+```
+
+## Performance Monitoring
+
+```typescript
+async function measured{{ display_name }}Call<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  const start = performance.now();
+  try {
+    const result = await fn();
+    const duration = performance.now() - start;
+    console.log({ operation, duration, status: 'success' });
+    return result;
+  } catch (error) {
+    const duration = performance.now() - start;
+    console.error({ operation, duration, status: 'error', error });
+    throw error;
+  }
+}
+```
+
+## Next Steps
+For cost optimization, see `{{ company }}-cost-tuning`.

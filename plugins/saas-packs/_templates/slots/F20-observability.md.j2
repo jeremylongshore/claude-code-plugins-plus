@@ -1,0 +1,199 @@
+---
+name: {{ company }}-observability
+description: |
+  {{ display_name }} metrics, traces, and alerts baseline configuration.
+  Trigger phrases: "{{ company }} monitoring", "{{ company }} metrics",
+  "{{ company }} observability", "monitor {{ company }}".
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Observability
+
+## Overview
+Set up comprehensive observability for {{ display_name }} integrations.
+
+## Metrics Collection
+
+### Key Metrics
+| Metric | Type | Description |
+|--------|------|-------------|
+| `{{ company }}_requests_total` | Counter | Total API requests |
+| `{{ company }}_request_duration_seconds` | Histogram | Request latency |
+| `{{ company }}_errors_total` | Counter | Error count by type |
+| `{{ company }}_rate_limit_remaining` | Gauge | Rate limit headroom |
+
+### Prometheus Metrics
+
+```typescript
+import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+
+const registry = new Registry();
+
+const requestCounter = new Counter({
+  name: '{{ company }}_requests_total',
+  help: 'Total {{ display_name }} API requests',
+  labelNames: ['method', 'status'],
+  registers: [registry],
+});
+
+const requestDuration = new Histogram({
+  name: '{{ company }}_request_duration_seconds',
+  help: '{{ display_name }} request duration',
+  labelNames: ['method'],
+  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
+  registers: [registry],
+});
+
+const errorCounter = new Counter({
+  name: '{{ company }}_errors_total',
+  help: '{{ display_name }} errors by type',
+  labelNames: ['error_type'],
+  registers: [registry],
+});
+```
+
+### Instrumented Client
+
+```typescript
+async function instrumentedRequest<T>(
+  method: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  const timer = requestDuration.startTimer({ method });
+
+  try {
+    const result = await operation();
+    requestCounter.inc({ method, status: 'success' });
+    return result;
+  } catch (error: any) {
+    requestCounter.inc({ method, status: 'error' });
+    errorCounter.inc({ error_type: error.code || 'unknown' });
+    throw error;
+  } finally {
+    timer();
+  }
+}
+```
+
+## Distributed Tracing
+
+### OpenTelemetry Setup
+
+```typescript
+import { trace, SpanStatusCode } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('{{ company }}-client');
+
+async function traced{{ display_name }}Call<T>(
+  operationName: string,
+  operation: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(`{{ company }}.${operationName}`, async (span) => {
+    try {
+      const result = await operation();
+      span.setStatus({ code: SpanStatusCode.OK });
+      return result;
+    } catch (error: any) {
+      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
+      span.recordException(error);
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Logging Strategy
+
+### Structured Logging
+
+```typescript
+import pino from 'pino';
+
+const logger = pino({
+  name: '{{ company }}',
+  level: process.env.LOG_LEVEL || 'info',
+});
+
+function log{{ display_name }}Operation(
+  operation: string,
+  data: Record<string, any>,
+  duration: number
+) {
+  logger.info({
+    service: '{{ company }}',
+    operation,
+    duration_ms: duration,
+    ...data,
+  });
+}
+```
+
+## Alert Configuration
+
+### Prometheus AlertManager Rules
+
+```yaml
+# {{ company }}_alerts.yaml
+groups:
+  - name: {{ company }}_alerts
+    rules:
+      - alert: {{ display_name }}HighErrorRate
+        expr: |
+          rate({{ company }}_errors_total[5m]) /
+          rate({{ company }}_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ display_name }} error rate > 5%"
+
+      - alert: {{ display_name }}HighLatency
+        expr: |
+          histogram_quantile(0.95,
+            rate({{ company }}_request_duration_seconds_bucket[5m])
+          ) > 2
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ display_name }} P95 latency > 2s"
+
+      - alert: {{ display_name }}Down
+        expr: up{job="{{ company }}"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "{{ display_name }} integration is down"
+```
+
+## Dashboard
+
+### Grafana Panel Queries
+
+```json
+{
+  "panels": [
+    {
+      "title": "{{ display_name }} Request Rate",
+      "targets": [{
+        "expr": "rate({{ company }}_requests_total[5m])"
+      }]
+    },
+    {
+      "title": "{{ display_name }} Latency P50/P95/P99",
+      "targets": [{
+        "expr": "histogram_quantile(0.5, rate({{ company }}_request_duration_seconds_bucket[5m]))"
+      }]
+    }
+  ]
+}
+```
+
+## Next Steps
+For incident response, see `{{ company }}-incident-runbook`.

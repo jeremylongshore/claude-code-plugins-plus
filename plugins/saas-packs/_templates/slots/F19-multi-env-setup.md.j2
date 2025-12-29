@@ -1,0 +1,174 @@
+---
+name: {{ company }}-multi-env-setup
+description: |
+  {{ display_name }} multi-environment configuration for dev/staging/prod.
+  Trigger phrases: "{{ company }} environments", "{{ company }} staging",
+  "{{ company }} dev prod", "{{ company }} environment setup".
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Multi-Environment Setup
+
+## Overview
+Configure {{ display_name }} across development, staging, and production environments.
+
+## Environment Strategy
+
+| Environment | Purpose | API Keys | Data |
+|-------------|---------|----------|------|
+| Development | Local dev | Test keys | Sandbox |
+| Staging | Pre-prod validation | Staging keys | Test data |
+| Production | Live traffic | Production keys | Real data |
+
+## Configuration Structure
+
+```
+config/
+├── {{ company }}/
+│   ├── base.json           # Shared config
+│   ├── development.json    # Dev overrides
+│   ├── staging.json        # Staging overrides
+│   └── production.json     # Prod overrides
+```
+
+### base.json
+```json
+{
+  "timeout": 30000,
+  "retries": 3,
+  "cache": {
+    "enabled": true,
+    "ttlSeconds": 60
+  }
+}
+```
+
+### development.json
+```json
+{
+  "apiKey": "${{{ company | upper }}_API_KEY}",
+  "baseUrl": "{{ dev_base_url | default('https://api-sandbox.' + company + '.com') }}",
+  "debug": true,
+  "cache": {
+    "enabled": false
+  }
+}
+```
+
+### staging.json
+```json
+{
+  "apiKey": "${{{ company | upper }}_API_KEY_STAGING}",
+  "baseUrl": "{{ staging_base_url | default('https://api-staging.' + company + '.com') }}",
+  "debug": false
+}
+```
+
+### production.json
+```json
+{
+  "apiKey": "${{{ company | upper }}_API_KEY_PROD}",
+  "baseUrl": "{{ prod_base_url | default('https://api.' + company + '.com') }}",
+  "debug": false,
+  "retries": 5
+}
+```
+
+## Environment Detection
+
+```typescript
+// src/{{ company }}/config.ts
+import baseConfig from '../../config/{{ company }}/base.json';
+
+type Environment = 'development' | 'staging' | 'production';
+
+function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || 'development';
+  const validEnvs: Environment[] = ['development', 'staging', 'production'];
+  return validEnvs.includes(env as Environment)
+    ? (env as Environment)
+    : 'development';
+}
+
+export function get{{ display_name }}Config() {
+  const env = detectEnvironment();
+  const envConfig = require(`../../config/{{ company }}/${env}.json`);
+
+  return {
+    ...baseConfig,
+    ...envConfig,
+    environment: env,
+  };
+}
+```
+
+## Secret Management by Environment
+
+### Local Development
+```bash
+# .env.local (git-ignored)
+{{ company | upper }}_API_KEY=sk_test_dev_***
+```
+
+### CI/CD (GitHub Actions)
+```yaml
+env:
+  {{ company | upper }}_API_KEY: ${{ '{{' }} secrets.{{ company | upper }}_API_KEY_${{ '{{' }} matrix.environment {{ '}}' }} {{ '}}' }}
+```
+
+### Production (Vault/Secrets Manager)
+```bash
+# AWS Secrets Manager
+aws secretsmanager get-secret-value --secret-id {{ company }}/production/api-key
+
+# GCP Secret Manager
+gcloud secrets versions access latest --secret={{ company }}-api-key
+
+# HashiCorp Vault
+vault kv get -field=api_key secret/{{ company }}/production
+```
+
+## Environment Isolation
+
+```typescript
+// Prevent production operations in non-prod
+function guardProductionOperation(operation: string): void {
+  const config = get{{ display_name }}Config();
+
+  if (config.environment !== 'production') {
+    console.warn(`[{{ company }}] ${operation} blocked in ${config.environment}`);
+    throw new Error(`${operation} only allowed in production`);
+  }
+}
+
+// Usage
+async function deleteAllData() {
+  guardProductionOperation('deleteAllData');
+  // Dangerous operation here
+}
+```
+
+## Feature Flags by Environment
+
+```typescript
+const featureFlags: Record<Environment, Record<string, boolean>> = {
+  development: {
+    newFeature: true,
+    betaApi: true,
+  },
+  staging: {
+    newFeature: true,
+    betaApi: false,
+  },
+  production: {
+    newFeature: false,
+    betaApi: false,
+  },
+};
+```
+
+## Next Steps
+For observability setup, see `{{ company }}-observability`.

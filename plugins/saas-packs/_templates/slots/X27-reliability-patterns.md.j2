@@ -1,0 +1,241 @@
+---
+name: {{ company }}-reliability-patterns
+description: |
+  {{ display_name }} idempotency, circuit breakers, and reliability patterns.
+  Trigger phrases: "{{ company }} reliability", "{{ company }} circuit breaker",
+  "{{ company }} idempotent", "{{ company }} resilience".
+allowed-tools: Read, Write, Edit
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Reliability Patterns
+
+## Overview
+Production-grade reliability patterns for {{ display_name }} integrations.
+
+## Circuit Breaker
+
+```typescript
+import CircuitBreaker from 'opossum';
+
+const {{ company }}Breaker = new CircuitBreaker(
+  async (operation: () => Promise<any>) => operation(),
+  {
+    timeout: {{ timeout_ms | default('30000') }},
+    errorThresholdPercentage: 50,
+    resetTimeout: 30000,
+    volumeThreshold: 10,
+  }
+);
+
+// Events
+{{ company }}Breaker.on('open', () => {
+  console.warn('{{ display_name }} circuit OPEN - requests failing fast');
+  alertOps('{{ display_name }} circuit breaker opened');
+});
+
+{{ company }}Breaker.on('halfOpen', () => {
+  console.info('{{ display_name }} circuit HALF-OPEN - testing recovery');
+});
+
+{{ company }}Breaker.on('close', () => {
+  console.info('{{ display_name }} circuit CLOSED - normal operation');
+});
+
+// Usage
+async function safe{{ display_name }}Call<T>(fn: () => Promise<T>): Promise<T> {
+  return {{ company }}Breaker.fire(fn);
+}
+```
+
+## Idempotency Keys
+
+```typescript
+import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic idempotency key from input
+function generateIdempotencyKey(
+  operation: string,
+  params: Record<string, any>
+): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+// Or use random key with storage
+class IdempotencyManager {
+  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
+
+  getOrCreate(operationId: string): string {
+    const existing = this.store.get(operationId);
+    if (existing && existing.expiresAt > new Date()) {
+      return existing.key;
+    }
+
+    const key = uuidv4();
+    this.store.set(operationId, {
+      key,
+      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
+    });
+    return key;
+  }
+}
+```
+
+## Bulkhead Pattern
+
+```typescript
+import PQueue from 'p-queue';
+
+// Separate queues for different operations
+const {{ company }}Queues = {
+  critical: new PQueue({ concurrency: 10 }),
+  normal: new PQueue({ concurrency: 5 }),
+  bulk: new PQueue({ concurrency: 2 }),
+};
+
+async function prioritized{{ display_name }}Call<T>(
+  priority: 'critical' | 'normal' | 'bulk',
+  fn: () => Promise<T>
+): Promise<T> {
+  return {{ company }}Queues[priority].add(fn);
+}
+
+// Usage
+await prioritized{{ display_name }}Call('critical', () =>
+  {{ company }}Client.processPayment(order)
+);
+
+await prioritized{{ display_name }}Call('bulk', () =>
+  {{ company }}Client.syncCatalog(products)
+);
+```
+
+## Timeout Hierarchy
+
+```typescript
+const TIMEOUT_CONFIG = {
+  connect: 5000,      // Initial connection
+  request: 30000,     // Standard requests
+  upload: 120000,     // File uploads
+  longPoll: 300000,   // Webhook long-polling
+};
+
+async function timedout{{ display_name }}Call<T>(
+  operation: 'connect' | 'request' | 'upload' | 'longPoll',
+  fn: () => Promise<T>
+): Promise<T> {
+  const timeout = TIMEOUT_CONFIG[operation];
+
+  return Promise.race([
+    fn(),
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`{{ display_name }} ${operation} timeout`)), timeout)
+    ),
+  ]);
+}
+```
+
+## Graceful Degradation
+
+```typescript
+interface {{ display_name }}Fallback {
+  enabled: boolean;
+  data: any;
+  staleness: 'fresh' | 'stale' | 'very_stale';
+}
+
+async function with{{ display_name }}Fallback<T>(
+  fn: () => Promise<T>,
+  fallbackFn: () => Promise<T>
+): Promise<{ data: T; fallback: boolean }> {
+  try {
+    const data = await fn();
+    // Update cache for future fallback
+    await updateFallbackCache(data);
+    return { data, fallback: false };
+  } catch (error) {
+    console.warn('{{ display_name }} failed, using fallback:', error.message);
+    const data = await fallbackFn();
+    return { data, fallback: true };
+  }
+}
+```
+
+## Dead Letter Queue
+
+```typescript
+interface DeadLetterEntry {
+  id: string;
+  operation: string;
+  payload: any;
+  error: string;
+  attempts: number;
+  lastAttempt: Date;
+}
+
+class {{ display_name }}DeadLetterQueue {
+  private queue: DeadLetterEntry[] = [];
+
+  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
+    this.queue.push({
+      ...entry,
+      id: uuidv4(),
+      lastAttempt: new Date(),
+    });
+  }
+
+  async processOne(): Promise<boolean> {
+    const entry = this.queue.shift();
+    if (!entry) return false;
+
+    try {
+      await {{ company }}Client[entry.operation](entry.payload);
+      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
+      return true;
+    } catch (error) {
+      entry.attempts++;
+      entry.lastAttempt = new Date();
+
+      if (entry.attempts < 5) {
+        this.queue.push(entry);
+      } else {
+        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
+        await alertOnPermanentFailure(entry);
+      }
+      return false;
+    }
+  }
+}
+```
+
+## Health Check with Degraded State
+
+```typescript
+type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
+
+async function {{ company }}HealthCheck(): Promise<{
+  status: HealthStatus;
+  details: Record<string, any>;
+}> {
+  const checks = {
+    api: await checkApiConnectivity(),
+    circuitBreaker: {{ company }}Breaker.stats(),
+    dlqSize: deadLetterQueue.size(),
+  };
+
+  const status: HealthStatus =
+    !checks.api.connected ? 'unhealthy' :
+    checks.circuitBreaker.state === 'open' ? 'degraded' :
+    checks.dlqSize > 100 ? 'degraded' :
+    'healthy';
+
+  return { status, details: checks };
+}
+```
+
+## Next Steps
+For policy enforcement, see `{{ company }}-policy-guardrails`.

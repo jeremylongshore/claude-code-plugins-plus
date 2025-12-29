@@ -1,0 +1,111 @@
+---
+name: {{ company }}-common-errors
+description: |
+  {{ display_name }} common errors and solutions. Trigger phrases:
+  "{{ company }} error", "fix {{ company }}", "{{ company }} not working",
+  "{{ company }} troubleshoot", "debug {{ company }}".
+allowed-tools: Read, Grep, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Common Errors
+
+## Overview
+Quick reference for the top 10 most common {{ display_name }} errors and their solutions.
+
+## Error Reference
+
+### 1. {{ error_1_name | default('Authentication Failed') }}
+**Error Message:**
+```
+{{ error_1_message | default('Authentication error: Invalid API key') }}
+```
+
+**Cause:** {{ error_1_cause | default('API key is missing, expired, or invalid.') }}
+
+**Solution:**
+```bash
+{{ error_1_solution | default('# Verify API key is set\necho $' + company | upper + '_API_KEY') }}
+```
+
+---
+
+### 2. {{ error_2_name | default('Rate Limit Exceeded') }}
+**Error Message:**
+```
+{{ error_2_message | default('Rate limit exceeded. Please retry after X seconds.') }}
+```
+
+**Cause:** {{ error_2_cause | default('Too many requests in a short period.') }}
+
+**Solution:**
+{{ error_2_solution | default('Implement exponential backoff. See `' + company + '-rate-limits` skill.') }}
+
+---
+
+### 3. {{ error_3_name | default('Network Timeout') }}
+**Error Message:**
+```
+{{ error_3_message | default('Request timeout after 30000ms') }}
+```
+
+**Cause:** {{ error_3_cause | default('Network connectivity or server latency issues.') }}
+
+**Solution:**
+```{{ primary_language | default('typescript') }}
+{{ error_3_solution | default('// Increase timeout\nconst client = new Client({ timeout: 60000 });') }}
+```
+
+---
+
+### 4. {{ error_4_name | default('Invalid Request') }}
+**Error Message:**
+```
+{{ error_4_message | default('Invalid request: missing required field') }}
+```
+
+**Cause:** {{ error_4_cause | default('Request payload missing required fields.') }}
+
+**Solution:**
+{{ error_4_solution | default('Validate request before sending. Check API docs for required fields.') }}
+
+---
+
+### 5. {{ error_5_name | default('Resource Not Found') }}
+**Error Message:**
+```
+{{ error_5_message | default('Resource not found: 404') }}
+```
+
+**Cause:** {{ error_5_cause | default('Referenced resource does not exist or was deleted.') }}
+
+**Solution:**
+{{ error_5_solution | default('Verify resource ID. Check if resource was recently deleted.') }}
+
+---
+
+### 6-10. Additional Errors
+{{ additional_errors | default('See ' + display_name + ' documentation for additional error codes.') }}
+
+## Quick Diagnostic Commands
+```bash
+# Check {{ display_name }} status
+curl -s {{ status_url | default('https://status.' + company + '.com/api/status') }}
+
+# Verify API connectivity
+curl -I {{ api_url | default('https://api.' + company + '.com') }}
+
+# Check local configuration
+env | grep {{ company | upper }}
+```
+
+## Escalation Path
+If errors persist after trying solutions:
+1. Collect evidence with `{{ company }}-debug-bundle`
+2. Check {{ display_name }} status page
+3. Contact support with request ID
+
+## Next Steps
+For comprehensive debugging, see `{{ company }}-debug-bundle`.

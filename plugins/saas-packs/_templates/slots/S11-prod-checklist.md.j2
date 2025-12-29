@@ -1,0 +1,129 @@
+---
+name: {{ company }}-prod-checklist
+description: |
+  {{ display_name }} production deployment checklist and rollback procedures.
+  Trigger phrases: "{{ company }} production", "deploy {{ company }}",
+  "{{ company }} go-live", "{{ company }} launch checklist".
+allowed-tools: Read, Bash, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Production Checklist
+
+## Overview
+Complete checklist for deploying {{ display_name }} integrations to production.
+
+## Pre-Deployment Checklist
+
+### Configuration
+- [ ] Production API keys in secure vault (not .env files)
+- [ ] Environment variables set in deployment platform
+- [ ] API key scopes are minimal (least privilege)
+- [ ] Webhook endpoints configured with HTTPS
+- [ ] Webhook secrets stored securely
+
+### Code Quality
+- [ ] All tests passing (`npm test`)
+- [ ] No hardcoded credentials
+- [ ] Error handling covers all {{ display_name }} error types
+- [ ] Rate limiting/backoff implemented
+- [ ] Logging is production-appropriate (no sensitive data)
+
+### Infrastructure
+- [ ] Health check endpoint includes {{ display_name }} connectivity
+- [ ] Monitoring/alerting configured for {{ display_name }} errors
+- [ ] Circuit breaker pattern for external API calls
+- [ ] Graceful degradation if {{ display_name }} is unavailable
+
+### Documentation
+- [ ] Runbook for {{ display_name }}-related incidents
+- [ ] On-call knows how to check {{ display_name }} status
+- [ ] API key rotation procedure documented
+
+## Health Check Implementation
+
+```typescript
+async function healthCheck(): Promise<{
+  status: 'healthy' | 'degraded' | 'unhealthy';
+  {{ company }}: { connected: boolean; latencyMs: number };
+}> {
+  const start = Date.now();
+  try {
+    await {{ company }}Client.ping();
+    return {
+      status: 'healthy',
+      {{ company }}: { connected: true, latencyMs: Date.now() - start },
+    };
+  } catch (error) {
+    return {
+      status: 'degraded',
+      {{ company }}: { connected: false, latencyMs: Date.now() - start },
+    };
+  }
+}
+```
+
+## Deployment Procedure
+
+### 1. Pre-flight Checks
+```bash
+# Verify staging environment works
+curl -f https://staging.example.com/health
+
+# Check {{ display_name }} API status
+curl -s {{ status_url | default('https://status.' + company + '.com') }}
+```
+
+### 2. Deploy
+```bash
+# Deploy with feature flag disabled
+kubectl apply -f k8s/production.yaml
+
+# Verify pods are healthy
+kubectl get pods -l app={{ company }}-integration
+
+# Enable feature flag gradually (10% → 50% → 100%)
+```
+
+### 3. Validation
+```bash
+# Check logs for {{ display_name }} errors
+kubectl logs -l app={{ company }}-integration --since=5m | grep -i error
+
+# Verify metrics
+curl localhost:9090/metrics | grep {{ company }}
+```
+
+## Rollback Procedure
+
+### Immediate Rollback
+```bash
+# 1. Disable feature flag
+curl -X POST https://api.featureflags.com/disable/{{ company }}-integration
+
+# 2. Revert to previous deployment
+kubectl rollout undo deployment/{{ company }}-integration
+
+# 3. Verify rollback
+kubectl rollout status deployment/{{ company }}-integration
+```
+
+### Post-Mortem Requirements
+- [ ] Timeline of events
+- [ ] Root cause identified
+- [ ] {{ display_name }} API logs/request IDs collected
+- [ ] Action items to prevent recurrence
+
+## Monitoring Alerts
+
+| Alert | Condition | Severity |
+|-------|-----------|----------|
+| {{ display_name }} API Down | 5xx errors > 10/min | P1 |
+| High Latency | p99 > {{ latency_threshold | default('5000') }}ms | P2 |
+| Rate Limited | 429 errors > 5/min | P2 |
+| Auth Failures | 401/403 errors > 0 | P1 |
+
+## Next Steps
+For version upgrades, see `{{ company }}-upgrade-migration`.

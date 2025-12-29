@@ -1,0 +1,90 @@
+---
+name: {{ company }}-local-dev-loop
+description: |
+  {{ display_name }} local development workflow with hot reload and testing.
+  Trigger phrases: "{{ company }} dev setup", "{{ company }} local development",
+  "{{ company }} dev environment", "develop with {{ company }}".
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Local Dev Loop
+
+## Overview
+Set up a fast, reproducible local development workflow for {{ display_name }}.
+
+## Development Environment
+
+### 1. Project Structure
+```
+my-{{ company }}-project/
+├── src/
+│   ├── {{ company }}/
+│   │   ├── client.ts       # {{ display_name }} client wrapper
+│   │   ├── config.ts       # Configuration management
+│   │   └── utils.ts        # Helper functions
+│   └── index.ts
+├── tests/
+│   └── {{ company }}.test.ts
+├── .env.local              # Local secrets (git-ignored)
+├── .env.example            # Template for team
+└── package.json
+```
+
+### 2. Environment Setup
+```bash
+# Copy environment template
+cp .env.example .env.local
+
+# Install dependencies
+{{ package_manager | default('npm') }} install
+
+# Start development server
+{{ package_manager | default('npm') }} run dev
+```
+
+### 3. Hot Reload Configuration
+```json
+// package.json scripts
+{
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "test": "vitest",
+    "test:watch": "vitest --watch"
+  }
+}
+```
+
+## Testing Strategy
+
+### Unit Tests
+```typescript
+import { describe, it, expect, vi } from 'vitest';
+import { {{ client_class | default(display_name + 'Client') }} } from '../src/{{ company }}/client';
+
+describe('{{ display_name }} Client', () => {
+  it('should initialize with API key', () => {
+    const client = new {{ client_class | default(display_name + 'Client') }}({ apiKey: 'test-key' });
+    expect(client).toBeDefined();
+  });
+});
+```
+
+### Mock Responses
+```typescript
+vi.mock('{{ npm_package | default(company + '-sdk') }}', () => ({
+  {{ client_class | default(display_name + 'Client') }}: vi.fn().mockImplementation(() => ({
+    // Mock methods here
+  })),
+}));
+```
+
+## Debugging Tips
+- Use `DEBUG={{ company | upper }}=*` for verbose logging
+- Check {{ display_name }} dashboard for request logs
+- Use `{{ company }}-debug-bundle` skill for evidence collection
+
+## Next Steps
+See `{{ company }}-sdk-patterns` for production-ready code patterns.

@@ -1,0 +1,172 @@
+---
+name: {{ company }}-enterprise-rbac
+description: |
+  {{ display_name }} enterprise SSO, roles, and organization controls.
+  Trigger phrases: "{{ company }} SSO", "{{ company }} RBAC",
+  "{{ company }} enterprise", "{{ company }} roles".
+allowed-tools: Read, Write, Edit
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Enterprise RBAC
+
+## Overview
+Configure enterprise-grade access control for {{ display_name }} integrations.
+
+## Role Definitions
+
+| Role | Permissions | Use Case |
+|------|-------------|----------|
+| Admin | Full access | Platform administrators |
+| Developer | Read/write, no delete | Active development |
+| Viewer | Read-only | Stakeholders, auditors |
+| Service | API access only | Automated systems |
+
+## Role Implementation
+
+```typescript
+enum {{ display_name }}Role {
+  Admin = 'admin',
+  Developer = 'developer',
+  Viewer = 'viewer',
+  Service = 'service',
+}
+
+interface {{ display_name }}Permissions {
+  read: boolean;
+  write: boolean;
+  delete: boolean;
+  admin: boolean;
+}
+
+const ROLE_PERMISSIONS: Record<{{ display_name }}Role, {{ display_name }}Permissions> = {
+  admin: { read: true, write: true, delete: true, admin: true },
+  developer: { read: true, write: true, delete: false, admin: false },
+  viewer: { read: true, write: false, delete: false, admin: false },
+  service: { read: true, write: true, delete: false, admin: false },
+};
+
+function checkPermission(
+  role: {{ display_name }}Role,
+  action: keyof {{ display_name }}Permissions
+): boolean {
+  return ROLE_PERMISSIONS[role][action];
+}
+```
+
+## SSO Integration
+
+### SAML Configuration
+
+```typescript
+// {{ display_name }} SAML setup
+const samlConfig = {
+  entryPoint: 'https://idp.company.com/saml/sso',
+  issuer: 'https://{{ company }}.com/saml/metadata',
+  cert: process.env.SAML_CERT,
+  callbackUrl: 'https://app.yourcompany.com/auth/{{ company }}/callback',
+};
+
+// Map IdP groups to {{ display_name }} roles
+const groupRoleMapping: Record<string, {{ display_name }}Role> = {
+  'Engineering': {{ display_name }}Role.Developer,
+  'Platform-Admins': {{ display_name }}Role.Admin,
+  'Data-Team': {{ display_name }}Role.Viewer,
+};
+```
+
+### OAuth2/OIDC Integration
+
+```typescript
+import { OAuth2Client } from '{{ npm_package | default(company + '-sdk') }}';
+
+const oauthClient = new OAuth2Client({
+  clientId: process.env.{{ company | upper }}_OAUTH_CLIENT_ID!,
+  clientSecret: process.env.{{ company | upper }}_OAUTH_CLIENT_SECRET!,
+  redirectUri: 'https://app.yourcompany.com/auth/{{ company }}/callback',
+  scopes: {{ oauth_scopes | default("['read', 'write']") }},
+});
+```
+
+## Organization Management
+
+```typescript
+interface {{ display_name }}Organization {
+  id: string;
+  name: string;
+  ssoEnabled: boolean;
+  enforceSso: boolean;
+  allowedDomains: string[];
+  defaultRole: {{ display_name }}Role;
+}
+
+async function createOrganization(
+  config: {{ display_name }}Organization
+): Promise<void> {
+  await {{ company }}Client.organizations.create({
+    ...config,
+    settings: {
+      sso: {
+        enabled: config.ssoEnabled,
+        enforced: config.enforceSso,
+        domains: config.allowedDomains,
+      },
+    },
+  });
+}
+```
+
+## Access Control Middleware
+
+```typescript
+function require{{ display_name }}Permission(
+  requiredPermission: keyof {{ display_name }}Permissions
+) {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user as { {{ company }}Role: {{ display_name }}Role };
+
+    if (!checkPermission(user.{{ company }}Role, requiredPermission)) {
+      return res.status(403).json({
+        error: 'Forbidden',
+        message: `Missing permission: ${requiredPermission}`,
+      });
+    }
+
+    next();
+  };
+}
+
+// Usage
+app.delete('/{{ company }}/resource/:id',
+  require{{ display_name }}Permission('delete'),
+  deleteResourceHandler
+);
+```
+
+## Audit Trail
+
+```typescript
+interface {{ display_name }}AuditEntry {
+  timestamp: Date;
+  userId: string;
+  role: {{ display_name }}Role;
+  action: string;
+  resource: string;
+  success: boolean;
+  ipAddress: string;
+}
+
+async function log{{ display_name }}Access(entry: {{ display_name }}AuditEntry): Promise<void> {
+  await auditDb.insert(entry);
+
+  // Alert on suspicious activity
+  if (entry.action === 'delete' && !entry.success) {
+    await alertOnSuspiciousActivity(entry);
+  }
+}
+```
+
+## Next Steps
+For major migrations, see `{{ company }}-migration-deep-dive`.

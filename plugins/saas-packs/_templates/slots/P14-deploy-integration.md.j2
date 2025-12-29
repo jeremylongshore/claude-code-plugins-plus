@@ -1,0 +1,149 @@
+---
+name: {{ company }}-deploy-integration
+description: |
+  {{ display_name }} deployment patterns for Vercel, Fly.io, and Cloud Run.
+  Trigger phrases: "deploy {{ company }}", "{{ company }} Vercel",
+  "{{ company }} production deploy", "{{ company }} Cloud Run".
+allowed-tools: Read, Write, Edit, Bash
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Deploy Integration
+
+## Overview
+Deploy {{ display_name }}-powered applications to popular platforms.
+
+## Vercel Deployment
+
+### Environment Setup
+```bash
+# Add {{ display_name }} secrets to Vercel
+vercel secrets add {{ company }}_api_key sk_live_***
+vercel secrets add {{ company }}_webhook_secret whsec_***
+
+# Link to project
+vercel link
+
+# Deploy preview
+vercel
+
+# Deploy production
+vercel --prod
+```
+
+### vercel.json Configuration
+```json
+{
+  "env": {
+    "{{ company | upper }}_API_KEY": "@{{ company }}_api_key"
+  },
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
+```
+
+## Fly.io Deployment
+
+### fly.toml
+```toml
+app = "my-{{ company }}-app"
+primary_region = "{{ primary_region | default('iad') }}"
+
+[env]
+  NODE_ENV = "production"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+```
+
+### Secrets
+```bash
+# Set {{ display_name }} secrets
+fly secrets set {{ company | upper }}_API_KEY=sk_live_***
+fly secrets set {{ company | upper }}_WEBHOOK_SECRET=whsec_***
+
+# Deploy
+fly deploy
+```
+
+## Google Cloud Run
+
+### Dockerfile
+```dockerfile
+FROM node:20-slim
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+CMD ["npm", "start"]
+```
+
+### Deploy Script
+```bash
+#!/bin/bash
+# deploy-cloud-run.sh
+
+PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
+SERVICE_NAME="{{ company }}-service"
+REGION="{{ gcp_region | default('us-central1') }}"
+
+# Build and push image
+gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
+
+# Deploy to Cloud Run
+gcloud run deploy $SERVICE_NAME \
+  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
+  --region $REGION \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-secrets={{ company | upper }}_API_KEY={{ company }}-api-key:latest
+```
+
+## Environment Configuration Pattern
+
+```typescript
+// config/{{ company }}.ts
+interface {{ display_name }}Config {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  webhookSecret?: string;
+}
+
+export function get{{ display_name }}Config(): {{ display_name }}Config {
+  const env = process.env.NODE_ENV || 'development';
+
+  return {
+    apiKey: process.env.{{ company | upper }}_API_KEY!,
+    environment: env as {{ display_name }}Config['environment'],
+    webhookSecret: process.env.{{ company | upper }}_WEBHOOK_SECRET,
+  };
+}
+```
+
+## Health Check Endpoint
+
+```typescript
+// api/health.ts
+export async function GET() {
+  const {{ company }}Status = await check{{ display_name }}Connection();
+
+  return Response.json({
+    status: {{ company }}Status ? 'healthy' : 'degraded',
+    services: {
+      {{ company }}: {{ company }}Status,
+    },
+    timestamp: new Date().toISOString(),
+  });
+}
+```
+
+## Next Steps
+For webhook handling, see `{{ company }}-webhooks-events`.

@@ -1,0 +1,149 @@
+---
+name: {{ company }}-cost-tuning
+description: |
+  {{ display_name }} cost optimization with tier selection and usage monitoring.
+  Trigger phrases: "{{ company }} cost", "{{ company }} billing",
+  "reduce {{ company }} costs", "{{ company }} pricing", "{{ company }} expensive".
+allowed-tools: Read, Bash, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# {{ display_name }} Cost Tuning
+
+## Overview
+Optimize {{ display_name }} costs through smart tier selection, sampling, and usage monitoring.
+
+## Pricing Tiers
+
+| Tier | Monthly Cost | Included | Overage |
+|------|-------------|----------|---------|
+| {{ tier_1_name | default('Free') }} | ${{ tier_1_cost | default('0') }} | {{ tier_1_included | default('1,000 requests') }} | N/A |
+| {{ tier_2_name | default('Pro') }} | ${{ tier_2_cost | default('99') }} | {{ tier_2_included | default('100,000 requests') }} | ${{ tier_2_overage | default('0.001') }}/request |
+| {{ tier_3_name | default('Enterprise') }} | Custom | Unlimited | Volume discounts |
+
+## Cost Estimation
+
+```typescript
+interface UsageEstimate {
+  requestsPerMonth: number;
+  tier: string;
+  estimatedCost: number;
+  recommendation?: string;
+}
+
+function estimate{{ display_name }}Cost(requestsPerMonth: number): UsageEstimate {
+  if (requestsPerMonth <= {{ tier_1_limit | default('1000') }}) {
+    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
+  }
+
+  if (requestsPerMonth <= {{ tier_2_limit | default('100000') }}) {
+    return { requestsPerMonth, tier: 'Pro', estimatedCost: {{ tier_2_cost | default('99') }} };
+  }
+
+  const proOverage = (requestsPerMonth - {{ tier_2_limit | default('100000') }}) * {{ tier_2_overage_rate | default('0.001') }};
+  const proCost = {{ tier_2_cost | default('99') }} + proOverage;
+
+  return {
+    requestsPerMonth,
+    tier: 'Pro (with overage)',
+    estimatedCost: proCost,
+    recommendation: proCost > {{ enterprise_threshold | default('500') }}
+      ? 'Consider Enterprise tier for volume discounts'
+      : undefined,
+  };
+}
+```
+
+## Usage Monitoring
+
+```typescript
+class {{ display_name }}UsageMonitor {
+  private requestCount = 0;
+  private bytesTransferred = 0;
+  private alertThreshold: number;
+
+  constructor(monthlyBudget: number) {
+    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
+  }
+
+  track(request: { bytes: number }) {
+    this.requestCount++;
+    this.bytesTransferred += request.bytes;
+
+    if (this.estimatedCost() > this.alertThreshold) {
+      this.sendAlert('Approaching {{ display_name }} budget limit');
+    }
+  }
+
+  estimatedCost(): number {
+    return estimate{{ display_name }}Cost(this.requestCount).estimatedCost;
+  }
+
+  private sendAlert(message: string) {
+    // Send to Slack, email, PagerDuty, etc.
+  }
+}
+```
+
+## Cost Reduction Strategies
+
+### 1. Request Sampling
+```typescript
+function shouldSample(samplingRate = 0.1): boolean {
+  return Math.random() < samplingRate;
+}
+
+// Use for non-critical telemetry
+if (shouldSample(0.1)) { // 10% sample
+  await {{ company }}Client.trackEvent(event);
+}
+```
+
+### 2. Batching Requests
+```typescript
+// Instead of N individual calls
+await Promise.all(ids.map(id => {{ company }}Client.get(id)));
+
+// Use batch endpoint (1 call)
+await {{ company }}Client.batchGet(ids);
+```
+
+### 3. Caching (from P16)
+- Cache frequently accessed data
+- Use cache invalidation webhooks
+- Set appropriate TTLs
+
+### 4. Compression
+```typescript
+const client = new {{ client_class | default(display_name + 'Client') }}({
+  compression: true, // Enable gzip
+});
+```
+
+## Budget Alerts
+
+```bash
+# Set up billing alerts in {{ display_name }} dashboard
+# Or use API if available:
+{{ billing_api_example | default('# Check ' + display_name + ' documentation for billing APIs') }}
+```
+
+## Cost Dashboard Query
+
+```sql
+-- If tracking usage in your database
+SELECT
+  DATE_TRUNC('day', created_at) as date,
+  COUNT(*) as requests,
+  SUM(response_bytes) as bytes,
+  COUNT(*) * {{ cost_per_request | default('0.001') }} as estimated_cost
+FROM {{ company }}_api_logs
+WHERE created_at >= NOW() - INTERVAL '30 days'
+GROUP BY 1
+ORDER BY 1;
+```
+
+## Next Steps
+For architecture patterns, see `{{ company }}-reference-architecture`.
