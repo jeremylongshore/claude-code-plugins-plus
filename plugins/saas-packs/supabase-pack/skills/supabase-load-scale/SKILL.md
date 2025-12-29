@@ -1,25 +1,25 @@
 ---
-name: {{ company }}-load-scale
+name: supabase-load-scale
 description: |
-  {{ display_name }} load testing, scaling, and capacity planning.
-  Trigger phrases: "{{ company }} load test", "{{ company }} scale",
-  "{{ company }} performance test", "{{ company }} capacity".
+  Supabase load testing, scaling, and capacity planning.
+  Trigger phrases: "supabase load test", "supabase scale",
+  "supabase performance test", "supabase capacity".
 allowed-tools: Read, Write, Edit, Bash
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
-# {{ display_name }} Load & Scale
+# Supabase Load & Scale
 
 ## Overview
-Load testing, scaling strategies, and capacity planning for {{ display_name }} integrations.
+Load testing, scaling strategies, and capacity planning for Supabase integrations.
 
 ## Load Testing with k6
 
 ### Basic Load Test
 ```javascript
-// {{ company }}-load-test.js
+// supabase-load-test.js
 import http from 'k6/http';
 import { check, sleep } from 'k6';
 
@@ -32,26 +32,26 @@ export const options = {
     { duration: '2m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<{{ target_p95_ms | default('500') }}'],
+    http_req_duration: ['p(95)<200'],
     http_req_failed: ['rate<0.01'],
   },
 };
 
 export default function () {
   const response = http.post(
-    '{{ api_url | default('https://api.' + company + '.com') }}/v1/resource',
+    'https://api.supabase.com/v1/resource',
     JSON.stringify({ test: true }),
     {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${__ENV.{{ company | upper }}_API_KEY}`,
+        'Authorization': `Bearer ${__ENV.SUPABASE_API_KEY}`,
       },
     }
   );
 
   check(response, {
     'status is 200': (r) => r.status === 200,
-    'latency < {{ target_p95_ms | default('500') }}ms': (r) => r.timings.duration < {{ target_p95_ms | default('500') }},
+    'latency < 200ms': (r) => r.timings.duration < 200,
   });
 
   sleep(1);
@@ -65,10 +65,10 @@ brew install k6  # macOS
 # or: sudo apt install k6  # Linux
 
 # Run test
-k6 run --env {{ company | upper }}_API_KEY=${{ '{' }}{{ company | upper }}_API_KEY} {{ company }}-load-test.js
+k6 run --env SUPABASE_API_KEY=${SUPABASE_API_KEY} supabase-load-test.js
 
 # Run with output to InfluxDB
-k6 run --out influxdb=http://localhost:8086/k6 {{ company }}-load-test.js
+k6 run --out influxdb=http://localhost:8086/k6 supabase-load-test.js
 ```
 
 ## Scaling Patterns
@@ -79,12 +79,12 @@ k6 run --out influxdb=http://localhost:8086/k6 {{ company }}-load-test.js
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ company }}-integration-hpa
+  name: supabase-integration-hpa
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ company }}-integration
+    name: supabase-integration
   minReplicas: 2
   maxReplicas: 20
   metrics:
@@ -97,7 +97,7 @@ spec:
     - type: Pods
       pods:
         metric:
-          name: {{ company }}_queue_depth
+          name: supabase_queue_depth
         target:
           type: AverageValue
           averageValue: 100
@@ -107,28 +107,28 @@ spec:
 ```typescript
 import { Pool } from 'generic-pool';
 
-const {{ company }}Pool = Pool.create({
+const supabasePool = Pool.create({
   create: async () => {
-    return new {{ client_class | default(display_name + 'Client') }}({
-      apiKey: process.env.{{ company | upper }}_API_KEY!,
+    return new SupabaseClient({
+      apiKey: process.env.SUPABASE_API_KEY!,
     });
   },
   destroy: async (client) => {
     await client.close();
   },
-  max: {{ pool_max | default('20') }},
-  min: {{ pool_min | default('5') }},
+  max: 20,
+  min: 5,
   idleTimeoutMillis: 30000,
 });
 
-async function with{{ display_name }}Client<T>(
-  fn: (client: {{ client_class | default(display_name + 'Client') }}) => Promise<T>
+async function withSupabaseClient<T>(
+  fn: (client: SupabaseClient) => Promise<T>
 ): Promise<T> {
-  const client = await {{ company }}Pool.acquire();
+  const client = await supabasePool.acquire();
   try {
     return await fn(client);
   } finally {
-    {{ company }}Pool.release(client);
+    supabasePool.release(client);
   }
 }
 ```
@@ -142,7 +142,7 @@ async function with{{ display_name }}Client<T>(
 | Memory Usage | > 75% | > 90% |
 | Request Queue Depth | > 100 | > 500 |
 | Error Rate | > 1% | > 5% |
-| P95 Latency | > {{ warning_p95 | default('1000') }}ms | > {{ critical_p95 | default('3000') }}ms |
+| P95 Latency | > 500ms | > 2000ms |
 
 ### Capacity Calculation
 ```typescript
@@ -153,7 +153,7 @@ interface CapacityEstimate {
   scaleRecommendation: string;
 }
 
-function estimate{{ display_name }}Capacity(
+function estimateSupabaseCapacity(
   metrics: SystemMetrics
 ): CapacityEstimate {
   const currentRPS = metrics.requestsPerSecond;
@@ -180,7 +180,7 @@ function estimate{{ display_name }}Capacity(
 ## Benchmark Results Template
 
 ```markdown
-## {{ display_name }} Performance Benchmark
+## Supabase Performance Benchmark
 **Date:** YYYY-MM-DD
 **Environment:** [staging/production]
 **SDK Version:** X.Y.Z
@@ -209,4 +209,4 @@ function estimate{{ display_name }}Capacity(
 ```
 
 ## Next Steps
-For reliability patterns, see `{{ company }}-reliability-patterns`.
+For reliability patterns, see `supabase-reliability-patterns`.

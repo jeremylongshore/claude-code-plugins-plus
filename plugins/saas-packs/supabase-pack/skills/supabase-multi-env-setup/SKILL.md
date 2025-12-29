@@ -1,19 +1,19 @@
 ---
-name: {{ company }}-multi-env-setup
+name: supabase-multi-env-setup
 description: |
-  {{ display_name }} multi-environment configuration for dev/staging/prod.
-  Trigger phrases: "{{ company }} environments", "{{ company }} staging",
-  "{{ company }} dev prod", "{{ company }} environment setup".
+  Supabase multi-environment configuration for dev/staging/prod.
+  Trigger phrases: "supabase environments", "supabase staging",
+  "supabase dev prod", "supabase environment setup".
 allowed-tools: Read, Write, Edit, Bash
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
-# {{ display_name }} Multi-Environment Setup
+# Supabase Multi-Environment Setup
 
 ## Overview
-Configure {{ display_name }} across development, staging, and production environments.
+Configure Supabase across development, staging, and production environments.
 
 ## Environment Strategy
 
@@ -27,7 +27,7 @@ Configure {{ display_name }} across development, staging, and production environ
 
 ```
 config/
-├── {{ company }}/
+├── supabase/
 │   ├── base.json           # Shared config
 │   ├── development.json    # Dev overrides
 │   ├── staging.json        # Staging overrides
@@ -49,8 +49,8 @@ config/
 ### development.json
 ```json
 {
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY}",
-  "baseUrl": "{{ dev_base_url | default('https://api-sandbox.' + company + '.com') }}",
+  "apiKey": "${SUPABASE_API_KEY}",
+  "baseUrl": "https://api-sandbox.supabase.com",
   "debug": true,
   "cache": {
     "enabled": false
@@ -61,8 +61,8 @@ config/
 ### staging.json
 ```json
 {
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY_STAGING}",
-  "baseUrl": "{{ staging_base_url | default('https://api-staging.' + company + '.com') }}",
+  "apiKey": "${SUPABASE_API_KEY_STAGING}",
+  "baseUrl": "https://api-staging.supabase.com",
   "debug": false
 }
 ```
@@ -70,8 +70,8 @@ config/
 ### production.json
 ```json
 {
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY_PROD}",
-  "baseUrl": "{{ prod_base_url | default('https://api.' + company + '.com') }}",
+  "apiKey": "${SUPABASE_API_KEY_PROD}",
+  "baseUrl": "https://api.supabase.com",
   "debug": false,
   "retries": 5
 }
@@ -80,8 +80,8 @@ config/
 ## Environment Detection
 
 ```typescript
-// src/{{ company }}/config.ts
-import baseConfig from '../../config/{{ company }}/base.json';
+// src/supabase/config.ts
+import baseConfig from '../../config/supabase/base.json';
 
 type Environment = 'development' | 'staging' | 'production';
 
@@ -93,9 +93,9 @@ function detectEnvironment(): Environment {
     : 'development';
 }
 
-export function get{{ display_name }}Config() {
+export function getSupabaseConfig() {
   const env = detectEnvironment();
-  const envConfig = require(`../../config/{{ company }}/${env}.json`);
+  const envConfig = require(`../../config/supabase/${env}.json`);
 
   return {
     ...baseConfig,
@@ -110,25 +110,25 @@ export function get{{ display_name }}Config() {
 ### Local Development
 ```bash
 # .env.local (git-ignored)
-{{ company | upper }}_API_KEY=sk_test_dev_***
+SUPABASE_API_KEY=sk_test_dev_***
 ```
 
 ### CI/CD (GitHub Actions)
 ```yaml
 env:
-  {{ company | upper }}_API_KEY: ${{ '{{' }} secrets.{{ company | upper }}_API_KEY_${{ '{{' }} matrix.environment {{ '}}' }} {{ '}}' }}
+  SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY_${{ matrix.environment }} }}
 ```
 
 ### Production (Vault/Secrets Manager)
 ```bash
 # AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id {{ company }}/production/api-key
+aws secretsmanager get-secret-value --secret-id supabase/production/api-key
 
 # GCP Secret Manager
-gcloud secrets versions access latest --secret={{ company }}-api-key
+gcloud secrets versions access latest --secret=supabase-api-key
 
 # HashiCorp Vault
-vault kv get -field=api_key secret/{{ company }}/production
+vault kv get -field=api_key secret/supabase/production
 ```
 
 ## Environment Isolation
@@ -136,10 +136,10 @@ vault kv get -field=api_key secret/{{ company }}/production
 ```typescript
 // Prevent production operations in non-prod
 function guardProductionOperation(operation: string): void {
-  const config = get{{ display_name }}Config();
+  const config = getSupabaseConfig();
 
   if (config.environment !== 'production') {
-    console.warn(`[{{ company }}] ${operation} blocked in ${config.environment}`);
+    console.warn(`[supabase] ${operation} blocked in ${config.environment}`);
     throw new Error(`${operation} only allowed in production`);
   }
 }
@@ -171,4 +171,4 @@ const featureFlags: Record<Environment, Record<string, boolean>> = {
 ```
 
 ## Next Steps
-For observability setup, see `{{ company }}-observability`.
+For observability setup, see `supabase-observability`.

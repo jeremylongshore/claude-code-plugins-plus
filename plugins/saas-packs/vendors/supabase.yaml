@@ -1,0 +1,119 @@
+# Supabase Vendor Configuration
+# Reference implementation for 50-Vendor SaaS Skill Packs
+
+company: supabase
+display_name: Supabase
+tier: flagship+
+primary_language: typescript
+
+# SDK/Package info
+npm_package: "@supabase/supabase-js"
+pip_package: supabase
+client_class: SupabaseClient
+
+# URLs
+api_url: https://api.supabase.com
+docs_url: https://supabase.com/docs
+status_url: https://status.supabase.com
+
+# Verification code for install-auth
+verification_code: "const result = await supabase.from('_test').select('*').limit(1); console.log(result.error ? 'Failed' : 'OK');"
+
+# Hello world code
+hello_world_ts: "const result = await supabase.from('todos').insert({ task: 'Hello!' }).select(); console.log(result.data);"
+hello_world_py: "response = supabase.table('todos').insert({'task': 'Hello!'}).execute(); print(response.data)"
+
+# Core workflows (Supabase-specific)
+workflow_a_slug: schema-from-requirements
+workflow_a_name: Schema from Requirements
+workflow_a_description: |
+  Generate Supabase database schema from natural language requirements.
+  This is the primary workflow for starting new Supabase projects.
+workflow_a_trigger: schema from requirements
+workflow_a_action: generate database schema
+workflow_a_use_case_1: Starting a new project with defined data requirements
+workflow_a_use_case_2: Refactoring an existing schema based on new features
+workflow_a_use_case_3: Creating migrations from specification documents
+
+workflow_b_slug: auth-storage-realtime-core
+workflow_b_name: Auth + Storage + Realtime
+workflow_b_description: |
+  Implement the core Supabase trifecta: authentication, file storage,
+  and real-time subscriptions in a single cohesive setup.
+workflow_b_trigger: auth storage realtime
+workflow_b_action: implement full stack features
+
+# Rate limits
+tier_1_name: Free
+tier_1_rpm: "500"
+tier_1_rpd: "50,000"
+tier_2_name: Pro
+tier_2_rpm: "5,000"
+tier_2_rpd: "1,000,000"
+tier_3_name: Enterprise
+tier_3_rpm: "Unlimited"
+tier_3_rpd: "Unlimited"
+
+# Error patterns
+error_1_name: Invalid JWT
+error_1_message: "Invalid JWT: expired or malformed"
+error_1_cause: JWT token has expired or is incorrectly formatted
+error_1_solution: "Check token expiry with supabase.auth.getSession() and call refreshSession() if needed"
+
+error_2_name: RLS Policy Violation
+error_2_message: "new row violates row-level security policy for table"
+error_2_cause: Row Level Security (RLS) policy is blocking the operation
+error_2_solution: "Check RLS policies in dashboard or via pg_policies table. Ensure user has required role."
+
+error_3_name: Connection Pool Exhausted
+error_3_message: "too many clients already"
+error_3_cause: Connection pool limit reached due to too many concurrent connections
+error_3_solution: "Use connection pooling mode in Supabase dashboard. Switch to Session mode or pgBouncer."
+
+# CLI commands
+cli_webhook_test: "supabase functions invoke webhook-handler"
+
+# OAuth scopes
+oauth_scopes: "read, write, realtime"
+dev_scopes: "read, write"
+staging_scopes: "read, write, admin"
+prod_scopes: "read, write"
+
+# Performance benchmarks
+op_1_name: Select
+op_1_p50: "15ms"
+op_1_p95: "50ms"
+op_1_p99: "100ms"
+op_2_name: Insert
+op_2_p50: "25ms"
+op_2_p95: "75ms"
+op_2_p99: "150ms"
+op_3_name: Real-time Subscribe
+op_3_p50: "50ms"
+op_3_p95: "150ms"
+op_3_p99: "300ms"
+
+# Pricing
+tier_1_cost: "0"
+tier_1_included: "500MB database, 1GB storage, 50K MAUs"
+tier_2_cost: "25"
+tier_2_included: "8GB database, 100GB storage, 100K MAUs"
+tier_3_cost: "599"
+tier_3_included: "Unlimited"
+
+# GCP region
+gcp_region: us-central1
+primary_region: iad
+
+# Caching
+cache_ttl_ms: "30000"
+
+# Connection pool
+pool_max: "20"
+pool_min: "5"
+max_sockets: "15"
+
+# Latency thresholds
+target_p95_ms: "200"
+warning_p95: "500"
+critical_p95: "2000"

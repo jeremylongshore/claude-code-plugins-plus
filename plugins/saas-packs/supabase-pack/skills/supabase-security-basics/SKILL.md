@@ -1,27 +1,27 @@
 ---
-name: {{ company }}-security-basics
+name: supabase-security-basics
 description: |
-  {{ display_name }} security best practices for secrets and access control.
-  Trigger phrases: "{{ company }} security", "{{ company }} secrets",
-  "secure {{ company }}", "{{ company }} API key security".
+  Supabase security best practices for secrets and access control.
+  Trigger phrases: "supabase security", "supabase secrets",
+  "secure supabase", "supabase API key security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
 
-# {{ display_name }} Security Basics
+# Supabase Security Basics
 
 ## Overview
-Security best practices for {{ display_name }} API keys, tokens, and access control.
+Security best practices for Supabase API keys, tokens, and access control.
 
 ## Secret Management
 
 ### Environment Variables (Required)
 ```bash
 # .env (NEVER commit to git)
-{{ company | upper }}_API_KEY=sk_live_***
-{{ company | upper }}_SECRET=***
+SUPABASE_API_KEY=sk_live_***
+SUPABASE_SECRET=***
 
 # .gitignore
 .env
@@ -31,13 +31,13 @@ Security best practices for {{ display_name }} API keys, tokens, and access cont
 
 ### Secret Rotation
 ```bash
-# 1. Generate new key in {{ display_name }} dashboard
+# 1. Generate new key in Supabase dashboard
 # 2. Update environment variable
-export {{ company | upper }}_API_KEY="new_key_here"
+export SUPABASE_API_KEY="new_key_here"
 
 # 3. Verify new key works
-curl -H "Authorization: Bearer ${{ '{' }}{{ company | upper }}_API_KEY}" \
-  {{ api_url | default('https://api.' + company + '.com') }}/health
+curl -H "Authorization: Bearer ${SUPABASE_API_KEY}" \
+  https://api.supabase.com/health
 
 # 4. Revoke old key in dashboard
 ```
@@ -47,19 +47,19 @@ curl -H "Authorization: Bearer ${{ '{' }}{{ company | upper }}_API_KEY}" \
 ### Scope Recommendations
 | Environment | Recommended Scopes |
 |-------------|-------------------|
-| Development | `{{ dev_scopes | default('read:*') }}` |
-| Staging | `{{ staging_scopes | default('read:*, write:limited') }}` |
-| Production | `{{ prod_scopes | default('Only required scopes') }}` |
+| Development | `read, write` |
+| Staging | `read, write, admin` |
+| Production | `read, write` |
 
 ### Service Account Pattern
 ```typescript
 // Use separate API keys per service/environment
 const clients = {
-  reader: new {{ client_class | default(display_name + 'Client') }}({
-    apiKey: process.env.{{ company | upper }}_READ_KEY,
+  reader: new SupabaseClient({
+    apiKey: process.env.SUPABASE_READ_KEY,
   }),
-  writer: new {{ client_class | default(display_name + 'Client') }}({
-    apiKey: process.env.{{ company | upper }}_WRITE_KEY,
+  writer: new SupabaseClient({
+    apiKey: process.env.SUPABASE_WRITE_KEY,
   }),
 };
 ```
@@ -67,7 +67,7 @@ const clients = {
 ## Audit Logging
 
 ```typescript
-// Log all {{ display_name }} operations (without secrets)
+// Log all Supabase operations (without secrets)
 function logOperation(operation: string, params: Record<string, any>) {
   const sanitized = { ...params };
   delete sanitized.apiKey;
@@ -75,7 +75,7 @@ function logOperation(operation: string, params: Record<string, any>) {
 
   console.log(JSON.stringify({
     timestamp: new Date().toISOString(),
-    service: '{{ company }}',
+    service: 'supabase',
     operation,
     params: sanitized,
   }));
@@ -98,12 +98,12 @@ function logOperation(operation: string, params: Record<string, any>) {
 ### ❌ Don't Do This
 ```typescript
 // NEVER hardcode API keys
-const client = new {{ client_class | default(display_name + 'Client') }}({
+const client = new SupabaseClient({
   apiKey: 'sk_live_actual_key_here', // BAD!
 });
 
 // NEVER log API keys
-console.log('Using key:', process.env.{{ company | upper }}_API_KEY); // BAD!
+console.log('Using key:', process.env.SUPABASE_API_KEY); // BAD!
 
 // NEVER commit .env files
 git add .env  // BAD!
@@ -112,12 +112,12 @@ git add .env  // BAD!
 ### ✅ Do This Instead
 ```typescript
 // Use environment variables
-const client = new {{ client_class | default(display_name + 'Client') }}({
-  apiKey: process.env.{{ company | upper }}_API_KEY,
+const client = new SupabaseClient({
+  apiKey: process.env.SUPABASE_API_KEY,
 });
 
 // Log presence, not value
-console.log('API key configured:', !!process.env.{{ company | upper }}_API_KEY);
+console.log('API key configured:', !!process.env.SUPABASE_API_KEY);
 ```
 
 ## Webhook Security
@@ -143,4 +143,4 @@ function verifyWebhookSignature(
 ```
 
 ## Next Steps
-For production deployment, see `{{ company }}-prod-checklist`.
+For production deployment, see `supabase-prod-checklist`.
