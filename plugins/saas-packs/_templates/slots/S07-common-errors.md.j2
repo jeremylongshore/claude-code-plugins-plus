@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-common-errors
 description: |
-  {{ display_name }} common errors and solutions. Trigger phrases:
-  "{{ company }} error", "fix {{ company }}", "{{ company }} not working",
-  "{{ company }} troubleshoot", "debug {{ company }}".
-allowed-tools: Read, Grep, Bash
+  Diagnose and fix {{ display_name }} common errors with solutions.
+  Use when encountering {{ display_name }} errors or troubleshooting issues.
+  Trigger with phrases like "{{ company }} error", "fix {{ company }}",
+  "{{ company }} not working", "debug {{ company }}".
+allowed-tools: Read, Grep, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,81 +16,88 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Quick reference for the top 10 most common {{ display_name }} errors and their solutions.
 
-## Error Reference
+## Prerequisites
+- Basic understanding of {{ display_name }} API
+- Access to application logs
+- {{ company | upper }}_API_KEY environment variable configured
+
+## Instructions
+
+### Step 1: Identify the Error
+Check your logs for the error message:
+```bash
+grep -i "{{ company }}" /var/log/app.log | tail -20
+```
+
+### Step 2: Match to Known Errors
+Compare the error message against the reference below.
+
+### Step 3: Apply the Solution
+Follow the solution steps for your specific error.
+
+## Error Handling
 
 ### 1. {{ error_1_name | default('Authentication Failed') }}
-**Error Message:**
-```
-{{ error_1_message | default('Authentication error: Invalid API key') }}
-```
+**Message:** `{{ error_1_message | default('Authentication error: Invalid API key') }}`
 
 **Cause:** {{ error_1_cause | default('API key is missing, expired, or invalid.') }}
 
 **Solution:**
 ```bash
-{{ error_1_solution | default('# Verify API key is set\necho $' + company | upper + '_API_KEY') }}
+# Verify API key is set
+echo ${{ company | upper }}_API_KEY | head -c 10
+# Regenerate key if needed in {{ display_name }} dashboard
 ```
 
 ---
 
 ### 2. {{ error_2_name | default('Rate Limit Exceeded') }}
-**Error Message:**
-```
-{{ error_2_message | default('Rate limit exceeded. Please retry after X seconds.') }}
-```
+**Message:** `{{ error_2_message | default('Rate limit exceeded. Retry after X seconds.') }}`
 
 **Cause:** {{ error_2_cause | default('Too many requests in a short period.') }}
 
-**Solution:**
-{{ error_2_solution | default('Implement exponential backoff. See `' + company + '-rate-limits` skill.') }}
+**Solution:** {{ error_2_solution | default('Implement exponential backoff. See `' + company + '-rate-limits` skill.') }}
 
 ---
 
 ### 3. {{ error_3_name | default('Network Timeout') }}
-**Error Message:**
-```
-{{ error_3_message | default('Request timeout after 30000ms') }}
-```
+**Message:** `{{ error_3_message | default('Request timeout after 30000ms') }}`
 
 **Cause:** {{ error_3_cause | default('Network connectivity or server latency issues.') }}
 
 **Solution:**
 ```{{ primary_language | default('typescript') }}
-{{ error_3_solution | default('// Increase timeout\nconst client = new Client({ timeout: 60000 });') }}
+// Increase timeout
+const client = new Client({ timeout: 60000 });
 ```
 
 ---
 
 ### 4. {{ error_4_name | default('Invalid Request') }}
-**Error Message:**
-```
-{{ error_4_message | default('Invalid request: missing required field') }}
-```
+**Message:** `{{ error_4_message | default('Invalid request: missing required field') }}`
 
 **Cause:** {{ error_4_cause | default('Request payload missing required fields.') }}
 
-**Solution:**
-{{ error_4_solution | default('Validate request before sending. Check API docs for required fields.') }}
+**Solution:** {{ error_4_solution | default('Validate request before sending. Check API docs for required fields.') }}
 
 ---
 
 ### 5. {{ error_5_name | default('Resource Not Found') }}
-**Error Message:**
-```
-{{ error_5_message | default('Resource not found: 404') }}
-```
+**Message:** `{{ error_5_message | default('Resource not found: 404') }}`
 
 **Cause:** {{ error_5_cause | default('Referenced resource does not exist or was deleted.') }}
 
-**Solution:**
-{{ error_5_solution | default('Verify resource ID. Check if resource was recently deleted.') }}
+**Solution:** {{ error_5_solution | default('Verify resource ID. Check if resource was recently deleted.') }}
 
----
+## Output
+- Identified error type and root cause
+- Applied fix from solution steps
+- Verified error is resolved
+- Updated code to prevent recurrence
 
-### 6-10. Additional Errors
-{{ additional_errors | default('See ' + display_name + ' documentation for additional error codes.') }}
+## Examples
 
-## Quick Diagnostic Commands
+### Quick Diagnostic Commands
 ```bash
 # Check {{ display_name }} status
 curl -s {{ status_url | default('https://status.' + company + '.com/api/status') }}
@@ -101,11 +109,28 @@ curl -I {{ api_url | default('https://api.' + company + '.com') }}
 env | grep {{ company | upper }}
 ```
 
-## Escalation Path
-If errors persist after trying solutions:
-1. Collect evidence with `{{ company }}-debug-bundle`
-2. Check {{ display_name }} status page
-3. Contact support with request ID
+### Error Handling Pattern
+```{{ primary_language | default('typescript') }}
+try {
+  const result = await client.operation();
+} catch (error) {
+  if (error.code === 'RATE_LIMIT') {
+    await sleep(error.retryAfter * 1000);
+    return retry();
+  }
+  if (error.code === 'AUTH_ERROR') {
+    throw new Error('Invalid API key - check configuration');
+  }
+  throw error;
+}
+```
+
+## Resources
+- [{{ display_name }} Error Codes]({{ docs_url | default('https://docs.' + company + '.com') }}/errors)
+- [Status Page]({{ status_url | default('https://status.' + company + '.com') }})
+- [Support Contact]({{ support_url | default('https://' + company + '.com/support') }})
 
 ## Next Steps
-For comprehensive debugging, see `{{ company }}-debug-bundle`.
+- Collect evidence with `{{ company }}-debug-bundle`
+- Check {{ display_name }} status page
+- Contact support with request ID if error persists

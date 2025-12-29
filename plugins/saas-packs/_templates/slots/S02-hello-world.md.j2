@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-hello-world
 description: |
-  {{ display_name }} hello world example - minimal working code. Trigger phrases:
-  "{{ company }} hello world", "{{ company }} example", "{{ company }} quick start",
-  "simple {{ company }} code", "basic {{ company }} usage".
-allowed-tools: Read, Write, Edit
+  Create a minimal working {{ display_name }} integration example.
+  Use when testing {{ display_name }} connection or learning the basics.
+  Trigger with phrases like "{{ company }} hello world", "test {{ company }}",
+  "{{ company }} example", "simple {{ company }} code".
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -17,11 +18,17 @@ Minimal working example demonstrating core {{ display_name }} functionality.
 
 ## Prerequisites
 - Completed `{{ company }}-install-auth` setup
-- Valid API credentials configured
+- Valid API credentials configured in environment
+- Node.js 18+ or Python 3.10+
 
-## Hello World Example
+## Instructions
 
-### TypeScript
+### Step 1: Create Test File
+Create a new file named `{{ company }}-test.ts` (or `.py` for Python):
+
+### Step 2: Add Hello World Code
+
+#### TypeScript
 ```typescript
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
 
@@ -30,30 +37,77 @@ const client = new {{ client_class | default(display_name + 'Client') }}({
 });
 
 async function main() {
-  {{ hello_world_ts | default('// Your first API call here') }}
+  {{ hello_world_ts | default('const result = await client.test();\n  console.log("Success:", result);') }}
 }
 
 main().catch(console.error);
 ```
 
-### Python
+#### Python
 ```python
 from {{ pip_package | default(company) }} import {{ client_class | default(display_name + 'Client') }}
 
 client = {{ client_class | default(display_name + 'Client') }}()
 
-{{ hello_world_py | default('# Your first API call here') }}
+{{ hello_world_py | default('result = client.test()\nprint("Success:", result)') }}
 ```
 
-## Expected Output
+### Step 3: Run the Test
+```bash
+# TypeScript
+npx ts-node {{ company }}-test.ts
+
+# Python
+python {{ company }}-test.py
+```
+
+## Output
 ```
 {{ expected_output | default('Success! Your ' + display_name + ' connection is working.') }}
 ```
 
-## Troubleshooting
-- **Import Error**: Verify SDK installation with `npm list` or `pip show`
-- **Auth Error**: Check environment variable is set correctly
-- **Timeout**: Increase timeout or check network connectivity
+Expected results:
+- Console output showing successful API response
+- No authentication errors
+- Response data from {{ display_name }} API
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Import Error | SDK not installed | Run `npm install {{ npm_package | default(company + '-sdk') }}` |
+| Auth Error | Invalid API key | Check `{{ company | upper }}_API_KEY` in environment |
+| Timeout | Network issue | Increase timeout or check connectivity |
+| Rate Limit | Too many requests | Wait and retry with backoff |
+
+## Examples
+
+### Extended Hello World (TypeScript)
+```typescript
+import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
+
+const client = new {{ client_class | default(display_name + 'Client') }}({
+  apiKey: process.env.{{ company | upper }}_API_KEY,
+});
+
+async function main() {
+  try {
+    const result = await client.test();
+    console.log('✅ Connection successful');
+    console.log('Response:', JSON.stringify(result, null, 2));
+  } catch (error) {
+    console.error('❌ Connection failed:', error.message);
+    process.exit(1);
+  }
+}
+
+main();
+```
+
+## Resources
+- [{{ display_name }} Quickstart Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/quickstart)
+- [API Examples]({{ docs_url | default('https://docs.' + company + '.com') }}/examples)
+- [SDK Documentation]({{ sdk_docs_url | default('https://docs.' + company + '.com/sdk') }})
 
 ## Next Steps
 Proceed to `{{ company }}-local-dev-loop` for development workflow setup.

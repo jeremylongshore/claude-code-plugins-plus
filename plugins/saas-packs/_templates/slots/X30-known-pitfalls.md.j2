@@ -2,7 +2,8 @@
 name: {{ company }}-known-pitfalls
 description: |
   {{ display_name }} anti-patterns and common mistakes to avoid.
-  Trigger phrases: "{{ company }} mistakes", "{{ company }} anti-patterns",
+  Use when reviewing {{ display_name }} code for common mistakes.
+  Trigger with phrases like "{{ company }} mistakes", "{{ company }} anti-patterns",
   "{{ company }} pitfalls", "{{ company }} what not to do".
 allowed-tools: Read, Grep
 version: 1.0.0
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Common mistakes and anti-patterns when integrating with {{ display_name }}.
 
-## Pitfall #1: Synchronous API Calls in Request Path
+## Prerequisites
+- {{ company }}-install-auth completed
+- Code review in progress
+- Understanding of {{ display_name }} best practices
+- Team onboarding for new developers
+
+## Instructions
+
+### Step 1: Review for Pitfall #1 - Synchronous API Calls in Request Path
 
 ### ❌ Anti-Pattern
 ```typescript
@@ -268,6 +277,45 @@ return renderPage({ recommendations, degraded: !recommendations });
 ```
 
 ---
+
+## Output
+- Pitfalls identified in existing code
+- Better approaches documented
+- Quick reference card for code reviews
+- Team awareness of common mistakes
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Review missed pitfall | Checklist not followed | Use automated linting |
+| Pitfall in production | Code review gap | Add to CI/CD checks |
+| Team keeps repeating | Training gap | Document in ADR, share knowledge |
+| Legacy code has pitfall | Technical debt | Plan gradual refactoring |
+
+## Examples
+
+### Code Review Checklist
+
+```markdown
+## {{ display_name }} Integration Review Checklist
+
+- [ ] No sync calls in request path (use queues)
+- [ ] Rate limiting implemented
+- [ ] API keys in environment variables
+- [ ] Idempotency keys for mutations
+- [ ] Webhooks signature verified
+- [ ] Proper error handling (typed errors)
+- [ ] Configuration externalized
+- [ ] Circuit breaker in place
+- [ ] No PII in logs
+- [ ] Graceful degradation fallbacks
+```
+
+## Resources
+- [{{ display_name }} Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/best-practices)
+- [Common Integration Issues]({{ docs_url | default('https://docs.' + company + '.com') }}/troubleshooting)
+- [Security Guidelines]({{ docs_url | default('https://docs.' + company + '.com') }}/security)
 
 ## Quick Reference Card
 

@@ -2,9 +2,10 @@
 name: {{ company }}-load-scale
 description: |
   {{ display_name }} load testing, scaling, and capacity planning.
-  Trigger phrases: "{{ company }} load test", "{{ company }} scale",
+  Use when load testing or planning capacity for {{ display_name }} integration.
+  Trigger with phrases like "{{ company }} load test", "{{ company }} scale",
   "{{ company }} performance test", "{{ company }} capacity".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Load testing, scaling strategies, and capacity planning for {{ display_name }} integrations.
 
-## Load Testing with k6
+## Prerequisites
+- {{ company }}-install-auth completed
+- k6 or similar load testing tool installed
+- Kubernetes cluster (for HPA testing)
+- Metrics and monitoring configured
+
+## Instructions
+
+### Step 1: Load Testing with k6
 
 ### Basic Load Test
 ```javascript
@@ -177,7 +186,7 @@ function estimate{{ display_name }}Capacity(
 }
 ```
 
-## Benchmark Results Template
+### Step 2: Benchmark Results Template
 
 ```markdown
 ## {{ display_name }} Performance Benchmark
@@ -207,6 +216,41 @@ function estimate{{ display_name }}Capacity(
 ### Recommendations
 - [Scaling recommendation]
 ```
+
+## Output
+- Load test results with latency percentiles
+- Scaling configuration (HPA, connection pooling)
+- Capacity estimates with headroom
+- Benchmark documentation for future reference
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Test timeout | Endpoint too slow | Increase k6 timeout, check {{ display_name }} |
+| Connection refused | Pod not ready | Wait for readiness, check HPA |
+| Rate limit hit | Too aggressive ramp | Reduce VUs, add delays |
+| Memory OOM | Pool too large | Reduce connection pool size |
+
+## Examples
+
+### Grafana Dashboard Queries
+
+```promql
+# RPS by endpoint
+sum(rate(http_requests_total{service="{{ company }}"}[1m])) by (endpoint)
+
+# P95 latency
+histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="{{ company }}"}[5m])) by (le))
+
+# Connection pool utilization
+{{ company }}_pool_connections_active / {{ company }}_pool_connections_max
+```
+
+## Resources
+- [k6 Documentation](https://k6.io/docs/)
+- [{{ display_name }} Rate Limits]({{ docs_url | default('https://docs.' + company + '.com') }}/rate-limits)
+- [Kubernetes HPA Guide](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
 
 ## Next Steps
 For reliability patterns, see `{{ company }}-reliability-patterns`.

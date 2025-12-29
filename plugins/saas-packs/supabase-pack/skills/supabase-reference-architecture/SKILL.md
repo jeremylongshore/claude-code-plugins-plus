@@ -2,7 +2,8 @@
 name: supabase-reference-architecture
 description: |
   Supabase reference architecture and best-practice layout.
-  Trigger phrases: "supabase architecture", "supabase best practices",
+  Use when designing Supabase integration architecture or reviewing patterns.
+  Trigger with phrases like "supabase architecture", "supabase best practices",
   "supabase project structure", "how to organize supabase".
 allowed-tools: Read, Grep
 version: 1.0.0
@@ -15,7 +16,17 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Production-ready architecture patterns for Supabase integrations.
 
-## Project Structure
+## Prerequisites
+- supabase-install-auth completed
+- Understanding of layered architecture
+- TypeScript/Node.js project setup
+- Basic understanding of design patterns
+
+## Instructions
+
+### Step 1: Project Structure
+
+Organize your Supabase integration using a layered architecture that separates concerns and promotes maintainability. The following structure provides clear boundaries between client configuration, business logic, and API handlers.
 
 ```
 my-supabase-project/
@@ -163,7 +174,7 @@ User Request
 └─────────────┘
 ```
 
-## Configuration Management
+### Step 2: Configuration Management
 
 ```typescript
 // config/supabase.ts
@@ -183,6 +194,40 @@ export function loadSupabaseConfig(): SupabaseConfig {
   return require(`./supabase.${env}.json`);
 }
 ```
+
+## Output
+- Clean separation of concerns across layers
+- Reusable client wrapper with caching/monitoring
+- Consistent error handling patterns
+- Health check endpoint for Supabase connectivity
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Circular dependency | Service importing client incorrectly | Use dependency injection |
+| Config not found | Missing environment config file | Create config for environment |
+| Type mismatch | SDK types don't match app types | Create adapter layer |
+| Health check false positive | Stale cache | Disable cache for health checks |
+
+## Examples
+
+### Dependency Injection Pattern
+```typescript
+// src/container.ts
+import { Container } from 'inversify';
+import { SupabaseService } from './supabase/client';
+
+const container = new Container();
+container.bind(SupabaseService).toSelf().inSingletonScope();
+
+export { container };
+```
+
+## Resources
+- [Supabase Best Practices](https://supabase.com/docs/best-practices)
+- [Architecture Examples](https://supabase.com/docs/examples)
+- [TypeScript SDK Reference](https://supabase.com/docs/sdk/typescript)
 
 ## Flagship Skills
 For multi-environment setup, see `supabase-multi-env-setup`.

@@ -2,9 +2,10 @@
 name: {{ company }}-migration-deep-dive
 description: |
   {{ display_name }} major re-architecture and migration strategies.
-  Trigger phrases: "migrate {{ company }}", "{{ company }} migration",
+  Use when migrating to {{ display_name }} or performing major version upgrades.
+  Trigger with phrases like "migrate {{ company }}", "{{ company }} migration",
   "switch to {{ company }}", "{{ company }} replatform".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Comprehensive guide for migrating to or from {{ display_name }}, or major version upgrades.
 
-## Migration Types
+## Prerequisites
+- {{ company }}-install-auth completed
+- Current system fully documented
+- Test environment available
+- Rollback plan defined
+
+## Instructions
+
+### Step 1: Migration Types
 
 | Type | Complexity | Duration | Risk |
 |------|-----------|----------|------|
@@ -172,7 +181,7 @@ kubectl rollout restart deployment/app
 curl https://app.yourcompany.com/health | jq '.services.{{ company }}'
 ```
 
-## Post-Migration Validation
+### Step 2: Post-Migration Validation
 
 ```typescript
 async function validate{{ display_name }}Migration(): Promise<ValidationReport> {
@@ -190,6 +199,56 @@ async function validate{{ display_name }}Migration(): Promise<ValidationReport> 
   return { checks: results, passed: results.every(r => r.result.success) };
 }
 ```
+
+## Output
+- Migration plan documented and approved
+- Data migrated with validation
+- Traffic shifted gradually
+- Rollback tested and documented
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform error | Review transformation logic, re-migrate |
+| Performance regression | Missing optimization | Profile and optimize new implementation |
+| Integration failures | API incompatibility | Update adapter layer for compatibility |
+| Rollback needed | Critical issue found | Execute rollback procedure |
+
+## Examples
+
+### Migration Progress Tracking
+
+```typescript
+interface MigrationProgress {
+  phase: string;
+  recordsTotal: number;
+  recordsMigrated: number;
+  errors: number;
+  startTime: Date;
+  estimatedCompletion: Date;
+}
+
+async function trackMigrationProgress(): Promise<MigrationProgress> {
+  const total = await oldSystem.count();
+  const migrated = await {{ company }}Client.count();
+  const errors = await getMigrationErrors();
+
+  return {
+    phase: 'data-migration',
+    recordsTotal: total,
+    recordsMigrated: migrated,
+    errors: errors.length,
+    startTime: migrationStartTime,
+    estimatedCompletion: estimateCompletion(migrated, total),
+  };
+}
+```
+
+## Resources
+- [{{ display_name }} Migration Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/migration)
+- [Data Import API]({{ docs_url | default('https://docs.' + company + '.com') }}/import)
+- [Migration Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/migration-best-practices)
 
 ## Flagship+ Skills
 For advanced troubleshooting, see `{{ company }}-advanced-troubleshooting`.

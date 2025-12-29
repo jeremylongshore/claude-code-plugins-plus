@@ -1,10 +1,11 @@
 ---
 name: supabase-incident-runbook
 description: |
-  Supabase incident response: triage, mitigate, and postmortem.
-  Trigger phrases: "supabase incident", "supabase outage",
+  Detect and respond to Supabase incidents with triage, mitigation, and postmortem.
+  Use when responding to Supabase outages or service degradation.
+  Trigger with phrases like "supabase incident", "supabase outage",
   "supabase down", "supabase on-call".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Rapid incident response procedures for Supabase-related outages.
 
-## Severity Levels
+## Prerequisites
+- supabase-install-auth completed
+- Access to Kubernetes/infrastructure
+- Monitoring dashboards available
+- On-call escalation contacts
+
+## Instructions
+
+### Step 1: Assess Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
@@ -151,6 +160,42 @@ curl "localhost:9090/api/v1/query_range?query=supabase_errors_total&start=2h" > 
 ### Action Items
 - [ ] [Preventive measure] - Owner - Due date
 ```
+
+## Output
+- Incident triaged and severity assigned
+- Root cause identified or escalated
+- Mitigation applied and verified
+- Postmortem documented with action items
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Can't access logs | RBAC permissions | Use break-glass access or escalate |
+| Status page disagrees | Stale status or different issue | Check multiple sources, trust metrics |
+| Rollback failed | Bad previous version | Deploy known-good version manually |
+| Unable to reach Supabase | Network/DNS issue | Try alternative endpoints, check DNS |
+
+## Examples
+
+### PagerDuty Automation
+
+```yaml
+# Automatic Supabase incident creation
+on_call:
+  service: supabase-integration
+  escalation_policy: engineering-on-call
+  severity_mapping:
+    P1: critical
+    P2: high
+    P3: warning
+    P4: info
+```
+
+## Resources
+- [Supabase Status Page](https://status.supabase.com)
+- [Incident Response Best Practices](https://supabase.com/docs/incident-response)
+- [Support Contact](https://supabase.com/docs/support)
 
 ## Next Steps
 For data handling, see `supabase-data-handling`.

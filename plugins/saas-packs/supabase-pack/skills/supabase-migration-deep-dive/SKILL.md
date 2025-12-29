@@ -2,9 +2,10 @@
 name: supabase-migration-deep-dive
 description: |
   Supabase major re-architecture and migration strategies.
-  Trigger phrases: "migrate supabase", "supabase migration",
+  Use when migrating to Supabase or performing major version upgrades.
+  Trigger with phrases like "migrate supabase", "supabase migration",
   "switch to supabase", "supabase replatform".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Comprehensive guide for migrating to or from Supabase, or major version upgrades.
 
-## Migration Types
+## Prerequisites
+- supabase-install-auth completed
+- Current system fully documented
+- Test environment available
+- Rollback plan defined
+
+## Instructions
+
+### Step 1: Migration Types
 
 | Type | Complexity | Duration | Risk |
 |------|-----------|----------|------|
@@ -172,7 +181,7 @@ kubectl rollout restart deployment/app
 curl https://app.yourcompany.com/health | jq '.services.supabase'
 ```
 
-## Post-Migration Validation
+### Step 2: Post-Migration Validation
 
 ```typescript
 async function validateSupabaseMigration(): Promise<ValidationReport> {
@@ -190,6 +199,56 @@ async function validateSupabaseMigration(): Promise<ValidationReport> {
   return { checks: results, passed: results.every(r => r.result.success) };
 }
 ```
+
+## Output
+- Migration plan documented and approved
+- Data migrated with validation
+- Traffic shifted gradually
+- Rollback tested and documented
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform error | Review transformation logic, re-migrate |
+| Performance regression | Missing optimization | Profile and optimize new implementation |
+| Integration failures | API incompatibility | Update adapter layer for compatibility |
+| Rollback needed | Critical issue found | Execute rollback procedure |
+
+## Examples
+
+### Migration Progress Tracking
+
+```typescript
+interface MigrationProgress {
+  phase: string;
+  recordsTotal: number;
+  recordsMigrated: number;
+  errors: number;
+  startTime: Date;
+  estimatedCompletion: Date;
+}
+
+async function trackMigrationProgress(): Promise<MigrationProgress> {
+  const total = await oldSystem.count();
+  const migrated = await supabaseClient.count();
+  const errors = await getMigrationErrors();
+
+  return {
+    phase: 'data-migration',
+    recordsTotal: total,
+    recordsMigrated: migrated,
+    errors: errors.length,
+    startTime: migrationStartTime,
+    estimatedCompletion: estimateCompletion(migrated, total),
+  };
+}
+```
+
+## Resources
+- [Supabase Migration Guide](https://supabase.com/docs/migration)
+- [Data Import API](https://supabase.com/docs/import)
+- [Migration Best Practices](https://supabase.com/docs/migration-best-practices)
 
 ## Flagship+ Skills
 For advanced troubleshooting, see `supabase-advanced-troubleshooting`.

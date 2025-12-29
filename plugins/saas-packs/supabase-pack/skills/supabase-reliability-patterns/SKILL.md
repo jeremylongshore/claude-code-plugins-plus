@@ -2,7 +2,8 @@
 name: supabase-reliability-patterns
 description: |
   Supabase idempotency, circuit breakers, and reliability patterns.
-  Trigger phrases: "supabase reliability", "supabase circuit breaker",
+  Use when implementing production reliability for Supabase integration.
+  Trigger with phrases like "supabase reliability", "supabase circuit breaker",
   "supabase idempotent", "supabase resilience".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -15,7 +16,17 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Production-grade reliability patterns for Supabase integrations.
 
-## Circuit Breaker
+## Prerequisites
+- supabase-install-auth completed
+- opossum or similar circuit breaker library
+- Redis for distributed state (optional)
+- Queue system for DLQ
+
+## Instructions
+
+### Step 1: Circuit Breaker
+
+Implement a circuit breaker to prevent cascading failures when Supabase experiences issues. The circuit breaker will automatically stop sending requests when the error rate exceeds a threshold, allowing the service time to recover.
 
 ```typescript
 import CircuitBreaker from 'opossum';
@@ -212,7 +223,7 @@ class SupabaseDeadLetterQueue {
 }
 ```
 
-## Health Check with Degraded State
+### Step 2: Health Check with Degraded State
 
 ```typescript
 type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
@@ -236,6 +247,49 @@ async function supabaseHealthCheck(): Promise<{
   return { status, details: checks };
 }
 ```
+
+## Output
+- Circuit breaker protecting against cascading failures
+- Idempotency keys preventing duplicate operations
+- Bulkhead pattern isolating different workloads
+- Graceful degradation when Supabase is unavailable
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Circuit open | Too many failures | Wait for reset, check Supabase status |
+| Idempotency collision | Reused key | Generate unique keys per operation |
+| Queue backlog | Slow processing | Scale consumers, check DLQ |
+| Fallback failed | Both primary and fallback down | Alert, enable maintenance mode |
+
+## Examples
+
+### Retry with Jitter
+
+```typescript
+async function retryWithJitter<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3
+): Promise<T> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      const baseDelay = Math.pow(2, i) * 1000;
+      const jitter = Math.random() * 1000;
+      await sleep(baseDelay + jitter);
+    }
+  }
+  throw new Error('Unreachable');
+}
+```
+
+## Resources
+- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Supabase Reliability Guide](https://supabase.com/docs/reliability)
+- [Bulkhead Pattern](https://docs.microsoft.com/en-us/azure/architecture/patterns/bulkhead)
 
 ## Next Steps
 For policy enforcement, see `supabase-policy-guardrails`.

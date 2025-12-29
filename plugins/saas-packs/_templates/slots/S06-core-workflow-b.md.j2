@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-{{ workflow_b_slug | default('core-workflow-b') }}
 description: |
-  {{ display_name }} secondary workflow: {{ workflow_b_name | default('Core Workflow B') }}.
-  Trigger phrases: "{{ company }} {{ workflow_b_trigger | default('secondary workflow') }}",
+  Execute {{ display_name }} {{ workflow_b_name | default('Core Workflow B') }} - the secondary integration path.
+  Use when {{ workflow_b_use_case_1 | default('implementing the secondary use case') }}.
+  Trigger with phrases like "{{ company }} {{ workflow_b_trigger | default('secondary workflow') }}",
   "{{ workflow_b_action | default('secondary task') }} with {{ company }}".
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,44 +16,69 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 {{ workflow_b_description | default('Secondary workflow for ' + display_name + '. Complements the primary workflow.') }}
 
-## When to Use
-- {{ workflow_b_use_case_1 | default('Use case scenario 1') }}
-- {{ workflow_b_use_case_2 | default('Use case scenario 2') }}
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Understanding of `{{ company }}-{{ workflow_a_slug | default('core-workflow-a') }}`
+- Valid API credentials configured
+- {{ workflow_b_prereq | default('Understanding of the secondary use case') }}
 
-## Implementation
+## Instructions
 
 ### Step 1: {{ workflow_b_step1_name | default('Setup') }}
+{{ workflow_b_step1_desc | default('Configure the workflow for the secondary path.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_b_step1_code | default('// Step 1 implementation') }}
+{{ workflow_b_step1_code | default('// Step 1: Setup configuration\nconst client = getClient();\nconst options = { mode: "secondary" };') }}
 ```
 
 ### Step 2: {{ workflow_b_step2_name | default('Process') }}
+{{ workflow_b_step2_desc | default('Execute the secondary processing logic.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_b_step2_code | default('// Step 2 implementation') }}
+{{ workflow_b_step2_code | default('// Step 2: Process with secondary logic\nconst result = await client.processSecondary(options);\nconsole.log("Processed:", result);') }}
 ```
 
 ### Step 3: {{ workflow_b_step3_name | default('Complete') }}
+{{ workflow_b_step3_desc | default('Finalize the secondary workflow.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_b_step3_code | default('// Step 3 implementation') }}
+{{ workflow_b_step3_code | default('// Step 3: Complete the workflow\nawait client.complete(result);\nconsole.log("Secondary workflow complete");') }}
 ```
 
-## Complete Example
+## Output
+- Successful completion of {{ workflow_b_name | default('Core Workflow B') }}
+- Result data from secondary processing
+- Comparison metrics with primary workflow
+- Logs showing step-by-step execution
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| {{ workflow_b_error1_name | default('Setup Failed') }} | {{ workflow_b_error1_cause | default('Invalid options') }} | {{ workflow_b_error1_solution | default('Check options configuration') }} |
+| {{ workflow_b_error2_name | default('Processing Error') }} | {{ workflow_b_error2_cause | default('Data format mismatch') }} | {{ workflow_b_error2_solution | default('Validate data before processing') }} |
+| Conflict with Primary | Running both workflows | Use workflow locks or sequential execution |
+| Rate Limit | Too many requests | Implement backoff, see `{{ company }}-rate-limits` |
+
+## Examples
+
+### Complete Workflow Example
 ```{{ primary_language | default('typescript') }}
-{{ workflow_b_complete_example | default('// Complete workflow example') }}
+{{ workflow_b_complete_example | default('// Complete secondary workflow example\nimport { getClient } from "./client";\n\nasync function runSecondaryWorkflow() {\n  const client = getClient();\n  \n  // Step 1: Setup\n  const options = { mode: "secondary" };\n  \n  // Step 2: Process\n  const result = await client.processSecondary(options);\n  \n  // Step 3: Complete\n  await client.complete(result);\n  \n  return result;\n}\n\nrunSecondaryWorkflow().then(console.log).catch(console.error);') }}
 ```
 
-## Comparison with {{ workflow_a_name | default('Core Workflow A') }}
+### Comparison with {{ workflow_a_name | default('Core Workflow A') }}
 
 | Aspect | {{ workflow_a_name | default('Workflow A') }} | {{ workflow_b_name | default('Workflow B') }} |
 |--------|------------|------------|
-| Use Case | {{ workflow_a_use_case_1 | default('Primary') }} | {{ workflow_b_use_case_1 | default('Secondary') }} |
+| Use Case | {{ workflow_a_use_case_1 | default('Primary operations') }} | {{ workflow_b_use_case_1 | default('Secondary operations') }} |
 | Complexity | {{ workflow_a_complexity | default('Medium') }} | {{ workflow_b_complexity | default('Lower') }} |
 | Performance | {{ workflow_a_perf | default('Standard') }} | {{ workflow_b_perf | default('Optimized') }} |
 
-## Error Handling
-```{{ primary_language | default('typescript') }}
-{{ workflow_b_error_handling | default('// Error handling code') }}
-```
+## Resources
+- [{{ display_name }} {{ workflow_b_name | default('Workflow B') }} Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/workflows/secondary)
+- [Workflow Comparison]({{ docs_url | default('https://docs.' + company + '.com') }}/workflows/comparison)
+- [API Reference]({{ api_reference_url | default('https://docs.' + company + '.com/api') }})
 
 ## Next Steps
 For common errors, see `{{ company }}-common-errors`.

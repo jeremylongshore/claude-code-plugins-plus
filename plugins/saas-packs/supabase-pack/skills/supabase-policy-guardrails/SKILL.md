@@ -2,9 +2,10 @@
 name: supabase-policy-guardrails
 description: |
   Supabase lint rules, policy enforcement, and guardrails.
-  Trigger phrases: "supabase policy", "supabase lint",
+  Use when implementing policy enforcement for Supabase integration.
+  Trigger with phrases like "supabase policy", "supabase lint",
   "supabase guardrails", "supabase best practices check".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Automated policy enforcement and guardrails for Supabase integrations.
 
-## ESLint Rules
+## Prerequisites
+- supabase-install-auth completed
+- ESLint configured in project
+- CI/CD pipeline available
+- Pre-commit hooks installed
+
+## Instructions
+
+### Step 1: ESLint Rules
 
 ### Custom Supabase Plugin
 ```javascript
@@ -177,7 +186,7 @@ jobs:
         run: npx eslint --plugin supabase --rule 'supabase/no-hardcoded-keys: error' src/
 ```
 
-## Runtime Guardrails
+### Step 2: Runtime Guardrails
 
 ```typescript
 // Prevent dangerous operations in production
@@ -204,6 +213,82 @@ function guardRateLimits(requestsInWindow: number): void {
   }
 }
 ```
+
+## Output
+- ESLint rules catching Supabase anti-patterns
+- Pre-commit hooks blocking secrets
+- CI policy checks in every PR
+- Runtime guardrails preventing dangerous operations
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| ESLint rule violation | Code anti-pattern | Fix code or disable rule with comment |
+| Pre-commit rejection | Secret detected | Remove secret, use environment variable |
+| OPA policy denial | Configuration violation | Update config to comply with policy |
+| Runtime guard block | Dangerous operation in prod | Use appropriate environment or override |
+
+## Examples
+
+### Semgrep Rules
+
+```yaml
+rules:
+  - id: supabase-hardcoded-key
+    pattern: |
+      new $CLIENT({ apiKey: "sk_..." })
+    message: Hardcoded Supabase API key detected
+    severity: ERROR
+    languages: [typescript, javascript]
+```
+
+### Complete ESLint Plugin Setup
+
+```javascript
+// eslint-plugin-supabase/index.js
+module.exports = {
+  rules: {
+    'no-hardcoded-keys': require('./rules/no-hardcoded-keys'),
+    'require-error-handling': require('./rules/require-error-handling'),
+    'use-typed-client': require('./rules/use-typed-client'),
+  },
+  configs: {
+    recommended: {
+      plugins: ['supabase'],
+      rules: {
+        'supabase/no-hardcoded-keys': 'error',
+        'supabase/require-error-handling': 'warn',
+        'supabase/use-typed-client': 'warn',
+      },
+    },
+  },
+};
+```
+
+### Git Hooks Configuration
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+echo "Running Supabase policy checks..."
+
+# Check for secrets
+if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+  echo "ERROR: Supabase secrets detected!"
+  exit 1
+fi
+
+# Run ESLint
+npx eslint --plugin supabase --rule 'supabase/no-hardcoded-keys: error' src/
+
+echo "Supabase policy checks passed!"
+```
+
+## Resources
+- [ESLint Custom Rules](https://eslint.org/docs/developer-guide/working-with-rules)
+- [OPA Policy Language](https://www.openpolicyagent.org/docs/latest/policy-language/)
+- [Pre-commit Framework](https://pre-commit.com/)
 
 ## Next Steps
 For architecture blueprints, see `supabase-architecture-variants`.

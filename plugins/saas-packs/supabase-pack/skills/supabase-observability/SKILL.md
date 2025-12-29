@@ -2,9 +2,10 @@
 name: supabase-observability
 description: |
   Supabase metrics, traces, and alerts baseline configuration.
-  Trigger phrases: "supabase monitoring", "supabase metrics",
+  Use when setting up monitoring or debugging Supabase performance.
+  Trigger with phrases like "supabase monitoring", "supabase metrics",
   "supabase observability", "monitor supabase".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Set up comprehensive observability for Supabase integrations.
 
-## Metrics Collection
+## Prerequisites
+- supabase-install-auth completed
+- Prometheus/metrics backend available
+- OpenTelemetry collector configured (optional)
+- Grafana or similar dashboard tool
+
+## Instructions
+
+### Step 1: Metrics Collection
 
 ### Key Metrics
 | Metric | Type | Description |
@@ -172,7 +181,7 @@ groups:
           summary: "Supabase integration is down"
 ```
 
-## Dashboard
+### Step 2: Dashboard
 
 ### Grafana Panel Queries
 
@@ -194,6 +203,41 @@ groups:
   ]
 }
 ```
+
+## Output
+- Prometheus metrics for Supabase API calls
+- OpenTelemetry traces for distributed tracing
+- Structured logs with correlation IDs
+- AlertManager rules for critical conditions
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Missing metrics | Client not instrumented | Add instrumentation wrapper to all calls |
+| High cardinality | Too many label values | Use bounded labels, avoid IDs |
+| Alert fatigue | Thresholds too sensitive | Tune alert thresholds based on baseline |
+| Trace gaps | Missing context propagation | Ensure context passed through async calls |
+
+## Examples
+
+### Datadog Integration
+
+```typescript
+import { tracer } from 'dd-trace';
+
+tracer.trace('supabase.request', async (span) => {
+  span.setTag('supabase.method', method);
+  const result = await supabaseClient.call(method, params);
+  span.setTag('supabase.status', 'success');
+  return result;
+});
+```
+
+## Resources
+- [Supabase Metrics Reference](https://supabase.com/docs/metrics)
+- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
+- [Prometheus Best Practices](https://prometheus.io/docs/practices/)
 
 ## Next Steps
 For incident response, see `supabase-incident-runbook`.

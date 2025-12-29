@@ -2,7 +2,8 @@
 name: {{ company }}-architecture-variants
 description: |
   {{ display_name }} validated architecture blueprints for different use cases.
-  Trigger phrases: "{{ company }} architecture", "{{ company }} blueprint",
+  Use when choosing architecture pattern for {{ display_name }} integration.
+  Trigger with phrases like "{{ company }} architecture", "{{ company }} blueprint",
   "how to structure {{ company }}", "{{ company }} project layout".
 allowed-tools: Read, Grep
 version: 1.0.0
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Three validated architecture blueprints for {{ display_name }} integrations.
 
-## Variant A: Monolith (Simple)
+## Prerequisites
+- {{ company }}-install-auth completed
+- Understanding of team size and traffic expectations
+- Knowledge of deployment environment
+- Scalability requirements defined
+
+## Instructions
+
+### Step 1: Choose Variant - Monolith (Simple)
 
 **Best for:** MVPs, small teams, < 10K daily active users
 
@@ -214,7 +223,7 @@ class {{ display_name }}EventHandler {
 | Operational Complexity | Low | Medium | High |
 | Time to Market | Fastest | Moderate | Slowest |
 
-## Migration Path
+### Step 2: Migration Path
 
 ```
 Monolith → Service Layer:
@@ -229,6 +238,53 @@ Service Layer → Microservice:
 4. Deploy to Kubernetes
 5. Migrate traffic gradually
 ```
+
+## Output
+- Architecture variant selected based on team/traffic
+- Project structure matching chosen variant
+- Migration path documented for future scaling
+- Decision matrix for trade-off analysis
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Over-engineering | Started with microservice | Simplify to monolith, scale later |
+| Performance issues | Wrong variant for traffic | Re-evaluate decision matrix |
+| Team confusion | Inconsistent patterns | Document ADRs, enforce through code review |
+| Deployment complexity | Microservice overhead | Consider service mesh or platform team |
+
+## Examples
+
+### ADR for Architecture Choice
+
+```markdown
+# ADR-002: {{ display_name }} Integration Architecture
+
+## Status
+Accepted
+
+## Context
+We need to integrate {{ display_name }} for [use case].
+Team size: 5, Expected DAU: 50K
+
+## Decision
+Service Layer (Variant B)
+
+## Rationale
+- Team is small but growing
+- Traffic will scale in 6 months
+- Need background processing for webhooks
+
+## Consequences
+- +: Ready for growth
+- -: Slightly more complex than monolith
+```
+
+## Resources
+- [Microservices Trade-offs](https://martinfowler.com/articles/microservice-trade-offs.html)
+- [{{ display_name }} Architecture Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/architecture)
+- [Domain-Driven Design](https://domainlanguage.com/ddd/)
 
 ## Next Steps
 For common anti-patterns, see `{{ company }}-known-pitfalls`.

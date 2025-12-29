@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-debug-bundle
 description: |
-  {{ display_name }} debug evidence collection for support tickets.
-  Trigger phrases: "{{ company }} debug", "{{ company }} support bundle",
+  Collect {{ display_name }} debug evidence for support tickets and troubleshooting.
+  Use when preparing a support ticket or diagnosing persistent issues.
+  Trigger with phrases like "{{ company }} debug", "{{ company }} support bundle",
   "collect {{ company }} logs", "{{ company }} diagnostic".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,17 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Collect all necessary diagnostic information for {{ display_name }} support tickets.
 
-## Quick Bundle Generation
+## Prerequisites
+- Access to application logs
+- Permission to read configuration files
+- {{ company | upper }}_API_KEY environment variable configured
+- Bash shell available
+
+## Instructions
+
+### Step 1: Run Debug Bundle Script
+Create and run the debug bundle collection script:
+
 ```bash
 #!/bin/bash
 # {{ company }}-debug-bundle.sh
@@ -25,70 +36,89 @@ mkdir -p "$BUNDLE_DIR"
 
 echo "=== {{ display_name }} Debug Bundle ===" > "$BUNDLE_DIR/summary.txt"
 echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
+```
 
-# 1. Environment info
+### Step 2: Collect Environment Information
+```bash
+# Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
 node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
 npm --version >> "$BUNDLE_DIR/summary.txt" 2>&1
-echo "{{ company | upper }}_API_KEY: ${{ '{' }}{{ company | upper }}_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
+echo "{{ company | upper }}_API_KEY: [{{ '${' }}{{ company | upper }}_API_KEY:+SET}]" >> "$BUNDLE_DIR/summary.txt"
 
-# 2. SDK version
+# SDK version
 echo "--- SDK Version ---" >> "$BUNDLE_DIR/summary.txt"
 npm list {{ npm_package | default(company + '-sdk') }} 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
+```
 
-# 3. Recent logs (redacted)
-echo "--- Recent Logs ---" >> "$BUNDLE_DIR/summary.txt"
+### Step 3: Collect Logs (Redacted)
+```bash
+# Recent logs (redacted)
 grep -i "{{ company }}" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
 
-# 4. Configuration (redacted)
-echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+# Configuration (redacted)
 cat {{ config_file | default('.env') }} 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
 
-# 5. Network connectivity
-echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+# Network connectivity test
 curl -s -o /dev/null -w "%{http_code}" {{ api_url | default('https://api.' + company + '.com') }} >> "$BUNDLE_DIR/summary.txt"
+```
 
-# Create archive
+### Step 4: Create Archive
+```bash
 tar -czf "$BUNDLE_DIR.tar.gz" "$BUNDLE_DIR"
 echo "Bundle created: $BUNDLE_DIR.tar.gz"
 ```
 
-## Bundle Contents Checklist
+## Output
+- `summary.txt` - Environment and SDK version info
+- `logs.txt` - Recent error logs (redacted)
+- `config-redacted.txt` - Configuration with secrets removed
+- `$BUNDLE_DIR.tar.gz` - Compressed archive for support
 
-| Item | Purpose | Included |
-|------|---------|----------|
-| Environment versions | Compatibility check | ✓ |
-| SDK version | Version-specific bugs | ✓ |
-| Error logs (redacted) | Root cause analysis | ✓ |
-| Config (redacted) | Configuration issues | ✓ |
-| Network test | Connectivity issues | ✓ |
-| Request/Response samples | API debugging | Manual |
+## Error Handling
 
-## Sensitive Data Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Permission denied | No log access | Run with sudo or check permissions |
+| No logs found | Log rotation | Check log archive location |
+| Network test failed | Connectivity issue | Check firewall and DNS |
+| Missing SDK | Not installed | Run `npm install {{ npm_package | default(company + '-sdk') }}` |
 
-**ALWAYS REDACT:**
-- API keys and tokens
-- Passwords and secrets
-- PII (emails, names, IDs)
-- Internal URLs/IPs
+## Examples
 
-**Safe to Include:**
-- Error messages
-- Stack traces (redacted)
-- SDK/runtime versions
-- HTTP status codes
-
-## Submitting to Support
-
-1. Create bundle: `bash {{ company }}-debug-bundle.sh`
-2. Review for sensitive data
-3. Upload to {{ display_name }} support portal
-4. Reference bundle in ticket
-
-## Programmatic Collection
-```{{ primary_language | default('typescript') }}
-{{ debug_bundle_code | default('// Programmatic debug collection') }}
+### Quick Bundle Generation
+```bash
+bash {{ company }}-debug-bundle.sh
+# Output: {{ company }}-debug-20241229-120000.tar.gz
 ```
 
+### Programmatic Collection
+```{{ primary_language | default('typescript') }}
+import { execSync } from 'child_process';
+
+function collectDebugBundle(): string {
+  const bundleDir = `{{ company }}-debug-${Date.now()}`;
+  execSync(`mkdir -p ${bundleDir}`);
+
+  // Collect environment info
+  const nodeVersion = execSync('node --version').toString();
+  const sdkVersion = execSync('npm list {{ npm_package | default(company + '-sdk') }}').toString();
+
+  // Write summary
+  const summary = `Node: ${nodeVersion}\nSDK: ${sdkVersion}`;
+  require('fs').writeFileSync(`${bundleDir}/summary.txt`, summary);
+
+  return bundleDir;
+}
+```
+
+## Resources
+- [{{ display_name }} Support Portal]({{ support_url | default('https://' + company + '.com/support') }})
+- [Status Page]({{ status_url | default('https://status.' + company + '.com') }})
+- [Community Forum]({{ community_url | default('https://community.' + company + '.com') }})
+
 ## Next Steps
-For rate limit issues, see `{{ company }}-rate-limits`.
+- Review bundle for sensitive data before submitting
+- Upload to {{ display_name }} support portal
+- Reference bundle ID in support ticket
+- For rate limit issues, see `{{ company }}-rate-limits`

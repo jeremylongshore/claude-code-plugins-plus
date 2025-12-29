@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-incident-runbook
 description: |
-  {{ display_name }} incident response: triage, mitigate, and postmortem.
-  Trigger phrases: "{{ company }} incident", "{{ company }} outage",
+  Detect and respond to {{ display_name }} incidents with triage, mitigation, and postmortem.
+  Use when responding to {{ display_name }} outages or service degradation.
+  Trigger with phrases like "{{ company }} incident", "{{ company }} outage",
   "{{ company }} down", "{{ company }} on-call".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Rapid incident response procedures for {{ display_name }}-related outages.
 
-## Severity Levels
+## Prerequisites
+- {{ company }}-install-auth completed
+- Access to Kubernetes/infrastructure
+- Monitoring dashboards available
+- On-call escalation contacts
+
+## Instructions
+
+### Step 1: Assess Severity Levels
 
 | Level | Definition | Response Time | Examples |
 |-------|------------|---------------|----------|
@@ -151,6 +160,42 @@ curl "localhost:9090/api/v1/query_range?query={{ company }}_errors_total&start=2
 ### Action Items
 - [ ] [Preventive measure] - Owner - Due date
 ```
+
+## Output
+- Incident triaged and severity assigned
+- Root cause identified or escalated
+- Mitigation applied and verified
+- Postmortem documented with action items
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Can't access logs | RBAC permissions | Use break-glass access or escalate |
+| Status page disagrees | Stale status or different issue | Check multiple sources, trust metrics |
+| Rollback failed | Bad previous version | Deploy known-good version manually |
+| Unable to reach {{ display_name }} | Network/DNS issue | Try alternative endpoints, check DNS |
+
+## Examples
+
+### PagerDuty Automation
+
+```yaml
+# Automatic {{ display_name }} incident creation
+on_call:
+  service: {{ company }}-integration
+  escalation_policy: engineering-on-call
+  severity_mapping:
+    P1: critical
+    P2: high
+    P3: warning
+    P4: info
+```
+
+## Resources
+- [{{ display_name }} Status Page]({{ status_url | default('https://status.' + company + '.com') }})
+- [Incident Response Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/incident-response)
+- [Support Contact]({{ docs_url | default('https://docs.' + company + '.com') }}/support)
 
 ## Next Steps
 For data handling, see `{{ company }}-data-handling`.

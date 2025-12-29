@@ -2,7 +2,8 @@
 name: {{ company }}-reference-architecture
 description: |
   {{ display_name }} reference architecture and best-practice layout.
-  Trigger phrases: "{{ company }} architecture", "{{ company }} best practices",
+  Use when designing {{ display_name }} integration architecture or reviewing patterns.
+  Trigger with phrases like "{{ company }} architecture", "{{ company }} best practices",
   "{{ company }} project structure", "how to organize {{ company }}".
 allowed-tools: Read, Grep
 version: 1.0.0
@@ -15,7 +16,17 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Production-ready architecture patterns for {{ display_name }} integrations.
 
-## Project Structure
+## Prerequisites
+- {{ company }}-install-auth completed
+- Understanding of layered architecture
+- TypeScript/Node.js project setup
+- Basic understanding of design patterns
+
+## Instructions
+
+### Step 1: Project Structure
+
+Organize your {{ display_name }} integration using a layered architecture that separates concerns and promotes maintainability. The following structure provides clear boundaries between client configuration, business logic, and API handlers.
 
 ```
 my-{{ company }}-project/
@@ -163,7 +174,7 @@ User Request
 └─────────────┘
 ```
 
-## Configuration Management
+### Step 2: Configuration Management
 
 ```typescript
 // config/{{ company }}.ts
@@ -183,6 +194,40 @@ export function load{{ display_name }}Config(): {{ display_name }}Config {
   return require(`./{{ company }}.${env}.json`);
 }
 ```
+
+## Output
+- Clean separation of concerns across layers
+- Reusable client wrapper with caching/monitoring
+- Consistent error handling patterns
+- Health check endpoint for {{ display_name }} connectivity
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Circular dependency | Service importing client incorrectly | Use dependency injection |
+| Config not found | Missing environment config file | Create config for environment |
+| Type mismatch | SDK types don't match app types | Create adapter layer |
+| Health check false positive | Stale cache | Disable cache for health checks |
+
+## Examples
+
+### Dependency Injection Pattern
+```typescript
+// src/container.ts
+import { Container } from 'inversify';
+import { {{ display_name }}Service } from './{{ company }}/client';
+
+const container = new Container();
+container.bind({{ display_name }}Service).toSelf().inSingletonScope();
+
+export { container };
+```
+
+## Resources
+- [{{ display_name }} Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/best-practices)
+- [Architecture Examples]({{ docs_url | default('https://docs.' + company + '.com') }}/examples)
+- [TypeScript SDK Reference]({{ docs_url | default('https://docs.' + company + '.com') }}/sdk/typescript)
 
 ## Flagship Skills
 For multi-environment setup, see `{{ company }}-multi-env-setup`.

@@ -2,7 +2,8 @@
 name: supabase-architecture-variants
 description: |
   Supabase validated architecture blueprints for different use cases.
-  Trigger phrases: "supabase architecture", "supabase blueprint",
+  Use when choosing architecture pattern for Supabase integration.
+  Trigger with phrases like "supabase architecture", "supabase blueprint",
   "how to structure supabase", "supabase project layout".
 allowed-tools: Read, Grep
 version: 1.0.0
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Three validated architecture blueprints for Supabase integrations.
 
-## Variant A: Monolith (Simple)
+## Prerequisites
+- supabase-install-auth completed
+- Understanding of team size and traffic expectations
+- Knowledge of deployment environment
+- Scalability requirements defined
+
+## Instructions
+
+### Step 1: Choose Variant - Monolith (Simple)
 
 **Best for:** MVPs, small teams, < 10K daily active users
 
@@ -214,7 +223,7 @@ class SupabaseEventHandler {
 | Operational Complexity | Low | Medium | High |
 | Time to Market | Fastest | Moderate | Slowest |
 
-## Migration Path
+### Step 2: Migration Path
 
 ```
 Monolith → Service Layer:
@@ -229,6 +238,53 @@ Service Layer → Microservice:
 4. Deploy to Kubernetes
 5. Migrate traffic gradually
 ```
+
+## Output
+- Architecture variant selected based on team/traffic
+- Project structure matching chosen variant
+- Migration path documented for future scaling
+- Decision matrix for trade-off analysis
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Over-engineering | Started with microservice | Simplify to monolith, scale later |
+| Performance issues | Wrong variant for traffic | Re-evaluate decision matrix |
+| Team confusion | Inconsistent patterns | Document ADRs, enforce through code review |
+| Deployment complexity | Microservice overhead | Consider service mesh or platform team |
+
+## Examples
+
+### ADR for Architecture Choice
+
+```markdown
+# ADR-002: Supabase Integration Architecture
+
+## Status
+Accepted
+
+## Context
+We need to integrate Supabase for [use case].
+Team size: 5, Expected DAU: 50K
+
+## Decision
+Service Layer (Variant B)
+
+## Rationale
+- Team is small but growing
+- Traffic will scale in 6 months
+- Need background processing for webhooks
+
+## Consequences
+- +: Ready for growth
+- -: Slightly more complex than monolith
+```
+
+## Resources
+- [Microservices Trade-offs](https://martinfowler.com/articles/microservice-trade-offs.html)
+- [Supabase Architecture Guide](https://supabase.com/docs/architecture)
+- [Domain-Driven Design](https://domainlanguage.com/ddd/)
 
 ## Next Steps
 For common anti-patterns, see `supabase-known-pitfalls`.

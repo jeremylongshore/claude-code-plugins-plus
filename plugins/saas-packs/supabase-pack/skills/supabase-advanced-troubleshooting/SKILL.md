@@ -2,9 +2,10 @@
 name: supabase-advanced-troubleshooting
 description: |
   Supabase advanced debugging for hard-to-diagnose issues.
-  Trigger phrases: "supabase hard bug", "supabase mystery error",
+  Use when debugging complex Supabase issues that resist standard troubleshooting.
+  Trigger with phrases like "supabase hard bug", "supabase mystery error",
   "supabase impossible to debug", "difficult supabase issue".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Deep debugging techniques for complex Supabase issues that resist standard troubleshooting.
 
-## Evidence Collection Framework
+## Prerequisites
+- supabase-install-auth completed
+- Standard troubleshooting already attempted
+- Access to production logs and metrics
+- Network capture tools available (tcpdump, Wireshark)
+
+## Instructions
+
+### Step 1: Evidence Collection Framework
 
 ### Comprehensive Debug Bundle
 ```bash
@@ -178,7 +187,7 @@ class SupabaseConcurrencyChecker {
 }
 ```
 
-## Support Escalation Template
+### Step 2: Support Escalation Template
 
 ```markdown
 ## Supabase Support Escalation
@@ -208,6 +217,42 @@ class SupabaseConcurrencyChecker {
 1. [Workaround 1] - Result: [outcome]
 2. [Workaround 2] - Result: [outcome]
 ```
+
+## Output
+- Debug bundle with logs, metrics, and traces
+- Minimal reproduction case
+- Timing analysis report
+- Support escalation with evidence
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Intermittent failure | Race condition | Use concurrency checker |
+| Memory growth | Leak in client usage | Monitor heap, analyze GC |
+| Timeout variations | Network or DNS | Layer-by-layer testing |
+| Inconsistent results | Caching issues | Clear all caches, test fresh |
+
+## Examples
+
+### Heap Snapshot Analysis
+
+```typescript
+import v8 from 'v8';
+import fs from 'fs';
+
+// Take heap snapshot when issue occurs
+function captureHeapSnapshot(reason: string) {
+  const filename = `heap-${Date.now()}-${reason}.heapsnapshot`;
+  const snapshotStream = v8.writeHeapSnapshot(filename);
+  console.log(`Heap snapshot written to ${snapshotStream}`);
+}
+```
+
+## Resources
+- [Supabase Support](https://supabase.com/docs/support)
+- [Debugging Guide](https://supabase.com/docs/debugging)
+- [Community Forums](https://community.supabase.com)
 
 ## Next Steps
 For load testing, see `supabase-load-scale`.

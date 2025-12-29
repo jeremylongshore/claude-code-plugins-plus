@@ -2,9 +2,10 @@
 name: {{ company }}-cost-tuning
 description: |
   {{ display_name }} cost optimization with tier selection and usage monitoring.
-  Trigger phrases: "{{ company }} cost", "{{ company }} billing",
+  Use when optimizing {{ display_name }} costs or analyzing billing.
+  Trigger with phrases like "{{ company }} cost", "{{ company }} billing",
   "reduce {{ company }} costs", "{{ company }} pricing", "{{ company }} expensive".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Optimize {{ display_name }} costs through smart tier selection, sampling, and usage monitoring.
 
-## Pricing Tiers
+## Prerequisites
+- {{ company }}-install-auth completed
+- Access to {{ display_name }} billing dashboard
+- Current usage metrics available
+- Budget limits defined
+
+## Instructions
+
+### Step 1: Understand Pricing Tiers
 
 | Tier | Monthly Cost | Included | Overage |
 |------|-------------|----------|---------|
@@ -130,7 +139,7 @@ const client = new {{ client_class | default(display_name + 'Client') }}({
 {{ billing_api_example | default('# Check ' + display_name + ' documentation for billing APIs') }}
 ```
 
-## Cost Dashboard Query
+### Step 2: Cost Dashboard Query
 
 ```sql
 -- If tracking usage in your database
@@ -144,6 +153,47 @@ WHERE created_at >= NOW() - INTERVAL '30 days'
 GROUP BY 1
 ORDER BY 1;
 ```
+
+## Output
+- Monthly cost reduced by 20-50%
+- Budget alerts preventing overages
+- Right-sized tier for actual usage
+- Usage patterns documented
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Unexpected overage | Usage spike | Set up usage alerts, review top consumers |
+| Wrong tier selected | Underestimated usage | Upgrade tier, monitor usage patterns |
+| Budget exceeded | No alerts configured | Set up budget alerts at 80% threshold |
+| Billing access denied | Missing permissions | Request billing admin access |
+
+## Examples
+
+### Usage Trend Analysis
+```typescript
+async function analyzeUsageTrend() {
+  const last30Days = await {{ company }}Client.getUsage({
+    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    end: new Date(),
+  });
+
+  const avgDaily = last30Days.total / 30;
+  const projectedMonthly = avgDaily * 30;
+
+  return {
+    current: last30Days.total,
+    projected: projectedMonthly,
+    recommended: estimate{{ display_name }}Cost(projectedMonthly),
+  };
+}
+```
+
+## Resources
+- [{{ display_name }} Pricing]({{ pricing_url | default('https://' + company + '.com/pricing') }})
+- [Billing Dashboard]({{ billing_url | default('https://dashboard.' + company + '.com/billing') }})
+- [Usage Optimization Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/cost-optimization)
 
 ## Next Steps
 For architecture patterns, see `{{ company }}-reference-architecture`.

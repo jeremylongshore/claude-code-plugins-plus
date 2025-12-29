@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-install-auth
 description: |
-  {{ display_name }} installation and authentication setup. Trigger phrases:
-  "install {{ company }}", "setup {{ company }}", "{{ company }} auth",
-  "configure {{ company }} API key", "{{ company }} SDK setup".
-allowed-tools: Read, Write, Bash, Grep
+  Install and configure {{ display_name }} SDK/CLI with authentication.
+  Use when setting up {{ display_name }} integration for the first time.
+  Trigger with phrases like "install {{ company }}", "setup {{ company }}",
+  "{{ company }} auth", "configure {{ company }} API key".
+allowed-tools: Read, Write, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -20,9 +21,9 @@ Set up {{ display_name }} SDK/CLI and configure authentication credentials.
 - Package manager (npm, pnpm, or pip)
 - {{ display_name }} account with API access
 
-## Installation Steps
+## Instructions
 
-### 1. Install SDK
+### Step 1: Install SDK
 ```bash
 # Node.js
 npm install {{ npm_package | default(company + '-sdk') }}
@@ -31,7 +32,7 @@ npm install {{ npm_package | default(company + '-sdk') }}
 pip install {{ pip_package | default(company) }}
 ```
 
-### 2. Configure Authentication
+### Step 2: Configure Authentication
 ```bash
 # Set environment variable
 export {{ company | upper }}_API_KEY="your-api-key"
@@ -40,15 +41,50 @@ export {{ company | upper }}_API_KEY="your-api-key"
 echo '{{ company | upper }}_API_KEY=your-api-key' >> .env
 ```
 
-### 3. Verify Connection
+### Step 3: Verify Connection
 ```{{ primary_language | default('typescript') }}
 {{ verification_code | default('// Test connection code here') }}
 ```
 
-## Common Issues
-- **Invalid API Key**: Verify key in {{ display_name }} dashboard
-- **Rate Limited**: Check quota at {{ docs_url | default('docs.' + company + '.com') }}
-- **Network Error**: Ensure firewall allows outbound HTTPS
+## Output
+- SDK installed in `node_modules/` or Python site-packages
+- Environment variable `{{ company | upper }}_API_KEY` configured
+- Successful connection test confirming API access
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Key not found or expired | Verify key in {{ display_name }} dashboard |
+| Rate Limited | Exceeded API quota | Check limits at {{ docs_url | default('docs.' + company + '.com') }} |
+| Network Error | Firewall blocking | Ensure outbound HTTPS (443) allowed |
+| Module Not Found | SDK not installed | Run `npm install {{ npm_package | default(company + '-sdk') }}` |
+
+## Examples
+
+### Basic Setup (TypeScript)
+```typescript
+import { {{ client_class | default('Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
+
+const client = new {{ client_class | default('Client') }}({
+  apiKey: process.env.{{ company | upper }}_API_KEY
+});
+```
+
+### Basic Setup (Python)
+```python
+import os
+from {{ pip_package | default(company) }} import {{ client_class | default('Client') }}
+
+client = {{ client_class | default('Client') }}(
+    api_key=os.environ.get('{{ company | upper }}_API_KEY')
+)
+```
+
+## Resources
+- [{{ display_name }} Documentation]({{ docs_url | default('https://docs.' + company + '.com') }})
+- [API Reference]({{ api_reference_url | default('https://docs.' + company + '.com/api') }})
+- [SDK Repository]({{ sdk_repo_url | default('https://github.com/' + company + '/' + company + '-sdk') }})
 
 ## Next Steps
 After successful auth, proceed to `{{ company }}-hello-world` for your first API call.

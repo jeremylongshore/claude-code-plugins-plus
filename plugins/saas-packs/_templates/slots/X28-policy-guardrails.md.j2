@@ -2,9 +2,10 @@
 name: {{ company }}-policy-guardrails
 description: |
   {{ display_name }} lint rules, policy enforcement, and guardrails.
-  Trigger phrases: "{{ company }} policy", "{{ company }} lint",
+  Use when implementing policy enforcement for {{ display_name }} integration.
+  Trigger with phrases like "{{ company }} policy", "{{ company }} lint",
   "{{ company }} guardrails", "{{ company }} best practices check".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Automated policy enforcement and guardrails for {{ display_name }} integrations.
 
-## ESLint Rules
+## Prerequisites
+- {{ company }}-install-auth completed
+- ESLint configured in project
+- CI/CD pipeline available
+- Pre-commit hooks installed
+
+## Instructions
+
+### Step 1: ESLint Rules
 
 ### Custom {{ display_name }} Plugin
 ```javascript
@@ -177,7 +186,7 @@ jobs:
         run: npx eslint --plugin {{ company }} --rule '{{ company }}/no-hardcoded-keys: error' src/
 ```
 
-## Runtime Guardrails
+### Step 2: Runtime Guardrails
 
 ```typescript
 // Prevent dangerous operations in production
@@ -204,6 +213,82 @@ function guardRateLimits(requestsInWindow: number): void {
   }
 }
 ```
+
+## Output
+- ESLint rules catching {{ display_name }} anti-patterns
+- Pre-commit hooks blocking secrets
+- CI policy checks in every PR
+- Runtime guardrails preventing dangerous operations
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| ESLint rule violation | Code anti-pattern | Fix code or disable rule with comment |
+| Pre-commit rejection | Secret detected | Remove secret, use environment variable |
+| OPA policy denial | Configuration violation | Update config to comply with policy |
+| Runtime guard block | Dangerous operation in prod | Use appropriate environment or override |
+
+## Examples
+
+### Semgrep Rules
+
+```yaml
+rules:
+  - id: {{ company }}-hardcoded-key
+    pattern: |
+      new $CLIENT({ apiKey: "sk_..." })
+    message: Hardcoded {{ display_name }} API key detected
+    severity: ERROR
+    languages: [typescript, javascript]
+```
+
+### Complete ESLint Plugin Setup
+
+```javascript
+// eslint-plugin-{{ company }}/index.js
+module.exports = {
+  rules: {
+    'no-hardcoded-keys': require('./rules/no-hardcoded-keys'),
+    'require-error-handling': require('./rules/require-error-handling'),
+    'use-typed-client': require('./rules/use-typed-client'),
+  },
+  configs: {
+    recommended: {
+      plugins: ['{{ company }}'],
+      rules: {
+        '{{ company }}/no-hardcoded-keys': 'error',
+        '{{ company }}/require-error-handling': 'warn',
+        '{{ company }}/use-typed-client': 'warn',
+      },
+    },
+  },
+};
+```
+
+### Git Hooks Configuration
+
+```bash
+#!/bin/bash
+# .git/hooks/pre-commit
+echo "Running {{ display_name }} policy checks..."
+
+# Check for secrets
+if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
+  echo "ERROR: {{ display_name }} secrets detected!"
+  exit 1
+fi
+
+# Run ESLint
+npx eslint --plugin {{ company }} --rule '{{ company }}/no-hardcoded-keys: error' src/
+
+echo "{{ display_name }} policy checks passed!"
+```
+
+## Resources
+- [ESLint Custom Rules](https://eslint.org/docs/developer-guide/working-with-rules)
+- [OPA Policy Language](https://www.openpolicyagent.org/docs/latest/policy-language/)
+- [Pre-commit Framework](https://pre-commit.com/)
 
 ## Next Steps
 For architecture blueprints, see `{{ company }}-architecture-variants`.

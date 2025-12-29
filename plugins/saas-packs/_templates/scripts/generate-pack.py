@@ -106,22 +106,29 @@ def get_default_config(company: str) -> dict:
     }
 
 
-def generate_plugin_json(company: str, display_name: str, tier: str, skill_count: int) -> dict:
+def generate_plugin_json(company: str, display_name: str, tier: str, skill_count: int, config: dict) -> dict:
     """Generate plugin.json manifest."""
     return {
         "name": f"{company}-pack",
         "version": "1.0.0",
         "description": f"Claude Code skill pack for {display_name} ({skill_count} skills)",
-        "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
-        "license": "MIT",
-        "homepage": f"https://claudecodeplugins.io/learn/{company}",
-        "repository": {
-            "type": "git",
-            "url": "https://github.com/jeremylongshore/claude-code-plugins"
+        "author": {
+            "name": "Jeremy Longshore",
+            "email": "jeremy@intentsolutions.io"
         },
+        "license": "MIT",
         "keywords": [company, display_name.lower(), "saas", "sdk", "integration"],
-        "skills": [f"skills/{company}-{slot.split('-', 1)[1]}" for slot in get_slots_for_tier(tier)],
     }
+
+
+def get_skill_slug(slot: str, config: dict) -> str:
+    """Get the skill slug for a slot, using vendor-specific slugs when available."""
+    slot_slug = slot.split("-", 1)[1]
+    if slot == "S05-core-workflow-a":
+        slot_slug = config.get("workflow_a_slug", slot_slug)
+    elif slot == "S06-core-workflow-b":
+        slot_slug = config.get("workflow_b_slug", slot_slug)
+    return slot_slug
 
 
 def generate_readme(config: dict, slots: list) -> str:
@@ -149,29 +156,33 @@ def generate_readme(config: dict, slots: list) -> str:
 
     # Add standard skills
     for slot in TIER_SLOTS["standard"]:
-        skill_name = f"{company}-{slot.split('-', 1)[1]}"
-        readme += f"| `{skill_name}` | {slot.split('-', 1)[1].replace('-', ' ').title()} |\n"
+        skill_slug = get_skill_slug(slot, config)
+        skill_name = f"{company}-{skill_slug}"
+        readme += f"| `{skill_name}` | {skill_slug.replace('-', ' ').title()} |\n"
 
     # Add pro skills if applicable
     if tier in ("pro", "flagship", "flagship+"):
         readme += "\n### Pro Skills (P13-P18)\n| Skill | Description |\n|-------|-------------|\n"
         for slot in TIER_SLOTS["pro"]:
-            skill_name = f"{company}-{slot.split('-', 1)[1]}"
-            readme += f"| `{skill_name}` | {slot.split('-', 1)[1].replace('-', ' ').title()} |\n"
+            skill_slug = get_skill_slug(slot, config)
+            skill_name = f"{company}-{skill_slug}"
+            readme += f"| `{skill_name}` | {skill_slug.replace('-', ' ').title()} |\n"
 
     # Add flagship skills if applicable
     if tier in ("flagship", "flagship+"):
         readme += "\n### Flagship Skills (F19-F24)\n| Skill | Description |\n|-------|-------------|\n"
         for slot in TIER_SLOTS["flagship"]:
-            skill_name = f"{company}-{slot.split('-', 1)[1]}"
-            readme += f"| `{skill_name}` | {slot.split('-', 1)[1].replace('-', ' ').title()} |\n"
+            skill_slug = get_skill_slug(slot, config)
+            skill_name = f"{company}-{skill_slug}"
+            readme += f"| `{skill_name}` | {skill_slug.replace('-', ' ').title()} |\n"
 
     # Add flagship+ skills if applicable
     if tier == "flagship+":
         readme += "\n### Flagship+ Skills (X25-X30)\n| Skill | Description |\n|-------|-------------|\n"
         for slot in TIER_SLOTS["flagship+"]:
-            skill_name = f"{company}-{slot.split('-', 1)[1]}"
-            readme += f"| `{skill_name}` | {slot.split('-', 1)[1].replace('-', ' ').title()} |\n"
+            skill_slug = get_skill_slug(slot, config)
+            skill_name = f"{company}-{skill_slug}"
+            readme += f"| `{skill_name}` | {skill_slug.replace('-', ' ').title()} |\n"
 
     readme += f"""
 ## Usage
@@ -222,6 +233,13 @@ def generate_pack(company: str, dry_run: bool = False) -> bool:
     # Generate each skill from template
     for slot in slots:
         slot_slug = slot.split("-", 1)[1]
+
+        # Use vendor-specific slugs for workflow slots (to match template names)
+        if slot == "S05-core-workflow-a":
+            slot_slug = config.get("workflow_a_slug", slot_slug)
+        elif slot == "S06-core-workflow-b":
+            slot_slug = config.get("workflow_b_slug", slot_slug)
+
         skill_name = f"{company}-{slot_slug}"
         skill_dir = skills_dir / skill_name
         skill_dir.mkdir(parents=True, exist_ok=True)
@@ -241,7 +259,7 @@ def generate_pack(company: str, dry_run: bool = False) -> bool:
             return False
 
     # Generate plugin.json
-    plugin_json = generate_plugin_json(company, display_name, tier, len(slots))
+    plugin_json = generate_plugin_json(company, display_name, tier, len(slots), config)
     with open(plugin_dir / "plugin.json", "w") as f:
         json.dump(plugin_json, f, indent=2)
     print(f"  Created: .claude-plugin/plugin.json")

@@ -2,9 +2,10 @@
 name: {{ company }}-performance-tuning
 description: |
   {{ display_name }} latency optimization, caching, and batching patterns.
-  Trigger phrases: "{{ company }} performance", "optimize {{ company }}",
+  Use when {{ display_name }} API calls are slow or need optimization.
+  Trigger with phrases like "{{ company }} performance", "optimize {{ company }}",
   "{{ company }} latency", "{{ company }} caching", "{{ company }} slow".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Optimize {{ display_name }} API performance with caching, batching, and connection pooling.
 
-## Latency Benchmarks
+## Prerequisites
+- {{ company }}-install-auth completed
+- Performance metrics baseline established
+- Redis/cache infrastructure (for distributed caching)
+- Profiling tools available (optional)
+
+## Instructions
+
+### Step 1: Establish Latency Benchmarks
 
 | Operation | P50 | P95 | P99 |
 |-----------|-----|-----|-----|
@@ -138,7 +147,7 @@ for await (const item of paginated{{ display_name }}List(cursor =>
 }
 ```
 
-## Performance Monitoring
+### Step 2: Performance Monitoring
 
 ```typescript
 async function measured{{ display_name }}Call<T>(
@@ -158,6 +167,53 @@ async function measured{{ display_name }}Call<T>(
   }
 }
 ```
+
+## Output
+- Response times reduced by 40-60%
+- Cache hit rates > 80% for read operations
+- Batch operations reducing API calls by 10x
+- Connection pool preventing socket exhaustion
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Cache miss thundering herd | Many requests for uncached key | Use cache stampede protection |
+| Connection pool exhausted | Too many concurrent requests | Increase pool size or add backpressure |
+| Batch too large | Exceeds API batch limit | Split into smaller batches |
+| Memory pressure | Large cache size | Reduce TTL or max entries |
+
+## Examples
+
+### OpenTelemetry Integration
+```typescript
+import { trace } from '@opentelemetry/api';
+
+const tracer = trace.getTracer('{{ company }}-client');
+
+async function traced{{ display_name }}Call<T>(
+  operation: string,
+  fn: () => Promise<T>
+): Promise<T> {
+  return tracer.startActiveSpan(operation, async (span) => {
+    try {
+      const result = await fn();
+      span.setStatus({ code: 1 }); // OK
+      return result;
+    } catch (error) {
+      span.setStatus({ code: 2, message: error.message }); // ERROR
+      throw error;
+    } finally {
+      span.end();
+    }
+  });
+}
+```
+
+## Resources
+- [{{ display_name }} Performance Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/performance)
+- [Rate Limits Reference]({{ docs_url | default('https://docs.' + company + '.com') }}/rate-limits)
+- [Caching Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/caching)
 
 ## Next Steps
 For cost optimization, see `{{ company }}-cost-tuning`.

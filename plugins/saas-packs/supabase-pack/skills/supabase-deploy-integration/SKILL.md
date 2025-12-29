@@ -1,10 +1,11 @@
 ---
 name: supabase-deploy-integration
 description: |
-  Supabase deployment patterns for Vercel, Fly.io, and Cloud Run.
-  Trigger phrases: "deploy supabase", "supabase Vercel",
+  Deploy Supabase applications to Vercel, Fly.io, and Cloud Run.
+  Use when deploying to production or configuring deployment pipelines.
+  Trigger with phrases like "deploy supabase", "supabase Vercel",
   "supabase production deploy", "supabase Cloud Run".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -13,43 +14,71 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 # Supabase Deploy Integration
 
 ## Overview
-Deploy Supabase-powered applications to popular platforms.
+Deploy Supabase-powered applications to popular cloud platforms.
 
-## Vercel Deployment
+## Prerequisites
+- supabase-prod-checklist completed
+- Account on target platform (Vercel/Fly.io/GCP)
+- Production API keys ready
+- CLI tools installed for target platform
 
-### Environment Setup
+## Instructions
+
+### Step 1: Vercel Deployment
 ```bash
-# Add Supabase secrets to Vercel
+# Add secrets
 vercel secrets add supabase_api_key sk_live_***
-vercel secrets add supabase_webhook_secret whsec_***
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
+# Deploy
 vercel --prod
 ```
 
-### vercel.json Configuration
+### Step 2: Fly.io Deployment
+```bash
+# Set secrets
+fly secrets set SUPABASE_API_KEY=sk_live_***
+
+# Deploy
+fly deploy
+```
+
+### Step 3: Cloud Run Deployment
+```bash
+gcloud run deploy supabase-service \
+  --image gcr.io/$PROJECT_ID/supabase-service \
+  --set-secrets=SUPABASE_API_KEY=supabase-api-key:latest
+```
+
+## Output
+- Application deployed to cloud platform
+- Environment variables configured securely
+- Health check endpoint responding
+- Secrets stored in platform's secret manager
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing platform secret | Add secret using platform CLI |
+| Build failed | Missing dependencies | Check package.json and build logs |
+| Health check failed | App not starting | Check application logs |
+| Permission denied | IAM misconfiguration | Update service account permissions |
+
+## Examples
+
+### Vercel Configuration
 ```json
 {
   "env": {
     "SUPABASE_API_KEY": "@supabase_api_key"
   },
   "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+    "api/**/*.ts": { "maxDuration": 30 }
   }
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
+### Fly.io Configuration
 ```toml
 app = "my-supabase-app"
 primary_region = "iad"
@@ -60,90 +89,23 @@ primary_region = "iad"
 [http_service]
   internal_port = 3000
   force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
 ```
 
-### Secrets
-```bash
-# Set Supabase secrets
-fly secrets set SUPABASE_API_KEY=sk_live_***
-fly secrets set SUPABASE_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="supabase-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=SUPABASE_API_KEY=supabase-api-key:latest
-```
-
-## Environment Configuration Pattern
-
+### Health Check Endpoint
 ```typescript
-// config/supabase.ts
-interface SupabaseConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getSupabaseConfig(): SupabaseConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.SUPABASE_API_KEY!,
-    environment: env as SupabaseConfig['environment'],
-    webhookSecret: process.env.SUPABASE_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
 export async function GET() {
-  const supabaseStatus = await checkSupabaseConnection();
-
+  const status = await checkSupabaseConnection();
   return Response.json({
-    status: supabaseStatus ? 'healthy' : 'degraded',
-    services: {
-      supabase: supabaseStatus,
-    },
-    timestamp: new Date().toISOString(),
+    status: status ? 'healthy' : 'degraded',
+    services: { supabase: status },
   });
 }
 ```
+
+## Resources
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
 
 ## Next Steps
 For webhook handling, see `supabase-webhooks-events`.

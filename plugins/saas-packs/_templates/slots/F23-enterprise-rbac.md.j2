@@ -2,7 +2,8 @@
 name: {{ company }}-enterprise-rbac
 description: |
   {{ display_name }} enterprise SSO, roles, and organization controls.
-  Trigger phrases: "{{ company }} SSO", "{{ company }} RBAC",
+  Use when implementing enterprise access control for {{ display_name }}.
+  Trigger with phrases like "{{ company }} SSO", "{{ company }} RBAC",
   "{{ company }} enterprise", "{{ company }} roles".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Configure enterprise-grade access control for {{ display_name }} integrations.
 
-## Role Definitions
+## Prerequisites
+- {{ company }}-install-auth completed
+- Enterprise {{ display_name }} plan active
+- Identity provider (Okta, Azure AD, etc.) configured
+- Organization structure defined
+
+## Instructions
+
+### Step 1: Role Definitions
 
 | Role | Permissions | Use Case |
 |------|-------------|----------|
@@ -145,7 +154,7 @@ app.delete('/{{ company }}/resource/:id',
 );
 ```
 
-## Audit Trail
+### Step 2: Audit Trail
 
 ```typescript
 interface {{ display_name }}AuditEntry {
@@ -167,6 +176,44 @@ async function log{{ display_name }}Access(entry: {{ display_name }}AuditEntry):
   }
 }
 ```
+
+## Output
+- Role-based access control implemented
+- SSO integration configured
+- Organization structure enforced
+- Audit trail for all access attempts
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| SSO callback failed | Misconfigured callback URL | Verify callback URL in IdP settings |
+| Role mapping failed | Unknown group | Add group to role mapping |
+| Permission denied | Wrong role assigned | Review user's group membership in IdP |
+| Token expired | Session timeout | Implement token refresh logic |
+
+## Examples
+
+### Azure AD Integration
+
+```typescript
+import { ConfidentialClientApplication } from '@azure/msal-node';
+
+const msalConfig = {
+  auth: {
+    clientId: process.env.AZURE_CLIENT_ID!,
+    authority: `https://login.microsoftonline.com/${process.env.AZURE_TENANT_ID}`,
+    clientSecret: process.env.AZURE_CLIENT_SECRET!,
+  },
+};
+
+const cca = new ConfidentialClientApplication(msalConfig);
+```
+
+## Resources
+- [{{ display_name }} Enterprise Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/enterprise)
+- [SSO Configuration]({{ docs_url | default('https://docs.' + company + '.com') }}/sso)
+- [RBAC Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/rbac)
 
 ## Next Steps
 For major migrations, see `{{ company }}-migration-deep-dive`.

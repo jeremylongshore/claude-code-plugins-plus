@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-multi-env-setup
 description: |
-  {{ display_name }} multi-environment configuration for dev/staging/prod.
-  Trigger phrases: "{{ company }} environments", "{{ company }} staging",
-  "{{ company }} dev prod", "{{ company }} environment setup".
-allowed-tools: Read, Write, Edit, Bash
+  {{ display_name }} multi-environment setup for dev/staging/prod configuration.
+  Use when setting up {{ display_name }} across multiple environments.
+  Trigger with phrases like "{{ company }} environments", "{{ company }} staging",
+  "{{ company }} multi-env", "{{ company }} dev setup".
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,160 +16,143 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Configure {{ display_name }} across development, staging, and production environments.
 
-## Environment Strategy
+## Prerequisites
+- {{ company }}-install-auth completed
+- Access to {{ display_name }} dashboard for all environments
+- Environment variable management system (dotenv, Vault, etc.)
+- Separate API keys per environment
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
+## Instructions
 
-## Configuration Structure
+### Step 1: Environment Configuration Structure
 
 ```
 config/
-├── {{ company }}/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
+├── {{ company }}.development.json
+├── {{ company }}.staging.json
+├── {{ company }}.production.json
+└── {{ company }}.base.json       # Shared settings
 ```
 
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY}",
-  "baseUrl": "{{ dev_base_url | default('https://api-sandbox.' + company + '.com') }}",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY_STAGING}",
-  "baseUrl": "{{ staging_base_url | default('https://api-staging.' + company + '.com') }}",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${{ '{' }}{{ company | upper }}_API_KEY_PROD}",
-  "baseUrl": "{{ prod_base_url | default('https://api.' + company + '.com') }}",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
+### Step 2: Environment-Specific Config
 
 ```typescript
-// src/{{ company }}/config.ts
-import baseConfig from '../../config/{{ company }}/base.json';
+// config/{{ company }}.ts
+import { merge } from 'lodash';
 
-type Environment = 'development' | 'staging' | 'production';
+interface {{ display_name }}Config {
+  apiKey: string;
+  environment: 'development' | 'staging' | 'production';
+  baseUrl: string;
+  timeout: number;
+  retries: number;
+  debug: boolean;
+}
 
-function detectEnvironment(): Environment {
+const baseConfig = require('./{{ company }}.base.json');
+
+export function get{{ display_name }}Config(): {{ display_name }}Config {
   const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
+  const envConfig = require(`./{{ company }}.${env}.json`);
 
-export function get{{ display_name }}Config() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/{{ company }}/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
+  return merge({}, baseConfig, envConfig, {
+    apiKey: process.env.{{ company | upper }}_API_KEY!,
+  });
 }
 ```
 
-## Secret Management by Environment
+### Step 3: Environment Variables
 
-### Local Development
 ```bash
-# .env.local (git-ignored)
-{{ company | upper }}_API_KEY=sk_test_dev_***
+# .env.development
+{{ company | upper }}_API_KEY=sk_dev_***
+{{ company | upper }}_ENV=development
+{{ company | upper }}_DEBUG=true
+
+# .env.staging
+{{ company | upper }}_API_KEY=sk_staging_***
+{{ company | upper }}_ENV=staging
+{{ company | upper }}_DEBUG=true
+
+# .env.production
+{{ company | upper }}_API_KEY=sk_live_***
+{{ company | upper }}_ENV=production
+{{ company | upper }}_DEBUG=false
 ```
 
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  {{ company | upper }}_API_KEY: ${{ '{{' }} secrets.{{ company | upper }}_API_KEY_${{ '{{' }} matrix.environment {{ '}}' }} {{ '}}' }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id {{ company }}/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret={{ company }}-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/{{ company }}/production
-```
-
-## Environment Isolation
+### Step 4: Environment Detection
 
 ```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = get{{ display_name }}Config();
+function get{{ display_name }}Environment(): 'development' | 'staging' | 'production' {
+  // Check explicit env var first
+  const explicit = process.env.{{ company | upper }}_ENV;
+  if (explicit) return explicit as any;
 
-  if (config.environment !== 'production') {
-    console.warn(`[{{ company }}] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
+  // Fall back to NODE_ENV
+  switch (process.env.NODE_ENV) {
+    case 'production': return 'production';
+    case 'staging': return 'staging';
+    default: return 'development';
   }
 }
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
 ```
 
-## Feature Flags by Environment
+## Output
+- Isolated {{ display_name }} configurations per environment
+- Environment-specific API keys and settings
+- Debug logging enabled for non-production
+- Consistent configuration loading across codebase
 
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
-  },
-};
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Wrong API key for env | Mismatched key/environment | Verify API key prefix matches environment |
+| Config file not found | Missing environment config | Create config file for environment |
+| Environment detection fail | NODE_ENV not set | Set NODE_ENV or {{ company | upper }}_ENV explicitly |
+| Cross-env data access | Using prod key in staging | Audit API key usage, use key validation |
+
+## Examples
+
+### Kubernetes ConfigMap
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ company }}-config
+data:
+  {{ company | upper }}_ENV: "production"
+  {{ company | upper }}_BASE_URL: "{{ api_url | default('https://api.' + company + '.com') }}"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ company }}-secrets
+stringData:
+  {{ company | upper }}_API_KEY: "sk_live_***"
 ```
+
+### GitHub Actions per Environment
+
+```yaml
+jobs:
+  deploy-staging:
+    environment: staging
+    env:
+      {{ company | upper }}_API_KEY: ${{ '{{' }} secrets.{{ company | upper }}_API_KEY_STAGING {{ '}}' }}
+
+  deploy-production:
+    environment: production
+    needs: deploy-staging
+    env:
+      {{ company | upper }}_API_KEY: ${{ '{{' }} secrets.{{ company | upper }}_API_KEY_PROD {{ '}}' }}
+```
+
+## Resources
+- [{{ display_name }} Environments Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/environments)
+- [API Key Management]({{ docs_url | default('https://docs.' + company + '.com') }}/api-keys)
+- [Configuration Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/configuration)
 
 ## Next Steps
-For observability setup, see `{{ company }}-observability`.
+For observability across environments, see `{{ company }}-observability`.

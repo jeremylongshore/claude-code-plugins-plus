@@ -2,50 +2,16 @@
   "name": "supabase-pack",
   "version": "1.0.0",
   "description": "Claude Code skill pack for Supabase (30 skills)",
-  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
-  "license": "MIT",
-  "homepage": "https://claudecodeplugins.io/learn/supabase",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jeremylongshore/claude-code-plugins"
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
   },
+  "license": "MIT",
   "keywords": [
     "supabase",
     "supabase",
     "saas",
     "sdk",
     "integration"
-  ],
-  "skills": [
-    "skills/supabase-install-auth",
-    "skills/supabase-hello-world",
-    "skills/supabase-local-dev-loop",
-    "skills/supabase-sdk-patterns",
-    "skills/supabase-core-workflow-a",
-    "skills/supabase-core-workflow-b",
-    "skills/supabase-common-errors",
-    "skills/supabase-debug-bundle",
-    "skills/supabase-rate-limits",
-    "skills/supabase-security-basics",
-    "skills/supabase-prod-checklist",
-    "skills/supabase-upgrade-migration",
-    "skills/supabase-ci-integration",
-    "skills/supabase-deploy-integration",
-    "skills/supabase-webhooks-events",
-    "skills/supabase-performance-tuning",
-    "skills/supabase-cost-tuning",
-    "skills/supabase-reference-architecture",
-    "skills/supabase-multi-env-setup",
-    "skills/supabase-observability",
-    "skills/supabase-incident-runbook",
-    "skills/supabase-data-handling",
-    "skills/supabase-enterprise-rbac",
-    "skills/supabase-migration-deep-dive",
-    "skills/supabase-advanced-troubleshooting",
-    "skills/supabase-load-scale",
-    "skills/supabase-reliability-patterns",
-    "skills/supabase-policy-guardrails",
-    "skills/supabase-architecture-variants",
-    "skills/supabase-known-pitfalls"
   ]
 }

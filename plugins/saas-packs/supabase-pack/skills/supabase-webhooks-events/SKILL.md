@@ -2,9 +2,10 @@
 name: supabase-webhooks-events
 description: |
   Supabase webhook signature validation and event handling.
-  Trigger phrases: "supabase webhook", "supabase events",
+  Use when implementing webhook endpoints or processing Supabase events.
+  Trigger with phrases like "supabase webhook", "supabase events",
   "supabase webhook signature", "handle supabase events".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(supabase:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Securely handle Supabase webhooks with signature validation and replay protection.
 
-## Webhook Endpoint Setup
+## Prerequisites
+- supabase-install-auth completed
+- Web server running (Express, Fastify, etc.)
+- Supabase webhook secret from dashboard
+- HTTPS endpoint for production
+
+## Instructions
+
+### Step 1: Webhook Endpoint Setup
 
 ### Express.js
 ```typescript
@@ -130,7 +139,7 @@ async function markEventProcessed(eventId: string): Promise<void> {
 }
 ```
 
-## Webhook Testing
+### Step 2: Webhook Testing
 
 ```bash
 # Use Supabase CLI to send test events
@@ -141,6 +150,45 @@ curl -X POST https://webhook.site/your-uuid \
   -H "Content-Type: application/json" \
   -d '{"type": "resource.created", "data": {}}'
 ```
+
+## Output
+- Webhook endpoint responding with 200 on valid signatures
+- Events processed and logged
+- Idempotency preventing duplicate processing
+- Replay attacks rejected (timestamp validation)
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature (401) | Wrong secret or payload tampering | Verify webhook secret matches dashboard |
+| Timestamp too old | Replay attack or clock drift | Check server time sync, reject old events |
+| Duplicate event | Event processed twice | Implement idempotency with Redis/DB |
+| Handler timeout | Slow event processing | Use async queue for heavy processing |
+
+## Examples
+
+### Next.js API Route
+```typescript
+export async function POST(req: Request) {
+  const body = await req.text();
+  const signature = req.headers.get('x-supabase-signature');
+
+  if (!verifySignature(body, signature)) {
+    return Response.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  const event = JSON.parse(body);
+  await processEvent(event);
+
+  return Response.json({ received: true });
+}
+```
+
+## Resources
+- [Supabase Webhooks Guide](https://supabase.com/docs/webhooks)
+- [Webhook Security Best Practices](https://supabase.com/docs/webhooks/security)
+- [Event Types Reference](https://supabase.com/docs/webhooks/events)
 
 ## Next Steps
 For performance optimization, see `supabase-performance-tuning`.

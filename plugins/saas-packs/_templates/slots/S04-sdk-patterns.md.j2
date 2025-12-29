@@ -1,8 +1,9 @@
 ---
 name: {{ company }}-sdk-patterns
 description: |
-  {{ display_name }} SDK patterns for TypeScript and Python with best practices.
-  Trigger phrases: "{{ company }} SDK patterns", "{{ company }} best practices",
+  Apply {{ display_name }} SDK patterns for TypeScript and Python with best practices.
+  Use when implementing production-ready {{ display_name }} integrations.
+  Trigger with phrases like "{{ company }} SDK patterns", "{{ company }} best practices",
   "{{ company }} code patterns", "idiomatic {{ company }}".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -15,9 +16,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Production-ready patterns for {{ display_name }} SDK usage in TypeScript and Python.
 
-## Client Initialization Patterns
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Understanding of async/await patterns
+- TypeScript 5.0+ or Python 3.10+
 
-### Singleton Pattern (Recommended)
+## Instructions
+
+### Step 1: Implement Singleton Pattern
 ```typescript
 // src/{{ company }}/client.ts
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
@@ -35,21 +41,7 @@ export function get{{ display_name }}Client(): {{ client_class | default(display
 }
 ```
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, {{ client_class | default(display_name + 'Client') }}>();
-
-export function getClientForTenant(tenantId: string): {{ client_class | default(display_name + 'Client') }} {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new {{ client_class | default(display_name + 'Client') }}({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-## Error Handling Pattern
-
+### Step 2: Add Error Handling
 ```typescript
 import { {{ error_class | default(display_name + 'Error') }} } from '{{ npm_package | default(company + '-sdk') }}';
 
@@ -61,20 +53,14 @@ async function safe{{ display_name }}Call<T>(
     return { data, error: null };
   } catch (err) {
     if (err instanceof {{ error_class | default(display_name + 'Error') }}) {
-      // Log structured error
-      console.error({
-        code: err.code,
-        message: err.message,
-        {{ error_fields | default('// Additional error fields') }}
-      });
+      console.error({ code: err.code, message: err.message });
     }
     return { data: null, error: err as Error };
   }
 }
 ```
 
-## Retry Pattern
-
+### Step 3: Implement Retry Logic
 ```typescript
 async function withRetry<T>(
   operation: () => Promise<T>,
@@ -94,28 +80,37 @@ async function withRetry<T>(
 }
 ```
 
-## Type Safety Patterns
+## Output
+- Singleton client instance for efficient resource usage
+- Consistent error handling across all API calls
+- Automatic retry with exponential backoff
+- Type-safe API responses
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Multiple instances | Not using singleton | Use `get{{ display_name }}Client()` |
+| Unhandled rejection | Missing try-catch | Wrap in `safe{{ display_name }}Call` |
+| Rate limit exceeded | Too many retries | Increase backoff delay |
+| Type errors | Schema mismatch | Update Zod schema |
+
+## Examples
+
+### Factory Pattern (Multi-tenant)
 ```typescript
-// Strict typing for API responses
-interface {{ response_type | default(display_name + 'Response') }}<T> {
-  data: T;
-  meta: {
-    requestId: string;
-    timestamp: string;
-  };
+const clients = new Map<string, {{ client_class | default(display_name + 'Client') }}>();
+
+export function getClientForTenant(tenantId: string): {{ client_class | default(display_name + 'Client') }} {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new {{ client_class | default(display_name + 'Client') }}({ apiKey }));
+  }
+  return clients.get(tenantId)!;
 }
-
-// Zod validation for runtime safety
-import { z } from 'zod';
-
-const {{ company }}ResponseSchema = z.object({
-  {{ zod_schema | default('// Define schema fields') }}
-});
 ```
 
-## Python Patterns
-
+### Python Context Manager
 ```python
 from contextlib import asynccontextmanager
 from {{ pip_package | default(company) }} import {{ client_class | default(display_name + 'Client') }}
@@ -128,6 +123,22 @@ async def get_{{ company }}_client():
     finally:
         await client.close()
 ```
+
+### Type Safety with Zod
+```typescript
+import { z } from 'zod';
+
+const {{ company }}ResponseSchema = z.object({
+  {{ zod_schema | default('id: z.string(),\n  data: z.unknown()') }}
+});
+
+type {{ display_name }}Response = z.infer<typeof {{ company }}ResponseSchema>;
+```
+
+## Resources
+- [{{ display_name }} SDK Documentation]({{ sdk_docs_url | default('https://docs.' + company + '.com/sdk') }})
+- [TypeScript Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/typescript)
+- [Python Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/python)
 
 ## Next Steps
 Apply patterns in `{{ company }}-core-workflow-a` for real-world usage.

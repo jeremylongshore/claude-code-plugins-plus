@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-local-dev-loop
 description: |
-  {{ display_name }} local development workflow with hot reload and testing.
-  Trigger phrases: "{{ company }} dev setup", "{{ company }} local development",
+  Set up {{ display_name }} local development workflow with hot reload and testing.
+  Use when configuring a reproducible development environment.
+  Trigger with phrases like "{{ company }} dev setup", "{{ company }} local development",
   "{{ company }} dev environment", "develop with {{ company }}".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,9 +16,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Set up a fast, reproducible local development workflow for {{ display_name }}.
 
-## Development Environment
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Node.js 18+ or Python 3.10+
+- Package manager (npm, pnpm, or pip)
 
-### 1. Project Structure
+## Instructions
+
+### Step 1: Create Project Structure
 ```
 my-{{ company }}-project/
 ├── src/
@@ -33,7 +39,7 @@ my-{{ company }}-project/
 └── package.json
 ```
 
-### 2. Environment Setup
+### Step 2: Configure Environment
 ```bash
 # Copy environment template
 cp .env.example .env.local
@@ -45,7 +51,7 @@ cp .env.example .env.local
 {{ package_manager | default('npm') }} run dev
 ```
 
-### 3. Hot Reload Configuration
+### Step 3: Set Up Hot Reload
 ```json
 // package.json scripts
 {
@@ -57,9 +63,7 @@ cp .env.example .env.local
 }
 ```
 
-## Testing Strategy
-
-### Unit Tests
+### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { {{ client_class | default(display_name + 'Client') }} } from '../src/{{ company }}/client';
@@ -72,7 +76,24 @@ describe('{{ display_name }} Client', () => {
 });
 ```
 
-### Mock Responses
+## Output
+- Working development environment with hot reload
+- Test suite configured and passing
+- Environment variables properly isolated
+- Mock responses for offline development
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| .env not found | Missing configuration | Copy `.env.example` to `.env.local` |
+| Test failures | Mock not configured | Set up mocks in test setup file |
+| Hot reload broken | File watcher issue | Restart dev server |
+| Import errors | TypeScript paths | Check `tsconfig.json` paths |
+
+## Examples
+
+### Mock Responses for Testing
 ```typescript
 vi.mock('{{ npm_package | default(company + '-sdk') }}', () => ({
   {{ client_class | default(display_name + 'Client') }}: vi.fn().mockImplementation(() => ({
@@ -81,10 +102,25 @@ vi.mock('{{ npm_package | default(company + '-sdk') }}', () => ({
 }));
 ```
 
-## Debugging Tips
+### Environment Validation
+```typescript
+// src/{{ company }}/config.ts
+import { z } from 'zod';
+
+const configSchema = z.object({
+  {{ company | upper }}_API_KEY: z.string().min(1),
+});
+
+export const config = configSchema.parse(process.env);
+```
+
+## Resources
+- [{{ display_name }} Local Development Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/local-dev)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+## Next Steps
 - Use `DEBUG={{ company | upper }}=*` for verbose logging
 - Check {{ display_name }} dashboard for request logs
 - Use `{{ company }}-debug-bundle` skill for evidence collection
-
-## Next Steps
-See `{{ company }}-sdk-patterns` for production-ready code patterns.
+- See `{{ company }}-sdk-patterns` for production-ready code patterns

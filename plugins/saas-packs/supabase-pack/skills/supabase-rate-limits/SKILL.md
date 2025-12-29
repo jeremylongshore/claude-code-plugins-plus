@@ -1,8 +1,9 @@
 ---
 name: supabase-rate-limits
 description: |
-  Supabase rate limiting, backoff, and idempotency patterns.
-  Trigger phrases: "supabase rate limit", "supabase throttling",
+  Implement Supabase rate limiting, backoff, and idempotency patterns.
+  Use when handling API throttling or implementing retry logic.
+  Trigger with phrases like "supabase rate limit", "supabase throttling",
   "supabase 429", "supabase retry", "supabase backoff".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -15,7 +16,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Handle Supabase rate limits gracefully with exponential backoff and idempotency.
 
-## Rate Limit Tiers
+## Prerequisites
+- Understanding of HTTP status codes (429, 5xx)
+- Familiarity with async/await patterns
+- supabase-install-auth completed
+
+## Instructions
+
+### Step 1: Understand Rate Limit Tiers
 
 | Tier | Requests/min | Requests/day | Burst |
 |------|-------------|--------------|-------|
@@ -23,7 +31,7 @@ Handle Supabase rate limits gracefully with exponential backoff and idempotency.
 | Pro | 5,000 | 1,000,000 | 50 |
 | Enterprise | Unlimited | Unlimited | 200 |
 
-## Response Headers
+### Step 2: Parse Rate Limit Headers
 ```
 X-RateLimit-Limit: 60
 X-RateLimit-Remaining: 45
@@ -31,8 +39,7 @@ X-RateLimit-Reset: 1640995200
 Retry-After: 30
 ```
 
-## Exponential Backoff Implementation
-
+### Step 3: Implement Exponential Backoff
 ```typescript
 interface RetryConfig {
   maxRetries: number;
@@ -56,11 +63,9 @@ async function withExponentialBackoff<T>(
     } catch (error: any) {
       if (attempt === config.maxRetries) throw error;
 
-      // Only retry on rate limit (429) or server errors (5xx)
       const status = error.status || error.response?.status;
       if (status !== 429 && (status < 500 || status >= 600)) throw error;
 
-      // Calculate delay with exponential backoff + jitter
       const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
       const jitter = Math.random() * config.jitterMs;
       const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
@@ -73,8 +78,24 @@ async function withExponentialBackoff<T>(
 }
 ```
 
-## Idempotency Pattern
+## Output
+- Automatic retry on rate limit (429) responses
+- Exponential backoff with jitter to prevent thundering herd
+- Idempotent requests that are safe to retry
+- Rate limit monitoring with proactive throttling
 
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 429 Too Many Requests | Rate limit exceeded | Implement exponential backoff |
+| Max retries exceeded | Persistent rate limiting | Reduce request rate or upgrade tier |
+| Retry-After header | Server-specified delay | Use header value for delay |
+| No remaining quota | Daily limit reached | Wait for quota reset |
+
+## Examples
+
+### Idempotency Pattern
 ```typescript
 import { v4 as uuidv4 } from 'uuid';
 
@@ -88,34 +109,27 @@ async function idempotentRequest<T>(
 
   return client.request({
     ...params,
-    headers: {
-      'Idempotency-Key': key,
-      ...params.headers,
-    },
+    headers: { 'Idempotency-Key': key, ...params.headers },
   });
 }
 ```
 
-## Queue-Based Rate Limiting
-
+### Queue-Based Rate Limiting
 ```typescript
 import PQueue from 'p-queue';
 
-// Create queue with rate limit
 const queue = new PQueue({
   concurrency: 5,
   interval: 1000,
   intervalCap: 10,
 });
 
-// Add operations to queue
 async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
   return queue.add(operation);
 }
 ```
 
-## Monitoring Rate Limit Usage
-
+### Rate Limit Monitor
 ```typescript
 class RateLimitMonitor {
   private remaining: number = 60;
@@ -132,6 +146,11 @@ class RateLimitMonitor {
   }
 }
 ```
+
+## Resources
+- [Supabase Rate Limits Documentation](https://supabase.com/docs/rate-limits)
+- [p-queue Library](https://github.com/sindresorhus/p-queue)
+- [Exponential Backoff Best Practices](https://cloud.google.com/iot/docs/how-tos/exponential-backoff)
 
 ## Next Steps
 For security configuration, see `supabase-security-basics`.

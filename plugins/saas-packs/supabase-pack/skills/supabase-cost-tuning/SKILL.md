@@ -2,9 +2,10 @@
 name: supabase-cost-tuning
 description: |
   Supabase cost optimization with tier selection and usage monitoring.
-  Trigger phrases: "supabase cost", "supabase billing",
+  Use when optimizing Supabase costs or analyzing billing.
+  Trigger with phrases like "supabase cost", "supabase billing",
   "reduce supabase costs", "supabase pricing", "supabase expensive".
-allowed-tools: Read, Bash, Grep
+allowed-tools: Read, Bash(supabase:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,7 +16,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Optimize Supabase costs through smart tier selection, sampling, and usage monitoring.
 
-## Pricing Tiers
+## Prerequisites
+- supabase-install-auth completed
+- Access to Supabase billing dashboard
+- Current usage metrics available
+- Budget limits defined
+
+## Instructions
+
+### Step 1: Understand Pricing Tiers
 
 | Tier | Monthly Cost | Included | Overage |
 |------|-------------|----------|---------|
@@ -130,7 +139,7 @@ const client = new SupabaseClient({
 # Check Supabase documentation for billing APIs
 ```
 
-## Cost Dashboard Query
+### Step 2: Cost Dashboard Query
 
 ```sql
 -- If tracking usage in your database
@@ -144,6 +153,47 @@ WHERE created_at >= NOW() - INTERVAL '30 days'
 GROUP BY 1
 ORDER BY 1;
 ```
+
+## Output
+- Monthly cost reduced by 20-50%
+- Budget alerts preventing overages
+- Right-sized tier for actual usage
+- Usage patterns documented
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Unexpected overage | Usage spike | Set up usage alerts, review top consumers |
+| Wrong tier selected | Underestimated usage | Upgrade tier, monitor usage patterns |
+| Budget exceeded | No alerts configured | Set up budget alerts at 80% threshold |
+| Billing access denied | Missing permissions | Request billing admin access |
+
+## Examples
+
+### Usage Trend Analysis
+```typescript
+async function analyzeUsageTrend() {
+  const last30Days = await supabaseClient.getUsage({
+    start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
+    end: new Date(),
+  });
+
+  const avgDaily = last30Days.total / 30;
+  const projectedMonthly = avgDaily * 30;
+
+  return {
+    current: last30Days.total,
+    projected: projectedMonthly,
+    recommended: estimateSupabaseCost(projectedMonthly),
+  };
+}
+```
+
+## Resources
+- [Supabase Pricing](https://supabase.com/pricing)
+- [Billing Dashboard](https://dashboard.supabase.com/billing)
+- [Usage Optimization Guide](https://supabase.com/docs/cost-optimization)
 
 ## Next Steps
 For architecture patterns, see `supabase-reference-architecture`.

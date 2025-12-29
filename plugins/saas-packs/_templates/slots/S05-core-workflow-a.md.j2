@@ -1,10 +1,11 @@
 ---
 name: {{ company }}-{{ workflow_a_slug | default('core-workflow-a') }}
 description: |
-  {{ display_name }} primary workflow: {{ workflow_a_name | default('Core Workflow A') }}.
-  Trigger phrases: "{{ company }} {{ workflow_a_trigger | default('main workflow') }}",
+  Execute {{ display_name }} {{ workflow_a_name | default('Core Workflow A') }} - the primary integration path.
+  Use when {{ workflow_a_use_case_1 | default('implementing the main use case') }}.
+  Trigger with phrases like "{{ company }} {{ workflow_a_trigger | default('main workflow') }}",
   "{{ workflow_a_action | default('primary task') }} with {{ company }}".
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Bash({{ company }}:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,41 +16,64 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 {{ workflow_a_description | default('Primary money-path workflow for ' + display_name + '. This is the most common use case.') }}
 
-## When to Use
-- {{ workflow_a_use_case_1 | default('Primary use case scenario') }}
-- {{ workflow_a_use_case_2 | default('Secondary use case scenario') }}
-- {{ workflow_a_use_case_3 | default('Third use case scenario') }}
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Valid API credentials configured
+- Understanding of `{{ company }}-sdk-patterns`
+- {{ workflow_a_prereq | default('Domain knowledge for the use case') }}
 
-## Implementation
+## Instructions
 
 ### Step 1: {{ workflow_a_step1_name | default('Initialize') }}
+{{ workflow_a_step1_desc | default('Set up the initial state for the workflow.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_a_step1_code | default('// Step 1 implementation') }}
+{{ workflow_a_step1_code | default('// Step 1: Initialize the workflow\nconst client = getClient();\nconst config = await client.getConfig();') }}
 ```
 
 ### Step 2: {{ workflow_a_step2_name | default('Execute') }}
+{{ workflow_a_step2_desc | default('Execute the core operation.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_a_step2_code | default('// Step 2 implementation') }}
+{{ workflow_a_step2_code | default('// Step 2: Execute the main operation\nconst result = await client.execute(config);\nconsole.log("Result:", result);') }}
 ```
 
 ### Step 3: {{ workflow_a_step3_name | default('Finalize') }}
+{{ workflow_a_step3_desc | default('Complete the workflow and handle cleanup.') }}
+
 ```{{ primary_language | default('typescript') }}
-{{ workflow_a_step3_code | default('// Step 3 implementation') }}
+{{ workflow_a_step3_code | default('// Step 3: Finalize and cleanup\nawait client.finalize(result);\nconsole.log("Workflow complete");') }}
 ```
 
-## Complete Example
-```{{ primary_language | default('typescript') }}
-{{ workflow_a_complete_example | default('// Complete workflow example') }}
-```
+## Output
+- Successful completion of {{ workflow_a_name | default('Core Workflow A') }}
+- Result data returned from {{ display_name }} API
+- Confirmation of workflow execution
+- Logs showing each step completion
 
-## Common Variations
-{{ workflow_a_variations | default('- Variation 1: Description\n- Variation 2: Description') }}
+## Error Handling
 
-## Error Scenarios
 | Error | Cause | Solution |
 |-------|-------|----------|
-| {{ workflow_a_error1_name | default('Error 1') }} | {{ workflow_a_error1_cause | default('Cause') }} | {{ workflow_a_error1_solution | default('Solution') }} |
-| {{ workflow_a_error2_name | default('Error 2') }} | {{ workflow_a_error2_cause | default('Cause') }} | {{ workflow_a_error2_solution | default('Solution') }} |
+| {{ workflow_a_error1_name | default('Initialization Failed') }} | {{ workflow_a_error1_cause | default('Missing configuration') }} | {{ workflow_a_error1_solution | default('Check environment variables and config') }} |
+| {{ workflow_a_error2_name | default('Execution Error') }} | {{ workflow_a_error2_cause | default('Invalid input data') }} | {{ workflow_a_error2_solution | default('Validate input before execution') }} |
+| {{ workflow_a_error3_name | default('Timeout') }} | {{ workflow_a_error3_cause | default('Long-running operation') }} | {{ workflow_a_error3_solution | default('Increase timeout or use async pattern') }} |
+| Rate Limit | Too many requests | Implement backoff, see `{{ company }}-rate-limits` |
+
+## Examples
+
+### Complete Workflow Example
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_complete_example | default('// Complete workflow example\nimport { getClient } from "./client";\n\nasync function runWorkflow() {\n  const client = getClient();\n  \n  // Step 1: Initialize\n  const config = await client.getConfig();\n  \n  // Step 2: Execute\n  const result = await client.execute(config);\n  \n  // Step 3: Finalize\n  await client.finalize(result);\n  \n  return result;\n}\n\nrunWorkflow().then(console.log).catch(console.error);') }}
+```
+
+### Workflow Variations
+{{ workflow_a_variations | default('- **Variation 1**: Batch processing - process multiple items\n- **Variation 2**: Async mode - fire and forget with callback\n- **Variation 3**: Dry run - validate without executing') }}
+
+## Resources
+- [{{ display_name }} {{ workflow_a_name | default('Workflow A') }} Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/workflows)
+- [API Reference]({{ api_reference_url | default('https://docs.' + company + '.com/api') }})
+- [Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/best-practices)
 
 ## Next Steps
 For secondary workflow, see `{{ company }}-{{ workflow_b_slug | default('core-workflow-b') }}`.
