@@ -52,6 +52,16 @@ npm list {{ npm_package | default(company + '-sdk') }} 2>/dev/null >> "$BUNDLE_D
 
 # Recent logs (redacted)
 grep -i "{{ company }}" ~/.npm/_logs/*.log 2>/dev/null | tail -50 >> "$BUNDLE_DIR/logs.txt"
+
+# Configuration (redacted - secrets masked)
+echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
+cat {{ config_file | default('.env') }} 2>/dev/null | sed 's/=.*/=***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"
+
+# Network connectivity test
+echo "--- Network Test ---" >> "$BUNDLE_DIR/summary.txt"
+echo -n "API Health: " >> "$BUNDLE_DIR/summary.txt"
+curl -s -o /dev/null -w "%{http_code}" {{ api_url | default('https://api.' + company + '.com') }}/health >> "$BUNDLE_DIR/summary.txt"
+echo "" >> "$BUNDLE_DIR/summary.txt"
 ```
 
 ### Step 4: Package Bundle

@@ -86,6 +86,24 @@ const client = new {{ client_class | default(display_name + 'Client') }}({
 npm install {{ npm_package | default(company + '-sdk') }}@1.x.x --save-exact
 ```
 
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[{{ display_name }}]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
+
 ## Resources
 - [{{ display_name }} Changelog]({{ changelog_url | default('https://github.com/' + company + '/sdk/releases') }})
 - [{{ display_name }} Migration Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/migration)

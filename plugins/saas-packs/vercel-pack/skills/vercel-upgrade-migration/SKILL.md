@@ -86,6 +86,24 @@ const client = new VercelClient({
 npm install vercel@1.x.x --save-exact
 ```
 
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Vercel]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
+
 ## Resources
 - [Vercel Changelog](https://github.com/vercel/vercel/releases)
 - [Vercel Migration Guide](https://vercel.com/docs/migration)

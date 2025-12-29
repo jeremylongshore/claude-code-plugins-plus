@@ -86,6 +86,24 @@ const client = new SupabaseClient({
 npm install @supabase/supabase-js@1.x.x --save-exact
 ```
 
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Supabase]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
+
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
+
 ## Resources
 - [Supabase Changelog](https://github.com/supabase/sdk/releases)
 - [Supabase Migration Guide](https://supabase.com/docs/migration)

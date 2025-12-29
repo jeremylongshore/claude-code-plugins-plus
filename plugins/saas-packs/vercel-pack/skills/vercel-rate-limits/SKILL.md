@@ -32,12 +32,12 @@ Handle Vercel rate limits gracefully with exponential backoff and idempotency.
 | Pro | 1,000 | 1,000,000 | 50 |
 | Enterprise | 10,000 | Unlimited | 200 |
 
-### Step 2: Implement Exponential Backoff
+### Step 2: Implement Exponential Backoff with Jitter
 
 ```typescript
 async function withExponentialBackoff<T>(
   operation: () => Promise<T>,
-  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000 }
+  config = { maxRetries: 5, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
 ): Promise<T> {
   for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
     try {
@@ -46,7 +46,13 @@ async function withExponentialBackoff<T>(
       if (attempt === config.maxRetries) throw error;
       const status = error.status || error.response?.status;
       if (status !== 429 && (status < 500 || status >= 600)) throw error;
-      const delay = Math.min(config.baseDelayMs * Math.pow(2, attempt), config.maxDelayMs);
+
+      // Exponential delay with jitter to prevent thundering herd
+      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
+      const jitter = Math.random() * config.jitterMs;
+      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
+
+      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
       await new Promise(r => setTimeout(r, delay));
     }
   }
@@ -58,14 +64,24 @@ async function withExponentialBackoff<T>(
 
 ```typescript
 import { v4 as uuidv4 } from 'uuid';
+import crypto from 'crypto';
+
+// Generate deterministic key from operation params (for safe retries)
+function generateIdempotencyKey(operation: string, params: Record<string, any>): string {
+  const data = JSON.stringify({ operation, params });
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
 
 async function idempotentRequest<T>(
   client: VercelClient,
-  params: Record<string, any>
+  params: Record<string, any>,
+  idempotencyKey?: string  // Pass existing key for retries
 ): Promise<T> {
+  // Use provided key (for retries) or generate deterministic key from params
+  const key = idempotencyKey || generateIdempotencyKey(params.method || 'POST', params);
   return client.request({
     ...params,
-    headers: { 'Idempotency-Key': uuidv4(), ...params.headers },
+    headers: { 'Idempotency-Key': key, ...params.headers },
   });
 }
 ```
@@ -104,13 +120,23 @@ async function queuedRequest<T>(operation: () => Promise<T>): Promise<T> {
 ```typescript
 class RateLimitMonitor {
   private remaining: number = 60;
+  private resetAt: Date = new Date();
 
   updateFromHeaders(headers: Headers) {
     this.remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
+    const resetTimestamp = headers.get('X-RateLimit-Reset');
+    if (resetTimestamp) {
+      this.resetAt = new Date(parseInt(resetTimestamp) * 1000);
+    }
   }
 
   shouldThrottle(): boolean {
-    return this.remaining < 5;
+    // Only throttle if low remaining AND reset hasn't happened yet
+    return this.remaining < 5 && new Date() < this.resetAt;
+  }
+
+  getWaitTime(): number {
+    return Math.max(0, this.resetAt.getTime() - Date.now());
   }
 }
 ```

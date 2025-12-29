@@ -3,6 +3,12 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import vendorPacks from '../../../data/vendor-packs.json';
 
 const vendor = vendorPacks.vendors.find(v => v.id === 'vercel');
+
+// Handle missing vendor gracefully
+if (!vendor) {
+  return Astro.redirect('/learn/');
+}
+
 const pageTitle = `${vendor.name} Skill Pack - ${vendor.skillCount} Skills`;
 const pageDescription = `Complete ${vendor.name} integration with ${vendor.skillCount} skills covering ${vendor.description.toLowerCase()}.`;
 ---
@@ -245,8 +251,8 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       <div class="install-section">
         <div class="install-label">Install this pack:</div>
         <div class="install-command">
-          <code>{vendor.installCommand}</code>
-          <button class="copy-btn" onclick="navigator.clipboard.writeText('{vendor.installCommand}')">
+          <code id="install-cmd">{vendor.installCommand}</code>
+          <button class="copy-btn" data-copy-target="install-cmd">
             Copy
           </button>
         </div>
@@ -287,4 +293,23 @@ const pageDescription = `Complete ${vendor.name} integration with ${vendor.skill
       </a>
     </div>
   </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyBtn = document.querySelector('[data-copy-target]');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const targetId = copyBtn.getAttribute('data-copy-target');
+          const target = document.getElementById(targetId);
+          if (target) {
+            navigator.clipboard.writeText(target.textContent || '').then(() => {
+              const originalText = copyBtn.textContent;
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+            });
+          }
+        });
+      }
+    });
+  </script>
 </BaseLayout>

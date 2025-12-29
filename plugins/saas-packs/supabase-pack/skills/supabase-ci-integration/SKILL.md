@@ -42,6 +42,8 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -93,9 +95,18 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    env:
+      SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY_PROD }}
     steps:
       - uses: actions/checkout@v4
-      - run: npm ci && npm run build && npm publish
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - name: Verify Supabase production readiness
+        run: npm run test:integration
+      - run: npm run build
+      - run: npm publish
 ```
 
 ### Branch Protection

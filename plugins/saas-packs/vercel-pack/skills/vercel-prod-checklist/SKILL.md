@@ -45,15 +45,35 @@ Complete checklist for deploying Vercel integrations to production.
 - [ ] Circuit breaker pattern implemented
 - [ ] Graceful degradation configured
 
-### Step 4: Deploy and Validate
+### Step 4: Documentation Requirements
+- [ ] Incident runbook created
+- [ ] Key rotation procedure documented
+- [ ] Rollback procedure documented
+- [ ] On-call escalation path defined
+
+### Step 5: Deploy with Gradual Rollout
 ```bash
 # Pre-flight checks
 curl -f https://staging.example.com/health
 curl -s https://www.vercel-status.com
 
-# Deploy and verify
+# Gradual rollout - start with canary (10%)
 kubectl apply -f k8s/production.yaml
-kubectl get pods -l app=vercel-integration
+kubectl set image deployment/vercel-integration app=image:new --record
+kubectl rollout pause deployment/vercel-integration
+
+# Monitor canary traffic for 10 minutes
+sleep 600
+# Check error rates and latency before continuing
+
+# If healthy, continue rollout to 50%
+kubectl rollout resume deployment/vercel-integration
+kubectl rollout pause deployment/vercel-integration
+sleep 300
+
+# Complete rollout to 100%
+kubectl rollout resume deployment/vercel-integration
+kubectl rollout status deployment/vercel-integration
 ```
 
 ## Output
