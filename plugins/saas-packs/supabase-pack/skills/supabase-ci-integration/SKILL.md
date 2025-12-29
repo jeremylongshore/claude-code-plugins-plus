@@ -1,10 +1,12 @@
 ---
 name: supabase-ci-integration
 description: |
-  Supabase CI/CD integration with GitHub Actions and testing.
-  Trigger phrases: "supabase CI", "supabase GitHub Actions",
+  Configure Supabase CI/CD integration with GitHub Actions and testing.
+  Use when setting up automated testing, configuring CI pipelines,
+  or integrating Supabase tests into your build process.
+  Trigger with phrases like "supabase CI", "supabase GitHub Actions",
   "supabase automated tests", "CI supabase".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(gh:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,10 +17,17 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Set up CI/CD pipelines for Supabase integrations with automated testing.
 
-## GitHub Actions Workflow
+## Prerequisites
+- GitHub repository with Actions enabled
+- Supabase test API key
+- npm/pnpm project configured
+
+## Instructions
+
+### Step 1: Create GitHub Actions Workflow
+Create `.github/workflows/supabase-integration.yml`:
 
 ```yaml
-# .github/workflows/supabase-integration.yml
 name: Supabase Integration Tests
 
 on:
@@ -35,58 +44,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run unit tests
-        run: npm test -- --coverage
-
-      - name: Run Supabase integration tests
-        run: npm run test:integration
-        env:
-          SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY }}
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: ./coverage/lcov.info
+      - run: npm ci
+      - run: npm test -- --coverage
+      - run: npm run test:integration
 ```
 
-## Secrets Configuration
-
+### Step 2: Configure Secrets
 ```bash
-# Add secrets to GitHub repository
 gh secret set SUPABASE_API_KEY --body "sk_test_***"
-
-# For staging/production, use environment-specific secrets
-gh secret set SUPABASE_API_KEY_STAGING -e staging
-gh secret set SUPABASE_API_KEY_PROD -e production
 ```
 
-## Integration Test Pattern
-
+### Step 3: Add Integration Tests
 ```typescript
-// tests/integration/supabase.test.ts
-import { describe, it, expect, beforeAll } from 'vitest';
-
 describe('Supabase Integration', () => {
-  const isCI = process.env.CI === 'true';
-  const hasApiKey = !!process.env.SUPABASE_API_KEY;
-
-  beforeAll(() => {
-    if (isCI && !hasApiKey) {
-      console.warn('Skipping integration tests: no API key');
-    }
-  });
-
-  it.skipIf(!hasApiKey)('should connect to Supabase API', async () => {
+  it.skipIf(!process.env.SUPABASE_API_KEY)('should connect', async () => {
     const client = getSupabaseClient();
     const result = await client.healthCheck();
     expect(result.status).toBe('ok');
@@ -94,12 +69,23 @@ describe('Supabase Integration', () => {
 });
 ```
 
-## Release Workflow
+## Output
+- Automated test pipeline
+- PR checks configured
+- Coverage reports uploaded
+- Release workflow ready
 
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via `gh secret set` |
+| Tests timeout | Network issues | Increase timeout or mock |
+| Auth failures | Invalid key | Check secret value |
+
+## Examples
+
+### Release Workflow
 ```yaml
-# .github/workflows/release.yml
-name: Release
-
 on:
   push:
     tags: ['v*']
@@ -109,28 +95,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Verify Supabase production readiness
-        run: npm run verify:supabase
-        env:
-          SUPABASE_API_KEY: ${{ secrets.SUPABASE_API_KEY_PROD }}
-
-      - name: Build and publish
-        run: |
-          npm ci
-          npm run build
-          npm publish
+      - run: npm ci && npm run build && npm publish
 ```
 
-## PR Checks
-
+### Branch Protection
 ```yaml
-# Branch protection rule requirements
-# Settings → Branches → Add rule
 required_status_checks:
   - "test"
   - "supabase-integration"
 ```
+
+## Resources
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Supabase CI Guide](https://supabase.com/docs/ci)
 
 ## Next Steps
 For deployment patterns, see `supabase-deploy-integration`.

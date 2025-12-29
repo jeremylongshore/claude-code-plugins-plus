@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-cost-tuning
 description: |
-  {{ display_name }} cost optimization with tier selection and usage monitoring.
-  Trigger phrases: "{{ company }} cost", "{{ company }} billing",
-  "reduce {{ company }} costs", "{{ company }} pricing", "{{ company }} expensive".
-allowed-tools: Read, Bash, Grep
+  Optimize {{ display_name }} costs through tier selection, sampling, and usage monitoring.
+  Use when analyzing {{ display_name }} billing, reducing API costs,
+  or implementing usage monitoring and budget alerts.
+  Trigger with phrases like "{{ company }} cost", "{{ company }} billing",
+  "reduce {{ company }} costs", "{{ company }} pricing", "{{ company }} expensive", "{{ company }} budget".
+allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Optimize {{ display_name }} costs through smart tier selection, sampling, and usage monitoring.
+
+## Prerequisites
+- Access to {{ display_name }} billing dashboard
+- Understanding of current usage patterns
+- Database for usage tracking (optional)
+- Alerting system configured (optional)
 
 ## Pricing Tiers
 
@@ -89,7 +97,7 @@ class {{ display_name }}UsageMonitor {
 
 ## Cost Reduction Strategies
 
-### 1. Request Sampling
+### Step 1: Request Sampling
 ```typescript
 function shouldSample(samplingRate = 0.1): boolean {
   return Math.random() < samplingRate;
@@ -101,7 +109,7 @@ if (shouldSample(0.1)) { // 10% sample
 }
 ```
 
-### 2. Batching Requests
+### Step 2: Batching Requests
 ```typescript
 // Instead of N individual calls
 await Promise.all(ids.map(id => {{ company }}Client.get(id)));
@@ -110,12 +118,12 @@ await Promise.all(ids.map(id => {{ company }}Client.get(id)));
 await {{ company }}Client.batchGet(ids);
 ```
 
-### 3. Caching (from P16)
+### Step 3: Caching (from P16)
 - Cache frequently accessed data
 - Use cache invalidation webhooks
 - Set appropriate TTLs
 
-### 4. Compression
+### Step 4: Compression
 ```typescript
 const client = new {{ client_class | default(display_name + 'Client') }}({
   compression: true, // Enable gzip
@@ -144,6 +152,50 @@ WHERE created_at >= NOW() - INTERVAL '30 days'
 GROUP BY 1
 ORDER BY 1;
 ```
+
+## Instructions
+
+### Step 1: Analyze Current Usage
+Review {{ display_name }} dashboard for usage patterns and costs.
+
+### Step 2: Select Optimal Tier
+Use the cost estimation function to find the right tier.
+
+### Step 3: Implement Monitoring
+Add usage tracking to catch budget overruns early.
+
+### Step 4: Apply Optimizations
+Enable batching, caching, and sampling where appropriate.
+
+## Output
+- Optimized tier selection
+- Usage monitoring implemented
+- Budget alerts configured
+- Cost reduction strategies applied
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Unexpected charges | Untracked usage | Implement monitoring |
+| Overage fees | Wrong tier | Upgrade tier |
+| Budget exceeded | No alerts | Set up alerts |
+| Inefficient usage | No batching | Enable batch requests |
+
+## Examples
+
+### Quick Cost Check
+```typescript
+// Estimate monthly cost for your usage
+const estimate = estimate{{ display_name }}Cost(yourMonthlyRequests);
+console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
+if (estimate.recommendation) {
+  console.log(`💡 ${estimate.recommendation}`);
+}
+```
+
+## Resources
+- [{{ display_name }} Pricing]({{ pricing_url | default('https://' + company + '.com/pricing') }})
+- [{{ display_name }} Billing Dashboard]({{ dashboard_url | default('https://dashboard.' + company + '.com') }}/billing)
 
 ## Next Steps
 For architecture patterns, see `{{ company }}-reference-architecture`.

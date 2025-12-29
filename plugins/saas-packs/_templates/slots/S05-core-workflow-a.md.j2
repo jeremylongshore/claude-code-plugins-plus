@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-{{ workflow_a_slug | default('core-workflow-a') }}
 description: |
-  {{ display_name }} primary workflow: {{ workflow_a_name | default('Core Workflow A') }}.
-  Trigger phrases: "{{ company }} {{ workflow_a_trigger | default('main workflow') }}",
+  Execute {{ display_name }} primary workflow: {{ workflow_a_name | default('Core Workflow A') }}.
+  Use when {{ workflow_a_use_case_1 | default('implementing primary use case') }},
+  {{ workflow_a_use_case_2 | default('building main features') }}, or {{ workflow_a_use_case_3 | default('core integration tasks') }}.
+  Trigger with phrases like "{{ company }} {{ workflow_a_trigger | default('main workflow') }}",
   "{{ workflow_a_action | default('primary task') }} with {{ company }}".
-allowed-tools: Read, Write, Edit, Bash, Grep
+allowed-tools: Read, Write, Edit, Bash(npm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,12 +17,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 {{ workflow_a_description | default('Primary money-path workflow for ' + display_name + '. This is the most common use case.') }}
 
-## When to Use
-- {{ workflow_a_use_case_1 | default('Primary use case scenario') }}
-- {{ workflow_a_use_case_2 | default('Secondary use case scenario') }}
-- {{ workflow_a_use_case_3 | default('Third use case scenario') }}
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Understanding of {{ display_name }} core concepts
+- Valid API credentials configured
 
-## Implementation
+## Instructions
 
 ### Step 1: {{ workflow_a_step1_name | default('Initialize') }}
 ```{{ primary_language | default('typescript') }}
@@ -37,19 +39,30 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 {{ workflow_a_step3_code | default('// Step 3 implementation') }}
 ```
 
-## Complete Example
-```{{ primary_language | default('typescript') }}
-{{ workflow_a_complete_example | default('// Complete workflow example') }}
-```
+## Output
+- Completed {{ workflow_a_name | default('Core Workflow A') }} execution
+- Expected results from {{ display_name }} API
+- Success confirmation or error details
 
-## Common Variations
-{{ workflow_a_variations | default('- Variation 1: Description\n- Variation 2: Description') }}
-
-## Error Scenarios
+## Error Handling
 | Error | Cause | Solution |
 |-------|-------|----------|
 | {{ workflow_a_error1_name | default('Error 1') }} | {{ workflow_a_error1_cause | default('Cause') }} | {{ workflow_a_error1_solution | default('Solution') }} |
 | {{ workflow_a_error2_name | default('Error 2') }} | {{ workflow_a_error2_cause | default('Cause') }} | {{ workflow_a_error2_solution | default('Solution') }} |
+
+## Examples
+
+### Complete Workflow
+```{{ primary_language | default('typescript') }}
+{{ workflow_a_complete_example | default('// Complete workflow example') }}
+```
+
+### Common Variations
+{{ workflow_a_variations | default('- Variation 1: Description\n- Variation 2: Description') }}
+
+## Resources
+- [{{ display_name }} Documentation]({{ docs_url | default('https://docs.' + company + '.com') }})
+- [{{ display_name }} API Reference]({{ docs_url | default('https://docs.' + company + '.com') }}/api)
 
 ## Next Steps
 For secondary workflow, see `{{ company }}-{{ workflow_b_slug | default('core-workflow-b') }}`.

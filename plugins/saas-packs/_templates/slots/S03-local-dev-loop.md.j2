@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-local-dev-loop
 description: |
-  {{ display_name }} local development workflow with hot reload and testing.
-  Trigger phrases: "{{ company }} dev setup", "{{ company }} local development",
+  Configure {{ display_name }} local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with {{ display_name }}.
+  Trigger with phrases like "{{ company }} dev setup", "{{ company }} local development",
   "{{ company }} dev environment", "develop with {{ company }}".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,9 +17,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Set up a fast, reproducible local development workflow for {{ display_name }}.
 
-## Development Environment
+## Prerequisites
+- Completed `{{ company }}-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
-### 1. Project Structure
+## Instructions
+
+### Step 1: Create Project Structure
 ```
 my-{{ company }}-project/
 ├── src/
@@ -33,7 +41,7 @@ my-{{ company }}-project/
 └── package.json
 ```
 
-### 2. Environment Setup
+### Step 2: Configure Environment
 ```bash
 # Copy environment template
 cp .env.example .env.local
@@ -45,9 +53,8 @@ cp .env.example .env.local
 {{ package_manager | default('npm') }} run dev
 ```
 
-### 3. Hot Reload Configuration
+### Step 3: Setup Hot Reload
 ```json
-// package.json scripts
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -57,9 +64,7 @@ cp .env.example .env.local
 }
 ```
 
-## Testing Strategy
-
-### Unit Tests
+### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { {{ client_class | default(display_name + 'Client') }} } from '../src/{{ company }}/client';
@@ -72,7 +77,23 @@ describe('{{ display_name }} Client', () => {
 });
 ```
 
-### Mock Responses
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for {{ display_name }} development
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock {{ display_name }} Responses
 ```typescript
 vi.mock('{{ npm_package | default(company + '-sdk') }}', () => ({
   {{ client_class | default(display_name + 'Client') }}: vi.fn().mockImplementation(() => ({
@@ -81,10 +102,16 @@ vi.mock('{{ npm_package | default(company + '-sdk') }}', () => ({
 }));
 ```
 
-## Debugging Tips
-- Use `DEBUG={{ company | upper }}=*` for verbose logging
-- Check {{ display_name }} dashboard for request logs
-- Use `{{ company }}-debug-bundle` skill for evidence collection
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG={{ company | upper }}=* npm run dev
+```
+
+## Resources
+- [{{ display_name }} SDK Reference]({{ docs_url | default('https://docs.' + company + '.com') }}/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
 See `{{ company }}-sdk-patterns` for production-ready code patterns.

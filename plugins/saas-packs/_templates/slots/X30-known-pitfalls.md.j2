@@ -1,9 +1,11 @@
 ---
 name: {{ company }}-known-pitfalls
 description: |
-  {{ display_name }} anti-patterns and common mistakes to avoid.
-  Trigger phrases: "{{ company }} mistakes", "{{ company }} anti-patterns",
-  "{{ company }} pitfalls", "{{ company }} what not to do".
+  Identify and avoid {{ display_name }} anti-patterns and common integration mistakes.
+  Use when reviewing {{ display_name }} code for issues, onboarding new developers,
+  or auditing existing {{ display_name }} integrations for best practices violations.
+  Trigger with phrases like "{{ company }} mistakes", "{{ company }} anti-patterns",
+  "{{ company }} pitfalls", "{{ company }} what not to do", "{{ company }} code review".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Common mistakes and anti-patterns when integrating with {{ display_name }}.
+
+## Prerequisites
+- Access to {{ display_name }} codebase for review
+- Understanding of async/await patterns
+- Knowledge of security best practices
+- Familiarity with rate limiting concepts
 
 ## Pitfall #1: Synchronous API Calls in Request Path
 
@@ -268,6 +276,47 @@ return renderPage({ recommendations, degraded: !recommendations });
 ```
 
 ---
+
+## Instructions
+
+### Step 1: Review for Anti-Patterns
+Scan codebase for each pitfall pattern.
+
+### Step 2: Prioritize Fixes
+Address security issues first, then performance.
+
+### Step 3: Implement Better Approach
+Replace anti-patterns with recommended patterns.
+
+### Step 4: Add Prevention
+Set up linting and CI checks to prevent recurrence.
+
+## Output
+- Anti-patterns identified
+- Fixes prioritized and implemented
+- Prevention measures in place
+- Code quality improved
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Too many findings | Legacy codebase | Prioritize security first |
+| Pattern not detected | Complex code | Manual review |
+| False positive | Similar code | Whitelist exceptions |
+| Fix breaks tests | Behavior change | Update tests |
+
+## Examples
+
+### Quick Pitfall Scan
+```bash
+# Check for common pitfalls
+grep -r "sk_live_" --include="*.ts" src/        # Key leakage
+grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+```
+
+## Resources
+- [{{ display_name }} Security Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/security)
+- [{{ display_name }} Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/best-practices)
 
 ## Quick Reference Card
 

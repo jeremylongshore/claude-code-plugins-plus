@@ -1,8 +1,10 @@
 ---
 name: {{ company }}-security-basics
 description: |
-  {{ display_name }} security best practices for secrets and access control.
-  Trigger phrases: "{{ company }} security", "{{ company }} secrets",
+  Apply {{ display_name }} security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing {{ display_name }} security configuration.
+  Trigger with phrases like "{{ company }} security", "{{ company }} secrets",
   "secure {{ company }}", "{{ company }} API key security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
@@ -15,9 +17,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Security best practices for {{ display_name }} API keys, tokens, and access control.
 
-## Secret Management
+## Prerequisites
+- {{ display_name }} SDK installed
+- Understanding of environment variables
+- Access to {{ display_name }} dashboard
 
-### Environment Variables (Required)
+## Instructions
+
+### Step 1: Configure Environment Variables
 ```bash
 # .env (NEVER commit to git)
 {{ company | upper }}_API_KEY=sk_live_***
@@ -29,7 +36,7 @@ Security best practices for {{ display_name }} API keys, tokens, and access cont
 .env.*.local
 ```
 
-### Secret Rotation
+### Step 2: Implement Secret Rotation
 ```bash
 # 1. Generate new key in {{ display_name }} dashboard
 # 2. Update environment variable
@@ -42,18 +49,29 @@ curl -H "Authorization: Bearer ${{ '{' }}{{ company | upper }}_API_KEY}" \
 # 4. Revoke old key in dashboard
 ```
 
-## Least Privilege Principle
-
-### Scope Recommendations
+### Step 3: Apply Least Privilege
 | Environment | Recommended Scopes |
 |-------------|-------------------|
 | Development | `{{ dev_scopes | default('read:*') }}` |
 | Staging | `{{ staging_scopes | default('read:*, write:limited') }}` |
 | Production | `{{ prod_scopes | default('Only required scopes') }}` |
 
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
 ### Service Account Pattern
 ```typescript
-// Use separate API keys per service/environment
 const clients = {
   reader: new {{ client_class | default(display_name + 'Client') }}({
     apiKey: process.env.{{ company | upper }}_READ_KEY,
@@ -64,83 +82,28 @@ const clients = {
 };
 ```
 
-## Audit Logging
-
-```typescript
-// Log all {{ display_name }} operations (without secrets)
-function logOperation(operation: string, params: Record<string, any>) {
-  const sanitized = { ...params };
-  delete sanitized.apiKey;
-  delete sanitized.token;
-
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    service: '{{ company }}',
-    operation,
-    params: sanitized,
-  }));
-}
-```
-
-## Security Checklist
-
-- [ ] API keys stored in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Audit logging enabled
-- [ ] Regular key rotation schedule
-- [ ] IP allowlist configured (if available)
-- [ ] Webhook signatures validated
-
-## Common Security Mistakes
-
-### ❌ Don't Do This
-```typescript
-// NEVER hardcode API keys
-const client = new {{ client_class | default(display_name + 'Client') }}({
-  apiKey: 'sk_live_actual_key_here', // BAD!
-});
-
-// NEVER log API keys
-console.log('Using key:', process.env.{{ company | upper }}_API_KEY); // BAD!
-
-// NEVER commit .env files
-git add .env  // BAD!
-```
-
-### ✅ Do This Instead
-```typescript
-// Use environment variables
-const client = new {{ client_class | default(display_name + 'Client') }}({
-  apiKey: process.env.{{ company | upper }}_API_KEY,
-});
-
-// Log presence, not value
-console.log('API key configured:', !!process.env.{{ company | upper }}_API_KEY);
-```
-
-## Webhook Security
-
+### Webhook Signature Verification
 ```typescript
 import crypto from 'crypto';
 
 function verifyWebhookSignature(
-  payload: string,
-  signature: string,
-  secret: string
+  payload: string, signature: string, secret: string
 ): boolean {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+
+## Resources
+- [{{ display_name }} Security Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/security)
+- [{{ display_name }} API Scopes]({{ docs_url | default('https://docs.' + company + '.com') }}/scopes)
 
 ## Next Steps
 For production deployment, see `{{ company }}-prod-checklist`.

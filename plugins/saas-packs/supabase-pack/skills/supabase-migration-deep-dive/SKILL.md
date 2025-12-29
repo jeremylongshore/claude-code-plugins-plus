@@ -1,10 +1,12 @@
 ---
 name: supabase-migration-deep-dive
 description: |
-  Supabase major re-architecture and migration strategies.
-  Trigger phrases: "migrate supabase", "supabase migration",
-  "switch to supabase", "supabase replatform".
-allowed-tools: Read, Write, Edit, Bash
+  Execute Supabase major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from Supabase, performing major version upgrades,
+  or re-platforming existing integrations to Supabase.
+  Trigger with phrases like "migrate supabase", "supabase migration",
+  "switch to supabase", "supabase replatform", "supabase upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Comprehensive guide for migrating to or from Supabase, or major version upgrades.
+
+## Prerequisites
+- Current system documentation
+- Supabase SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
 
 ## Migration Types
 
@@ -26,7 +34,7 @@ Comprehensive guide for migrating to or from Supabase, or major version upgrades
 
 ## Pre-Migration Assessment
 
-### 1. Current State Analysis
+### Step 1: Current State Analysis
 ```bash
 # Document current implementation
 find . -name "*.ts" -o -name "*.py" | xargs grep -l "supabase" > supabase-files.txt
@@ -39,7 +47,7 @@ npm list | grep supabase
 pip freeze | grep supabase
 ```
 
-### 2. Data Inventory
+### Step 2: Data Inventory
 ```typescript
 interface MigrationInventory {
   dataTypes: string[];
@@ -190,6 +198,47 @@ async function validateSupabaseMigration(): Promise<ValidationReport> {
   return { checks: results, passed: results.every(r => r.result.success) };
 }
 ```
+
+## Instructions
+
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
+
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
+
+### Step 3: Migrate Data
+Run batch data migration with error handling.
+
+### Step 4: Shift Traffic
+Gradually route traffic to new Supabase integration.
+
+## Output
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to Supabase
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
+
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validateSupabaseMigration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
+
+## Resources
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [Supabase Migration Guide](https://supabase.com/docs/migration)
 
 ## Flagship+ Skills
 For advanced troubleshooting, see `supabase-advanced-troubleshooting`.

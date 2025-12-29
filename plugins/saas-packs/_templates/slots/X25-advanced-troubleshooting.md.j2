@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-advanced-troubleshooting
 description: |
-  {{ display_name }} advanced debugging for hard-to-diagnose issues.
-  Trigger phrases: "{{ company }} hard bug", "{{ company }} mystery error",
-  "{{ company }} impossible to debug", "difficult {{ company }} issue".
-allowed-tools: Read, Bash, Grep
+  Apply {{ display_name }} advanced debugging techniques for hard-to-diagnose issues.
+  Use when standard troubleshooting fails, investigating complex race conditions,
+  or preparing evidence bundles for {{ display_name }} support escalation.
+  Trigger with phrases like "{{ company }} hard bug", "{{ company }} mystery error",
+  "{{ company }} impossible to debug", "difficult {{ company }} issue", "{{ company }} deep debug".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Deep debugging techniques for complex {{ display_name }} issues that resist standard troubleshooting.
+
+## Prerequisites
+- Access to production logs and metrics
+- kubectl access to clusters
+- Network capture tools available
+- Understanding of distributed tracing
 
 ## Evidence Collection Framework
 
@@ -208,6 +216,46 @@ class {{ display_name }}ConcurrencyChecker {
 1. [Workaround 1] - Result: [outcome]
 2. [Workaround 2] - Result: [outcome]
 ```
+
+## Instructions
+
+### Step 1: Collect Evidence Bundle
+Run the comprehensive debug script to gather all relevant data.
+
+### Step 2: Systematic Isolation
+Test each layer independently to identify the failure point.
+
+### Step 3: Create Minimal Reproduction
+Strip down to the simplest failing case.
+
+### Step 4: Escalate with Evidence
+Use the support template with all collected evidence.
+
+## Output
+- Comprehensive debug bundle collected
+- Failure layer identified
+- Minimal reproduction created
+- Support escalation submitted
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reproduce | Race condition | Add timing analysis |
+| Intermittent failure | Timing-dependent | Increase sample size |
+| No useful logs | Missing instrumentation | Add debug logging |
+| Memory growth | Resource leak | Use heap profiling |
+
+## Examples
+
+### Quick Layer Test
+```bash
+# Test each layer in sequence
+curl -v {{ api_url | default('https://api.' + company + '.com') }}/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
+```
+
+## Resources
+- [{{ display_name }} Support Portal]({{ support_url | default('https://support.' + company + '.com') }})
+- [{{ display_name }} Status Page]({{ status_url | default('https://status.' + company + '.com') }})
 
 ## Next Steps
 For load testing, see `{{ company }}-load-scale`.

@@ -5138,6 +5138,62 @@
         "skills": 1,
         "commands": 3
       }
+    },
+    {
+      "name": "supabase-pack",
+      "source": "./plugins/saas-packs/supabase-pack",
+      "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "supabase",
+        "postgres",
+        "database",
+        "authentication",
+        "realtime",
+        "storage",
+        "edge-functions",
+        "rls",
+        "row-level-security",
+        "baas",
+        "backend-as-a-service",
+        "firebase-alternative"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "components": {
+        "skills": 30
+      }
+    },
+    {
+      "name": "vercel-pack",
+      "source": "./plugins/saas-packs/vercel-pack",
+      "description": "Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations. Flagship+ tier vendor pack.",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "vercel",
+        "deployment",
+        "edge-functions",
+        "serverless",
+        "preview",
+        "ci-cd",
+        "hosting",
+        "next-js",
+        "jamstack",
+        "frontend-cloud"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "components": {
+        "skills": 30
+      }
     }
   ]
 }

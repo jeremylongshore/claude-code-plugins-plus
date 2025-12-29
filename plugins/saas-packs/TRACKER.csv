@@ -1,6 +1,6 @@
 company,display_name,tier,skill_count,npm_package,npm_status,beads_epic_id,skills_created,skills_tested,website_status,marketplace_status,notes
-supabase,Supabase,flagship+,30,@claude-code-plugins/supabase-pack,not_reserved,ccpi-supabase,0,0,not_started,not_added,first reference implementation
-vercel,Vercel,flagship+,30,@claude-code-plugins/vercel-pack,not_reserved,ccpi-vercel,0,0,not_started,not_added,
+supabase,Supabase,flagship+,30,@claude-code-plugins/supabase-pack,not_reserved,ccpi-supabase,30,0,not_started,added,first reference implementation
+vercel,Vercel,flagship+,30,@claude-code-plugins/vercel-pack,not_reserved,ccpi-vercel,30,0,not_started,added,second Flagship+ pack
 sentry,Sentry,flagship+,30,@claude-code-plugins/sentry-pack,not_reserved,ccpi-sentry,0,0,not_started,not_added,
 langchain,LangChain,flagship+,30,@claude-code-plugins/langchain-pack,not_reserved,ccpi-langchain,0,0,not_started,not_added,
 replit,Replit,flagship+,30,@claude-code-plugins/replit-pack,not_reserved,ccpi-replit,0,0,not_started,not_added,

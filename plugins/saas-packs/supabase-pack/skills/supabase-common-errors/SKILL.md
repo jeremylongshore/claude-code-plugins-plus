@@ -1,10 +1,12 @@
 ---
 name: supabase-common-errors
 description: |
-  Supabase common errors and solutions. Trigger phrases:
-  "supabase error", "fix supabase", "supabase not working",
-  "supabase troubleshoot", "debug supabase".
-allowed-tools: Read, Grep, Bash
+  Diagnose and fix Supabase common errors and exceptions.
+  Use when encountering Supabase errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "supabase error", "fix supabase",
+  "supabase not working", "debug supabase".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,9 +17,30 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Quick reference for the top 10 most common Supabase errors and their solutions.
 
-## Error Reference
+## Prerequisites
+- Supabase SDK installed
+- API credentials configured
+- Access to error logs
 
-### 1. Invalid JWT
+## Instructions
+
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
+
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### Invalid JWT
 **Error Message:**
 ```
 Invalid JWT: expired or malformed
@@ -32,7 +55,7 @@ Check token expiry with supabase.auth.getSession() and call refreshSession() if 
 
 ---
 
-### 2. RLS Policy Violation
+### RLS Policy Violation
 **Error Message:**
 ```
 new row violates row-level security policy for table
@@ -45,7 +68,7 @@ Check RLS policies in dashboard or via pg_policies table. Ensure user has requir
 
 ---
 
-### 3. Connection Pool Exhausted
+### Connection Pool Exhausted
 **Error Message:**
 ```
 too many clients already
@@ -58,38 +81,9 @@ too many clients already
 Use connection pooling mode in Supabase dashboard. Switch to Session mode or pgBouncer.
 ```
 
----
+## Examples
 
-### 4. Invalid Request
-**Error Message:**
-```
-Invalid request: missing required field
-```
-
-**Cause:** Request payload missing required fields.
-
-**Solution:**
-Validate request before sending. Check API docs for required fields.
-
----
-
-### 5. Resource Not Found
-**Error Message:**
-```
-Resource not found: 404
-```
-
-**Cause:** Referenced resource does not exist or was deleted.
-
-**Solution:**
-Verify resource ID. Check if resource was recently deleted.
-
----
-
-### 6-10. Additional Errors
-See Supabase documentation for additional error codes.
-
-## Quick Diagnostic Commands
+### Quick Diagnostic Commands
 ```bash
 # Check Supabase status
 curl -s https://status.supabase.com
@@ -101,11 +95,15 @@ curl -I https://api.supabase.com
 env | grep SUPABASE
 ```
 
-## Escalation Path
-If errors persist after trying solutions:
+### Escalation Path
 1. Collect evidence with `supabase-debug-bundle`
 2. Check Supabase status page
 3. Contact support with request ID
+
+## Resources
+- [Supabase Status Page](https://status.supabase.com)
+- [Supabase Support](https://supabase.com/docs/support)
+- [Supabase Error Codes](https://supabase.com/docs/errors)
 
 ## Next Steps
 For comprehensive debugging, see `supabase-debug-bundle`.

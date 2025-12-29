@@ -1,8 +1,10 @@
 ---
 name: supabase-security-basics
 description: |
-  Supabase security best practices for secrets and access control.
-  Trigger phrases: "supabase security", "supabase secrets",
+  Apply Supabase security best practices for secrets and access control.
+  Use when securing API keys, implementing least privilege access,
+  or auditing Supabase security configuration.
+  Trigger with phrases like "supabase security", "supabase secrets",
   "secure supabase", "supabase API key security".
 allowed-tools: Read, Write, Grep
 version: 1.0.0
@@ -15,9 +17,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Security best practices for Supabase API keys, tokens, and access control.
 
-## Secret Management
+## Prerequisites
+- Supabase SDK installed
+- Understanding of environment variables
+- Access to Supabase dashboard
 
-### Environment Variables (Required)
+## Instructions
+
+### Step 1: Configure Environment Variables
 ```bash
 # .env (NEVER commit to git)
 SUPABASE_API_KEY=sk_live_***
@@ -29,7 +36,7 @@ SUPABASE_SECRET=***
 .env.*.local
 ```
 
-### Secret Rotation
+### Step 2: Implement Secret Rotation
 ```bash
 # 1. Generate new key in Supabase dashboard
 # 2. Update environment variable
@@ -42,18 +49,29 @@ curl -H "Authorization: Bearer ${SUPABASE_API_KEY}" \
 # 4. Revoke old key in dashboard
 ```
 
-## Least Privilege Principle
-
-### Scope Recommendations
+### Step 3: Apply Least Privilege
 | Environment | Recommended Scopes |
 |-------------|-------------------|
 | Development | `read, write` |
 | Staging | `read, write, admin` |
 | Production | `read, write` |
 
+## Output
+- Secure API key storage
+- Environment-specific access controls
+- Audit logging enabled
+
+## Error Handling
+| Security Issue | Detection | Mitigation |
+|----------------|-----------|------------|
+| Exposed API key | Git scanning | Rotate immediately |
+| Excessive scopes | Audit logs | Reduce permissions |
+| Missing rotation | Key age check | Schedule rotation |
+
+## Examples
+
 ### Service Account Pattern
 ```typescript
-// Use separate API keys per service/environment
 const clients = {
   reader: new SupabaseClient({
     apiKey: process.env.SUPABASE_READ_KEY,
@@ -64,83 +82,28 @@ const clients = {
 };
 ```
 
-## Audit Logging
-
-```typescript
-// Log all Supabase operations (without secrets)
-function logOperation(operation: string, params: Record<string, any>) {
-  const sanitized = { ...params };
-  delete sanitized.apiKey;
-  delete sanitized.token;
-
-  console.log(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    service: 'supabase',
-    operation,
-    params: sanitized,
-  }));
-}
-```
-
-## Security Checklist
-
-- [ ] API keys stored in environment variables
-- [ ] `.env` files in `.gitignore`
-- [ ] Different keys for dev/staging/prod
-- [ ] Minimal scopes per environment
-- [ ] Audit logging enabled
-- [ ] Regular key rotation schedule
-- [ ] IP allowlist configured (if available)
-- [ ] Webhook signatures validated
-
-## Common Security Mistakes
-
-### ❌ Don't Do This
-```typescript
-// NEVER hardcode API keys
-const client = new SupabaseClient({
-  apiKey: 'sk_live_actual_key_here', // BAD!
-});
-
-// NEVER log API keys
-console.log('Using key:', process.env.SUPABASE_API_KEY); // BAD!
-
-// NEVER commit .env files
-git add .env  // BAD!
-```
-
-### ✅ Do This Instead
-```typescript
-// Use environment variables
-const client = new SupabaseClient({
-  apiKey: process.env.SUPABASE_API_KEY,
-});
-
-// Log presence, not value
-console.log('API key configured:', !!process.env.SUPABASE_API_KEY);
-```
-
-## Webhook Security
-
+### Webhook Signature Verification
 ```typescript
 import crypto from 'crypto';
 
 function verifyWebhookSignature(
-  payload: string,
-  signature: string,
-  secret: string
+  payload: string, signature: string, secret: string
 ): boolean {
-  const expected = crypto
-    .createHmac('sha256', secret)
-    .update(payload)
-    .digest('hex');
-
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expected)
-  );
+  const expected = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
 }
 ```
+
+### Security Checklist
+- [ ] API keys in environment variables
+- [ ] `.env` files in `.gitignore`
+- [ ] Different keys for dev/staging/prod
+- [ ] Minimal scopes per environment
+- [ ] Webhook signatures validated
+
+## Resources
+- [Supabase Security Guide](https://supabase.com/docs/security)
+- [Supabase API Scopes](https://supabase.com/docs/scopes)
 
 ## Next Steps
 For production deployment, see `supabase-prod-checklist`.

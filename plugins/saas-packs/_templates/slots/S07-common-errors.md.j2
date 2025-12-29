@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-common-errors
 description: |
-  {{ display_name }} common errors and solutions. Trigger phrases:
-  "{{ company }} error", "fix {{ company }}", "{{ company }} not working",
-  "{{ company }} troubleshoot", "debug {{ company }}".
-allowed-tools: Read, Grep, Bash
+  Diagnose and fix {{ display_name }} common errors and exceptions.
+  Use when encountering {{ display_name }} errors, debugging failed requests,
+  or troubleshooting integration issues.
+  Trigger with phrases like "{{ company }} error", "fix {{ company }}",
+  "{{ company }} not working", "debug {{ company }}".
+allowed-tools: Read, Grep, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,9 +17,30 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Quick reference for the top 10 most common {{ display_name }} errors and their solutions.
 
-## Error Reference
+## Prerequisites
+- {{ display_name }} SDK installed
+- API credentials configured
+- Access to error logs
 
-### 1. {{ error_1_name | default('Authentication Failed') }}
+## Instructions
+
+### Step 1: Identify the Error
+Check error message and code in your logs or console.
+
+### Step 2: Find Matching Error Below
+Match your error to one of the documented cases.
+
+### Step 3: Apply Solution
+Follow the solution steps for your specific error.
+
+## Output
+- Identified error cause
+- Applied fix
+- Verified resolution
+
+## Error Handling
+
+### {{ error_1_name | default('Authentication Failed') }}
 **Error Message:**
 ```
 {{ error_1_message | default('Authentication error: Invalid API key') }}
@@ -32,7 +55,7 @@ Quick reference for the top 10 most common {{ display_name }} errors and their s
 
 ---
 
-### 2. {{ error_2_name | default('Rate Limit Exceeded') }}
+### {{ error_2_name | default('Rate Limit Exceeded') }}
 **Error Message:**
 ```
 {{ error_2_message | default('Rate limit exceeded. Please retry after X seconds.') }}
@@ -45,7 +68,7 @@ Quick reference for the top 10 most common {{ display_name }} errors and their s
 
 ---
 
-### 3. {{ error_3_name | default('Network Timeout') }}
+### {{ error_3_name | default('Network Timeout') }}
 **Error Message:**
 ```
 {{ error_3_message | default('Request timeout after 30000ms') }}
@@ -58,38 +81,9 @@ Quick reference for the top 10 most common {{ display_name }} errors and their s
 {{ error_3_solution | default('// Increase timeout\nconst client = new Client({ timeout: 60000 });') }}
 ```
 
----
+## Examples
 
-### 4. {{ error_4_name | default('Invalid Request') }}
-**Error Message:**
-```
-{{ error_4_message | default('Invalid request: missing required field') }}
-```
-
-**Cause:** {{ error_4_cause | default('Request payload missing required fields.') }}
-
-**Solution:**
-{{ error_4_solution | default('Validate request before sending. Check API docs for required fields.') }}
-
----
-
-### 5. {{ error_5_name | default('Resource Not Found') }}
-**Error Message:**
-```
-{{ error_5_message | default('Resource not found: 404') }}
-```
-
-**Cause:** {{ error_5_cause | default('Referenced resource does not exist or was deleted.') }}
-
-**Solution:**
-{{ error_5_solution | default('Verify resource ID. Check if resource was recently deleted.') }}
-
----
-
-### 6-10. Additional Errors
-{{ additional_errors | default('See ' + display_name + ' documentation for additional error codes.') }}
-
-## Quick Diagnostic Commands
+### Quick Diagnostic Commands
 ```bash
 # Check {{ display_name }} status
 curl -s {{ status_url | default('https://status.' + company + '.com/api/status') }}
@@ -101,11 +95,15 @@ curl -I {{ api_url | default('https://api.' + company + '.com') }}
 env | grep {{ company | upper }}
 ```
 
-## Escalation Path
-If errors persist after trying solutions:
+### Escalation Path
 1. Collect evidence with `{{ company }}-debug-bundle`
 2. Check {{ display_name }} status page
 3. Contact support with request ID
+
+## Resources
+- [{{ display_name }} Status Page]({{ status_url | default('https://status.' + company + '.com') }})
+- [{{ display_name }} Support]({{ docs_url | default('https://docs.' + company + '.com') }}/support)
+- [{{ display_name }} Error Codes]({{ docs_url | default('https://docs.' + company + '.com') }}/errors)
 
 ## Next Steps
 For comprehensive debugging, see `{{ company }}-debug-bundle`.

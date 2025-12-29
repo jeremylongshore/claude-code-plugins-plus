@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-install-auth
 description: |
-  {{ display_name }} installation and authentication setup. Trigger phrases:
-  "install {{ company }}", "setup {{ company }}", "{{ company }} auth",
-  "configure {{ company }} API key", "{{ company }} SDK setup".
-allowed-tools: Read, Write, Bash, Grep
+  Install and configure {{ display_name }} SDK/CLI authentication.
+  Use when setting up a new {{ display_name }} integration, configuring API keys,
+  or initializing {{ display_name }} in your project.
+  Trigger with phrases like "install {{ company }}", "setup {{ company }}",
+  "{{ company }} auth", "configure {{ company }} API key".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -19,10 +21,11 @@ Set up {{ display_name }} SDK/CLI and configure authentication credentials.
 - Node.js 18+ or Python 3.10+
 - Package manager (npm, pnpm, or pip)
 - {{ display_name }} account with API access
+- API key from {{ display_name }} dashboard
 
-## Installation Steps
+## Instructions
 
-### 1. Install SDK
+### Step 1: Install SDK
 ```bash
 # Node.js
 npm install {{ npm_package | default(company + '-sdk') }}
@@ -31,7 +34,7 @@ npm install {{ npm_package | default(company + '-sdk') }}
 pip install {{ pip_package | default(company) }}
 ```
 
-### 2. Configure Authentication
+### Step 2: Configure Authentication
 ```bash
 # Set environment variable
 export {{ company | upper }}_API_KEY="your-api-key"
@@ -40,15 +43,48 @@ export {{ company | upper }}_API_KEY="your-api-key"
 echo '{{ company | upper }}_API_KEY=your-api-key' >> .env
 ```
 
-### 3. Verify Connection
+### Step 3: Verify Connection
 ```{{ primary_language | default('typescript') }}
 {{ verification_code | default('// Test connection code here') }}
 ```
 
-## Common Issues
-- **Invalid API Key**: Verify key in {{ display_name }} dashboard
-- **Rate Limited**: Check quota at {{ docs_url | default('docs.' + company + '.com') }}
-- **Network Error**: Ensure firewall allows outbound HTTPS
+## Output
+- Installed SDK package in node_modules or site-packages
+- Environment variable or .env file with API key
+- Successful connection verification output
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Invalid API Key | Incorrect or expired key | Verify key in {{ display_name }} dashboard |
+| Rate Limited | Exceeded quota | Check quota at {{ docs_url | default('docs.' + company + '.com') }} |
+| Network Error | Firewall blocking | Ensure outbound HTTPS allowed |
+| Module Not Found | Installation failed | Run `npm install` or `pip install` again |
+
+## Examples
+
+### TypeScript Setup
+```typescript
+import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
+
+const client = new {{ client_class | default(display_name + 'Client') }}({
+  apiKey: process.env.{{ company | upper }}_API_KEY,
+});
+```
+
+### Python Setup
+```python
+from {{ pip_package | default(company) }} import {{ client_class | default(display_name + 'Client') }}
+
+client = {{ client_class | default(display_name + 'Client') }}(
+    api_key=os.environ.get('{{ company | upper }}_API_KEY')
+)
+```
+
+## Resources
+- [{{ display_name }} Documentation]({{ docs_url | default('https://docs.' + company + '.com') }})
+- [{{ display_name }} Dashboard]({{ api_url | default('https://api.' + company + '.com') }})
+- [{{ display_name }} Status]({{ status_url | default('https://status.' + company + '.com') }})
 
 ## Next Steps
 After successful auth, proceed to `{{ company }}-hello-world` for your first API call.

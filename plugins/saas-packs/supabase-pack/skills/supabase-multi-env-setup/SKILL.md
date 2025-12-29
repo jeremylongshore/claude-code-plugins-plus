@@ -1,10 +1,12 @@
 ---
 name: supabase-multi-env-setup
 description: |
-  Supabase multi-environment configuration for dev/staging/prod.
-  Trigger phrases: "supabase environments", "supabase staging",
-  "supabase dev prod", "supabase environment setup".
-allowed-tools: Read, Write, Edit, Bash
+  Configure Supabase across development, staging, and production environments.
+  Use when setting up multi-environment deployments, configuring per-environment secrets,
+  or implementing environment-specific Supabase configurations.
+  Trigger with phrases like "supabase environments", "supabase staging",
+  "supabase dev prod", "supabase environment setup", "supabase config by env".
+allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Configure Supabase across development, staging, and production environments.
+
+## Prerequisites
+- Separate Supabase accounts or API keys per environment
+- Secret management solution (Vault, AWS Secrets Manager, etc.)
+- CI/CD pipeline with environment variables
+- Environment detection in application
 
 ## Environment Strategy
 
@@ -169,6 +177,46 @@ const featureFlags: Record<Environment, Record<string, boolean>> = {
   },
 };
 ```
+
+## Instructions
+
+### Step 1: Create Config Structure
+Set up the base and per-environment configuration files.
+
+### Step 2: Implement Environment Detection
+Add logic to detect and load environment-specific config.
+
+### Step 3: Configure Secrets
+Store API keys securely using your secret management solution.
+
+### Step 4: Add Environment Guards
+Implement safeguards for production-only operations.
+
+## Output
+- Multi-environment config structure
+- Environment detection logic
+- Secure secret management
+- Production safeguards enabled
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Wrong environment | Missing NODE_ENV | Set environment variable |
+| Secret not found | Wrong secret path | Verify secret manager config |
+| Config merge fails | Invalid JSON | Validate config files |
+| Production guard triggered | Wrong environment | Check NODE_ENV value |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const env = getSupabaseConfig();
+console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+```
+
+## Resources
+- [Supabase Environments Guide](https://supabase.com/docs/environments)
+- [12-Factor App Config](https://12factor.net/config)
 
 ## Next Steps
 For observability setup, see `supabase-observability`.

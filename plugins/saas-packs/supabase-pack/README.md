@@ -17,8 +17,8 @@
 | `supabase-hello-world` | Hello World |
 | `supabase-local-dev-loop` | Local Dev Loop |
 | `supabase-sdk-patterns` | Sdk Patterns |
-| `supabase-core-workflow-a` | Core Workflow A |
-| `supabase-core-workflow-b` | Core Workflow B |
+| `supabase-schema-from-requirements` | Schema From Requirements |
+| `supabase-auth-storage-realtime-core` | Auth Storage Realtime Core |
 | `supabase-common-errors` | Common Errors |
 | `supabase-debug-bundle` | Debug Bundle |
 | `supabase-rate-limits` | Rate Limits |

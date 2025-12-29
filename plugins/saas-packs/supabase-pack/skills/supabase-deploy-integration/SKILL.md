@@ -1,10 +1,12 @@
 ---
 name: supabase-deploy-integration
 description: |
-  Supabase deployment patterns for Vercel, Fly.io, and Cloud Run.
-  Trigger phrases: "deploy supabase", "supabase Vercel",
-  "supabase production deploy", "supabase Cloud Run".
-allowed-tools: Read, Write, Edit, Bash
+  Deploy Supabase integrations to Vercel, Fly.io, and Cloud Run platforms.
+  Use when deploying Supabase-powered applications to production,
+  configuring platform-specific secrets, or setting up deployment pipelines.
+  Trigger with phrases like "deploy supabase", "supabase Vercel",
+  "supabase production deploy", "supabase Cloud Run", "supabase Fly.io".
+allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -13,7 +15,13 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 # Supabase Deploy Integration
 
 ## Overview
-Deploy Supabase-powered applications to popular platforms.
+Deploy Supabase-powered applications to popular platforms with proper secrets management.
+
+## Prerequisites
+- Supabase API keys for production environment
+- Platform CLI installed (vercel, fly, or gcloud)
+- Application code ready for deployment
+- Environment variables documented
 
 ## Vercel Deployment
 
@@ -144,6 +152,58 @@ export async function GET() {
   });
 }
 ```
+
+## Instructions
+
+### Step 1: Choose Deployment Platform
+Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+
+### Step 2: Configure Secrets
+Store Supabase API keys securely using the platform's secrets management.
+
+### Step 3: Deploy Application
+Use the platform CLI to deploy your application with Supabase integration.
+
+### Step 4: Verify Health
+Test the health check endpoint to confirm Supabase connectivity.
+
+## Output
+- Application deployed to production
+- Supabase secrets securely configured
+- Health check endpoint functional
+- Environment-specific configuration in place
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Secret not found | Missing configuration | Add secret via platform CLI |
+| Deploy timeout | Large build | Increase build timeout |
+| Health check fails | Wrong API key | Verify environment variable |
+| Cold start issues | No warm-up | Configure minimum instances |
+
+## Examples
+
+### Quick Deploy Script
+```bash
+#!/bin/bash
+# Platform-agnostic deploy helper
+case "$1" in
+  vercel)
+    vercel secrets add supabase_api_key "$SUPABASE_API_KEY"
+    vercel --prod
+    ;;
+  fly)
+    fly secrets set SUPABASE_API_KEY="$SUPABASE_API_KEY"
+    fly deploy
+    ;;
+esac
+```
+
+## Resources
+- [Vercel Documentation](https://vercel.com/docs)
+- [Fly.io Documentation](https://fly.io/docs)
+- [Cloud Run Documentation](https://cloud.google.com/run/docs)
+- [Supabase Deploy Guide](https://supabase.com/docs/deploy)
 
 ## Next Steps
 For webhook handling, see `supabase-webhooks-events`.

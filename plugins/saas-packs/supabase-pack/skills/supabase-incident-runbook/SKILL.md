@@ -1,10 +1,12 @@
 ---
 name: supabase-incident-runbook
 description: |
-  Supabase incident response: triage, mitigate, and postmortem.
-  Trigger phrases: "supabase incident", "supabase outage",
-  "supabase down", "supabase on-call".
-allowed-tools: Read, Bash, Grep
+  Execute Supabase incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to Supabase-related outages, investigating errors,
+  or running post-incident reviews for Supabase integration failures.
+  Trigger with phrases like "supabase incident", "supabase outage",
+  "supabase down", "supabase on-call", "supabase emergency", "supabase broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Rapid incident response procedures for Supabase-related outages.
+
+## Prerequisites
+- Access to Supabase dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
@@ -151,6 +159,45 @@ curl "localhost:9090/api/v1/query_range?query=supabase_errors_total&start=2h" > 
 ### Action Items
 - [ ] [Preventive measure] - Owner - Due date
 ```
+
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is Supabase-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.supabase.status' || echo "UNHEALTHY"
+```
+
+## Resources
+- [Supabase Status Page](https://status.supabase.com)
+- [Supabase Support](https://support.supabase.com)
 
 ## Next Steps
 For data handling, see `supabase-data-handling`.

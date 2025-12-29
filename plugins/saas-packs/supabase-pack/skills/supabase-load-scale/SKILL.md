@@ -1,10 +1,12 @@
 ---
 name: supabase-load-scale
 description: |
-  Supabase load testing, scaling, and capacity planning.
-  Trigger phrases: "supabase load test", "supabase scale",
-  "supabase performance test", "supabase capacity".
-allowed-tools: Read, Write, Edit, Bash
+  Implement Supabase load testing, auto-scaling, and capacity planning strategies.
+  Use when running performance tests, configuring horizontal scaling,
+  or planning capacity for Supabase integrations.
+  Trigger with phrases like "supabase load test", "supabase scale",
+  "supabase performance test", "supabase capacity", "supabase k6", "supabase benchmark".
+allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Load testing, scaling strategies, and capacity planning for Supabase integrations.
+
+## Prerequisites
+- k6 load testing tool installed
+- Kubernetes cluster with HPA configured
+- Prometheus for metrics collection
+- Test environment API keys
 
 ## Load Testing with k6
 
@@ -207,6 +215,60 @@ function estimateSupabaseCapacity(
 ### Recommendations
 - [Scaling recommendation]
 ```
+
+## Instructions
+
+### Step 1: Create Load Test Script
+Write k6 test script with appropriate thresholds.
+
+### Step 2: Configure Auto-Scaling
+Set up HPA with CPU and custom metrics.
+
+### Step 3: Run Load Test
+Execute test and collect metrics.
+
+### Step 4: Analyze and Document
+Record results in benchmark template.
+
+## Output
+- Load test script created
+- HPA configured
+- Benchmark results documented
+- Capacity recommendations defined
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| k6 timeout | Rate limited | Reduce RPS |
+| HPA not scaling | Wrong metrics | Verify metric name |
+| Connection refused | Pool exhausted | Increase pool size |
+| Inconsistent results | Warm-up needed | Add ramp-up phase |
+
+## Examples
+
+### Quick k6 Test
+```bash
+k6 run --vus 10 --duration 30s supabase-load-test.js
+```
+
+### Check Current Capacity
+```typescript
+const metrics = await getSystemMetrics();
+const capacity = estimateSupabaseCapacity(metrics);
+console.log('Headroom:', capacity.headroom + '%');
+console.log('Recommendation:', capacity.scaleRecommendation);
+```
+
+### Scale HPA Manually
+```bash
+kubectl scale deployment supabase-integration --replicas=5
+kubectl get hpa supabase-integration-hpa
+```
+
+## Resources
+- [k6 Documentation](https://k6.io/docs/)
+- [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Supabase Rate Limits](https://supabase.com/docs/rate-limits)
 
 ## Next Steps
 For reliability patterns, see `supabase-reliability-patterns`.
