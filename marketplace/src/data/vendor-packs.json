@@ -135,6 +135,40 @@
       ],
       "docsUrl": "https://docs.cursor.com",
       "dashboardUrl": "https://cursor.com/settings"
+    },
+    {
+      "id": "openrouter",
+      "name": "OpenRouter",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "Multi-model LLM gateway with 100+ models and OpenAI compatibility",
+      "icon": "layers",
+      "color": "#6366F1",
+      "installCommand": "/plugin install openrouter-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["openrouter-install-auth", "openrouter-hello-world", "openrouter-model-catalog", "openrouter-sdk-patterns", "openrouter-openai-compat", "openrouter-pricing-basics"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["openrouter-common-errors", "openrouter-debug-bundle", "openrouter-rate-limits", "openrouter-model-availability", "openrouter-prod-checklist", "openrouter-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["openrouter-fallback-config", "openrouter-routing-rules", "openrouter-streaming-setup", "openrouter-caching-strategy", "openrouter-load-balancing", "openrouter-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["openrouter-team-setup", "openrouter-cost-controls", "openrouter-usage-analytics", "openrouter-data-privacy", "openrouter-audit-logging", "openrouter-compliance-review"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["openrouter-model-routing", "openrouter-function-calling", "openrouter-context-optimization", "openrouter-multi-provider", "openrouter-performance-tuning", "openrouter-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://openrouter.ai/docs",
+      "dashboardUrl": "https://openrouter.ai/keys"
     }
   ],
   "tiers": {

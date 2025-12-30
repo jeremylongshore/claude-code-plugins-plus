@@ -3,7 +3,7 @@ supabase,Supabase,flagship+,30,@intentsolutionsio/supabase-skill-md-pack,publish
 vercel,Vercel,flagship+,30,@intentsolutionsio/vercel-skill-md-pack,published,ccpi-vercel,30,0,not_started,added,Brex #27 - npm published 2025-12-29
 sentry,Sentry,flagship+,30,@intentsolutionsio/sentry-skill-md-pack,published,ccpi-sentry,30,0,complete,added,Brex #33 - npm published 2025-12-30
 cursor,Cursor,flagship+,30,@intentsolutionsio/cursor-skill-md-pack,published,ccpi-cursor,30,0,complete,added,Brex #1 - npm published 2025-12-30
-openrouter,OpenRouter,flagship+,30,@intentsolutionsio/openrouter-skill-md-pack,reserved,ccpi-openrouter,0,0,not_started,not_added,Brex #2
+openrouter,OpenRouter,flagship+,30,@intentsolutionsio/openrouter-skill-md-pack,published,ccpi-openrouter,30,0,complete,added,Brex #2 - npm published 2025-12-30
 klingai,Kling AI,flagship+,30,@intentsolutionsio/klingai-skill-md-pack,reserved,ccpi-klingai,0,0,not_started,not_added,Brex #3
 retellai,Retell AI,flagship+,30,@intentsolutionsio/retellai-skill-md-pack,reserved,ccpi-retellai,0,0,not_started,not_added,Brex #4
 perplexity,Perplexity,flagship+,30,@intentsolutionsio/perplexity-skill-md-pack,reserved,ccpi-perplexity,0,0,not_started,not_added,Brex #5
