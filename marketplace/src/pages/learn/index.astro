@@ -1,0 +1,259 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import vendorPacks from '../../data/vendor-packs.json';
+
+const pageTitle = 'SaaS Skill Packs - Learn Hub';
+const pageDescription = 'Deep integration packs for your favorite SaaS platforms. Each pack contains 12-30 skills for complete coverage.';
+
+const tierOrder = ['flagship+', 'flagship', 'pro', 'standard'];
+const sortedVendors = [...vendorPacks.vendors].sort((a, b) => {
+  return tierOrder.indexOf(a.tier) - tierOrder.indexOf(b.tier);
+});
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    .learn-hero {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: white;
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+    }
+
+    .learn-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .learn-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 2rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .hero-stat span {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: block;
+      color: #3ECF8E;
+    }
+
+    .vendors-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .tier-section {
+      margin-bottom: 3rem;
+    }
+
+    .tier-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tier-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .tier-badge.flagship-plus {
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #1a1a2e;
+    }
+
+    .tier-badge.flagship {
+      background: linear-gradient(135deg, #C0C0C0, #A0A0A0);
+      color: #1a1a2e;
+    }
+
+    .tier-badge.pro {
+      background: linear-gradient(135deg, #CD7F32, #8B4513);
+      color: white;
+    }
+
+    .tier-badge.standard {
+      background: linear-gradient(135deg, #4A90D9, #357ABD);
+      color: white;
+    }
+
+    .tier-description {
+      color: var(--brand-mid-gray);
+      font-size: 0.9rem;
+    }
+
+    .vendor-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .vendor-card {
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .vendor-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      border-color: var(--brand-orange);
+    }
+
+    .vendor-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .vendor-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .vendor-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .vendor-description {
+      color: var(--brand-mid-gray);
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+
+    .vendor-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--brand-light-gray);
+    }
+
+    .skill-count {
+      font-weight: 600;
+      color: var(--brand-orange);
+    }
+
+    .install-hint {
+      font-size: 0.8rem;
+      color: var(--brand-mid-gray);
+      font-family: monospace;
+    }
+
+    .coming-soon {
+      text-align: center;
+      padding: 2rem;
+      background: var(--brand-light-gray);
+      border-radius: 12px;
+      color: var(--brand-mid-gray);
+    }
+
+    @media (max-width: 768px) {
+      .hero-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .vendor-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <section class="learn-hero">
+    <h1 class="learn-title">SaaS Skill Packs</h1>
+    <p class="learn-subtitle">
+      Deep integration packs for your favorite platforms. Each pack contains 12-30 skills
+      covering authentication, operations, debugging, and production best practices.
+    </p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span>{vendorPacks.vendors.length}</span>
+        Vendor Packs
+      </div>
+      <div class="hero-stat">
+        <span>{vendorPacks.vendors.reduce((acc, v) => acc + v.skillCount, 0)}</span>
+        Total Skills
+      </div>
+      <div class="hero-stat">
+        <span>4</span>
+        Tier Levels
+      </div>
+    </div>
+  </section>
+
+  <section class="vendors-section">
+    {tierOrder.map(tier => {
+      const tierVendors = sortedVendors.filter(v => v.tier === tier);
+      const tierInfo = vendorPacks.tiers[tier];
+      if (tierVendors.length === 0) return null;
+
+      return (
+        <div class="tier-section">
+          <div class="tier-header">
+            <span class={`tier-badge ${tier.replace('+', '-plus')}`}>
+              {tierInfo.badge}
+            </span>
+            <span class="tier-description">
+              {tierInfo.skillCount} skills per pack
+            </span>
+          </div>
+
+          <div class="vendor-grid">
+            {tierVendors.map(vendor => (
+              <a href={`/learn/${vendor.id}/`} class="vendor-card">
+                <div class="vendor-header">
+                  <div class="vendor-icon" style={`background: ${vendor.color}15; color: ${vendor.color};`}>
+                    {vendor.icon === 'database' ? '🗄️' : vendor.icon === 'cloud' ? '☁️' : '📦'}
+                  </div>
+                  <h3 class="vendor-name">{vendor.name}</h3>
+                </div>
+                <p class="vendor-description">{vendor.description}</p>
+                <div class="vendor-meta">
+                  <span class="skill-count">{vendor.skillCount} skills</span>
+                  <span class="install-hint">View Pack</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      );
+    })}
+
+    <div class="coming-soon">
+      <h3>More Packs Coming Soon</h3>
+      <p>We're building packs for 50 vendors across Flagship+, Flagship, Pro, and Standard tiers.</p>
+    </div>
+  </section>
+</BaseLayout>

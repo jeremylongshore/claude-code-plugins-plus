@@ -1,9 +1,11 @@
 ---
 name: {{ company }}-reliability-patterns
 description: |
-  {{ display_name }} idempotency, circuit breakers, and reliability patterns.
-  Trigger phrases: "{{ company }} reliability", "{{ company }} circuit breaker",
-  "{{ company }} idempotent", "{{ company }} resilience".
+  Implement {{ display_name }} reliability patterns including circuit breakers, idempotency, and graceful degradation.
+  Use when building fault-tolerant {{ display_name }} integrations, implementing retry strategies,
+  or adding resilience to production {{ display_name }} services.
+  Trigger with phrases like "{{ company }} reliability", "{{ company }} circuit breaker",
+  "{{ company }} idempotent", "{{ company }} resilience", "{{ company }} fallback", "{{ company }} bulkhead".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Production-grade reliability patterns for {{ display_name }} integrations.
+
+## Prerequisites
+- Understanding of circuit breaker pattern
+- opossum or similar library installed
+- Queue infrastructure for DLQ
+- Caching layer for fallbacks
 
 ## Circuit Breaker
 
@@ -236,6 +244,47 @@ async function {{ company }}HealthCheck(): Promise<{
   return { status, details: checks };
 }
 ```
+
+## Instructions
+
+### Step 1: Implement Circuit Breaker
+Wrap {{ display_name }} calls with circuit breaker.
+
+### Step 2: Add Idempotency Keys
+Generate deterministic keys for operations.
+
+### Step 3: Configure Bulkheads
+Separate queues for different priorities.
+
+### Step 4: Set Up Dead Letter Queue
+Handle permanent failures gracefully.
+
+## Output
+- Circuit breaker protecting {{ display_name }} calls
+- Idempotency preventing duplicates
+- Bulkhead isolation implemented
+- DLQ for failed operations
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circuit stays open | Threshold too low | Adjust error percentage |
+| Duplicate operations | Missing idempotency | Add idempotency key |
+| Queue full | Rate too high | Increase concurrency |
+| DLQ growing | Persistent failures | Investigate root cause |
+
+## Examples
+
+### Quick Circuit Check
+```typescript
+const state = {{ company }}Breaker.stats().state;
+console.log('{{ display_name }} circuit:', state);
+```
+
+## Resources
+- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
+- [Opossum Documentation](https://nodeshift.dev/opossum/)
+- [{{ display_name }} Reliability Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/reliability)
 
 ## Next Steps
 For policy enforcement, see `{{ company }}-policy-guardrails`.

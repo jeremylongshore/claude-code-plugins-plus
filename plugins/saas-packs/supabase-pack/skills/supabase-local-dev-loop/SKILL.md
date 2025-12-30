@@ -1,10 +1,12 @@
 ---
 name: supabase-local-dev-loop
 description: |
-  Supabase local development workflow with hot reload and testing.
-  Trigger phrases: "supabase dev setup", "supabase local development",
+  Configure Supabase local development with hot reload and testing.
+  Use when setting up a development environment, configuring test workflows,
+  or establishing a fast iteration cycle with Supabase.
+  Trigger with phrases like "supabase dev setup", "supabase local development",
   "supabase dev environment", "develop with supabase".
-allowed-tools: Read, Write, Edit, Bash
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,9 +17,15 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Set up a fast, reproducible local development workflow for Supabase.
 
-## Development Environment
+## Prerequisites
+- Completed `supabase-install-auth` setup
+- Node.js 18+ with npm/pnpm
+- Code editor with TypeScript support
+- Git for version control
 
-### 1. Project Structure
+## Instructions
+
+### Step 1: Create Project Structure
 ```
 my-supabase-project/
 ├── src/
@@ -33,7 +41,7 @@ my-supabase-project/
 └── package.json
 ```
 
-### 2. Environment Setup
+### Step 2: Configure Environment
 ```bash
 # Copy environment template
 cp .env.example .env.local
@@ -45,9 +53,8 @@ npm install
 npm run dev
 ```
 
-### 3. Hot Reload Configuration
+### Step 3: Setup Hot Reload
 ```json
-// package.json scripts
 {
   "scripts": {
     "dev": "tsx watch src/index.ts",
@@ -57,9 +64,7 @@ npm run dev
 }
 ```
 
-## Testing Strategy
-
-### Unit Tests
+### Step 4: Configure Testing
 ```typescript
 import { describe, it, expect, vi } from 'vitest';
 import { SupabaseClient } from '../src/supabase/client';
@@ -72,7 +77,23 @@ describe('Supabase Client', () => {
 });
 ```
 
-### Mock Responses
+## Output
+- Working development environment with hot reload
+- Configured test suite with mocking
+- Environment variable management
+- Fast iteration cycle for Supabase development
+
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Module not found | Missing dependency | Run `npm install` |
+| Port in use | Another process | Kill process or change port |
+| Env not loaded | Missing .env.local | Copy from .env.example |
+| Test timeout | Slow network | Increase test timeout |
+
+## Examples
+
+### Mock Supabase Responses
 ```typescript
 vi.mock('@supabase/supabase-js', () => ({
   SupabaseClient: vi.fn().mockImplementation(() => ({
@@ -81,10 +102,16 @@ vi.mock('@supabase/supabase-js', () => ({
 }));
 ```
 
-## Debugging Tips
-- Use `DEBUG=SUPABASE=*` for verbose logging
-- Check Supabase dashboard for request logs
-- Use `supabase-debug-bundle` skill for evidence collection
+### Debug Mode
+```bash
+# Enable verbose logging
+DEBUG=SUPABASE=* npm run dev
+```
+
+## Resources
+- [Supabase SDK Reference](https://supabase.com/docs/sdk)
+- [Vitest Documentation](https://vitest.dev/)
+- [tsx Documentation](https://github.com/esbuild-kit/tsx)
 
 ## Next Steps
 See `supabase-sdk-patterns` for production-ready code patterns.

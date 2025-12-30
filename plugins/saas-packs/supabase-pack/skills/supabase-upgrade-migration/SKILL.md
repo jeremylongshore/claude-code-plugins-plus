@@ -1,10 +1,12 @@
 ---
 name: supabase-upgrade-migration
 description: |
-  Supabase SDK upgrades and breaking change migrations.
-  Trigger phrases: "upgrade supabase", "supabase migration",
-  "supabase breaking changes", "update supabase SDK".
-allowed-tools: Read, Write, Edit, Bash
+  Analyze, plan, and execute Supabase SDK upgrades with breaking change detection.
+  Use when upgrading Supabase SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade supabase", "supabase migration",
+  "supabase breaking changes", "update supabase SDK", "analyze supabase version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,44 +17,51 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Guide for upgrading Supabase SDK versions and handling breaking changes.
 
-## Version Check
+## Prerequisites
+- Current Supabase SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
+## Instructions
+
+### Step 1: Check Current Version
 ```bash
-# Current installed version
 npm list @supabase/supabase-js
-
-# Latest available version
 npm view @supabase/supabase-js version
-
-# Check for breaking changes
-npm view @supabase/supabase-js changelog
 ```
 
-## Upgrade Procedure
-
-### 1. Review Changelog
+### Step 2: Review Changelog
 ```bash
-# Check release notes
 open https://github.com/supabase/sdk/releases
 ```
 
-### 2. Test in Isolation
+### Step 3: Create Upgrade Branch
 ```bash
-# Create test branch
 git checkout -b upgrade/supabase-sdk-vX.Y.Z
-
-# Update dependency
 npm install @supabase/supabase-js@latest
-
-# Run tests
 npm test
 ```
 
-### 3. Handle Breaking Changes
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
-#### Common Migration Patterns
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
-**Import Changes:**
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| 3.x | 2024-01 | 18+ | Major refactor |
+| 2.x | 2023-06 | 16+ | Auth changes |
+| 1.x | 2022-01 | 14+ | Initial release |
+
+## Examples
+
+### Import Changes
 ```typescript
 // Before (v1.x)
 import { Client } from '@supabase/supabase-js';
@@ -61,7 +70,7 @@ import { Client } from '@supabase/supabase-js';
 import { SupabaseClient } from '@supabase/supabase-js';
 ```
 
-**Configuration Changes:**
+### Configuration Changes
 ```typescript
 // Before (v1.x)
 const client = new Client({ key: 'xxx' });
@@ -69,73 +78,35 @@ const client = new Client({ key: 'xxx' });
 // After (v2.x)
 const client = new SupabaseClient({
   apiKey: 'xxx',
-  // New required options
 });
 ```
 
-**Method Signature Changes:**
-```typescript
-// Before (v1.x)
-client.create(data);
-
-// After (v2.x)
-client.create({ data, // New required params });
-```
-
-### 4. Codemods (If Available)
-
+### Rollback Procedure
 ```bash
-# Run official codemod
-npx @supabase/codemod --transform v1-to-v2
-
-# Or use jscodeshift for custom transforms
-npx jscodeshift -t supabase-v2-transform.js src/
-```
-
-## Deprecation Handling
-
-```typescript
-// Find deprecated usage
-const DEPRECATED_PATTERNS = [
-  'client.oldMethod',
-];
-
-// Suppress warnings during migration (temporary)
-process.env.SUPABASE_SUPPRESS_DEPRECATION = 'true';
-```
-
-## Rollback Plan
-
-```bash
-# 1. Keep old version pinned in package-lock.json
 npm install @supabase/supabase-js@1.x.x --save-exact
-
-# 2. Document rollback command
-echo "Rollback: npm install @supabase/supabase-js@1.x.x"
-
-# 3. Test rollback in staging first
 ```
 
-## Version Compatibility Matrix
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[Supabase]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
 
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| 3.x | 2024-01 | 18+ | Major refactor |
-| 2.x | 2023-06 | 16+ | Auth changes |
-| 1.x | 2022-01 | 14+ | Initial release |
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
-## Migration Checklist
+## Resources
+- [Supabase Changelog](https://github.com/supabase/sdk/releases)
+- [Supabase Migration Guide](https://supabase.com/docs/migration)
 
-- [ ] Read full changelog for target version
-- [ ] Create upgrade branch
-- [ ] Update package.json
-- [ ] Fix TypeScript compilation errors
-- [ ] Update configuration code
-- [ ] Fix breaking API changes
-- [ ] Run full test suite
-- [ ] Test in staging environment
-- [ ] Deploy with rollback plan ready
-- [ ] Monitor for errors post-deployment
-
-## Pro Tier Skills
+## Next Steps
 For CI integration during upgrades, see `supabase-ci-integration`.

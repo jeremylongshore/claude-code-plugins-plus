@@ -1,0 +1,78 @@
+{
+  "vendors": [
+    {
+      "id": "supabase",
+      "name": "Supabase",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "Real-time database, auth, storage, and edge functions",
+      "icon": "database",
+      "color": "#3ECF8E",
+      "installCommand": "/plugin install supabase-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["supabase-install-auth", "supabase-hello-world", "supabase-local-dev-loop", "supabase-sdk-patterns", "supabase-schema-from-requirements", "supabase-auth-storage-realtime-core"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["supabase-common-errors", "supabase-debug-bundle", "supabase-rate-limits", "supabase-security-basics", "supabase-prod-checklist", "supabase-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["supabase-ci-integration", "supabase-deploy-integration", "supabase-webhooks-events", "supabase-performance-tuning", "supabase-cost-tuning", "supabase-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["supabase-multi-env-setup", "supabase-observability", "supabase-incident-runbook", "supabase-data-handling", "supabase-enterprise-rbac", "supabase-migration-deep-dive"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["supabase-advanced-troubleshooting", "supabase-load-scale", "supabase-reliability-patterns", "supabase-policy-guardrails", "supabase-architecture-variants", "supabase-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://supabase.com/docs",
+      "dashboardUrl": "https://app.supabase.com"
+    },
+    {
+      "id": "vercel",
+      "name": "Vercel",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "Frontend cloud platform for deployments and edge functions",
+      "icon": "cloud",
+      "color": "#000000",
+      "installCommand": "/plugin install vercel-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["vercel-install-auth", "vercel-hello-world", "vercel-local-dev-loop", "vercel-sdk-patterns", "vercel-deploy-preview", "vercel-edge-functions"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["vercel-common-errors", "vercel-debug-bundle", "vercel-rate-limits", "vercel-security-basics", "vercel-prod-checklist", "vercel-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["vercel-ci-integration", "vercel-deploy-integration", "vercel-webhooks-events", "vercel-performance-tuning", "vercel-cost-tuning", "vercel-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["vercel-multi-env-setup", "vercel-observability", "vercel-incident-runbook", "vercel-data-handling", "vercel-enterprise-rbac", "vercel-migration-deep-dive"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["vercel-advanced-troubleshooting", "vercel-load-scale", "vercel-reliability-patterns", "vercel-policy-guardrails", "vercel-architecture-variants", "vercel-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://vercel.com/docs",
+      "dashboardUrl": "https://vercel.com/dashboard"
+    }
+  ],
+  "tiers": {
+    "flagship+": { "skillCount": 30, "badge": "Flagship+", "color": "#FFD700" },
+    "flagship": { "skillCount": 24, "badge": "Flagship", "color": "#C0C0C0" },
+    "pro": { "skillCount": 18, "badge": "Pro", "color": "#CD7F32" },
+    "standard": { "skillCount": 12, "badge": "Standard", "color": "#4A90D9" }
+  }
+}

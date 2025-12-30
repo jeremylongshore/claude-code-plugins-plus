@@ -203,10 +203,10 @@ packages:
 **Location:** `packages/` (pnpm workspace)
 
 ### 1. CLI Tool (`packages/cli/`)
-- **Package:** `@claude-code-plugins/ccp`
+- **Package:** `@intentsolutionsio/ccpi`
 - **Published to:** npm registry
 - **Framework:** Commander 12.1.0
-- **Commands:** `ccp --version`, `ccp --help`, `ccp doctor --json`
+- **Commands:** `ccpi --version`, `ccpi --help`, `ccpi doctor --json`
 - **Testing:** Cross-platform (Ubuntu, macOS, Windows) × 3 Node versions
 - **Build:** TypeScript → `dist/index.js` (executable with shebang)
 
@@ -458,7 +458,7 @@ author: Name <email>
    - Artifact uploads: build outputs + logs
 
 4. **cli-publish.yml** - Manual trigger
-   - Publish `@claude-code-plugins/ccp` to npm registry
+   - Publish `@intentsolutionsio/ccpi` to npm registry
    - Version validation
    - Distribution builds
 
@@ -757,10 +757,10 @@ python3 scripts/audit-skills-quality.py
 - **Categories**: 22 total categories
 - **2025 Schema**: Validated with scripts/validate-skills-schema.py
 - **Website**: https://claudecodeplugins.io/ (Astro 5.16.6 + Tailwind 4.1.18)
-- **Monorepo Version**: 4.3.0 (package.json)
-- **Release Version**: 4.0.0 (README.md - includes Learning Lab)
-- **CLI Tool**: @claude-code-plugins/ccp (published to npm)
-- **Last Updated**: 2025-12-27
+- **Monorepo Version**: 4.4.0 (package.json)
+- **Release Version**: 4.4.0 (README.md - includes Learning Lab)
+- **CLI Tool**: @intentsolutionsio/ccpi (published to npm)
+- **Last Updated**: 2025-12-29
 
 ## Important Notes
 

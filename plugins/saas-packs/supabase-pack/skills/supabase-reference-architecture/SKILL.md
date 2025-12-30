@@ -1,9 +1,11 @@
 ---
 name: supabase-reference-architecture
 description: |
-  Supabase reference architecture and best-practice layout.
-  Trigger phrases: "supabase architecture", "supabase best practices",
-  "supabase project structure", "how to organize supabase".
+  Implement Supabase reference architecture with best-practice project layout.
+  Use when designing new Supabase integrations, reviewing project structure,
+  or establishing architecture standards for Supabase applications.
+  Trigger with phrases like "supabase architecture", "supabase best practices",
+  "supabase project structure", "how to organize supabase", "supabase layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Production-ready architecture patterns for Supabase integrations.
+
+## Prerequisites
+- Understanding of layered architecture
+- Supabase SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
 ## Project Structure
 
@@ -74,7 +82,7 @@ my-supabase-project/
 
 ## Key Components
 
-### 1. Client Wrapper
+### Step 1: Client Wrapper
 ```typescript
 // src/supabase/client.ts
 export class SupabaseService {
@@ -96,7 +104,7 @@ export class SupabaseService {
 }
 ```
 
-### 2. Error Boundary
+### Step 2: Error Boundary
 ```typescript
 // src/supabase/errors.ts
 export class SupabaseServiceError extends Error {
@@ -116,7 +124,7 @@ export function wrapSupabaseError(error: unknown): SupabaseServiceError {
 }
 ```
 
-### 3. Health Check
+### Step 3: Health Check
 ```typescript
 // src/supabase/health.ts
 export async function checkSupabaseHealth(): Promise<HealthStatus> {
@@ -183,6 +191,48 @@ export function loadSupabaseConfig(): SupabaseConfig {
   return require(`./supabase.${env}.json`);
 }
 ```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for Supabase operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for Supabase connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add Supabase types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/supabase/{handlers} src/services/supabase src/api/supabase
+touch src/supabase/{client,config,types,errors}.ts
+touch src/services/supabase/{index,sync,cache}.ts
+```
+
+## Resources
+- [Supabase SDK Documentation](https://supabase.com/docs/sdk)
+- [Supabase Best Practices](https://supabase.com/docs/best-practices)
 
 ## Flagship Skills
 For multi-environment setup, see `supabase-multi-env-setup`.

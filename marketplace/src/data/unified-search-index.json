@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2025-12-28T22:22:54.685Z",
+    "generated": "2025-12-29T20:56:34.324Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 265,
-    "totalSkills": 245,
-    "totalItems": 510,
+    "totalPlugins": 267,
+    "totalSkills": 305,
+    "totalItems": 572,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -31,6 +31,7 @@
       "packages",
       "performance",
       "productivity",
+      "saas-packs",
       "security",
       "skill-enhancers",
       "testing"
@@ -5864,6 +5865,52 @@
       "searchText": "mattyp changelog automates changelog generation from git history with config validation and quality scoring. use when publishing weekly updates, release notes, or pr summaries. trigger with /changelog-weekly, /changelog-custom, or /changelog-validate. automation "
     },
     {
+      "type": "plugin",
+      "id": "supabase-pack",
+      "slug": "supabase-pack",
+      "name": "supabase-pack",
+      "displayName": "supabase pack",
+      "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
+      "category": "database",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 30,
+      "searchText": "supabase pack complete supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. flagship+ tier vendor pack. database "
+    },
+    {
+      "type": "plugin",
+      "id": "vercel-pack",
+      "slug": "vercel-pack",
+      "name": "vercel-pack",
+      "displayName": "vercel pack",
+      "description": "Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations. Flagship+ tier vendor pack.",
+      "category": "devops",
+      "tags": [],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 30,
+      "searchText": "vercel pack complete vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations. flagship+ tier vendor pack. devops "
+    },
+    {
       "type": "skill",
       "id": "000-jeremy-content-consistency-validator",
       "slug": "000-jeremy-content-consistency-validator",
@@ -9241,6 +9288,456 @@
     },
     {
       "type": "skill",
+      "id": "supabase-advanced-troubleshooting",
+      "slug": "supabase-advanced-troubleshooting",
+      "name": "supabase-advanced-troubleshooting",
+      "description": "Apply Supabase advanced debugging techniques for hard-to-diagnose issues. Use when standard troubleshooting fails, investigating complex race conditions, or preparing evidence bundles for Supabase support escalation. Trigger with phrases like \"supabase hard bug\", \"supabase mystery error\", \"supabase impossible to debug\", \"difficult supabase issue\", \"supabase deep debug\". allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-advanced-troubleshooting apply supabase advanced debugging techniques for hard-to-diagnose issues. use when standard troubleshooting fails, investigating complex race conditions, or preparing evidence bundles for supabase support escalation. trigger with phrases like \"supabase hard bug\", \"supabase mystery error\", \"supabase impossible to debug\", \"difficult supabase issue\", \"supabase deep debug\". allowed-tools: read, grep, bash(kubectl:*), bash(curl:*), bash(tcpdump:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-architecture-variants",
+      "slug": "supabase-architecture-variants",
+      "name": "supabase-architecture-variants",
+      "description": "Choose and implement Supabase validated architecture blueprints for different scales. Use when designing new Supabase integrations, choosing between monolith/service/microservice architectures, or planning migration paths for Supabase applications. Trigger with phrases like \"supabase architecture\", \"supabase blueprint\", \"how to structure supabase\", \"supabase project layout\", \"supabase microservice\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-architecture-variants choose and implement supabase validated architecture blueprints for different scales. use when designing new supabase integrations, choosing between monolith/service/microservice architectures, or planning migration paths for supabase applications. trigger with phrases like \"supabase architecture\", \"supabase blueprint\", \"how to structure supabase\", \"supabase project layout\", \"supabase microservice\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-auth-storage-realtime-core",
+      "slug": "supabase-auth-storage-realtime-core",
+      "name": "supabase-auth-storage-realtime-core",
+      "description": "Execute Supabase secondary workflow: Auth + Storage + Realtime. Use when implementing secondary use case, or complementing primary workflow. Trigger with phrases like \"supabase auth storage realtime\", \"implement full stack features with supabase\". allowed-tools: Read, Write, Edit, Bash(npm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-auth-storage-realtime-core execute supabase secondary workflow: auth + storage + realtime. use when implementing secondary use case, or complementing primary workflow. trigger with phrases like \"supabase auth storage realtime\", \"implement full stack features with supabase\". allowed-tools: read, write, edit, bash(npm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-ci-integration",
+      "slug": "supabase-ci-integration",
+      "name": "supabase-ci-integration",
+      "description": "Configure Supabase CI/CD integration with GitHub Actions and testing. Use when setting up automated testing, configuring CI pipelines, or integrating Supabase tests into your build process. Trigger with phrases like \"supabase CI\", \"supabase GitHub Actions\", \"supabase automated tests\", \"CI supabase\". allowed-tools: Read, Write, Edit, Bash(gh:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-ci-integration configure supabase ci/cd integration with github actions and testing. use when setting up automated testing, configuring ci pipelines, or integrating supabase tests into your build process. trigger with phrases like \"supabase ci\", \"supabase github actions\", \"supabase automated tests\", \"ci supabase\". allowed-tools: read, write, edit, bash(gh:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-common-errors",
+      "slug": "supabase-common-errors",
+      "name": "supabase-common-errors",
+      "description": "Diagnose and fix Supabase common errors and exceptions. Use when encountering Supabase errors, debugging failed requests, or troubleshooting integration issues. Trigger with phrases like \"supabase error\", \"fix supabase\", \"supabase not working\", \"debug supabase\". allowed-tools: Read, Grep, Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-common-errors diagnose and fix supabase common errors and exceptions. use when encountering supabase errors, debugging failed requests, or troubleshooting integration issues. trigger with phrases like \"supabase error\", \"fix supabase\", \"supabase not working\", \"debug supabase\". allowed-tools: read, grep, bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-cost-tuning",
+      "slug": "supabase-cost-tuning",
+      "name": "supabase-cost-tuning",
+      "description": "Optimize Supabase costs through tier selection, sampling, and usage monitoring. Use when analyzing Supabase billing, reducing API costs, or implementing usage monitoring and budget alerts. Trigger with phrases like \"supabase cost\", \"supabase billing\", \"reduce supabase costs\", \"supabase pricing\", \"supabase expensive\", \"supabase budget\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-cost-tuning optimize supabase costs through tier selection, sampling, and usage monitoring. use when analyzing supabase billing, reducing api costs, or implementing usage monitoring and budget alerts. trigger with phrases like \"supabase cost\", \"supabase billing\", \"reduce supabase costs\", \"supabase pricing\", \"supabase expensive\", \"supabase budget\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-data-handling",
+      "slug": "supabase-data-handling",
+      "name": "supabase-data-handling",
+      "description": "Implement Supabase PII handling, data retention, and GDPR/CCPA compliance patterns. Use when handling sensitive data, implementing data redaction, configuring retention policies, or ensuring compliance with privacy regulations for Supabase integrations. Trigger with phrases like \"supabase data\", \"supabase PII\", \"supabase GDPR\", \"supabase data retention\", \"supabase privacy\", \"supabase CCPA\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-data-handling implement supabase pii handling, data retention, and gdpr/ccpa compliance patterns. use when handling sensitive data, implementing data redaction, configuring retention policies, or ensuring compliance with privacy regulations for supabase integrations. trigger with phrases like \"supabase data\", \"supabase pii\", \"supabase gdpr\", \"supabase data retention\", \"supabase privacy\", \"supabase ccpa\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-debug-bundle",
+      "slug": "supabase-debug-bundle",
+      "name": "supabase-debug-bundle",
+      "description": "Collect Supabase debug evidence for support tickets and troubleshooting. Use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for Supabase problems. Trigger with phrases like \"supabase debug\", \"supabase support bundle\", \"collect supabase logs\", \"supabase diagnostic\". allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-debug-bundle collect supabase debug evidence for support tickets and troubleshooting. use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for supabase problems. trigger with phrases like \"supabase debug\", \"supabase support bundle\", \"collect supabase logs\", \"supabase diagnostic\". allowed-tools: read, bash(grep:*), bash(curl:*), bash(tar:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-deploy-integration",
+      "slug": "supabase-deploy-integration",
+      "name": "supabase-deploy-integration",
+      "description": "Deploy Supabase integrations to Vercel, Fly.io, and Cloud Run platforms. Use when deploying Supabase-powered applications to production, configuring platform-specific secrets, or setting up deployment pipelines. Trigger with phrases like \"deploy supabase\", \"supabase Vercel\", \"supabase production deploy\", \"supabase Cloud Run\", \"supabase Fly.io\". allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-deploy-integration deploy supabase integrations to vercel, fly.io, and cloud run platforms. use when deploying supabase-powered applications to production, configuring platform-specific secrets, or setting up deployment pipelines. trigger with phrases like \"deploy supabase\", \"supabase vercel\", \"supabase production deploy\", \"supabase cloud run\", \"supabase fly.io\". allowed-tools: read, write, edit, bash(vercel:*), bash(fly:*), bash(gcloud:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-enterprise-rbac",
+      "slug": "supabase-enterprise-rbac",
+      "name": "supabase-enterprise-rbac",
+      "description": "Configure Supabase enterprise SSO, role-based access control, and organization management. Use when implementing SSO integration, configuring role-based permissions, or setting up organization-level controls for Supabase. Trigger with phrases like \"supabase SSO\", \"supabase RBAC\", \"supabase enterprise\", \"supabase roles\", \"supabase permissions\", \"supabase SAML\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-enterprise-rbac configure supabase enterprise sso, role-based access control, and organization management. use when implementing sso integration, configuring role-based permissions, or setting up organization-level controls for supabase. trigger with phrases like \"supabase sso\", \"supabase rbac\", \"supabase enterprise\", \"supabase roles\", \"supabase permissions\", \"supabase saml\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-hello-world",
+      "slug": "supabase-hello-world",
+      "name": "supabase-hello-world",
+      "description": "Create a minimal working Supabase example. Use when starting a new Supabase integration, testing your setup, or learning basic Supabase API patterns. Trigger with phrases like \"supabase hello world\", \"supabase example\", \"supabase quick start\", \"simple supabase code\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-hello-world create a minimal working supabase example. use when starting a new supabase integration, testing your setup, or learning basic supabase api patterns. trigger with phrases like \"supabase hello world\", \"supabase example\", \"supabase quick start\", \"simple supabase code\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-incident-runbook",
+      "slug": "supabase-incident-runbook",
+      "name": "supabase-incident-runbook",
+      "description": "Execute Supabase incident response procedures with triage, mitigation, and postmortem. Use when responding to Supabase-related outages, investigating errors, or running post-incident reviews for Supabase integration failures. Trigger with phrases like \"supabase incident\", \"supabase outage\", \"supabase down\", \"supabase on-call\", \"supabase emergency\", \"supabase broken\". allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-incident-runbook execute supabase incident response procedures with triage, mitigation, and postmortem. use when responding to supabase-related outages, investigating errors, or running post-incident reviews for supabase integration failures. trigger with phrases like \"supabase incident\", \"supabase outage\", \"supabase down\", \"supabase on-call\", \"supabase emergency\", \"supabase broken\". allowed-tools: read, grep, bash(kubectl:*), bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-install-auth",
+      "slug": "supabase-install-auth",
+      "name": "supabase-install-auth",
+      "description": "Install and configure Supabase SDK/CLI authentication. Use when setting up a new Supabase integration, configuring API keys, or initializing Supabase in your project. Trigger with phrases like \"install supabase\", \"setup supabase\", \"supabase auth\", \"configure supabase API key\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-install-auth install and configure supabase sdk/cli authentication. use when setting up a new supabase integration, configuring api keys, or initializing supabase in your project. trigger with phrases like \"install supabase\", \"setup supabase\", \"supabase auth\", \"configure supabase api key\". allowed-tools: read, write, edit, bash(npm:*), bash(pip:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-known-pitfalls",
+      "slug": "supabase-known-pitfalls",
+      "name": "supabase-known-pitfalls",
+      "description": "Identify and avoid Supabase anti-patterns and common integration mistakes. Use when reviewing Supabase code for issues, onboarding new developers, or auditing existing Supabase integrations for best practices violations. Trigger with phrases like \"supabase mistakes\", \"supabase anti-patterns\", \"supabase pitfalls\", \"supabase what not to do\", \"supabase code review\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-known-pitfalls identify and avoid supabase anti-patterns and common integration mistakes. use when reviewing supabase code for issues, onboarding new developers, or auditing existing supabase integrations for best practices violations. trigger with phrases like \"supabase mistakes\", \"supabase anti-patterns\", \"supabase pitfalls\", \"supabase what not to do\", \"supabase code review\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-load-scale",
+      "slug": "supabase-load-scale",
+      "name": "supabase-load-scale",
+      "description": "Implement Supabase load testing, auto-scaling, and capacity planning strategies. Use when running performance tests, configuring horizontal scaling, or planning capacity for Supabase integrations. Trigger with phrases like \"supabase load test\", \"supabase scale\", \"supabase performance test\", \"supabase capacity\", \"supabase k6\", \"supabase benchmark\". allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-load-scale implement supabase load testing, auto-scaling, and capacity planning strategies. use when running performance tests, configuring horizontal scaling, or planning capacity for supabase integrations. trigger with phrases like \"supabase load test\", \"supabase scale\", \"supabase performance test\", \"supabase capacity\", \"supabase k6\", \"supabase benchmark\". allowed-tools: read, write, edit, bash(k6:*), bash(kubectl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-local-dev-loop",
+      "slug": "supabase-local-dev-loop",
+      "name": "supabase-local-dev-loop",
+      "description": "Configure Supabase local development with hot reload and testing. Use when setting up a development environment, configuring test workflows, or establishing a fast iteration cycle with Supabase. Trigger with phrases like \"supabase dev setup\", \"supabase local development\", \"supabase dev environment\", \"develop with supabase\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-local-dev-loop configure supabase local development with hot reload and testing. use when setting up a development environment, configuring test workflows, or establishing a fast iteration cycle with supabase. trigger with phrases like \"supabase dev setup\", \"supabase local development\", \"supabase dev environment\", \"develop with supabase\". allowed-tools: read, write, edit, bash(npm:*), bash(pnpm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-migration-deep-dive",
+      "slug": "supabase-migration-deep-dive",
+      "name": "supabase-migration-deep-dive",
+      "description": "Execute Supabase major re-architecture and migration strategies with strangler fig pattern. Use when migrating to or from Supabase, performing major version upgrades, or re-platforming existing integrations to Supabase. Trigger with phrases like \"migrate supabase\", \"supabase migration\", \"switch to supabase\", \"supabase replatform\", \"supabase upgrade major\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-migration-deep-dive execute supabase major re-architecture and migration strategies with strangler fig pattern. use when migrating to or from supabase, performing major version upgrades, or re-platforming existing integrations to supabase. trigger with phrases like \"migrate supabase\", \"supabase migration\", \"switch to supabase\", \"supabase replatform\", \"supabase upgrade major\". allowed-tools: read, write, edit, bash(npm:*), bash(node:*), bash(kubectl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-multi-env-setup",
+      "slug": "supabase-multi-env-setup",
+      "name": "supabase-multi-env-setup",
+      "description": "Configure Supabase across development, staging, and production environments. Use when setting up multi-environment deployments, configuring per-environment secrets, or implementing environment-specific Supabase configurations. Trigger with phrases like \"supabase environments\", \"supabase staging\", \"supabase dev prod\", \"supabase environment setup\", \"supabase config by env\". allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-multi-env-setup configure supabase across development, staging, and production environments. use when setting up multi-environment deployments, configuring per-environment secrets, or implementing environment-specific supabase configurations. trigger with phrases like \"supabase environments\", \"supabase staging\", \"supabase dev prod\", \"supabase environment setup\", \"supabase config by env\". allowed-tools: read, write, edit, bash(aws:*), bash(gcloud:*), bash(vault:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-observability",
+      "slug": "supabase-observability",
+      "name": "supabase-observability",
+      "description": "Set up comprehensive observability for Supabase integrations with metrics, traces, and alerts. Use when implementing monitoring for Supabase operations, setting up dashboards, or configuring alerting for Supabase integration health. Trigger with phrases like \"supabase monitoring\", \"supabase metrics\", \"supabase observability\", \"monitor supabase\", \"supabase alerts\", \"supabase tracing\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-observability set up comprehensive observability for supabase integrations with metrics, traces, and alerts. use when implementing monitoring for supabase operations, setting up dashboards, or configuring alerting for supabase integration health. trigger with phrases like \"supabase monitoring\", \"supabase metrics\", \"supabase observability\", \"monitor supabase\", \"supabase alerts\", \"supabase tracing\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-performance-tuning",
+      "slug": "supabase-performance-tuning",
+      "name": "supabase-performance-tuning",
+      "description": "Optimize Supabase API performance with caching, batching, and connection pooling. Use when experiencing slow API responses, implementing caching strategies, or optimizing request throughput for Supabase integrations. Trigger with phrases like \"supabase performance\", \"optimize supabase\", \"supabase latency\", \"supabase caching\", \"supabase slow\", \"supabase batch\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-performance-tuning optimize supabase api performance with caching, batching, and connection pooling. use when experiencing slow api responses, implementing caching strategies, or optimizing request throughput for supabase integrations. trigger with phrases like \"supabase performance\", \"optimize supabase\", \"supabase latency\", \"supabase caching\", \"supabase slow\", \"supabase batch\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-policy-guardrails",
+      "slug": "supabase-policy-guardrails",
+      "name": "supabase-policy-guardrails",
+      "description": "Implement Supabase lint rules, policy enforcement, and automated guardrails. Use when setting up code quality rules for Supabase integrations, implementing pre-commit hooks, or configuring CI policy checks for Supabase best practices. Trigger with phrases like \"supabase policy\", \"supabase lint\", \"supabase guardrails\", \"supabase best practices check\", \"supabase eslint\". allowed-tools: Read, Write, Edit, Bash(npx:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-policy-guardrails implement supabase lint rules, policy enforcement, and automated guardrails. use when setting up code quality rules for supabase integrations, implementing pre-commit hooks, or configuring ci policy checks for supabase best practices. trigger with phrases like \"supabase policy\", \"supabase lint\", \"supabase guardrails\", \"supabase best practices check\", \"supabase eslint\". allowed-tools: read, write, edit, bash(npx:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-prod-checklist",
+      "slug": "supabase-prod-checklist",
+      "name": "supabase-prod-checklist",
+      "description": "Execute Supabase production deployment checklist and rollback procedures. Use when deploying Supabase integrations to production, preparing for launch, or implementing go-live procedures. Trigger with phrases like \"supabase production\", \"deploy supabase\", \"supabase go-live\", \"supabase launch checklist\". allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-prod-checklist execute supabase production deployment checklist and rollback procedures. use when deploying supabase integrations to production, preparing for launch, or implementing go-live procedures. trigger with phrases like \"supabase production\", \"deploy supabase\", \"supabase go-live\", \"supabase launch checklist\". allowed-tools: read, bash(kubectl:*), bash(curl:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-rate-limits",
+      "slug": "supabase-rate-limits",
+      "name": "supabase-rate-limits",
+      "description": "Implement Supabase rate limiting, backoff, and idempotency patterns. Use when handling rate limit errors, implementing retry logic, or optimizing API request throughput for Supabase. Trigger with phrases like \"supabase rate limit\", \"supabase throttling\", \"supabase 429\", \"supabase retry\", \"supabase backoff\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-rate-limits implement supabase rate limiting, backoff, and idempotency patterns. use when handling rate limit errors, implementing retry logic, or optimizing api request throughput for supabase. trigger with phrases like \"supabase rate limit\", \"supabase throttling\", \"supabase 429\", \"supabase retry\", \"supabase backoff\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-reference-architecture",
+      "slug": "supabase-reference-architecture",
+      "name": "supabase-reference-architecture",
+      "description": "Implement Supabase reference architecture with best-practice project layout. Use when designing new Supabase integrations, reviewing project structure, or establishing architecture standards for Supabase applications. Trigger with phrases like \"supabase architecture\", \"supabase best practices\", \"supabase project structure\", \"how to organize supabase\", \"supabase layout\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-reference-architecture implement supabase reference architecture with best-practice project layout. use when designing new supabase integrations, reviewing project structure, or establishing architecture standards for supabase applications. trigger with phrases like \"supabase architecture\", \"supabase best practices\", \"supabase project structure\", \"how to organize supabase\", \"supabase layout\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-reliability-patterns",
+      "slug": "supabase-reliability-patterns",
+      "name": "supabase-reliability-patterns",
+      "description": "Implement Supabase reliability patterns including circuit breakers, idempotency, and graceful degradation. Use when building fault-tolerant Supabase integrations, implementing retry strategies, or adding resilience to production Supabase services. Trigger with phrases like \"supabase reliability\", \"supabase circuit breaker\", \"supabase idempotent\", \"supabase resilience\", \"supabase fallback\", \"supabase bulkhead\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-reliability-patterns implement supabase reliability patterns including circuit breakers, idempotency, and graceful degradation. use when building fault-tolerant supabase integrations, implementing retry strategies, or adding resilience to production supabase services. trigger with phrases like \"supabase reliability\", \"supabase circuit breaker\", \"supabase idempotent\", \"supabase resilience\", \"supabase fallback\", \"supabase bulkhead\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-schema-from-requirements",
+      "slug": "supabase-schema-from-requirements",
+      "name": "supabase-schema-from-requirements",
+      "description": "Execute Supabase primary workflow: Schema from Requirements. Use when Starting a new project with defined data requirements, Refactoring an existing schema based on new features, or Creating migrations from specification documents. Trigger with phrases like \"supabase schema from requirements\", \"generate database schema with supabase\". allowed-tools: Read, Write, Edit, Bash(npm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-schema-from-requirements execute supabase primary workflow: schema from requirements. use when starting a new project with defined data requirements, refactoring an existing schema based on new features, or creating migrations from specification documents. trigger with phrases like \"supabase schema from requirements\", \"generate database schema with supabase\". allowed-tools: read, write, edit, bash(npm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-sdk-patterns",
+      "slug": "supabase-sdk-patterns",
+      "name": "supabase-sdk-patterns",
+      "description": "Apply production-ready Supabase SDK patterns for TypeScript and Python. Use when implementing Supabase integrations, refactoring SDK usage, or establishing team coding standards for Supabase. Trigger with phrases like \"supabase SDK patterns\", \"supabase best practices\", \"supabase code patterns\", \"idiomatic supabase\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-sdk-patterns apply production-ready supabase sdk patterns for typescript and python. use when implementing supabase integrations, refactoring sdk usage, or establishing team coding standards for supabase. trigger with phrases like \"supabase sdk patterns\", \"supabase best practices\", \"supabase code patterns\", \"idiomatic supabase\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-security-basics",
+      "slug": "supabase-security-basics",
+      "name": "supabase-security-basics",
+      "description": "Apply Supabase security best practices for secrets and access control. Use when securing API keys, implementing least privilege access, or auditing Supabase security configuration. Trigger with phrases like \"supabase security\", \"supabase secrets\", \"secure supabase\", \"supabase API key security\". allowed-tools: Read, Write, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-security-basics apply supabase security best practices for secrets and access control. use when securing api keys, implementing least privilege access, or auditing supabase security configuration. trigger with phrases like \"supabase security\", \"supabase secrets\", \"secure supabase\", \"supabase api key security\". allowed-tools: read, write, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-upgrade-migration",
+      "slug": "supabase-upgrade-migration",
+      "name": "supabase-upgrade-migration",
+      "description": "Analyze, plan, and execute Supabase SDK upgrades with breaking change detection. Use when upgrading Supabase SDK versions, detecting deprecations, or migrating to new API versions. Trigger with phrases like \"upgrade supabase\", \"supabase migration\", \"supabase breaking changes\", \"update supabase SDK\", \"analyze supabase version\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-upgrade-migration analyze, plan, and execute supabase sdk upgrades with breaking change detection. use when upgrading supabase sdk versions, detecting deprecations, or migrating to new api versions. trigger with phrases like \"upgrade supabase\", \"supabase migration\", \"supabase breaking changes\", \"update supabase sdk\", \"analyze supabase version\". allowed-tools: read, write, edit, bash(npm:*), bash(git:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "supabase-webhooks-events",
+      "slug": "supabase-webhooks-events",
+      "name": "supabase-webhooks-events",
+      "description": "Implement Supabase webhook signature validation and event handling. Use when setting up webhook endpoints, implementing signature verification, or handling Supabase event notifications securely. Trigger with phrases like \"supabase webhook\", \"supabase events\", \"supabase webhook signature\", \"handle supabase events\", \"supabase notifications\". allowed-tools: Read, Write, Edit, Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "supabase-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "supabase-webhooks-events implement supabase webhook signature validation and event handling. use when setting up webhook endpoints, implementing signature verification, or handling supabase event notifications securely. trigger with phrases like \"supabase webhook\", \"supabase events\", \"supabase webhook signature\", \"handle supabase events\", \"supabase notifications\". allowed-tools: read, write, edit, bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
       "id": "testing-browser-compatibility",
       "slug": "testing-browser-compatibility",
       "name": "testing-browser-compatibility",
@@ -9708,6 +10205,456 @@
         "category": "ai-ml"
       },
       "searchText": "validator-expert validate production readiness of vertex ai agent engine deployments across security, monitoring, performance, compliance, and best practices. generates weighted scores (0-100%) with actionable recommendations. use when asked to \"validate deploymen... trigger with phrases like 'validate', 'check', or 'verify'. allowed-tools: read, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-advanced-troubleshooting",
+      "slug": "vercel-advanced-troubleshooting",
+      "name": "vercel-advanced-troubleshooting",
+      "description": "Apply Vercel advanced debugging techniques for hard-to-diagnose issues. Use when standard troubleshooting fails, investigating complex race conditions, or preparing evidence bundles for Vercel support escalation. Trigger with phrases like \"vercel hard bug\", \"vercel mystery error\", \"vercel impossible to debug\", \"difficult vercel issue\", \"vercel deep debug\". allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*), Bash(tcpdump:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-advanced-troubleshooting apply vercel advanced debugging techniques for hard-to-diagnose issues. use when standard troubleshooting fails, investigating complex race conditions, or preparing evidence bundles for vercel support escalation. trigger with phrases like \"vercel hard bug\", \"vercel mystery error\", \"vercel impossible to debug\", \"difficult vercel issue\", \"vercel deep debug\". allowed-tools: read, grep, bash(kubectl:*), bash(curl:*), bash(tcpdump:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-architecture-variants",
+      "slug": "vercel-architecture-variants",
+      "name": "vercel-architecture-variants",
+      "description": "Choose and implement Vercel validated architecture blueprints for different scales. Use when designing new Vercel integrations, choosing between monolith/service/microservice architectures, or planning migration paths for Vercel applications. Trigger with phrases like \"vercel architecture\", \"vercel blueprint\", \"how to structure vercel\", \"vercel project layout\", \"vercel microservice\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-architecture-variants choose and implement vercel validated architecture blueprints for different scales. use when designing new vercel integrations, choosing between monolith/service/microservice architectures, or planning migration paths for vercel applications. trigger with phrases like \"vercel architecture\", \"vercel blueprint\", \"how to structure vercel\", \"vercel project layout\", \"vercel microservice\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-ci-integration",
+      "slug": "vercel-ci-integration",
+      "name": "vercel-ci-integration",
+      "description": "Configure Vercel CI/CD integration with GitHub Actions and testing. Use when setting up automated testing, configuring CI pipelines, or integrating Vercel tests into your build process. Trigger with phrases like \"vercel CI\", \"vercel GitHub Actions\", \"vercel automated tests\", \"CI vercel\". allowed-tools: Read, Write, Edit, Bash(gh:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-ci-integration configure vercel ci/cd integration with github actions and testing. use when setting up automated testing, configuring ci pipelines, or integrating vercel tests into your build process. trigger with phrases like \"vercel ci\", \"vercel github actions\", \"vercel automated tests\", \"ci vercel\". allowed-tools: read, write, edit, bash(gh:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-common-errors",
+      "slug": "vercel-common-errors",
+      "name": "vercel-common-errors",
+      "description": "Diagnose and fix Vercel common errors and exceptions. Use when encountering Vercel errors, debugging failed requests, or troubleshooting integration issues. Trigger with phrases like \"vercel error\", \"fix vercel\", \"vercel not working\", \"debug vercel\". allowed-tools: Read, Grep, Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-common-errors diagnose and fix vercel common errors and exceptions. use when encountering vercel errors, debugging failed requests, or troubleshooting integration issues. trigger with phrases like \"vercel error\", \"fix vercel\", \"vercel not working\", \"debug vercel\". allowed-tools: read, grep, bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-cost-tuning",
+      "slug": "vercel-cost-tuning",
+      "name": "vercel-cost-tuning",
+      "description": "Optimize Vercel costs through tier selection, sampling, and usage monitoring. Use when analyzing Vercel billing, reducing API costs, or implementing usage monitoring and budget alerts. Trigger with phrases like \"vercel cost\", \"vercel billing\", \"reduce vercel costs\", \"vercel pricing\", \"vercel expensive\", \"vercel budget\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-cost-tuning optimize vercel costs through tier selection, sampling, and usage monitoring. use when analyzing vercel billing, reducing api costs, or implementing usage monitoring and budget alerts. trigger with phrases like \"vercel cost\", \"vercel billing\", \"reduce vercel costs\", \"vercel pricing\", \"vercel expensive\", \"vercel budget\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-data-handling",
+      "slug": "vercel-data-handling",
+      "name": "vercel-data-handling",
+      "description": "Implement Vercel PII handling, data retention, and GDPR/CCPA compliance patterns. Use when handling sensitive data, implementing data redaction, configuring retention policies, or ensuring compliance with privacy regulations for Vercel integrations. Trigger with phrases like \"vercel data\", \"vercel PII\", \"vercel GDPR\", \"vercel data retention\", \"vercel privacy\", \"vercel CCPA\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-data-handling implement vercel pii handling, data retention, and gdpr/ccpa compliance patterns. use when handling sensitive data, implementing data redaction, configuring retention policies, or ensuring compliance with privacy regulations for vercel integrations. trigger with phrases like \"vercel data\", \"vercel pii\", \"vercel gdpr\", \"vercel data retention\", \"vercel privacy\", \"vercel ccpa\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-debug-bundle",
+      "slug": "vercel-debug-bundle",
+      "name": "vercel-debug-bundle",
+      "description": "Collect Vercel debug evidence for support tickets and troubleshooting. Use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for Vercel problems. Trigger with phrases like \"vercel debug\", \"vercel support bundle\", \"collect vercel logs\", \"vercel diagnostic\". allowed-tools: Read, Bash(grep:*), Bash(curl:*), Bash(tar:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-debug-bundle collect vercel debug evidence for support tickets and troubleshooting. use when encountering persistent issues, preparing support tickets, or collecting diagnostic information for vercel problems. trigger with phrases like \"vercel debug\", \"vercel support bundle\", \"collect vercel logs\", \"vercel diagnostic\". allowed-tools: read, bash(grep:*), bash(curl:*), bash(tar:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-deploy-integration",
+      "slug": "vercel-deploy-integration",
+      "name": "vercel-deploy-integration",
+      "description": "Deploy Vercel integrations to Vercel, Fly.io, and Cloud Run platforms. Use when deploying Vercel-powered applications to production, configuring platform-specific secrets, or setting up deployment pipelines. Trigger with phrases like \"deploy vercel\", \"vercel Vercel\", \"vercel production deploy\", \"vercel Cloud Run\", \"vercel Fly.io\". allowed-tools: Read, Write, Edit, Bash(vercel:*), Bash(fly:*), Bash(gcloud:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-deploy-integration deploy vercel integrations to vercel, fly.io, and cloud run platforms. use when deploying vercel-powered applications to production, configuring platform-specific secrets, or setting up deployment pipelines. trigger with phrases like \"deploy vercel\", \"vercel vercel\", \"vercel production deploy\", \"vercel cloud run\", \"vercel fly.io\". allowed-tools: read, write, edit, bash(vercel:*), bash(fly:*), bash(gcloud:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-deploy-preview",
+      "slug": "vercel-deploy-preview",
+      "name": "vercel-deploy-preview",
+      "description": "Execute Vercel primary workflow: Deploy Preview. Use when Deploying a preview for a pull request, Testing changes before production, or Sharing preview URLs with stakeholders. Trigger with phrases like \"vercel deploy preview\", \"create preview deployment with vercel\". allowed-tools: Read, Write, Edit, Bash(npm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-deploy-preview execute vercel primary workflow: deploy preview. use when deploying a preview for a pull request, testing changes before production, or sharing preview urls with stakeholders. trigger with phrases like \"vercel deploy preview\", \"create preview deployment with vercel\". allowed-tools: read, write, edit, bash(npm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-edge-functions",
+      "slug": "vercel-edge-functions",
+      "name": "vercel-edge-functions",
+      "description": "Execute Vercel secondary workflow: Edge Functions. Use when API routes with minimal latency, or complementing primary workflow. Trigger with phrases like \"vercel edge function\", \"deploy edge function with vercel\". allowed-tools: Read, Write, Edit, Bash(npm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-edge-functions execute vercel secondary workflow: edge functions. use when api routes with minimal latency, or complementing primary workflow. trigger with phrases like \"vercel edge function\", \"deploy edge function with vercel\". allowed-tools: read, write, edit, bash(npm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-enterprise-rbac",
+      "slug": "vercel-enterprise-rbac",
+      "name": "vercel-enterprise-rbac",
+      "description": "Configure Vercel enterprise SSO, role-based access control, and organization management. Use when implementing SSO integration, configuring role-based permissions, or setting up organization-level controls for Vercel. Trigger with phrases like \"vercel SSO\", \"vercel RBAC\", \"vercel enterprise\", \"vercel roles\", \"vercel permissions\", \"vercel SAML\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-enterprise-rbac configure vercel enterprise sso, role-based access control, and organization management. use when implementing sso integration, configuring role-based permissions, or setting up organization-level controls for vercel. trigger with phrases like \"vercel sso\", \"vercel rbac\", \"vercel enterprise\", \"vercel roles\", \"vercel permissions\", \"vercel saml\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-hello-world",
+      "slug": "vercel-hello-world",
+      "name": "vercel-hello-world",
+      "description": "Create a minimal working Vercel example. Use when starting a new Vercel integration, testing your setup, or learning basic Vercel API patterns. Trigger with phrases like \"vercel hello world\", \"vercel example\", \"vercel quick start\", \"simple vercel code\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-hello-world create a minimal working vercel example. use when starting a new vercel integration, testing your setup, or learning basic vercel api patterns. trigger with phrases like \"vercel hello world\", \"vercel example\", \"vercel quick start\", \"simple vercel code\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-incident-runbook",
+      "slug": "vercel-incident-runbook",
+      "name": "vercel-incident-runbook",
+      "description": "Execute Vercel incident response procedures with triage, mitigation, and postmortem. Use when responding to Vercel-related outages, investigating errors, or running post-incident reviews for Vercel integration failures. Trigger with phrases like \"vercel incident\", \"vercel outage\", \"vercel down\", \"vercel on-call\", \"vercel emergency\", \"vercel broken\". allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-incident-runbook execute vercel incident response procedures with triage, mitigation, and postmortem. use when responding to vercel-related outages, investigating errors, or running post-incident reviews for vercel integration failures. trigger with phrases like \"vercel incident\", \"vercel outage\", \"vercel down\", \"vercel on-call\", \"vercel emergency\", \"vercel broken\". allowed-tools: read, grep, bash(kubectl:*), bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-install-auth",
+      "slug": "vercel-install-auth",
+      "name": "vercel-install-auth",
+      "description": "Install and configure Vercel SDK/CLI authentication. Use when setting up a new Vercel integration, configuring API keys, or initializing Vercel in your project. Trigger with phrases like \"install vercel\", \"setup vercel\", \"vercel auth\", \"configure vercel API key\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pip:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-install-auth install and configure vercel sdk/cli authentication. use when setting up a new vercel integration, configuring api keys, or initializing vercel in your project. trigger with phrases like \"install vercel\", \"setup vercel\", \"vercel auth\", \"configure vercel api key\". allowed-tools: read, write, edit, bash(npm:*), bash(pip:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-known-pitfalls",
+      "slug": "vercel-known-pitfalls",
+      "name": "vercel-known-pitfalls",
+      "description": "Identify and avoid Vercel anti-patterns and common integration mistakes. Use when reviewing Vercel code for issues, onboarding new developers, or auditing existing Vercel integrations for best practices violations. Trigger with phrases like \"vercel mistakes\", \"vercel anti-patterns\", \"vercel pitfalls\", \"vercel what not to do\", \"vercel code review\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-known-pitfalls identify and avoid vercel anti-patterns and common integration mistakes. use when reviewing vercel code for issues, onboarding new developers, or auditing existing vercel integrations for best practices violations. trigger with phrases like \"vercel mistakes\", \"vercel anti-patterns\", \"vercel pitfalls\", \"vercel what not to do\", \"vercel code review\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-load-scale",
+      "slug": "vercel-load-scale",
+      "name": "vercel-load-scale",
+      "description": "Implement Vercel load testing, auto-scaling, and capacity planning strategies. Use when running performance tests, configuring horizontal scaling, or planning capacity for Vercel integrations. Trigger with phrases like \"vercel load test\", \"vercel scale\", \"vercel performance test\", \"vercel capacity\", \"vercel k6\", \"vercel benchmark\". allowed-tools: Read, Write, Edit, Bash(k6:*), Bash(kubectl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-load-scale implement vercel load testing, auto-scaling, and capacity planning strategies. use when running performance tests, configuring horizontal scaling, or planning capacity for vercel integrations. trigger with phrases like \"vercel load test\", \"vercel scale\", \"vercel performance test\", \"vercel capacity\", \"vercel k6\", \"vercel benchmark\". allowed-tools: read, write, edit, bash(k6:*), bash(kubectl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-local-dev-loop",
+      "slug": "vercel-local-dev-loop",
+      "name": "vercel-local-dev-loop",
+      "description": "Configure Vercel local development with hot reload and testing. Use when setting up a development environment, configuring test workflows, or establishing a fast iteration cycle with Vercel. Trigger with phrases like \"vercel dev setup\", \"vercel local development\", \"vercel dev environment\", \"develop with vercel\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(pnpm:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-local-dev-loop configure vercel local development with hot reload and testing. use when setting up a development environment, configuring test workflows, or establishing a fast iteration cycle with vercel. trigger with phrases like \"vercel dev setup\", \"vercel local development\", \"vercel dev environment\", \"develop with vercel\". allowed-tools: read, write, edit, bash(npm:*), bash(pnpm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-migration-deep-dive",
+      "slug": "vercel-migration-deep-dive",
+      "name": "vercel-migration-deep-dive",
+      "description": "Execute Vercel major re-architecture and migration strategies with strangler fig pattern. Use when migrating to or from Vercel, performing major version upgrades, or re-platforming existing integrations to Vercel. Trigger with phrases like \"migrate vercel\", \"vercel migration\", \"switch to vercel\", \"vercel replatform\", \"vercel upgrade major\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-migration-deep-dive execute vercel major re-architecture and migration strategies with strangler fig pattern. use when migrating to or from vercel, performing major version upgrades, or re-platforming existing integrations to vercel. trigger with phrases like \"migrate vercel\", \"vercel migration\", \"switch to vercel\", \"vercel replatform\", \"vercel upgrade major\". allowed-tools: read, write, edit, bash(npm:*), bash(node:*), bash(kubectl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-multi-env-setup",
+      "slug": "vercel-multi-env-setup",
+      "name": "vercel-multi-env-setup",
+      "description": "Configure Vercel across development, staging, and production environments. Use when setting up multi-environment deployments, configuring per-environment secrets, or implementing environment-specific Vercel configurations. Trigger with phrases like \"vercel environments\", \"vercel staging\", \"vercel dev prod\", \"vercel environment setup\", \"vercel config by env\". allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-multi-env-setup configure vercel across development, staging, and production environments. use when setting up multi-environment deployments, configuring per-environment secrets, or implementing environment-specific vercel configurations. trigger with phrases like \"vercel environments\", \"vercel staging\", \"vercel dev prod\", \"vercel environment setup\", \"vercel config by env\". allowed-tools: read, write, edit, bash(aws:*), bash(gcloud:*), bash(vault:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-observability",
+      "slug": "vercel-observability",
+      "name": "vercel-observability",
+      "description": "Set up comprehensive observability for Vercel integrations with metrics, traces, and alerts. Use when implementing monitoring for Vercel operations, setting up dashboards, or configuring alerting for Vercel integration health. Trigger with phrases like \"vercel monitoring\", \"vercel metrics\", \"vercel observability\", \"monitor vercel\", \"vercel alerts\", \"vercel tracing\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-observability set up comprehensive observability for vercel integrations with metrics, traces, and alerts. use when implementing monitoring for vercel operations, setting up dashboards, or configuring alerting for vercel integration health. trigger with phrases like \"vercel monitoring\", \"vercel metrics\", \"vercel observability\", \"monitor vercel\", \"vercel alerts\", \"vercel tracing\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-performance-tuning",
+      "slug": "vercel-performance-tuning",
+      "name": "vercel-performance-tuning",
+      "description": "Optimize Vercel API performance with caching, batching, and connection pooling. Use when experiencing slow API responses, implementing caching strategies, or optimizing request throughput for Vercel integrations. Trigger with phrases like \"vercel performance\", \"optimize vercel\", \"vercel latency\", \"vercel caching\", \"vercel slow\", \"vercel batch\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-performance-tuning optimize vercel api performance with caching, batching, and connection pooling. use when experiencing slow api responses, implementing caching strategies, or optimizing request throughput for vercel integrations. trigger with phrases like \"vercel performance\", \"optimize vercel\", \"vercel latency\", \"vercel caching\", \"vercel slow\", \"vercel batch\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-policy-guardrails",
+      "slug": "vercel-policy-guardrails",
+      "name": "vercel-policy-guardrails",
+      "description": "Implement Vercel lint rules, policy enforcement, and automated guardrails. Use when setting up code quality rules for Vercel integrations, implementing pre-commit hooks, or configuring CI policy checks for Vercel best practices. Trigger with phrases like \"vercel policy\", \"vercel lint\", \"vercel guardrails\", \"vercel best practices check\", \"vercel eslint\". allowed-tools: Read, Write, Edit, Bash(npx:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-policy-guardrails implement vercel lint rules, policy enforcement, and automated guardrails. use when setting up code quality rules for vercel integrations, implementing pre-commit hooks, or configuring ci policy checks for vercel best practices. trigger with phrases like \"vercel policy\", \"vercel lint\", \"vercel guardrails\", \"vercel best practices check\", \"vercel eslint\". allowed-tools: read, write, edit, bash(npx:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-prod-checklist",
+      "slug": "vercel-prod-checklist",
+      "name": "vercel-prod-checklist",
+      "description": "Execute Vercel production deployment checklist and rollback procedures. Use when deploying Vercel integrations to production, preparing for launch, or implementing go-live procedures. Trigger with phrases like \"vercel production\", \"deploy vercel\", \"vercel go-live\", \"vercel launch checklist\". allowed-tools: Read, Bash(kubectl:*), Bash(curl:*), Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-prod-checklist execute vercel production deployment checklist and rollback procedures. use when deploying vercel integrations to production, preparing for launch, or implementing go-live procedures. trigger with phrases like \"vercel production\", \"deploy vercel\", \"vercel go-live\", \"vercel launch checklist\". allowed-tools: read, bash(kubectl:*), bash(curl:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-rate-limits",
+      "slug": "vercel-rate-limits",
+      "name": "vercel-rate-limits",
+      "description": "Implement Vercel rate limiting, backoff, and idempotency patterns. Use when handling rate limit errors, implementing retry logic, or optimizing API request throughput for Vercel. Trigger with phrases like \"vercel rate limit\", \"vercel throttling\", \"vercel 429\", \"vercel retry\", \"vercel backoff\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-rate-limits implement vercel rate limiting, backoff, and idempotency patterns. use when handling rate limit errors, implementing retry logic, or optimizing api request throughput for vercel. trigger with phrases like \"vercel rate limit\", \"vercel throttling\", \"vercel 429\", \"vercel retry\", \"vercel backoff\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-reference-architecture",
+      "slug": "vercel-reference-architecture",
+      "name": "vercel-reference-architecture",
+      "description": "Implement Vercel reference architecture with best-practice project layout. Use when designing new Vercel integrations, reviewing project structure, or establishing architecture standards for Vercel applications. Trigger with phrases like \"vercel architecture\", \"vercel best practices\", \"vercel project structure\", \"how to organize vercel\", \"vercel layout\". allowed-tools: Read, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-reference-architecture implement vercel reference architecture with best-practice project layout. use when designing new vercel integrations, reviewing project structure, or establishing architecture standards for vercel applications. trigger with phrases like \"vercel architecture\", \"vercel best practices\", \"vercel project structure\", \"how to organize vercel\", \"vercel layout\". allowed-tools: read, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-reliability-patterns",
+      "slug": "vercel-reliability-patterns",
+      "name": "vercel-reliability-patterns",
+      "description": "Implement Vercel reliability patterns including circuit breakers, idempotency, and graceful degradation. Use when building fault-tolerant Vercel integrations, implementing retry strategies, or adding resilience to production Vercel services. Trigger with phrases like \"vercel reliability\", \"vercel circuit breaker\", \"vercel idempotent\", \"vercel resilience\", \"vercel fallback\", \"vercel bulkhead\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-reliability-patterns implement vercel reliability patterns including circuit breakers, idempotency, and graceful degradation. use when building fault-tolerant vercel integrations, implementing retry strategies, or adding resilience to production vercel services. trigger with phrases like \"vercel reliability\", \"vercel circuit breaker\", \"vercel idempotent\", \"vercel resilience\", \"vercel fallback\", \"vercel bulkhead\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-sdk-patterns",
+      "slug": "vercel-sdk-patterns",
+      "name": "vercel-sdk-patterns",
+      "description": "Apply production-ready Vercel SDK patterns for TypeScript and Python. Use when implementing Vercel integrations, refactoring SDK usage, or establishing team coding standards for Vercel. Trigger with phrases like \"vercel SDK patterns\", \"vercel best practices\", \"vercel code patterns\", \"idiomatic vercel\". allowed-tools: Read, Write, Edit version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-sdk-patterns apply production-ready vercel sdk patterns for typescript and python. use when implementing vercel integrations, refactoring sdk usage, or establishing team coding standards for vercel. trigger with phrases like \"vercel sdk patterns\", \"vercel best practices\", \"vercel code patterns\", \"idiomatic vercel\". allowed-tools: read, write, edit version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-security-basics",
+      "slug": "vercel-security-basics",
+      "name": "vercel-security-basics",
+      "description": "Apply Vercel security best practices for secrets and access control. Use when securing API keys, implementing least privilege access, or auditing Vercel security configuration. Trigger with phrases like \"vercel security\", \"vercel secrets\", \"secure vercel\", \"vercel API key security\". allowed-tools: Read, Write, Grep version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-security-basics apply vercel security best practices for secrets and access control. use when securing api keys, implementing least privilege access, or auditing vercel security configuration. trigger with phrases like \"vercel security\", \"vercel secrets\", \"secure vercel\", \"vercel api key security\". allowed-tools: read, write, grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-upgrade-migration",
+      "slug": "vercel-upgrade-migration",
+      "name": "vercel-upgrade-migration",
+      "description": "Analyze, plan, and execute Vercel SDK upgrades with breaking change detection. Use when upgrading Vercel SDK versions, detecting deprecations, or migrating to new API versions. Trigger with phrases like \"upgrade vercel\", \"vercel migration\", \"vercel breaking changes\", \"update vercel SDK\", \"analyze vercel version\". allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-upgrade-migration analyze, plan, and execute vercel sdk upgrades with breaking change detection. use when upgrading vercel sdk versions, detecting deprecations, or migrating to new api versions. trigger with phrases like \"upgrade vercel\", \"vercel migration\", \"vercel breaking changes\", \"update vercel sdk\", \"analyze vercel version\". allowed-tools: read, write, edit, bash(npm:*), bash(git:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "vercel-webhooks-events",
+      "slug": "vercel-webhooks-events",
+      "name": "vercel-webhooks-events",
+      "description": "Implement Vercel webhook signature validation and event handling. Use when setting up webhook endpoints, implementing signature verification, or handling Vercel event notifications securely. Trigger with phrases like \"vercel webhook\", \"vercel events\", \"vercel webhook signature\", \"handle vercel events\", \"vercel notifications\". allowed-tools: Read, Write, Edit, Bash(curl:*) version: 1.0.0 license: MIT author: Jeremy Longshore <jeremy@intentsolutions.io>",
+      "category": "saas-packs",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "vercel-pack",
+        "category": "saas-packs"
+      },
+      "searchText": "vercel-webhooks-events implement vercel webhook signature validation and event handling. use when setting up webhook endpoints, implementing signature verification, or handling vercel event notifications securely. trigger with phrases like \"vercel webhook\", \"vercel events\", \"vercel webhook signature\", \"handle vercel events\", \"vercel notifications\". allowed-tools: read, write, edit, bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
     },
     {
       "type": "skill",

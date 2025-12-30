@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-incident-runbook
 description: |
-  {{ display_name }} incident response: triage, mitigate, and postmortem.
-  Trigger phrases: "{{ company }} incident", "{{ company }} outage",
-  "{{ company }} down", "{{ company }} on-call".
-allowed-tools: Read, Bash, Grep
+  Execute {{ display_name }} incident response procedures with triage, mitigation, and postmortem.
+  Use when responding to {{ display_name }}-related outages, investigating errors,
+  or running post-incident reviews for {{ display_name }} integration failures.
+  Trigger with phrases like "{{ company }} incident", "{{ company }} outage",
+  "{{ company }} down", "{{ company }} on-call", "{{ company }} emergency", "{{ company }} broken".
+allowed-tools: Read, Grep, Bash(kubectl:*), Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Rapid incident response procedures for {{ display_name }}-related outages.
+
+## Prerequisites
+- Access to {{ display_name }} dashboard and status page
+- kubectl access to production cluster
+- Prometheus/Grafana access
+- Communication channels (Slack, PagerDuty)
 
 ## Severity Levels
 
@@ -151,6 +159,45 @@ curl "localhost:9090/api/v1/query_range?query={{ company }}_errors_total&start=2
 ### Action Items
 - [ ] [Preventive measure] - Owner - Due date
 ```
+
+## Instructions
+
+### Step 1: Quick Triage
+Run the triage commands to identify the issue source.
+
+### Step 2: Follow Decision Tree
+Determine if the issue is {{ display_name }}-side or internal.
+
+### Step 3: Execute Immediate Actions
+Apply the appropriate remediation for the error type.
+
+### Step 4: Communicate Status
+Update internal and external stakeholders.
+
+## Output
+- Issue identified and categorized
+- Remediation applied
+- Stakeholders notified
+- Evidence collected for postmortem
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Can't reach status page | Network issue | Use mobile or VPN |
+| kubectl fails | Auth expired | Re-authenticate |
+| Metrics unavailable | Prometheus down | Check backup metrics |
+| Secret rotation fails | Permission denied | Escalate to admin |
+
+## Examples
+
+### One-Line Health Check
+```bash
+curl -sf https://api.yourapp.com/health | jq '.services.{{ company }}.status' || echo "UNHEALTHY"
+```
+
+## Resources
+- [{{ display_name }} Status Page]({{ status_url | default('https://status.' + company + '.com') }})
+- [{{ display_name }} Support]({{ support_url | default('https://support.' + company + '.com') }})
 
 ## Next Steps
 For data handling, see `{{ company }}-data-handling`.

@@ -1,28 +1,28 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2025-12-28T22:22:54.595Z",
+    "generated": "2025-12-29T20:56:34.209Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 265,
-    "totalSkills": 44,
+    "totalPlugins": 267,
+    "totalSkills": 104,
     "totalCommands": 55,
-    "pluginsWithSkills": 26,
+    "pluginsWithSkills": 28,
     "byCategory": {
       "productivity": 13,
       "security": 27,
       "testing": 25,
       "ai-ml": 38,
       "performance": 25,
-      "devops": 33,
+      "devops": 34,
       "api-development": 25,
       "crypto": 26,
       "skill-enhancers": 6,
       "debugging": 1,
       "packages": 1,
-      "database": 27,
+      "database": 28,
       "design": 1,
       "ai-agency": 6,
       "business-tools": 1,
@@ -35,12 +35,12 @@
       "development": 1
     },
     "byStatus": {
-      "active": 246,
+      "active": 248,
       "maintained": 19
     },
     "featured": 2,
-    "new": 244,
-    "generatedAt": "2025-12-28T22:22:54.595Z"
+    "new": 246,
+    "generatedAt": "2025-12-29T20:56:34.209Z"
   },
   "plugins": [
     {
@@ -8902,6 +8902,86 @@
         "name": "Mattyp",
         "email": "mattyp@claudecodeplugins.io",
         "url": "https://claudecodeplugins.io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "supabase-pack",
+      "name": "supabase-pack",
+      "displayName": "supabase pack",
+      "description": "Complete Supabase integration skill pack with 30 skills covering authentication, database, storage, realtime, edge functions, and production operations. Flagship+ tier vendor pack.",
+      "version": "1.0.0",
+      "category": "database",
+      "keywords": [
+        "supabase",
+        "postgres",
+        "database",
+        "authentication",
+        "realtime",
+        "storage",
+        "edge-functions",
+        "rls",
+        "row-level-security",
+        "baas",
+        "backend-as-a-service",
+        "firebase-alternative"
+      ],
+      "hasSkills": true,
+      "skillCount": 30,
+      "commandCount": 0,
+      "installCommand": "/plugin install supabase-pack",
+      "sourcePath": "./plugins/saas-packs/supabase-pack",
+      "lastUpdatedEpoch": 1767041608,
+      "lastUpdatedDate": "2025-12-29T20:53:28.531Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "vercel-pack",
+      "name": "vercel-pack",
+      "displayName": "vercel pack",
+      "description": "Complete Vercel integration skill pack with 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations. Flagship+ tier vendor pack.",
+      "version": "1.0.0",
+      "category": "devops",
+      "keywords": [
+        "vercel",
+        "deployment",
+        "edge-functions",
+        "serverless",
+        "preview",
+        "ci-cd",
+        "hosting",
+        "next-js",
+        "jamstack",
+        "frontend-cloud"
+      ],
+      "hasSkills": true,
+      "skillCount": 30,
+      "commandCount": 0,
+      "installCommand": "/plugin install vercel-pack",
+      "sourcePath": "./plugins/saas-packs/vercel-pack",
+      "lastUpdatedEpoch": 1767041608,
+      "lastUpdatedDate": "2025-12-29T20:53:28.531Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io",
+        "url": "https://github.com/jeremylongshore"
       },
       "type": "instruction-plugin"
     }

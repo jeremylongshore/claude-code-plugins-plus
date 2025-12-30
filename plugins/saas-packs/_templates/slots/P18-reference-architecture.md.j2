@@ -1,9 +1,11 @@
 ---
 name: {{ company }}-reference-architecture
 description: |
-  {{ display_name }} reference architecture and best-practice layout.
-  Trigger phrases: "{{ company }} architecture", "{{ company }} best practices",
-  "{{ company }} project structure", "how to organize {{ company }}".
+  Implement {{ display_name }} reference architecture with best-practice project layout.
+  Use when designing new {{ display_name }} integrations, reviewing project structure,
+  or establishing architecture standards for {{ display_name }} applications.
+  Trigger with phrases like "{{ company }} architecture", "{{ company }} best practices",
+  "{{ company }} project structure", "how to organize {{ company }}", "{{ company }} layout".
 allowed-tools: Read, Grep
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Production-ready architecture patterns for {{ display_name }} integrations.
+
+## Prerequisites
+- Understanding of layered architecture
+- {{ display_name }} SDK knowledge
+- TypeScript project setup
+- Testing framework configured
 
 ## Project Structure
 
@@ -74,7 +82,7 @@ my-{{ company }}-project/
 
 ## Key Components
 
-### 1. Client Wrapper
+### Step 1: Client Wrapper
 ```typescript
 // src/{{ company }}/client.ts
 export class {{ display_name }}Service {
@@ -96,7 +104,7 @@ export class {{ display_name }}Service {
 }
 ```
 
-### 2. Error Boundary
+### Step 2: Error Boundary
 ```typescript
 // src/{{ company }}/errors.ts
 export class {{ display_name }}ServiceError extends Error {
@@ -116,7 +124,7 @@ export function wrap{{ display_name }}Error(error: unknown): {{ display_name }}S
 }
 ```
 
-### 3. Health Check
+### Step 3: Health Check
 ```typescript
 // src/{{ company }}/health.ts
 export async function check{{ display_name }}Health(): Promise<HealthStatus> {
@@ -183,6 +191,48 @@ export function load{{ display_name }}Config(): {{ display_name }}Config {
   return require(`./{{ company }}.${env}.json`);
 }
 ```
+
+## Instructions
+
+### Step 1: Create Directory Structure
+Set up the project layout following the reference structure above.
+
+### Step 2: Implement Client Wrapper
+Create the singleton client with caching and monitoring.
+
+### Step 3: Add Error Handling
+Implement custom error classes for {{ display_name }} operations.
+
+### Step 4: Configure Health Checks
+Add health check endpoint for {{ display_name }} connectivity.
+
+## Output
+- Structured project layout
+- Client wrapper with caching
+- Error boundary implemented
+- Health checks configured
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Circular dependencies | Wrong layering | Separate concerns by layer |
+| Config not loading | Wrong paths | Verify config file locations |
+| Type errors | Missing types | Add {{ display_name }} types |
+| Test isolation | Shared state | Use dependency injection |
+
+## Examples
+
+### Quick Setup Script
+```bash
+# Create reference structure
+mkdir -p src/{{ company }}/{handlers} src/services/{{ company }} src/api/{{ company }}
+touch src/{{ company }}/{client,config,types,errors}.ts
+touch src/services/{{ company }}/{index,sync,cache}.ts
+```
+
+## Resources
+- [{{ display_name }} SDK Documentation]({{ docs_url | default('https://docs.' + company + '.com') }}/sdk)
+- [{{ display_name }} Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/best-practices)
 
 ## Flagship Skills
 For multi-environment setup, see `{{ company }}-multi-env-setup`.

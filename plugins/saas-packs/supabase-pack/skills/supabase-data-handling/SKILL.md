@@ -1,9 +1,11 @@
 ---
 name: supabase-data-handling
 description: |
-  Supabase PII handling, data retention, and redaction patterns.
-  Trigger phrases: "supabase data", "supabase PII",
-  "supabase GDPR", "supabase data retention".
+  Implement Supabase PII handling, data retention, and GDPR/CCPA compliance patterns.
+  Use when handling sensitive data, implementing data redaction, configuring retention policies,
+  or ensuring compliance with privacy regulations for Supabase integrations.
+  Trigger with phrases like "supabase data", "supabase PII",
+  "supabase GDPR", "supabase data retention", "supabase privacy", "supabase CCPA".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Handle sensitive data correctly when integrating with Supabase.
+
+## Prerequisites
+- Understanding of GDPR/CCPA requirements
+- Supabase SDK with data export capabilities
+- Database for audit logging
+- Scheduled job infrastructure for cleanup
 
 ## Data Classification
 
@@ -152,6 +160,61 @@ const cacheData = {
   // Omit sensitive fields
 };
 ```
+
+## Instructions
+
+### Step 1: Classify Data
+Categorize all Supabase data by sensitivity level.
+
+### Step 2: Implement PII Detection
+Add regex patterns to detect sensitive data in logs.
+
+### Step 3: Configure Redaction
+Apply redaction to sensitive fields before logging.
+
+### Step 4: Set Up Retention
+Configure automatic cleanup with appropriate retention periods.
+
+## Output
+- Data classification documented
+- PII detection implemented
+- Redaction in logging active
+- Retention policy enforced
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| PII in logs | Missing redaction | Wrap logging with redact |
+| Deletion failed | Data locked | Check dependencies |
+| Export incomplete | Timeout | Increase batch size |
+| Audit gap | Missing entries | Review log pipeline |
+
+## Examples
+
+### Quick PII Scan
+```typescript
+const findings = detectPII(JSON.stringify(userData));
+if (findings.length > 0) {
+  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+}
+```
+
+### Redact Before Logging
+```typescript
+const safeData = redactPII(apiResponse);
+logger.info('Supabase response:', safeData);
+```
+
+### GDPR Data Export
+```typescript
+const userExport = await exportUserData('user-123');
+await sendToUser(userExport);
+```
+
+## Resources
+- [GDPR Developer Guide](https://gdpr.eu/developers/)
+- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
+- [Supabase Privacy Guide](https://supabase.com/docs/privacy)
 
 ## Next Steps
 For enterprise access control, see `supabase-enterprise-rbac`.

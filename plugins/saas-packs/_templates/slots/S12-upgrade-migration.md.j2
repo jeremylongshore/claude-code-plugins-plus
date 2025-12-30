@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-upgrade-migration
 description: |
-  {{ display_name }} SDK upgrades and breaking change migrations.
-  Trigger phrases: "upgrade {{ company }}", "{{ company }} migration",
-  "{{ company }} breaking changes", "update {{ company }} SDK".
-allowed-tools: Read, Write, Edit, Bash
+  Analyze, plan, and execute {{ display_name }} SDK upgrades with breaking change detection.
+  Use when upgrading {{ display_name }} SDK versions, detecting deprecations,
+  or migrating to new API versions.
+  Trigger with phrases like "upgrade {{ company }}", "{{ company }} migration",
+  "{{ company }} breaking changes", "update {{ company }} SDK", "analyze {{ company }} version".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(git:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -15,44 +17,51 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Guide for upgrading {{ display_name }} SDK versions and handling breaking changes.
 
-## Version Check
+## Prerequisites
+- Current {{ display_name }} SDK installed
+- Git for version control
+- Test suite available
+- Staging environment
 
+## Instructions
+
+### Step 1: Check Current Version
 ```bash
-# Current installed version
 npm list {{ npm_package | default(company + '-sdk') }}
-
-# Latest available version
 npm view {{ npm_package | default(company + '-sdk') }} version
-
-# Check for breaking changes
-npm view {{ npm_package | default(company + '-sdk') }} changelog
 ```
 
-## Upgrade Procedure
-
-### 1. Review Changelog
+### Step 2: Review Changelog
 ```bash
-# Check release notes
 open {{ changelog_url | default('https://github.com/' + company + '/sdk/releases') }}
 ```
 
-### 2. Test in Isolation
+### Step 3: Create Upgrade Branch
 ```bash
-# Create test branch
 git checkout -b upgrade/{{ company }}-sdk-vX.Y.Z
-
-# Update dependency
 npm install {{ npm_package | default(company + '-sdk') }}@latest
-
-# Run tests
 npm test
 ```
 
-### 3. Handle Breaking Changes
+### Step 4: Handle Breaking Changes
+Update import statements, configuration, and method signatures as needed.
 
-#### Common Migration Patterns
+## Output
+- Updated SDK version
+- Fixed breaking changes
+- Passing test suite
+- Documented rollback procedure
 
-**Import Changes:**
+## Error Handling
+| SDK Version | API Version | Node.js | Breaking Changes |
+|-------------|-------------|---------|------------------|
+| {{ v3_sdk | default('3.x') }} | {{ v3_api | default('2024-01') }} | {{ v3_node | default('18+') }} | {{ v3_breaking | default('Major refactor') }} |
+| {{ v2_sdk | default('2.x') }} | {{ v2_api | default('2023-06') }} | {{ v2_node | default('16+') }} | {{ v2_breaking | default('Auth changes') }} |
+| {{ v1_sdk | default('1.x') }} | {{ v1_api | default('2022-01') }} | {{ v1_node | default('14+') }} | {{ v1_breaking | default('Initial release') }} |
+
+## Examples
+
+### Import Changes
 ```typescript
 // Before (v1.x)
 import { Client } from '{{ npm_package | default(company + '-sdk') }}';
@@ -61,7 +70,7 @@ import { Client } from '{{ npm_package | default(company + '-sdk') }}';
 import { {{ client_class | default(display_name + 'Client') }} } from '{{ npm_package | default(company + '-sdk') }}';
 ```
 
-**Configuration Changes:**
+### Configuration Changes
 ```typescript
 // Before (v1.x)
 const client = new Client({ key: 'xxx' });
@@ -69,73 +78,35 @@ const client = new Client({ key: 'xxx' });
 // After (v2.x)
 const client = new {{ client_class | default(display_name + 'Client') }}({
   apiKey: 'xxx',
-  {{ new_options | default('// New required options') }}
 });
 ```
 
-**Method Signature Changes:**
-```typescript
-// Before (v1.x)
-client.create(data);
-
-// After (v2.x)
-client.create({ data, {{ new_params | default('// New required params') }} });
-```
-
-### 4. Codemods (If Available)
-
+### Rollback Procedure
 ```bash
-# Run official codemod
-npx @{{ company }}/codemod --transform v1-to-v2
-
-# Or use jscodeshift for custom transforms
-npx jscodeshift -t {{ company }}-v2-transform.js src/
-```
-
-## Deprecation Handling
-
-```typescript
-// Find deprecated usage
-const DEPRECATED_PATTERNS = [
-  {{ deprecated_patterns | default("'client.oldMethod'") }},
-];
-
-// Suppress warnings during migration (temporary)
-process.env.{{ company | upper }}_SUPPRESS_DEPRECATION = 'true';
-```
-
-## Rollback Plan
-
-```bash
-# 1. Keep old version pinned in package-lock.json
 npm install {{ npm_package | default(company + '-sdk') }}@1.x.x --save-exact
-
-# 2. Document rollback command
-echo "Rollback: npm install {{ npm_package | default(company + '-sdk') }}@1.x.x"
-
-# 3. Test rollback in staging first
 ```
 
-## Version Compatibility Matrix
+### Deprecation Handling
+```typescript
+// Monitor for deprecation warnings in development
+if (process.env.NODE_ENV === 'development') {
+  process.on('warning', (warning) => {
+    if (warning.name === 'DeprecationWarning') {
+      console.warn('[{{ display_name }}]', warning.message);
+      // Log to tracking system for proactive updates
+    }
+  });
+}
 
-| SDK Version | API Version | Node.js | Breaking Changes |
-|-------------|-------------|---------|------------------|
-| {{ v3_sdk | default('3.x') }} | {{ v3_api | default('2024-01') }} | {{ v3_node | default('18+') }} | {{ v3_breaking | default('Major refactor') }} |
-| {{ v2_sdk | default('2.x') }} | {{ v2_api | default('2023-06') }} | {{ v2_node | default('16+') }} | {{ v2_breaking | default('Auth changes') }} |
-| {{ v1_sdk | default('1.x') }} | {{ v1_api | default('2022-01') }} | {{ v1_node | default('14+') }} | {{ v1_breaking | default('Initial release') }} |
+// Common deprecation patterns to watch for:
+// - Renamed methods: client.oldMethod() -> client.newMethod()
+// - Changed parameters: { key: 'x' } -> { apiKey: 'x' }
+// - Removed features: Check release notes before upgrading
+```
 
-## Migration Checklist
+## Resources
+- [{{ display_name }} Changelog]({{ changelog_url | default('https://github.com/' + company + '/sdk/releases') }})
+- [{{ display_name }} Migration Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/migration)
 
-- [ ] Read full changelog for target version
-- [ ] Create upgrade branch
-- [ ] Update package.json
-- [ ] Fix TypeScript compilation errors
-- [ ] Update configuration code
-- [ ] Fix breaking API changes
-- [ ] Run full test suite
-- [ ] Test in staging environment
-- [ ] Deploy with rollback plan ready
-- [ ] Monitor for errors post-deployment
-
-## Pro Tier Skills
+## Next Steps
 For CI integration during upgrades, see `{{ company }}-ci-integration`.

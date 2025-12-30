@@ -1,8 +1,10 @@
 ---
 name: supabase-sdk-patterns
 description: |
-  Supabase SDK patterns for TypeScript and Python with best practices.
-  Trigger phrases: "supabase SDK patterns", "supabase best practices",
+  Apply production-ready Supabase SDK patterns for TypeScript and Python.
+  Use when implementing Supabase integrations, refactoring SDK usage,
+  or establishing team coding standards for Supabase.
+  Trigger with phrases like "supabase SDK patterns", "supabase best practices",
   "supabase code patterns", "idiomatic supabase".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
@@ -15,9 +17,14 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 ## Overview
 Production-ready patterns for Supabase SDK usage in TypeScript and Python.
 
-## Client Initialization Patterns
+## Prerequisites
+- Completed `supabase-install-auth` setup
+- Familiarity with async/await patterns
+- Understanding of error handling best practices
 
-### Singleton Pattern (Recommended)
+## Instructions
+
+### Step 1: Implement Singleton Pattern (Recommended)
 ```typescript
 // src/supabase/client.ts
 import { SupabaseClient } from '@supabase/supabase-js';
@@ -35,21 +42,7 @@ export function getSupabaseClient(): SupabaseClient {
 }
 ```
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, SupabaseClient>();
-
-export function getClientForTenant(tenantId: string): SupabaseClient {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new SupabaseClient({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-## Error Handling Pattern
-
+### Step 2: Add Error Handling Wrapper
 ```typescript
 import { SupabaseError } from '@supabase/supabase-js';
 
@@ -61,11 +54,9 @@ async function safeSupabaseCall<T>(
     return { data, error: null };
   } catch (err) {
     if (err instanceof SupabaseError) {
-      // Log structured error
       console.error({
         code: err.code,
         message: err.message,
-        // Additional error fields
       });
     }
     return { data: null, error: err as Error };
@@ -73,8 +64,7 @@ async function safeSupabaseCall<T>(
 }
 ```
 
-## Retry Pattern
-
+### Step 3: Implement Retry Logic
 ```typescript
 async function withRetry<T>(
   operation: () => Promise<T>,
@@ -94,28 +84,36 @@ async function withRetry<T>(
 }
 ```
 
-## Type Safety Patterns
+## Output
+- Type-safe client singleton
+- Robust error handling with structured logging
+- Automatic retry with exponential backoff
+- Runtime validation for API responses
 
+## Error Handling
+| Pattern | Use Case | Benefit |
+|---------|----------|---------|
+| Safe wrapper | All API calls | Prevents uncaught exceptions |
+| Retry logic | Transient failures | Improves reliability |
+| Type guards | Response validation | Catches API changes |
+| Logging | All operations | Debugging and monitoring |
+
+## Examples
+
+### Factory Pattern (Multi-tenant)
 ```typescript
-// Strict typing for API responses
-interface SupabaseResponse<T> {
-  data: T;
-  meta: {
-    requestId: string;
-    timestamp: string;
-  };
+const clients = new Map<string, SupabaseClient>();
+
+export function getClientForTenant(tenantId: string): SupabaseClient {
+  if (!clients.has(tenantId)) {
+    const apiKey = getTenantApiKey(tenantId);
+    clients.set(tenantId, new SupabaseClient({ apiKey }));
+  }
+  return clients.get(tenantId)!;
 }
-
-// Zod validation for runtime safety
-import { z } from 'zod';
-
-const supabaseResponseSchema = z.object({
-  // Define schema fields
-});
 ```
 
-## Python Patterns
-
+### Python Context Manager
 ```python
 from contextlib import asynccontextmanager
 from supabase import SupabaseClient
@@ -128,6 +126,22 @@ async def get_supabase_client():
     finally:
         await client.close()
 ```
+
+### Zod Validation
+```typescript
+import { z } from 'zod';
+
+const supabaseResponseSchema = z.object({
+  id: z.string(),
+  status: z.enum(['active', 'inactive']),
+  createdAt: z.string().datetime(),
+});
+```
+
+## Resources
+- [Supabase SDK Reference](https://supabase.com/docs/sdk)
+- [Supabase API Types](https://supabase.com/docs/types)
+- [Zod Documentation](https://zod.dev/)
 
 ## Next Steps
 Apply patterns in `supabase-core-workflow-a` for real-world usage.

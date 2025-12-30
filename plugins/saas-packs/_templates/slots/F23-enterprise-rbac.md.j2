@@ -1,9 +1,11 @@
 ---
 name: {{ company }}-enterprise-rbac
 description: |
-  {{ display_name }} enterprise SSO, roles, and organization controls.
-  Trigger phrases: "{{ company }} SSO", "{{ company }} RBAC",
-  "{{ company }} enterprise", "{{ company }} roles".
+  Configure {{ display_name }} enterprise SSO, role-based access control, and organization management.
+  Use when implementing SSO integration, configuring role-based permissions,
+  or setting up organization-level controls for {{ display_name }}.
+  Trigger with phrases like "{{ company }} SSO", "{{ company }} RBAC",
+  "{{ company }} enterprise", "{{ company }} roles", "{{ company }} permissions", "{{ company }} SAML".
 allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Configure enterprise-grade access control for {{ display_name }} integrations.
+
+## Prerequisites
+- {{ display_name }} Enterprise tier subscription
+- Identity Provider (IdP) with SAML/OIDC support
+- Understanding of role-based access patterns
+- Audit logging infrastructure
 
 ## Role Definitions
 
@@ -167,6 +175,48 @@ async function log{{ display_name }}Access(entry: {{ display_name }}AuditEntry):
   }
 }
 ```
+
+## Instructions
+
+### Step 1: Define Roles
+Map organizational roles to {{ display_name }} permissions.
+
+### Step 2: Configure SSO
+Set up SAML or OIDC integration with your IdP.
+
+### Step 3: Implement Middleware
+Add permission checks to API endpoints.
+
+### Step 4: Enable Audit Logging
+Track all access for compliance.
+
+## Output
+- Role definitions implemented
+- SSO integration configured
+- Permission middleware active
+- Audit trail enabled
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| SSO login fails | Wrong callback URL | Verify IdP config |
+| Permission denied | Missing role mapping | Update group mappings |
+| Token expired | Short TTL | Refresh token logic |
+| Audit gaps | Async logging failed | Check log pipeline |
+
+## Examples
+
+### Quick Permission Check
+```typescript
+if (!checkPermission(user.role, 'write')) {
+  throw new ForbiddenError('Write permission required');
+}
+```
+
+## Resources
+- [{{ display_name }} Enterprise Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/enterprise)
+- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
+- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
 
 ## Next Steps
 For major migrations, see `{{ company }}-migration-deep-dive`.

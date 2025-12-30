@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-webhooks-events
 description: |
-  {{ display_name }} webhook signature validation and event handling.
-  Trigger phrases: "{{ company }} webhook", "{{ company }} events",
-  "{{ company }} webhook signature", "handle {{ company }} events".
-allowed-tools: Read, Write, Edit, Bash
+  Implement {{ display_name }} webhook signature validation and event handling.
+  Use when setting up webhook endpoints, implementing signature verification,
+  or handling {{ display_name }} event notifications securely.
+  Trigger with phrases like "{{ company }} webhook", "{{ company }} events",
+  "{{ company }} webhook signature", "handle {{ company }} events", "{{ company }} notifications".
+allowed-tools: Read, Write, Edit, Bash(curl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Securely handle {{ display_name }} webhooks with signature validation and replay protection.
+
+## Prerequisites
+- {{ display_name }} webhook secret configured
+- HTTPS endpoint accessible from internet
+- Understanding of cryptographic signatures
+- Redis or database for idempotency (optional)
 
 ## Webhook Endpoint Setup
 
@@ -139,6 +147,51 @@ curl -X POST https://webhook.site/your-uuid \
   -H "Content-Type: application/json" \
   -d '{"type": "resource.created", "data": {}}'
 ```
+
+## Instructions
+
+### Step 1: Register Webhook Endpoint
+Configure your webhook URL in the {{ display_name }} dashboard.
+
+### Step 2: Implement Signature Verification
+Use the signature verification code to validate incoming webhooks.
+
+### Step 3: Handle Events
+Implement handlers for each event type your application needs.
+
+### Step 4: Add Idempotency
+Prevent duplicate processing with event ID tracking.
+
+## Output
+- Secure webhook endpoint
+- Signature validation enabled
+- Event handlers implemented
+- Replay attack protection active
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Invalid signature | Wrong secret | Verify webhook secret |
+| Timestamp rejected | Clock drift | Check server time sync |
+| Duplicate events | Missing idempotency | Implement event ID tracking |
+| Handler timeout | Slow processing | Use async queue |
+
+## Examples
+
+### Testing Webhooks Locally
+```bash
+# Use ngrok to expose local server
+ngrok http 3000
+
+# Send test webhook
+curl -X POST https://your-ngrok-url/webhooks/{{ company }} \
+  -H "Content-Type: application/json" \
+  -d '{"type": "test", "data": {}}'
+```
+
+## Resources
+- [{{ display_name }} Webhooks Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/webhooks)
+- [Webhook Security Best Practices]({{ docs_url | default('https://docs.' + company + '.com') }}/webhooks/security)
 
 ## Next Steps
 For performance optimization, see `{{ company }}-performance-tuning`.

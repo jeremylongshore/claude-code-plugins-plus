@@ -1,10 +1,12 @@
 ---
 name: {{ company }}-migration-deep-dive
 description: |
-  {{ display_name }} major re-architecture and migration strategies.
-  Trigger phrases: "migrate {{ company }}", "{{ company }} migration",
-  "switch to {{ company }}", "{{ company }} replatform".
-allowed-tools: Read, Write, Edit, Bash
+  Execute {{ display_name }} major re-architecture and migration strategies with strangler fig pattern.
+  Use when migrating to or from {{ display_name }}, performing major version upgrades,
+  or re-platforming existing integrations to {{ display_name }}.
+  Trigger with phrases like "migrate {{ company }}", "{{ company }} migration",
+  "switch to {{ company }}", "{{ company }} replatform", "{{ company }} upgrade major".
+allowed-tools: Read, Write, Edit, Bash(npm:*), Bash(node:*), Bash(kubectl:*)
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,6 +16,12 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 
 ## Overview
 Comprehensive guide for migrating to or from {{ display_name }}, or major version upgrades.
+
+## Prerequisites
+- Current system documentation
+- {{ display_name }} SDK installed
+- Feature flag infrastructure
+- Rollback strategy tested
 
 ## Migration Types
 
@@ -26,7 +34,7 @@ Comprehensive guide for migrating to or from {{ display_name }}, or major versio
 
 ## Pre-Migration Assessment
 
-### 1. Current State Analysis
+### Step 1: Current State Analysis
 ```bash
 # Document current implementation
 find . -name "*.ts" -o -name "*.py" | xargs grep -l "{{ company }}" > {{ company }}-files.txt
@@ -39,7 +47,7 @@ npm list | grep {{ company }}
 pip freeze | grep {{ company }}
 ```
 
-### 2. Data Inventory
+### Step 2: Data Inventory
 ```typescript
 interface MigrationInventory {
   dataTypes: string[];
@@ -190,6 +198,47 @@ async function validate{{ display_name }}Migration(): Promise<ValidationReport> 
   return { checks: results, passed: results.every(r => r.result.success) };
 }
 ```
+
+## Instructions
+
+### Step 1: Assess Current State
+Document existing implementation and data inventory.
+
+### Step 2: Build Adapter Layer
+Create abstraction layer for gradual migration.
+
+### Step 3: Migrate Data
+Run batch data migration with error handling.
+
+### Step 4: Shift Traffic
+Gradually route traffic to new {{ display_name }} integration.
+
+## Output
+- Migration assessment complete
+- Adapter layer implemented
+- Data migrated successfully
+- Traffic fully shifted to {{ display_name }}
+
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Data mismatch | Transform errors | Validate transform logic |
+| Performance drop | No caching | Add caching layer |
+| Rollback triggered | Errors spiked | Reduce traffic percentage |
+| Validation failed | Missing data | Check batch processing |
+
+## Examples
+
+### Quick Migration Status
+```typescript
+const status = await validate{{ display_name }}Migration();
+console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
+status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
+```
+
+## Resources
+- [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
+- [{{ display_name }} Migration Guide]({{ docs_url | default('https://docs.' + company + '.com') }}/migration)
 
 ## Flagship+ Skills
 For advanced troubleshooting, see `{{ company }}-advanced-troubleshooting`.
