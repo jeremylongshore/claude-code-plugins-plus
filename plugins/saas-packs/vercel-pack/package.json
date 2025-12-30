@@ -1,5 +1,5 @@
 {
-  "name": "@intentsolutionsio/vercel-pack",
+  "name": "@intentsolutionsio/vercel-skill-md-pack",
   "version": "1.0.0",
   "description": "Claude Code skill pack for Vercel - 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations",
   "main": "README.md",

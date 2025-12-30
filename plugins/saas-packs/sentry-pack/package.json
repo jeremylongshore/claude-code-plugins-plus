@@ -1,5 +1,5 @@
 {
-  "name": "@intentsolutionsio/sentry-pack",
+  "name": "@intentsolutionsio/sentry-skill-md-pack",
   "version": "1.0.0",
   "description": "Claude Code skill pack for Sentry - 30 skills covering error tracking, performance monitoring, release management, and production operations",
   "main": "README.md",
