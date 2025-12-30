@@ -1,7 +1,7 @@
 {
   "name": "marketplace",
   "type": "module",
-  "version": "3.0.0",
+  "version": "4.4.0",
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/build.mjs",

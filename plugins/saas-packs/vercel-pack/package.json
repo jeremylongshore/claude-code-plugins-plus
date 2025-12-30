@@ -1,0 +1,43 @@
+{
+  "name": "@intentsolutionsio/vercel-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Vercel - 30 skills covering deployments, edge functions, preview environments, performance optimization, and production operations",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    "LICENSE",
+    ".claude-plugin/",
+    "skills/",
+    "000-docs/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "vercel",
+    "deployment",
+    "edge-functions",
+    "serverless",
+    "preview-deployments",
+    "nextjs",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/vercel-pack"
+  },
+  "bugs": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
+  },
+  "homepage": "https://claudecodeplugins.io/plugins/vercel-pack",
+  "publishConfig": {
+    "access": "public"
+  }
+}
