@@ -67,6 +67,40 @@
       ],
       "docsUrl": "https://vercel.com/docs",
       "dashboardUrl": "https://vercel.com/dashboard"
+    },
+    {
+      "id": "sentry",
+      "name": "Sentry",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "Error tracking, performance monitoring, and release management",
+      "icon": "alert-triangle",
+      "color": "#362D59",
+      "installCommand": "/plugin install sentry-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["sentry-install-auth", "sentry-hello-world", "sentry-local-dev-loop", "sentry-sdk-patterns", "sentry-error-capture", "sentry-performance-tracing"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["sentry-common-errors", "sentry-debug-bundle", "sentry-rate-limits", "sentry-security-basics", "sentry-prod-checklist", "sentry-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["sentry-ci-integration", "sentry-deploy-integration", "sentry-release-management", "sentry-performance-tuning", "sentry-cost-tuning", "sentry-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["sentry-multi-env-setup", "sentry-observability", "sentry-incident-runbook", "sentry-data-handling", "sentry-enterprise-rbac", "sentry-migration-deep-dive"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["sentry-advanced-troubleshooting", "sentry-load-scale", "sentry-reliability-patterns", "sentry-policy-guardrails", "sentry-architecture-variants", "sentry-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://docs.sentry.io",
+      "dashboardUrl": "https://sentry.io"
     }
   ],
   "tiers": {

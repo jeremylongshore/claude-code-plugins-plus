@@ -1,7 +1,7 @@
 company,display_name,tier,skill_count,npm_package,npm_status,beads_epic_id,skills_created,skills_tested,website_status,marketplace_status,notes
 supabase,Supabase,flagship+,30,@intentsolutionsio/supabase-pack,published,ccpi-supabase,30,0,not_started,added,first reference implementation - npm published 2025-12-29
 vercel,Vercel,flagship+,30,@intentsolutionsio/vercel-pack,published,ccpi-vercel,30,0,not_started,added,second Flagship+ pack - npm published 2025-12-29
-sentry,Sentry,flagship+,30,@intentsolutionsio/sentry-pack,not_reserved,ccpi-sentry,0,0,not_started,not_added,
+sentry,Sentry,flagship+,30,@intentsolutionsio/sentry-pack,published,ccpi-sentry,30,0,complete,added,third Flagship+ pack - npm published 2025-12-30
 langchain,LangChain,flagship+,30,@intentsolutionsio/langchain-pack,not_reserved,ccpi-langchain,0,0,not_started,not_added,
 replit,Replit,flagship+,30,@intentsolutionsio/replit-pack,not_reserved,ccpi-replit,0,0,not_started,not_added,
 clerk,Clerk,flagship,24,@intentsolutionsio/clerk-pack,not_reserved,ccpi-clerk,0,0,not_started,not_added,
