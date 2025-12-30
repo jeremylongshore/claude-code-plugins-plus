@@ -1,15 +1,41 @@
 ---
 name: openrouter-context-optimization
 description: |
-  Optimize context usage with OpenRouter. Triggers on "openrouter context",
-  "openrouter tokens", "reduce openrouter tokens", "context window optimization".
-allowed-tools: Read, Write, Edit, Bash
+  Optimize context window usage and token efficiency. Use when managing costs or hitting context limits. Trigger with phrases like 'openrouter context', 'openrouter tokens', 'reduce tokens', 'context window'.
+allowed-tools: Read, Write, Edit, Grep
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 ---
-
 # OpenRouter Context Optimization
+
+## Overview
+
+This skill covers techniques for efficient context management including truncation, summarization, and token optimization.
+
+## Prerequisites
+
+- OpenRouter integration
+- Understanding of token-based pricing
+
+## Instructions
+
+Follow these steps to implement this skill:
+
+1. **Verify Prerequisites**: Ensure all prerequisites listed above are met
+2. **Review the Implementation**: Study the code examples and patterns below
+3. **Adapt to Your Environment**: Modify configuration values for your setup
+4. **Test the Integration**: Run the verification steps to confirm functionality
+5. **Monitor in Production**: Set up appropriate logging and monitoring
+
+## Overview
+
+This skill covers techniques for efficient context management including truncation, summarization, and token optimization.
+
+## Prerequisites
+
+- OpenRouter integration
+- Understanding of token-based pricing
 
 ## Token Estimation
 
@@ -431,3 +457,55 @@ context_cache.register_system_prompt(
     "You are a code reviewer. Be concise and focus on important issues."
 )
 ```
+
+## Output
+
+Successful execution produces:
+- Working OpenRouter integration
+- Verified API connectivity
+- Example responses demonstrating functionality
+
+## Error Handling
+
+Common errors and solutions:
+1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
+2. **429 Rate Limited**: Implement exponential backoff
+3. **500 Server Error**: Retry with backoff, check OpenRouter status page
+4. **Model Not Found**: Verify model ID includes provider prefix
+
+## Examples
+
+See code examples in sections above for complete, runnable implementations.
+
+## Resources
+
+- [OpenRouter Documentation](https://openrouter.ai/docs)
+- [OpenRouter Models](https://openrouter.ai/models)
+- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- [OpenRouter Status](https://status.openrouter.ai)
+
+## Output
+
+Successful execution produces:
+- Working OpenRouter integration
+- Verified API connectivity
+- Example responses demonstrating functionality
+
+## Error Handling
+
+Common errors and solutions:
+1. **401 Unauthorized**: Check API key format (must start with `sk-or-`)
+2. **429 Rate Limited**: Implement exponential backoff
+3. **500 Server Error**: Retry with backoff, check OpenRouter status page
+4. **Model Not Found**: Verify model ID includes provider prefix
+
+## Examples
+
+See code examples in sections above for complete, runnable implementations.
+
+## Resources
+
+- [OpenRouter Documentation](https://openrouter.ai/docs)
+- [OpenRouter Models](https://openrouter.ai/models)
+- [OpenRouter API Reference](https://openrouter.ai/docs/api-reference)
+- [OpenRouter Status](https://status.openrouter.ai)
