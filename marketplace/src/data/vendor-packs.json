@@ -101,6 +101,40 @@
       ],
       "docsUrl": "https://docs.sentry.io",
       "dashboardUrl": "https://sentry.io"
+    },
+    {
+      "id": "cursor",
+      "name": "Cursor",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "AI-powered code editor with completions, chat, and composer",
+      "icon": "code",
+      "color": "#000000",
+      "installCommand": "/plugin install cursor-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["cursor-install-auth", "cursor-hello-world", "cursor-local-dev-loop", "cursor-keybindings", "cursor-ai-chat", "cursor-tab-completion"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["cursor-common-errors", "cursor-debug-bundle", "cursor-indexing-issues", "cursor-model-selection", "cursor-prod-checklist", "cursor-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["cursor-composer-workflows", "cursor-rules-config", "cursor-context-management", "cursor-codebase-indexing", "cursor-git-integration", "cursor-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["cursor-team-setup", "cursor-privacy-settings", "cursor-api-key-management", "cursor-sso-integration", "cursor-usage-analytics", "cursor-compliance-audit"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["cursor-advanced-composer", "cursor-custom-prompts", "cursor-multi-repo", "cursor-extension-integration", "cursor-performance-tuning", "cursor-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://docs.cursor.com",
+      "dashboardUrl": "https://cursor.com/settings"
     }
   ],
   "tiers": {
