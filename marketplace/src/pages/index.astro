@@ -1018,6 +1018,77 @@ const totalCategories = searchIndex.stats.categories.length;
         </div>
     </section>
 
+    <!-- SaaS Skill Packs - Featured -->
+    <section class="saas-packs-section" style="padding: 4rem 2rem; background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <span style="background: rgba(62, 207, 142, 0.2); color: #3ECF8E; padding: 0.4rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">New Release</span>
+                <h2 style="color: white; font-size: clamp(2rem, 4vw, 2.8rem); margin: 1rem 0 0.5rem; font-weight: 700;">SaaS Skill Packs</h2>
+                <p style="color: rgba(255,255,255,0.8); font-size: 1.1rem; max-width: 600px; margin: 0 auto;">
+                    Deep integration packs for your favorite platforms. 30 skills each for complete coverage.
+                </p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Supabase Pack -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='#3ECF8E';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)';">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div style="width: 48px; height: 48px; background: #3ECF8E; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="color: white; margin: 0; font-size: 1.2rem;">Supabase</h3>
+                            <span style="color: #3ECF8E; font-size: 0.85rem; font-weight: 600;">Flagship+ • 30 Skills</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Database, auth, storage, edge functions, realtime subscriptions, and production operations.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <code style="background: rgba(0,0,0,0.3); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; color: #3ECF8E; cursor: pointer;" onclick="navigator.clipboard.writeText('/plugin install supabase-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install supabase-pack', 2000);">/plugin install supabase-pack</code>
+                        <code style="background: rgba(0,0,0,0.3); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; color: rgba(255,255,255,0.6); cursor: pointer;" onclick="navigator.clipboard.writeText('npm i @intentsolutionsio/supabase-pack'); this.textContent='Copied!'; setTimeout(() => this.textContent='npm i @intentsolutionsio/supabase-pack', 2000);">npm i @intentsolutionsio/supabase-pack</code>
+                    </div>
+                </div>
+
+                <!-- Vercel Pack -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 1.5rem; transition: transform 0.2s, border-color 0.2s;" onmouseover="this.style.transform='translateY(-4px)'; this.style.borderColor='#fff';" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255,255,255,0.1)';">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                        <div style="width: 48px; height: 48px; background: #000; border: 1px solid rgba(255,255,255,0.2); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 19.5h20L12 2z"/></svg>
+                        </div>
+                        <div>
+                            <h3 style="color: white; margin: 0; font-size: 1.2rem;">Vercel</h3>
+                            <span style="color: #fff; font-size: 0.85rem; font-weight: 600;">Flagship+ • 30 Skills</span>
+                        </div>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-bottom: 1rem; line-height: 1.5;">
+                        Deployments, edge functions, preview environments, performance optimization, and CI/CD.
+                    </p>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <code style="background: rgba(0,0,0,0.3); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; color: #fff; cursor: pointer;" onclick="navigator.clipboard.writeText('/plugin install vercel-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install vercel-pack', 2000);">/plugin install vercel-pack</code>
+                        <code style="background: rgba(0,0,0,0.3); padding: 0.5rem 0.75rem; border-radius: 6px; font-size: 0.8rem; color: rgba(255,255,255,0.6); cursor: pointer;" onclick="navigator.clipboard.writeText('npm i @intentsolutionsio/vercel-pack'); this.textContent='Copied!'; setTimeout(() => this.textContent='npm i @intentsolutionsio/vercel-pack', 2000);">npm i @intentsolutionsio/vercel-pack</code>
+                    </div>
+                </div>
+
+                <!-- Coming Soon -->
+                <div style="background: rgba(255,255,255,0.02); border: 1px dashed rgba(255,255,255,0.2); border-radius: 16px; padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+                    <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">📦</div>
+                    <h3 style="color: white; margin: 0 0 0.5rem; font-size: 1.1rem;">+53 More Packs</h3>
+                    <p style="color: rgba(255,255,255,0.5); font-size: 0.85rem; margin: 0;">
+                        Sentry, Notion, Clerk, PostHog, Linear, Obsidian, and more coming soon
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="/learn/" style="display: inline-flex; align-items: center; gap: 0.5rem; background: #3ECF8E; color: #000; padding: 0.875rem 1.75rem; border-radius: 8px; font-weight: 600; text-decoration: none; font-size: 1rem; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 20px rgba(62,207,142,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none';">
+                    Browse All Packs
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
     <!-- Quick-Start Collections -->
     <section class="features" style="padding: 4rem 2rem; background: var(--brand-light);">
         <div class="section-label">Quick Start</div>
