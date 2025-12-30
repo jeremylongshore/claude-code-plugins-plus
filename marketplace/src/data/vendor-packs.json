@@ -169,6 +169,40 @@
       ],
       "docsUrl": "https://openrouter.ai/docs",
       "dashboardUrl": "https://openrouter.ai/keys"
+    },
+    {
+      "id": "klingai",
+      "name": "Kling AI",
+      "tier": "flagship+",
+      "skillCount": 30,
+      "description": "AI video generation with text-to-video, image-to-video, and cinematic controls",
+      "icon": "video",
+      "color": "#FF6B35",
+      "installCommand": "/plugin install klingai-pack@claude-code-plugins-plus",
+      "categories": [
+        {
+          "name": "Onboarding & Foundations",
+          "skills": ["klingai-install-auth", "klingai-hello-world", "klingai-model-catalog", "klingai-sdk-patterns", "klingai-text-to-video", "klingai-pricing-basics"]
+        },
+        {
+          "name": "Operations & Debugging",
+          "skills": ["klingai-common-errors", "klingai-debug-bundle", "klingai-rate-limits", "klingai-job-monitoring", "klingai-prod-checklist", "klingai-upgrade-migration"]
+        },
+        {
+          "name": "CI/CD & Deployment",
+          "skills": ["klingai-webhook-config", "klingai-batch-processing", "klingai-async-workflows", "klingai-storage-integration", "klingai-ci-integration", "klingai-reference-architecture"]
+        },
+        {
+          "name": "Enterprise & Compliance",
+          "skills": ["klingai-team-setup", "klingai-cost-controls", "klingai-usage-analytics", "klingai-content-policy", "klingai-audit-logging", "klingai-compliance-review"]
+        },
+        {
+          "name": "Advanced Patterns",
+          "skills": ["klingai-image-to-video", "klingai-video-extension", "klingai-camera-control", "klingai-style-transfer", "klingai-performance-tuning", "klingai-known-pitfalls"]
+        }
+      ],
+      "docsUrl": "https://docs.klingai.com",
+      "dashboardUrl": "https://klingai.com/dashboard"
     }
   ],
   "tiers": {

@@ -1,0 +1,33 @@
+{
+  "name": "@intentsolutionsio/klingai-skill-md-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Kling AI - 30 skills covering AI video generation, image-to-video, text-to-video, and production workflows",
+  "keywords": [
+    "claude-code",
+    "skill-pack",
+    "klingai",
+    "kling-ai",
+    "ai-video",
+    "video-generation",
+    "text-to-video",
+    "image-to-video",
+    "generative-ai"
+  ],
+  "author": "Jeremy Longshore <jeremy@intentsolutions.io>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/klingai-pack"
+  },
+  "homepage": "https://claudecodeplugins.io/learn/klingai",
+  "files": [
+    "skills/**/*.md",
+    "README.md",
+    "LICENSE",
+    ".claude-plugin/plugin.json"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}
