@@ -5,20 +5,20 @@ sentry,Sentry,flagship+,30,@intentsolutionsio/sentry-skill-md-pack,published,ccp
 cursor,Cursor,flagship+,30,@intentsolutionsio/cursor-skill-md-pack,published,ccpi-cursor,30,0,complete,added,Brex #1 - npm published 2025-12-30
 openrouter,OpenRouter,flagship+,30,@intentsolutionsio/openrouter-skill-md-pack,published,ccpi-openrouter,30,0,complete,added,Brex #2 - npm published 2025-12-30
 klingai,Kling AI,flagship+,30,@intentsolutionsio/klingai-skill-md-pack,published,ccpi-klingai,30,0,complete,added,Brex #3 - npm published 2025-12-30
-retellai,Retell AI,flagship+,30,@intentsolutionsio/retellai-skill-md-pack,reserved,ccpi-retellai,0,0,not_started,not_added,Brex #4
-perplexity,Perplexity,flagship+,30,@intentsolutionsio/perplexity-skill-md-pack,reserved,ccpi-perplexity,0,0,not_started,not_added,Brex #5
-windsurf,Windsurf,flagship+,30,@intentsolutionsio/windsurf-skill-md-pack,reserved,ccpi-windsurf,0,0,not_started,not_added,Brex #6
-firecrawl,FireCrawl,flagship+,30,@intentsolutionsio/firecrawl-skill-md-pack,reserved,ccpi-firecrawl,0,0,not_started,not_added,Brex #7
-clay,Clay,flagship+,30,@intentsolutionsio/clay-skill-md-pack,reserved,ccpi-clay,0,0,not_started,not_added,Brex #8
-replit,Replit,flagship+,30,@intentsolutionsio/replit-skill-md-pack,reserved,ccpi-replit,0,0,not_started,not_added,Brex #9
-exa,Exa,flagship+,30,@intentsolutionsio/exa-skill-md-pack,reserved,ccpi-exa,0,0,not_started,not_added,Brex #10
-vastai,Vast.ai,flagship,24,@intentsolutionsio/vastai-skill-md-pack,reserved,ccpi-vastai,0,0,not_started,not_added,Brex #11
-groq,Groq,flagship,24,@intentsolutionsio/groq-skill-md-pack,reserved,ccpi-groq,0,0,not_started,not_added,Brex #12
-instantly,Instantly,flagship,24,@intentsolutionsio/instantly-skill-md-pack,reserved,ccpi-instantly,0,0,not_started,not_added,Brex #13
-fireflies,Fireflies.ai,flagship,24,@intentsolutionsio/fireflies-skill-md-pack,reserved,ccpi-fireflies,0,0,not_started,not_added,Brex #14
-coderabbit,CodeRabbit,flagship,24,@intentsolutionsio/coderabbit-skill-md-pack,reserved,ccpi-coderabbit,0,0,not_started,not_added,Brex #15
-posthog,PostHog,flagship,24,@intentsolutionsio/posthog-skill-md-pack,reserved,ccpi-posthog,0,0,not_started,not_added,Brex #16
-ideogram,Ideogram,flagship,24,@intentsolutionsio/ideogram-skill-md-pack,reserved,ccpi-ideogram,0,0,not_started,not_added,Brex #17
+retellai,Retell AI,flagship+,30,@intentsolutionsio/retellai-skill-md-pack,reserved,ccpi-retellai,30,0,not_started,not_added,Brex #4
+perplexity,Perplexity,flagship+,30,@intentsolutionsio/perplexity-skill-md-pack,reserved,ccpi-perplexity,30,0,not_started,not_added,Brex #5
+windsurf,Windsurf,flagship+,30,@intentsolutionsio/windsurf-skill-md-pack,reserved,ccpi-windsurf,30,0,not_started,not_added,Brex #6
+firecrawl,FireCrawl,flagship+,30,@intentsolutionsio/firecrawl-skill-md-pack,reserved,ccpi-firecrawl,30,0,not_started,not_added,Brex #7
+clay,Clay,flagship+,30,@intentsolutionsio/clay-skill-md-pack,reserved,ccpi-clay,30,0,not_started,not_added,Brex #8
+replit,Replit,flagship+,30,@intentsolutionsio/replit-skill-md-pack,reserved,ccpi-replit,30,0,not_started,not_added,Brex #9
+exa,Exa,flagship+,30,@intentsolutionsio/exa-skill-md-pack,reserved,ccpi-exa,30,0,not_started,not_added,Brex #10
+vastai,Vast.ai,flagship,24,@intentsolutionsio/vastai-skill-md-pack,reserved,ccpi-vastai,24,0,not_started,not_added,Brex #11
+groq,Groq,flagship,24,@intentsolutionsio/groq-skill-md-pack,reserved,ccpi-groq,24,0,not_started,not_added,Brex #12
+instantly,Instantly,flagship,24,@intentsolutionsio/instantly-skill-md-pack,reserved,ccpi-instantly,24,0,not_started,not_added,Brex #13
+fireflies,Fireflies.ai,flagship,24,@intentsolutionsio/fireflies-skill-md-pack,reserved,ccpi-fireflies,24,0,not_started,not_added,Brex #14
+coderabbit,CodeRabbit,flagship,24,@intentsolutionsio/coderabbit-skill-md-pack,reserved,ccpi-coderabbit,24,0,not_started,not_added,Brex #15
+posthog,PostHog,flagship,24,@intentsolutionsio/posthog-skill-md-pack,reserved,ccpi-posthog,24,0,not_started,not_added,Brex #16
+ideogram,Ideogram,flagship,24,@intentsolutionsio/ideogram-skill-md-pack,reserved,ccpi-ideogram,24,0,not_started,not_added,Brex #17
 apollo,Apollo,flagship,24,@intentsolutionsio/apollo-skill-md-pack,reserved,ccpi-apollo,0,0,not_started,not_added,Brex #18
 deepgram,Deepgram,flagship,24,@intentsolutionsio/deepgram-skill-md-pack,reserved,ccpi-deepgram,0,0,not_started,not_added,Brex #19
 juicebox,Juicebox,flagship,24,@intentsolutionsio/juicebox-skill-md-pack,reserved,ccpi-juicebox,0,0,not_started,not_added,Brex #20
