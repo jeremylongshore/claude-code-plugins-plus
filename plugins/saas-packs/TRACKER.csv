@@ -19,88 +19,88 @@ fireflies,Fireflies.ai,flagship,24,@intentsolutionsio/fireflies-skill-md-pack,re
 coderabbit,CodeRabbit,flagship,24,@intentsolutionsio/coderabbit-skill-md-pack,reserved,ccpi-coderabbit,24,0,not_started,not_added,Brex #15
 posthog,PostHog,flagship,24,@intentsolutionsio/posthog-skill-md-pack,reserved,ccpi-posthog,24,0,not_started,not_added,Brex #16
 ideogram,Ideogram,flagship,24,@intentsolutionsio/ideogram-skill-md-pack,reserved,ccpi-ideogram,24,0,not_started,not_added,Brex #17
-apollo,Apollo,flagship,24,@intentsolutionsio/apollo-skill-md-pack,reserved,ccpi-apollo,0,0,not_started,not_added,Brex #18
-deepgram,Deepgram,flagship,24,@intentsolutionsio/deepgram-skill-md-pack,reserved,ccpi-deepgram,0,0,not_started,not_added,Brex #19
-juicebox,Juicebox,flagship,24,@intentsolutionsio/juicebox-skill-md-pack,reserved,ccpi-juicebox,0,0,not_started,not_added,Brex #20
-customerio,Customer.io,flagship,24,@intentsolutionsio/customerio-skill-md-pack,reserved,ccpi-customerio,0,0,not_started,not_added,Brex #21
-langchain,LangChain,flagship,24,@intentsolutionsio/langchain-skill-md-pack,reserved,ccpi-langchain,0,0,not_started,not_added,Brex #22
-lindy,Lindy,flagship,24,@intentsolutionsio/lindy-skill-md-pack,reserved,ccpi-lindy,0,0,not_started,not_added,Brex #24
-granola,Granola,flagship,24,@intentsolutionsio/granola-skill-md-pack,reserved,ccpi-granola,0,0,not_started,not_added,Brex #25
-gamma,Gamma,flagship,24,@intentsolutionsio/gamma-skill-md-pack,reserved,ccpi-gamma,0,0,not_started,not_added,Brex #26
-clerk,Clerk,flagship,24,@intentsolutionsio/clerk-skill-md-pack,reserved,ccpi-clerk,0,0,not_started,not_added,Brex #28
-linear,Linear,flagship,24,@intentsolutionsio/linear-skill-md-pack,reserved,ccpi-linear,0,0,not_started,not_added,Brex #29
-clickhouse,ClickHouse,flagship,24,@intentsolutionsio/clickhouse-skill-md-pack,reserved,ccpi-clickhouse,0,0,not_started,not_added,Brex #30
-fondo,Fondo,pro,18,@intentsolutionsio/fondo-skill-md-pack,reserved,ccpi-fondo,0,0,not_started,not_added,Brex #31
-anima,Anima,pro,18,@intentsolutionsio/anima-skill-md-pack,reserved,ccpi-anima,0,0,not_started,not_added,Brex #32
-flyio,Fly.io,pro,18,@intentsolutionsio/flyio-skill-md-pack,reserved,ccpi-flyio,0,0,not_started,not_added,Brex #34
-framer,Framer,pro,18,@intentsolutionsio/framer-skill-md-pack,reserved,ccpi-framer,0,0,not_started,not_added,Brex #35
-stackblitz,StackBlitz,pro,18,@intentsolutionsio/stackblitz-skill-md-pack,reserved,ccpi-stackblitz,0,0,not_started,not_added,Brex #36
-elevenlabs,ElevenLabs,pro,18,@intentsolutionsio/elevenlabs-skill-md-pack,reserved,ccpi-elevenlabs,0,0,not_started,not_added,Brex #37
-assemblyai,AssemblyAI,pro,18,@intentsolutionsio/assemblyai-skill-md-pack,reserved,ccpi-assemblyai,0,0,not_started,not_added,Brex #38
-serpapi,SerpApi,pro,18,@intentsolutionsio/serpapi-skill-md-pack,reserved,ccpi-serpapi,0,0,not_started,not_added,Brex #39
-hex,Hex,pro,18,@intentsolutionsio/hex-skill-md-pack,reserved,ccpi-hex,0,0,not_started,not_added,Brex #40
-fathom,Fathom,pro,18,@intentsolutionsio/fathom-skill-md-pack,reserved,ccpi-fathom,0,0,not_started,not_added,Brex #41
-attio,Attio,pro,18,@intentsolutionsio/attio-skill-md-pack,reserved,ccpi-attio,0,0,not_started,not_added,Brex #42
-alchemy,Alchemy,pro,18,@intentsolutionsio/alchemy-skill-md-pack,reserved,ccpi-alchemy,0,0,not_started,not_added,Brex #43
-runway,Runway,pro,18,@intentsolutionsio/runway-skill-md-pack,reserved,ccpi-runway,0,0,not_started,not_added,Brex #44
-brightdata,Bright Data,pro,18,@intentsolutionsio/brightdata-skill-md-pack,reserved,ccpi-brightdata,0,0,not_started,not_added,Brex #45
-together,Together AI,pro,18,@intentsolutionsio/together-skill-md-pack,reserved,ccpi-together,0,0,not_started,not_added,Brex #46
-apify,Apify,pro,18,@intentsolutionsio/apify-skill-md-pack,reserved,ccpi-apify,0,0,not_started,not_added,Brex #47
-finta,Finta,pro,18,@intentsolutionsio/finta-skill-md-pack,reserved,ccpi-finta,0,0,not_started,not_added,Brex #48
-mistral,Mistral AI,pro,18,@intentsolutionsio/mistral-skill-md-pack,reserved,ccpi-mistral,0,0,not_started,not_added,Brex #49
-wispr,Wispr,pro,18,@intentsolutionsio/wispr-skill-md-pack,reserved,ccpi-wispr,0,0,not_started,not_added,Brex #50
-anthropic,Anthropic,flagship+,30,@intentsolutionsio/anthropic-skill-md-pack,reserved,ccpi-anthropic,0,0,not_started,not_added,Extended #51 - Claude maker
-databricks,Databricks,flagship+,30,@intentsolutionsio/databricks-skill-md-pack,reserved,ccpi-databricks,0,0,not_started,not_added,Extended #52
-coreweave,CoreWeave,flagship,24,@intentsolutionsio/coreweave-skill-md-pack,reserved,ccpi-coreweave,0,0,not_started,not_added,Extended #53
-glean,Glean,flagship,24,@intentsolutionsio/glean-skill-md-pack,reserved,ccpi-glean,0,0,not_started,not_added,Extended #54
-cohere,Cohere,flagship,24,@intentsolutionsio/cohere-skill-md-pack,reserved,ccpi-cohere,0,0,not_started,not_added,Extended #55
-abridge,Abridge,pro,18,@intentsolutionsio/abridge-skill-md-pack,reserved,ccpi-abridge,0,0,not_started,not_added,Extended #56
-notion,Notion,flagship+,30,@intentsolutionsio/notion-skill-md-pack,reserved,ccpi-notion,0,0,not_started,not_added,Extended #57 - top note-taking app
-figma,Figma,flagship+,30,@intentsolutionsio/figma-skill-md-pack,reserved,ccpi-figma,0,0,not_started,not_added,Extended #58
-ramp,Ramp,flagship,24,@intentsolutionsio/ramp-skill-md-pack,reserved,ccpi-ramp,0,0,not_started,not_added,Extended #59
-navan,Navan,flagship,24,@intentsolutionsio/navan-skill-md-pack,reserved,ccpi-navan,0,0,not_started,not_added,Extended #60
-podium,Podium,pro,18,@intentsolutionsio/podium-skill-md-pack,reserved,ccpi-podium,0,0,not_started,not_added,Extended #61
-klaviyo,Klaviyo,flagship,24,@intentsolutionsio/klaviyo-skill-md-pack,reserved,ccpi-klaviyo,0,0,not_started,not_added,Extended #62
-intercom,Intercom,flagship,24,@intentsolutionsio/intercom-skill-md-pack,reserved,ccpi-intercom,0,0,not_started,not_added,Extended #63
-linktree,Linktree,pro,18,@intentsolutionsio/linktree-skill-md-pack,reserved,ccpi-linktree,0,0,not_started,not_added,Extended #64
-bamboohr,BambooHR,pro,18,@intentsolutionsio/bamboohr-skill-md-pack,reserved,ccpi-bamboohr,0,0,not_started,not_added,Extended #65
-miro,Miro,flagship,24,@intentsolutionsio/miro-skill-md-pack,reserved,ccpi-miro,0,0,not_started,not_added,Extended #66
-grammarly,Grammarly,flagship,24,@intentsolutionsio/grammarly-skill-md-pack,reserved,ccpi-grammarly,0,0,not_started,not_added,Extended #67
-shopify,Shopify,flagship+,30,@intentsolutionsio/shopify-skill-md-pack,reserved,ccpi-shopify,0,0,not_started,not_added,Extended #68
-canva,Canva,flagship+,30,@intentsolutionsio/canva-skill-md-pack,reserved,ccpi-canva,0,0,not_started,not_added,Extended #69
-clickup,ClickUp,flagship,24,@intentsolutionsio/clickup-skill-md-pack,reserved,ccpi-clickup,0,0,not_started,not_added,Extended #70
-hubspot,HubSpot,flagship+,30,@intentsolutionsio/hubspot-skill-md-pack,reserved,ccpi-hubspot,0,0,not_started,not_added,Extended #71
-salesforce,Salesforce,flagship+,30,@intentsolutionsio/salesforce-skill-md-pack,reserved,ccpi-salesforce,0,0,not_started,not_added,Extended #72
-adobe,Adobe,flagship+,30,@intentsolutionsio/adobe-skill-md-pack,reserved,ccpi-adobe,0,0,not_started,not_added,Extended #73
-palantir,Palantir,flagship,24,@intentsolutionsio/palantir-skill-md-pack,reserved,ccpi-palantir,0,0,not_started,not_added,Extended #74
-snowflake,Snowflake,flagship+,30,@intentsolutionsio/snowflake-skill-md-pack,reserved,ccpi-snowflake,0,0,not_started,not_added,Extended #75
-oraclecloud,Oracle Cloud,flagship,24,@intentsolutionsio/oraclecloud-skill-md-pack,reserved,ccpi-oraclecloud,0,0,not_started,not_added,Extended #76
-maintainx,MaintainX,pro,18,@intentsolutionsio/maintainx-skill-md-pack,reserved,ccpi-maintainx,0,0,not_started,not_added,Extended #77
-persona,Persona,pro,18,@intentsolutionsio/persona-skill-md-pack,reserved,ccpi-persona,0,0,not_started,not_added,Extended #78
-castai,Cast AI,pro,18,@intentsolutionsio/castai-skill-md-pack,reserved,ccpi-castai,0,0,not_started,not_added,Extended #79
-quicknode,QuickNode,pro,18,@intentsolutionsio/quicknode-skill-md-pack,reserved,ccpi-quicknode,0,0,not_started,not_added,Extended #80
-lokalise,Lokalise,pro,18,@intentsolutionsio/lokalise-skill-md-pack,reserved,ccpi-lokalise,0,0,not_started,not_added,Extended #81
-flexport,Flexport,flagship,24,@intentsolutionsio/flexport-skill-md-pack,reserved,ccpi-flexport,0,0,not_started,not_added,Extended #82
-webflow,Webflow,flagship,24,@intentsolutionsio/webflow-skill-md-pack,reserved,ccpi-webflow,0,0,not_started,not_added,Extended #83
-algolia,Algolia,flagship,24,@intentsolutionsio/algolia-skill-md-pack,reserved,ccpi-algolia,0,0,not_started,not_added,Extended #84
-lucidchart,Lucidchart,pro,18,@intentsolutionsio/lucidchart-skill-md-pack,reserved,ccpi-lucidchart,0,0,not_started,not_added,Extended #85
-techsmith,TechSmith,pro,18,@intentsolutionsio/techsmith-skill-md-pack,reserved,ccpi-techsmith,0,0,not_started,not_added,Extended #86
-mindtickle,Mindtickle,pro,18,@intentsolutionsio/mindtickle-skill-md-pack,reserved,ccpi-mindtickle,0,0,not_started,not_added,Extended #87
-salesloft,Salesloft,pro,18,@intentsolutionsio/salesloft-skill-md-pack,reserved,ccpi-salesloft,0,0,not_started,not_added,Extended #88
-clari,Clari,pro,18,@intentsolutionsio/clari-skill-md-pack,reserved,ccpi-clari,0,0,not_started,not_added,Extended #89
-workhuman,Workhuman,pro,18,@intentsolutionsio/workhuman-skill-md-pack,reserved,ccpi-workhuman,0,0,not_started,not_added,Extended #90
-hootsuite,Hootsuite,pro,18,@intentsolutionsio/hootsuite-skill-md-pack,reserved,ccpi-hootsuite,0,0,not_started,not_added,Extended #91
-remofirst,RemoFirst,standard,12,@intentsolutionsio/remofirst-skill-md-pack,reserved,ccpi-remofirst,0,0,not_started,not_added,Extended #92
-appfolio,AppFolio,pro,18,@intentsolutionsio/appfolio-skill-md-pack,reserved,ccpi-appfolio,0,0,not_started,not_added,Extended #93
-procore,Procore,flagship,24,@intentsolutionsio/procore-skill-md-pack,reserved,ccpi-procore,0,0,not_started,not_added,Extended #94
-veeva,Veeva,flagship,24,@intentsolutionsio/veeva-skill-md-pack,reserved,ccpi-veeva,0,0,not_started,not_added,Extended #95
-guidewire,Guidewire,pro,18,@intentsolutionsio/guidewire-skill-md-pack,reserved,ccpi-guidewire,0,0,not_started,not_added,Extended #96
-langfuse,Langfuse,pro,18,@intentsolutionsio/langfuse-skill-md-pack,reserved,ccpi-langfuse,0,0,not_started,not_added,Extended #97
-twinmind,TwinMind,standard,12,@intentsolutionsio/twinmind-skill-md-pack,reserved,ccpi-twinmind,0,0,not_started,not_added,Extended #98
-speak,Speak,pro,18,@intentsolutionsio/speak-skill-md-pack,reserved,ccpi-speak,0,0,not_started,not_added,Extended #99
-openevidence,OpenEvidence,pro,18,@intentsolutionsio/openevidence-skill-md-pack,reserved,ccpi-openevidence,0,0,not_started,not_added,Extended #100
-documenso,Documenso,pro,18,@intentsolutionsio/documenso-skill-md-pack,reserved,ccpi-documenso,0,0,not_started,not_added,open-source document signing - DocuSign alternative
-evernote,Evernote,flagship,24,@intentsolutionsio/evernote-skill-md-pack,reserved,ccpi-evernote,0,0,not_started,not_added,note-taking - 15.9% market share
-apple-notes,Apple Notes,flagship,24,@intentsolutionsio/apple-notes-skill-md-pack,reserved,ccpi-apple-notes,0,0,not_started,not_added,note-taking - 15.5% market share
-obsidian,Obsidian,pro,18,@intentsolutionsio/obsidian-skill-md-pack,reserved,ccpi-obsidian,0,0,not_started,not_added,note-taking - 8.7% market share
-onenote,OneNote,pro,18,@intentsolutionsio/onenote-skill-md-pack,reserved,ccpi-onenote,0,0,not_started,not_added,note-taking - 7.9% market share
+apollo,Apollo,flagship,24,@intentsolutionsio/apollo-skill-md-pack,reserved,ccpi-apollo,24,0,not_started,not_added,Brex #18
+deepgram,Deepgram,flagship,24,@intentsolutionsio/deepgram-skill-md-pack,reserved,ccpi-deepgram,24,0,not_started,not_added,Brex #19
+juicebox,Juicebox,flagship,24,@intentsolutionsio/juicebox-skill-md-pack,reserved,ccpi-juicebox,24,0,not_started,not_added,Brex #20
+customerio,Customer.io,flagship,24,@intentsolutionsio/customerio-skill-md-pack,reserved,ccpi-customerio,24,0,not_started,not_added,Brex #21
+langchain,LangChain,flagship,24,@intentsolutionsio/langchain-skill-md-pack,reserved,ccpi-langchain,24,0,not_started,not_added,Brex #22
+lindy,Lindy,flagship,24,@intentsolutionsio/lindy-skill-md-pack,reserved,ccpi-lindy,24,0,not_started,not_added,Brex #24
+granola,Granola,flagship,24,@intentsolutionsio/granola-skill-md-pack,reserved,ccpi-granola,24,0,not_started,not_added,Brex #25
+gamma,Gamma,flagship,24,@intentsolutionsio/gamma-skill-md-pack,reserved,ccpi-gamma,24,0,not_started,not_added,Brex #26
+clerk,Clerk,flagship,24,@intentsolutionsio/clerk-skill-md-pack,reserved,ccpi-clerk,24,0,not_started,not_added,Brex #28
+linear,Linear,flagship,24,@intentsolutionsio/linear-skill-md-pack,reserved,ccpi-linear,24,0,not_started,not_added,Brex #29
+clickhouse,ClickHouse,flagship,24,@intentsolutionsio/clickhouse-skill-md-pack,reserved,ccpi-clickhouse,24,0,not_started,not_added,Brex #30
+fondo,Fondo,pro,18,@intentsolutionsio/fondo-skill-md-pack,reserved,ccpi-fondo,18,0,not_started,not_added,Brex #31
+anima,Anima,pro,18,@intentsolutionsio/anima-skill-md-pack,reserved,ccpi-anima,18,0,not_started,not_added,Brex #32
+flyio,Fly.io,pro,18,@intentsolutionsio/flyio-skill-md-pack,reserved,ccpi-flyio,18,0,not_started,not_added,Brex #34
+framer,Framer,pro,18,@intentsolutionsio/framer-skill-md-pack,reserved,ccpi-framer,18,0,not_started,not_added,Brex #35
+stackblitz,StackBlitz,pro,18,@intentsolutionsio/stackblitz-skill-md-pack,reserved,ccpi-stackblitz,18,0,not_started,not_added,Brex #36
+elevenlabs,ElevenLabs,pro,18,@intentsolutionsio/elevenlabs-skill-md-pack,reserved,ccpi-elevenlabs,18,0,not_started,not_added,Brex #37
+assemblyai,AssemblyAI,pro,18,@intentsolutionsio/assemblyai-skill-md-pack,reserved,ccpi-assemblyai,18,0,not_started,not_added,Brex #38
+serpapi,SerpApi,pro,18,@intentsolutionsio/serpapi-skill-md-pack,reserved,ccpi-serpapi,18,0,not_started,not_added,Brex #39
+hex,Hex,pro,18,@intentsolutionsio/hex-skill-md-pack,reserved,ccpi-hex,18,0,not_started,not_added,Brex #40
+fathom,Fathom,pro,18,@intentsolutionsio/fathom-skill-md-pack,reserved,ccpi-fathom,18,0,not_started,not_added,Brex #41
+attio,Attio,pro,18,@intentsolutionsio/attio-skill-md-pack,reserved,ccpi-attio,18,0,not_started,not_added,Brex #42
+alchemy,Alchemy,pro,18,@intentsolutionsio/alchemy-skill-md-pack,reserved,ccpi-alchemy,18,0,not_started,not_added,Brex #43
+runway,Runway,pro,18,@intentsolutionsio/runway-skill-md-pack,reserved,ccpi-runway,18,0,not_started,not_added,Brex #44
+brightdata,Bright Data,pro,18,@intentsolutionsio/brightdata-skill-md-pack,reserved,ccpi-brightdata,18,0,not_started,not_added,Brex #45
+together,Together AI,pro,18,@intentsolutionsio/together-skill-md-pack,reserved,ccpi-together,18,0,not_started,not_added,Brex #46
+apify,Apify,pro,18,@intentsolutionsio/apify-skill-md-pack,reserved,ccpi-apify,18,0,not_started,not_added,Brex #47
+finta,Finta,pro,18,@intentsolutionsio/finta-skill-md-pack,reserved,ccpi-finta,18,0,not_started,not_added,Brex #48
+mistral,Mistral AI,pro,18,@intentsolutionsio/mistral-skill-md-pack,reserved,ccpi-mistral,18,0,not_started,not_added,Brex #49
+wispr,Wispr,pro,18,@intentsolutionsio/wispr-skill-md-pack,reserved,ccpi-wispr,18,0,not_started,not_added,Brex #50
+anthropic,Anthropic,flagship+,30,@intentsolutionsio/anthropic-skill-md-pack,reserved,ccpi-anthropic,30,0,not_started,not_added,Extended #51 - Claude maker
+databricks,Databricks,flagship+,30,@intentsolutionsio/databricks-skill-md-pack,reserved,ccpi-databricks,30,0,not_started,not_added,Extended #52
+coreweave,CoreWeave,flagship,24,@intentsolutionsio/coreweave-skill-md-pack,reserved,ccpi-coreweave,24,0,not_started,not_added,Extended #53
+glean,Glean,flagship,24,@intentsolutionsio/glean-skill-md-pack,reserved,ccpi-glean,24,0,not_started,not_added,Extended #54
+cohere,Cohere,flagship,24,@intentsolutionsio/cohere-skill-md-pack,reserved,ccpi-cohere,24,0,not_started,not_added,Extended #55
+abridge,Abridge,pro,18,@intentsolutionsio/abridge-skill-md-pack,reserved,ccpi-abridge,18,0,not_started,not_added,Extended #56
+notion,Notion,flagship+,30,@intentsolutionsio/notion-skill-md-pack,reserved,ccpi-notion,30,0,not_started,not_added,Extended #57 - top note-taking app
+figma,Figma,flagship+,30,@intentsolutionsio/figma-skill-md-pack,reserved,ccpi-figma,30,0,not_started,not_added,Extended #58
+ramp,Ramp,flagship,24,@intentsolutionsio/ramp-skill-md-pack,reserved,ccpi-ramp,24,0,not_started,not_added,Extended #59
+navan,Navan,flagship,24,@intentsolutionsio/navan-skill-md-pack,reserved,ccpi-navan,24,0,not_started,not_added,Extended #60
+podium,Podium,pro,18,@intentsolutionsio/podium-skill-md-pack,reserved,ccpi-podium,18,0,not_started,not_added,Extended #61
+klaviyo,Klaviyo,flagship,24,@intentsolutionsio/klaviyo-skill-md-pack,reserved,ccpi-klaviyo,24,0,not_started,not_added,Extended #62
+intercom,Intercom,flagship,24,@intentsolutionsio/intercom-skill-md-pack,reserved,ccpi-intercom,24,0,not_started,not_added,Extended #63
+linktree,Linktree,pro,18,@intentsolutionsio/linktree-skill-md-pack,reserved,ccpi-linktree,18,0,not_started,not_added,Extended #64
+bamboohr,BambooHR,pro,18,@intentsolutionsio/bamboohr-skill-md-pack,reserved,ccpi-bamboohr,18,0,not_started,not_added,Extended #65
+miro,Miro,flagship,24,@intentsolutionsio/miro-skill-md-pack,reserved,ccpi-miro,24,0,not_started,not_added,Extended #66
+grammarly,Grammarly,flagship,24,@intentsolutionsio/grammarly-skill-md-pack,reserved,ccpi-grammarly,24,0,not_started,not_added,Extended #67
+shopify,Shopify,flagship+,30,@intentsolutionsio/shopify-skill-md-pack,reserved,ccpi-shopify,30,0,not_started,not_added,Extended #68
+canva,Canva,flagship+,30,@intentsolutionsio/canva-skill-md-pack,reserved,ccpi-canva,30,0,not_started,not_added,Extended #69
+clickup,ClickUp,flagship,24,@intentsolutionsio/clickup-skill-md-pack,reserved,ccpi-clickup,24,0,not_started,not_added,Extended #70
+hubspot,HubSpot,flagship+,30,@intentsolutionsio/hubspot-skill-md-pack,reserved,ccpi-hubspot,30,0,not_started,not_added,Extended #71
+salesforce,Salesforce,flagship+,30,@intentsolutionsio/salesforce-skill-md-pack,reserved,ccpi-salesforce,30,0,not_started,not_added,Extended #72
+adobe,Adobe,flagship+,30,@intentsolutionsio/adobe-skill-md-pack,reserved,ccpi-adobe,30,0,not_started,not_added,Extended #73
+palantir,Palantir,flagship,24,@intentsolutionsio/palantir-skill-md-pack,reserved,ccpi-palantir,24,0,not_started,not_added,Extended #74
+snowflake,Snowflake,flagship+,30,@intentsolutionsio/snowflake-skill-md-pack,reserved,ccpi-snowflake,30,0,not_started,not_added,Extended #75
+oraclecloud,Oracle Cloud,flagship,24,@intentsolutionsio/oraclecloud-skill-md-pack,reserved,ccpi-oraclecloud,24,0,not_started,not_added,Extended #76
+maintainx,MaintainX,pro,18,@intentsolutionsio/maintainx-skill-md-pack,reserved,ccpi-maintainx,18,0,not_started,not_added,Extended #77
+persona,Persona,pro,18,@intentsolutionsio/persona-skill-md-pack,reserved,ccpi-persona,18,0,not_started,not_added,Extended #78
+castai,Cast AI,pro,18,@intentsolutionsio/castai-skill-md-pack,reserved,ccpi-castai,18,0,not_started,not_added,Extended #79
+quicknode,QuickNode,pro,18,@intentsolutionsio/quicknode-skill-md-pack,reserved,ccpi-quicknode,18,0,not_started,not_added,Extended #80
+lokalise,Lokalise,pro,18,@intentsolutionsio/lokalise-skill-md-pack,reserved,ccpi-lokalise,18,0,not_started,not_added,Extended #81
+flexport,Flexport,flagship,24,@intentsolutionsio/flexport-skill-md-pack,reserved,ccpi-flexport,24,0,not_started,not_added,Extended #82
+webflow,Webflow,flagship,24,@intentsolutionsio/webflow-skill-md-pack,reserved,ccpi-webflow,24,0,not_started,not_added,Extended #83
+algolia,Algolia,flagship,24,@intentsolutionsio/algolia-skill-md-pack,reserved,ccpi-algolia,24,0,not_started,not_added,Extended #84
+lucidchart,Lucidchart,pro,18,@intentsolutionsio/lucidchart-skill-md-pack,reserved,ccpi-lucidchart,18,0,not_started,not_added,Extended #85
+techsmith,TechSmith,pro,18,@intentsolutionsio/techsmith-skill-md-pack,reserved,ccpi-techsmith,18,0,not_started,not_added,Extended #86
+mindtickle,Mindtickle,pro,18,@intentsolutionsio/mindtickle-skill-md-pack,reserved,ccpi-mindtickle,18,0,not_started,not_added,Extended #87
+salesloft,Salesloft,pro,18,@intentsolutionsio/salesloft-skill-md-pack,reserved,ccpi-salesloft,18,0,not_started,not_added,Extended #88
+clari,Clari,pro,18,@intentsolutionsio/clari-skill-md-pack,reserved,ccpi-clari,18,0,not_started,not_added,Extended #89
+workhuman,Workhuman,pro,18,@intentsolutionsio/workhuman-skill-md-pack,reserved,ccpi-workhuman,18,0,not_started,not_added,Extended #90
+hootsuite,Hootsuite,pro,18,@intentsolutionsio/hootsuite-skill-md-pack,reserved,ccpi-hootsuite,18,0,not_started,not_added,Extended #91
+remofirst,RemoFirst,standard,12,@intentsolutionsio/remofirst-skill-md-pack,reserved,ccpi-remofirst,12,0,not_started,not_added,Extended #92
+appfolio,AppFolio,pro,18,@intentsolutionsio/appfolio-skill-md-pack,reserved,ccpi-appfolio,18,0,not_started,not_added,Extended #93
+procore,Procore,flagship,24,@intentsolutionsio/procore-skill-md-pack,reserved,ccpi-procore,24,0,not_started,not_added,Extended #94
+veeva,Veeva,flagship,24,@intentsolutionsio/veeva-skill-md-pack,reserved,ccpi-veeva,24,0,not_started,not_added,Extended #95
+guidewire,Guidewire,pro,18,@intentsolutionsio/guidewire-skill-md-pack,reserved,ccpi-guidewire,18,0,not_started,not_added,Extended #96
+langfuse,Langfuse,pro,18,@intentsolutionsio/langfuse-skill-md-pack,reserved,ccpi-langfuse,18,0,not_started,not_added,Extended #97
+twinmind,TwinMind,standard,12,@intentsolutionsio/twinmind-skill-md-pack,reserved,ccpi-twinmind,12,0,not_started,not_added,Extended #98
+speak,Speak,pro,18,@intentsolutionsio/speak-skill-md-pack,reserved,ccpi-speak,18,0,not_started,not_added,Extended #99
+openevidence,OpenEvidence,pro,18,@intentsolutionsio/openevidence-skill-md-pack,reserved,ccpi-openevidence,18,0,not_started,not_added,Extended #100
+documenso,Documenso,pro,18,@intentsolutionsio/documenso-skill-md-pack,reserved,ccpi-documenso,18,0,not_started,not_added,open-source document signing - DocuSign alternative
+evernote,Evernote,flagship,24,@intentsolutionsio/evernote-skill-md-pack,reserved,ccpi-evernote,24,0,not_started,not_added,note-taking - 15.9% market share
+apple-notes,Apple Notes,flagship,24,@intentsolutionsio/apple-notes-skill-md-pack,reserved,ccpi-apple-notes,24,0,not_started,not_added,note-taking - 15.5% market share
+obsidian,Obsidian,pro,18,@intentsolutionsio/obsidian-skill-md-pack,reserved,ccpi-obsidian,18,0,not_started,not_added,note-taking - 8.7% market share
+onenote,OneNote,pro,18,@intentsolutionsio/onenote-skill-md-pack,reserved,ccpi-onenote,18,0,not_started,not_added,note-taking - 7.9% market share
