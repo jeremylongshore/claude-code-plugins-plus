@@ -1,0 +1,42 @@
+---
+name: test-naming-enforcer
+description: |
+  Test Naming Enforcer - Auto-activating skill for Test Automation.
+  Triggers on: test naming enforcer, test naming enforcer
+  Part of the Test Automation skill category.
+allowed-tools: Read, Write, Edit, Bash, Grep
+version: 1.0.0
+license: MIT
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+---
+
+# Test Naming Enforcer
+
+## Purpose
+
+This skill provides automated assistance for test naming enforcer tasks within the Test Automation domain.
+
+## When to Use
+
+This skill activates automatically when you:
+- Mention "test naming enforcer" in your request
+- Ask about test naming enforcer patterns or best practices
+- Need help with test automation skills covering unit testing, integration testing, mocking, and test framework configuration.
+
+## Capabilities
+
+- Provides step-by-step guidance for test naming enforcer
+- Follows industry best practices and patterns
+- Generates production-ready code and configurations
+- Validates outputs against common standards
+
+## Example Triggers
+
+- "Help me with test naming enforcer"
+- "Set up test naming enforcer"
+- "How do I implement test naming enforcer?"
+
+## Related Skills
+
+Part of the **Test Automation** skill category.
+Tags: testing, jest, pytest, mocking, tdd
