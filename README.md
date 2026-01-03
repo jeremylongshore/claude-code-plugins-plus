@@ -489,6 +489,26 @@ See [000-docs/007-DR-GUID-contributing.md](000-docs/007-DR-GUID-contributing.md)
 - No hardcoded secrets or credentials
 - All scripts executable (`chmod +x`)
 
+### External Plugin Sync (Recommended for Active Projects)
+
+If you're actively developing your plugin and want us to stay in sync with your repo:
+
+1. **Open an issue** requesting external sync
+2. **We add your repo** to `sources.yaml`
+3. **Daily sync** pulls your latest changes at midnight UTC
+4. **You maintain ownership** - keep developing in your repo
+5. **Attribution preserved** - `.source.json` tracks provenance
+
+**Benefits:**
+- No stale copies - your updates appear within 24 hours
+- You control your codebase - we mirror it
+- Full attribution - clear provenance tracking
+
+**Currently synced from:**
+- [@numman-ali/n-skills](https://github.com/numman-ali/n-skills) - gastown, zai-cli
+
+See `sources.yaml` for the full list of synced sources.
+
 ---
 
 ## Important Notes

@@ -1,0 +1,123 @@
+name: Sync External Plugins
+
+on:
+  schedule:
+    # Run daily at midnight UTC
+    - cron: '0 0 * * *'
+
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force sync even if no changes detected'
+        type: boolean
+        default: false
+      source:
+        description: 'Sync only this source (leave empty for all)'
+        type: string
+        default: ''
+      dry_run:
+        description: 'Dry run - show what would change without making changes'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    name: Sync from external repos
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install js-yaml
+
+      - name: Run sync script
+        id: sync
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.force }}" = "true" ]; then
+            ARGS="$ARGS --force"
+          fi
+          if [ -n "${{ inputs.source }}" ]; then
+            ARGS="$ARGS --source=${{ inputs.source }}"
+          fi
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          ARGS="$ARGS --verbose"
+
+          node scripts/sync-external.mjs $ARGS
+
+      - name: Check for changes
+        id: changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Sync marketplace catalog
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        run: |
+          npm install
+          node scripts/sync-marketplace.cjs
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true' && inputs.dry_run != true
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            chore(sync): update external plugins from upstream
+
+            Automated sync from external plugin sources.
+            See sources.yaml for configured sources.
+
+            🤖 Generated with [Claude Code](https://claude.ai/claude-code)
+          title: "🔄 Sync external plugins"
+          body: |
+            ## Automated External Plugin Sync
+
+            This PR syncs the latest changes from external plugin sources.
+
+            ### Sources
+            See `sources.yaml` for the list of synced repositories.
+
+            ### Review Checklist
+            - [ ] Changes look correct
+            - [ ] No sensitive data included
+            - [ ] Plugin validation passes
+
+            ---
+            *This PR was automatically created by the sync-external workflow.*
+          branch: sync/external-plugins
+          delete-branch: true
+          labels: |
+            automated
+            sync
+            external-plugins
+
+      - name: Summary
+        run: |
+          echo "## 🔄 External Plugin Sync Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.changes.outputs.has_changes }}" = "true" ]; then
+            echo "✅ Changes detected and PR created" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✓ All sources are up to date" >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,105 @@
+# External Plugin Sources
+#
+# Plugins listed here are synced daily from their source repositories.
+# This allows plugin authors to maintain their plugins in their own repos
+# while we automatically mirror updates to our marketplace.
+#
+# Sync runs: Daily at midnight UTC via GitHub Actions
+# Workflow: .github/workflows/sync-external.yml
+# Script: scripts/sync-external.mjs
+
+sources:
+  # ============================================================
+  # n-skills Marketplace (Numman Ali)
+  # https://github.com/numman-ali/n-skills
+  # ============================================================
+
+  - name: gastown
+    description: Multi-agent orchestrator for Claude Code
+    repo: numman-ali/n-skills
+    source_path: skills/tools/gastown
+    target_path: plugins/community/gastown
+    author:
+      name: Numman Ali
+      github: numman-ali
+      email: numman.ali@gmail.com
+    license: Apache-2.0
+    category: community
+    verified: true
+    # Files to sync (relative to source_path)
+    include:
+      - "SKILL.md"
+      - "README.md"
+      - "references/**"
+    # Files to exclude
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: zai-cli
+    description: Z.AI vision, search, reader, and GitHub exploration
+    repo: numman-ali/n-skills
+    source_path: skills/tools/zai-cli
+    target_path: plugins/community/zai-cli
+    author:
+      name: Numman Ali
+      github: numman-ali
+      email: numman.ali@gmail.com
+    license: Apache-2.0
+    category: community
+    verified: true
+    include:
+      - "SKILL.md"
+      - "README.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  # ============================================================
+  # Add more external sources below
+  # ============================================================
+
+  # Example: Sawyer Hood's dev-browser
+  # - name: dev-browser
+  #   description: Browser automation for Claude Code
+  #   repo: SawyerHood/dev-browser
+  #   source_path: skills/dev-browser
+  #   target_path: plugins/community/dev-browser
+  #   author:
+  #     name: Sawyer Hood
+  #     github: SawyerHood
+  #   license: MIT
+  #   category: community
+  #   verified: true
+
+# Sync configuration
+config:
+  # Branch to sync from (default: main)
+  default_branch: main
+
+  # Create PR instead of direct commit
+  create_pr: true
+
+  # PR labels
+  pr_labels:
+    - automated
+    - sync
+    - external-plugins
+
+  # Commit message template
+  commit_message: "chore(sync): update external plugins from upstream"
+
+  # PR title template
+  pr_title: "🔄 Sync external plugins"
+
+  # PR body template (supports {sources} placeholder)
+  pr_body: |
+    Automated sync from external plugin sources.
+
+    ## Sources Updated
+    {sources}
+
+    See `sources.yaml` for configured sources.
