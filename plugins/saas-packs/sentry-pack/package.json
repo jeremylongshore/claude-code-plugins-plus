@@ -1,0 +1,42 @@
+{
+  "name": "@intentsolutionsio/sentry-skill-md-pack",
+  "version": "1.0.0",
+  "description": "Claude Code skill pack for Sentry - 30 skills covering error tracking, performance monitoring, release management, and production operations",
+  "main": "README.md",
+  "type": "module",
+  "files": [
+    "README.md",
+    "LICENSE",
+    ".claude-plugin/",
+    "skills/",
+    "000-docs/"
+  ],
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "sentry",
+    "error-tracking",
+    "monitoring",
+    "performance",
+    "observability",
+    "ai-skills",
+    "saas-pack"
+  ],
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremylongshore/claude-code-plugins.git",
+    "directory": "plugins/saas-packs/sentry-pack"
+  },
+  "bugs": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
+  },
+  "homepage": "https://claudecodeplugins.io/plugins/sentry-pack",
+  "publishConfig": {
+    "access": "public"
+  }
+}

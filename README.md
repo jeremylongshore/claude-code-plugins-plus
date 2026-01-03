@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/badge/version-4.4.0-brightgreen)](000-docs/247-OD-CHNG-changelog.md)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-239%20Skills-orange?logo=sparkles)](000-docs/247-OD-CHNG-changelog.md)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-739%20Skills-orange?logo=sparkles)](000-docs/247-OD-CHNG-changelog.md)
 [![Plugins](https://img.shields.io/badge/Total%20Plugins-258-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![2025 Schema](https://img.shields.io/badge/2025%20Schema-Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
 [![Tool Permissions](https://img.shields.io/badge/Tool%20Permissions-Secured-blueviolet?logo=shield)](tutorials/skills/02-skill-anatomy.ipynb)
@@ -172,7 +172,7 @@ See [Learning Paths](#-learning-paths) for step-by-step guides
 
 ## 🚀 Agent Skills - The Future of Claude Automation
 
-**239 production-ready Agent Skills** that activate automatically based on your conversations:
+**739 production-ready Agent Skills** (500 standalone + 239 embedded) that activate automatically based on your conversations:
 
 ### What are Agent Skills?
 Agent Skills are intelligent automation tools that Claude Code can invoke automatically when relevant. Unlike plugins that need manual commands, **Skills detect when they're needed and activate seamlessly**.
@@ -192,10 +192,10 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
 - **📝 Documentation Skills:** Auto-documentation, API specs, tutorials
 
 ### Quick Stats
-- **239 Skills** equipped across plugins
+- **739 Total Skills:** 500 standalone + 239 embedded in plugins
+- **20 Standalone Categories:** DevOps, Security, ML, Data, API, and more
 - **2025 Schema:** Validated against Anthropic standards
 - **Average skill size:** 3.2KB of intelligent automation
-- **Categories covered:** 18 specialized domains
 
 ---
 
@@ -299,7 +299,7 @@ Skill activates → Generates playbook → Ready to deploy
 - ✅ **One skill per plugin** - Comprehensive instruction manual
 - ✅ **Only for installed plugins** - Not for discovering new ones
 
-**Status:** Batch-generating Agent Skills for all 229 plugins using Vertex AI. Progress tracked in audit database with full backups.
+**Status:** 739 skills deployed! 500 standalone skills across 20 categories + 239 embedded in plugins. All validated against 2025 schema.
 
 **Resources:**
 - [Internal Guide: How Agent Skills Work →](backups/HOW_AGENT_SKILLS_WORK.md)
@@ -350,7 +350,7 @@ This marketplace contains **two types of plugins** that work differently:
 
 ### 🧠 Agent Skills - A Feature, Not a Type
 
-**239 Agent Skills across the marketplace** - automatic capabilities that Claude activates based on conversation context.
+**739 Agent Skills across the marketplace** - automatic capabilities that Claude activates based on conversation context (500 standalone + 239 embedded in plugins).
 
 - **What they are**: SKILL.md files that teach Claude when and how to use the plugin
 - **How they work**: Claude reads trigger phrases and activates skills automatically
@@ -379,7 +379,7 @@ A comprehensive technical breakdown by **Lee-Han Chung** covering:
 
 This article is the definitive external resource for understanding how Agent Skills work under the hood.
 
-*239 skills in this marketplace are built on these principles.*
+*739 skills in this marketplace are built on these principles.*
 
 ---
 
@@ -660,4 +660,4 @@ Made with dedication by the Claude Code community
 
 ---
 
-**Status**: Public Beta | **Version**: 4.0.0 | **Last Updated**: December 2025
+**Status**: Public Beta | **Version**: 4.5.0 | **Last Updated**: December 2025 | **Skills**: 739

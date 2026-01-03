@@ -1,0 +1,313 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import vendorPacks from '../../../data/vendor-packs.json';
+
+const vendor = vendorPacks.vendors.find(v => v.id === 'sentry');
+
+// Handle missing vendor gracefully
+if (!vendor) {
+  return Astro.redirect('/learn/');
+}
+
+const pageTitle = `${vendor.name} Skill Pack - ${vendor.skillCount} Skills`;
+const pageDescription = `Complete ${vendor.name} integration with ${vendor.skillCount} skills covering ${vendor.description.toLowerCase()}.`;
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    .pack-hero {
+      background: linear-gradient(135deg, #362D59 0%, #1a1a2e 100%);
+      color: white;
+      padding: 4rem 2rem 3rem;
+    }
+
+    .hero-content {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .breadcrumb {
+      font-size: 0.9rem;
+      opacity: 0.7;
+      margin-bottom: 1rem;
+    }
+
+    .breadcrumb a {
+      color: white;
+      text-decoration: none;
+    }
+
+    .breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .pack-header {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .vendor-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      background: #8b5cf615;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .pack-title {
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .pack-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+      margin-top: 0.5rem;
+    }
+
+    .tier-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #1a1a2e;
+      margin-top: 0.5rem;
+    }
+
+    .install-section {
+      background: rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .install-label {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+
+    .install-command {
+      font-family: monospace;
+      font-size: 1rem;
+      background: rgba(0,0,0,0.3);
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .copy-btn {
+      background: #8b5cf6;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .copy-btn:hover {
+      background: #7c3aed;
+    }
+
+    .skills-section {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .category-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .category-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--brand-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .category-badge {
+      background: var(--brand-light-gray);
+      color: var(--brand-mid-gray);
+      font-size: 0.75rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 10px;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .skill-card {
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 10px;
+      padding: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .skill-card:hover {
+      border-color: #8b5cf6;
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+    }
+
+    .skill-name {
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.25rem;
+      text-transform: capitalize;
+    }
+
+    .skill-slot {
+      font-size: 0.75rem;
+      color: var(--brand-mid-gray);
+      font-family: monospace;
+    }
+
+    .links-section {
+      background: var(--brand-light-gray);
+      padding: 2rem;
+    }
+
+    .links-content {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      gap: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .link-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      flex: 1;
+      min-width: 250px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .link-card:hover {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .link-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .link-url {
+      font-size: 0.85rem;
+      color: #8b5cf6;
+    }
+
+    @media (max-width: 768px) {
+      .pack-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .skills-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <section class="pack-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="/learn/">SaaS Packs</a> / {vendor.name}
+      </div>
+
+      <div class="pack-header">
+        <div class="vendor-logo">
+          🔍
+        </div>
+        <div>
+          <h1 class="pack-title">{vendor.name} Pack</h1>
+          <p class="pack-subtitle">{vendor.description}</p>
+          <span class="tier-badge">Flagship+ - {vendor.skillCount} Skills</span>
+        </div>
+      </div>
+
+      <div class="install-section">
+        <div class="install-label">Install this pack:</div>
+        <div class="install-command">
+          <code id="install-cmd">{vendor.installCommand}</code>
+          <button class="copy-btn" data-copy-target="install-cmd">
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="skills-section">
+    {vendor.categories.map((category, idx) => (
+      <div class="category-section">
+        <h2 class="category-title">
+          {category.name}
+          <span class="category-badge">{category.skills.length} skills</span>
+        </h2>
+        <div class="skills-grid">
+          {category.skills.map((skill) => (
+            <div class="skill-card">
+              <div class="skill-name">{skill.replace('sentry-', '').replace(/-/g, ' ')}</div>
+              <div class="skill-slot">{skill}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </section>
+
+  <section class="links-section">
+    <div class="links-content">
+      <a href={vendor.docsUrl} target="_blank" rel="noopener" class="link-card">
+        <div class="link-title">Official Documentation</div>
+        <div class="link-url">{vendor.docsUrl}</div>
+      </a>
+      <a href={vendor.dashboardUrl} target="_blank" rel="noopener" class="link-card">
+        <div class="link-title">Dashboard</div>
+        <div class="link-url">{vendor.dashboardUrl}</div>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const copyBtn = document.querySelector('[data-copy-target]');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const targetId = copyBtn.getAttribute('data-copy-target');
+          const target = document.getElementById(targetId);
+          if (target) {
+            navigator.clipboard.writeText(target.textContent || '').then(() => {
+              const originalText = copyBtn.textContent;
+              copyBtn.textContent = 'Copied!';
+              setTimeout(() => { copyBtn.textContent = originalText; }, 2000);
+            });
+          }
+        });
+      }
+    });
+  </script>
+</BaseLayout>

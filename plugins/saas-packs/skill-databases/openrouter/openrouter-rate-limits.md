@@ -1,0 +1,58 @@
+# openrouter-rate-limits
+
+> Handle OpenRouter rate limits with proper backoff strategies
+
+## Directory Structure
+
+```
+openrouter-rate-limits/
+├── 📄 SKILL.md                    # Main skill definition with YAML frontmatter
+└── 📂 examples/                   # Optional examples directory
+    ├── 🐍 rate_limiter.py         # Client-side rate limiting
+    ├── 🐍 backoff_strategies.py   # Exponential backoff implementation
+    └── 🐍 token_bucket.py         # Token bucket algorithm
+```
+
+## File Descriptions
+
+| File | Type | Purpose |
+|------|------|---------|
+| `SKILL.md` | 📄 Markdown | Skill definition with rate limit handling strategies |
+| `rate_limiter.py` | 🐍 Python | Client-side rate limiting decorator |
+| `backoff_strategies.py` | 🐍 Python | Various backoff strategies |
+| `token_bucket.py` | 🐍 Python | Token bucket rate limiting |
+
+## Summary
+
+**Category:** operations
+**Target Audience:** Developer building high-throughput systems
+**Trigger Phrases:** `openrouter rate limit`, `openrouter 429`, `openrouter throttle`, `openrouter backoff`
+
+### What This Skill Does
+
+This skill teaches proper rate limit handling for OpenRouter API. It covers:
+
+- Understanding rate limit headers
+- Model-specific rate limits
+- Client-side rate limiting with decorators
+- Exponential backoff with jitter
+- Token bucket algorithm
+- Per-model limit tracking
+
+### Technical Success Criteria
+
+- Smooth request throughput without rate limit errors
+- Proper backoff implemented
+- Client-side rate limiting preventing 429s
+
+### Business Success Criteria
+
+- Reliable system operation under load
+- No dropped requests due to rate limits
+- Predictable throughput capacity
+
+## Related Skills
+
+- `openrouter-fallback-config` - Fallback when rate limited
+- `openrouter-common-errors` - 429 error handling
+- `openrouter-load-balancing` - Distributing load

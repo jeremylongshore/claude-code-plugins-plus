@@ -1,0 +1,19 @@
+# miro-rate-limits
+
+## File Scaffold
+
+```
+miro-rate-limits/
+-- SKILL.md
+```
+
+## File Descriptions
+
+### 1. SKILL.md
+**Purpose:** Implement Miro rate limiting and backoff
+**Workflow:** Part of the operations skill category for Miro integration.
+**Relates to:** Other miro skills in this pack.
+
+## Summary
+
+This skill helps developers implement miro rate limiting and backoff. It provides step-by-step guidance for Miro integration following best practices and production-ready patterns. Use this skill to accelerate your Miro development workflow.
