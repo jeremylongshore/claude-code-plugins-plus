@@ -362,12 +362,12 @@ echo "Session preserved at: $SESSION_DIR"
 
 ## What You Learned
 
-✅ How to prepare test data
-✅ How to run verification script standalone
-✅ How phases produce reports + JSON
-✅ How orchestrator validates outputs
-✅ How session directories preserve evidence
-✅ How to debug validation failures
+✅ How to prepare test data  
+✅ How to run verification script standalone  
+✅ How phases produce reports + JSON  
+✅ How orchestrator validates outputs  
+✅ How session directories preserve evidence  
+✅ How to debug validation failures  
 
 ---
 
