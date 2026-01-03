@@ -10,7 +10,7 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 260,
+    "totalPlugins": 262,
     "skillsEnabled": 241,
     "lastUpdated": "2025-12-26"
   },
@@ -5000,6 +5000,54 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
         "url": "https://github.com/jeremylongshore"
+      }
+    },
+    {
+      "name": "gastown",
+      "source": "./plugins/community/gastown",
+      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
+      "version": "1.0.0",
+      "category": "automation",
+      "keywords": [
+        "multi-agent",
+        "orchestration",
+        "automation",
+        "polecats",
+        "convoys",
+        "beads",
+        "work-tracking",
+        "ai-factory",
+        "gastown",
+        "claude-code"
+      ],
+      "author": {
+        "name": "Numman Ali",
+        "email": "numman.ali@gmail.com",
+        "url": "https://github.com/numman-ali"
+      }
+    },
+    {
+      "name": "zai-cli",
+      "source": "./plugins/community/zai-cli",
+      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
+      "version": "1.0.0",
+      "category": "ai-ml",
+      "keywords": [
+        "vision",
+        "image-analysis",
+        "ocr",
+        "web-search",
+        "web-reader",
+        "github",
+        "mcp",
+        "z-ai",
+        "glm-4",
+        "multimodal"
+      ],
+      "author": {
+        "name": "Numman Ali",
+        "email": "numman.ali@gmail.com",
+        "url": "https://github.com/numman-ali"
       }
     }
   ]
