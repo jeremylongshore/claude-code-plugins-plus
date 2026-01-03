@@ -1,0 +1,88 @@
+name: Publish MCP Servers to Registry
+
+on:
+  push:
+    tags:
+      - 'mcp-v*'
+  workflow_dispatch:
+    inputs:
+      server:
+        description: 'Server to publish (leave empty for all)'
+        type: choice
+        options:
+          - all
+          - project-health-auditor
+          - conversational-api-debugger
+          - domain-memory-agent
+          - ai-experiment-logger
+          - design-to-code
+          - lumera-agent-memory
+          - workflow-orchestrator
+        default: 'all'
+      dry_run:
+        description: 'Dry run - validate without publishing'
+        type: boolean
+        default: true
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server:
+          - project-health-auditor
+          - conversational-api-debugger
+          - domain-memory-agent
+          - ai-experiment-logger
+          - design-to-code
+          - lumera-agent-memory
+          - workflow-orchestrator
+    steps:
+      - name: Check if should run
+        id: check
+        run: |
+          if [ "${{ inputs.server }}" = "all" ] || [ "${{ inputs.server }}" = "${{ matrix.server }}" ] || [ -z "${{ inputs.server }}" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "should_run=false" >> $GITHUB_OUTPUT
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.check.outputs.should_run == 'true'
+
+      - name: Install mcp-publisher
+        if: steps.check.outputs.should_run == 'true'
+        run: |
+          curl -L "https://github.com/modelcontextprotocol/registry/releases/download/latest/mcp-publisher_linux_amd64.tar.gz" -o mcp-publisher.tar.gz
+          tar xzf mcp-publisher.tar.gz
+          sudo mv mcp-publisher /usr/local/bin/
+          mcp-publisher --version
+
+      - name: Authenticate via GitHub OIDC
+        if: steps.check.outputs.should_run == 'true'
+        run: mcp-publisher login github-oidc
+
+      - name: Validate server.json
+        if: steps.check.outputs.should_run == 'true'
+        working-directory: plugins/mcp/${{ matrix.server }}
+        run: |
+          echo "Validating ${{ matrix.server }}..."
+          mcp-publisher validate
+
+      - name: Publish to MCP Registry
+        if: steps.check.outputs.should_run == 'true' && inputs.dry_run != true
+        working-directory: plugins/mcp/${{ matrix.server }}
+        run: |
+          echo "Publishing ${{ matrix.server }}..."
+          mcp-publisher publish
+
+      - name: Verify Publication
+        if: steps.check.outputs.should_run == 'true' && inputs.dry_run != true
+        run: |
+          sleep 3
+          echo "Verifying ${{ matrix.server }}..."
+          curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=io.github.jeremylongshore/${{ matrix.server }}" | head -20
