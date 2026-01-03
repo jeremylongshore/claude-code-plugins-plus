@@ -343,8 +343,21 @@ This marketplace contains **two types of plugins** that work differently:
 - **What they are**: TypeScript/JavaScript applications
 - **How they work**: Run as separate Node.js processes that Claude can communicate with
 - **Examples**: project-health-auditor, conversational-api-debugger, domain-memory-agent
-- **Count**: 5 plugins (21 MCP tools total)
+- **Count**: 7 plugins (21 MCP tools total)
 - **Actual compiled code** - 13-26KB of executable JavaScript per plugin
+
+#### Tool Routing for Token Efficiency
+
+MCP servers load tool schemas into context. Manage active servers to optimize token usage:
+
+```bash
+/mcp                              # See active MCP servers
+/mcp disable design-to-code       # Disable unused server
+/mcp enable project-health-auditor # Enable when needed
+/context                          # Check context usage
+```
+
+**[Full Guide: ZCF Integration & Tool Routing →](docs/zcf-integration.md)**
 
 ---
 
@@ -449,6 +462,7 @@ ccpi validate ./my-awesome-plugin
 - [Marketplace Guide](docs/marketplace-guide.md) - Distribute your plugins
 - [Security Best Practices](docs/security-best-practices.md) - Secure plugin development
 - [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
+- [ZCF Integration](docs/zcf-integration.md) - Tool routing, BMAD workflows, token optimization
 
 ### Production Playbooks
 - [Production Playbooks Index](000-docs/206-DR-SOPS-readme.md) - 11 comprehensive guides (~53,500 words)
@@ -570,7 +584,7 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 ## Statistics
 
 - **Plugin Packs**: 4 (62 total plugin components)
-- **MCP Plugins**: 5 (21 total MCP tools)
+- **MCP Plugins**: 7 (21 total MCP tools)
 - **Production Plugins**: 2 (git-commit-smart, overnight-dev)
 - **AI Agency Plugins**: 6 (complete business toolkit)
 - **Example Plugins**: 3 (hello-world, formatter, security-agent)
