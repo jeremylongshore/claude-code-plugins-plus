@@ -1,0 +1,79 @@
+{
+  "$schema": "https://claudecodeplugins.io/schemas/mcp-presets.schema.json",
+  "name": "claude-code-plugins-plus",
+  "description": "MCP server presets from Claude Code Plugins Marketplace",
+  "version": "1.0.0",
+  "homepage": "https://claudecodeplugins.io/",
+  "presets": {
+    "project-health-auditor": {
+      "name": "Project Health Auditor",
+      "description": "Analyze repos for code health, complexity, test coverage gaps",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-code-plugins-plus/project-health-auditor"],
+      "requiresApiKey": false,
+      "category": "code-quality",
+      "tags": ["metrics", "complexity", "coverage", "health"]
+    },
+    "conversational-api-debugger": {
+      "name": "Conversational API Debugger",
+      "description": "Debug REST API failures using OpenAPI specs and HTTP logs",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-code-plugins-plus/conversational-api-debugger"],
+      "requiresApiKey": false,
+      "category": "api",
+      "tags": ["api", "debugging", "openapi", "rest"]
+    },
+    "domain-memory-agent": {
+      "name": "Domain Memory Agent",
+      "description": "Domain-specific knowledge management with semantic search",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-code-plugins-plus/domain-memory-agent"],
+      "requiresApiKey": false,
+      "category": "knowledge",
+      "tags": ["memory", "knowledge", "semantic-search", "rag"]
+    },
+    "ai-experiment-logger": {
+      "name": "AI Experiment Logger",
+      "description": "Track and analyze AI experiments with web dashboard",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-plugins/ai-experiment-logger"],
+      "requiresApiKey": false,
+      "category": "ai-ml",
+      "tags": ["experiments", "logging", "analytics", "ml"]
+    },
+    "design-to-code": {
+      "name": "Design to Code",
+      "description": "Convert Figma designs and screenshots to React/Vue/Svelte",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-code-plugins-plus/design-to-code"],
+      "requiresApiKey": false,
+      "category": "design",
+      "tags": ["figma", "design", "components", "a11y"]
+    },
+    "lumera-agent-memory": {
+      "name": "Lumera Agent Memory",
+      "description": "Durable agent memory with Cascade storage and FTS index",
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["lumera-agent-memory"],
+      "requiresApiKey": false,
+      "category": "memory",
+      "tags": ["memory", "storage", "agent", "cascade"]
+    },
+    "workflow-orchestrator": {
+      "name": "Workflow Orchestrator",
+      "description": "DAG-based workflow orchestration with parallel execution",
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@claude-code-plugins-plus/workflow-orchestrator"],
+      "requiresApiKey": false,
+      "category": "automation",
+      "tags": ["workflow", "dag", "orchestration", "automation"]
+    }
+  }
+}

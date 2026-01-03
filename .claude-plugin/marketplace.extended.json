@@ -241,6 +241,12 @@
       ],
       "author": {
         "name": "Claude Code Plugins"
+      },
+      "zcf_metadata": {
+        "preset_id": "ai-experiment-logger",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "ai-ml"
       }
     },
     {
@@ -1188,7 +1194,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "zcf_metadata": {
+        "preset_id": "conversational-api-debugger",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "api"
+      }
     },
     {
       "name": "cors-policy-validator",
@@ -1954,7 +1966,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 3
+      "mcpTools": 3,
+      "zcf_metadata": {
+        "preset_id": "design-to-code",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "design"
+      }
     },
     {
       "name": "devops-automation-pack",
@@ -2089,7 +2107,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 6
+      "mcpTools": 6,
+      "zcf_metadata": {
+        "preset_id": "domain-memory-agent",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "knowledge"
+      }
     },
     {
       "name": "e2e-test-framework",
@@ -3453,7 +3477,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "zcf_metadata": {
+        "preset_id": "project-health-auditor",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "code-quality"
+      }
     },
     {
       "name": "query-performance-analyzer",
@@ -4559,7 +4589,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "mcpTools": 4
+      "mcpTools": 4,
+      "zcf_metadata": {
+        "preset_id": "workflow-orchestrator",
+        "bmad_compatible": true,
+        "ccr_compatible": true,
+        "category": "automation"
+      }
     },
     {
       "name": "xss-vulnerability-scanner",
