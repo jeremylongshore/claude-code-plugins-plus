@@ -95,7 +95,7 @@ Since we're in a learning lab, we'll simulate the orchestrator by running phases
 
 Create input file for Phase 1:
 
-````bash
+```bash
 cat > phase1-input.json <<EOF
 {
   "skill_dir": "$(pwd)",
@@ -117,7 +117,7 @@ echo "Session directory: $SESSION_DIR"
 
 For this exercise, let's manually create what Phase 1 would produce:
 
-```bash
+````bash
 cat > "$SESSION_DIR/01-initial-schema-analysis.md" <<'EOF'
 # Phase 1: Initial Schema Analysis
 
