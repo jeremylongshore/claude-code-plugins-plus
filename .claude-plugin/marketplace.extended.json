@@ -5194,6 +5194,70 @@
       "components": {
         "skills": 30
       }
+    },
+    {
+      "name": "gastown",
+      "source": "./plugins/community/gastown",
+      "description": "Multi-agent orchestrator for Claude Code. Track work with convoys, sling to polecats. The Cognition Engine for AI-powered software factories.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "multi-agent",
+        "orchestration",
+        "automation",
+        "polecats",
+        "convoys",
+        "beads",
+        "work-tracking",
+        "ai-factory",
+        "gastown",
+        "claude-code"
+      ],
+      "author": {
+        "name": "Numman Ali",
+        "email": "numman.ali@gmail.com",
+        "url": "https://github.com/numman-ali"
+      },
+      "components": {
+        "skills": 1
+      },
+      "external_sync": {
+        "enabled": true,
+        "source_repo": "numman-ali/n-skills",
+        "source_path": "skills/tools/gastown"
+      }
+    },
+    {
+      "name": "zai-cli",
+      "source": "./plugins/community/zai-cli",
+      "description": "Z.AI vision, search, reader, and GitHub exploration via CLI and MCP. Analyze images, search the web, read pages as markdown, explore repos.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "vision",
+        "image-analysis",
+        "ocr",
+        "web-search",
+        "web-reader",
+        "github",
+        "mcp",
+        "z-ai",
+        "glm-4",
+        "multimodal"
+      ],
+      "author": {
+        "name": "Numman Ali",
+        "email": "numman.ali@gmail.com",
+        "url": "https://github.com/numman-ali"
+      },
+      "components": {
+        "skills": 1
+      },
+      "external_sync": {
+        "enabled": true,
+        "source_repo": "numman-ali/n-skills",
+        "source_path": "skills/tools/zai-cli"
+      }
     }
   ]
 }
