@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jeremylongshore/workflow-orchestrator",
+  "title": "Workflow Orchestrator",
+  "description": "DAG-based workflow orchestration with parallel execution and run history",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+    "source": "github",
+    "subfolder": "plugins/mcp/workflow-orchestrator"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@claude-code-plugins-plus/workflow-orchestrator",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "_meta": {
+    "io.claudecodeplugins/marketplace": {
+      "category": "mcp",
+      "featured": false,
+      "websiteUrl": "https://claudecodeplugins.io/"
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jeremylongshore/ai-experiment-logger",
+  "title": "AI Experiment Logger",
+  "description": "Track and analyze AI experiments with MCP tools and web dashboard",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+    "source": "github",
+    "subfolder": "plugins/mcp/ai-experiment-logger"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@claude-plugins/ai-experiment-logger",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "_meta": {
+    "io.claudecodeplugins/marketplace": {
+      "category": "mcp",
+      "featured": false,
+      "websiteUrl": "https://claudecodeplugins.io/"
+    }
+  }
+}

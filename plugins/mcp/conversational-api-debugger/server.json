@@ -1,0 +1,29 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.jeremylongshore/conversational-api-debugger",
+  "title": "Conversational API Debugger",
+  "description": "MCP server for debugging REST API failures using OpenAPI specs and HTTP logs",
+  "version": "1.0.0",
+  "repository": {
+    "url": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
+    "source": "github",
+    "subfolder": "plugins/mcp/conversational-api-debugger"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "@claude-code-plugins-plus/conversational-api-debugger",
+      "version": "1.0.0",
+      "transport": {
+        "type": "stdio"
+      }
+    }
+  ],
+  "_meta": {
+    "io.claudecodeplugins/marketplace": {
+      "category": "mcp",
+      "featured": false,
+      "websiteUrl": "https://claudecodeplugins.io/"
+    }
+  }
+}
