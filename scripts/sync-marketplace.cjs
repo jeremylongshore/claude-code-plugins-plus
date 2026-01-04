@@ -12,7 +12,15 @@ const repoRoot = path.join(__dirname, '..');
 const extendedPath = path.join(repoRoot, '.claude-plugin', 'marketplace.extended.json');
 const cliPath = path.join(repoRoot, '.claude-plugin', 'marketplace.json');
 
-const DISALLOWED_KEYS = new Set(['featured', 'mcpTools', 'pluginCount', 'pricing', 'components']);
+const DISALLOWED_KEYS = new Set([
+  'featured',
+  'mcpTools',
+  'pluginCount',
+  'pricing',
+  'components',
+  'zcf_metadata',
+  'external_sync'
+]);
 
 if (!fs.existsSync(extendedPath)) {
   console.error(`❌ Missing extended marketplace catalog at ${extendedPath}`);

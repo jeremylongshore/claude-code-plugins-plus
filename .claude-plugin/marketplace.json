@@ -220,12 +220,6 @@
       ],
       "author": {
         "name": "Claude Code Plugins"
-      },
-      "zcf_metadata": {
-        "preset_id": "ai-experiment-logger",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "ai-ml"
       }
     },
     {
@@ -1161,12 +1155,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      },
-      "zcf_metadata": {
-        "preset_id": "conversational-api-debugger",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "api"
       }
     },
     {
@@ -1919,12 +1907,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      },
-      "zcf_metadata": {
-        "preset_id": "design-to-code",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "design"
       }
     },
     {
@@ -2056,12 +2038,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      },
-      "zcf_metadata": {
-        "preset_id": "domain-memory-agent",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "knowledge"
       }
     },
     {
@@ -3393,12 +3369,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      },
-      "zcf_metadata": {
-        "preset_id": "project-health-auditor",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "code-quality"
       }
     },
     {
@@ -4486,12 +4456,6 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
-      },
-      "zcf_metadata": {
-        "preset_id": "workflow-orchestrator",
-        "bmad_compatible": true,
-        "ccr_compatible": true,
-        "category": "automation"
       }
     },
     {
@@ -5060,11 +5024,6 @@
         "name": "Numman Ali",
         "email": "numman.ali@gmail.com",
         "url": "https://github.com/numman-ali"
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/gastown"
       }
     },
     {
@@ -5089,11 +5048,6 @@
         "name": "Numman Ali",
         "email": "numman.ali@gmail.com",
         "url": "https://github.com/numman-ali"
-      },
-      "external_sync": {
-        "enabled": true,
-        "source_repo": "numman-ali/n-skills",
-        "source_path": "skills/tools/zai-cli"
       }
     }
   ]
