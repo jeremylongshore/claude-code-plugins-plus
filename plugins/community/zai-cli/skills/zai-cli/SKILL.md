@@ -1,16 +1,14 @@
 ---
 name: zai-cli
 description: |
-  Z.AI CLI providing vision, search, reader, and GitHub exploration via CLI and MCP.
-  Use when user needs image/video analysis, OCR, UI-to-code conversion, error diagnosis,
-  real-time web search, web page to markdown extraction, or GitHub code exploration.
-  Trigger with phrases like "analyze this image", "search the web for", "read this page",
-  "explore this repo", or "use zai". Requires Z_AI_API_KEY.
-allowed-tools: Read, Write, Edit, Bash, WebFetch
-version: 1.0.0
-license: Apache-2.0
-author: Numman Ali <numman.ali@gmail.com>
----
+  Z.AI CLI providing:
+  - Vision: image/video analysis, OCR, UI-to-code, error diagnosis (GLM-4.6V)
+  - Search: real-time web search with domain/recency filtering
+  - Reader: web page to markdown extraction
+  - Repo: GitHub code search and reading via ZRead
+  - Tools: MCP tool discovery and raw calls
+  - Code: TypeScript tool chaining
+  Use for visual content analysis, web search, page reading, or GitHub exploration. Requires Z_AI_API_KEY.
 ---
 
 # ZAI CLI

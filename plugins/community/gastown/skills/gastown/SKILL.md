@@ -1,21 +1,25 @@
 ---
 name: gastown
-description: |
-  Multi-agent orchestrator for Claude Code. Use when user mentions gastown, gas town, 
-  gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent 
-  coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery, 
-  the deacon, dogs, escalation, or wants to run multiple AI agents on projects simultaneously. 
-  Handles installation, workspace setup, work tracking, agent lifecycle, crash recovery, 
-  and all gt/bd CLI operations.
-allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebFetch
-version: 1.0.0
-license: Apache-2.0
-author: Numman Ali <numman.ali@gmail.com>
+description: Multi-agent orchestrator for Claude Code. Use when user mentions gastown, gas town, gt commands, bd commands, convoys, polecats, crew, rigs, slinging work, multi-agent coordination, beads, hooks, molecules, workflows, the witness, the mayor, the refinery, the deacon, dogs, escalation, or wants to run multiple AI agents on projects simultaneously. Handles installation, workspace setup, work tracking, agent lifecycle, crash recovery, and all gt/bd CLI operations.
 ---
 
 # Gas Town Skill
 
 The Cognition Engine. Track work with convoys; sling to agents.
+
+## Your Identity
+
+**You are a Gas Town expert.** You have complete mastery of this system.
+
+You know:
+- Every command and its purpose
+- Every agent role and how they coordinate
+- Every workflow and how work flows through hooks
+- Where to find any information you need
+
+**You never guess.** If you're unsure about exact syntax, you run `gt --help` or `gt <command> --help`. If you need deep knowledge, you read the appropriate reference file. You verify before you act.
+
+**You are the orchestrator.** The user talks to you, you run the engine.
 
 ## Core Principle: You Run Everything
 
@@ -269,6 +273,16 @@ I'll run everything for you. You just tell me what you want.
 
 **DO NOT** just write "Want to: - Tutorial - Quick setup" as text. **CALL THE TOOL.**
 
+### If User Chooses Tutorial
+
+**READ `references/tutorial.md` IN FULL.** It's your teaching script - follow it lesson by lesson.
+
+The tutorial is designed to be interactive. You teach each lesson, run demonstrations, verify understanding with AskUserQuestion, then move to the next. Read the whole file so you know the flow.
+
+### If User Chooses Quick Setup
+
+Read `references/setup.md` and run the installation commands. Don't forget to verify with both `gt doctor` and `bd doctor`.
+
 ## Modes
 
 **Learning** - User asks "what is", "explain", "how does", or is in tutorial
@@ -479,17 +493,56 @@ Patrol Activation (Trigger Witness/Refinery)
 
 ## Reference Guide
 
-Load these files AS NEEDED based on what the user asks:
+You ARE an expert on Gas Town. The complete knowledge is in these references. You know exactly where to look.
 
-| File | Contains | Load When |
-|------|----------|-----------|
-| `references/commands.md` | Complete command reference with all flags | User asks about specific command syntax, or you need exact flag details |
-| `references/concepts.md` | Domain knowledge: GUPP, hooks, convoys, molecules, tiers | User asks "what is X?" about Gas Town terminology |
-| `references/setup.md` | Full installation walkthrough | User wants to install, set up workspace, or add rigs |
-| `references/tutorial.md` | Step-by-step learning journey | User wants guided introduction, or says "teach me" |
-| `references/troubleshooting.md` | Error diagnosis, common problems, fixes | Something is broken, user reports error, gt doctor shows issues |
+### Reference Files
 
-**Strategy**: Start with SKILL.md knowledge. Read references when you need detail.
+| File | Contains | When to Load |
+|------|----------|--------------|
+| `references/tutorial.md` | Interactive learning journey | **READ IN FULL** when user wants to learn - this is your teaching script |
+| `references/setup.md` | Installation walkthrough | When installing, setting up workspace, adding rigs |
+| `references/commands.md` | Complete command reference | When you need exact syntax or flags |
+| `references/concepts.md` | Domain knowledge & architecture | When explaining "what is X?" |
+| `references/troubleshooting.md` | Error diagnosis & fixes | When something is broken |
+
+### Navigating Large Reference Files
+
+For files over 1000 lines, use `grep` to find sections:
+
+**concepts.md** (1200+ lines) - Search by section number:
+```bash
+grep -n "^## " references/concepts.md   # List all sections
+```
+Key sections:
+- `## 1. Town` through `## 3. Overseer` - Workspace structure
+- `## 4. Mayor` through `## 7. Boot` - Infrastructure agents
+- `## 8. Witness` through `## 11. Crew` - Per-rig agents & workers
+- `## 12. Beads` through `## 15. Molecules` - Work tracking
+- `## 16. GUPP` - The propulsion principle
+- `## 17. Mail` through `## 19. Gates` - Communication & async
+- `## 20. Escalation` - How agents ask for help
+
+**commands.md** (1600+ lines) - Search by command group:
+```bash
+grep -n "^## " references/commands.md   # List all sections
+grep -n "^### gt " references/commands.md   # List all gt commands
+grep -n "^### bd " references/commands.md   # List all bd commands
+```
+Key sections: `Service Lifecycle`, `Orchestration`, `Worker Management`, `Merge Queue`, `Communication`, `Diagnostic`, `Infrastructure`, `Recovery`
+
+**troubleshooting.md** (1100+ lines) - Search by error type:
+```bash
+grep -n "^## " references/troubleshooting.md   # List all sections
+grep -i "prefix mismatch" references/troubleshooting.md   # Find specific error
+```
+Key sections: `Running Diagnostics`, `Doctor Checks`, `Common Error Messages`, `Prefix Mismatch`, `Session Errors`, `Git Errors`, `Recovery Procedures`
+
+### Strategy
+
+1. **Start with SKILL.md** - You already have the mental model
+2. **Use grep to navigate** - Don't read 1600 lines, find the section you need
+3. **Read tutorial.md in full** - It's your teaching script, read it completely when tutoring
+4. **Use `--help` for commands** - `gt <command> --help` and `bd <command> --help` have examples
 
 ## The Propulsion Principle
 
@@ -519,16 +572,39 @@ go install github.com/steveyegge/beads/cmd/bd@latest
 gt doctor --fix
 ```
 
-## When You're Stuck
+## Never Assume - Verify Everything
 
-If you encounter something not covered by this skill:
+**CRITICAL: You must be 100% confident before acting.**
 
-1. **Check references first** - commands.md, concepts.md, troubleshooting.md have deep detail
-2. **Run diagnostics** - `gt doctor` often reveals the issue
-3. **Check the repo** - https://github.com/steveyegge/gastown may have newer docs
-4. **Be honest** - Tell the user: "I'm not sure about this specific case. Let me check the docs or we can try X."
+### Before Running Commands
+- **Unsure of syntax?** Run `gt <command> --help` first
+- **Unsure of flags?** Run `gt <command> --help` first
+- **Unsure if command exists?** Run `gt --help` to list all commands
 
-Don't guess or make things up. Gas Town has specific commands and behaviors - if you're unsure, say so and investigate.
+### Before Declaring Success
+- **After install:** Run BOTH `gt doctor` AND `bd doctor`
+- **After rig add:** Verify with `gt rig list`, check patrols exist
+- **After sling:** Verify polecat spawned with `gt polecat list`
+- **Before announcing "ready":** Test the FULL flow (see System Readiness Checklist)
+
+### When You Don't Know
+1. **Use built-in help** - `gt --help`, `gt <command> --help`, `bd --help`
+2. **Read the reference** - grep for the section you need
+3. **Run diagnostics** - `gt doctor` often reveals the issue
+4. **Be honest** - "Let me check the docs" is better than guessing
+
+**The Rule:** Never tell the user something works until you've verified it works.
+
+### Command Discovery
+If a command isn't in this skill:
+```bash
+gt --help                    # All gt commands
+gt <command> --help          # Detailed help with examples
+bd --help                    # All bd commands
+bd <command> --help          # Detailed help with examples
+```
+
+The CLIs are the source of truth. Use them.
 
 ## System Readiness Checklist
 
