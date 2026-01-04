@@ -129,36 +129,44 @@ for file in "$INPUT_FOLDER"/*.json; do
   # (In real implementation, this would query actual data)
   # For this demo, we'll simulate based on field characteristics
 
-  jq -r '.schema[] | "\(.name)|\(.mode)|\(.type)"' "$file" 2>/dev/null | while IFS='|' read -r field_name field_mode field_type; do
+  while IFS='|' read -r field_name field_mode field_type; do
     # Simulate null percentage based on field patterns
     # Real implementation would query actual data rows
-
+    log "    Field: $table_name.$field_name, Mode: $field_mode, Type: $field_type"
     null_pct=0
 
     # Heuristic: Detect likely unused fields
     if [[ "$field_name" =~ (legacy|old|deprecated|temp|unused|backup) ]]; then
+      log "      Field: $table_name.$field_name, likely unused"
       # Likely unused
       null_pct=$((90 + RANDOM % 11))  # 90-100%
     elif [[ "$field_mode" == "NULLABLE" ]] && [[ "$field_name" =~ (notes|comments|optional|metadata) ]]; then
+      log "      Field Mode: $field_mode, likely low utilization"
       # Likely low utilization
       null_pct=$((60 + RANDOM % 30))  # 60-90%
     elif [[ "$field_mode" == "REQUIRED" ]]; then
+      log "      Field Mode: $field_mode, required field typically low null"
       # Required fields typically low null
       null_pct=$((0 + RANDOM % 20))  # 0-20%
     else
+      log "      Default: moderate utilization"
       # Default: moderate utilization
       null_pct=$((20 + RANDOM % 50))  # 20-70%
     fi
 
     # Categorize
+    log "      Field: $table_name.$field_name, Estimated Null %: $null_pct"
     if [ "$null_pct" -ge 90 ]; then
       UNUSED_FIELDS+=("$table_name|$field_name|$null_pct")
+      log "      Categorized as UNUSED ${#UNUSED_FIELDS[@]}"
     elif [ "$null_pct" -ge 70 ]; then
       LOW_UTIL_FIELDS+=("$table_name|$field_name|$null_pct")
+      log "      Categorized as LOW UTIL ${#LOW_UTIL_FIELDS[@]}"
     else
       HIGH_UTIL_FIELDS+=("$table_name|$field_name|$null_pct")
+      log "      Categorized as HIGH UTIL ${#HIGH_UTIL_FIELDS[@]}"
     fi
-  done
+  done < <(jq -r '.schema[] | "\(.name)|\(.mode)|\(.type)"' "$file" 2>/dev/null)
 
   log "  Processed $field_count fields"
 done
@@ -167,6 +175,9 @@ END_TIME=$(date +%s)
 RUNTIME=$((END_TIME - START_TIME))
 
 log "Analysis complete. Runtime: ${RUNTIME}s"
+log "Categorized as UNUSED ${#UNUSED_FIELDS[@]}"
+log "Categorized as LOW UTIL ${#LOW_UTIL_FIELDS[@]}"
+log "Categorized as HIGH UTIL ${#HIGH_UTIL_FIELDS[@]}"
 
 # ============================================
 # Format Output JSON
@@ -174,22 +185,25 @@ log "Analysis complete. Runtime: ${RUNTIME}s"
 log "Generating output JSON..."
 
 # Convert arrays to JSON
-unused_json=$(printf '%s\n' "${UNUSED_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
-low_util_json=$(printf '%s\n' "${LOW_UTIL_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
-high_util_json=$(printf '%s\n' "${HIGH_UTIL_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
-
-# Handle empty arrays
-if [ ${#UNUSED_FIELDS[@]} -eq 0 ]; then
+if [ ${#UNUSED_FIELDS[@]} -gt 0 ]; then
+  unused_json=$(printf '%s\n' "${UNUSED_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
+else
   unused_json="[]"
 fi
 
-if [ ${#LOW_UTIL_FIELDS[@]} -eq 0 ]; then
+if [ ${#LOW_UTIL_FIELDS[@]} -gt 0 ]; then
+  low_util_json=$(printf '%s\n' "${LOW_UTIL_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
+else
   low_util_json="[]"
 fi
 
-if [ ${#HIGH_UTIL_FIELDS[@]} -eq 0 ]; then
+if [ ${#HIGH_UTIL_FIELDS[@]} -gt 0 ]; then
+  high_util_json=$(printf '%s\n' "${HIGH_UTIL_FIELDS[@]}" | awk -F'|' '{print "{\"table\":\"" $1 "\",\"field\":\"" $2 "\",\"null_pct\":" $3 "}"}' | jq -s .)
+else
   high_util_json="[]"
 fi
+
+# Empty arrays are now handled above during JSON generation
 
 # Build complete JSON
 cat > "$OUTPUT_FOLDER/field_utilization_report.json" <<EOF
