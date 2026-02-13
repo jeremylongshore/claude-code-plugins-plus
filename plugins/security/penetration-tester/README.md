@@ -1,14 +1,16 @@
 # Penetration Tester Plugin
 
-Automated penetration testing for web applications with comprehensive OWASP Top 10 coverage and safe exploitation techniques.
+Security testing toolkit for web applications, dependencies, and source code.
+Three real scanners that wrap established tools (requests, bandit, pip-audit,
+npm audit) with unified reporting.
 
-## Features
+## What It Does
 
-- **OWASP Top 10 Testing** - Complete coverage of modern web vulnerabilities
-- **Safe Exploitation** - Proof of concept without causing damage
-- **Comprehensive Reporting** - Executive summaries and technical details
-- **Multiple Attack Vectors** - SQL injection, XSS, CSRF, authentication bypass
-- **API Testing** - REST, GraphQL, SOAP endpoint testing
+| Scanner | Target | What It Checks |
+|---------|--------|----------------|
+| `security_scanner.py` | Live URLs | Security headers, SSL/TLS, exposed endpoints, HTTP methods, CORS |
+| `dependency_auditor.py` | Project dirs | npm and pip vulnerabilities, CVEs, outdated packages |
+| `code_security_scanner.py` | Codebases | Hardcoded secrets, SQL injection, command injection, insecure deserialization |
 
 ## Installation
 
@@ -16,212 +18,139 @@ Automated penetration testing for web applications with comprehensive OWASP Top 
 /plugin install penetration-tester@claude-code-plugins-plus
 ```
 
-## Usage
+## Setup
+
+Install Python dependencies:
 
 ```bash
-# Run full penetration test
-/pentest
-
-# Or use shortcut
-/pt
+bash scripts/setup_pentest_env.sh
 ```
 
-## Warning
+Or with a virtual environment:
 
-**ONLY USE ON AUTHORIZED SYSTEMS**
-
-Unauthorized penetration testing is illegal. Only test:
-- Systems you own
-- Systems you have written permission to test
-- Systems in controlled testing environments
-
-## Test Phases
-
-### 1. Information Gathering
-- DNS enumeration
-- Subdomain discovery
-- Technology stack identification
-- Exposed endpoints mapping
-
-### 2. Vulnerability Scanning
-- Automated vulnerability detection
-- Configuration weaknesses
-- Known CVE exploitation paths
-- Custom vulnerability checks
-
-### 3. Exploitation
-- SQL injection attempts
-- XSS payload testing
-- CSRF token bypass
-- Authentication mechanism testing
-- Authorization boundary testing
-
-### 4. Post-Exploitation
-- Privilege escalation paths
-- Lateral movement opportunities
-- Data access verification
-- Persistence mechanisms
-
-## Example Report
-
-```
-PENETRATION TEST REPORT
-=======================
-Target: https://example.com
-Date: 2025-10-11
-Tester: Claude Penetration Testing Plugin
-
-EXECUTIVE SUMMARY
------------------
-Risk Rating: HIGH
-Critical Findings: 2
-High Findings: 4
-Medium Findings: 8
-
-CRITICAL FINDINGS
------------------
-
-1. SQL Injection in Login Form
-   Location: /api/auth/login
-   Method: POST
-   Parameter: username
-
-   Exploitation:
-   POST /api/auth/login
-   username=' OR '1'='1' --&password=anything
-
-   Result: Authentication bypass successful
-   Impact: Complete database access, user account takeover
-
-   Proof of Concept:
-   curl -X POST https://example.com/api/auth/login \
-     -d "username=' OR '1'='1' --&password=test"
-
-   Response: {"token": "eyJhbGc...", "user": "admin"}
-
-   Remediation:
-   - Use parameterized queries
-   - Implement input validation
-   - Add WAF rules
-   - Code: db.query('SELECT * FROM users WHERE username = ?', [username])
-
-2. Remote Code Execution via File Upload
-   Location: /api/upload
-   Method: POST
-   Parameter: file
-
-   Exploitation:
-   Uploaded PHP shell disguised as image
-   File: shell.php.jpg
-   Accessed: /uploads/shell.php.jpg?cmd=whoami
-
-   Result: Command execution as www-data user
-   Impact: Full server compromise
-
-   Proof of Concept:
-   <?php system($_GET['cmd']); ?>
-
-   Remediation:
-   - Validate file types by content, not extension
-   - Store uploads outside webroot
-   - Disable script execution in upload directory
-   - Implement virus scanning
-
-HIGH FINDINGS
--------------
-
-3. Cross-Site Scripting (XSS) in Search
-   Location: /search
-   Parameter: q
-   Type: Reflected XSS
-
-   Payload: <script>alert(document.cookie)</script>
-
-   Remediation:
-   - HTML encode all user input
-   - Implement Content Security Policy
-   - Use DOMPurify for sanitization
-
-4. Weak Password Policy
-   Location: /api/auth/register
-   Observation: Accepts passwords like "123"
-
-   Impact: Account takeover via brute force
-
-   Remediation:
-   - Minimum 12 characters
-   - Require complexity (upper, lower, numbers, symbols)
-   - Implement rate limiting
-   - Add account lockout
+```bash
+bash scripts/setup_pentest_env.sh --venv
 ```
 
-## Test Categories
+Requires Python 3.9+. The setup script installs `requests`, `bandit`, and
+`pip-audit`, then verifies each tool works.
 
-### Authentication Testing
-- Brute force protection
-- Password reset flaws
-- Session fixation
-- Multi-factor bypass
-- OAuth misconfigurations
+## Quick Start
 
-### Authorization Testing
-- Vertical privilege escalation
-- Horizontal privilege escalation
-- Insecure direct object references
-- Missing function-level access control
+**Check security headers on a URL:**
+```
+> Check the security headers on https://example.com
+```
 
-### Input Validation
-- SQL injection
-- NoSQL injection
-- Command injection
-- XML external entity (XXE)
-- LDAP injection
+**Audit project dependencies:**
+```
+> Audit the dependencies in this project for vulnerabilities
+```
 
-### Session Management
-- Session fixation
-- Session hijacking
-- Insecure session storage
-- Insufficient session timeout
+**Scan code for security issues:**
+```
+> Scan this codebase for hardcoded secrets and security issues
+```
 
-### Business Logic
-- Rate limiting bypass
-- Payment manipulation
-- Workflow bypass
-- Race conditions
+**Full security audit:**
+```
+> Run a full security audit on this project
+```
 
-## Best Practices
+## Scanners
 
-1. **Scope Definition**
-   - Define exact testing boundaries
-   - Get written authorization
-   - Clarify off-limit systems
-   - Set testing timeframe
+### security_scanner.py
 
-2. **Safe Testing**
-   - Use test accounts
-   - Avoid DoS attacks
-   - Don't delete data
-   - Monitor system impact
+HTTP security analysis for live web applications.
 
-3. **Documentation**
-   - Record all test activities
-   - Screenshot evidence
-   - Save request/response data
-   - Document exploitation steps
+```bash
+python3 scripts/security_scanner.py https://example.com
+python3 scripts/security_scanner.py https://example.com --checks headers,ssl
+python3 scripts/security_scanner.py https://example.com --output report.json
+```
 
-4. **Responsible Disclosure**
-   - Report findings immediately
-   - Provide clear remediation steps
-   - Give reasonable fix timeline
-   - Verify fixes after implementation
+**Checks:**
+- Security headers (CSP, HSTS, X-Frame-Options, X-Content-Type-Options,
+  Referrer-Policy, Permissions-Policy)
+- SSL/TLS certificate validity and expiry
+- Exposed endpoints (.git, .env, admin panels, server-status)
+- Dangerous HTTP methods (PUT, DELETE, TRACE)
+- CORS misconfigurations (wildcard, reflected origin)
+
+### dependency_auditor.py
+
+Unified dependency vulnerability scanner.
+
+```bash
+python3 scripts/dependency_auditor.py /path/to/project
+python3 scripts/dependency_auditor.py . --min-severity high
+python3 scripts/dependency_auditor.py . --scanners npm,pip --output findings.json
+```
+
+**Supports:**
+- npm projects (via `npm audit`)
+- Python projects (via `pip-audit`)
+- Auto-detects project type from manifest files
+
+### code_security_scanner.py
+
+Static analysis for security vulnerabilities.
+
+```bash
+python3 scripts/code_security_scanner.py /path/to/code
+python3 scripts/code_security_scanner.py . --tools bandit,regex --severity high
+python3 scripts/code_security_scanner.py . --exclude "test_*,*_test.py"
+```
+
+**Detects:**
+- Hardcoded secrets (API keys, AWS keys, passwords, tokens)
+- SQL injection (string concatenation in queries)
+- Command injection (os.system, subprocess with shell=True)
+- Eval/exec usage
+- Insecure deserialization (pickle, unsafe YAML loading)
+- Weak cryptography (MD5, SHA1)
+- Disabled SSL verification
+
+## Output
+
+All scanners produce:
+- Markdown-formatted reports for terminal display
+- JSON reports via `--output` for programmatic use
+- Risk scoring with severity levels (critical, high, medium, low, info)
+- Remediation guidance for each finding
+
+Exit code 0 means no critical or high findings. Exit code 1 means issues found.
+
+## Reference Documentation
+
+The `references/` directory contains detailed guides:
+
+- **OWASP_TOP_10.md** -- Each OWASP Top 10 risk with scanner mapping and fix templates
+- **SECURITY_HEADERS.md** -- HTTP header implementation for Express, Django, Nginx, Apache
+- **REMEDIATION_PLAYBOOK.md** -- Copy-paste fix templates for common vulnerabilities
+
+## Authorization Warning
+
+**Only test systems you are authorized to test.**
+
+- Never scan URLs you do not own or have written permission to test
+- Local code scanning and dependency auditing of your own projects is always safe
+- The scanners will ask for authorization confirmation before external scans
+- Unauthorized security testing may violate laws in your jurisdiction
+
+## Commands
+
+- `/pentest` -- Full security testing workflow with authorization checks
+- `/scan-headers` -- Quick security header check for a single URL
 
 ## Requirements
 
-- Authorized testing permission
-- Network access to target systems
-- Testing tools (burp suite, nmap, etc.)
-- Understanding of legal boundaries
+- Python 3.9+
+- `requests` >= 2.31.0
+- `bandit` >= 1.7.5 (optional, for code scanning)
+- `pip-audit` >= 2.6.0 (optional, for Python dependency auditing)
+- `npm` (optional, for JavaScript dependency auditing)
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License - See LICENSE file for details.
