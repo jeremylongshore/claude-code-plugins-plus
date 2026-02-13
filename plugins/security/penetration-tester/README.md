@@ -151,6 +151,10 @@ The `references/` directory contains detailed guides:
 - `pip-audit` >= 2.6.0 (optional, for Python dependency auditing)
 - `npm` (optional, for JavaScript dependency auditing)
 
+## Contributors
+
+- [@duskfallcrew](https://github.com/duskfallcrew) -- Reported AV false positive from PHP payloads in docs (#300), prompting the v2.0.0 rebuild
+
 ## License
 
 MIT License - See LICENSE file for details.
