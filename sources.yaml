@@ -88,6 +88,489 @@ sources:
       - ".git/**"
       - "*.log"
 
+
+  # ============================================================
+  # Wondel.ai Skills (Michal Jaskolski / wondelai)
+  # https://github.com/wondelai/skills
+  # 25 agent skills for product strategy, UX design, marketing,
+  # sales, motivation, and conversion optimization
+  # ============================================================
+
+  - name: wondelai-blue-ocean-strategy
+    description: Blue Ocean Strategy framework for creating uncontested market space
+    repo: wondelai/skills
+    source_path: blue-ocean-strategy
+    target_path: plugins/business-tools/wondelai-blue-ocean-strategy
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-contagious
+    description: Word-of-mouth and virality framework using the STEPPS model
+    repo: wondelai/skills
+    source_path: contagious
+    target_path: plugins/business-tools/wondelai-contagious
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-cro-methodology
+    description: Customer-centric conversion rate optimization methodology
+    repo: wondelai/skills
+    source_path: cro-methodology
+    target_path: plugins/business-tools/wondelai-cro-methodology
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-crossing-the-chasm
+    description: Technology adoption and go-to-market strategy for mainstream markets
+    repo: wondelai/skills
+    source_path: crossing-the-chasm
+    target_path: plugins/business-tools/wondelai-crossing-the-chasm
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-design-everyday-things
+    description: Fundamental design principles for intuitive interfaces
+    repo: wondelai/skills
+    source_path: design-everyday-things
+    target_path: plugins/design/wondelai-design-everyday-things
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-design-sprint
+    description: Google Ventures Design Sprint methodology for rapid prototyping
+    repo: wondelai/skills
+    source_path: design-sprint
+    target_path: plugins/productivity/wondelai-design-sprint
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-drive-motivation
+    description: Intrinsic motivation science framework (Autonomy, Mastery, Purpose)
+    repo: wondelai/skills
+    source_path: drive-motivation
+    target_path: plugins/business-tools/wondelai-drive-motivation
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-hooked-ux
+    description: Hook Model framework for building habit-forming products
+    repo: wondelai/skills
+    source_path: hooked-ux
+    target_path: plugins/design/wondelai-hooked-ux
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-hundred-million-offers
+    description: Grand Slam Offer creation framework for irresistible pricing
+    repo: wondelai/skills
+    source_path: hundred-million-offers
+    target_path: plugins/business-tools/wondelai-hundred-million-offers
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-influence-psychology
+    description: Persuasion science framework based on Cialdini's six principles
+    repo: wondelai/skills
+    source_path: influence-psychology
+    target_path: plugins/business-tools/wondelai-influence-psychology
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-ios-hig-design
+    description: Native iOS app design following Apple Human Interface Guidelines
+    repo: wondelai/skills
+    source_path: ios-hig-design
+    target_path: plugins/design/wondelai-ios-hig-design
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-jobs-to-be-done
+    description: Strategic product innovation framework using JTBD theory
+    repo: wondelai/skills
+    source_path: jobs-to-be-done
+    target_path: plugins/business-tools/wondelai-jobs-to-be-done
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-lean-startup
+    description: Lean Startup methodology for validated learning and MVPs
+    repo: wondelai/skills
+    source_path: lean-startup
+    target_path: plugins/productivity/wondelai-lean-startup
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: productivity
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-made-to-stick
+    description: Sticky messaging framework using the SUCCESs model
+    repo: wondelai/skills
+    source_path: made-to-stick
+    target_path: plugins/business-tools/wondelai-made-to-stick
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-negotiation
+    description: Tactical negotiation framework based on Chris Voss's techniques
+    repo: wondelai/skills
+    source_path: negotiation
+    target_path: plugins/business-tools/wondelai-negotiation
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-obviously-awesome
+    description: Product positioning framework for competitive differentiation
+    repo: wondelai/skills
+    source_path: obviously-awesome
+    target_path: plugins/business-tools/wondelai-obviously-awesome
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-one-page-marketing
+    description: End-to-end marketing plan framework in a single page
+    repo: wondelai/skills
+    source_path: one-page-marketing
+    target_path: plugins/business-tools/wondelai-one-page-marketing
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-predictable-revenue
+    description: Outbound sales methodology for scalable B2B pipeline
+    repo: wondelai/skills
+    source_path: predictable-revenue
+    target_path: plugins/business-tools/wondelai-predictable-revenue
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-refactoring-ui
+    description: Practical UI design system for professional interfaces
+    repo: wondelai/skills
+    source_path: refactoring-ui
+    target_path: plugins/design/wondelai-refactoring-ui
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-scorecard-marketing
+    description: Lead generation framework using quiz and assessment funnels
+    repo: wondelai/skills
+    source_path: scorecard-marketing
+    target_path: plugins/business-tools/wondelai-scorecard-marketing
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-storybrand-messaging
+    description: StoryBrand messaging framework that positions customer as hero
+    repo: wondelai/skills
+    source_path: storybrand-messaging
+    target_path: plugins/business-tools/wondelai-storybrand-messaging
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-top-design
+    description: Award-winning web design framework for premium experiences
+    repo: wondelai/skills
+    source_path: top-design
+    target_path: plugins/design/wondelai-top-design
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-traction-eos
+    description: Entrepreneurial Operating System for business execution
+    repo: wondelai/skills
+    source_path: traction-eos
+    target_path: plugins/business-tools/wondelai-traction-eos
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: business-tools
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-ux-heuristics
+    description: Usability heuristics and principles for UX audits
+    repo: wondelai/skills
+    source_path: ux-heuristics
+    target_path: plugins/design/wondelai-ux-heuristics
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
+  - name: wondelai-web-typography
+    description: Web typography framework for readable, beautiful type
+    repo: wondelai/skills
+    source_path: web-typography
+    target_path: plugins/design/wondelai-web-typography
+    author:
+      name: Wondel.ai
+      github: wondelai
+    license: MIT
+    category: design
+    verified: true
+    include:
+      - "SKILL.md"
+      - "references/**"
+    exclude:
+      - "node_modules/**"
+      - ".git/**"
+      - "*.log"
+
   # ============================================================
   # Add more external sources below
   # ============================================================
