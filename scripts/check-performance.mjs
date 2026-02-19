@@ -19,6 +19,9 @@ const __dirname = path.dirname(__filename);
 const REPO_ROOT = path.resolve(__dirname, '..');
 const DIST_DIR = path.join(REPO_ROOT, 'marketplace', 'dist');
 
+// Directories to exclude from performance analysis (binary downloads, not web assets)
+const EXCLUDE_DIRS = ['downloads'];
+
 // Performance budgets
 const BUDGETS = {
   totalSize: 3 * 1024 * 1024,  // 3MB gzipped (increased for SaaS skill packs)
@@ -74,6 +77,9 @@ async function walkDir(dir, fileList = []) {
     const stat = fs.statSync(filePath);
 
     if (stat.isDirectory()) {
+      // Skip excluded directories (binary downloads, not web assets)
+      const relDir = path.relative(DIST_DIR, filePath);
+      if (EXCLUDE_DIRS.includes(relDir)) continue;
       await walkDir(filePath, fileList);
     } else {
       fileList.push(filePath);
@@ -94,6 +100,10 @@ function countRoutes() {
       const stat = fs.statSync(fullPath);
 
       if (stat.isDirectory()) {
+        // Skip excluded directories (binary downloads, not web routes)
+        const relDir = path.relative(DIST_DIR, fullPath);
+        if (EXCLUDE_DIRS.includes(relDir)) continue;
+
         // Check if this directory has an index.html
         const indexPath = path.join(fullPath, 'index.html');
         if (fs.existsSync(indexPath)) {
