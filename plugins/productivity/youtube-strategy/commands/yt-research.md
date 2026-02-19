@@ -3,6 +3,7 @@ name: yt-research
 description: Research competitor channels, niches, and trending topics for YouTube content
 argument-hint: [channel-urls-or-topic]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Task, WebSearch, AskUserQuestion
+model: sonnet
 ---
 
 Run the YouTube Research skill. This is Stage 1 of the content production workflow - researching competitor channels, analyzing niches, identifying features and topics worth covering.

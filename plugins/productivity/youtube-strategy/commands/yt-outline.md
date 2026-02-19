@@ -3,6 +3,7 @@ name: yt-outline
 description: Build a step-by-step video outline with demo prep and visual planning
 argument-hint: [brief-file]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch, AskUserQuestion
+model: sonnet
 ---
 
 Run the YouTube Outline skill. This is the final stage of the content production workflow - building a detailed step-by-step outline with demo sequences, screen-share planning, and visual needs.

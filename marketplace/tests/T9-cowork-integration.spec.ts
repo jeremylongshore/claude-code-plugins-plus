@@ -38,7 +38,8 @@ test.describe('Cowork Integration', () => {
       const cards = section.locator('.cowork-card, .pack-card, [class*="card"]');
       const count = await cards.count();
 
-      // Should have at most 6 featured cards (limit={6} in index.astro)
+      // Should render between 1 and 6 featured cards (limit={6} in index.astro)
+      expect(count).toBeGreaterThanOrEqual(1);
       expect(count).toBeLessThanOrEqual(6);
     });
 

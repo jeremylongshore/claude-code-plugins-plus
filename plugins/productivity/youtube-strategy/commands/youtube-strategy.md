@@ -1,6 +1,7 @@
 ---
 name: youtube-strategy
 description: See all YouTube Strategy skills and get started
+model: sonnet
 ---
 
 # YouTube Strategy

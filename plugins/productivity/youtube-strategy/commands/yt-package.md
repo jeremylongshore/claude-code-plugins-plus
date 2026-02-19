@@ -3,6 +3,7 @@ name: yt-package
 description: Create optimized titles and thumbnail concepts for a video
 argument-hint: [brief-file]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, WebSearch, AskUserQuestion
+model: sonnet
 ---
 
 Run the YouTube Packaging skill. This is the packaging stage of the content production workflow - creating optimized title options and thumbnail concepts once a brief is locked.

@@ -57,10 +57,11 @@ if (allZips.length === 0) {
   process.exit(0);
 }
 
-// Sample up to 5 random zips
+// Sample up to 30 zips (or all if fewer)
+const SAMPLE_SIZE = Math.min(30, allZips.length);
 const sample = allZips
   .sort(() => Math.random() - 0.5)
-  .slice(0, 5);
+  .slice(0, SAMPLE_SIZE);
 
 console.log(`Sampling ${sample.length} of ${allZips.length} plugin zips\n`);
 
@@ -127,7 +128,10 @@ for (const zipPath of sample) {
 
   const files = listing.split('\n').filter(f => f.trim());
   for (const file of files) {
-    const parts = file.trim().split('/');
+    // For unzip -l lines, path is the last whitespace-delimited token;
+    // for zipinfo -1 lines, the whole trimmed line is the path.
+    const rawPath = file.trim().split(/\s+/).pop() || '';
+    const parts = rawPath.split('/');
     for (const part of parts) {
       if (part.startsWith('.') && part !== '.' && part !== '..' && part !== '.claude-plugin') {
         fail(`Hidden file/dir in zip: ${file.trim()} (in ${zipPath.split('/').pop()})`);

@@ -3,6 +3,7 @@ name: yt-pipeline
 description: Run the full YouTube content production pipeline
 argument-hint: [topic-or-channel-urls]
 allowed-tools: Read, Write, Edit, Bash, Grep, Glob, Task, WebSearch, AskUserQuestion
+model: sonnet
 ---
 
 Run the complete YouTube content production pipeline. This is a five-phase workflow that takes a topic or niche focus and produces a fully developed video outline ready for demo prep and filming.
