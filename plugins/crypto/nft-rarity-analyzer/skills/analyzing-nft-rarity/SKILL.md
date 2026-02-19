@@ -4,7 +4,7 @@ description: |
   Calculate NFT rarity scores and rank tokens by trait uniqueness.
   Use when analyzing NFT collections, checking token rarity, or comparing NFTs.
   Trigger with phrases like "check NFT rarity", "analyze collection", "rank tokens", "compare NFTs".
-allowed-tools: Read, Bash(python3 *)
+allowed-tools: Read, Bash(python3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

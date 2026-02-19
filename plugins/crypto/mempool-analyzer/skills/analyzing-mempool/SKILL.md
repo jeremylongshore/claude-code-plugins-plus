@@ -5,7 +5,7 @@ description: |
   Use when analyzing pending transactions, optimizing gas prices, or researching MEV.
   Trigger with phrases like "check mempool", "scan pending txs", "find MEV", "gas price analysis", or "pending swaps".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*mempool*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*mempool*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

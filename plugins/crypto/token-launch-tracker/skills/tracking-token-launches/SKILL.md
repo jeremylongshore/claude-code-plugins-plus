@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "track launches", "find new tokens", "new pairs on uniswap",
   "token risk analysis", or "monitor IDOs".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*launch_tracker*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*launch_tracker*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

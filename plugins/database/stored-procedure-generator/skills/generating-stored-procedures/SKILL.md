@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "generate stored procedure", "create database function", "write SQL procedure",
   "add trigger to table", or "create CRUD procedures".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:psql,cmd:mysql,cmd:sqlcmd,cmd:python3)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(sqlcmd:*), Bash(python3:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

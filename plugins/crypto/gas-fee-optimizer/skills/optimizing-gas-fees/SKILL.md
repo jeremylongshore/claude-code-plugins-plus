@@ -4,7 +4,7 @@ description: |
   Optimize blockchain gas costs by analyzing prices, patterns, and timing.
   Use when checking gas prices, estimating costs, or finding optimal windows.
   Trigger with phrases like "gas prices", "optimize gas", "transaction cost", "when to transact".
-allowed-tools: Read, Bash(python3 *)
+allowed-tools: Read, Bash(python3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

@@ -6,7 +6,7 @@ description: |
   Trigger with phrases like "monitor bridges", "compare bridge fees", "track bridge tx",
   "bridge TVL", or "cross-chain transfer status".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*bridge_monitor*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*bridge_monitor*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT

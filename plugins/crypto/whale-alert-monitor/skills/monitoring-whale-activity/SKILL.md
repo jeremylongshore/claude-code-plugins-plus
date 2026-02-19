@@ -5,7 +5,7 @@ description: |
   Use when tracking large holder movements, exchange flows, or wallet activity.
   Trigger with phrases like "track whales", "monitor large transfers", "check whale activity", "exchange inflows", or "watch wallet".
 
-allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*whale*)
+allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*whale*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
