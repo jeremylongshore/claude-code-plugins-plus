@@ -75,20 +75,23 @@ ccpi CLI fetches and caches locally
 
 ## Marketplace Build Pipeline
 
-`npm run build` in `marketplace/` runs 4 steps sequentially via `scripts/build.mjs`:
+`npm run build` in `marketplace/` runs 5 steps sequentially via `scripts/build.mjs`:
 
 1. `discover-skills.mjs` - Scans all plugins, extracts SKILL.md data into `src/data/`
 2. `sync-catalog.mjs` - Copies catalog JSON into marketplace data
 3. `generate-unified-search.mjs` - Builds Fuse.js search index
-4. `astro build` - Static site generation
+4. `build-cowork-zips.mjs` - Generates plugin zips, category bundles, mega-zip, and manifest for `/cowork` downloads
+5. `astro build` - Static site generation
 
 **Gotcha:** `compressHTML` is disabled in `astro.config.mjs` because iOS Safari fails to render lines > 5000 chars. CI enforces this with a smoke test.
 
 Post-build validation scripts (also run in CI):
 - `validate-routes.mjs` - Plugin page routes exist
 - `validate-playbook-routes.mjs` - Production playbook routes
-- `validate-internal-links.mjs` - No broken internal links in dist
+- `validate-internal-links.mjs` - No broken internal links in dist (seeds: index, playbooks, explore, skills, cowork)
 - `validate-links.mjs` - Skill-to-plugin link integrity
+- `validate-cowork-downloads.mjs` - Cowork zip build output (manifest, checksums, download links)
+- `validate-cowork-security.mjs` - Zip content security scanner (no secrets, no node_modules)
 
 ## Plugin Structure
 
@@ -145,8 +148,8 @@ PRs trigger 5 parallel jobs:
 | `validate` | JSON validity, plugin structure, catalog sync, secret scanning, dangerous patterns |
 | `test` (matrix) | MCP plugin builds + vitest, Python pytest, `ccpi validate --strict` + frontmatter |
 | `check-package-manager` | Enforces pnpm/npm policy per directory |
-| `marketplace-validation` | Astro build, route validation, link validation, smoke tests, performance budget |
-| `playwright-tests` | E2E tests on chromium + webkit (needs marketplace-validation) |
+| `marketplace-validation` | Astro build, route validation, link validation, smoke tests, cowork downloads/security validation, performance budget |
+| `playwright-tests` | E2E tests on chromium + webkit + mobile (T1-T9, needs marketplace-validation) |
 | `cli-smoke-tests` | CLI build, `--help`, `--version`, `npm pack`, no `workspace:` deps |
 
 ## Conventions

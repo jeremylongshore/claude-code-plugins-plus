@@ -1,6 +1,10 @@
 ---
 name: idea-validator
-description: Use this sub-agent to validate a batch of YouTube video ideas against search demand, competition, and audience fit. Spawn one instance per batch of 5 ideas. Each instance receives ideas plus strategy context, then returns a scored and validated assessment per idea.
+description: Validate batches of YouTube video ideas against search demand, competition, and audience fit. Returns scored assessments.
+capabilities:
+  - idea-validation
+  - search-demand
+  - competition-analysis
 model: sonnet
 maxTurns: 15
 tools: ["Read", "Write", "Bash", "WebSearch", "Grep"]

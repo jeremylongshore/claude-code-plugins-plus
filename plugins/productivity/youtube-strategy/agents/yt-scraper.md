@@ -1,6 +1,10 @@
 ---
 name: yt-scraper
-description: Use this sub-agent to orchestrate YouTube scraping via Apify actors. Only ONE instance should be spawned per pipeline run. It handles triggering Apify actors for YouTube channel/video/search scraping, waiting for completion, fetching datasets, and persisting all results to disk as JSON files.
+description: Orchestrate YouTube scraping via Apify actors. Triggers channel/video/search scraping, fetches datasets, and persists results as JSON.
+capabilities:
+  - youtube-scraping
+  - data-extraction
+  - apify-orchestration
 model: sonnet
 maxTurns: 20
 tools: ["Read", "Write", "Bash"]
