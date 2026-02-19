@@ -45,6 +45,9 @@ importers:
       '@playwright/test':
         specifier: ^1.57.0
         version: 1.57.0
+      archiver:
+        specifier: ^7.0.1
+        version: 7.0.1
 
   packages/analytics-daemon:
     dependencies:
