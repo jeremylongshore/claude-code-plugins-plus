@@ -16,9 +16,14 @@
 import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
-import archiver from 'archiver';
+import { createRequire } from 'node:module';
 
 const ROOT = resolve(dirname(new URL(import.meta.url).pathname), '..');
+
+// Resolve archiver from marketplace/node_modules where it's installed,
+// since this script lives at root scripts/ but archiver is a marketplace dep
+const require = createRequire(join(ROOT, 'marketplace', 'package.json'));
+const archiver = require('archiver');
 const EXTENDED_JSON = join(ROOT, '.claude-plugin', 'marketplace.extended.json');
 const OUTPUT_DIR = join(ROOT, 'marketplace', 'public', 'downloads');
 const PLUGINS_DIR = join(ROOT, 'plugins');
