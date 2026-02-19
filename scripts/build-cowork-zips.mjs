@@ -28,6 +28,8 @@ const SKIP_CATEGORIES = new Set(['mcp']);
 // Directories to skip inside plugin folders
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '__pycache__', '.pytest_cache']);
 const SKIP_FILES = new Set(['.DS_Store', 'Thumbs.db', '.env', '.env.local']);
+// Patterns for sensitive files that should never be included in downloads
+const SKIP_PATTERNS = [/^id_rsa/, /credentials/i, /secrets?\./i, /token\./i, /\.key$/, /\.pem$/];
 
 // Human-friendly category names
 const CATEGORY_LABELS = {
@@ -106,7 +108,9 @@ function countAgents(pluginDir) {
 }
 
 function shouldInclude(entryName) {
-  return !SKIP_DIRS.has(entryName) && !SKIP_FILES.has(entryName) && !entryName.startsWith('.');
+  if (SKIP_DIRS.has(entryName) || SKIP_FILES.has(entryName) || entryName.startsWith('.')) return false;
+  if (SKIP_PATTERNS.some(p => p.test(entryName))) return false;
+  return true;
 }
 
 /**
