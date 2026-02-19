@@ -46,6 +46,6 @@ Use `/yt-pipeline` to run all stages in sequence with human checkpoints.
 
 ## Installation
 
-```
+```bash
 /plugin install youtube-strategy@claude-code-plugins-plus
 ```

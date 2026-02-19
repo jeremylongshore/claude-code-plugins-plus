@@ -90,7 +90,7 @@ For the top 2-3 title + thumbnail combos, suggest A/B testing variants:
 
 Present all options in a structured format:
 
-```
+```markdown
 ## Title Options
 
 | # | Title | Strategy | Keywords | Length |

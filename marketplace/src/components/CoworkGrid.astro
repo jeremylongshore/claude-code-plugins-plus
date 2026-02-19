@@ -19,7 +19,7 @@ if (limit) {
 // Try to load enriched manifest data (generated at build time)
 let manifest: any = null;
 try {
-  manifest = await import('../data/cowork-manifest.json');
+  manifest = (await import('../data/cowork-manifest.json')).default;
 } catch {
   // Manifest not yet generated - will show packs without sizes
 }
@@ -222,12 +222,12 @@ const icons: Record<string, string> = {
 
 <script is:inline>
   document.addEventListener('click', function(e) {
-    var btn = e.target.closest('.download-btn');
+    const btn = e.target.closest('.download-btn');
     if (!btn) return;
-    var category = btn.dataset.category;
+    const category = btn.dataset.category;
     if (!category) return;
 
-    var toast = document.createElement('div');
+    const toast = document.createElement('div');
     toast.textContent = 'Downloading ' + category + ' pack...';
     toast.style.cssText = 'position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);background:#1a1a1a;color:white;padding:1rem 1.5rem;border-radius:8px;font-size:0.9rem;z-index:1000;animation:coworkFade 2.5s ease-in-out;';
     document.body.appendChild(toast);

@@ -94,7 +94,7 @@ Each sub-agent returns an opportunity score (1-10) per idea.
 
 Present ideas to the user sorted by opportunity score:
 
-```
+```markdown
 Here are your validated video ideas, ranked by opportunity:
 
 | # | Title | Tier | Type | Demand | Competition | Score |

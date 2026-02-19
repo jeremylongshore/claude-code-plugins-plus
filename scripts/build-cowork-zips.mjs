@@ -14,7 +14,7 @@
  */
 
 import { createWriteStream, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';
-import { basename, dirname, join, resolve } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import archiver from 'archiver';
 
@@ -87,7 +87,7 @@ function countSkills(pluginDir) {
         if (existsSync(skillMd)) count++;
       }
     }
-  } catch { /* ignore */ }
+  } catch (err) { console.warn(`  Warning: Could not count skills in ${skillsDir}: ${err.message}`); }
   return count;
 }
 
@@ -96,7 +96,7 @@ function countCommands(pluginDir) {
   if (!existsSync(cmdDir)) return 0;
   try {
     return readdirSync(cmdDir).filter(f => f.endsWith('.md')).length;
-  } catch { return 0; }
+  } catch (err) { console.warn(`  Warning: Could not count commands in ${cmdDir}: ${err.message}`); return 0; }
 }
 
 function countAgents(pluginDir) {
@@ -104,7 +104,7 @@ function countAgents(pluginDir) {
   if (!existsSync(agentDir)) return 0;
   try {
     return readdirSync(agentDir).filter(f => f.endsWith('.md')).length;
-  } catch { return 0; }
+  } catch (err) { console.warn(`  Warning: Could not count agents in ${agentDir}: ${err.message}`); return 0; }
 }
 
 function shouldInclude(entryName) {
@@ -135,7 +135,7 @@ function addDirToArchive(archive, dirPath, archivePrefix, archiveName) {
     try {
       const stats = lstatSync(fullPath);
       if (stats.isSymbolicLink()) continue;
-    } catch { continue; }
+    } catch (err) { console.warn(`  Warning: Could not stat ${fullPath}: ${err.message}`); continue; }
 
     if (entry.isDirectory()) {
       addDirToArchive(archive, fullPath, archivePath, archiveName);
@@ -262,7 +262,7 @@ async function main() {
     }
 
     // Detect category from directory structure if not in JSON
-    const dirParts = source.replace(/^\.\/plugins\//, '').split('/');
+    const dirParts = source.replace(/^\.?\/?plugins\//, '').split('/');
     const dirCategory = dirParts.length > 1 ? dirParts[0] : (category || 'uncategorized');
 
     // Skip MCP plugins
@@ -378,6 +378,7 @@ async function main() {
     console.log(`  Mega-zip: ${allEntries.length} plugins (${formatBytes(size)})\n`);
   } catch (err) {
     console.error(`  ERROR: mega-zip - ${err.message}`);
+    failedBuilds.push({ name: 'mega-zip', error: err.message });
   }
 
   // Write manifest

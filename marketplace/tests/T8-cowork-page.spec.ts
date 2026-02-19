@@ -104,9 +104,7 @@ test.describe('Cowork Downloads Page', () => {
         return;
       }
 
-      // Get initial count text
       const countLabel = page.locator('#plugin-count');
-      const initialText = await countLabel.textContent();
 
       // Type a search query
       await searchInput.fill('security');

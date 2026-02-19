@@ -103,7 +103,7 @@ For each demo in the outline, specify what the team needs to prepare:
 
 Present the outline to the user:
 
-```
+```markdown
 ## Video Outline: [Title]
 
 Total estimated length: [X] minutes
@@ -113,7 +113,7 @@ Total estimated length: [X] minutes
 
 Also present the demo prep checklist separately:
 
-```
+```markdown
 ## Demo Prep Checklist: [Title]
 
 [Full checklist organized by demo sequence]

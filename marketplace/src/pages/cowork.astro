@@ -5,7 +5,7 @@ import CoworkGrid from '../components/CoworkGrid.astro';
 // Try to load manifest for mega-zip stats
 let manifest: any = null;
 try {
-  manifest = await import('../data/cowork-manifest.json');
+  manifest = (await import('../data/cowork-manifest.json')).default;
 } catch {
   // Not yet generated
 }
