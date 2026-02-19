@@ -1,0 +1,20 @@
+{
+  "name": "youtube-strategy",
+  "version": "1.0.0",
+  "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+  "author": {
+    "name": "Claude Code Plugins"
+  },
+  "license": "MIT",
+  "keywords": [
+    "youtube",
+    "content-strategy",
+    "video-production",
+    "ideation",
+    "research",
+    "thumbnails",
+    "titles",
+    "outlining",
+    "content-creation"
+  ]
+}

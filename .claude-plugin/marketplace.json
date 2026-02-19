@@ -5974,6 +5974,27 @@
         "name": "Jake Kozloski",
         "email": "jakozloski@gmail.com"
       }
+    },
+    {
+      "name": "youtube-strategy",
+      "source": "./plugins/productivity/youtube-strategy",
+      "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "youtube",
+        "content-strategy",
+        "video-production",
+        "ideation",
+        "research",
+        "thumbnails",
+        "titles",
+        "outlining",
+        "content-creation"
+      ],
+      "author": {
+        "name": "Claude Code Plugins"
+      }
     }
   ]
 }
