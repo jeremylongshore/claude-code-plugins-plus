@@ -36,4 +36,5 @@ if (resolvedEsbuildBinaryPath && !process.env.ESBUILD_BINARY_PATH) {
 run('skills:generate', 'node', ['scripts/discover-skills.mjs']);
 run('catalog:sync', 'node', ['scripts/sync-catalog.mjs']);
 run('search:generate', 'node', ['scripts/generate-unified-search.mjs']);
+run('cowork:zips', 'node', ['../scripts/build-cowork-zips.mjs']);
 run('astro build', 'astro', ['build']);

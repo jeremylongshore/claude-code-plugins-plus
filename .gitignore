@@ -100,5 +100,9 @@ workspace/
 reports/
 marketplace/.firebase/
 .firebase/
+
+# Cowork download zips (generated at build time by build-cowork-zips.mjs)
+marketplace/public/downloads/
+marketplace/src/data/cowork-manifest.json
 **/skills/*/data/
 
