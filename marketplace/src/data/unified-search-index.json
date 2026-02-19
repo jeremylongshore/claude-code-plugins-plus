@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-02-17T01:23:00.802Z",
+    "generated": "2026-02-19T22:45:38.126Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 313,
-    "totalSkills": 1336,
-    "totalItems": 1649,
+    "totalPlugins": 314,
+    "totalSkills": 1341,
+    "totalItems": 1655,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -6966,6 +6966,27 @@
       ],
       "skillCount": 30,
       "searchText": "windsurf pack complete windsurf integration skill pack with 30 skills covering ai code editing, cascade workflows, codebase understanding, and developer productivity. flagship+ tier vendor pack. productivity "
+    },
+    {
+      "type": "plugin",
+      "id": "youtube-strategy",
+      "slug": "youtube-strategy",
+      "name": "youtube-strategy",
+      "displayName": "youtube strategy",
+      "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+      "category": "productivity",
+      "tags": [],
+      "author": {
+        "name": "Claude Code Plugins"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 5,
+      "searchText": "youtube strategy complete youtube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists. productivity "
     },
     {
       "type": "skill",
@@ -27258,6 +27279,81 @@
         "category": "productivity"
       },
       "searchText": "yaml-master execute proactive yaml intelligence: automatically activates when working with yaml files. use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(general:*), bash(util:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit productivity "
+    },
+    {
+      "type": "skill",
+      "id": "yt-brief",
+      "slug": "yt-brief",
+      "name": "yt-brief",
+      "description": "Refine a YouTube video idea into a structured production brief with angle, key points, value proposition, CTA asset, and audience segment. Use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining. allowed-tools: WebSearch, Read, Write version: 1.0.0 author: Claude Code Plugins <plugins@claudecodeplugins.io> license: MIT",
+      "category": "productivity",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "youtube-strategy",
+        "category": "productivity"
+      },
+      "searchText": "yt-brief refine a youtube video idea into a structured production brief with angle, key points, value proposition, cta asset, and audience segment. use this skill whenever the user says \"create a brief\", \"brief this idea\", \"develop this idea\", \"write a video brief\", \"production brief\", or has selected a video idea from ideation and wants to define the angle and structure before packaging and outlining. allowed-tools: websearch, read, write version: 1.0.0 author: claude code plugins <plugins@claudecodeplugins.io> license: mit productivity "
+    },
+    {
+      "type": "skill",
+      "id": "yt-ideation",
+      "slug": "yt-ideation",
+      "name": "yt-ideation",
+      "description": "Generate and validate YouTube video ideas aligned with content pillars, audience strategy, and priority tiers. Use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should I make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should I cover\", or wants to come up with new video concepts. allowed-tools: WebSearch, Read, Write, Task version: 1.0.0 author: Claude Code Plugins <plugins@claudecodeplugins.io> license: MIT",
+      "category": "productivity",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "youtube-strategy",
+        "category": "productivity"
+      },
+      "searchText": "yt-ideation generate and validate youtube video ideas aligned with content pillars, audience strategy, and priority tiers. use this skill whenever the user says \"generate ideas\", \"brainstorm videos\", \"what should i make next\", \"video ideas\", \"content ideas\", \"ideation\", \"what topics should i cover\", or wants to come up with new video concepts. allowed-tools: websearch, read, write, task version: 1.0.0 author: claude code plugins <plugins@claudecodeplugins.io> license: mit productivity "
+    },
+    {
+      "type": "skill",
+      "id": "yt-outline",
+      "slug": "yt-outline",
+      "name": "yt-outline",
+      "description": "Build detailed step-by-step YouTube video outlines with demo prep, screen-share sequences, and visual planning. Use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming. allowed-tools: WebSearch, Read, Write version: 1.0.0 author: Claude Code Plugins <plugins@claudecodeplugins.io> license: MIT",
+      "category": "productivity",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "youtube-strategy",
+        "category": "productivity"
+      },
+      "searchText": "yt-outline build detailed step-by-step youtube video outlines with demo prep, screen-share sequences, and visual planning. use this skill whenever the user says \"create an outline\", \"outline this video\", \"video outline\", \"build the outline\", \"production outline\", or has an approved brief and packaging and needs the final pre-production document before demo prep and filming. allowed-tools: websearch, read, write version: 1.0.0 author: claude code plugins <plugins@claudecodeplugins.io> license: mit productivity "
+    },
+    {
+      "type": "skill",
+      "id": "yt-packaging",
+      "slug": "yt-packaging",
+      "name": "yt-packaging",
+      "description": "Create optimized YouTube titles and thumbnail concepts for maximum CTR. Use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"CTR optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. Packaging determines whether viewers click. allowed-tools: WebSearch, Read, Write version: 1.0.0 author: Claude Code Plugins <plugins@claudecodeplugins.io> license: MIT",
+      "category": "productivity",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "youtube-strategy",
+        "category": "productivity"
+      },
+      "searchText": "yt-packaging create optimized youtube titles and thumbnail concepts for maximum ctr. use this skill whenever the user says \"title ideas\", \"thumbnail concepts\", \"package this video\", \"ctr optimization\", \"title options\", \"packaging\", or has an approved brief and needs to finalize the title and thumbnail direction before outlining. packaging determines whether viewers click. allowed-tools: websearch, read, write version: 1.0.0 author: claude code plugins <plugins@claudecodeplugins.io> license: mit productivity "
+    },
+    {
+      "type": "skill",
+      "id": "yt-research",
+      "slug": "yt-research",
+      "name": "yt-research",
+      "description": "Research competitor YouTube channels, niches, and trending topics for your content strategy. Use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape YouTube channels\", or wants to understand the competitive landscape for a specific tool or topic area. allowed-tools: WebSearch, Read, Write, Task version: 1.0.0 author: Claude Code Plugins <plugins@claudecodeplugins.io> license: MIT",
+      "category": "productivity",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "youtube-strategy",
+        "category": "productivity"
+      },
+      "searchText": "yt-research research competitor youtube channels, niches, and trending topics for your content strategy. use this skill whenever the user says \"research channels\", \"analyze competitors\", \"find trending topics\", \"niche analysis\", \"competitive research\", \"what are other creators doing\", \"scrape youtube channels\", or wants to understand the competitive landscape for a specific tool or topic area. allowed-tools: websearch, read, write, task version: 1.0.0 author: claude code plugins <plugins@claudecodeplugins.io> license: mit productivity "
     },
     {
       "type": "skill",

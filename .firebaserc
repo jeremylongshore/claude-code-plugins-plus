@@ -1,5 +1,15 @@
 {
   "projects": {
     "default": "claude-code-plugins-io"
-  }
+  },
+  "targets": {
+    "claude-code-plugins-io": {
+      "hosting": {
+        "cowork-redirect": [
+          "claudecoworkskills-io"
+        ]
+      }
+    }
+  },
+  "etags": {}
 }

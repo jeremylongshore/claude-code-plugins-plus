@@ -1,17 +1,17 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-02-17T01:23:00.402Z",
+    "generated": "2026-02-19T22:45:37.874Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 313,
-    "totalSkills": 1135,
-    "totalCommands": 59,
-    "pluginsWithSkills": 73,
+    "totalPlugins": 314,
+    "totalSkills": 1140,
+    "totalCommands": 66,
+    "pluginsWithSkills": 74,
     "byCategory": {
-      "productivity": 24,
+      "productivity": 25,
       "security": 28,
       "testing": 25,
       "ai-ml": 53,
@@ -38,12 +38,12 @@
       "analytics": 1
     },
     "byStatus": {
-      "active": 294,
+      "active": 295,
       "maintained": 19
     },
     "featured": 2,
-    "new": 292,
-    "generatedAt": "2026-02-17T01:23:00.402Z"
+    "new": 293,
+    "generatedAt": "2026-02-19T22:45:37.874Z"
   },
   "plugins": [
     {
@@ -10645,6 +10645,42 @@
         "name": "Jeremy Longshore",
         "email": "jeremy@intentsolutions.io",
         "url": "https://github.com/jeremylongshore"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "youtube-strategy",
+      "name": "youtube-strategy",
+      "displayName": "youtube strategy",
+      "description": "Complete YouTube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "youtube",
+        "content-strategy",
+        "video-production",
+        "ideation",
+        "research",
+        "thumbnails",
+        "titles",
+        "outlining",
+        "content-creation"
+      ],
+      "hasSkills": true,
+      "skillCount": 5,
+      "commandCount": 7,
+      "installCommand": "/plugin install youtube-strategy",
+      "sourcePath": "./plugins/productivity/youtube-strategy",
+      "lastUpdatedEpoch": 1771534764,
+      "lastUpdatedDate": "2026-02-19T20:59:24.542Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Claude Code Plugins"
       },
       "type": "instruction-plugin"
     }
