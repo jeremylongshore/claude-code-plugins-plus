@@ -491,7 +491,35 @@ jobs:
             echo "✓ HTML line length OK ($MAX_LINE chars)"
           fi
 
+          # 6. Verify /cowork/index.html exists
+          if [ ! -f "marketplace/dist/cowork/index.html" ]; then
+            echo "ERROR: marketplace/dist/cowork/index.html not found"
+            exit 1
+          fi
+          echo "✓ Cowork page exists"
+
+          # 7. Verify downloads manifest exists
+          if [ ! -f "marketplace/dist/downloads/manifest.json" ]; then
+            echo "ERROR: marketplace/dist/downloads/manifest.json not found"
+            exit 1
+          fi
+          echo "✓ Downloads manifest exists"
+
+          # 8. Verify plugin zips generated
+          PLUGIN_ZIP_COUNT=$(find marketplace/dist/downloads/plugins -name "*.zip" -type f 2>/dev/null | wc -l)
+          if [ "$PLUGIN_ZIP_COUNT" -lt 1 ]; then
+            echo "ERROR: No plugin zips in marketplace/dist/downloads/plugins/"
+            exit 1
+          fi
+          echo "✓ Found $PLUGIN_ZIP_COUNT plugin zips"
+
           echo "✅ All smoke tests passed"
+
+      - name: Validate Cowork Downloads
+        run: node marketplace/scripts/validate-cowork-downloads.mjs
+
+      - name: Validate Cowork Security
+        run: node scripts/validate-cowork-security.mjs
 
       - name: Validate routes
         run: node scripts/check-routes.mjs

@@ -26,7 +26,7 @@ const BUDGETS = {
   buildTime: 10 * 1000,       // 10 seconds (ms)
   routeCount: {
     min: 500,
-    max: 650,  // Increased for /learn/ hub pages
+    max: 660,  // Increased for /cowork downloads page
   },
 };
 

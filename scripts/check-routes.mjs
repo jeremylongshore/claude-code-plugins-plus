@@ -64,6 +64,7 @@ function generateExpectedRoutes() {
   routes.add('/sponsor');
   routes.add('/spotlight');
   routes.add('/skill-enhancers');
+  routes.add('/cowork');
 
   // Legal pages
   routes.add('/terms');
