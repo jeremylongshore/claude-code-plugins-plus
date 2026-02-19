@@ -3,6 +3,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import StackBuilder from '../components/StackBuilder.astro';
 import CollectionsGrid from '../components/CollectionsGrid.astro';
+import CoworkGrid from '../components/CoworkGrid.astro';
 import searchIndex from '../data/unified-search-index.json';
 
 // Dynamic stats from search index (updated at build time)
@@ -889,6 +890,77 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         /* ========================================
+           COWORK DOWNLOADS SECTION (Homepage)
+           ======================================== */
+        .cowork-home-section {
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 50%, #3b82f6 100%);
+        }
+
+        .cowork-home-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .cowork-home-badge {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+        }
+
+        .cowork-home-title {
+            color: white;
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            margin: 1rem 0 0.5rem;
+            font-weight: 700;
+        }
+
+        .cowork-home-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem;
+        }
+
+        .cowork-home-cta {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .cowork-home-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: white;
+            color: #2563eb;
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cowork-home-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (max-width: 768px) {
+            .cowork-home-section {
+                padding: 3rem 1.5rem;
+            }
+        }
+
+        /* ========================================
            PRODUCTS & SERVICES SECTION
            ======================================== */
         .products-section {
@@ -1539,6 +1611,26 @@ const totalCategories = searchIndex.stats.categories.length;
             <div class="saas-cta">
                 <a href="/explore?q=pack" class="saas-button">
                     Browse All 42 Packs
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cowork Downloads Section -->
+    <section class="cowork-home-section">
+        <div class="cowork-home-container">
+            <span class="cowork-home-badge">NEW - For Cowork Users</span>
+            <h2 class="cowork-home-title">Download Plugin Packs</h2>
+            <p class="cowork-home-subtitle">One-click downloads for Claude Cowork. No terminal needed.</p>
+
+            <div style="max-width: 1200px; margin: 0 auto;">
+                <CoworkGrid featured={true} limit={6} />
+            </div>
+
+            <div class="cowork-home-cta">
+                <a href="/cowork" class="cowork-home-button">
+                    Browse All Downloads
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
             </div>

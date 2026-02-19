@@ -1,0 +1,612 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CoworkGrid from '../components/CoworkGrid.astro';
+
+// Try to load manifest for mega-zip stats
+let manifest: any = null;
+try {
+  manifest = await import('../data/cowork-manifest.json');
+} catch {
+  // Not yet generated
+}
+
+const megaZip = manifest?.megaZip;
+const totalPlugins = manifest?.totalPlugins || 300;
+const totalSkills = manifest?.totalSkills || 1300;
+const allPlugins = manifest?.plugins || [];
+---
+
+<BaseLayout
+  title="Download Plugin Packs for Claude Cowork | No Terminal Needed"
+  description={`Download ${totalPlugins}+ plugins and ${totalSkills}+ skills as zip files. One-click downloads for Claude Cowork users. No CLI required.`}
+>
+  <style>
+    .cowork-hero {
+      background: linear-gradient(135deg, #2d4a6f 0%, var(--brand-blue, #6a9bcc) 50%, #8bb5d9 100%);
+      color: white;
+      padding: 4rem 2rem 3rem;
+      text-align: center;
+    }
+
+    .cowork-hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 0.3rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    .cowork-hero h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      margin: 0 0 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+      line-height: 1.2;
+    }
+
+    .cowork-hero p {
+      font-size: 1.15rem;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .cowork-hero-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .cowork-hero-stat {
+      text-align: center;
+    }
+
+    .cowork-hero-stat .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      display: block;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .cowork-hero-stat .stat-label {
+      font-size: 0.85rem;
+      opacity: 0.8;
+    }
+
+    /* Mega download banner */
+    .mega-banner {
+      background: white;
+      border: 3px solid var(--brand-blue, #6a9bcc);
+      border-radius: 16px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: -2rem auto 0;
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 12px 40px rgba(106, 155, 204, 0.2);
+    }
+
+    .mega-info h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .mega-info p {
+      color: var(--brand-mid-gray, #6b7280);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .mega-stats {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .mega-stat {
+      background: var(--brand-light, #faf9f5);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--brand-blue, #6a9bcc);
+    }
+
+    .mega-download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: var(--brand-blue, #6a9bcc);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-family: 'Poppins', Arial, sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .mega-download-btn:hover {
+      background: #4a7db0;
+      transform: scale(1.03);
+    }
+
+    /* Section styles */
+    .cowork-section {
+      padding: 3rem 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .cowork-section-title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .cowork-section-subtitle {
+      color: var(--brand-mid-gray, #6b7280);
+      margin: 0 0 2rem;
+      font-size: 1rem;
+    }
+
+    /* Security section */
+    .security-banner {
+      background: #f0fdf4;
+      border: 2px solid #86efac;
+      border-radius: 12px;
+      padding: 1.5rem 2rem;
+      margin: 2rem auto;
+      max-width: 1200px;
+    }
+
+    .security-banner h3 {
+      color: #166534;
+      font-size: 1.1rem;
+      margin: 0 0 0.75rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .security-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 0.5rem;
+    }
+
+    .security-list li {
+      color: #15803d;
+      font-size: 0.9rem;
+      padding-left: 1.5rem;
+      position: relative;
+    }
+
+    .security-list li::before {
+      content: '\2713';
+      position: absolute;
+      left: 0;
+      font-weight: 700;
+    }
+
+    /* Setup guide */
+    .setup-guide {
+      background: var(--brand-light, #f8f9fa);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .setup-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .setup-step {
+      text-align: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 12px;
+      border: 1px solid var(--brand-light-gray, #e5e7eb);
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: var(--brand-blue, #6a9bcc);
+      color: white;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .setup-step h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin: 0 0 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .setup-step p {
+      color: var(--brand-mid-gray, #6b7280);
+      font-size: 0.85rem;
+      margin: 0;
+      line-height: 1.5;
+    }
+
+    /* Learning path */
+    .learning-path {
+      background: linear-gradient(135deg, #fefce8, #fef3c7);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .learning-path h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin: 0 0 0.75rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .learning-path p {
+      color: var(--brand-mid-gray, #6b7280);
+      margin: 0 0 1.5rem;
+    }
+
+    .learning-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .learning-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      background: white;
+      color: #92400e;
+      border: 2px solid #f59e0b;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .learning-link:hover {
+      background: #f59e0b;
+      color: white;
+    }
+
+    /* Individual plugin search */
+    .plugin-search-container {
+      margin-top: 2rem;
+    }
+
+    .plugin-search-input {
+      width: 100%;
+      max-width: 500px;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 2px solid var(--brand-light-gray, #e5e7eb);
+      border-radius: 10px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s;
+      background: white url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E") no-repeat 0.75rem center;
+    }
+
+    .plugin-search-input:focus {
+      border-color: #3b82f6;
+    }
+
+    .plugin-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+      max-height: 600px;
+      overflow-y: auto;
+    }
+
+    .plugin-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+      background: white;
+      border: 1px solid var(--brand-light-gray, #e5e7eb);
+      border-radius: 8px;
+      gap: 0.5rem;
+    }
+
+    .plugin-item-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .plugin-item-meta {
+      font-size: 0.75rem;
+      color: var(--brand-mid-gray, #6b7280);
+      white-space: nowrap;
+    }
+
+    .plugin-dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.3rem 0.6rem;
+      background: var(--brand-blue, #6a9bcc);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .plugin-dl-btn:hover {
+      background: #4a7db0;
+    }
+
+    .plugin-count-label {
+      color: var(--brand-mid-gray, #6b7280);
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .mega-banner {
+        flex-direction: column;
+        text-align: center;
+        margin: -1.5rem 1rem 0;
+      }
+
+      .cowork-hero {
+        padding: 3rem 1.5rem 2.5rem;
+      }
+
+      .cowork-hero-stats {
+        gap: 1rem;
+      }
+
+      .plugin-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+
+  <!-- Hero -->
+  <section class="cowork-hero">
+    <span class="cowork-hero-badge">FOR COWORK USERS</span>
+    <h1>Download Plugin Packs</h1>
+    <p>One-click downloads for Claude Cowork. No terminal needed. Just download, unzip, and drag into your project.</p>
+
+    <div class="cowork-hero-stats">
+      <div class="cowork-hero-stat">
+        <span class="stat-number">{totalPlugins}+</span>
+        <span class="stat-label">Plugins</span>
+      </div>
+      <div class="cowork-hero-stat">
+        <span class="stat-number">{totalSkills}+</span>
+        <span class="stat-label">Skills</span>
+      </div>
+      <div class="cowork-hero-stat">
+        <span class="stat-number">{manifest?.bundles?.length || 18}</span>
+        <span class="stat-label">Category Packs</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mega download banner -->
+  <div style="padding: 0 2rem;">
+    <div class="mega-banner">
+      <div class="mega-info">
+        <h2>Download Everything</h2>
+        <p>All {totalPlugins} plugins and {totalSkills} skills in one zip</p>
+        <div class="mega-stats">
+          <span class="mega-stat">{totalPlugins} plugins</span>
+          <span class="mega-stat">{totalSkills} skills</span>
+          {megaZip && <span class="mega-stat">{megaZip.sizeFormatted}</span>}
+        </div>
+      </div>
+      <a
+        href={megaZip ? megaZip.path : '/downloads/claude-code-plugins-all.zip'}
+        download
+        class="mega-download-btn"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download All
+      </a>
+    </div>
+  </div>
+
+  <!-- Security info -->
+  <div style="padding: 0 2rem;">
+    <div class="security-banner">
+      <h3>Safe & Verified Downloads</h3>
+      <ul class="security-list">
+        <li>All plugins are open source (MIT licensed)</li>
+        <li>SHA-256 checksums in manifest.json</li>
+        <li>No executables - text/markdown files only</li>
+        <li>No API keys or secrets included</li>
+        <li>Built from verified GitHub source</li>
+        <li>Zero dependencies for AI instruction plugins</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Category Bundles -->
+  <section class="cowork-section">
+    <h2 class="cowork-section-title">Category Packs</h2>
+    <p class="cowork-section-subtitle">Download all plugins in a category at once. Each pack includes every plugin, skill, command, and agent for that topic.</p>
+
+    <CoworkGrid />
+  </section>
+
+  <!-- Individual Plugin Downloads -->
+  <section class="cowork-section">
+    <h2 class="cowork-section-title">Individual Plugins</h2>
+    <p class="cowork-section-subtitle">Search and download any single plugin.</p>
+
+    <div class="plugin-search-container">
+      <label for="plugin-search" class="sr-only">Search plugins by name</label>
+      <input
+        type="text"
+        class="plugin-search-input"
+        id="plugin-search"
+        placeholder="Search plugins..."
+        autocomplete="off"
+        aria-label="Search plugins by name"
+      />
+      <p class="plugin-count-label" id="plugin-count">Showing all {allPlugins.length} plugins</p>
+
+      <div class="plugin-list" id="plugin-list">
+        {allPlugins.map(plugin => (
+          <div class="plugin-item" data-name={plugin.name} data-category={plugin.category}>
+            <span class="plugin-item-name">{plugin.name}</span>
+            <span class="plugin-item-meta">{plugin.sizeFormatted}</span>
+            <a
+              href={plugin.path}
+              download
+              class="plugin-dl-btn"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              .zip
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Setup Guide -->
+  <section class="cowork-section">
+    <div class="setup-guide">
+      <h2 class="cowork-section-title">How to Install</h2>
+      <p class="cowork-section-subtitle">Three simple steps. No terminal required.</p>
+
+      <div class="setup-steps">
+        <div class="setup-step">
+          <div class="step-number">1</div>
+          <h4>Download</h4>
+          <p>Click any download button above. Your browser will save a .zip file to your Downloads folder.</p>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">2</div>
+          <h4>Unzip</h4>
+          <p>Double-click the .zip file to extract it. You'll see plugin folders with skills, commands, and agents inside.</p>
+        </div>
+        <div class="setup-step">
+          <div class="step-number">3</div>
+          <h4>Add to Project</h4>
+          <p>Copy the plugin folder into your project's <code>.claude/plugins/</code> directory. Claude Cowork will auto-detect it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Learning Path -->
+  <section class="cowork-section">
+    <div class="learning-path">
+      <h3>New to Claude Code Plugins?</h3>
+      <p>Start with our learning resources to get the most out of your plugins.</p>
+      <div class="learning-links">
+        <a href="/getting-started" class="learning-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          Getting Started Guide
+        </a>
+        <a href="/learning" class="learning-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 8 3 12 0v-5"/></svg>
+          Learning Hub
+        </a>
+        <a href="/skills" class="learning-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          Browse Skills
+        </a>
+        <a href="/explore" class="learning-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+          Explore Plugins
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    // Plugin search filter
+    const searchInput = document.getElementById('plugin-search');
+    const pluginList = document.getElementById('plugin-list');
+    const pluginCount = document.getElementById('plugin-count');
+
+    if (searchInput && pluginList) {
+      const items = pluginList.querySelectorAll('.plugin-item');
+
+      searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        let visible = 0;
+
+        items.forEach(item => {
+          const name = item.dataset.name || '';
+          const category = item.dataset.category || '';
+          const match = !query || name.includes(query) || category.includes(query);
+          item.style.display = match ? '' : 'none';
+          if (match) visible++;
+        });
+
+        if (pluginCount) {
+          pluginCount.textContent = query
+            ? `Showing ${visible} of ${items.length} plugins`
+            : `Showing all ${items.length} plugins`;
+        }
+      });
+    }
+  </script>
+</BaseLayout>

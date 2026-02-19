@@ -1,0 +1,170 @@
+{
+  "packs": [
+    {
+      "id": "ai-ml",
+      "name": "AI & Machine Learning",
+      "description": "LLM tools, ML pipelines, prompt engineering, and AI agent frameworks",
+      "icon": "brain",
+      "color": "#7C3AED",
+      "category": "ai-ml",
+      "featured": true
+    },
+    {
+      "id": "devops",
+      "name": "DevOps & Infrastructure",
+      "description": "CI/CD, Docker, Kubernetes, Terraform, and deployment automation",
+      "icon": "rocket",
+      "color": "#4F46E5",
+      "category": "devops",
+      "featured": true
+    },
+    {
+      "id": "saas-packs",
+      "name": "SaaS Integrations",
+      "description": "Pre-built packs for Stripe, Vercel, Supabase, Sentry, and 38+ more services",
+      "icon": "package",
+      "color": "#F59E0B",
+      "category": "saas-packs",
+      "featured": true
+    },
+    {
+      "id": "security",
+      "name": "Security",
+      "description": "Vulnerability scanning, code auditing, compliance checks, and threat modeling",
+      "icon": "shield",
+      "color": "#DC2626",
+      "category": "security",
+      "featured": true
+    },
+    {
+      "id": "database",
+      "name": "Database",
+      "description": "SQL optimization, schema design, migration tools, and query builders",
+      "icon": "database",
+      "color": "#059669",
+      "category": "database",
+      "featured": true
+    },
+    {
+      "id": "testing",
+      "name": "Testing",
+      "description": "Unit tests, integration tests, E2E automation, and test generation",
+      "icon": "check-circle",
+      "color": "#0891B2",
+      "category": "testing",
+      "featured": true
+    },
+    {
+      "id": "crypto",
+      "name": "Crypto & Web3",
+      "description": "Smart contracts, DeFi protocols, blockchain development, and token analysis",
+      "icon": "link",
+      "color": "#8B5CF6",
+      "category": "crypto",
+      "featured": false
+    },
+    {
+      "id": "api-development",
+      "name": "API Development",
+      "description": "REST, GraphQL, OpenAPI specs, SDK generation, and API testing",
+      "icon": "globe",
+      "color": "#2563EB",
+      "category": "api-development",
+      "featured": false
+    },
+    {
+      "id": "performance",
+      "name": "Performance",
+      "description": "Profiling, optimization, load testing, and caching strategies",
+      "icon": "zap",
+      "color": "#EA580C",
+      "category": "performance",
+      "featured": false
+    },
+    {
+      "id": "productivity",
+      "name": "Productivity",
+      "description": "Workflow automation, content tools, YouTube strategy, and documentation",
+      "icon": "star",
+      "color": "#0D9488",
+      "category": "productivity",
+      "featured": false
+    },
+    {
+      "id": "ai-agency",
+      "name": "AI Agents & Agency",
+      "description": "Autonomous agents, multi-agent orchestration, and agentic workflows",
+      "icon": "bot",
+      "color": "#6D28D9",
+      "category": "ai-agency",
+      "featured": false
+    },
+    {
+      "id": "skill-enhancers",
+      "name": "Skill Enhancers",
+      "description": "Meta-skills that improve how Claude Code operates across all tasks",
+      "icon": "trending-up",
+      "color": "#B45309",
+      "category": "skill-enhancers",
+      "featured": false
+    },
+    {
+      "id": "community",
+      "name": "Community",
+      "description": "Community-contributed plugins and shared resources",
+      "icon": "users",
+      "color": "#7C3AED",
+      "category": "community",
+      "featured": false
+    },
+    {
+      "id": "business-tools",
+      "name": "Business Tools",
+      "description": "Project management, analytics, reporting, and business workflow tools",
+      "icon": "briefcase",
+      "color": "#4338CA",
+      "category": "business-tools",
+      "featured": false
+    },
+    {
+      "id": "finance",
+      "name": "Finance",
+      "description": "Financial modeling, trading strategies, and quantitative analysis",
+      "icon": "dollar-sign",
+      "color": "#15803D",
+      "category": "finance",
+      "featured": false
+    },
+    {
+      "id": "automation",
+      "name": "Automation",
+      "description": "Workflow automation, task scheduling, and process orchestration",
+      "icon": "settings",
+      "color": "#525252",
+      "category": "automation",
+      "featured": false
+    },
+    {
+      "id": "examples",
+      "name": "Examples & Templates",
+      "description": "Starter templates, examples, and reference implementations",
+      "icon": "book-open",
+      "color": "#9333EA",
+      "category": "examples",
+      "featured": false
+    },
+    {
+      "id": "packages",
+      "name": "Packages",
+      "description": "Reusable packages including the ccpi CLI and analytics tools",
+      "icon": "box",
+      "color": "#374151",
+      "category": "packages",
+      "featured": false
+    }
+  ],
+  "meta": {
+    "version": "1.0.0",
+    "lastUpdated": "2026-02-19"
+  }
+}
