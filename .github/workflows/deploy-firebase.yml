@@ -73,13 +73,10 @@ jobs:
 
           echo "Build validation passed"
 
-      - name: Install Firebase CLI
-        run: npm install -g firebase-tools
-
       - name: Deploy to Firebase Hosting
         run: |
           ACCESS_TOKEN=$(gcloud auth print-access-token)
-          firebase deploy --only hosting \
+          npx firebase-tools deploy --only hosting:marketplace \
             --project claude-code-plugins-io \
             --non-interactive \
             --token "$ACCESS_TOKEN"
