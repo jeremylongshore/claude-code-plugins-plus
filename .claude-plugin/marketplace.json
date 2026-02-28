@@ -5999,7 +5999,7 @@
     {
       "name": "b12-claude-plugin",
       "source": "./plugins/community/b12-claude-plugin",
-      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "description": "B12 Website Generator \u2014 an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
       "version": "1.0.0",
       "category": "community",
       "keywords": [
@@ -6014,6 +6014,26 @@
       "author": {
         "name": "B12.io",
         "url": "https://github.com/b12io"
+      }
+    },
+    {
+      "name": "deapi-skills",
+      "source": "./plugins/community/deapi-skills",
+      "description": "AI media generation for Claude Code \u2014 transcribe YouTube videos, generate images, text-to-speech, OCR. Up to 20x cheaper inference via deAPI.ai",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "transcription",
+        "text-to-image",
+        "text-to-speech",
+        "ocr",
+        "text-to-video",
+        "media-generation",
+        "ai-tools"
+      ],
+      "author": {
+        "name": "deAPI.ai",
+        "url": "https://github.com/deapi-ai"
       }
     }
   ]

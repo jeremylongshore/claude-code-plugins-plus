@@ -1,0 +1,22 @@
+{
+  "name": "deapi-skills",
+  "version": "1.0.0",
+  "description": "AI media generation for Claude Code — transcribe YouTube videos, generate images, text-to-speech, OCR. Up to 20x cheaper inference via deAPI.ai",
+  "author": {
+    "name": "deAPI.ai",
+    "url": "https://github.com/deapi-ai"
+  },
+  "repository": "https://github.com/deapi-ai/claude-code-skills",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "transcription",
+    "text-to-image",
+    "text-to-speech",
+    "ocr",
+    "text-to-video",
+    "ai-tools",
+    "media-generation",
+    "deapi"
+  ]
+}
