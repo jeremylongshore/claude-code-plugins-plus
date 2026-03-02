@@ -573,6 +573,10 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 - [Announcement Blog](https://www.anthropic.com/news/claude-code-plugins)
 - [Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
 
+### API Gateway Platforms
+
+- [SkillBoss](https://skillboss.co) - **Backed by OpenAI Startup Fund & Amazon.** One SkillBoss key for 100+ AI services: GPT-5, Claude Opus 4.5, Gemini, video generation, web scraping, Stripe payments. Native Claude Code, Cursor, Windsurf integration. Pay-as-you-go. ([Docs](https://skillboss.co/docs))
+
 ### Community
 
 - [Claude Developers Discord](https://discord.com/invite/6PPFFzqPDZ) - 40,000+ members
