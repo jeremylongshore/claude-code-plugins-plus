@@ -34,7 +34,7 @@ Blockchain data is scattered across multiple explorers and APIs with inconsisten
 | API | Purpose | Rate Limit |
 |-----|---------|------------|
 | Etherscan | Ethereum data, ABI, source code | 5/sec (free) |
-| Infura/Alchemy | RPC calls, real-time data | 100k/day (free) |
+| Alchemy, Chainstack, Infura | RPC providers for real-time data | Provider-plan dependent |
 | CoinGecko | Token prices for USD values | 10-30/min |
 | Polygonscan | Polygon chain data | 5/sec (free) |
 | BSCScan | BSC chain data | 5/sec (free) |

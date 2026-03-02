@@ -9,7 +9,7 @@ Error: Connection refused to RPC endpoint
 **Cause**: RPC endpoint is down or unreachable
 **Solution**:
 - Check if RPC URL is correct
-- Try alternative endpoint (Infura, Alchemy, public RPC)
+- Try alternative endpoint (Alchemy, Chainstack, Infura, or public RPC)
 - Verify network connectivity
 
 ### Timeout
@@ -29,7 +29,7 @@ Error: Too many requests (429)
 **Cause**: Exceeded RPC provider rate limits
 **Solution**:
 - Reduce polling frequency
-- Upgrade RPC tier (Infura, Alchemy paid plans)
+- Upgrade RPC tier (paid Alchemy, Chainstack, or Infura plans)
 - Use multiple RPC endpoints
 
 ## Mempool Access Errors

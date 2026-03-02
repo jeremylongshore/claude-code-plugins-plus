@@ -25,7 +25,7 @@ Script Automation with Multi-Provider Fallback
 │                     chain_client.py                              │
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │ ChainClient: Multi-chain RPC + Explorer API abstraction     ││
-│  │   - Ethereum (Etherscan + Infura)                           ││
+│  │   - Ethereum (Etherscan + RPC provider)                     ││
 │  │   - Polygon (Polygonscan + RPC)                             ││
 │  │   - BSC (BSCScan + RPC)                                     ││
 │  │   - Arbitrum, Optimism, Base, Avalanche                     ││
@@ -35,7 +35,7 @@ Script Automation with Multi-Provider Fallback
               ┌───────────────┼───────────────┐
               ▼               ▼               ▼
        ┌───────────┐   ┌───────────┐   ┌───────────┐
-       │ Etherscan │   │   Infura  │   │ CoinGecko │
+       │ Etherscan │   │  Provider │   │ CoinGecko │
        │    API    │   │    RPC    │   │    API    │
        └───────────┘   └───────────┘   └───────────┘
 ```
@@ -92,7 +92,7 @@ GET /api?module=contract&action=getabi&address={contract}
 GET /api?module=account&action=tokentx&address={addr}
 ```
 
-### Secondary: RPC (Infura/Alchemy)
+### Secondary: RPC (Alchemy, Chainstack, Infura)
 ```python
 # Real-time balance
 eth_getBalance(address, 'latest')

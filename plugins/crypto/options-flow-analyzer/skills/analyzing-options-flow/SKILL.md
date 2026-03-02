@@ -21,7 +21,7 @@ This skill provides automated assistance for the described functionality.
 
 Before using this skill, ensure you have:
 - Access to crypto market data APIs (CoinGecko, CoinMarketCap, or similar)
-- Blockchain RPC endpoints or node access (Infura, Alchemy, or self-hosted)
+- Blockchain RPC endpoints or node access (Alchemy, Chainstack, Infura, or self-hosted)
 - API keys for exchanges if trading or querying account data
 - Web3 libraries installed (ethers.js, web3.py, or equivalent)
 - Understanding of blockchain concepts and crypto market dynamics
