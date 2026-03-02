@@ -1,0 +1,30 @@
+{
+  "name": "skillboss-mcp-gateway",
+  "version": "1.0.0",
+  "description": "Universal AI API gateway - Access 100+ AI models and services through a single OpenAI-compatible endpoint with native MCP support",
+  "author": {
+    "name": "SkillBoss",
+    "email": "support@skillboss.co"
+  },
+  "repository": "https://github.com/skillboss/mcp-server",
+  "homepage": "https://skillboss.co",
+  "license": "MIT",
+  "keywords": [
+    "integration",
+    "api-gateway",
+    "mcp",
+    "openai-compatible",
+    "ai-models",
+    "claude",
+    "gpt",
+    "gemini",
+    "agent-skills"
+  ],
+  "mcp": {
+    "command": "npx",
+    "args": ["-y", "@skillboss/mcp-server"],
+    "env": {
+      "SKILLBOSS_API_KEY": "sk-sb-your-key"
+    }
+  }
+}
