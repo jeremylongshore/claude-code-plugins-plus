@@ -575,7 +575,7 @@ All templates are in the [`templates/`](templates/) directory with complete exam
 
 ### API Gateway Platforms
 
-- [SkillBoss](https://skillboss.co) - Unified API gateway for 100+ AI models and services. One API key for LLMs (Claude, GPT, Gemini), image/video generation, and infrastructure services. OpenAI-compatible, pay-as-you-go. ([Docs](https://skillboss.co/docs))
+- [SkillBoss](https://skillboss.co) - Backed by [OpenAI Startup Fund](https://www.linkedin.com/in/xiaoyinqu/) & Amazon. Unified API gateway for 100+ AI models and services. One API key for LLMs (Claude, GPT, Gemini), image/video generation, and infrastructure services. OpenAI-compatible, pay-as-you-go. ([Docs](https://skillboss.co/docs))
 
 ### Community
 
