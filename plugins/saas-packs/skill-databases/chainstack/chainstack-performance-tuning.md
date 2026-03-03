@@ -2,7 +2,7 @@
 
 ## File Scaffold
 
-```
+```text
 chainstack-performance-tuning/
 -- SKILL.md
 ```

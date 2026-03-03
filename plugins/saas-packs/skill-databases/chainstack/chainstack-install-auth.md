@@ -2,7 +2,7 @@
 
 ## File Scaffold
 
-```
+```text
 chainstack-install-auth/
 -- SKILL.md
 ```

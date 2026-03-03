@@ -2,7 +2,7 @@
 
 ## File Scaffold
 
-```
+```text
 chainstack-upgrade-migration/
 -- SKILL.md
 ```

@@ -2,7 +2,7 @@
 
 ## File Scaffold
 
-```
+```text
 chainstack-ci-integration/
 -- SKILL.md
 ```
