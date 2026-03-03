@@ -11,7 +11,7 @@ chainstack-performance-tuning/
 
 ### 1. SKILL.md
 **Purpose:** Optimize Chainstack API performance
-**Workflow:** Part of the cicd skill category for Chainstack integration.
+**Workflow:** Part of the CI/CD skill category for Chainstack integration.
 **Relates to:** Other Chainstack skills in this pack.
 
 ## Summary

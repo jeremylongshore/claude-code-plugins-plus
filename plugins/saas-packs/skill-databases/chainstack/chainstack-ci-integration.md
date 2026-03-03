@@ -11,7 +11,7 @@ chainstack-ci-integration/
 
 ### 1. SKILL.md
 **Purpose:** Configure Chainstack CI/CD integration
-**Workflow:** Part of the cicd skill category for Chainstack integration.
+**Workflow:** Part of the CI/CD skill category for Chainstack integration.
 **Relates to:** Other Chainstack skills in this pack.
 
 ## Summary
