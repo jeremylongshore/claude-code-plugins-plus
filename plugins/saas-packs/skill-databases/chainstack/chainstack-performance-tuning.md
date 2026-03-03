@@ -16,4 +16,4 @@ chainstack-performance-tuning/
 
 ## Summary
 
-This skill helps developers optimize Chainstack api performance. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.
+This skill helps developers optimize Chainstack API performance. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.

@@ -16,4 +16,4 @@ chainstack-upgrade-migration/
 
 ## Summary
 
-This skill helps developers plan and execute Chainstack sdk upgrades. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.
+This skill helps developers plan and execute Chainstack SDK upgrades. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.

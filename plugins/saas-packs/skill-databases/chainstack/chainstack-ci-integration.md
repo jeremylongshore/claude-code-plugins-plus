@@ -16,4 +16,4 @@ chainstack-ci-integration/
 
 ## Summary
 
-This skill helps developers configure Chainstack ci/cd integration. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.
+This skill helps developers configure Chainstack CI/CD integration. It provides step-by-step guidance for Chainstack integration following best practices and production-ready patterns. Use this skill to accelerate your Chainstack development workflow.

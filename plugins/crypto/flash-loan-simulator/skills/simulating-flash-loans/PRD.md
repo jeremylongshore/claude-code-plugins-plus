@@ -143,7 +143,7 @@ Flash loans are powerful DeFi primitives that allow borrowing any amount without
 | API | Purpose | Auth | Rate Limits |
 |-----|---------|------|-------------|
 | Ankr RPC | Free blockchain queries | None | 30 req/sec |
-| Chainstack Free | RPC with archive data | API Key | 25 req/sec |
+| Chainstack Free | RPC | API Key | 25 req/sec |
 | DeFiLlama | TVL and protocol data | None | Generous |
 | Etherscan | Gas oracle, contract ABIs | API Key | 5 req/sec |
 | Infura Free | RPC with archive data | API Key | 10 req/sec |
