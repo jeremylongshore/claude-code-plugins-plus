@@ -32,8 +32,8 @@ Error: 429 Too Many Requests
    import time
    time.sleep(0.5)  # 500ms between calls
    ```
-2. Switch to a different free RPC (rotate between Ankr, Llamarpc, Chainstack)
-3. Use a private RPC for production (Infura, Alchemy, QuickNode)
+2. Switch to a different free RPC (rotate between Ankr, Chainstack, Llamarpc)
+3. Use a private RPC for production (Alchemy, Chainstack, Infura, or QuickNode)
 
 ---
 

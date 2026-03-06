@@ -441,7 +441,7 @@ rich>=13.0             # Terminal formatting
 ```
 
 ### External Services
-- Free RPC endpoints (Ankr, Infura free tier)
+- Free RPC endpoints (Ankr, Chainstack free tier, Infura free tier)
 - DeFiLlama API (protocol TVL)
 - Etherscan API (gas oracle)
 

@@ -9,7 +9,7 @@ Error: RPC connection timeout after 30s
 **Cause:** RPC endpoint is overloaded or unreachable.
 **Solution:**
 1. Try a different RPC URL with `--rpc-url`
-2. Use a backup RPC provider (Infura, Alchemy, QuickNode)
+2. Use a backup RPC provider (Alchemy, Chainstack, Infura, or QuickNode)
 3. Reduce request frequency
 
 ### RPC Rate Limited

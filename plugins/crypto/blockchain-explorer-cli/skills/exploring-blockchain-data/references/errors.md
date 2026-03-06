@@ -51,7 +51,7 @@ Error: RPC error: {'code': -32000, 'message': 'execution timeout'}
 **Solutions:**
 1. Retry with different RPC endpoint
 2. Check internet connection
-3. Use dedicated RPC (Infura, Alchemy, QuickNode)
+3. Use dedicated RPC (Alchemy, Chainstack, Infura, or QuickNode)
 4. Simplify query or add timeout
 
 ### Invalid Address Format

@@ -44,7 +44,7 @@ Currently, mempool analysis requires running full nodes, subscribing to expensiv
 
 | API | Purpose | Auth |
 |-----|---------|------|
-| Ethereum RPC | Mempool access | RPC URL (Infura, Alchemy, etc.) |
+| Ethereum RPC | Mempool access | Alchemy, Chainstack, or Infura URL |
 | Flashbots API | MEV bundle status | No auth for basic |
 | DEX Subgraphs | Pool/pair data | No auth |
 | Etherscan | Contract ABI | API key (free tier) |
