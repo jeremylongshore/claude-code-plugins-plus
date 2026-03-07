@@ -1,0 +1,65 @@
+{
+  "name": "axiom",
+  "version": "0.7.0",
+  "description": "Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) development",
+  "author": "Charles Wiltgen",
+  "license": "MIT",
+  "skills": [
+    {
+      "name": "xcode-debugging",
+      "description": "Use when encountering BUILD FAILED, test crashes, simulator hangs, stale builds, zombie xcodebuild processes, or mysterious Xcode issues - systematic environment-first diagnostics"
+    },
+    {
+      "name": "swift-concurrency",
+      "description": "Swift 6 strict concurrency patterns - async/await, MainActor, Sendable, actor isolation, and data race prevention"
+    },
+    {
+      "name": "database-migration",
+      "description": "Safe database schema evolution for SQLite/GRDB - prevents data loss with additive migrations and testing workflows"
+    },
+    {
+      "name": "memory-debugging",
+      "description": "Use when app memory grows over time, seeing multiple instances of same class, experiencing crashes with memory limit exceeded, or Instruments shows retain cycles - systematic diagnosis of memory leaks"
+    },
+    {
+      "name": "ui-testing",
+      "description": "Use when writing UI tests, recording interactions (WWDC 2025), tests have race conditions, timing dependencies, or are flaky - covers Recording UI Automation in Xcode 26, condition-based waiting, and accessibility-first testing patterns"
+    },
+    {
+      "name": "build-troubleshooting",
+      "description": "Use when encountering dependency conflicts, CocoaPods/SPM resolution failures, Multiple commands produce errors, or framework version mismatches - systematic dependency and build configuration debugging"
+    },
+    {
+      "name": "liquid-glass",
+      "description": "Use when implementing Liquid Glass effects (WWDC 2025), reviewing UI for adoption, debugging visual artifacts, or requesting expert review - Apple's new material design system with comprehensive design principles, API patterns, Regular vs Clear variants, tinting, and troubleshooting for iOS 26+"
+    },
+    {
+      "name": "swiftui-performance",
+      "description": "Use when analyzing SwiftUI performance (WWDC 2025), identifying long view body updates, reducing unnecessary updates, or optimizing rendering - covers new SwiftUI Instrument in Instruments 26, Cause & Effect Graph, and performance patterns for iOS 26+"
+    },
+    {
+      "name": "swiftui-debugging",
+      "description": "Use when debugging SwiftUI view updates, intermittent rendering issues, preview crashes, or layout problems - diagnostic decision trees for struct mutation, binding identity, view recreation, missing observers, and pressure scenarios for App Store deadlines"
+    },
+    {
+      "name": "performance-profiling",
+      "description": "Use when app feels slow, memory grows over time, battery drains fast, or profiling proactively - decision trees to choose the right Instruments tool (Time Profiler, Allocations, Core Data, Energy Impact), deep workflows for each tool, and pressure scenarios for misinterpreting results under deadline"
+    },
+    {
+      "name": "sqlitedata",
+      "description": "Use when working with SQLiteData (Point-Free) - @Table models, queries with @FetchAll/@FetchOne, CloudKit sync setup, StructuredQueries post-migration crashes, batch imports, and when to drop to GRDB - type-safe SQLite persistence patterns for iOS"
+    },
+    {
+      "name": "grdb",
+      "description": "Use when writing raw SQL queries with GRDB, complex joins, ValueObservation for reactive queries, DatabaseMigrator patterns, or dropping down from SQLiteData for performance - direct SQLite access for iOS/macOS"
+    },
+    {
+      "name": "swiftdata",
+      "description": "Use when working with SwiftData - @Model definitions, @Query in SwiftUI, @Relationship macros, ModelContext patterns, CloudKit integration, iOS 26+ features, and Swift 6 concurrency with @MainActor - Apple's native persistence framework"
+    },
+    {
+      "name": "uikit-animation-debugging",
+      "description": "Use when CAAnimation completion handler doesn't fire, spring physics look wrong on device, animation duration mismatches actual time, gesture + animation interaction causes jank, or timing differs between simulator and real hardware - systematic CAAnimation diagnosis with CATransaction patterns, frame rate awareness, and device-specific behavior"
+    }
+  ]
+}

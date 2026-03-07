@@ -50,26 +50,26 @@ class SMAcrossover(Strategy):
         params = self.validate_params(params)
         fast = params.get("fast_period", 20)
         slow = params.get("slow_period", 50)
-        
+
         if len(data) < slow + 1:
             return Signal()
-        
+
         close = data["close"]
         fast_ma = close.rolling(window=fast).mean()
         slow_ma = close.rolling(window=slow).mean()
-        
+
         # Current and previous values
         curr_fast, prev_fast = fast_ma.iloc[-1], fast_ma.iloc[-2]
         curr_slow, prev_slow = slow_ma.iloc[-1], slow_ma.iloc[-2]
-        
-        # Golden cross: fast crosses above slow
+
+        # Golden cross: fast crosses above slow (long only)
         if prev_fast <= prev_slow and curr_fast > curr_slow:
             return Signal(entry=True, direction="long")
-        
-        # Death cross: fast crosses below slow
+
+        # Death cross: fast crosses below slow (exit long)
         if prev_fast >= prev_slow and curr_fast < curr_slow:
             return Signal(exit=True)
-        
+
         return Signal()
 
 
@@ -104,112 +104,118 @@ class EMAcrossover(Strategy):
 
 class RSIreversal(Strategy):
     """RSI Overbought/Oversold Reversal Strategy.
-    
-    Buy when RSI crosses above oversold level.
-    Sell when RSI crosses below overbought level.
+
+    Long when RSI crosses above oversold. Short when RSI crosses below overbought.
     """
-    
+
     name = "rsi_reversal"
     lookback = 14
-    
+
     def _calculate_rsi(self, close: pd.Series, period: int) -> pd.Series:
         delta = close.diff()
         gain = (delta.where(delta > 0, 0)).rolling(window=period).mean()
         loss = (-delta.where(delta < 0, 0)).rolling(window=period).mean()
         rs = gain / loss
         return 100 - (100 / (1 + rs))
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         period = params.get("period", 14)
         overbought = params.get("overbought", 70)
         oversold = params.get("oversold", 30)
-        
+
         if len(data) < period + 1:
             return Signal()
-        
+
         rsi = self._calculate_rsi(data["close"], period)
         curr_rsi, prev_rsi = rsi.iloc[-1], rsi.iloc[-2]
-        
-        # Oversold reversal: buy signal
+
+        # Oversold reversal: enter long (also exits any short)
         if prev_rsi <= oversold and curr_rsi > oversold:
-            return Signal(entry=True, direction="long", strength=min(1.0, (oversold - prev_rsi) / 10))
-        
-        # Overbought reversal: sell signal
+            return Signal(entry=True, exit=True, direction="long", strength=min(1.0, (oversold - prev_rsi) / 10))
+
+        # Overbought reversal: enter short (also exits any long)
         if prev_rsi >= overbought and curr_rsi < overbought:
-            return Signal(exit=True)
-        
+            return Signal(entry=True, exit=True, direction="short", strength=min(1.0, (prev_rsi - overbought) / 10))
+
         return Signal()
 
 
 class MACD(Strategy):
-    """MACD Signal Line Crossover Strategy."""
-    
+    """MACD Signal Line Crossover Strategy (long and short)."""
+
     name = "macd"
     lookback = 35
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         fast = params.get("fast", 12)
         slow = params.get("slow", 26)
         signal_period = params.get("signal", 9)
-        
+
         if len(data) < slow + signal_period:
             return Signal()
-        
+
         close = data["close"]
         fast_ema = close.ewm(span=fast, adjust=False).mean()
         slow_ema = close.ewm(span=slow, adjust=False).mean()
         macd_line = fast_ema - slow_ema
         signal_line = macd_line.ewm(span=signal_period, adjust=False).mean()
-        
+
         curr_macd, prev_macd = macd_line.iloc[-1], macd_line.iloc[-2]
         curr_signal, prev_signal = signal_line.iloc[-1], signal_line.iloc[-2]
-        
-        # MACD crosses above signal: buy
+
+        # Bullish crossover: enter long, exit short
         if prev_macd <= prev_signal and curr_macd > curr_signal:
-            return Signal(entry=True, direction="long")
-        
-        # MACD crosses below signal: sell
+            return Signal(entry=True, exit=True, direction="long")
+
+        # Bearish crossover: enter short, exit long
         if prev_macd >= prev_signal and curr_macd < curr_signal:
-            return Signal(exit=True)
-        
+            return Signal(entry=True, exit=True, direction="short")
+
         return Signal()
 
 
 class BollingerBands(Strategy):
-    """Bollinger Bands Mean Reversion Strategy.
-    
-    Buy when price touches lower band.
-    Sell when price touches upper band.
+    """Bollinger Bands Mean Reversion Strategy (long and short).
+
+    Long when price touches lower band. Short when price crosses upper band.
+    Exit at middle band.
     """
-    
+
     name = "bollinger_bands"
     lookback = 20
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         period = params.get("period", 20)
         std_dev = params.get("std_dev", 2.0)
-        
+
         if len(data) < period:
             return Signal()
-        
+
         close = data["close"]
         sma = close.rolling(window=period).mean()
         std = close.rolling(window=period).std()
-        
+
         upper_band = sma + (std * std_dev)
         lower_band = sma - (std * std_dev)
-        
+
         curr_close = close.iloc[-1]
         prev_close = close.iloc[-2]
-        
-        # Price crosses below lower band: buy
+
+        # Price crosses below lower band: enter long, exit short
         if prev_close >= lower_band.iloc[-2] and curr_close < lower_band.iloc[-1]:
-            return Signal(entry=True, direction="long")
-        
-        # Price crosses above upper band: sell
+            return Signal(entry=True, exit=True, direction="long")
+
+        # Price crosses above upper band: enter short, exit long
         if prev_close <= upper_band.iloc[-2] and curr_close > upper_band.iloc[-1]:
+            return Signal(entry=True, exit=True, direction="short")
+
+        # Price crosses middle band: exit any position
+        curr_mid = sma.iloc[-1]
+        prev_mid = sma.iloc[-2]
+        if (prev_close < prev_mid and curr_close >= curr_mid) or \
+           (prev_close > prev_mid and curr_close <= curr_mid):
             return Signal(exit=True)
-        
+
         return Signal()
 
 
@@ -249,37 +255,44 @@ class Breakout(Strategy):
 
 
 class MeanReversion(Strategy):
-    """Mean Reversion Strategy.
-    
-    Buy when price deviates significantly below moving average.
-    Sell when price reverts to or exceeds moving average.
+    """Mean Reversion Strategy (long and short).
+
+    Long when price deviates below mean. Short when price deviates above mean.
+    Exit when z-score crosses zero.
     """
-    
+
     name = "mean_reversion"
     lookback = 20
-    
+
     def generate_signals(self, data: pd.DataFrame, params: Dict[str, Any]) -> Signal:
         period = params.get("period", 20)
         z_threshold = params.get("z_threshold", 2.0)
-        
+
         if len(data) < period:
             return Signal()
-        
+
         close = data["close"]
         sma = close.rolling(window=period).mean()
         std = close.rolling(window=period).std()
-        
+
+        if std.iloc[-1] == 0 or std.iloc[-2] == 0:
+            return Signal()
+
         z_score = (close.iloc[-1] - sma.iloc[-1]) / std.iloc[-1]
         prev_z_score = (close.iloc[-2] - sma.iloc[-2]) / std.iloc[-2]
-        
-        # Price significantly below mean: buy
+
+        # Price significantly below mean: enter long, exit short
         if z_score < -z_threshold and prev_z_score >= -z_threshold:
-            return Signal(entry=True, direction="long", strength=min(1.0, abs(z_score) / 3))
-        
-        # Price reverts to mean: sell
-        if z_score >= 0 and prev_z_score < 0:
+            return Signal(entry=True, exit=True, direction="long", strength=min(1.0, abs(z_score) / 3))
+
+        # Price significantly above mean: enter short, exit long
+        if z_score > z_threshold and prev_z_score <= z_threshold:
+            return Signal(entry=True, exit=True, direction="short", strength=min(1.0, abs(z_score) / 3))
+
+        # Price reverts to mean: exit any position
+        if (prev_z_score < 0 and z_score >= 0) or (prev_z_score > 0 and z_score <= 0):
             return Signal(exit=True)
-        
+
         return Signal()
 
 

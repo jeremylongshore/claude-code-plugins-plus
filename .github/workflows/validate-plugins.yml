@@ -317,11 +317,9 @@ jobs:
           fi
 
           # Install dependencies from plugin requirements.txt files
-          for req in plugins/mcp/*/requirements.txt; do
-            if [ -f "$req" ]; then
-              echo "Installing deps from $req"
-              pip install -r "$req" || true
-            fi
+          find plugins/ -name "requirements.txt" | while read req; do
+            echo "Installing deps from $req"
+            pip install -r "$req" || true
           done
 
           # Install additional testing tools
