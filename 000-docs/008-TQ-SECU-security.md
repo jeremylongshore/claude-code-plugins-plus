@@ -280,7 +280,7 @@ throw new Error("Database connection failed");
 
 ### For Marketplace Vulnerabilities
 
-**Private Disclosure**: security@yourdomain.com (or create GitHub Security Advisory)
+**Private Disclosure**: jeremy@intentsolutions.io (or create [GitHub Security Advisory](https://github.com/jeremylongshore/claude-code-plugins/security/advisories/new))
 
 We follow responsible disclosure:
 1. Acknowledge report within 24 hours
@@ -403,5 +403,5 @@ Subscribe to:
 
 ---
 
-**Version**: 1.0.0
-**Last Updated**: October 13, 2025
+**Version**: 1.1.0
+**Last Updated**: March 6, 2026

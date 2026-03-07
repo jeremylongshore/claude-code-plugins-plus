@@ -301,7 +301,7 @@ Description:
 - Impact:
 ```
 
-**Urgent vulnerabilities**: Email security@yourdomain.com
+**Urgent vulnerabilities**: Email jeremy@intentsolutions.io
 
 ---
 
@@ -349,4 +349,4 @@ Description:
 
 ---
 
-**Last Updated**: October 13, 2025
+**Last Updated**: March 6, 2026
