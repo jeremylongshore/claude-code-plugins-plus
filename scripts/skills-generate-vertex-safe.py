@@ -36,7 +36,7 @@ DB_PATH = BACKUP_DIR / 'skills_generation.db'
 # Initialize Vertex AI
 try:
     vertexai.init(project=PROJECT_ID, location=LOCATION)
-    model = GenerativeModel("gemini-2.0-flash-exp")
+    model = GenerativeModel("gemini-2.5-flash")
     print(f"✅ Vertex AI initialized: {PROJECT_ID} / {LOCATION}")
 except Exception as e:
     print(f"❌ Vertex AI init failed: {e}")

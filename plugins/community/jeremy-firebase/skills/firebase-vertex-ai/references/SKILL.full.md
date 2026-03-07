@@ -288,7 +288,7 @@ export const analyzeContent = functions.https.onCall(async (data, context) => {
     throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
   }
 
-  const model = vertex.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+  const model = vertex.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
   const prompt = `
 Analyze this content for:
@@ -344,7 +344,7 @@ export const ragQuery = functions.https.onCall(async (data, context) => {
   );
 
   // 4. Generate answer with Gemini using retrieved context
-  const genModel = vertex.getGenerativeModel({ model: 'gemini-2.0-flash-exp' });
+  const genModel = vertex.getGenerativeModel({ model: 'gemini-2.5-flash' });
 
   const contextText = documents
     .map(doc => `${doc.title}: ${doc.content}`)

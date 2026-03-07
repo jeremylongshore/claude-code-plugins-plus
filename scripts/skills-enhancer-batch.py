@@ -58,7 +58,7 @@ class PluginEnhancer:
         """Initialize Vertex AI Gemini"""
         try:
             vertexai.init(project=PROJECT_ID, location=LOCATION)
-            self.model = GenerativeModel("gemini-2.0-flash-exp")
+            self.model = GenerativeModel("gemini-2.5-flash")
             print(f"✅ Vertex AI initialized: {PROJECT_ID} / {LOCATION}")
         except Exception as e:
             print(f"❌ Vertex AI init failed: {e}")
@@ -561,7 +561,7 @@ Start with --- for frontmatter and end with proper markdown."""
         print(f"🌙 OVERNIGHT PLUGIN ENHANCEMENT BATCH")
         print(f"{'='*60}")
         print(f"Project: {PROJECT_ID}")
-        print(f"Model: gemini-2.0-flash-exp")
+        print(f"Model: gemini-2.5-flash")
         print(f"Rate limit: {RATE_LIMIT_DELAY}s between calls")
         print(f"Backup dir: {BACKUP_DIR}")
         print(f"{'='*60}\n")

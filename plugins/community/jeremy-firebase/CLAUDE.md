@@ -290,7 +290,7 @@ const {VertexAI} = require('@google-cloud/vertexai');
 const admin = require('firebase-admin');
 
 const vertex = new VertexAI({project: 'PROJECT_ID', location: 'us-central1'});
-const model = vertex.getGenerativeModel({model: 'gemini-2.0-flash-exp'});
+const model = vertex.getGenerativeModel({model: 'gemini-2.5-flash'});
 
 exports.analyzeContent = functions.firestore
   .document('posts/{postId}')
