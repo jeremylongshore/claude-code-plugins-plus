@@ -15,7 +15,7 @@ export function buildProgram() {
 
   program
     .name('ccpi')
-    .description('Claude Code Plugins - Install and manage plugins from claudecodeplugins.io')
+    .description('Claude Code Plugins - Install and manage plugins from tonsofskills.com')
     .version(getVersion());
 
   program
@@ -87,7 +87,7 @@ export function buildProgram() {
     .action(async (query: string) => {
       console.log(chalk.blue(`Searching marketplace for: ${query}`));
       console.log(chalk.yellow('🚧 Search functionality coming soon!'));
-      console.log(chalk.gray('Visit https://claudecodeplugins.io to browse plugins'));
+      console.log(chalk.gray('Visit https://tonsofskills.com to browse plugins'));
     });
 
   program

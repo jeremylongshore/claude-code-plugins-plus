@@ -435,9 +435,31 @@ const categories = [
   }
 
   // Event listeners
-  searchInput.addEventListener('input', updatePluginDisplay);
-  categoryFilter.addEventListener('change', updatePluginDisplay);
-  sortFilter.addEventListener('change', updatePluginDisplay);
+  let searchBarDebounce: ReturnType<typeof setTimeout> | null = null;
+  searchInput.addEventListener('input', () => {
+    updatePluginDisplay();
+    // Debounced search tracking (1s)
+    if (searchBarDebounce) clearTimeout(searchBarDebounce);
+    if (searchInput.value.length >= 2) {
+      searchBarDebounce = setTimeout(() => {
+        if ((window as any).trackEvent) {
+          (window as any).trackEvent('search', { query: searchInput.value, source: 'search_bar' });
+        }
+      }, 1000);
+    }
+  });
+  categoryFilter.addEventListener('change', () => {
+    updatePluginDisplay();
+    if (categoryFilter.value && (window as any).trackEvent) {
+      (window as any).trackEvent('filter_applied', { filter_type: 'category', value: categoryFilter.value });
+    }
+  });
+  sortFilter.addEventListener('change', () => {
+    updatePluginDisplay();
+    if ((window as any).trackEvent) {
+      (window as any).trackEvent('filter_applied', { filter_type: 'sort', value: sortFilter.value });
+    }
+  });
 
   clearBtn.addEventListener('click', () => {
     searchInput.value = '';

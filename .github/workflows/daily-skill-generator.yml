@@ -1,7 +1,7 @@
 name: Daily Skill Generator
 on:
-  schedule:
-    - cron: "0 10 * * *"  # 10 AM UTC daily (5 AM EST)
+  # schedule disabled — burns Actions minutes
+  # - cron: "0 10 * * *"  # 10 AM UTC daily (5 AM EST)
   workflow_dispatch:  # Manual trigger
 
 jobs:

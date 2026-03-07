@@ -1,0 +1,634 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="Tool Permission Threat Modeling"
+  description="What Bash access really means, how namespaced constraints protect you, and the security model behind 1,372 skills."
+  domain="Security & Governance"
+  domainSlug="security"
+  wordCount={3100}
+>
+
+  <h2 id="the-permission-model">The Permission Model</h2>
+
+  <p>
+    Every skill in the Claude Code Plugins catalog declares, upfront, the complete list of tools it is allowed to use.
+    Not a suggestion. Not a hint. An explicit, enumerated surface area that Claude enforces at runtime before executing
+    a single action. If a skill's frontmatter says <code>allowed-tools: Read, Glob</code>, that skill cannot write a
+    file, run a command, or fetch a URL — even if the skill's instructions tell Claude to try.
+  </p>
+
+  <p>
+    This is the principle of least privilege expressed as a data structure. And it's worth understanding exactly what
+    that means in practice, because the 13 tools in the specification are not created equal.
+  </p>
+
+  <div class="data-point">
+    <strong>1,372 skills</strong> across 315 plugins have been validated against the tool permission specification.
+    Each one declares its allowed tools explicitly in YAML frontmatter before any instructions are evaluated.
+  </div>
+
+  <h3 id="the-13-tools">The 13 Tools and Their Risk Profiles</h3>
+
+  <p>
+    The complete list of valid tools as of the 2026 spec is: <code>Read</code>, <code>Write</code>, <code>Edit</code>,
+    <code>Bash</code>, <code>Glob</code>, <code>Grep</code>, <code>WebFetch</code>, <code>WebSearch</code>,
+    <code>Task</code>, <code>TodoWrite</code>, <code>NotebookEdit</code>, <code>AskUserQuestion</code>, and
+    <code>Skill</code>. Any tool name outside this list is flagged as invalid during validation and will fail CI.
+  </p>
+
+  <p>
+    Each tool has a different blast radius. Some of them can only observe — they read data from the filesystem or
+    search for patterns. Others can modify state. And one of them, <code>Bash</code>, can in principle do anything
+    the operating system allows.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tool</th>
+        <th>What It Does</th>
+        <th>Risk Level</th>
+        <th>Reversible?</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Read</code></td>
+        <td>Reads file contents from the filesystem</td>
+        <td>Low</td>
+        <td>N/A (read-only)</td>
+      </tr>
+      <tr>
+        <td><code>Glob</code></td>
+        <td>Matches file paths by pattern</td>
+        <td>Low</td>
+        <td>N/A (read-only)</td>
+      </tr>
+      <tr>
+        <td><code>Grep</code></td>
+        <td>Searches file contents by regex</td>
+        <td>Low</td>
+        <td>N/A (read-only)</td>
+      </tr>
+      <tr>
+        <td><code>WebSearch</code></td>
+        <td>Queries a search engine</td>
+        <td>Low</td>
+        <td>N/A (read-only)</td>
+      </tr>
+      <tr>
+        <td><code>AskUserQuestion</code></td>
+        <td>Prompts the user for input before proceeding</td>
+        <td>Low</td>
+        <td>N/A (interactive)</td>
+      </tr>
+      <tr>
+        <td><code>TodoWrite</code></td>
+        <td>Manages the structured task list</td>
+        <td>Low–Medium</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <td><code>Write</code></td>
+        <td>Creates or overwrites files</td>
+        <td>Medium</td>
+        <td>With backups</td>
+      </tr>
+      <tr>
+        <td><code>Edit</code></td>
+        <td>Makes targeted in-place changes to existing files</td>
+        <td>Medium</td>
+        <td>With version control</td>
+      </tr>
+      <tr>
+        <td><code>WebFetch</code></td>
+        <td>Fetches content from a URL</td>
+        <td>Medium</td>
+        <td>N/A (network I/O)</td>
+      </tr>
+      <tr>
+        <td><code>NotebookEdit</code></td>
+        <td>Modifies Jupyter notebook cells</td>
+        <td>Medium</td>
+        <td>With version control</td>
+      </tr>
+      <tr>
+        <td><code>Skill</code></td>
+        <td>Invokes another skill (chaining)</td>
+        <td>Medium–High</td>
+        <td>Depends on child skill</td>
+      </tr>
+      <tr>
+        <td><code>Task</code></td>
+        <td>Spawns a subagent with its own execution context</td>
+        <td>High</td>
+        <td>Depends on subagent</td>
+      </tr>
+      <tr>
+        <td><code>Bash</code></td>
+        <td>Executes shell commands (unrestricted or namespaced)</td>
+        <td>High</td>
+        <td>Depends on command</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The risk levels here aren't arbitrary. They map to two things: the ability to modify persistent state, and the
+    ability to interact with systems outside the current project. A skill that only uses <code>Read</code>,
+    <code>Glob</code>, and <code>Grep</code> cannot change anything. A skill that uses <code>Write</code> and
+    <code>Edit</code> can change files, but only files. A skill that uses <code>Bash</code> without constraints
+    can delete files, run network requests, install packages, or fork processes.
+  </p>
+
+  <hr />
+
+  <h2 id="why-bash-gets-special-treatment">Why Bash Gets Special Treatment</h2>
+
+  <p>
+    There's a reason <code>Bash</code> is the one tool in the spec that supports namespacing. Every other tool in
+    the list has a well-defined scope — <code>Read</code> reads, <code>Write</code> writes, <code>Grep</code>
+    searches. Their names are their contracts. But <code>Bash</code> is different. Bash is a meta-tool. It grants
+    access to everything the shell can reach, which is effectively everything your user account can touch on the
+    operating system.
+  </p>
+
+  <p>
+    When a skill declares <code>allowed-tools: Bash</code> with no namespace, it's asking for unrestricted shell
+    access. That skill could, in principle, run <code>rm -rf</code>, <code>curl | bash</code>, or
+    <code>git push --force</code>. Whether it actually does any of those things depends entirely on the skill's
+    instructions — but the permission has been granted, and there's no technical guardrail below it beyond Claude's
+    own judgment.
+  </p>
+
+  <blockquote>
+    Unrestricted <code>Bash</code> access is not inherently malicious — many legitimate skills need it. But it
+    requires more scrutiny than any other tool in the spec. When you see it, your first question should be: does
+    this skill actually need that much access?
+  </blockquote>
+
+  <p>
+    This is where namespacing comes in. Instead of granting full shell access, a skill author can constrain
+    <code>Bash</code> to a specific command prefix. <code>Bash(npm:*)</code> means the skill can only run commands
+    that start with <code>npm</code>. <code>Bash(terraform:*)</code> means only Terraform commands. The wildcard
+    after the colon means "any arguments to that command," but the command itself is fixed.
+  </p>
+
+  <p>
+    This is a meaningful security boundary. A skill that declares <code>Bash(npm:*)</code> cannot run
+    <code>git push</code>, cannot delete files, cannot hit an arbitrary URL with <code>curl</code>. It can
+    run <code>npm install</code>, <code>npm test</code>, <code>npm publish</code> — all the npm surface area —
+    but nothing outside it. The constraint is narrow enough to be meaningful and specific enough to be auditable
+    by a human reviewer in about three seconds.
+  </p>
+
+  <div class="data-point">
+    <strong>The key insight:</strong> namespaced Bash shifts the review question from "can this skill do anything dangerous?" to "is this specific command family dangerous in this context?" That's a much easier question to answer.
+  </div>
+
+  <hr />
+
+  <h2 id="namespaced-bash-in-practice">Namespaced Bash in Practice</h2>
+
+  <p>
+    Across the skills catalog, several Bash namespace patterns appear repeatedly. Each maps to a different
+    category of work — package management, databases, infrastructure, cloud APIs. Here's what each one
+    grants and, equally importantly, what it prevents.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Namespace</th>
+        <th>What It Allows</th>
+        <th>What It Prevents</th>
+        <th>Common Use</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Bash(npm:*)</code></td>
+        <td>All <code>npm</code> subcommands and flags</td>
+        <td>Git, file deletion, curl, any non-npm command</td>
+        <td>Node.js dependency management, package publishing</td>
+      </tr>
+      <tr>
+        <td><code>Bash(python:*)</code></td>
+        <td>All <code>python</code> invocations</td>
+        <td>System commands, pip (separate binary), file I/O via shell</td>
+        <td>Running scripts, REPL evaluation, test runners</td>
+      </tr>
+      <tr>
+        <td><code>Bash(psql:*)</code></td>
+        <td>PostgreSQL CLI commands</td>
+        <td>MySQL, file writes, network calls outside psql</td>
+        <td>Database migrations, query execution, schema inspection</td>
+      </tr>
+      <tr>
+        <td><code>Bash(mysql:*)</code></td>
+        <td>MySQL CLI commands</td>
+        <td>PostgreSQL, other databases, system shell</td>
+        <td>MySQL query execution, dump/restore operations</td>
+      </tr>
+      <tr>
+        <td><code>Bash(ansible:*)</code></td>
+        <td>Ansible CLI toolchain</td>
+        <td>Direct SSH, file system writes outside ansible</td>
+        <td>Playbook execution, inventory management</td>
+      </tr>
+      <tr>
+        <td><code>Bash(terraform:*)</code></td>
+        <td>All Terraform subcommands</td>
+        <td>AWS CLI directly, kubectl, file system manipulation</td>
+        <td>Infrastructure plan/apply, state management</td>
+      </tr>
+      <tr>
+        <td><code>Bash(cmd:*)</code></td>
+        <td>Windows Command Prompt commands</td>
+        <td>PowerShell, bash/sh, Unix utilities</td>
+        <td>Windows-specific automation workflows</td>
+      </tr>
+      <tr>
+        <td><code>Bash(api:*)</code></td>
+        <td>API-related CLI commands (curl, httpie, etc.)</td>
+        <td>File system, package managers, database CLIs</td>
+        <td>REST API testing, endpoint verification</td>
+      </tr>
+      <tr>
+        <td><code>Bash(aws:s3:*)</code></td>
+        <td>AWS S3 CLI operations only</td>
+        <td>EC2, IAM, Lambda, all non-S3 AWS services</td>
+        <td>Object storage reads/writes, bucket management</td>
+      </tr>
+      <tr>
+        <td><code>Bash(az:storage:*)</code></td>
+        <td>Azure Storage CLI operations only</td>
+        <td>Azure Compute, Azure AD, all non-storage Azure services</td>
+        <td>Blob storage operations, file share management</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Notice the two-level namespaces at the bottom: <code>Bash(aws:s3:*)</code> and <code>Bash(az:storage:*)</code>.
+    This pattern is particularly powerful because it constrains not just which CLI tool is available, but which
+    subcommand group within that tool. A skill with <code>Bash(aws:s3:*)</code> cannot touch IAM policies, cannot
+    modify Lambda functions, cannot list EC2 instances. It is locked to the S3 service surface only.
+  </p>
+
+  <p>
+    This layered namespacing is how you express "this skill needs cloud access, but only to one specific service"
+    — a common and legitimate requirement that, without namespacing, would require granting full AWS CLI access
+    or nothing at all.
+  </p>
+
+  <hr />
+
+  <h2 id="the-risk-spectrum">The Risk Spectrum</h2>
+
+  <p>
+    Security models that treat all tools as equally risky aren't useful. Real threat modeling requires calibrating
+    attention to the actual blast radius of each tool. Here's a more granular breakdown of how to think about
+    the risk spectrum.
+  </p>
+
+  <h3 id="low-risk-observation-tools">Low Risk: Observation Tools</h3>
+
+  <p>
+    <code>Read</code>, <code>Glob</code>, <code>Grep</code>, and <code>WebSearch</code> share a defining property:
+    they cannot change anything. They observe and return. A skill that uses only these four tools is, at most,
+    an information leak risk — and even that depends heavily on what the skill does with what it reads. In most
+    contexts, a purely observational skill is safe to run without careful review.
+  </p>
+
+  <p>
+    <code>AskUserQuestion</code> also falls here. Its function is to pause execution and wait for human input
+    before proceeding — which is actually a risk-reducing pattern, not a risk-adding one. Skills that ask before
+    acting are generally safer than skills that don't.
+  </p>
+
+  <h3 id="medium-risk-state-modification">Medium Risk: State Modification</h3>
+
+  <p>
+    <code>Write</code>, <code>Edit</code>, and <code>NotebookEdit</code> can all change files on disk. The risk
+    depends on what files are in scope and whether the project uses version control. In a git repository, most
+    file changes are recoverable — which is why these tools sit in the medium range rather than the high range.
+    Outside version control, file writes are permanent, and the risk profile shifts upward accordingly.
+  </p>
+
+  <p>
+    <code>WebFetch</code> introduces a different kind of medium risk: network I/O. It can retrieve data from
+    external URLs, which means it can be used to exfiltrate data via URL parameters, or to pull in content from
+    untrusted sources. This risk is theoretical in most skill contexts — legitimate skills use WebFetch to read
+    documentation or fetch API specs — but it's worth noting that the tool has an outbound vector that the
+    pure filesystem tools don't.
+  </p>
+
+  <h3 id="high-risk-execution-and-delegation">High Risk: Execution and Delegation</h3>
+
+  <p>
+    <code>Task</code> and <code>Bash</code> are the two tools where reviewer attention should concentrate.
+    <code>Task</code> spawns a subagent — an entirely separate execution context that can have its own tool
+    permissions, its own instructions, and its own chain of actions. The parent skill's constraints don't
+    automatically propagate to subagents. A skill that uses <code>Task</code> needs to be reviewed not just
+    for its own permissions, but for what it might spawn.
+  </p>
+
+  <p>
+    <code>Bash</code>, especially unrestricted, sits at the top of the risk spectrum for the reasons described
+    earlier. But even namespaced Bash deserves scrutiny. <code>Bash(terraform:*)</code> with instructions to
+    run <code>terraform apply -auto-approve</code> on production infrastructure is high risk regardless of
+    the namespace constraint. The namespace limits the command family; it doesn't limit what that command family
+    can do to your infrastructure.
+  </p>
+
+  <div class="data-point">
+    <strong>Reviewer heuristic:</strong> if a skill declares <code>Bash</code> (unrestricted) or <code>Task</code>, read the skill instructions carefully before the description. The permissions are the lead signal.
+  </div>
+
+  <hr />
+
+  <h2 id="what-the-ci-pipeline-catches">What the CI Pipeline Catches</h2>
+
+  <p>
+    The validation pipeline that runs on every pull request and commit to the plugins repository is a multi-layered
+    automated review. Understanding what it catches — and what it doesn't — is useful context for anyone thinking
+    about the actual security posture of the catalog.
+  </p>
+
+  <h3 id="secret-scanning">Secret Scanning</h3>
+
+  <p>
+    Every plugin file is scanned for patterns that match common secret formats: API keys, tokens, private key
+    headers, connection strings with embedded credentials. This scan runs at multiple points — on plugin source
+    files during the <code>validate</code> CI job, and again on the generated zip archives during the
+    <code>validate-cowork-security.mjs</code> post-build step.
+  </p>
+
+  <p>
+    The post-build scan on zip files is particularly important because it catches cases where secrets might be
+    embedded in generated artifacts even when the source files looked clean. A build step that inlines
+    configuration values could theoretically produce a zip containing credentials that weren't in any source
+    file the pre-build scan examined.
+  </p>
+
+  <h3 id="dangerous-pattern-detection">Dangerous Pattern Detection</h3>
+
+  <p>
+    Beyond credential patterns, the pipeline scans for shell patterns that are frequently used in supply chain
+    attacks: piping curl output to bash, downloading and executing remote scripts, suspicious use of
+    <code>eval</code>, and similar constructs. These patterns don't automatically fail a plugin, but they
+    flag it for closer human review.
+  </p>
+
+  <h3 id="tool-name-validation">Tool Name Validation</h3>
+
+  <p>
+    The <code>validate-skills-schema.py</code> script enforces that every tool name in every
+    <code>allowed-tools</code> declaration matches the known valid set. An unrecognized tool name — whether
+    from a typo or an attempt to declare a tool that doesn't exist in the spec — fails validation outright.
+    This prevents a class of confusion attacks where a skill might try to claim permissions that look legitimate
+    but aren't actually valid.
+  </p>
+
+  <h3 id="structural-completeness">Structural Completeness Checks</h3>
+
+  <p>
+    Required fields — <code>name</code>, <code>description</code>, <code>version</code>, <code>author</code>,
+    and <code>allowed-tools</code> — must all be present. Missing frontmatter fields fail validation before
+    the skill can be published. This isn't just housekeeping: an incomplete permissions declaration is
+    semantically ambiguous, and the pipeline refuses to let ambiguous skill definitions reach the catalog.
+  </p>
+
+  <hr />
+
+  <h2 id="the-8-field-constraint-as-security">The 8-Field Constraint as Security</h2>
+
+  <p>
+    One of the less obvious security properties of the catalog is the strict constraint on <code>plugin.json</code>
+    structure. The spec allows exactly eight fields: <code>name</code>, <code>version</code>,
+    <code>description</code>, <code>author</code>, <code>repository</code>, <code>homepage</code>,
+    <code>license</code>, and <code>keywords</code>. Any additional field causes CI to fail.
+  </p>
+
+  <p>
+    This might look like arbitrary strictness, but it's actually preventing a specific class of attack.
+  </p>
+
+  <h3 id="configuration-injection">Configuration Injection</h3>
+
+  <p>
+    Package manifests that accept arbitrary fields are a vector for configuration injection. An attacker who
+    can add arbitrary fields to a package manifest can potentially influence how that manifest is interpreted
+    by downstream tooling — install hooks, resolution strategies, registry behavior. The npm ecosystem has
+    seen this attack surface exploited in practice.
+  </p>
+
+  <p>
+    By enforcing a strict eight-field allowlist, the catalog eliminates this entire class of risk. There is no
+    way to embed a <code>scripts.postinstall</code> field, a <code>dependencies</code> object, or any other
+    mechanism that downstream tooling might act on. The manifest is inert beyond the declared fields.
+  </p>
+
+  <h3 id="dependency-confusion">Dependency Confusion Prevention</h3>
+
+  <p>
+    Dependency confusion attacks work by publishing a package to a public registry with the same name as a
+    private internal package, relying on the package manager preferring the public version. The eight-field
+    constraint doesn't prevent this directly, but it removes the <code>dependencies</code> and
+    <code>devDependencies</code> fields from the manifest entirely — plugins cannot declare npm dependencies
+    in their plugin.json at all. MCP plugins (TypeScript) have their own <code>package.json</code> that's
+    evaluated separately, but AI instruction plugins have no dependency surface to exploit.
+  </p>
+
+  <div class="data-point">
+    <strong>315 plugins</strong> pass through the eight-field constraint validation before reaching the catalog. The constraint has caught several submitted plugins with extra fields, including a handful attempting to add <code>scripts</code> blocks.
+  </div>
+
+  <hr />
+
+  <h2 id="practical-guidance-for-reviewers">Practical Guidance for Reviewers</h2>
+
+  <p>
+    If you're reviewing a plugin before adding it to your own setup, or contributing to the catalog's review
+    process, here's what to look for — and what distinguishes a reasonable permission request from a red flag.
+  </p>
+
+  <h3 id="normal-patterns">Normal Patterns</h3>
+
+  <p>
+    A skill that reads code and writes tests probably needs <code>Read</code>, <code>Glob</code>, <code>Grep</code>,
+    and <code>Write</code> — that's a coherent, minimal permission set for that task. A skill that manages npm
+    dependencies needs <code>Bash(npm:*)</code>. A skill that inspects and repairs database schemas needs
+    <code>Bash(psql:*)</code> or <code>Bash(mysql:*)</code> plus <code>Read</code>. The permissions should
+    tell a story that matches the skill's stated purpose.
+  </p>
+
+  <p>
+    It's also normal for complex, multi-purpose skills to request broader permissions. A "full-stack development
+    workflow" skill that orchestrates an entire feature branch — writing code, running tests, managing git —
+    legitimately needs a broader tool surface than a focused single-purpose skill. The question isn't just
+    "are these permissions wide?" but "do these permissions match what the skill actually does?"
+  </p>
+
+  <h3 id="red-flags">Red Flags</h3>
+
+  <ul>
+    <li>
+      <strong>Unrestricted Bash with vague instructions.</strong> If a skill declares <code>Bash</code> without
+      namespacing and the description is generic or the instructions are opaque, that's worth extra scrutiny.
+      Legitimate skills that need full shell access typically have obvious reasons — deployment scripts,
+      system configuration, complex build orchestration.
+    </li>
+    <li>
+      <strong>Task with no explanation of what's being spawned.</strong> Skills that use <code>Task</code> to
+      spawn subagents should describe what those subagents do. A skill that says "uses Task to coordinate work"
+      without any specifics about what that coordination entails is giving you incomplete information about its
+      actual blast radius.
+    </li>
+    <li>
+      <strong>WebFetch with Bash.</strong> The combination of "can fetch arbitrary URLs" and "can run shell
+      commands" is the core pattern in "curl | bash" style attacks. Skills that combine these two tools
+      should have a clear, benign explanation — fetching an API spec to generate code, for instance — and
+      instructions that obviously don't connect the fetch output to the shell execution.
+    </li>
+    <li>
+      <strong>Permissions that don't match the description.</strong> A "code formatting" skill that requests
+      database access. A "documentation generator" that requests Terraform permissions. When the permissions
+      and the stated purpose are misaligned, either the description is incomplete or something else is going on.
+    </li>
+    <li>
+      <strong>Skill chaining with <code>Skill</code> across trust boundaries.</strong> A skill in a
+      low-trust plugin that uses <code>Skill</code> to invoke a skill from a different, more permissive plugin
+      is attempting to access elevated permissions through delegation. This pattern needs explicit review.
+    </li>
+  </ul>
+
+  <h3 id="review-checklist">Practical Review Checklist</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Check</th>
+        <th>What to Look For</th>
+        <th>Pass Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Permission coherence</td>
+        <td>Do the declared tools match what the skill claims to do?</td>
+        <td>Every permission has an obvious use in the instructions</td>
+      </tr>
+      <tr>
+        <td>Bash namespace</td>
+        <td>Is Bash namespaced? If not, why not?</td>
+        <td>Namespaced, or has an explicit reason for full access</td>
+      </tr>
+      <tr>
+        <td>Task delegation</td>
+        <td>Does the skill use Task? What do subagents do?</td>
+        <td>Subagent purpose is described and benign</td>
+      </tr>
+      <tr>
+        <td>WebFetch + Bash</td>
+        <td>Does the skill combine network fetch with shell execution?</td>
+        <td>The two are clearly not connected in the instructions</td>
+      </tr>
+      <tr>
+        <td>Secret patterns</td>
+        <td>Are any credentials or tokens embedded in skill instructions?</td>
+        <td>No static credentials anywhere in the file</td>
+      </tr>
+      <tr>
+        <td>Minimal access</td>
+        <td>Could the skill work with fewer permissions?</td>
+        <td>No obviously unnecessary tools are declared</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <h2 id="what-remains-open">What Remains Open</h2>
+
+  <p>
+    The permission model described here is a real security improvement over "Claude can use any tool it
+    decides to use." But intellectual honesty requires being clear about what it doesn't protect against.
+    No permission model is a complete security solution, and this one has known boundaries.
+  </p>
+
+  <h3 id="prompt-injection">Prompt Injection via Fetched Content</h3>
+
+  <p>
+    A skill that uses <code>WebFetch</code> to retrieve a URL, then passes that content to Claude as context,
+    is exposed to prompt injection in the fetched content. The fetched page could contain instructions designed
+    to manipulate Claude's behavior — to expand its effective permissions, to take actions outside the skill's
+    stated scope, or to exfiltrate data through legitimate channels. The tool permission model cannot fully
+    protect against this because the attack vector is in the content, not the tool invocation.
+  </p>
+
+  <p>
+    The same risk applies, to a lesser degree, to <code>Read</code> — a file that a skill reads might contain
+    adversarial content if the file was created by an untrusted source. Skills that read then act on content
+    from untrusted sources carry an inherent injection risk that permission declarations alone cannot neutralize.
+  </p>
+
+  <h3 id="social-engineering">Social Engineering Through Skill Instructions</h3>
+
+  <p>
+    The validation pipeline checks that skill instructions don't contain embedded credentials or obviously
+    dangerous patterns. But it can't evaluate whether a skill's instructions, taken as a whole, constitute
+    social engineering. A skill that's technically well-formed but designed to manipulate Claude into
+    behavior that serves the skill author's interests over the user's would pass most automated checks.
+    This is a fundamentally human review problem, and automated tooling can only help at the margins.
+  </p>
+
+  <h3 id="namespace-escape">Namespace Escape Edge Cases</h3>
+
+  <p>
+    The <code>Bash(npm:*)</code> namespace is enforced by checking the command prefix. But <code>npm</code>
+    itself has features that can invoke other programs — <code>npm run</code> executes scripts defined in
+    <code>package.json</code>, and those scripts can be arbitrary shell commands. A <code>Bash(npm:*)</code>
+    constraint allows <code>npm run deploy</code>, which might invoke <code>terraform apply</code> under the
+    hood. The namespace constrains what Claude can directly invoke; it doesn't constrain what those invocations
+    do transitively.
+  </p>
+
+  <p>
+    This is a known limitation and not unique to this permission model — it's a fundamental property of how
+    shell namespacing works. Mitigating it fully would require sandboxing at the OS level, which is beyond
+    what the catalog can enforce for every runtime environment.
+  </p>
+
+  <h3 id="the-trust-model">The Underlying Trust Model</h3>
+
+  <p>
+    The permission system works within a trust model: Claude is assumed to follow its declared permissions
+    honestly, and skill authors are assumed to be trying to solve legitimate user problems. Both assumptions
+    are reasonable in most cases, and the catalog's review process and CI pipeline are designed to catch
+    deviations from the second assumption before they reach users.
+  </p>
+
+  <p>
+    But the model is not adversarial-proof. A determined, technically sophisticated actor who wanted to
+    sneak a malicious skill through review would face real obstacles — secret scanning, dangerous pattern
+    detection, structural validation, human review for featured skills. Those obstacles are meaningful. They're
+    just not a guarantee.
+  </p>
+
+  <blockquote>
+    The honest summary: the permission model makes malicious skills harder to write, easier to detect, and
+    limited in blast radius when they slip through. It does not make them impossible. The appropriate
+    response to that is vigilance and process, not paralysis.
+  </blockquote>
+
+  <p>
+    The current architecture — explicit permission declarations, namespaced Bash constraints, eight-field
+    plugin manifests, automated secret scanning, and post-build security validation across 315 plugins —
+    represents a deliberate and documented approach to shifting the security baseline. Understanding where
+    the boundaries are is part of using the system responsibly.
+  </p>
+
+</ResearchTemplate>

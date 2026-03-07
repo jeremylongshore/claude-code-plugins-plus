@@ -1,0 +1,471 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="Agent-Skill-Command Interaction Model"
+  description="The three content types in every plugin and how they coordinate at runtime. Patterns from 315 plugins."
+  domain="Multi-Agent Orchestration"
+  domainSlug="orchestration"
+  wordCount={3400}
+>
+
+  <p>
+    Every plugin in the ecosystem is built from some combination of three building blocks: skills, commands, and agents. They look similar on the surface — they're all Markdown files with YAML frontmatter — but they behave in completely different ways at runtime. Understanding the difference isn't just academic. It changes how you design plugins, where bugs hide, and why some plugins feel effortless while others require constant coaxing.
+  </p>
+
+  <p>
+    This analysis is based on 315 plugins across the ecosystem, covering 1,372 skills, hundreds of commands, and 44 agent definitions. The numbers tell a clear story about which patterns developers actually reach for — and which they avoid.
+  </p>
+
+  <h2 id="three-types-three-jobs">Three Types, Three Jobs</h2>
+
+  <p>
+    The easiest way to understand skills, commands, and agents is by asking a single question about each: <em>who decides when this runs?</em>
+  </p>
+
+  <p>
+    For a skill, Claude decides. For a command, the user decides. For an agent, another piece of the system decides — either a skill or a command that delegates work it can't handle alone.
+  </p>
+
+  <p>
+    That one distinction explains most of the behavioral differences you'll observe in production. Skills are ambient — they're always potentially active, waiting for Claude to recognize a situation that matches their description. Commands are on-demand — they only fire when someone types the slash command explicitly. Agents are specialized — they exist to handle a narrow class of tasks with dedicated context and permissions.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>File Location</th>
+        <th>Who Triggers It</th>
+        <th>Trigger Mechanism</th>
+        <th>Ecosystem Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Skills</strong></td>
+        <td><code>skills/[name]/SKILL.md</code></td>
+        <td>Claude (autonomous)</td>
+        <td>Description matching</td>
+        <td>1,372 total</td>
+      </tr>
+      <tr>
+        <td><strong>Commands</strong></td>
+        <td><code>commands/*.md</code></td>
+        <td>User (explicit)</td>
+        <td>Slash command invocation</td>
+        <td>231 plugins (52.3%)</td>
+      </tr>
+      <tr>
+        <td><strong>Agents</strong></td>
+        <td><code>agents/*.md</code></td>
+        <td>System (delegated)</td>
+        <td>Called by skill or command</td>
+        <td>44 plugins (10%)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    None of these types is inherently better than the others. They're designed for different situations, and the most interesting plugins use two or three of them in combination. But before getting to composition, it helps to understand each type in isolation.
+  </p>
+
+  <h2 id="how-skills-get-activated">How Skills Get Activated</h2>
+
+  <p>
+    A skill's activation mechanism is its <code>description</code> field in the YAML frontmatter. That's it. There's no registration step, no function call, no explicit trigger. Claude reads the description and decides whether the current situation matches.
+  </p>
+
+  <p>Here's what a typical skill's frontmatter looks like:</p>
+
+  <pre><code>---
+name: commit-message-writer
+description: |
+  Use this skill when writing or improving git commit messages.
+  Triggered by: committing changes, reviewing staged files,
+  drafting changelogs, or any request that involves summarizing
+  what changed in a codebase and why.
+allowed-tools: Read, Bash(git:*)
+version: 1.0.0
+author: Your Name &lt;you@example.com&gt;
+---</code></pre>
+
+  <p>
+    The description does two jobs simultaneously: it tells Claude when to activate the skill, and it tells the plugin author what situations the skill handles. A well-written description reads like a set of trigger conditions. A poorly written one reads like a marketing blurb — and it activates erratically as a result.
+  </p>
+
+  <blockquote>
+    <p>The description field is the most important line in a SKILL.md file. Everything else — tool permissions, instructions, examples — only matters if Claude decides to load the skill in the first place. A skill with a vague description is a skill that activates unpredictably or not at all.</p>
+  </blockquote>
+
+  <p>
+    The <code>allowed-tools</code> field is the second critical element. It declares exactly which tools the skill can use when it runs. This isn't just a security constraint — it's a signal to Claude about the skill's capabilities. A skill with <code>allowed-tools: Read</code> is clearly for analysis. A skill with <code>allowed-tools: Write, Edit, Bash</code> is clearly for making changes.
+  </p>
+
+  <p>
+    The ecosystem's most common allowed-tools combinations reveal how plugin authors think about skill scope:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Allowed-Tools Pattern</th>
+        <th>Typical Use Case</th>
+        <th>Prevalence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Read, Glob, Grep</code></td>
+        <td>Code analysis, search, review</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td><code>Read, Write, Edit</code></td>
+        <td>File generation, refactoring</td>
+        <td>High</td>
+      </tr>
+      <tr>
+        <td><code>Bash(git:*)</code></td>
+        <td>Git operations scoped to git commands</td>
+        <td>Moderate</td>
+      </tr>
+      <tr>
+        <td><code>Read, Write, Edit, Bash</code></td>
+        <td>Full-stack automation</td>
+        <td>Moderate</td>
+      </tr>
+      <tr>
+        <td><code>WebFetch, WebSearch</code></td>
+        <td>Research, documentation lookup</td>
+        <td>Lower</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    Skills are passive in the sense that they don't initiate anything. But once activated, they can be quite active — running commands, reading files, writing output. The "passive" label refers to activation, not capability.
+  </p>
+
+  <div class="data-point">
+    <strong>1,372 skills</strong> across 315 plugins. The average plugin with skills has roughly 4-5 skills, but the distribution is heavily skewed — SaaS packs and comprehensive developer tooling plugins account for much of the high end.
+  </div>
+
+  <h2 id="how-commands-get-invoked">How Commands Get Invoked</h2>
+
+  <p>
+    Commands are the opposite of skills in the most important way: the user is always in the loop. When someone types <code>/commit</code> or <code>/review-pr</code>, that's an explicit, intentional act. Nothing about the current context matters — the user has decided they want this specific behavior right now.
+  </p>
+
+  <p>
+    This explicitness is the entire point. Commands are for workflows where predictability matters more than automation. You don't want your code review process to trigger automatically based on vague context matching — you want to type <code>/review-pr</code> when you're ready to review, and have it work exactly as designed, every time.
+  </p>
+
+  <p>Command files look structurally similar to SKILL.md files:</p>
+
+  <pre><code>---
+name: review-pr
+description: Comprehensive pull request review with security and performance checks
+allowed-tools: Read, Bash(git:*), Glob, Grep
+---
+
+## PR Review Process
+
+1. Fetch the PR diff and changed files
+2. Analyze for security issues, performance regressions, and style violations
+3. Check test coverage for changed code
+4. Generate a structured review comment
+
+...</code></pre>
+
+  <p>
+    The frontmatter is nearly identical to a SKILL.md. The behavioral difference is entirely in how Claude Code handles the file — commands are registered as slash commands in the UI, while skills are loaded contextually. A user will see <code>/review-pr</code> in their command palette; they'll never see a skill name unless they go looking for it.
+  </p>
+
+  <p>
+    Over half the plugins in the ecosystem — 231 of 441, or 52.3% — include at least one command. This is the most common non-skill content type. Developers reach for commands when they have a workflow with a clear entry point that users should be able to invoke deliberately.
+  </p>
+
+  <div class="data-point">
+    <strong>52.3% of plugins</strong> (231 of 441) include commands. This makes commands the most common companion to skills — more than half of plugin authors decided their plugin needed at least one explicit user-invocable action in addition to automatic skill behavior.
+  </div>
+
+  <p>
+    The most popular command categories across the ecosystem cluster around a few workflow types: git operations (commit, PR review, changelog), code quality (lint, format, test), documentation (generate docs, update README), and project management (status, standup, retrospective). These are all situations where a user wants to say "do this thing now" rather than "be ready to do this thing when relevant."
+  </p>
+
+  <h2 id="how-agents-get-delegated-to">How Agents Get Delegated To</h2>
+
+  <p>
+    Agents are the rarest content type in the ecosystem by a significant margin. Only 44 plugins — about 10% — define agents. Understanding why requires understanding what agents are actually for.
+  </p>
+
+  <p>
+    An agent is a specialized worker with its own context, its own instructions, and often its own tool permissions. It gets called when a skill or command decides it needs focused expertise that's better handled in an isolated context. The key word is "isolated" — an agent gets a fresh context for its specific task, which means it's not contaminated by the broader conversation history.
+  </p>
+
+  <p>
+    Think of it this way: if a skill is a generalist who knows when to help, and a command is a workflow you invoke explicitly, an agent is a specialist you bring in for a particular part of the job. You wouldn't hire a specialist for every task — only for the ones where specialized context and focus are worth the overhead.
+  </p>
+
+  <p>
+    Agent definitions specify their own capabilities:
+  </p>
+
+  <pre><code>---
+name: security-reviewer
+description: Specialized agent for security analysis of code changes.
+  Called when a PR review or code analysis identifies security-relevant
+  patterns that require dedicated scrutiny.
+allowed-tools: Read, Glob, Grep, WebFetch
+model: sonnet
+---
+
+## Security Analysis Protocol
+
+You are a security specialist. Your job is to analyze the provided
+code for vulnerabilities, not to review style or architecture.
+
+Focus exclusively on:
+- Authentication and authorization flows
+- Input validation and sanitization
+- Secrets handling and exposure risks
+- Dependency vulnerability patterns
+...</code></pre>
+
+  <p>
+    Notice how the agent's instructions are narrow and focused. It's not trying to do a comprehensive code review — it's doing one specific thing well. That specialization is the entire justification for using an agent rather than just making the parent skill more capable.
+  </p>
+
+  <blockquote>
+    <p>Agents earn their complexity when two conditions hold: the subtask requires significantly different expertise from the parent workflow, and isolating that expertise in a fresh context produces meaningfully better results. If either condition is false, a well-scoped skill will serve you better.</p>
+  </blockquote>
+
+  <h2 id="the-runtime-interaction">The Runtime Interaction</h2>
+
+  <p>
+    Abstract explanations only go so far. The clearest way to understand how skills, commands, and agents coordinate is to trace a realistic example from start to finish.
+  </p>
+
+  <h3 id="example-pr-review-workflow">Example: A PR Review Workflow</h3>
+
+  <p>
+    Imagine a developer is working on a pull request. They've finished their changes and want a comprehensive review before requesting feedback from teammates. They type <code>/review-pr</code>.
+  </p>
+
+  <p><strong>Step 1: Command activation.</strong> The <code>/review-pr</code> command fires. Claude Code loads the command's instructions and begins executing the defined workflow. The command's first job is to gather context — what files changed, what the diff looks like, what tests exist. It uses its allowed tools (<code>Read, Bash(git:*), Glob, Grep</code>) to pull together this information.</p>
+
+  <p><strong>Step 2: Skill detection.</strong> As the command processes the diff, it encounters code patterns that match an active skill. The developer's plugin configuration includes a <code>security-patterns</code> skill whose description mentions activation when "reviewing code changes that touch authentication, session management, or external API calls." The diff touches an authentication flow. Claude recognizes the match and the skill becomes active for this part of the review.</p>
+
+  <p><strong>Step 3: Skill execution.</strong> The security-patterns skill runs within the command's workflow. It reads the changed files using <code>Read</code> and searches for known vulnerability patterns using <code>Grep</code>. It identifies two potential issues: a JWT verification path that might be bypassable, and a place where user input flows into a SQL query without parameterization.</p>
+
+  <p><strong>Step 4: Agent delegation.</strong> The skill recognizes that one of the identified issues — the JWT path — requires deeper analysis than it's set up to provide. The skill delegates to a <code>security-reviewer</code> agent, passing the specific code sections that need scrutiny. The agent runs in a fresh context with its narrow instructions, analyzes just the JWT verification flow, and returns a structured finding with severity rating and recommended fix.</p>
+
+  <p><strong>Step 5: Output assembly.</strong> Control returns to the <code>/review-pr</code> command, which now has input from the general diff analysis, the security skill's pattern findings, and the security agent's detailed JWT analysis. The command assembles these into a structured review: architecture observations, code quality notes, test coverage gaps, and a dedicated security section with the agent's findings highlighted.</p>
+
+  <div class="data-point">
+    <strong>The key insight from this flow:</strong> each layer handled what it was suited for. The command managed the overall workflow and user-facing structure. The skill recognized a domain-specific situation and applied specialized knowledge. The agent provided depth on a specific subtask without contaminating the broader review context. Remove any one layer and the review becomes either less capable or harder to predict.
+  </div>
+
+  <p>
+    This coordination isn't automatic or magical. It requires deliberate design. The command author has to decide what skills might be relevant to the workflow. The skill author has to define clear delegation criteria for when to involve an agent. The agent author has to scope the agent's context tightly enough that it actually improves results rather than just adding latency.
+  </p>
+
+  <h3 id="where-things-can-go-wrong">Where Things Can Go Wrong</h3>
+
+  <p>
+    The three-layer model introduces coordination points where things can break down. Understanding the failure modes is as important as understanding the happy path.
+  </p>
+
+  <p>
+    <strong>Over-activation of skills.</strong> If a skill's description is too broad, it activates when it shouldn't — injecting its instructions into contexts where they're irrelevant or actively unhelpful. A skill described as "use when working with code" will activate almost constantly, diluting Claude's context with instructions designed for a narrow situation.
+  </p>
+
+  <p>
+    <strong>Command-skill conflicts.</strong> When a command and a skill both try to handle the same aspect of a workflow, the results can be inconsistent. The command expects to own the process; the skill activates autonomously and modifies behavior. Avoiding this requires careful description scoping — skills should describe when they're needed, not what they can do.
+  </p>
+
+  <p>
+    <strong>Excessive agent delegation.</strong> Delegating to an agent has a cost: it consumes additional context and adds latency. If an agent is invoked for work that a skill could handle directly, the overhead isn't justified. The 90% of plugins that skip agents have decided — correctly, in most cases — that their workflows don't require that level of specialization.
+  </p>
+
+  <h2 id="why-most-plugins-skip-agents">Why Most Plugins Skip Agents</h2>
+
+  <p>
+    The 10% agent adoption rate isn't a sign that agents are niche or poorly understood. It's a sign that they solve a specific problem, and most plugins don't have that problem.
+  </p>
+
+  <p>
+    Agents make sense when you have a genuinely distinct subtask — something that requires different instructions, different tool permissions, and ideally a fresh context to work well. The operative word is "distinct." If you can handle the subtask with a skill whose description is narrower, that's almost always the right call. Skills have lower overhead, simpler mental models, and fewer coordination points.
+  </p>
+
+  <p>
+    The plugins that use agents tend to fall into a few categories:
+  </p>
+
+  <ul>
+    <li><strong>Comprehensive review workflows.</strong> PR review, code audit, security analysis — workflows that have a general phase and then a specialist phase where a different kind of thinking is needed.</li>
+    <li><strong>Multi-stage generation.</strong> Creating documentation that requires both technical analysis (reading the code) and writing (producing the docs) as distinct passes with different contexts.</li>
+    <li><strong>Research + synthesis.</strong> Gathering information from multiple sources (agent handles research) and then synthesizing it into an artifact (parent skill handles synthesis).</li>
+    <li><strong>Validation pipelines.</strong> Running checks where each check is narrow enough to benefit from isolated context — a security agent, a performance agent, a style agent — rather than a single skill trying to do all three.</li>
+  </ul>
+
+  <p>
+    What these use cases share is a clear boundary between subtasks. When you can draw a clean line between "this part needs these tools and these instructions" and "that part needs those tools and those instructions," an agent might be worth it. When the workflow is more continuous — where skills naturally hand off to each other without needing isolated context — agents add complexity without adding value.
+  </p>
+
+  <div class="data-point">
+    <strong>Only 25 plugins (5.7%)</strong> include all three content types: skills, commands, and agents. These are the most sophisticated plugins in the ecosystem — comprehensive toolkits designed around complex, multi-phase workflows. Studying them reveals the full expressiveness of the plugin system, but they're not a template for most use cases.
+  </div>
+
+  <h2 id="design-recommendations">Design Recommendations</h2>
+
+  <p>
+    The data from 315 plugins points toward a consistent progression. Plugins that work well tend to follow the same pattern in how they incorporate these three content types.
+  </p>
+
+  <h3 id="start-with-skills">Start With Skills</h3>
+
+  <p>
+    Every plugin that does anything should start with one or more skills. Skills are the ambient layer — they make Claude smarter in the domains your plugin covers without requiring any user action. A well-crafted skill with a precise description and appropriate tool permissions handles the common case elegantly.
+  </p>
+
+  <p>
+    Write the description before writing the instructions. Ask: "What will a user be doing when this skill should activate?" Express those scenarios in plain language. Then write instructions that handle those scenarios well.
+  </p>
+
+  <p>
+    If your plugin covers multiple distinct domains, give each one its own skill file. Don't bundle everything into a single SKILL.md — a monolithic skill with a broad description is worse than several focused skills with precise descriptions.
+  </p>
+
+  <h3 id="add-commands-for-explicit-entry-points">Add Commands for Explicit Entry Points</h3>
+
+  <p>
+    Once your skills are working well, look for workflows that users should be able to invoke explicitly — things where "do this now, on demand" is more useful than "do this when you think it's relevant." Those are command candidates.
+  </p>
+
+  <p>
+    Good commands have clear names that describe an action (<code>/commit</code>, <code>/review-pr</code>, <code>/generate-docs</code>). They represent workflows with obvious start and end points. They're things users would type deliberately, not things that should happen automatically.
+  </p>
+
+  <p>
+    Don't add commands just because you can. If a skill handles the use case well autonomously, a parallel command adds cognitive load without adding capability. The question to ask is: "Would a user ever want to invoke this explicitly, separate from the AI's judgment about when it's relevant?" If yes, add a command.
+  </p>
+
+  <h3 id="agents-only-for-complex-delegation">Agents Only for Complex Delegation</h3>
+
+  <p>
+    Agents are for situations where isolated context genuinely improves results. Before adding an agent, ask: "Is this subtask distinct enough — in terms of instructions, tools, and required focus — that isolating it in a fresh context will produce meaningfully better output?" If you're not confident the answer is yes, it probably isn't.
+  </p>
+
+  <p>
+    If you do add agents, keep their scope narrow. An agent that's trying to do too much will produce the same inconsistency as a skill with a vague description. Agents work best when they have a single clear responsibility and clear input/output contracts.
+  </p>
+
+  <p>
+    Document the delegation criteria explicitly in both the parent skill or command and the agent itself. Both sides of the delegation should express the same understanding of when delegation happens and what the agent is expected to produce.
+  </p>
+
+  <h3 id="composition-patterns-that-work">Composition Patterns That Work</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Pattern</th>
+        <th>Content Types</th>
+        <th>Best For</th>
+        <th>Prevalence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Skills only</td>
+        <td>Skills</td>
+        <td>Domain expertise that enhances ambient behavior</td>
+        <td>Most common for focused plugins</td>
+      </tr>
+      <tr>
+        <td>Skills + Commands</td>
+        <td>Skills, Commands</td>
+        <td>Plugins with both ambient and on-demand workflows</td>
+        <td>203 plugins (46.1%)</td>
+      </tr>
+      <tr>
+        <td>Commands only</td>
+        <td>Commands</td>
+        <td>Pure workflow tools — no ambient activation needed</td>
+        <td>Less common</td>
+      </tr>
+      <tr>
+        <td>Full stack</td>
+        <td>Skills, Commands, Agents</td>
+        <td>Complex multi-phase workflows with specialist subtasks</td>
+        <td>25 plugins (5.7%)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The skills-plus-commands pattern at 46.1% is the sweet spot for most serious plugins. It gives you ambient enhancement through skills and explicit control through commands, without the coordination overhead of agents. Most plugin authors who've shipped production-quality plugins land here.
+  </p>
+
+  <h2 id="the-numbers">The Numbers</h2>
+
+  <p>
+    To close, here's the complete picture of how each content type is adopted across the ecosystem. These figures come from analysis of 315 plugins actively maintained in the marketplace.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th>Skills</th>
+        <th>Commands</th>
+        <th>Agents</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Total instances</td>
+        <td>1,372</td>
+        <td>Hundreds across 231 plugins</td>
+        <td>Dozens across 44 plugins</td>
+      </tr>
+      <tr>
+        <td>Plugin adoption rate</td>
+        <td>Dominant content type</td>
+        <td>52.3% of plugins</td>
+        <td>10.0% of plugins</td>
+      </tr>
+      <tr>
+        <td>Avg per plugin (adopters)</td>
+        <td>~4-5 skills</td>
+        <td>Typically 2-5 commands</td>
+        <td>Typically 1-3 agents</td>
+      </tr>
+      <tr>
+        <td>Combined with all three</td>
+        <td colspan="3" style="text-align:center">25 plugins (5.7%)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="data-point">
+    <strong>The takeaway in one sentence:</strong> skills are the foundation, commands are the interface, and agents are the specialists — and most excellent plugins need only the first two.
+  </div>
+
+  <p>
+    The progression from skills to commands to agents maps roughly to workflow complexity. Simple plugins that enhance Claude's domain knowledge stay at the skills layer. Plugins that offer user-facing workflows add commands. Plugins that orchestrate multi-phase processes with distinct specialist subtasks add agents. Each step is justified by the use case — not added because the capability exists.
+  </p>
+
+  <p>
+    This is the design principle the ecosystem has converged on through practice rather than prescription. The 5.7% of plugins that use all three content types didn't start there — they grew into that complexity as their workflows demanded it. Starting simple and adding complexity only when forced to by genuine requirements is how the best plugins in the ecosystem were built.
+  </p>
+
+  <hr />
+
+  <p>
+    The interaction model described here is based on the 2026 SKILL.md spec and the current plugin structure for Claude Code. As the platform evolves, the coordination mechanisms between content types may change — but the underlying principle of separating ambient expertise (skills), explicit control (commands), and specialized delegation (agents) is likely to remain stable.
+  </p>
+
+</ResearchTemplate>

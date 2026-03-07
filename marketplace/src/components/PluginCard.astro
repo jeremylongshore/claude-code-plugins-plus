@@ -137,7 +137,7 @@ const colorClass = categoryColors[category] || 'category-neutral';
       )}
       <button
         class="install-btn"
-        onclick={`navigator.clipboard.writeText('${installation}').then(() => { const btn = this; const orig = btn.innerHTML; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" /></svg> Copied!'; setTimeout(() => btn.innerHTML = orig, 2000); })`}
+        onclick={`navigator.clipboard.writeText('${installation}').then(() => { const btn = this; const orig = btn.innerHTML; btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 01.208 1.04l-9 13.5a.75.75 0 01-1.154.114l-6-6a.75.75 0 011.06-1.06l5.353 5.353 8.493-12.739a.75.75 0 011.04-.208z" clip-rule="evenodd" /></svg> Copied!'; setTimeout(() => btn.innerHTML = orig, 2000); if(window.trackEvent) window.trackEvent("install_copied",{plugin_name:"${name}",source:"plugin_card"}); })`}
       >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
           <path d="M7.5 3.375c0-1.036.84-1.875 1.875-1.875h.375a3.75 3.75 0 013.75 3.75v1.875C13.5 8.161 14.34 9 15.375 9h1.875A3.75 3.75 0 0121 12.75v3.375C21 17.16 20.16 18 19.125 18h-9.75A1.875 1.875 0 017.5 16.125V3.375z" />

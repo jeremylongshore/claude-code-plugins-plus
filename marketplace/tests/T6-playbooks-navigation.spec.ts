@@ -108,13 +108,13 @@ test.describe('Playbooks Navigation (Real-world Scenarios)', () => {
     test('should click every playbook link found on index page', async ({ page }) => {
       await page.goto('/playbooks');
 
-      // Get all playbook hrefs from the page
-      const links = await page.locator('a[href^="/playbooks/"][href$="/"]').all();
+      // Get all playbook hrefs from the page (links don't have trailing slashes)
+      const links = await page.locator('a[href^="/playbooks/"]').all();
       const hrefs: string[] = [];
 
       for (const link of links) {
         const href = await link.getAttribute('href');
-        if (href && href !== '/playbooks/' && !hrefs.includes(href)) {
+        if (href && href !== '/playbooks' && href !== '/playbooks/' && !hrefs.includes(href)) {
           hrefs.push(href);
         }
       }

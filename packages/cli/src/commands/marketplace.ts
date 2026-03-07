@@ -96,7 +96,7 @@ function showMarketplaceInfo(isInstalled: boolean): void {
 
   console.log(chalk.gray('Repository:  ') + chalk.cyan(MARKETPLACE_REPO));
   console.log(chalk.gray('Slug:        ') + chalk.cyan(MARKETPLACE_SLUG));
-  console.log(chalk.gray('Website:     ') + chalk.cyan('https://claudecodeplugins.io'));
+  console.log(chalk.gray('Website:     ') + chalk.cyan('https://tonsofskills.com'));
   console.log(chalk.gray('Plugins:     ') + chalk.cyan('258 across 18 categories\n'));
 
   console.log(chalk.bold('📂 Plugin Categories:\n'));
@@ -110,7 +110,7 @@ function showMarketplaceInfo(isInstalled: boolean): void {
     console.log(chalk.bold('🚀 Next Steps:\n'));
     console.log(chalk.gray('1. Search for plugins:  ') + chalk.cyan('ccpi search <keyword>'));
     console.log(chalk.gray('2. Install a plugin:    ') + chalk.cyan('ccpi install <name>'));
-    console.log(chalk.gray('3. Browse all plugins:  ') + chalk.cyan('https://claudecodeplugins.io\n'));
+    console.log(chalk.gray('3. Browse all plugins:  ') + chalk.cyan('https://tonsofskills.com\n'));
   } else {
     console.log(chalk.bold('🚀 After Setup:\n'));
     console.log(chalk.gray('Run `ccpi search <keyword>` to find plugins'));

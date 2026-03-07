@@ -1,6 +1,7 @@
 name: Validate Plugins
 
 on:
+  workflow_dispatch:
   pull_request:
     paths:
       - 'plugins/**'
@@ -316,11 +317,9 @@ jobs:
           fi
 
           # Install dependencies from plugin requirements.txt files
-          for req in plugins/mcp/*/requirements.txt; do
-            if [ -f "$req" ]; then
-              echo "Installing deps from $req"
-              pip install -r "$req" || true
-            fi
+          find plugins/ -name "requirements.txt" | while read req; do
+            echo "Installing deps from $req"
+            pip install -r "$req" || true
           done
 
           # Install additional testing tools
@@ -592,6 +591,47 @@ jobs:
           name: test-videos
           path: marketplace/test-results/**/video.webm
           retention-days: 7
+
+  # Production E2E Tests (live site — no build needed)
+  production-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Install marketplace dependencies
+        run: |
+          cd marketplace
+          npm install --ignore-scripts
+
+      - name: Install Playwright
+        run: |
+          cd marketplace
+          npm install -D @playwright/test
+
+      - name: Install Playwright browsers
+        run: |
+          cd marketplace
+          npx playwright install --with-deps chromium webkit
+
+      - name: Run production E2E tests
+        run: |
+          cd marketplace
+          npx playwright test --config=playwright.production.config.ts --reporter=html,github
+        env:
+          CI: true
+
+      - name: Upload production E2E report
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: production-e2e-report
+          path: marketplace/production-e2e-report/
+          retention-days: 30
 
   # CLI Smoke Tests (EPIC D - D3)
   cli-smoke-tests:

@@ -1,7 +1,7 @@
 {
   "name": "@intentsolutionsio/ccpi",
   "version": "2.0.0",
-  "description": "Command-line tool for installing and managing Claude Code plugins from claudecodeplugins.io",
+  "description": "Command-line tool for installing and managing Claude Code plugins from tonsofskills.com",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -35,7 +35,7 @@
     "url": "https://github.com/jeremylongshore/claude-code-plugins.git",
     "directory": "packages/cli"
   },
-  "homepage": "https://claudecodeplugins.io",
+  "homepage": "https://tonsofskills.com",
   "bugs": {
     "url": "https://github.com/jeremylongshore/claude-code-plugins/issues"
   },

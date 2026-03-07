@@ -48,240 +48,84 @@ const totalCategories = searchIndex.stats.categories.length;
             z-index: 1000;
         }
 
-        /* Hero Section */
+        /* ========================================
+           HERO — minimal, centered, dark
+           ======================================== */
         .hero {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
             justify-content: center;
-            padding: 8rem 4rem 4rem;
+            text-align: center;
+            padding: 8rem 2rem 5rem;
             position: relative;
         }
 
-        .hero-badge {
-            display: inline-flex;
+        .hero-inner {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            background: var(--brand-light-gray);
-            border: 1px solid rgba(217, 119, 87, 0.25);
-            padding: 0.5rem 1rem;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: var(--brand-orange-dark);
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s var(--transition-smooth) forwards;
-            opacity: 0;
-            font-family: 'Poppins', Arial, sans-serif;
+            gap: 0;
         }
 
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--brand-orange);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
+        /* H1 — Bebas Neue, huge, gold gradient */
         .hero h1 {
-            font-size: clamp(3rem, 8vw, 5.5rem);
-            font-weight: 700;
-            line-height: 1.08;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.1s forwards;
-            opacity: 0;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            font-family: 'Bebas Neue', 'Arial Black', sans-serif;
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 400;
+            line-height: 0.95;
+            letter-spacing: 0.05em;
+            margin: 0 0 1.5rem;
+            background: linear-gradient(135deg, var(--gold) 0%, #F5C842 50%, var(--gold) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
         }
 
+        /* Subtitle */
         .hero-subtitle {
-            font-family: 'Lora', Georgia, serif;
-            font-size: clamp(1.15rem, 2.5vw, 1.5rem);
-            color: var(--brand-mid-gray);
-            max-width: 680px;
-            margin-bottom: 2rem;
-            font-style: italic;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.2s forwards;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-2);
+            max-width: 500px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
             opacity: 0;
         }
 
-        /* Hero Partners Badge */
-        .hero-partners {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.75rem;
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.25s forwards;
-            opacity: 0;
-        }
-
-        .hero-partners-label {
-            font-family: 'Poppins', Arial, sans-serif;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: var(--brand-mid-gray);
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-
-        .partner-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1rem;
-            background: var(--brand-dark);
-            border-radius: 8px;
-            color: var(--brand-orange);
-            transition: all 0.3s ease;
-        }
-
-        .partner-badge:hover {
-            background: var(--brand-orange);
-            color: white;
-            transform: translateY(-2px);
-        }
-
-        /* Stats bar */
-        .stats-bar {
-            display: flex;
-            gap: 3rem;
-            margin-bottom: 3rem;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.25s forwards;
-            opacity: 0;
-        }
-
-        .stat-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stats-number {
-            font-family: 'Poppins', Arial, sans-serif;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--brand-orange);
-            line-height: 1;
-        }
-
-        .stat-label {
-            font-family: 'Lora', Georgia, serif;
-            font-size: 0.9rem;
-            color: var(--brand-mid-gray);
-        }
-
-        .hero-cta-group {
-            display: flex;
-            gap: 1rem;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.3s forwards;
-            opacity: 0;
-        }
-
-        .btn-primary {
-            font-family: 'Poppins', Arial, sans-serif;
-            background: var(--brand-orange);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: all 0.3s var(--transition-smooth);
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-primary:hover {
-            background: var(--brand-orange-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 12px 40px rgba(217, 119, 87, 0.35);
-        }
-
-        .btn-secondary {
-            font-family: 'Poppins', Arial, sans-serif;
-            background: transparent;
-            color: var(--brand-dark);
-            padding: 1rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.95rem;
-            border: 2px solid var(--brand-dark);
-            transition: all 0.3s var(--transition-smooth);
-        }
-
-        .btn-secondary:hover {
-            background: var(--brand-dark);
-            color: var(--brand-light);
-        }
-
-        /* Installation box */
-        .install-box {
-            margin-top: 3rem;
-            padding: 1.5rem;
-            background: var(--brand-dark);
-            border-radius: 12px;
-            max-width: fit-content;
-            animation: fadeInUp 0.8s var(--transition-smooth) 0.35s forwards;
-            opacity: 0;
-        }
-
-        .install-label {
-            font-family: 'Poppins', Arial, sans-serif;
-            color: var(--brand-mid-gray);
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 0.5rem;
-        }
-
-        .install-command {
-            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            color: var(--brand-light);
-            font-size: 0.95rem;
-            user-select: all;
-            cursor: pointer;
-        }
-
-        /* Hero Search Bar */
+        /* Search */
         .hero-search {
             width: 100%;
-            max-width: 700px;
-            margin: 2rem auto 3rem;
+            max-width: 640px;
+            margin: 0 auto 2.5rem;
             position: relative;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+            opacity: 0;
         }
 
         .search-container {
             position: relative;
-            background: white;
-            border: 2px solid var(--brand-light-gray);
+            background: var(--surface-2);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(20, 20, 19, 0.08);
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease;
             cursor: pointer;
         }
 
         .search-container:hover {
-            border-color: var(--brand-orange);
-            box-shadow: 0 6px 25px rgba(217, 119, 87, 0.12);
+            border-color: var(--gold);
         }
 
         .search-container:focus-within {
-            border-color: var(--brand-orange);
-            box-shadow: 0 8px 30px rgba(217, 119, 87, 0.15);
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(234, 170, 0, 0.12);
         }
 
         .search-icon {
@@ -289,17 +133,18 @@ const totalCategories = searchIndex.stats.categories.length;
             left: 1.25rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
             pointer-events: none;
         }
 
         .search-input {
             width: 100%;
-            padding: 1.25rem 3rem 1.25rem 3.5rem; /* Reduced right padding from 15rem to 3rem */
+            padding: 1.15rem 3rem 1.15rem 3.5rem;
             border: none;
             background: transparent;
-            font-size: 1.1rem;
-            color: var(--brand-dark);
+            font-size: 1rem;
+            font-family: 'DM Sans', sans-serif;
+            color: var(--text);
             outline: none;
         }
 
@@ -311,7 +156,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .search-input::placeholder {
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
         }
 
         .search-toggle {
@@ -319,16 +164,15 @@ const totalCategories = searchIndex.stats.categories.length;
             right: 0.75rem;
             top: 50%;
             transform: translateY(-50%);
-            display: none; /* Hidden on mobile by default */
+            display: none;
             gap: 0.5rem;
-            background: var(--brand-light-gray);
+            background: var(--surface-3);
             padding: 0.25rem;
             border-radius: 8px;
             z-index: 10;
             pointer-events: auto;
         }
 
-        /* Show toggle buttons on larger screens */
         @media (min-width: 640px) {
             .search-toggle {
                 display: flex;
@@ -339,7 +183,8 @@ const totalCategories = searchIndex.stats.categories.length;
             padding: 0.5rem 1rem;
             border: none;
             background: transparent;
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
+            font-family: 'DM Sans', sans-serif;
             font-size: 0.875rem;
             font-weight: 500;
             border-radius: 6px;
@@ -348,14 +193,12 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .toggle-btn:hover {
-            background: rgba(255,255,255,0.7);
-            color: var(--brand-dark);
+            color: var(--text);
         }
 
         .toggle-btn.active {
-            background: white;
-            color: var(--brand-orange);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            background: var(--surface-1);
+            color: var(--gold);
         }
 
         .search-results {
@@ -363,10 +206,10 @@ const totalCategories = searchIndex.stats.categories.length;
             top: calc(100% + 0.5rem);
             left: 0;
             right: 0;
-            background: white;
-            border: 2px solid var(--brand-light-gray);
+            background: var(--surface-2);
+            border: 1.5px solid var(--border);
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(20, 20, 19, 0.12);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
             max-height: 400px;
             overflow-y: auto;
             z-index: 100;
@@ -378,9 +221,9 @@ const totalCategories = searchIndex.stats.categories.length;
 
         .search-result-item {
             padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--brand-light-gray);
+            border-bottom: 1px solid var(--border);
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: background 0.15s ease;
             text-decoration: none;
             display: block;
             color: inherit;
@@ -391,7 +234,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .search-result-item:hover {
-            background: var(--brand-light);
+            background: var(--surface-3);
         }
 
         .result-type-badge {
@@ -402,28 +245,30 @@ const totalCategories = searchIndex.stats.categories.length;
             font-weight: 600;
             text-transform: uppercase;
             margin-bottom: 0.5rem;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.05em;
         }
 
         .result-type-badge.plugin {
-            background: rgba(106, 155, 204, 0.1);
+            background: rgba(68, 147, 248, 0.15);
             color: var(--brand-blue);
         }
 
         .result-type-badge.skill {
-            background: rgba(217, 119, 87, 0.1);
-            color: var(--brand-orange);
+            background: rgba(234, 170, 0, 0.15);
+            color: var(--gold);
         }
 
         .result-name {
             font-size: 1rem;
             font-weight: 600;
-            color: var(--brand-dark);
+            color: var(--text);
             margin: 0.25rem 0;
         }
 
         .result-description {
             font-size: 0.875rem;
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             margin: 0.25rem 0;
             line-height: 1.4;
         }
@@ -434,81 +279,88 @@ const totalCategories = searchIndex.stats.categories.length;
             margin-top: 0.5rem;
         }
 
-        /* Floating code block decoration */
-        .hero-decoration {
-            position: absolute;
-            right: 4rem;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 480px;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(-50%); }
-            50% { transform: translateY(calc(-50% - 20px)); }
-        }
-
-        .code-window {
-            background: var(--brand-dark);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 30px 80px rgba(20, 20, 19, 0.2);
-        }
-
-        .code-header {
-            padding: 1rem 1.25rem;
-            background: rgba(255,255,255,0.05);
+        /* Stats bar */
+        .stats-bar {
             display: flex;
-            gap: 0.5rem;
+            gap: 3rem;
+            justify-content: center;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            opacity: 0;
         }
 
-        .code-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: var(--brand-orange);
-            opacity: 0.9;
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
         }
 
-        .code-dot:nth-child(2) { background: var(--brand-blue); }
-        .code-dot:nth-child(3) { background: var(--brand-green); }
-
-        .code-content {
-            padding: 1.5rem;
-            font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
-            font-size: 0.85rem;
-            color: var(--brand-light-gray);
-            line-height: 1.8;
+        .stats-number {
+            font-family: 'DM Mono', monospace;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold);
+            line-height: 1;
         }
 
-        .code-comment { color: var(--brand-mid-gray); }
-        .code-keyword { color: var(--brand-orange); }
-        .code-string { color: var(--brand-green); }
-        .code-function { color: var(--brand-blue); }
+        .stat-label {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-3);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        /* Install box */
+        .install-box {
+            width: 100%;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--surface-2);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+            opacity: 0;
+        }
+
+        .install-label {
+            font-family: 'DM Mono', monospace;
+            color: var(--text-3);
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 0.5rem;
+        }
+
+        .install-command {
+            font-family: 'DM Mono', 'SF Mono', 'Fira Code', monospace;
+            color: var(--text);
+            font-size: 0.95rem;
+            user-select: all;
+            cursor: pointer;
+        }
 
         @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(24px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Features Section */
+        /* ========================================
+           FEATURES SECTION
+           ======================================== */
         .features {
             padding: 8rem 4rem;
-            background: white;
+            background: var(--surface);
         }
 
         .section-label {
-            font-family: 'Poppins', Arial, sans-serif;
-            color: var(--brand-orange);
-            font-size: 0.8rem;
-            font-weight: 600;
+            font-family: 'DM Mono', monospace;
+            color: var(--gold);
+            font-size: 0.75rem;
+            font-weight: 500;
             letter-spacing: 0.15em;
             text-transform: uppercase;
             margin-bottom: 1rem;
@@ -521,6 +373,7 @@ const totalCategories = searchIndex.stats.categories.length;
             margin-bottom: 4rem;
             max-width: 700px;
             line-height: 1.2;
+            color: var(--text);
         }
 
         .features-grid {
@@ -531,9 +384,10 @@ const totalCategories = searchIndex.stats.categories.length;
 
         .feature-card {
             padding: 2.5rem;
-            background: var(--brand-light);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
             border-radius: 16px;
-            transition: all 0.4s var(--transition-smooth);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
             text-align: center;
@@ -545,16 +399,17 @@ const totalCategories = searchIndex.stats.categories.length;
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--brand-orange) 0%, var(--brand-blue) 100%);
+            height: 3px;
+            background: linear-gradient(90deg, var(--gold) 0%, var(--red) 100%);
             transform: scaleX(0);
             transform-origin: left;
-            transition: transform 0.4s var(--transition-smooth);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 60px rgba(217, 119, 87, 0.12);
+            transform: translateY(-6px);
+            border-color: var(--border-bright);
+            box-shadow: 0 16px 48px rgba(234, 170, 0, 0.08);
         }
 
         .feature-card:hover::before {
@@ -568,29 +423,31 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .feature-card h3 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            color: var(--brand-dark);
+            color: var(--text);
         }
 
         .feature-card p {
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             line-height: 1.7;
             margin: 0;
         }
 
-        /* Client Showcase */
+        /* ========================================
+           CLIENT SHOWCASE
+           ======================================== */
         .client-showcase {
-            background: var(--brand-dark);
+            background: var(--surface-1);
             padding: 3rem 0;
             overflow: hidden;
         }
 
         .client-showcase-label {
-            font-family: 'Poppins', Arial, sans-serif;
+            font-family: 'DM Mono', monospace;
             text-align: center;
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
             font-size: 0.75rem;
             font-weight: 500;
             letter-spacing: 0.15em;
@@ -622,7 +479,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .client-logo {
-            opacity: 0.8;
+            opacity: 0.6;
             transition: opacity 0.3s;
         }
 
@@ -635,75 +492,12 @@ const totalCategories = searchIndex.stats.categories.length;
             to { transform: translateX(-50%); }
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 1024px) {
-            .hero-decoration {
-                display: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .hero {
-                padding: 6rem 2rem 2rem;
-                min-height: auto;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .features {
-                padding: 4rem 2rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-
-            .hero-cta-group {
-                flex-direction: column;
-            }
-
-            .stats-bar {
-                gap: 1.5rem;
-                flex-wrap: wrap;
-            }
-
-            .install-box {
-                max-width: 100%;
-            }
-
-            .install-command {
-                font-size: 0.75rem;
-                word-break: break-all;
-                overflow-wrap: break-word;
-                white-space: pre-wrap; /* Allow wrapping while preserving structure */
-                max-width: 100%; /* Constrain to parent width */
-            }
-
-            /* Mobile search toggle fixes - iOS Safari 44px touch targets */
-            .toggle-btn {
-                padding: 0.75rem 1.25rem;
-                font-size: 0.9375rem;
-            }
-
-            .search-toggle {
-                gap: 0.375rem;
-                padding: 0.375rem;
-            }
-
-            .hero-cta-group {
-                gap: 1rem;
-            }
-        }
-
         /* ========================================
            SAAS SKILL PACKS SECTION
            ======================================== */
         .saas-packs-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            background: linear-gradient(135deg, var(--red) 0%, #8B0A2D 100%);
         }
 
         .saas-packs-container {
@@ -726,6 +520,7 @@ const totalCategories = searchIndex.stats.categories.length;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: inline-block;
+            font-family: 'DM Mono', monospace;
         }
 
         .saas-title {
@@ -750,8 +545,8 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .saas-card {
-            background: white;
-            border: 1px solid var(--brand-light-gray);
+            background: var(--surface-1);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 1.5rem;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -759,7 +554,7 @@ const totalCategories = searchIndex.stats.categories.length;
 
         .saas-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
         }
 
         .saas-card-header {
@@ -780,7 +575,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .saas-card h3 {
-            color: var(--brand-dark);
+            color: var(--text);
             margin: 0;
             font-size: 1.2rem;
         }
@@ -788,11 +583,12 @@ const totalCategories = searchIndex.stats.categories.length;
         .saas-tier {
             font-size: 0.85rem;
             font-weight: 600;
-            color: var(--brand-orange);
+            color: var(--gold);
+            font-family: 'DM Mono', monospace;
         }
 
         .saas-desc {
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             font-size: 0.9rem;
             margin-bottom: 1rem;
             line-height: 1.5;
@@ -805,32 +601,35 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .saas-cmd {
-            background: var(--brand-light-gray);
+            background: var(--surface-2);
             padding: 0.5rem 0.75rem;
             border-radius: 6px;
             font-size: 0.8rem;
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             cursor: pointer;
             transition: background 0.2s;
             border: none;
+            font-family: 'DM Mono', monospace;
+            text-align: left;
         }
 
         .saas-cmd:hover {
-            background: var(--brand-light);
+            background: var(--surface-3);
         }
 
         .saas-cmd.primary {
-            background: var(--brand-dark);
-            color: var(--brand-orange);
+            background: rgba(234, 170, 0, 0.1);
+            color: var(--gold);
+            border: 1px solid rgba(234, 170, 0, 0.2);
         }
 
         .saas-cmd.primary:hover {
-            background: #1a1a19;
+            background: rgba(234, 170, 0, 0.18);
         }
 
         .saas-card.coming-soon {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px dashed rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -850,7 +649,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .saas-card.coming-soon p {
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             font-size: 0.85rem;
             margin: 0;
         }
@@ -864,19 +663,19 @@ const totalCategories = searchIndex.stats.categories.length;
             align-items: center;
             gap: 0.5rem;
             background: white;
-            color: var(--brand-orange-dark);
+            color: #8B0A2D;
             padding: 0.875rem 1.75rem;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             font-size: 1rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             transition: transform 0.2s, box-shadow 0.2s;
         }
 
         .saas-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -894,7 +693,7 @@ const totalCategories = searchIndex.stats.categories.length;
            ======================================== */
         .cowork-home-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #141413 0%, #c45e3e 50%, #d97757 100%);
+            background: linear-gradient(135deg, var(--navy) 0%, var(--red) 50%, #8B0A2D 100%);
         }
 
         .cowork-home-container {
@@ -913,6 +712,7 @@ const totalCategories = searchIndex.stats.categories.length;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             display: inline-block;
+            font-family: 'DM Mono', monospace;
         }
 
         .cowork-home-title {
@@ -939,27 +739,27 @@ const totalCategories = searchIndex.stats.categories.length;
             align-items: center;
             gap: 0.75rem;
             background: white;
-            color: #c45e3e;
+            color: var(--navy);
             padding: 1.2rem 3rem;
             border-radius: 12px;
             font-weight: 700;
             text-decoration: none;
             font-size: 1.25rem;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 24px rgba(196, 94, 62, 0.3);
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
             animation: cowork-pulse 2.5s ease-in-out infinite;
         }
 
         .cowork-home-button:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 32px rgba(196, 94, 62, 0.45);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
             animation: none;
         }
 
         @keyframes cowork-pulse {
-            0%, 100% { box-shadow: 0 4px 24px rgba(196, 94, 62, 0.3); }
-            50% { box-shadow: 0 4px 36px rgba(196, 94, 62, 0.55); }
+            0%, 100% { box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 4px 36px rgba(0, 0, 0, 0.5); }
         }
 
         @media (max-width: 768px) {
@@ -973,7 +773,7 @@ const totalCategories = searchIndex.stats.categories.length;
            ======================================== */
         .products-section {
             padding: 4rem 2rem;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+            background: var(--surface);
         }
 
         .products-grid {
@@ -985,8 +785,8 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 2rem;
             position: relative;
@@ -1007,7 +807,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-card.service-card::before {
-            background: linear-gradient(90deg, #22c55e, #4ade80);
+            background: linear-gradient(90deg, var(--positive), #4ade80);
         }
 
         .product-card:hover {
@@ -1017,8 +817,8 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-card.service-card:hover {
-            border-color: rgba(34, 197, 94, 0.3);
-            box-shadow: 0 12px 40px rgba(34, 197, 94, 0.1);
+            border-color: rgba(63, 185, 80, 0.3);
+            box-shadow: 0 12px 40px rgba(63, 185, 80, 0.1);
         }
 
         .product-card:hover::before {
@@ -1026,7 +826,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-card h3 {
-            color: white;
+            color: var(--text);
             font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
@@ -1046,21 +846,22 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .service-card .product-price .amount {
-            color: #22c55e;
+            color: var(--positive);
         }
 
         .product-price .label {
             font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.5);
+            color: var(--text-3);
             text-transform: uppercase;
             letter-spacing: 0.05em;
             background: rgba(249, 115, 22, 0.15);
             padding: 2px 8px;
             border-radius: 4px;
+            font-family: 'DM Mono', monospace;
         }
 
         .service-card .product-price .label {
-            background: rgba(34, 197, 94, 0.15);
+            background: rgba(63, 185, 80, 0.15);
         }
 
         .product-features {
@@ -1070,7 +871,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-features li {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--text-2);
             font-size: 0.9rem;
             padding: 0.4rem 0;
             padding-left: 1.5rem;
@@ -1086,7 +887,7 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .service-card .product-features li::before {
-            color: #22c55e;
+            color: var(--positive);
         }
 
         .product-cta {
@@ -1111,16 +912,62 @@ const totalCategories = searchIndex.stats.categories.length;
         }
 
         .product-cta.service-cta {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
+            background: linear-gradient(135deg, var(--positive), #16a34a);
         }
 
         .product-cta.service-cta:hover {
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 4px 20px rgba(63, 185, 80, 0.4);
         }
 
         @media (max-width: 768px) {
             .products-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        /* ========================================
+           MOBILE RESPONSIVE
+           ======================================== */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1.5rem 3rem;
+                min-height: auto;
+            }
+
+            .features {
+                padding: 4rem 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .stats-bar {
+                gap: 2rem;
+                flex-wrap: wrap;
+            }
+
+            .install-box {
+                padding: 1.5rem;
+            }
+
+            .install-command {
+                font-size: 0.8rem;
+                word-break: break-all;
+                overflow-wrap: break-word;
+                white-space: pre-wrap;
+                max-width: 100%;
+            }
+
+            .toggle-btn {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.9375rem;
+            }
+
+            .search-toggle {
+                gap: 0.375rem;
+                padding: 0.375rem;
             }
         }
     </style>
@@ -1132,12 +979,12 @@ const totalCategories = searchIndex.stats.categories.length;
       "@type": "WebSite",
       "name": "Claude Code Plugins Marketplace",
       "description": "Search agent skills with fuzzy search. Browse plugins. Interactive tutorials and production workflows.",
-      "url": "https://claudecodeplugins.io",
+      "url": "https://tonsofskills.com",
       "potentialAction": {
         "@type": "SearchAction",
         "target": {
           "@type": "EntryPoint",
-          "urlTemplate": "https://claudecodeplugins.io/?stack={search_term_string}"
+          "urlTemplate": "https://tonsofskills.com/?stack={search_term_string}"
         },
         "query-input": "required name=search_term_string"
       },
@@ -1169,7 +1016,7 @@ const totalCategories = searchIndex.stats.categories.length;
       },
       "description": "295 plugins for Claude Code with 1,537 agent skills, interactive tutorials, and production workflows. Supports 2026 schema.",
       "softwareVersion": "4.14.0",
-      "url": "https://claudecodeplugins.io",
+      "url": "https://tonsofskills.com",
       "downloadUrl": "https://github.com/jeremylongshore/claude-code-plugins",
       "applicationSuite": "Claude Code",
       "featureList": [
@@ -1187,131 +1034,77 @@ const totalCategories = searchIndex.stats.categories.length;
 
     <!-- Hero Section -->
     <section class="hero">
-        <h1>The Ultimate<br><span>Claude Code</span> Skills Hub</h1>
-        <p class="hero-subtitle">
-            Search {totalSkills} skills embedded in {totalPlugins} plugins. Learn with interactive tutorials. All open source and production-ready.
-        </p>
+        <div class="hero-inner">
+            <h1>TONS OF SKILLS</h1>
 
-        <!-- Welcome Banner for New Users -->
-        <div class="welcome-banner" style="display:inline-flex;align-items:center;gap:0.75rem;background:var(--brand-light-gray);border:1px solid rgba(217,119,87,0.25);padding:0.6rem 1.25rem;border-radius:100px;font-family:'Poppins',sans-serif;font-size:0.9rem;color:var(--brand-mid-gray);margin-bottom:2rem;animation:fadeInUp 0.8s var(--transition-smooth) 0.15s forwards;opacity:0;">
-            New to Claude Code plugins? <a href="/getting-started" style="color:var(--brand-orange);font-weight:600;text-decoration:none;">Start Here (60 seconds) &rarr;</a>
-        </div>
+            <p class="hero-subtitle">
+                Agent skills for Claude Code. Search {totalSkills} skills across {totalPlugins} plugins.
+            </p>
 
-        <!-- Strategic Partners (in hero for visibility) -->
-        <div class="hero-partners">
-            <span class="hero-partners-label">Strategic Partners:</span>
-            <a href="/sponsor/" class="partner-badge" title="Nixtla - Funding Plugin Innovation">
-                <svg width="80" height="14" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="currentColor"/>
-                    <path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="currentColor"/>
-                    <path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="currentColor"/>
-                    <path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="currentColor"/>
-                    <path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="currentColor"/>
-                    <path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="currentColor"/>
-                    <path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="currentColor"/>
-                    <path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="currentColor"/>
-                    <path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="currentColor"/>
-                </svg>
-            </a>
-            <a href="https://www.agent37.com/" class="partner-badge" target="_blank" rel="noopener noreferrer" title="Agent37">
-                <span style="font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem; color: currentColor;">Agent37</span>
-            </a>
-        </div>
-
-        <!-- Hero Search Bar -->
-        <div class="hero-search">
-            <div class="search-container">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <path d="m21 21-4.35-4.35"></path>
-                </svg>
-                <input
-                    type="text"
-                    id="hero-search-input"
-                    placeholder="Search plugins and skills..."
-                    class="search-input"
-                    autocomplete="off"
-                />
-                <div class="search-toggle">
-                    <button class="toggle-btn active" data-type="all">All</button>
-                    <button class="toggle-btn" data-type="plugin">Plugins</button>
-                    <button class="toggle-btn" data-type="skill">Skills</button>
+            <!-- Hero Search Bar -->
+            <div class="hero-search">
+                <div class="search-container">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
+                    <input
+                        type="text"
+                        id="hero-search-input"
+                        placeholder="Search plugins and skills..."
+                        class="search-input"
+                        autocomplete="off"
+                    />
+                    <div class="search-toggle">
+                        <button class="toggle-btn active" data-type="all">All</button>
+                        <button class="toggle-btn" data-type="plugin">Plugins</button>
+                        <button class="toggle-btn" data-type="skill">Skills</button>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="stats-bar">
-            <div class="stat-item">
-                <div class="stats-number">{totalSkills}</div>
-                <div class="stat-label">Searchable Skills</div>
-            </div>
-            <div class="stat-item">
-                <div class="stats-number">{totalPlugins}</div>
-                <div class="stat-label">Plugins</div>
-            </div>
-            <div class="stat-item">
-                <div class="stats-number">{totalCategories}</div>
-                <div class="stat-label">Categories</div>
-            </div>
-        </div>
-
-        <!-- Installation Instructions - PROMINENT CTA -->
-        <div class="install-box" style="max-width: 650px; margin: 2rem auto; padding: 2rem; background: var(--brand-dark); border-radius: 16px; box-shadow: 0 8px 32px rgba(20, 20, 19, 0.2);">
-            <div style="text-align: center; margin-bottom: 1.5rem;">
-                <span style="display: inline-block; background: var(--brand-orange); color: white; padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Get Started in 30 Seconds</span>
-            </div>
-
-            <!-- CLI Install - PRIMARY -->
-            <div style="margin-bottom: 1.5rem;">
-                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.8rem; font-weight: 600; color: var(--brand-orange); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Install CLI (Recommended)</h3>
-                <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 1rem 1.25rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; font-size: 1rem; color: var(--brand-light); overflow-x: auto; cursor: pointer;"><code style="font-family: 'SF Mono', 'Fira Code', monospace;">pnpm add -g @intentsolutionsio/ccpi</code></pre>
-                <p style="margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--brand-mid-gray);">Click to copy • Also works with npm, yarn, or bun</p>
-            </div>
-
-            <!-- Claude Code Install - SECONDARY -->
-            <div style="padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--brand-mid-gray); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Or Add Marketplace in Claude Code</h3>
-                <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem 1rem; background: rgba(255,255,255,0.05); border-radius: 6px; font-size: 0.85rem; color: var(--brand-light-gray); overflow-x: auto; cursor: pointer;"><code>/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
-            </div>
-
-            <!-- What's Next -->
-            <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1);">
-                <h4 style="margin: 0 0 0.75rem 0; font-size: 0.7rem; font-weight: 600; color: var(--brand-mid-gray); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'Poppins', sans-serif;">Then</h4>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--brand-light-gray);">
-                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">1.</span> <a href="/explore" style="color: var(--brand-light); text-decoration: underline;">Browse</a> plugins & skills</span>
-                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">2.</span> Install with <code style="background: rgba(255,255,255,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem;">/plugin install [name]</code></span>
-                    <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--brand-orange);">3.</span> Skills auto-activate</span>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <div class="stats-number">{totalSkills}</div>
+                    <div class="stat-label">Searchable Skills</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stats-number">{totalPlugins}</div>
+                    <div class="stat-label">Plugins</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stats-number">{totalCategories}</div>
+                    <div class="stat-label">Categories</div>
                 </div>
             </div>
-        </div>
 
-        <div class="hero-cta-group">
-            <a href="/skills/" class="btn-primary">
-                Browse Skills Directory
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-            </a>
-            <a href="/learning/" class="btn-secondary">Learning Hub</a>
-        </div>
-
-        <div class="hero-decoration">
-            <div class="code-window">
-                <div class="code-header">
-                    <div class="code-dot"></div>
-                    <div class="code-dot"></div>
-                    <div class="code-dot"></div>
+            <!-- Installation Instructions -->
+            <div class="install-box">
+                <div style="text-align: center; margin-bottom: 1.5rem;">
+                    <span style="display: inline-block; background: rgba(234,170,0,0.15); color: var(--gold); padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Get Started in 30 Seconds</span>
                 </div>
-                <div class="code-content">
-                    <span class="code-comment">// Install a plugin from the marketplace</span><br>
-                    <span class="code-keyword">/plugin</span> install <span class="code-string">devops-automation-pack</span><br>
-                    <span class="code-keyword">/plugin</span> install <span class="code-string">project-health-auditor</span><br>
-                    <br>
-                    <span class="code-comment">// Use your new AI-powered tools</span><br>
-                    <span class="code-keyword">/audit</span> <span class="code-function">--comprehensive</span><br>
-                    <span class="code-keyword">/deploy</span> <span class="code-function">--production</span><br>
-                    <br>
-                    <span class="code-comment">// 1,537 AI Skills activate automatically based on context</span>
+
+                <!-- CLI Install - PRIMARY -->
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Install CLI (Recommended)</h3>
+                    <pre class="install-command" data-copy="pnpm add -g @intentsolutionsio/ccpi" style="margin: 0; padding: 1rem 1.25rem; background: rgba(234,170,0,0.06); border: 1px solid rgba(234,170,0,0.2); border-radius: 8px; font-size: 1rem; color: var(--text); overflow-x: auto; cursor: pointer;"><code style="font-family: 'DM Mono', monospace;">pnpm add -g @intentsolutionsio/ccpi</code></pre>
+                    <p style="margin: 0.5rem 0 0; font-size: 0.75rem; color: var(--text-3); font-family: 'DM Mono', monospace;">Click to copy &bull; Also works with npm, yarn, or bun</p>
+                </div>
+
+                <!-- Claude Code Install - SECONDARY -->
+                <div style="padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <h3 style="margin: 0 0 0.5rem 0; font-size: 0.75rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Or Add Marketplace in Claude Code</h3>
+                    <pre class="install-command" data-copy="/plugin marketplace add jeremylongshore/claude-code-plugins" style="margin: 0; padding: 0.75rem 1rem; background: var(--surface-3); border: 1px solid var(--border); border-radius: 6px; font-size: 0.85rem; color: var(--text-2); overflow-x: auto; cursor: pointer;"><code style="font-family: 'DM Mono', monospace;">/plugin marketplace add jeremylongshore/claude-code-plugins</code></pre>
+                </div>
+
+                <!-- What's Next -->
+                <div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--border);">
+                    <h4 style="margin: 0 0 0.75rem 0; font-size: 0.7rem; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.1em; font-family: 'DM Mono', monospace;">Then</h4>
+                    <div style="display: flex; gap: 1rem; flex-wrap: wrap; font-size: 0.85rem; color: var(--text-2);">
+                        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">1.</span> <a href="/explore" style="color: var(--text); text-decoration: underline;">Browse</a> plugins &amp; skills</span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">2.</span> Install with <code style="background: var(--surface-3); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-family: 'DM Mono', monospace;">/plugin install [name]</code></span>
+                        <span style="display: flex; align-items: center; gap: 0.5rem;"><span style="color: var(--gold);">3.</span> Skills auto-activate</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1349,7 +1142,7 @@ const totalCategories = searchIndex.stats.categories.length;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1359,7 +1152,7 @@ const totalCategories = searchIndex.stats.categories.length;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1369,7 +1162,7 @@ const totalCategories = searchIndex.stats.categories.length;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
             <div class="client-item">
@@ -1379,17 +1172,7 @@ const totalCategories = searchIndex.stats.categories.length;
             </div>
             <div class="client-item">
                 <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
-                </a>
-            </div>
-            <div class="client-item">
-                <a href="https://nixtla.io" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <svg class="client-logo" width="115" height="20" viewBox="0 0 115 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M49.1185 1.82227V18.1763H45.2484L38.5142 5.8072H37.9645V18.1763H35.3535V1.82227H39.2239L45.958 14.1914H46.5075V1.82227H49.1185Z" fill="white"/><path d="M54.8645 1.82227V18.1763H52.1152V1.82227H54.8645Z" fill="white"/><path d="M64.5741 11.0984H63.7954L59.947 18.1763H56.9688L61.6648 9.56438L57.6342 1.82227H60.5202L63.8189 8.07589H64.5976L67.964 1.82227H70.8278L66.7282 9.47327L71.4243 18.1778H68.3328L64.5772 11.0999L64.5741 11.0984Z" fill="white"/><path d="M85.0296 4.24966H79.8073V18.1763H77.0583V4.24966H71.8125V1.82227H85.028V4.24966H85.0296Z" fill="white"/><path d="M98.1543 15.5888V18.1778H86.4961V1.82227H89.2454V15.5888H98.1556H98.1543Z" fill="white"/><path d="M110.478 13.4803H103.767L102.278 18.1763H99.5293L104.957 1.82227H109.355L114.806 18.1763H111.989L110.478 13.4803ZM104.546 11.0293H109.677L107.592 4.50093H106.607L104.546 11.0293Z" fill="white"/><path d="M2.17981 17.8359L13.801 6.2146C13.9098 6.10586 14.0861 6.10586 14.1934 6.2146L19.7623 11.8305C19.871 11.9393 20.0459 11.9393 20.1546 11.8305L27.8924 4.09283C28.001 3.9841 28.001 3.80925 27.8924 3.70051L26.207 2.01514C26.0981 1.90641 25.9233 1.90641 25.8147 2.01514L20.2001 7.62961C20.0914 7.73835 19.9166 7.73835 19.8078 7.62961L14.1934 2.01808C14.0846 1.90935 13.9098 1.90935 13.801 2.01808L8.18659 7.63255C8.07785 7.74129 7.903 7.74129 7.79426 7.63255L2.17981 2.01808C2.07108 1.90935 1.89622 1.90935 1.78749 2.01808L0.08155 3.72402C-0.0271833 3.83275 -0.0271833 4.00761 0.08155 4.11634L5.69602 9.73081C5.80473 9.83953 5.80473 10.0144 5.69602 10.1231L0.08155 15.7376C-0.0271833 15.8463 -0.0271833 16.0212 0.08155 16.1299L1.78749 17.8359C1.89622 17.9446 2.07108 17.9446 2.17981 17.8359Z" fill="white"/><path d="M18.9078 13.0792L18.9504 13.0366L17.0696 11.1558C16.9609 11.047 16.786 11.047 16.6773 11.1558L14.194 13.639C14.0853 13.7477 13.9104 13.7477 13.8017 13.639L11.3185 11.1558C11.2098 11.047 11.0349 11.047 10.9262 11.1558L9.22023 12.8617C9.11149 12.9704 9.11149 13.1453 9.22023 13.254L13.8017 17.8355C13.9104 17.9443 14.0853 17.9443 14.194 17.8355L18.9298 13.0997L18.9092 13.0792H18.9078Z" fill="white"/><path d="M22.8938 11.1087L21.1888 12.8137C21.0803 12.9221 21.0803 13.098 21.1888 13.2064L25.8154 17.8331C25.9238 17.9416 26.0996 17.9416 26.2082 17.8331L27.913 16.1281C28.0217 16.0196 28.0217 15.8438 27.913 15.7354L23.2865 11.1087C23.178 11.0002 23.0022 11.0002 22.8938 11.1087Z" fill="white"/></svg>
-                </a>
-            </div>
-            <div class="client-item">
-                <a href="https://www.agent37.com/" target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                    <span class="client-logo" style="font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
+                    <span class="client-logo" style="font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 1.1rem; color: white; letter-spacing: 0.02em;">Agent37</span>
                 </a>
             </div>
         </div>
@@ -1415,7 +1198,7 @@ const totalCategories = searchIndex.stats.categories.length;
                         </div>
                         <div>
                             <h3>Supabase</h3>
-                            <span class="saas-tier" style="color: #3ECF8E;">Flagship+ • 30 Skills</span>
+                            <span class="saas-tier" style="color: #3ECF8E;">Flagship+ &bull; 30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1430,12 +1213,12 @@ const totalCategories = searchIndex.stats.categories.length;
                 <!-- Vercel Pack -->
                 <div class="saas-card" data-accent="#000">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #000; border: 1px solid var(--brand-light-gray);">
+                        <div class="saas-icon" style="background: #333; border: 1px solid var(--border);">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M12 2L2 19.5h20L12 2z"/></svg>
                         </div>
                         <div>
                             <h3>Vercel</h3>
-                            <span class="saas-tier">Flagship+ • 30 Skills</span>
+                            <span class="saas-tier">Flagship+ &bull; 30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1455,7 +1238,7 @@ const totalCategories = searchIndex.stats.categories.length;
                         </div>
                         <div>
                             <h3>Sentry</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ • 30 Skills</span>
+                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ &bull; 30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1470,12 +1253,12 @@ const totalCategories = searchIndex.stats.categories.length;
                 <!-- Cursor Pack -->
                 <div class="saas-card" data-accent="#8b5cf6">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #000; border: 1px solid var(--brand-light-gray);">
+                        <div class="saas-icon" style="background: #333; border: 1px solid var(--border);">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
                         </div>
                         <div>
                             <h3>Cursor</h3>
-                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ • 30 Skills</span>
+                            <span class="saas-tier" style="color: #8b5cf6;">Flagship+ &bull; 30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1495,7 +1278,7 @@ const totalCategories = searchIndex.stats.categories.length;
                         </div>
                         <div>
                             <h3>OpenRouter</h3>
-                            <span class="saas-tier" style="color: #6366f1;">Flagship+ • 30 Skills</span>
+                            <span class="saas-tier" style="color: #6366f1;">Flagship+ &bull; 30 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1515,7 +1298,7 @@ const totalCategories = searchIndex.stats.categories.length;
                         </div>
                         <div>
                             <h3>Groq</h3>
-                            <span class="saas-tier" style="color: #f55036;">Flagship • 24 Skills</span>
+                            <span class="saas-tier" style="color: #f55036;">Flagship &bull; 24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1529,19 +1312,19 @@ const totalCategories = searchIndex.stats.categories.length;
                 <!-- LangChain Pack -->
                 <div class="saas-card" data-accent="#1c3c3c">
                     <div class="saas-card-header">
-                        <div class="saas-icon" style="background: #1c3c3c;">
+                        <div class="saas-icon" style="background: #1c5c3c;">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
                         </div>
                         <div>
                             <h3>LangChain</h3>
-                            <span class="saas-tier" style="color: #1c3c3c;">Flagship • 24 Skills</span>
+                            <span class="saas-tier" style="color: #3ECF8E;">Flagship &bull; 24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
                         LLM orchestration, chains, agents, RAG patterns, and production pipelines.
                     </p>
                     <div class="saas-commands">
-                        <code class="saas-cmd primary" style="color: #1c3c3c;" onclick="navigator.clipboard.writeText('/plugin install langchain-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install langchain-pack', 2000);">/plugin install langchain-pack</code>
+                        <code class="saas-cmd primary" onclick="navigator.clipboard.writeText('/plugin install langchain-pack@claude-code-plugins-plus'); this.textContent='Copied!'; setTimeout(() => this.textContent='/plugin install langchain-pack', 2000);">/plugin install langchain-pack</code>
                     </div>
                 </div>
 
@@ -1553,7 +1336,7 @@ const totalCategories = searchIndex.stats.categories.length;
                         </div>
                         <div>
                             <h3>PostHog</h3>
-                            <span class="saas-tier" style="color: #1d4aff;">Flagship • 24 Skills</span>
+                            <span class="saas-tier" style="color: #1d4aff;">Flagship &bull; 24 Skills</span>
                         </div>
                     </div>
                     <p class="saas-desc">
@@ -1571,7 +1354,7 @@ const totalCategories = searchIndex.stats.categories.length;
                     <p>
                         Mistral, Perplexity, Clerk, Linear, Obsidian, Firecrawl, and more
                     </p>
-                    <span style="color: var(--brand-orange); font-weight: 600;">Browse All →</span>
+                    <span style="color: var(--gold); font-weight: 600;">Browse All &rarr;</span>
                 </div>
             </div>
 
@@ -1603,7 +1386,7 @@ const totalCategories = searchIndex.stats.categories.length;
                     <li>Hands-on plugin dev training</li>
                     <li>Custom workflow optimization</li>
                     <li>Production deployment practices</li>
-                    <li>Ongoing support & code reviews</li>
+                    <li>Ongoing support &amp; code reviews</li>
                 </ul>
                 <a href="https://www.upwork.com/services/product/lifestyle-to-learn-claude-code-cli-white-glove-training-to-build-with-ai-2016039265158461099?ref=project_share&tier=1" class="product-cta service-cta" target="_blank" rel="noopener noreferrer">Book Training Session</a>
             </div>
@@ -1611,10 +1394,10 @@ const totalCategories = searchIndex.stats.categories.length;
     </section>
 
     <!-- Quick-Start Collections -->
-    <section class="features" style="padding: 4rem 2rem; background: var(--brand-light);">
+    <section class="features" style="padding: 4rem 2rem;">
         <div class="section-label">Quick Start</div>
         <h2 class="section-title">Curated Plugin Collections</h2>
-        <p style="text-align: center; color: var(--brand-mid-gray); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
+        <p style="color: var(--text-2); margin-bottom: 2rem; max-width: 600px; margin-left: auto; margin-right: auto;">
             Pre-built bundles for common use cases. One-click install for instant productivity.
         </p>
 
@@ -1623,8 +1406,8 @@ const totalCategories = searchIndex.stats.categories.length;
         </div>
 
         <div style="text-align: center; margin-top: 2rem;">
-            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--brand-orange); color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-family: 'Poppins', sans-serif;">
-                View All Collections →
+            <a href="/collections/" class="primary-button" style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: var(--gold); color: var(--navy); text-decoration: none; border-radius: 8px; font-weight: 700; font-family: 'DM Sans', sans-serif;">
+                View All Collections &rarr;
             </a>
         </div>
     </section>
@@ -1685,8 +1468,8 @@ const totalCategories = searchIndex.stats.categories.length;
                 <ul class="product-features">
                     <li>Docker + FastAPI source code</li>
                     <li>Multi-chain EVM wallet support</li>
-                    <li>Spending limits & kill switch</li>
-                    <li>Encrypted keys & audit logs</li>
+                    <li>Spending limits &amp; kill switch</li>
+                    <li>Encrypted keys &amp; audit logs</li>
                     <li>Production deployment guides</li>
                 </ul>
                 <a href="https://jeremylongshore.gumroad.com/l/ai-agent-wallet" class="product-cta" target="_blank" rel="noopener noreferrer">Get AI Agent Wallet</a>
@@ -1754,12 +1537,37 @@ const totalCategories = searchIndex.stats.categories.length;
                 navigator.clipboard.writeText(text).then(() => {
                     const original = this.textContent;
                     this.textContent = '✓ Copied to clipboard!';
-                    this.style.color = 'var(--brand-green)';
+                    this.style.color = 'var(--positive)';
+                    if (window.trackEvent) {
+                        window.trackEvent('install_copied', { plugin_name: text, source: 'homepage_install' });
+                    }
                     setTimeout(() => {
                         this.textContent = original;
                         this.style.color = '';
                     }, 2000);
                 });
+            });
+        });
+
+        // Track SaaS pack copy clicks
+        document.querySelectorAll('.saas-cmd').forEach(function(el) {
+            el.addEventListener('click', function() {
+                if (window.trackEvent) {
+                    var packName = this.textContent.replace('/plugin install ', '').replace('npm i ', '').trim();
+                    window.trackEvent('install_copied', { plugin_name: packName, source: 'homepage_saas_pack' });
+                }
+            });
+        });
+
+        // Track CTA clicks
+        document.querySelectorAll('.hero-cta-group a, .cowork-home-cta a, .saas-cta a').forEach(function(link) {
+            link.addEventListener('click', function() {
+                if (window.trackEvent) {
+                    window.trackEvent('cta_click', {
+                        cta_name: this.textContent.trim().substring(0, 50),
+                        cta_url: this.getAttribute('href')
+                    });
+                }
             });
         });
 
@@ -1806,4 +1614,4 @@ const totalCategories = searchIndex.stats.categories.length;
     <!-- Stack Builder Component -->
     <StackBuilder />
 </BaseLayout>
-<!-- rebuilt 2026-01-13T00:42:16-06:00 -->
+<!-- rebuilt 2026-03-04T00:00:00-06:00 -->

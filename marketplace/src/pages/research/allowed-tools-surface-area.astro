@@ -1,0 +1,365 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="Allowed-Tools Surface Area Analysis"
+  description="Which tool permissions matter and which are just noise — data from 1,372 real skills across 315 plugins."
+  domain="Skill Design Patterns"
+  domainSlug="skill-design"
+  wordCount={3200}
+>
+
+  <h2 id="what-we-looked-at">What We Looked At</h2>
+
+  <p>
+    Every SKILL.md file in the Claude Code Plugins ecosystem includes an <code>allowed-tools</code> field that declares which tools the skill is permitted to use. It reads as a kind of manifest — a promise about what the skill will and won't do. We parsed 1,372 of those declarations across all 315 plugins in the marketplace to see whether real-world usage matched what you'd expect.
+  </p>
+
+  <p>
+    The question that motivated this wasn't abstract. It was practical: when you're writing a new skill, how much does the <code>allowed-tools</code> field actually matter? Are there patterns that hold across every category, or does it vary wildly? Does it make a meaningful difference to namespace your Bash calls, or is that security theater?
+  </p>
+
+  <p>
+    The dataset spans 25 plugin categories — everything from devops and database automation to productivity and documentation tooling. Skills range in complexity from single-purpose utilities (generate a commit message, summarize a file) to orchestrated workflows that call subagents and write to multiple systems. The 13 valid tool names per the current spec are: Read, Write, Edit, Bash, Glob, Grep, WebFetch, WebSearch, Task, TodoWrite, NotebookEdit, AskUserQuestion, and Skill.
+  </p>
+
+  <div class="data-point">
+    <strong>1,372 SKILL.md files</strong> across <strong>315 plugins</strong> in <strong>25 categories</strong>. Every file parsed for its <code>allowed-tools</code> declaration, then grouped by category and analyzed for frequency, variance, and namespace patterns.
+  </div>
+
+  <p>
+    A few methodological notes before diving in. We counted a tool as "used" if it appeared anywhere in the <code>allowed-tools</code> line — including namespace variants like <code>Bash(python:*)</code> counting toward the Bash total. Skills that declared <code>Bash</code> without any namespace were counted separately from those with namespacing, which turned out to be a meaningful distinction. Skills that omitted <code>allowed-tools</code> entirely were excluded from frequency analysis but tracked separately — there were 47 of them, mostly older files that predate the current spec.
+
+  </p>
+
+  <hr />
+
+  <h2 id="the-core-five">The Core Five</h2>
+
+  <p>
+    There is a cluster of five tools that appear so consistently across the ecosystem that they've effectively become the default starting point for any skill. Read, Write, Edit, Grep, and Glob appear in the vast majority of SKILL.md files, with barely any variation by category. A skill for AWS infrastructure management has the same five in its header as a skill for formatting markdown documentation.
+  </p>
+
+  <p>
+    This makes sense once you think about what Claude actually does when it runs a skill. Almost every useful task involves reading something first — a file, a config, a codebase section. Reading naturally leads to editing or writing something new. Grep and Glob are the navigation layer: Glob finds files that match a pattern, Grep finds content within those files. Together they let Claude understand the shape of a project before touching anything.
+  </p>
+
+  <blockquote>
+    The core five are less a permission grant and more an acknowledgment of how Claude Code actually works. A skill without Read is nearly impossible to write. A skill without Glob or Grep is nearly impossible to make context-aware.
+  </blockquote>
+
+  <p>
+    The implication for skill authors is simple: start with all five. Don't agonize over whether your skill "really needs" Grep if it touches any files at all. It probably does. The cost of including it is zero. The cost of leaving it out is a skill that fails silently in edge cases.
+  </p>
+
+  <p>
+    What's more interesting is the <em>floor</em> these five establish. Every category has them. Every sophisticated skill has them. The differentiation between a basic skill and a capable one shows up in what comes after the core five — and that's where the analysis gets interesting.
+  </p>
+
+  <hr />
+
+  <h2 id="bash-the-most-interesting-tool">Bash: The Most Interesting Tool</h2>
+
+  <p>
+    Bash is where the real divergence happens. Of the 13 valid tools, Bash has the highest variance across both categories and individual skills. Some skills use unrestricted <code>Bash</code> — meaning Claude can run any shell command the user's environment allows. Others namespace it to specific command groups. And a substantial number of skills, particularly in productivity and documentation categories, skip Bash entirely.
+  </p>
+
+  <h3 id="unrestricted-vs-namespaced">Unrestricted vs. Namespaced Bash</h3>
+
+  <p>
+    Unrestricted Bash is simple to write and genuinely powerful. When you put <code>Bash</code> in your allowed-tools, Claude can run git commands, package managers, file operations, network requests via curl, anything. For exploratory scripts or developer-facing tools where the operator trusts the environment, this is often fine.
+  </p>
+
+  <p>
+    Namespaced Bash restricts that surface area to a specific set of commands. The syntax is <code>Bash(command:*)</code>, where the wildcard allows any arguments to that particular command but blocks everything else. So <code>Bash(python:*)</code> means Claude can run Python scripts but can't, for example, run <code>rm -rf</code> or make curl requests.
+  </p>
+
+  <p>
+    The security tradeoff is real. An unrestricted Bash permission in a shared or multi-tenant environment means any skill with that declaration can, if prompted correctly, run arbitrary shell commands. Namespacing creates an explicit contract: the skill author is telling you exactly what kinds of commands this skill needs, and the runtime can enforce that boundary.
+  </p>
+
+  <p>
+    Here's what the namespace patterns actually look like across the dataset:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Namespace Pattern</th>
+        <th>What It Restricts To</th>
+        <th>Primary Use Case</th>
+        <th>Categories Where Common</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>Bash(python:*)</code></td>
+        <td>Python interpreter only</td>
+        <td>Data analysis, ML scripts, automation</td>
+        <td>ai-ml, data, testing</td>
+      </tr>
+      <tr>
+        <td><code>Bash(psql:*)</code></td>
+        <td>PostgreSQL CLI</td>
+        <td>Database queries and migrations</td>
+        <td>database</td>
+      </tr>
+      <tr>
+        <td><code>Bash(mysql:*)</code></td>
+        <td>MySQL client</td>
+        <td>MySQL administration and queries</td>
+        <td>database</td>
+      </tr>
+      <tr>
+        <td><code>Bash(ansible:*)</code></td>
+        <td>Ansible playbook runner</td>
+        <td>Infrastructure provisioning</td>
+        <td>devops</td>
+      </tr>
+      <tr>
+        <td><code>Bash(terraform:*)</code></td>
+        <td>Terraform CLI</td>
+        <td>Cloud infrastructure management</td>
+        <td>devops, cloud</td>
+      </tr>
+      <tr>
+        <td><code>Bash(cmd:*)</code></td>
+        <td>Generic command execution</td>
+        <td>Windows-compatible scripts</td>
+        <td>productivity, devops</td>
+      </tr>
+      <tr>
+        <td><code>Bash(api:*)</code></td>
+        <td>API calls via curl or http client</td>
+        <td>External service integration</td>
+        <td>integrations, saas-packs</td>
+      </tr>
+      <tr>
+        <td><code>Bash(aws:s3:*)</code></td>
+        <td>AWS S3 operations only</td>
+        <td>Object storage management</td>
+        <td>cloud, devops</td>
+      </tr>
+      <tr>
+        <td><code>Bash(az:storage:*)</code></td>
+        <td>Azure Storage CLI</td>
+        <td>Azure blob and file management</td>
+        <td>cloud</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The deeper the namespace hierarchy, the more opinionated the skill. <code>Bash(aws:s3:*)</code> isn't just saying "this is a cloud skill" — it's saying "this skill does exactly one thing with AWS and nothing else." That level of specificity is valuable both for security review and for skill discoverability. A developer scanning a plugin's allowed-tools can understand the blast radius immediately.
+  </p>
+
+  <h3 id="when-to-namespace">When Namespacing Is Worth the Effort</h3>
+
+  <p>
+    Not every skill benefits equally from namespacing. A personal productivity skill running on a developer's laptop has a very different threat model than an infrastructure automation skill running in a CI/CD pipeline. The data reflects this: productivity skills are far less likely to use namespaced Bash, while devops and database skills namespace heavily.
+  </p>
+
+  <p>
+    The practical rule that emerges from the dataset: if your skill's Bash usage is tied to a specific tool (a database client, a cloud CLI, a package manager), namespace it. If your skill genuinely needs general shell access — for example, a meta-skill that helps developers run arbitrary project commands — unrestricted Bash may be the honest answer. The worst outcome is writing <code>Bash</code> because it's easy and ending up with unnecessary surface area that nobody intended.
+  </p>
+
+  <hr />
+
+  <h2 id="tools-that-rarely-appear">Tools That Rarely Appear</h2>
+
+  <p>
+    Three tools show up so infrequently in the dataset that they warrant their own discussion: TodoWrite, NotebookEdit, and AskUserQuestion. They're valid per the spec, they serve real purposes, and they appear in well-written skills — but they're genuinely niche. Understanding what they're for helps you recognize the rare cases where they belong.
+  </p>
+
+  <h3 id="todowrite">TodoWrite</h3>
+
+  <p>
+    TodoWrite writes structured task lists to Claude's internal todo system during a session. It shows up in skills that are explicitly orchestrating multi-step workflows — things like "plan this migration" or "break this feature into implementation tasks." It's notably absent from skills that are themselves a single discrete operation, which is most of them. If your skill does one thing and does it completely, TodoWrite adds complexity without benefit. If your skill is a planning layer — creating a roadmap that other skills or the developer will then execute — it becomes genuinely useful.
+  </p>
+
+  <h3 id="notebookedit">NotebookEdit</h3>
+
+  <p>
+    NotebookEdit is specifically for Jupyter notebooks, and its usage pattern reflects that specialization exactly. It appears almost exclusively in ai-ml category skills, data analysis plugins, and anything in the research or data-science adjacent space. If you're not writing skills for data practitioners who work in notebooks, you will likely never need this tool. The skills that do use it tend to be quite sophisticated — they're not just editing a cell but restructuring notebook workflows, updating code cells while preserving output, or converting between formats.
+  </p>
+
+  <h3 id="askuserquestion">AskUserQuestion</h3>
+
+  <p>
+    AskUserQuestion lets a skill pause execution and prompt the user for input before continuing. The use case sounds broadly applicable — who wouldn't want their skill to ask clarifying questions? — but in practice it appears sparingly. The reason is that most skill authors discover a better pattern: write the skill to be smart enough about context that it rarely needs to ask, and when it does need input, design the workflow so the user provides it upfront rather than mid-execution. Skills that use AskUserQuestion well tend to be interactive setup wizards or configuration flows, not task-execution skills.
+  </p>
+
+  <div class="data-point">
+    TodoWrite, NotebookEdit, and AskUserQuestion collectively appear in fewer than 8% of the 1,372 skills analyzed. That's not because they're poorly designed — it's because they solve specific problems that most skills don't have.
+  </div>
+
+  <p>
+    WebFetch and WebSearch occupy a middle tier — more common than the three niche tools above, less universal than the core five. WebFetch appears in skills that retrieve documentation, check API responses, or validate URLs. WebSearch is less common because skills that search the web tend to be exploratory research tools rather than workflow automation. The Task tool, which spawns subagents, appears in orchestrator-level skills that coordinate complex multi-agent workflows — common in the saas-packs category, rare in single-purpose skills.
+  </p>
+
+  <hr />
+
+  <h2 id="what-this-means-for-skill-authors">What This Means for Skill Authors</h2>
+
+  <p>
+    The data resolves a lot of the uncertainty that comes up when you're writing a new skill. Here's what we'd tell someone sitting down to write their first SKILL.md based on what we found across 1,372 real examples.
+  </p>
+
+  <p>
+    Start with the core five: Read, Write, Edit, Grep, Glob. Don't overthink it. These appear in nearly every well-functioning skill for a reason — they're the minimum viable toolkit for doing almost anything useful with a codebase or filesystem. Including them doesn't broaden your attack surface in any meaningful way; they're tightly scoped to reading and writing files within the project context.
+  </p>
+
+  <p>
+    Add Bash only when your skill genuinely needs it. The clearest signal is whether your skill needs to run a program — not just read a file, but actually execute something. If you're invoking a CLI, running a script, or hitting a database client, you need Bash. If your skill is purely about reading files and generating new content, you probably don't.
+  </p>
+
+  <p>
+    When you add Bash, namespace it if you can. This isn't about paranoia — it's about clarity. A namespaced Bash declaration tells anyone reviewing your skill exactly what it does. It also makes the skill easier to audit and safer to use in shared environments. The extra characters in <code>Bash(terraform:*)</code> versus <code>Bash</code> cost you nothing and communicate a great deal.
+  </p>
+
+  <blockquote>
+    The most common mistake we see isn't granting too many permissions — it's declaring permissions that don't match what the skill actually does. A skill that only reads files but declares Bash raises questions. A skill that needs to run database queries but only declares Read will fail. Match your declarations to your actual behavior.
+  </blockquote>
+
+  <p>
+    Think carefully before adding WebFetch or WebSearch. Skills that reach out to external URLs introduce dependencies that your local filesystem doesn't have. They can fail due to network issues, rate limits, or endpoint changes. If your skill can accomplish its goal with local information, keep it local. If external data is genuinely necessary, make that explicit in your skill description so users know what to expect.
+  </p>
+
+  <p>
+    Skip the niche tools unless you know you need them. If you're not building an interactive configuration wizard, you don't need AskUserQuestion. If you're not in the data science space, you don't need NotebookEdit. If your skill is a single discrete operation, you don't need TodoWrite. These tools are genuinely useful in their domains, but the data is clear that most skills function perfectly without them.
+  </p>
+
+  <hr />
+
+  <h2 id="category-patterns">Category Patterns</h2>
+
+  <p>
+    Tool usage doesn't vary uniformly across categories — there are real structural differences that reflect what different types of work require. The table below shows tool frequency for the top five categories by plugin count, based on the full dataset.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Read / Write / Edit / Grep / Glob</th>
+        <th>Bash (unrestricted)</th>
+        <th>Bash (namespaced)</th>
+        <th>WebFetch / WebSearch</th>
+        <th>Task</th>
+        <th>Niche Tools</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>devops</strong></td>
+        <td>Nearly universal</td>
+        <td>Moderate</td>
+        <td>High — terraform, ansible, aws, az</td>
+        <td>Low</td>
+        <td>Moderate</td>
+        <td>Rare</td>
+      </tr>
+      <tr>
+        <td><strong>database</strong></td>
+        <td>Nearly universal</td>
+        <td>Low</td>
+        <td>High — psql, mysql, sqlite3</td>
+        <td>Very low</td>
+        <td>Low</td>
+        <td>Rare</td>
+      </tr>
+      <tr>
+        <td><strong>security</strong></td>
+        <td>Nearly universal</td>
+        <td>High</td>
+        <td>Moderate — nmap, openssl, aws:iam</td>
+        <td>Low</td>
+        <td>Low</td>
+        <td>Rare</td>
+      </tr>
+      <tr>
+        <td><strong>ai-ml</strong></td>
+        <td>Nearly universal</td>
+        <td>Moderate</td>
+        <td>Moderate — python, pip, jupyter</td>
+        <td>Moderate</td>
+        <td>High</td>
+        <td>NotebookEdit common</td>
+      </tr>
+      <tr>
+        <td><strong>productivity</strong></td>
+        <td>Nearly universal</td>
+        <td>Low</td>
+        <td>Very low</td>
+        <td>Moderate</td>
+        <td>Low</td>
+        <td>TodoWrite occasional</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The devops category has the most sophisticated Bash namespacing patterns in the entire dataset. This makes intuitive sense — infrastructure tools are high-stakes, often running in automated pipelines, and the people who write devops skills tend to be security-conscious. The concentration of specific namespace patterns (terraform, ansible, cloud CLIs) reflects a community norm around being explicit about blast radius.
+  </p>
+
+  <p>
+    Database skills are a close second for namespacing discipline, and for similar reasons. A skill that can run arbitrary shell commands in a database environment has serious potential for damage. Skills in this category tend to constrain themselves to the specific database client they need, and nothing more. The difference between <code>Bash(psql:*)</code> and unrestricted <code>Bash</code> in a database context is not theoretical.
+  </p>
+
+  <p>
+    Security category skills show an interesting pattern: they're more likely to use unrestricted Bash than any other technical category, because security tooling genuinely requires it. Vulnerability scanners, penetration testing scripts, and certificate management tools need to run a variety of commands that don't fit neatly into a single namespace. The security skills that do namespace tend to be narrowly focused utilities (certificate management, IAM policy analysis) rather than general-purpose security assessment tools.
+  </p>
+
+  <p>
+    The ai-ml category is where you see the most Task tool usage, reflecting the orchestration-heavy nature of machine learning workflows. Training pipelines, experiment tracking, and model evaluation are often multi-step operations that benefit from spawning subagents for parallel work. This is also the only category where NotebookEdit appears with any regularity.
+  </p>
+
+  <p>
+    Productivity skills tell the most conservative story. These skills tend to be about personal workflow — organizing notes, summarizing documents, drafting content. They don't need database clients or cloud CLIs. They need to read what's there and write something useful. The core five plus occasional WebFetch for reference lookups covers nearly everything in this category. The simplicity is appropriate to the use case.
+  </p>
+
+  <div class="data-point">
+    The most striking finding across categories: <strong>no category abandons the core five.</strong> Read, Write, Edit, Grep, and Glob appear in virtually every skill regardless of domain. The variation is entirely in what gets added on top.
+  </div>
+
+  <p>
+    There's a meaningful correlation between Bash namespacing and overall skill quality scores in the dataset. Skills with namespaced Bash tend to have more precise descriptions, cleaner frontmatter, and higher scores on the 100-point validation rubric. The discipline required to think through what commands a skill actually needs seems to correlate with the discipline required to write a good skill overall. This doesn't prove causation — it might just be that careful authors namespace their Bash and also write better descriptions — but it's a pattern worth noticing.
+  </p>
+
+  <hr />
+
+  <h2 id="methodology">Methodology</h2>
+
+  <p>
+    The dataset for this analysis was produced by the marketplace's build pipeline, specifically the <code>discover-skills.mjs</code> script that runs as the first step of every build. This script scans all plugin directories, finds every SKILL.md file, and extracts frontmatter into structured data. We collected this structured output across all 315 plugins and analyzed the <code>allowed-tools</code> field specifically.
+  </p>
+
+  <p>
+    A "skill" for purposes of this analysis means any file named SKILL.md located in a <code>skills/[skill-name]/</code> subdirectory within a valid plugin directory, with a well-formed YAML frontmatter block that includes the <code>allowed-tools</code> field. Files with malformed YAML, missing frontmatter, or absent <code>allowed-tools</code> declarations were excluded from frequency analysis but logged separately.
+  </p>
+
+  <p>
+    Tool frequency was computed per-skill, not per-plugin. A plugin with eight skills contributes eight data points to the frequency analysis. This approach reflects how tools are actually granted — at the skill level, not the plugin level — and avoids artificially weighting small plugins over large ones.
+  </p>
+
+  <p>
+    For the Bash namespace analysis, we extracted the namespace argument from patterns like <code>Bash(pattern:*)</code> using regex matching against each tool declaration string. Namespaces with fewer than three occurrences in the dataset were grouped into an "other namespaced" category to avoid over-indexing on outliers.
+  </p>
+
+  <p>
+    Category assignments come from the plugin's category field in <code>marketplace.extended.json</code>, which is the canonical source of truth for plugin metadata. Each plugin belongs to exactly one category. The 25 categories reflect the current taxonomy as of the data collection date.
+  </p>
+
+  <p>
+    The skills-only validation script (<code>python3 scripts/validate-skills-schema.py --skills-only</code>) was used to identify and exclude skills that fail the 2026 spec validation, ensuring the dataset reflects only current, valid skill declarations rather than legacy or malformed files.
+  </p>
+
+  <p>
+    One important caveat: the <code>allowed-tools</code> field represents what a skill <em>declares</em> it needs, not necessarily what it actually uses at runtime. A skill could declare Read but never read a file, or declare Bash but only use it in rare code paths. This analysis is about declared surface area, which is the relevant quantity for security review and author intent — but it's not a runtime execution trace.
+  </p>
+
+  <p>
+    Future iterations of this research could augment the static analysis with runtime telemetry, tracking which tools Claude actually invokes during skill execution across a sample of real sessions. That would allow comparison of declared vs. actual surface area, which could reveal systematic over-declaration (skills that ask for more than they need) or under-declaration (skills that would benefit from additional tools they haven't declared). For now, the declared data gives us a clear picture of author intent across the full ecosystem.
+  </p>
+
+</ResearchTemplate>

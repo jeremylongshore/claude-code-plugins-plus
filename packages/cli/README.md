@@ -1,6 +1,6 @@
 # @intentsolutionsio/ccpi
 
-> Command-line tool for installing and managing Claude Code plugins from [claudecodeplugins.io](https://claudecodeplugins.io)
+> Command-line tool for installing and managing Claude Code plugins from [tonsofskills.com](https://tonsofskills.com)
 
 [![npm version](https://img.shields.io/npm/v/@intentsolutionsio/ccpi.svg)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -186,7 +186,7 @@ Search for plugins in the marketplace.
 npx @intentsolutionsio/ccpi search terraform
 ```
 
-*Note: Search functionality coming soon. For now, visit [claudecodeplugins.io](https://claudecodeplugins.io) to browse plugins.*
+*Note: Search functionality coming soon. For now, visit [tonsofskills.com](https://tonsofskills.com) to browse plugins.*
 
 ### `ccpi analytics`
 
@@ -325,7 +325,7 @@ If a plugin can't be found:
 
 1. Check the plugin name spelling
 2. Run `ccpi list --all` to see available plugins
-3. Visit [claudecodeplugins.io](https://claudecodeplugins.io) to browse the full marketplace
+3. Visit [tonsofskills.com](https://tonsofskills.com) to browse the full marketplace
 4. Ensure your marketplace catalog is up to date
 
 ## Development
@@ -371,10 +371,10 @@ MIT (c) [Intent Solutions IO](https://intentsolutions.io)
 
 ## Links
 
-- **Website**: [claudecodeplugins.io](https://claudecodeplugins.io)
+- **Website**: [tonsofskills.com](https://tonsofskills.com)
 - **GitHub**: [jeremylongshore/claude-code-plugins](https://github.com/jeremylongshore/claude-code-plugins)
 - **Issues**: [GitHub Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- **Marketplace**: [Browse Plugins](https://claudecodeplugins.io)
+- **Marketplace**: [Browse Plugins](https://tonsofskills.com)
 
 ---
 

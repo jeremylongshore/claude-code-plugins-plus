@@ -1,0 +1,434 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Research domains with their documents
+const domains = [
+  {
+    id: 'skill-design',
+    name: 'Skill Design Patterns',
+    tagline: 'What makes a skill actually work — patterns from 1,500+ real skills',
+    docs: [
+      { slug: 'allowed-tools-surface-area', title: 'Allowed-Tools Surface Area Analysis', subtitle: 'Which tool permissions matter and which are just noise', ready: true },
+      { slug: null, title: 'Frontmatter Impact on Activation Rates', subtitle: 'How description phrasing affects whether Claude picks your skill', ready: false },
+      { slug: null, title: 'Progressive Disclosure Architecture', subtitle: 'How top-scoring skills structure their instructions', ready: false },
+      { slug: null, title: 'Trigger Phrase Engineering', subtitle: 'The difference between skills that activate and skills that sit there', ready: false },
+    ]
+  },
+  {
+    id: 'plugin-architecture',
+    name: 'Plugin Architecture',
+    tagline: 'Structural patterns across 270+ plugins and 23 categories',
+    docs: [
+      { slug: 'plugin-composition-patterns', title: 'Plugin Composition Patterns', subtitle: 'Single-skill, multi-skill, and hybrid — what works when', ready: true },
+      { slug: null, title: 'SaaS Pack Architecture', subtitle: 'How supabase-pack and vercel-pack achieve coherent developer experience', ready: false },
+      { slug: null, title: 'MCP Server Plugin Lifecycle', subtitle: 'Build, distribution, and execution — the full picture', ready: false },
+      { slug: null, title: 'Plugin.json Schema Economics', subtitle: 'Why the 8-field constraint exists and what it prevents', ready: false },
+    ]
+  },
+  {
+    id: 'orchestration',
+    name: 'Multi-Agent Orchestration',
+    tagline: 'How agents, skills, and commands work together at runtime',
+    docs: [
+      { slug: 'agent-skill-command-interaction', title: 'Agent-Skill-Command Interaction Model', subtitle: 'The three content types and how they coordinate', ready: true },
+      { slug: null, title: 'Orchestrator-Worker Patterns', subtitle: 'Hierarchical delegation with real latency and cost data', ready: false },
+      { slug: null, title: 'Cross-Plugin Dependency Resolution', subtitle: 'What happens when two plugins want to handle the same task', ready: false },
+      { slug: null, title: 'Sequential vs Parallel Skill Execution', subtitle: 'Token consumption curves and when parallelism actually helps', ready: false },
+    ]
+  },
+  {
+    id: 'security',
+    name: 'Security & Governance',
+    tagline: 'Permission boundaries, trust models, and what keeps plugins safe',
+    docs: [
+      { slug: 'tool-permission-threat-modeling', title: 'Tool Permission Threat Modeling', subtitle: 'What Bash access really means and how constraints protect you', ready: true },
+      { slug: null, title: 'Secret Scanning Pipeline Analysis', subtitle: 'Detection rates by secret type — what gets caught and what slips through', ready: false },
+      { slug: null, title: 'Plugin Integrity Verification', subtitle: 'From submission to installation — the validation chain', ready: false },
+      { slug: null, title: 'Graduated Trust Architecture', subtitle: 'Community, verified, and official — how trust levels work', ready: false },
+    ]
+  },
+  {
+    id: 'performance',
+    name: 'Performance & Cost',
+    tagline: 'Token economics, model selection, and getting more done for less',
+    docs: [
+      { slug: 'model-tiering-strategy', title: 'Model Tiering Strategy', subtitle: 'When to use sonnet, haiku, or opus — with real cost comparisons', ready: true },
+      { slug: null, title: 'Token Budget by Category', subtitle: 'Which plugin categories are efficient and which ones burn through tokens', ready: false },
+      { slug: null, title: 'SKILL.md Size vs Performance', subtitle: 'The diminishing-returns curve and why bigger is not always better', ready: false },
+      { slug: null, title: 'Batch vs Interactive Execution Costs', subtitle: 'CI/CD pipelines vs developer sessions — the cost difference', ready: false },
+    ]
+  },
+  {
+    id: 'production',
+    name: 'Production Deployment',
+    tagline: 'How teams actually adopt and operate plugins at scale',
+    docs: [
+      { slug: 'cicd-integration-patterns', title: 'CI/CD Integration Patterns', subtitle: 'Validation gates, pre-commit hooks, and automated quality checks', ready: true },
+      { slug: null, title: 'Enterprise Plugin Adoption Curve', subtitle: 'The path from one developer to organization-wide deployment', ready: false },
+      { slug: null, title: 'Plugin Ecosystem Health Metrics', subtitle: 'Install rates, activation frequency, and what healthy looks like', ready: false },
+      { slug: null, title: 'Cowork Distribution Architecture', subtitle: 'Zip-based distribution, manifests, and checksums', ready: false },
+    ]
+  },
+];
+
+const totalDocs = domains.reduce((sum, d) => sum + d.docs.length, 0);
+const readyDocs = domains.reduce((sum, d) => sum + d.docs.filter(doc => doc.ready).length, 0);
+---
+
+<BaseLayout
+  title="Research & Analysis | Claude Code Plugins"
+  description="Data-driven analysis across 1,500+ skills and 270+ plugins. Skill design patterns, plugin architecture, security models, performance benchmarks, and production deployment research."
+>
+  <div class="research-index">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-badge">Research & Analysis</span>
+          <h1 class="hero-title">How We Know What Works</h1>
+          <p class="hero-subtitle">
+            Every plugin recommendation and skill pattern we share comes from studying what actually happens across the ecosystem. This is the analysis behind the advice — open, detailed, and always evolving.
+          </p>
+
+          <div class="hero-stats">
+            <div class="stat-item">
+              <div class="stat-number">{domains.length}</div>
+              <div class="stat-label">Research Areas</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">{totalDocs}</div>
+              <div class="stat-label">Documents</div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <div class="stat-number">1,500+</div>
+              <div class="stat-label">Skills Analyzed</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Domain Cards -->
+    <section class="domains-section">
+      <div class="container">
+        <div class="domains-grid">
+          {domains.map(domain => (
+            <div class="domain-card" id={domain.id}>
+              <div class="domain-header">
+                <h2 class="domain-name">{domain.name}</h2>
+                <span class="domain-count">{domain.docs.filter(d => d.ready).length} of {domain.docs.length}</span>
+              </div>
+              <p class="domain-tagline">{domain.tagline}</p>
+              <ul class="doc-list">
+                {domain.docs.map(doc => (
+                  <li class={`doc-item ${doc.ready ? 'ready' : 'coming-soon'}`}>
+                    {doc.ready && doc.slug ? (
+                      <a href={`/research/${doc.slug}`} class="doc-link">
+                        <span class="doc-title">{doc.title}</span>
+                        <span class="doc-subtitle">{doc.subtitle}</span>
+                      </a>
+                    ) : (
+                      <div class="doc-placeholder">
+                        <span class="doc-title">{doc.title}</span>
+                        <span class="doc-subtitle">{doc.subtitle}</span>
+                        <span class="coming-badge">Coming Soon</span>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Back to Home -->
+    <section class="footer-section">
+      <div class="container">
+        <a href="/" class="back-link">&larr; Back to Home</a>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .research-index {
+      min-height: 100vh;
+      background: var(--brand-light);
+      color: var(--brand-dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Hero Section */
+    .hero {
+      padding: 4rem 0 3rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #4a6741 0%, var(--brand-green) 50%, #97a87e 100%);
+      color: white;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      margin-bottom: 1.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .hero-title {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: rgba(255, 255, 255, 0.9);
+      margin-bottom: 2.5rem;
+      line-height: 1.6;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-stats {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: 900;
+      color: white;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .stat-divider {
+      width: 1px;
+      height: 3rem;
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Domains Section */
+    .domains-section {
+      padding: 3rem 0 4rem;
+    }
+
+    .domains-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 2rem;
+    }
+
+    .domain-card {
+      background: white;
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 0.75rem;
+      padding: 1.75rem;
+      transition: all 0.2s ease;
+    }
+
+    .domain-card:hover {
+      border-color: var(--brand-green);
+      box-shadow: 0 4px 16px rgba(120, 140, 93, 0.12);
+    }
+
+    .domain-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .domain-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .domain-count {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--brand-green);
+      background: rgba(120, 140, 93, 0.1);
+      padding: 0.25rem 0.625rem;
+      border-radius: 0.375rem;
+      font-family: 'Poppins', Arial, sans-serif;
+      white-space: nowrap;
+    }
+
+    .domain-tagline {
+      font-size: 0.9375rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.5;
+      margin-bottom: 1.25rem;
+    }
+
+    .doc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .doc-item {
+      border-radius: 0.5rem;
+    }
+
+    .doc-link {
+      display: block;
+      padding: 0.75rem 1rem;
+      background: rgba(120, 140, 93, 0.06);
+      border: 1px solid rgba(120, 140, 93, 0.15);
+      border-radius: 0.5rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .doc-link:hover {
+      background: rgba(120, 140, 93, 0.12);
+      border-color: var(--brand-green);
+      transform: translateX(4px);
+    }
+
+    .doc-link .doc-title {
+      display: block;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-bottom: 0.25rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .doc-link .doc-subtitle {
+      display: block;
+      font-size: 0.8125rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.4;
+    }
+
+    .doc-placeholder {
+      padding: 0.75rem 1rem;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 0.5rem;
+      position: relative;
+    }
+
+    .doc-placeholder .doc-title {
+      display: block;
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--brand-mid-gray);
+      margin-bottom: 0.25rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .doc-placeholder .doc-subtitle {
+      display: block;
+      font-size: 0.8125rem;
+      color: var(--brand-light-gray);
+      line-height: 1.4;
+    }
+
+    .coming-badge {
+      display: inline-block;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--brand-mid-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-top: 0.375rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    /* Footer Section */
+    .footer-section {
+      padding: 3rem 0;
+      text-align: center;
+    }
+
+    .back-link {
+      color: var(--brand-green);
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.15s ease;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: #4a6741;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .domains-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 2rem 0;
+      }
+
+      .hero-stats {
+        gap: 1rem;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+      }
+
+      .stat-divider {
+        height: 2rem;
+      }
+    }
+  </style>
+</BaseLayout>

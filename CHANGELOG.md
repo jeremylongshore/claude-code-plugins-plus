@@ -5,6 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.16.0] - 2026-03-07
+
+### Added
+- **Domain migration to tonsofskills.com** - Primary domain with Firebase hosting and 301 redirects
+- **Homepage dark theme redesign** - Braves Booth-inspired dark theme with modern UI
+- **Production E2E tests** - Playwright tests for tonsofskills.com deployment validation
+- **Research page** - `/research` with 6 data-driven analysis documents
+- **Trading strategy backtester fixes** - 8 quality gaps fixed (#314):
+  - Stop-loss and take-profit enforcement
+  - Short position support for RSI, MACD, Bollinger, MeanReversion strategies
+  - Settings.yaml loading with CLI override support
+  - Full test suite with 31 pytest tests
+
+### Fixed
+- **Axiom submodule issue** - Converted broken submodule to regular directory, fixing CI on forks
+- Mobile horizontal overflow on `/explore` page
+- Badge text size and cowork plugin overflow on mobile
+- Hidden nav links handling in Playwright tests
+- Skills link to cowork page, updated skills page title
+
+### Changed
+- CI cron schedules disabled to reduce Actions minutes usage
+- Workflow dispatch trigger added to Validate Plugins workflow
+- Cowork zip integrity check now works without unzip (Node.js fallback)
+- Production E2E job now independent of marketplace-validation
+
+### Reverted
+- Chainstack and deAPI plugins temporarily reverted pending review
+
+### Metrics
+- Commits since v4.15.0: 50
+- Files changed: 183 (+25,792 / -1,584 lines)
+- Contributors: Jeremy Longshore, intentsolutions.io, clowreed, Eugene Aseev
+
+---
+
 ## [4.15.0] - 2026-02-13
 
 ### Added

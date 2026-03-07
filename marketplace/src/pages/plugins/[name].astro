@@ -159,6 +159,13 @@ const relatedPlugins = await (async () => {
         copyBtn.textContent = 'Copied!';
         copyBtn.classList.add('copied');
 
+        if (window.trackEvent) {
+          window.trackEvent('install_copied', {
+            plugin_name: text.split(' ').pop() || '',
+            source: 'plugin_detail'
+          });
+        }
+
         setTimeout(() => {
           copyBtn.textContent = 'Copy';
           copyBtn.classList.remove('copied');

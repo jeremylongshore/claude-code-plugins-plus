@@ -44,6 +44,7 @@ logs/
 .env
 .env.local
 .env.*.local
+.mcp.json
 
 # Build outputs
 dist/
@@ -106,3 +107,4 @@ marketplace/public/downloads/
 marketplace/src/data/cowork-manifest.json
 **/skills/*/data/
 
+claudes-docs/

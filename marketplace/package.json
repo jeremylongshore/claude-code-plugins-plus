@@ -1,7 +1,7 @@
 {
   "name": "marketplace",
   "type": "module",
-  "version": "4.10.0",
+  "version": "4.16.0",
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/build.mjs",
@@ -13,7 +13,8 @@
     "validate:playbooks": "node scripts/validate-playbook-routes.mjs",
     "validate:internal-links": "node scripts/validate-internal-links.mjs",
     "validate": "node scripts/validate-playbook-routes.mjs && node scripts/validate-routes.mjs",
-    "validate:dist": "node scripts/validate-playbook-routes.mjs --dist && node scripts/validate-internal-links.mjs"
+    "validate:dist": "node scripts/validate-playbook-routes.mjs --dist && node scripts/validate-internal-links.mjs",
+    "test:production": "npx playwright test --config=playwright.production.config.ts"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.18",

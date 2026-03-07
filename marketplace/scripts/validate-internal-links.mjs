@@ -36,6 +36,7 @@ const SEED_PAGES = [
   'explore/index.html',
   'skills/index.html',
   'cowork/index.html',
+  'research/index.html',
 ];
 
 console.log('🔗 Validating internal links...\n');

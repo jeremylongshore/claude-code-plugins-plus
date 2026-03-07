@@ -1,0 +1,510 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  domain: string;
+  domainSlug: string;
+  wordCount: number;
+}
+
+const { title, description, domain, domainSlug, wordCount } = Astro.props;
+const readTime = Math.round(wordCount / 200);
+const currentUrl = `https://tonsofskills.com${Astro.url.pathname}`;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{title} | Research | Claude Code Plugins</title>
+  <meta name="description" content={description}>
+  <link rel="stylesheet" href="/styles/global.css">
+</head>
+<body>
+  <div class="research-page">
+    <!-- Header -->
+    <header class="research-header">
+      <div class="container">
+        <nav class="breadcrumbs">
+          <a href="/">Home</a>
+          <span class="breadcrumb-separator">/</span>
+          <a href="/research">Research</a>
+          <span class="breadcrumb-separator">/</span>
+          <span class="breadcrumb-current">{title}</span>
+        </nav>
+
+        <div class="research-hero">
+          <span class="domain-badge">{domain}</span>
+          <h1 class="research-title">{title}</h1>
+          <p class="research-description">{description}</p>
+          <div class="research-meta">
+            <span class="meta-item">~{readTime} min read</span>
+            <span class="meta-divider">&bull;</span>
+            <span class="meta-item">{wordCount.toLocaleString()} words</span>
+            <span class="meta-divider">&bull;</span>
+            <span class="meta-item">Data-Driven</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="research-main">
+      <div class="container">
+        <div class="research-layout">
+          <!-- Table of Contents (Sidebar) -->
+          <aside class="toc-sidebar" id="toc-sidebar">
+            <div class="toc-sticky">
+              <h2 class="toc-title">Table of Contents</h2>
+              <nav class="toc-nav" id="toc-nav">
+                <!-- Populated by JavaScript -->
+              </nav>
+            </div>
+          </aside>
+
+          <!-- Research Content -->
+          <article class="research-content">
+            <slot />
+
+            <!-- Cite This Block -->
+            <div class="cite-block">
+              <h3 class="cite-title">Cite This Research</h3>
+              <div class="cite-text">
+                <code>{title}. Claude Code Plugins Research, 2026. {currentUrl}</code>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer Navigation -->
+    <footer class="research-footer">
+      <div class="container">
+        <div class="back-to-index">
+          <a href={`/research#${domainSlug}`} class="back-link">&larr; Back to {domain}</a>
+          <span class="back-divider">&bull;</span>
+          <a href="/research" class="back-link">All Research</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <style>
+    .research-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* Header Styles */
+    .research-header {
+      background: var(--brand-light);
+      border-bottom: 1px solid var(--brand-light-gray);
+      padding: 2rem 0;
+    }
+
+    .breadcrumbs {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      margin-bottom: 2rem;
+      color: var(--brand-mid-gray);
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .breadcrumbs a {
+      color: var(--brand-mid-gray);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .breadcrumbs a:hover {
+      color: var(--brand-green);
+    }
+
+    .breadcrumb-separator {
+      color: var(--brand-mid-gray);
+    }
+
+    .breadcrumb-current {
+      color: var(--brand-dark);
+    }
+
+    .research-hero {
+      max-width: 800px;
+    }
+
+    .domain-badge {
+      display: inline-block;
+      background: rgba(120, 140, 93, 0.1);
+      color: var(--brand-green);
+      padding: 0.375rem 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(120, 140, 93, 0.2);
+      margin-bottom: 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-title {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 900;
+      color: var(--brand-dark);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-description {
+      font-size: 1.125rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .research-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.875rem;
+      color: var(--brand-mid-gray);
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .meta-divider {
+      color: var(--brand-light-gray);
+    }
+
+    /* Main Content Layout */
+    .research-main {
+      flex: 1;
+      padding: 3rem 0;
+    }
+
+    .research-layout {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* Table of Contents */
+    .toc-sidebar {
+      position: relative;
+    }
+
+    .toc-sticky {
+      position: sticky;
+      top: 2rem;
+    }
+
+    .toc-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--brand-mid-gray);
+      margin-bottom: 1rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .toc-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .toc-nav a {
+      display: block;
+      color: var(--brand-mid-gray);
+      font-size: 0.875rem;
+      padding: 0.375rem 0.75rem;
+      border-left: 2px solid var(--brand-light-gray);
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .toc-nav a:hover {
+      color: var(--brand-green);
+      border-left-color: var(--brand-green);
+      background: rgba(120, 140, 93, 0.05);
+    }
+
+    .toc-nav a.active {
+      color: var(--brand-green);
+      border-left-color: var(--brand-green);
+      font-weight: 600;
+    }
+
+    /* Research Content */
+    .research-content {
+      max-width: 800px;
+    }
+
+    /* Typography within content */
+    .research-content :global(h2) {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--brand-dark);
+      margin-top: 3rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--brand-light-gray);
+      scroll-margin-top: 2rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-content :global(h3) {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--brand-dark);
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      scroll-margin-top: 2rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-content :global(h4) {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--brand-dark);
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      scroll-margin-top: 2rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-content :global(p) {
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+      color: var(--brand-dark);
+    }
+
+    .research-content :global(ul),
+    .research-content :global(ol) {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+
+    .research-content :global(li) {
+      margin-bottom: 0.5rem;
+      line-height: 1.7;
+      color: var(--brand-dark);
+    }
+
+    .research-content :global(table) {
+      width: 100%;
+      margin: 2rem 0;
+      border-collapse: collapse;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .research-content :global(th) {
+      background: var(--brand-light-gray);
+      color: var(--brand-dark);
+      font-weight: 600;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--brand-light-gray);
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .research-content :global(td) {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--brand-light-gray);
+      color: var(--brand-dark);
+    }
+
+    .research-content :global(tr:last-child td) {
+      border-bottom: none;
+    }
+
+    .research-content :global(pre) {
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .research-content :global(code) {
+      font-family: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+      font-size: 0.875em;
+    }
+
+    .research-content :global(blockquote) {
+      border-left: 4px solid var(--brand-green);
+      background: rgba(120, 140, 93, 0.05);
+      padding: 1rem 1.5rem;
+      margin: 1.5rem 0;
+      color: var(--brand-dark);
+      font-style: italic;
+    }
+
+    .research-content :global(hr) {
+      border: none;
+      border-top: 1px solid var(--brand-light-gray);
+      margin: 3rem 0;
+    }
+
+    /* Data highlight boxes */
+    .research-content :global(.data-point) {
+      background: rgba(120, 140, 93, 0.08);
+      border: 1px solid rgba(120, 140, 93, 0.2);
+      border-radius: 0.5rem;
+      padding: 1.25rem 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .research-content :global(.data-point strong) {
+      color: var(--brand-green);
+    }
+
+    /* Cite Block */
+    .cite-block {
+      margin-top: 4rem;
+      padding: 1.5rem;
+      background: var(--brand-light);
+      border: 1px solid var(--brand-light-gray);
+      border-radius: 0.5rem;
+    }
+
+    .cite-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--brand-mid-gray);
+      margin-bottom: 0.75rem;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .cite-text code {
+      font-size: 0.8125rem;
+      color: var(--brand-mid-gray);
+      line-height: 1.6;
+      word-break: break-all;
+    }
+
+    /* Footer Navigation */
+    .research-footer {
+      background: var(--brand-light);
+      border-top: 1px solid var(--brand-light-gray);
+      padding: 2rem 0;
+      margin-top: 4rem;
+    }
+
+    .back-to-index {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .back-link {
+      color: var(--brand-green);
+      font-weight: 600;
+      transition: color 0.2s ease;
+      text-decoration: none;
+      font-family: 'Poppins', Arial, sans-serif;
+    }
+
+    .back-link:hover {
+      color: #4a6741;
+    }
+
+    .back-divider {
+      color: var(--brand-light-gray);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+      .research-layout {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+
+      .toc-sidebar {
+        display: none;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .research-header {
+        padding: 1.5rem 0;
+      }
+
+      .research-main {
+        padding: 2rem 0;
+      }
+
+      .research-meta {
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+
+  <script>
+    // Generate Table of Contents from h2 and h3 headings
+    function generateTOC() {
+      const content = document.querySelector('.research-content');
+      const tocNav = document.getElementById('toc-nav');
+
+      if (!content || !tocNav) return;
+
+      const headings = content.querySelectorAll('h2, h3');
+
+      headings.forEach((heading, index) => {
+        if (!heading.id) {
+          heading.id = `section-${index}`;
+        }
+
+        const link = document.createElement('a');
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent;
+        link.style.paddingLeft = heading.tagName === 'H3' ? '1.5rem' : '0.75rem';
+
+        tocNav.appendChild(link);
+      });
+
+      // Active section tracking
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            const links = tocNav.querySelectorAll('a');
+            links.forEach(link => {
+              link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+            });
+          }
+        });
+      }, {
+        rootMargin: '-100px 0px -66%'
+      });
+
+      headings.forEach(heading => observer.observe(heading));
+    }
+
+    document.addEventListener('DOMContentLoaded', generateTOC);
+  </script>
+</body>
+</html>

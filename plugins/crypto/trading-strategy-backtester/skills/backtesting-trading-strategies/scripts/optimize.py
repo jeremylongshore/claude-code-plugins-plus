@@ -20,7 +20,8 @@ import pandas as pd
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from backtest import load_data, run_backtest, parse_period
+from backtest import load_data, run_backtest
+from fetch_data import parse_period
 
 
 def grid_search(

@@ -14,7 +14,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <meta name="description" content={description}>
-    <link rel="canonical" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+    <link rel="canonical" content={`https://tonsofskills.com${Astro.url.pathname}`}>
 
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -23,14 +23,14 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+    <meta property="og:url" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
     <meta property="og:site_name" content="Claude Code Plugins">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content={`https://claudecodeplugins.io${Astro.url.pathname}`}>
+    <meta name="twitter:url" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <meta name="twitter:title" content={title}>
     <meta name="twitter:description" content={description}>
 
@@ -55,11 +55,17 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
 
-        // Log page view
-        logEvent(analytics, 'page_view', {
+        // Log page view with UTM attribution
+        const urlParams = new URLSearchParams(window.location.search);
+        const pageViewParams = {
           page_path: window.location.pathname,
           page_title: document.title
-        });
+        };
+        const utmSource = urlParams.get('utm_source');
+        const utmMedium = urlParams.get('utm_medium');
+        if (utmSource) pageViewParams.source = utmSource;
+        if (utmMedium) pageViewParams.medium = utmMedium;
+        logEvent(analytics, 'page_view', pageViewParams);
 
         // Make analytics available globally for custom events
         window.firebaseAnalytics = analytics;
@@ -67,97 +73,103 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
       }
     </script>
 
-    <!-- Fonts -->
+    <!-- Unified Analytics Helper -->
+    <script is:inline src="/scripts/analytics.js"></script>
+
+    <!-- Fonts: Bebas Neue (display), DM Sans (body), DM Mono (mono/labels) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 
     <style>
         /* ========================================
-           ANTHROPIC OFFICIAL BRAND COLORS
+           BRAVES BOOTH DARK THEME
            ======================================== */
         :root {
-            /* Main Colors */
-            --brand-dark: #141413;
-            --brand-light: #faf9f5;
-            --brand-mid-gray: #b0aea5;
-            --brand-light-gray: #e8e6dc;
+            /* Core surface palette */
+            --surface:   #06090f;
+            --surface-1: #0d1117;
+            --surface-2: #161b22;
+            --surface-3: #1c2333;
 
-            /* Accent Colors */
-            --brand-orange: #d97757;
-            --brand-blue: #6a9bcc;
-            --brand-green: #788c5d;
+            /* Brand accents */
+            --navy:  #0C2340;
+            --red:   #CE1141;
+            --gold:  #EAAA00;
 
-            /* Derived Colors */
-            --brand-orange-dark: #c45e3e;
-            --brand-orange-light: #e8937a;
+            /* Borders */
+            --border:        #30363d;
+            --border-bright: #484f58;
+
+            /* Text */
+            --text:   #e6edf3;
+            --text-2: #8b949e;
+            --text-3: #6e7681;
+
+            /* Status */
+            --positive: #3fb950;
+            --warning:  #d29922;
+            --danger:   #f85149;
+
+            /* ----------------------------------------
+               Legacy brand-* aliases — kept so that
+               existing pages that reference these vars
+               continue to work unchanged.
+               ---------------------------------------- */
+            --brand-dark:         #06090f;        /* was #141413 → surface */
+            --brand-light:        #e6edf3;        /* was #faf9f5 → text */
+            --brand-mid-gray:     #8b949e;        /* was #b0aea5 → text-2 */
+            --brand-light-gray:   #30363d;        /* was #e8e6dc → border */
+            --brand-orange:       #EAAA00;        /* was #d97757 → gold */
+            --brand-orange-dark:  #CE1141;        /* was #c45e3e → red */
+            --brand-orange-light: #f0c040;        /* was #e8937a → gold lighter */
+            --brand-blue:         #4493f8;        /* was #6a9bcc */
+            --brand-green:        #3fb950;        /* was #788c5d → positive */
 
             --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
+        :global(*), :global(*::before), :global(*::after) {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        html, body {
+        :global(html), :global(body) {
             overflow-x: hidden;
             max-width: 100%;
             scroll-behavior: smooth;
-            scroll-padding-top: 120px;
+            scroll-padding-top: 90px;
         }
 
         body {
-            font-family: 'Lora', Georgia, serif;
-            background-color: var(--brand-light);
-            color: var(--brand-dark);
+            font-family: 'DM Sans', system-ui, sans-serif;
+            background-color: var(--surface-1);
+            color: var(--text);
             line-height: 1.7;
         }
 
-        h1, h2, h3, h4, h5, h6 {
-            font-family: 'Poppins', Arial, sans-serif;
+        h1, h2 {
+            font-family: 'Bebas Neue', Impact, Arial, sans-serif;
+            letter-spacing: 0.03em;
+        }
+
+        h3, h4, h5, h6 {
+            font-family: 'DM Sans', system-ui, sans-serif;
         }
 
         /* Navigation */
         nav {
             position: fixed;
-            top: 36px; /* Account for top banner */
+            top: 0;
             width: 100%;
-            padding: 1.5rem 4rem;
+            padding: 1rem 4rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 100;
-            background: linear-gradient(to bottom, var(--brand-light) 0%, transparent 100%);
-        }
-
-        /* Top Banner */
-        .top-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 101;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-            color: white;
-            text-align: center;
-            padding: 0.6rem 1rem;
-            font-family: 'Poppins', Arial, sans-serif;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .top-banner a {
-            color: white;
-            text-decoration: underline;
-            font-weight: 600;
-            margin-left: 0.5rem;
-            transition: opacity 0.3s var(--transition-smooth);
-        }
-
-        .top-banner a:hover {
-            opacity: 0.85;
+            background: var(--navy);
+            border-bottom: 1px solid var(--border);
         }
 
         .logo {
@@ -167,9 +179,9 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             font-weight: 600;
             font-size: 1.1rem;
             letter-spacing: -0.02em;
-            color: var(--brand-dark);
+            color: var(--text);
             text-decoration: none;
-            font-family: 'Poppins', Arial, sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
         }
 
         .logo-text {
@@ -179,39 +191,43 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .logo-title {
-            font-weight: 600;
-            font-size: 1.1rem;
+            font-family: 'Bebas Neue', Impact, Arial, sans-serif;
+            font-weight: 400;
+            font-size: 1.35rem;
+            letter-spacing: 0.06em;
+            color: var(--gold);
         }
 
         .logo-subtitle {
             font-size: 0.65rem;
             font-weight: 400;
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
             letter-spacing: 0.02em;
+            font-family: 'DM Mono', monospace;
         }
 
         .logo-icon {
             width: 36px;
             height: 36px;
-            background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
+            background: var(--gold);
             border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 600;
-            font-size: 1.1rem;
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
         .nav-links {
             display: flex;
             gap: 2.5rem;
             list-style: none;
-            font-family: 'Poppins', Arial, sans-serif;
+            font-family: 'DM Sans', system-ui, sans-serif;
         }
 
         .nav-links a {
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             text-decoration: none;
             font-size: 0.9rem;
             font-weight: 500;
@@ -219,11 +235,11 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .nav-links a:hover {
-            color: var(--brand-orange);
+            color: var(--gold);
         }
 
         .nav-cta {
-            background: var(--brand-orange);
+            background: var(--red) !important;
             color: white !important;
             padding: 0.5rem 1.25rem;
             border-radius: 6px;
@@ -232,7 +248,8 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .nav-cta:hover {
-            background: var(--brand-orange-dark);
+            background: #a50d33 !important;
+            color: white !important;
             transform: translateY(-2px);
         }
 
@@ -241,7 +258,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             display: none;
             background: none;
             border: none;
-            color: var(--brand-dark);
+            color: var(--text);
             cursor: pointer;
             padding: 0.5rem;
         }
@@ -253,16 +270,17 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
 
         /* Main Content */
         main {
-            padding-top: 116px; /* 36px banner + 80px nav */
-            min-height: calc(100vh - 116px);
+            padding-top: 72px; /* nav height only — no top banner */
+            min-height: calc(100vh - 72px);
         }
 
         /* Footer */
         footer {
-            background: var(--brand-dark);
-            color: var(--brand-light-gray);
+            background: var(--surface);
+            color: var(--text-2);
             padding: 3rem 2rem 2rem;
             margin-top: 4rem;
+            border-top: 1px solid var(--border);
         }
 
         .footer-content {
@@ -272,16 +290,17 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 2rem;
             padding-bottom: 2rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid var(--border);
         }
 
         .footer-section h4 {
-            color: white;
-            font-size: 0.9rem;
+            color: var(--gold);
+            font-size: 0.8rem;
             font-weight: 600;
             margin-bottom: 1rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.08em;
+            font-family: 'DM Mono', monospace;
         }
 
         .footer-section ul {
@@ -289,7 +308,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .footer-section a {
-            color: var(--brand-mid-gray);
+            color: var(--text-2);
             text-decoration: none;
             font-size: 0.85rem;
             line-height: 2;
@@ -297,7 +316,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
         }
 
         .footer-section a:hover {
-            color: var(--brand-orange);
+            color: var(--gold);
         }
 
         .footer-bottom {
@@ -306,11 +325,11 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             padding-top: 2rem;
             text-align: center;
             font-size: 0.85rem;
-            color: var(--brand-mid-gray);
+            color: var(--text-3);
         }
 
         .footer-bottom a {
-            color: var(--brand-orange);
+            color: var(--gold);
             text-decoration: none;
         }
 
@@ -332,15 +351,15 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                 width: 80%;
                 max-width: 300px;
                 height: 100vh;
-                background: var(--brand-light);
-                border-left: 1px solid var(--brand-light-gray);
+                background: var(--surface-1);
+                border-left: 1px solid var(--border);
                 flex-direction: column;
                 gap: 0;
                 padding: 5rem 0 2rem;
                 transition: right 0.3s var(--transition-smooth);
                 overflow-y: auto;
                 z-index: 999;
-                box-shadow: -4px 0 20px rgba(0,0,0,0.1);
+                box-shadow: -4px 0 20px rgba(0, 0, 0, 0.5);
             }
 
             .nav-links.active {
@@ -355,7 +374,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             .nav-links a {
                 display: block;
                 padding: 1rem 2rem;
-                border-bottom: 1px solid var(--brand-light-gray);
+                border-bottom: 1px solid var(--border);
             }
 
             .nav-cta {
@@ -365,18 +384,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
             }
 
             main {
-                padding-top: 106px; /* 36px banner + 70px nav on mobile */
-            }
-
-            .top-banner {
-                font-size: 0.7rem;
-                padding: 0.5rem 1rem;
-                line-height: 1.4;
-            }
-
-            .top-banner a {
-                display: inline;
-                margin-left: 0.25rem;
+                padding-top: 64px; /* nav only on mobile */
             }
 
             .logo-subtitle {
@@ -395,18 +403,12 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     </style>
 </head>
 <body>
-    <!-- Top Banner -->
-    <div class="top-banner">
-        📅 let's chat! explore the endless possibilities creating industries that don't exist.
-        <a href="https://calendar.app.google/Dj5qDi9oQjDzGkcq8" target="_blank" rel="noopener">click here</a>
-    </div>
-
     <!-- Navigation -->
     <nav>
         <a href="/" class="logo">
-            <div class="logo-icon">⌘</div>
+            <div class="logo-icon">&#8984;</div>
             <div class="logo-text">
-                <span class="logo-title">Claude Code Skills</span>
+                <span class="logo-title">TONS OF SKILLS</span>
                 <span class="logo-subtitle">by intent solutions io</span>
             </div>
         </a>
@@ -445,6 +447,7 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                     <li><a href="/explore">Explore Plugins</a></li>
                     <li><a href="/skills">Agent Skills</a></li>
                     <li><a href="/learning">Learning Hub</a></li>
+                    <li><a href="/research">Research</a></li>
                     <li><a href="/cowork">Cowork Downloads</a></li>
                     <li><a href="https://github.com/jeremylongshore/claude-code-plugins">GitHub</a></li>
                 </ul>
@@ -484,10 +487,10 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <!-- Mobile Menu Script -->
     <script is:inline>
         document.addEventListener('DOMContentLoaded', function() {
-            const menuToggle = document.querySelector('.mobile-menu-toggle');
-            const navLinks = document.querySelector('.nav-links');
-            const menuIcon = document.querySelector('.menu-icon');
-            const closeIcon = document.querySelector('.close-icon');
+            var menuToggle = document.querySelector('.mobile-menu-toggle');
+            var navLinks = document.querySelector('.nav-links');
+            var menuIcon = document.querySelector('.menu-icon');
+            var closeIcon = document.querySelector('.close-icon');
 
             if (menuToggle && navLinks) {
                 menuToggle.addEventListener('click', function() {
@@ -525,6 +528,18 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
                     }
                 });
             }
+
+            // Track outbound link clicks (nav + footer)
+            document.querySelectorAll('nav a[target="_blank"], footer a[target="_blank"]').forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.trackEvent) {
+                        window.trackEvent('outbound_click', {
+                            url: link.href,
+                            link_text: link.textContent.trim()
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>

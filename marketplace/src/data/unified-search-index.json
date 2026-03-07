@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-02-19T22:45:38.126Z",
+    "generated": "2026-03-05T01:56:06.353Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 314,
-    "totalSkills": 1341,
-    "totalItems": 1655,
+    "totalPlugins": 315,
+    "totalSkills": 1342,
+    "totalItems": 1657,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -6989,6 +6989,28 @@
       "searchText": "youtube strategy complete youtube content production workflow: research competitors, generate video ideas, build briefs, craft titles and thumbnails, and create detailed video outlines with demo prep checklists. productivity "
     },
     {
+      "type": "plugin",
+      "id": "b12-claude-plugin",
+      "slug": "b12-claude-plugin",
+      "name": "b12-claude-plugin",
+      "displayName": "b12 claude plugin",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "category": "community",
+      "tags": [],
+      "author": {
+        "name": "B12.io",
+        "url": "https://github.com/b12io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "b12 claude plugin b12 website generator — an official plugin by b12.io. ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready b12 website signup link instantly. community "
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -7721,7 +7743,7 @@
       "id": "analyzing-mempool",
       "slug": "analyzing-mempool",
       "name": "analyzing-mempool",
-      "description": "Monitor blockchain mempools for pending transactions, gas analysis, and MEV opportunities. Use when analyzing pending transactions, optimizing gas prices, or researching MEV. Trigger with phrases like \"check mempool\", \"scan pending txs\", \"find MEV\", \"gas price analysis\", or \"pending swaps\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*mempool*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Monitor blockchain mempools for pending transactions, gas analysis, and MEV opportunities. Use when analyzing pending transactions, optimizing gas prices, or researching MEV. Trigger with phrases like \"check mempool\", \"scan pending txs\", \"find MEV\", \"gas price analysis\", or \"pending swaps\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*mempool*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7729,7 +7751,7 @@
         "name": "mempool-analyzer",
         "category": "crypto"
       },
-      "searchText": "analyzing-mempool monitor blockchain mempools for pending transactions, gas analysis, and mev opportunities. use when analyzing pending transactions, optimizing gas prices, or researching mev. trigger with phrases like \"check mempool\", \"scan pending txs\", \"find mev\", \"gas price analysis\", or \"pending swaps\". allowed-tools: read, write, edit, grep, glob, bash(python*mempool*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "analyzing-mempool monitor blockchain mempools for pending transactions, gas analysis, and mev opportunities. use when analyzing pending transactions, optimizing gas prices, or researching mev. trigger with phrases like \"check mempool\", \"scan pending txs\", \"find mev\", \"gas price analysis\", or \"pending swaps\". allowed-tools: read, write, edit, grep, glob, bash(python:*mempool*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -7758,7 +7780,7 @@
       "id": "analyzing-nft-rarity",
       "slug": "analyzing-nft-rarity",
       "name": "analyzing-nft-rarity",
-      "description": "Calculate NFT rarity scores and rank tokens by trait uniqueness. Use when analyzing NFT collections, checking token rarity, or comparing NFTs. Trigger with phrases like \"check NFT rarity\", \"analyze collection\", \"rank tokens\", \"compare NFTs\". allowed-tools: Read, Bash(python3 *) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Calculate NFT rarity scores and rank tokens by trait uniqueness. Use when analyzing NFT collections, checking token rarity, or comparing NFTs. Trigger with phrases like \"check NFT rarity\", \"analyze collection\", \"rank tokens\", \"compare NFTs\". allowed-tools: Read, Bash(python3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -7766,7 +7788,7 @@
         "name": "nft-rarity-analyzer",
         "category": "crypto"
       },
-      "searchText": "analyzing-nft-rarity calculate nft rarity scores and rank tokens by trait uniqueness. use when analyzing nft collections, checking token rarity, or comparing nfts. trigger with phrases like \"check nft rarity\", \"analyze collection\", \"rank tokens\", \"compare nfts\". allowed-tools: read, bash(python3 *) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "analyzing-nft-rarity calculate nft rarity scores and rank tokens by trait uniqueness. use when analyzing nft collections, checking token rarity, or comparing nfts. trigger with phrases like \"check nft rarity\", \"analyze collection\", \"rank tokens\", \"compare nfts\". allowed-tools: read, bash(python3:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -14190,7 +14212,7 @@
       "id": "generating-stored-procedures",
       "slug": "generating-stored-procedures",
       "name": "generating-stored-procedures",
-      "description": "Use when you need to generate, validate, or deploy stored procedures for PostgreSQL, MySQL, or SQL Server. Creates database functions, triggers, and procedures with proper error handling and transaction management. Trigger with phrases like \"generate stored procedure\", \"create database function\", \"write SQL procedure\", \"add trigger to table\", or \"create CRUD procedures\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:psql,cmd:mysql,cmd:sqlcmd,cmd:python3) version: 2.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Use when you need to generate, validate, or deploy stored procedures for PostgreSQL, MySQL, or SQL Server. Creates database functions, triggers, and procedures with proper error handling and transaction management. Trigger with phrases like \"generate stored procedure\", \"create database function\", \"write SQL procedure\", \"add trigger to table\", or \"create CRUD procedures\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(sqlcmd:*), Bash(python3:*) version: 2.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "database",
       "allowedTools": [],
       "version": "1.0.0",
@@ -14198,7 +14220,7 @@
         "name": "stored-procedure-generator",
         "category": "database"
       },
-      "searchText": "generating-stored-procedures use when you need to generate, validate, or deploy stored procedures for postgresql, mysql, or sql server. creates database functions, triggers, and procedures with proper error handling and transaction management. trigger with phrases like \"generate stored procedure\", \"create database function\", \"write sql procedure\", \"add trigger to table\", or \"create crud procedures\". allowed-tools: read, write, edit, grep, glob, bash(cmd:psql,cmd:mysql,cmd:sqlcmd,cmd:python3) version: 2.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit database "
+      "searchText": "generating-stored-procedures use when you need to generate, validate, or deploy stored procedures for postgresql, mysql, or sql server. creates database functions, triggers, and procedures with proper error handling and transaction management. trigger with phrases like \"generate stored procedure\", \"create database function\", \"write sql procedure\", \"add trigger to table\", or \"create crud procedures\". allowed-tools: read, write, edit, grep, glob, bash(psql:*), bash(mysql:*), bash(sqlcmd:*), bash(python3:*) version: 2.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit database "
     },
     {
       "type": "skill",
@@ -19913,7 +19935,7 @@
       "id": "monitoring-cross-chain-bridges",
       "slug": "monitoring-cross-chain-bridges",
       "name": "monitoring-cross-chain-bridges",
-      "description": "Monitor cross-chain bridge TVL, volume, fees, and transaction status across networks. Use when researching bridges, comparing routes, or tracking bridge transactions. Trigger with phrases like \"monitor bridges\", \"compare bridge fees\", \"track bridge tx\", \"bridge TVL\", or \"cross-chain transfer status\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*bridge_monitor*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Monitor cross-chain bridge TVL, volume, fees, and transaction status across networks. Use when researching bridges, comparing routes, or tracking bridge transactions. Trigger with phrases like \"monitor bridges\", \"compare bridge fees\", \"track bridge tx\", \"bridge TVL\", or \"cross-chain transfer status\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*bridge_monitor*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -19921,7 +19943,7 @@
         "name": "cross-chain-bridge-monitor",
         "category": "crypto"
       },
-      "searchText": "monitoring-cross-chain-bridges monitor cross-chain bridge tvl, volume, fees, and transaction status across networks. use when researching bridges, comparing routes, or tracking bridge transactions. trigger with phrases like \"monitor bridges\", \"compare bridge fees\", \"track bridge tx\", \"bridge tvl\", or \"cross-chain transfer status\". allowed-tools: read, write, edit, grep, glob, bash(python*bridge_monitor*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "monitoring-cross-chain-bridges monitor cross-chain bridge tvl, volume, fees, and transaction status across networks. use when researching bridges, comparing routes, or tracking bridge transactions. trigger with phrases like \"monitor bridges\", \"compare bridge fees\", \"track bridge tx\", \"bridge tvl\", or \"cross-chain transfer status\". allowed-tools: read, write, edit, grep, glob, bash(python:*bridge_monitor*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -19980,7 +20002,7 @@
       "id": "monitoring-whale-activity",
       "slug": "monitoring-whale-activity",
       "name": "monitoring-whale-activity",
-      "description": "Track large cryptocurrency transactions and whale wallet movements in real-time. Use when tracking large holder movements, exchange flows, or wallet activity. Trigger with phrases like \"track whales\", \"monitor large transfers\", \"check whale activity\", \"exchange inflows\", or \"watch wallet\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*whale*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Track large cryptocurrency transactions and whale wallet movements in real-time. Use when tracking large holder movements, exchange flows, or wallet activity. Trigger with phrases like \"track whales\", \"monitor large transfers\", \"check whale activity\", \"exchange inflows\", or \"watch wallet\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*whale*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -19988,7 +20010,7 @@
         "name": "whale-alert-monitor",
         "category": "crypto"
       },
-      "searchText": "monitoring-whale-activity track large cryptocurrency transactions and whale wallet movements in real-time. use when tracking large holder movements, exchange flows, or wallet activity. trigger with phrases like \"track whales\", \"monitor large transfers\", \"check whale activity\", \"exchange inflows\", or \"watch wallet\". allowed-tools: read, write, edit, grep, glob, bash(python*whale*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "monitoring-whale-activity track large cryptocurrency transactions and whale wallet movements in real-time. use when tracking large holder movements, exchange flows, or wallet activity. trigger with phrases like \"track whales\", \"monitor large transfers\", \"check whale activity\", \"exchange inflows\", or \"watch wallet\". allowed-tools: read, write, edit, grep, glob, bash(python:*whale*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -21270,7 +21292,7 @@
       "id": "optimizing-gas-fees",
       "slug": "optimizing-gas-fees",
       "name": "optimizing-gas-fees",
-      "description": "Optimize blockchain gas costs by analyzing prices, patterns, and timing. Use when checking gas prices, estimating costs, or finding optimal windows. Trigger with phrases like \"gas prices\", \"optimize gas\", \"transaction cost\", \"when to transact\". allowed-tools: Read, Bash(python3 *) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Optimize blockchain gas costs by analyzing prices, patterns, and timing. Use when checking gas prices, estimating costs, or finding optimal windows. Trigger with phrases like \"gas prices\", \"optimize gas\", \"transaction cost\", \"when to transact\". allowed-tools: Read, Bash(python3:*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -21278,7 +21300,7 @@
         "name": "gas-fee-optimizer",
         "category": "crypto"
       },
-      "searchText": "optimizing-gas-fees optimize blockchain gas costs by analyzing prices, patterns, and timing. use when checking gas prices, estimating costs, or finding optimal windows. trigger with phrases like \"gas prices\", \"optimize gas\", \"transaction cost\", \"when to transact\". allowed-tools: read, bash(python3 *) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "optimizing-gas-fees optimize blockchain gas costs by analyzing prices, patterns, and timing. use when checking gas prices, estimating costs, or finding optimal windows. trigger with phrases like \"gas prices\", \"optimize gas\", \"transaction cost\", \"when to transact\". allowed-tools: read, bash(python3:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -25309,7 +25331,7 @@
       "id": "tracking-token-launches",
       "slug": "tracking-token-launches",
       "name": "tracking-token-launches",
-      "description": "Track new token launches across DEXes with risk analysis and contract verification. Use when discovering new token launches, monitoring IDOs, or analyzing token contracts. Trigger with phrases like \"track launches\", \"find new tokens\", \"new pairs on uniswap\", \"token risk analysis\", or \"monitor IDOs\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python*launch_tracker*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
+      "description": "Track new token launches across DEXes with risk analysis and contract verification. Use when discovering new token launches, monitoring IDOs, or analyzing token contracts. Trigger with phrases like \"track launches\", \"find new tokens\", \"new pairs on uniswap\", \"token risk analysis\", or \"monitor IDOs\". allowed-tools: Read, Write, Edit, Grep, Glob, Bash(python:*launch_tracker*) version: 1.0.0 author: Jeremy Longshore <jeremy@intentsolutions.io> license: MIT",
       "category": "crypto",
       "allowedTools": [],
       "version": "1.0.0",
@@ -25317,7 +25339,7 @@
         "name": "token-launch-tracker",
         "category": "crypto"
       },
-      "searchText": "tracking-token-launches track new token launches across dexes with risk analysis and contract verification. use when discovering new token launches, monitoring idos, or analyzing token contracts. trigger with phrases like \"track launches\", \"find new tokens\", \"new pairs on uniswap\", \"token risk analysis\", or \"monitor idos\". allowed-tools: read, write, edit, grep, glob, bash(python*launch_tracker*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+      "searchText": "tracking-token-launches track new token launches across dexes with risk analysis and contract verification. use when discovering new token launches, monitoring idos, or analyzing token contracts. trigger with phrases like \"track launches\", \"find new tokens\", \"new pairs on uniswap\", \"token risk analysis\", or \"monitor idos\". allowed-tools: read, write, edit, grep, glob, bash(python:*launch_tracker*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
     },
     {
       "type": "skill",
@@ -26814,6 +26836,21 @@
         "category": "devops"
       },
       "searchText": "vertex-infra-expert execute use when provisioning vertex ai infrastructure with terraform. trigger with phrases like \"vertex ai terraform\", \"deploy gemini terraform\", \"model garden infrastructure\", \"vertex ai endpoints terraform\", or \"vector search terraform\". provisions model garden models, gemini endpoints, vector search indices, ml pipelines, and production ai services with encryption and auto-scaling. allowed-tools: read, write, edit, grep, glob, bash(terraform:*), bash(gcloud:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit devops "
+    },
+    {
+      "type": "skill",
+      "id": "website-generator",
+      "slug": "website-generator",
+      "name": "website-generator",
+      "description": "Use when the user asks to create a website, build a site, generate a landing page, or mentions B12. Trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"B12 website\". allowed-tools: AskUserQuestion version: 1.0.0 author: B12.io <https://github.com/b12io>",
+      "category": "community",
+      "allowedTools": [],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "b12-claude-plugin",
+        "category": "community"
+      },
+      "searchText": "website-generator use when the user asks to create a website, build a site, generate a landing page, or mentions b12. trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"b12 website\". allowed-tools: askuserquestion version: 1.0.0 author: b12.io <https://github.com/b12io> community "
     },
     {
       "type": "skill",

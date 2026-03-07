@@ -18,8 +18,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .explorer-hero {
-      background: linear-gradient(135deg, var(--brand-orange) 0%, var(--brand-orange-dark) 100%);
-      color: white;
+      background: linear-gradient(135deg, var(--navy) 0%, #0a1628 100%);
+      color: var(--text);
       padding: 4rem 4rem 3rem;
       text-align: center;
     }
@@ -48,9 +48,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       width: 100%;
       padding: 1.25rem 1.75rem;
       font-size: 1.1rem;
-      border: none;
+      border: 1px solid var(--border);
       border-radius: 12px;
-      font-family: 'Lora', Georgia, serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--surface-1);
+      color: var(--text);
       box-shadow: 0 8px 32px rgba(0,0,0,0.2);
     }
 
@@ -80,8 +82,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     /* Filters Section */
     .filters-bar {
-      background: white;
-      border-bottom: 2px solid var(--brand-light-gray);
+      background: var(--surface-1);
+      border-bottom: 2px solid var(--border);
       padding: 1.5rem 4rem;
       position: sticky;
       top: 80px;
@@ -100,13 +102,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     .type-toggle {
       display: flex;
       gap: 0.5rem;
-      background: var(--brand-light);
+      background: var(--surface-3);
       padding: 0.25rem;
       border-radius: 8px;
     }
 
     .type-btn {
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
       padding: 0.5rem 1.25rem;
       border: none;
       background: transparent;
@@ -119,8 +121,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .type-btn.active {
-      background: white;
-      color: var(--brand-orange);
+      background: var(--surface-1);
+      color: var(--gold);
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
 
@@ -129,15 +131,16 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       border: 2px solid var(--brand-light-gray);
       border-radius: 8px;
       font-size: 0.9rem;
-      font-family: 'Lora', Georgia, serif;
-      background: white;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--surface-2);
+      color: var(--text);
       cursor: pointer;
       transition: border-color 0.2s;
     }
 
     .filter-select:focus {
       outline: none;
-      border-color: var(--brand-orange);
+      border-color: var(--gold);
     }
 
     .results-info {
@@ -156,11 +159,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .keyboard-hint kbd {
-      background: var(--brand-light);
+      background: var(--surface-3);
       border: 1px solid var(--brand-light-gray);
       border-radius: 4px;
       padding: 0.15rem 0.4rem;
-      font-family: monospace;
+      font-family: 'DM Mono', monospace;
       font-size: 0.7rem;
     }
 
@@ -187,17 +190,17 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       display: flex;
       flex-direction: column;
       padding: 1.75rem;
-      background: white;
+      background: var(--surface-2);
       border-radius: 12px;
-      border: 2px solid var(--brand-light-gray);
+      border: 1px solid var(--border);
       transition: all 0.3s var(--transition-smooth);
       position: relative;
     }
 
     .result-card:hover {
-      border-color: var(--brand-orange);
+      border-color: var(--gold);
       transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(217, 119, 87, 0.15);
+      box-shadow: 0 8px 24px rgba(234, 170, 0, 0.1);
     }
 
     .result-card-link {
@@ -212,7 +215,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       bottom: 1rem;
       right: 1rem;
       padding: 0.4rem 0.75rem;
-      background: var(--brand-light);
+      background: var(--surface-3);
       border: 1px solid var(--brand-light-gray);
       border-radius: 6px;
       font-size: 0.75rem;
@@ -220,13 +223,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--brand-mid-gray);
       cursor: pointer;
       transition: all 0.2s;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
     }
 
     .compare-toggle-btn:hover {
-      border-color: var(--brand-orange);
-      color: var(--brand-orange);
-      background: rgba(217, 119, 87, 0.1);
+      border-color: var(--gold);
+      color: var(--gold);
+      background: rgba(234, 170, 0, 0.1);
     }
 
     .compare-toggle-btn.active {
@@ -269,8 +272,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .card-badge.has-skills {
-      background: rgba(217, 119, 87, 0.15);
-      color: var(--brand-orange-dark);
+      background: rgba(234, 170, 0, 0.15);
+      color: var(--gold);
     }
 
     /* Bookmark button */
@@ -280,7 +283,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       left: 0.75rem;
       width: 28px;
       height: 28px;
-      background: white;
+      background: var(--surface-3);
       border: 1px solid var(--brand-light-gray);
       border-radius: 6px;
       cursor: pointer;
@@ -299,21 +302,21 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     .bookmark-btn:hover {
       border-color: #ef4444;
-      background: #fef2f2;
+      background: rgba(248, 81, 73, 0.15);
     }
 
     .bookmark-btn.active {
       opacity: 1;
-      background: #fef2f2;
+      background: rgba(248, 81, 73, 0.15);
       border-color: #ef4444;
       color: #ef4444;
     }
 
     /* Keyboard navigation focus state */
     .result-card.keyboard-focused {
-      outline: 3px solid var(--brand-orange);
+      outline: 3px solid var(--gold);
       outline-offset: 2px;
-      box-shadow: 0 0 0 6px rgba(217, 119, 87, 0.2);
+      box-shadow: 0 0 0 6px rgba(234, 170, 0, 0.2);
     }
 
     .result-type-badge {
@@ -323,7 +326,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       padding: 0.35rem 0.75rem;
       font-size: 0.7rem;
       font-weight: 700;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       border-radius: 6px;
@@ -335,14 +338,14 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .result-type-badge.skill {
-      background: rgba(217, 119, 87, 0.15);
-      color: var(--brand-orange-dark);
+      background: rgba(234, 170, 0, 0.15);
+      color: var(--gold);
     }
 
     .result-name {
       font-size: 1.15rem;
       font-weight: 600;
-      color: var(--brand-dark);
+      color: var(--text);
       margin-bottom: 0.75rem;
       padding-right: 4rem;
     }
@@ -371,11 +374,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       align-items: center;
       gap: 0.5rem;
       padding: 0.5rem 0.75rem;
-      background: var(--brand-light);
+      background: var(--surface-3);
       border-radius: 6px;
-      color: var(--brand-orange-dark);
+      color: var(--gold);
       font-weight: 600;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
     }
 
     .result-category {
@@ -391,12 +394,12 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     .tool-tag {
       padding: 0.25rem 0.6rem;
-      background: rgba(217, 119, 87, 0.1);
-      color: var(--brand-orange-dark);
+      background: rgba(234, 170, 0, 0.1);
+      color: var(--gold);
       font-size: 0.7rem;
       font-weight: 600;
       border-radius: 4px;
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Mono', monospace;
     }
 
     .no-results {
@@ -407,7 +410,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     .no-results h3 {
       font-size: 1.5rem;
-      color: var(--brand-dark);
+      color: var(--text);
       margin-bottom: 1rem;
     }
 
@@ -417,10 +420,10 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     }
 
     .no-results button {
-      font-family: 'Poppins', Arial, sans-serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
       padding: 0.75rem 1.5rem;
-      background: var(--brand-orange);
-      color: white;
+      background: var(--gold);
+      color: var(--surface);
       border: none;
       border-radius: 8px;
       font-weight: 600;
@@ -459,6 +462,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
       .type-toggle {
         justify-content: center;
+        flex-wrap: wrap;
       }
 
       .results-info {
@@ -473,6 +477,12 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       .hero-stats {
         flex-direction: column;
         gap: 1rem;
+      }
+
+      .card-badge,
+      .result-type-badge,
+      .tool-tag {
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -575,7 +585,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           >♡</button>
 
           <a
-            href={item.type === 'plugin' ? `/plugins/${item.name}/` : `/skills/${item.slug}/`}
+            href={item.type === 'plugin' ? `/plugins/${item.name}/` : (item.parentPlugin ? `/cowork` : `/skills/${item.slug}/`)}
             class="result-card-link"
           >
             <span class={`result-type-badge ${item.type}`}>
@@ -787,9 +797,20 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       }
 
       // Search input
+      let searchDebounceTimer = null;
       document.getElementById('main-search').addEventListener('input', (e) => {
         activeFilters.search = e.target.value;
         applyFilters();
+
+        // Debounced search tracking (1s)
+        clearTimeout(searchDebounceTimer);
+        if (e.target.value.length >= 2) {
+          searchDebounceTimer = setTimeout(() => {
+            if (window.trackEvent) {
+              window.trackEvent('search', { query: e.target.value, source: 'explore' });
+            }
+          }, 1000);
+        }
       });
 
       // Type toggle buttons
@@ -799,6 +820,9 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           e.target.classList.add('active');
           activeFilters.type = e.target.dataset.type;
           applyFilters();
+          if (window.trackEvent) {
+            window.trackEvent('filter_applied', { filter_type: 'type', value: activeFilters.type });
+          }
         });
       });
 
@@ -806,18 +830,27 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       document.getElementById('category-filter').addEventListener('change', (e) => {
         activeFilters.category = e.target.value || null;
         applyFilters();
+        if (window.trackEvent && activeFilters.category) {
+          window.trackEvent('filter_applied', { filter_type: 'category', value: activeFilters.category });
+        }
       });
 
       // Tool filter
       document.getElementById('tool-filter').addEventListener('change', (e) => {
         activeFilters.tool = e.target.value || null;
         applyFilters();
+        if (window.trackEvent && activeFilters.tool) {
+          window.trackEvent('filter_applied', { filter_type: 'tool', value: activeFilters.tool });
+        }
       });
 
       // Sort filter
       document.getElementById('sort-filter').addEventListener('change', (e) => {
         activeFilters.sort = e.target.value;
         applyFilters();
+        if (window.trackEvent) {
+          window.trackEvent('filter_applied', { filter_type: 'sort', value: activeFilters.sort });
+        }
       });
 
       // Read additional URL params (category, sort)
@@ -966,8 +999,10 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           if (window.CompareManager) {
             if (window.CompareManager.has(id)) {
               window.CompareManager.remove(id);
+              if (window.trackEvent) window.trackEvent('compare_action', { action: 'remove', plugin_name: name });
             } else {
               window.CompareManager.add({ id, name, type });
+              if (window.trackEvent) window.trackEvent('compare_action', { action: 'add', plugin_name: name });
             }
           }
         });
@@ -994,12 +1029,18 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       },
 
       toggle(id) {
+        var action;
         if (this.favorites.has(id)) {
           this.favorites.delete(id);
           this.showToast('Removed from favorites');
+          action = 'remove';
         } else {
           this.favorites.add(id);
           this.showToast('Added to favorites');
+          action = 'add';
+        }
+        if (window.trackEvent) {
+          window.trackEvent('favorite_toggled', { plugin_name: id, action: action });
         }
         this.save();
         this.updateUI();

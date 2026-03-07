@@ -118,7 +118,7 @@ export async function installPlugin(
       console.log(chalk.gray('Search for plugins:'));
       console.log(chalk.cyan(`   npx @intentsolutionsio/ccpi search ${pluginName}`));
       console.log(chalk.gray('\nBrowse all plugins:'));
-      console.log(chalk.cyan('   https://claudecodeplugins.io\n'));
+      console.log(chalk.cyan('   https://tonsofskills.com\n'));
       process.exit(1);
     }
 
@@ -369,7 +369,7 @@ async function guideMarketplaceSetup(): Promise<void> {
   console.log(chalk.gray('Open Claude Code and run this command:\n'));
   console.log(chalk.cyan(`   /plugin marketplace add ${MARKETPLACE_REPO}\n`));
 
-  console.log(chalk.gray('This will add access to all 259 plugins from https://claudecodeplugins.io\n'));
+  console.log(chalk.gray('This will add access to all 259 plugins from https://tonsofskills.com\n'));
 
   console.log(chalk.bold('After adding the marketplace:\n'));
   console.log(chalk.gray('Run this command again to install your plugin:\n'));

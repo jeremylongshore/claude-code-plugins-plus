@@ -1,0 +1,32 @@
+{
+  "name": "Axiom Marketplace",
+  "owner": {
+    "name": "Charles Wiltgen"
+  },
+  "metadata": {
+    "description": "Battle-tested Claude Code skills for modern iOS/iPadOS/watchOS/tvOS development",
+    "version": "0.7.0"
+  },
+  "plugins": [
+    {
+      "name": "axiom",
+      "version": "0.7.0",
+      "description": "Battle-tested Claude Code skills for modern xOS (iOS, iPadOS, watchOS, tvOS) development",
+      "author": "Charles Wiltgen",
+      "license": "MIT",
+      "repository": "https://github.com/CharlesWiltgen/Axiom",
+      "keywords": [
+        "iOS",
+        "debugging",
+        "swift",
+        "persistence",
+        "testing",
+        "performance",
+        "xcode",
+        "concurrency",
+        "database"
+      ],
+      "category": "development"
+    }
+  ]
+}

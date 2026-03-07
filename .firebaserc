@@ -6,13 +6,16 @@
     "claude-code-plugins-io": {
       "hosting": {
         "marketplace": [
-          "claude-code-plugins-io"
+          "tonsofskills-com"
         ],
         "cowork-redirect": [
           "claudecoworkskills-io"
         ],
         "skills-redirect": [
           "claudecodeskills-io"
+        ],
+        "plugins-redirect": [
+          "claude-code-plugins-io"
         ]
       }
     }

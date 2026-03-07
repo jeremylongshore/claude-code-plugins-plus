@@ -409,6 +409,16 @@ const allPlugins = manifest?.plugins || [];
       .plugin-list {
         grid-template-columns: 1fr;
       }
+
+      .plugin-item {
+        min-width: 0;
+      }
+
+      .plugin-item-name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 0;
+      }
     }
 
     .sr-only {

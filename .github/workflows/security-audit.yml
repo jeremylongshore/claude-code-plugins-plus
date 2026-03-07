@@ -1,7 +1,7 @@
 name: security-audit
 on:
-  schedule:
-    - cron: "0 4 * * 1"
+  # schedule disabled — burns Actions minutes
+  # - cron: "0 4 * * 1"
   workflow_dispatch:
 jobs:
   audit:

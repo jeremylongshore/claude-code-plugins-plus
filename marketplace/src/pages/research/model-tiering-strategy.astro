@@ -1,0 +1,453 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="Model Tiering Strategy"
+  description="When to use sonnet, haiku, or opus — with real cost comparisons and task-type recommendations."
+  domain="Performance & Cost"
+  domainSlug="performance"
+  wordCount={2800}
+>
+
+  <h2 id="three-models-three-price-points">Three Models, Three Price Points</h2>
+
+  <p>
+    When you install a skill from the Claude Code Plugins marketplace, you're getting a set of instructions that Claude follows when it's time to do a job. But which Claude? The ecosystem currently supports three models — and picking the right one for the right task is where real cost and performance optimization begins.
+  </p>
+
+  <p>
+    Think of the three tiers as having different specialists on call. Haiku is your quick-turn contractor: fast, economical, and excellent at well-defined tasks. Sonnet is your senior generalist: capable across almost everything, with a cost profile that doesn't make you flinch on a Tuesday afternoon. Opus is your principal architect: brought in for the genuinely hard problems where getting it right matters more than getting it cheap.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Model</th>
+        <th>Identifier in Skills</th>
+        <th>Speed</th>
+        <th>Relative Cost</th>
+        <th>Best For</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Claude Haiku 4.5</strong></td>
+        <td><code>haiku</code></td>
+        <td>Fastest</td>
+        <td>~1x (baseline)</td>
+        <td>Validation, linting, formatting, quick summaries</td>
+      </tr>
+      <tr>
+        <td><strong>Claude Sonnet 4.6</strong></td>
+        <td><code>sonnet</code></td>
+        <td>Fast</td>
+        <td>~5x</td>
+        <td>Code generation, reviews, documentation, most day-to-day tasks</td>
+      </tr>
+      <tr>
+        <td><strong>Claude Opus 4.6</strong></td>
+        <td><code>opus</code></td>
+        <td>Moderate</td>
+        <td>~15x</td>
+        <td>Architecture decisions, complex reasoning, security audits</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    These relative cost figures are approximate — Anthropic adjusts pricing over time — but the ratios tell the real story. Running a skill on Opus costs roughly fifteen times more than the same skill on Haiku. For a single interactive query, that's noise. For a CI/CD pipeline running fifty skills in batch across every pull request, it's a budget conversation.
+  </p>
+
+  <div class="data-point">
+    <strong>1,372 skills</strong> analyzed across the ecosystem. Of those, the vast majority specify no model preference in their frontmatter — they let Claude Code select based on task context. Less than 3% hardcode a specific model identifier.
+  </div>
+
+  <h3 id="what-each-model-actually-handles-well">What Each Model Actually Handles Well</h3>
+
+  <p>
+    Haiku's strength isn't just speed — it's consistency on narrow, well-defined tasks. Ask it to check whether a JSON file is valid, reformat a function signature, or summarize a changelog entry, and it performs just as well as Sonnet at a fraction of the cost. Where Haiku stumbles is on open-ended reasoning: multi-step architecture questions, ambiguous requirements that need interpretation, code that spans complex interdependencies.
+  </p>
+
+  <p>
+    Sonnet is the workhorse. It handles the full range of developer tasks — writing functions, reviewing code for obvious issues, generating tests from existing implementation, writing documentation from docstrings. Anthropic tuned Sonnet to be the balanced choice, and in practice it earns that description. Most skills that specify a model preference choose Sonnet.
+  </p>
+
+  <p>
+    Opus earns its cost premium in a specific scenario: when the task involves genuine reasoning about tradeoffs, novel problem spaces, or the kind of judgment calls that a senior engineer would spend half an hour on. Security vulnerability assessment, architectural refactoring across a codebase, deciding how to structure a data model that will need to evolve — these are Opus territory.
+  </p>
+
+  <hr />
+
+  <h2 id="how-most-skills-handle-model-selection">How Most Skills Handle Model Selection</h2>
+
+  <p>
+    Here's what surprises most people: the majority of skills in the ecosystem say nothing about which model to use. They describe <em>what</em> to do and <em>when</em> to activate, but they leave the model selection entirely to Claude Code's runtime judgment.
+  </p>
+
+  <p>
+    This isn't laziness on the part of skill authors — it's good design. Claude Code has context that a static SKILL.md file doesn't: the current conversation length, the complexity of what's been requested, the user's session context. Letting the runtime pick often produces better results than a hardcoded preference written months before at authoring time.
+  </p>
+
+  <blockquote>
+    The <code>model</code> field in SKILL.md frontmatter is optional. When omitted, Claude Code selects the model based on task complexity and context. When specified, it constrains the runtime to that tier — a tradeoff that only makes sense when you have a strong reason for it.
+  </blockquote>
+
+  <h3 id="the-disable-model-invocation-flag">The disable-model-invocation Flag</h3>
+
+  <p>
+    There's a second model-related control that sees even less use than the <code>model</code> field: <code>disable-model-invocation</code>. When set to true, the skill runs without spawning an additional model call — essentially operating as a pure instruction set that modifies Claude Code's behavior rather than delegating to a submodel.
+  </p>
+
+  <p>
+    This flag exists for skills that function as behavior modifiers: always-format-output, enforce-citation-style, remind-to-ask-for-confirmation. These aren't tasks that need model intelligence — they're constraints. Using <code>disable-model-invocation</code> on them avoids unnecessary token consumption entirely.
+  </p>
+
+  <div class="data-point">
+    <strong>Default behavior works well in 97%+ of cases.</strong> The skills that explicitly set model preferences tend to be either high-stakes automation (where Opus is worth the cost) or high-volume batch tasks (where Haiku is worth the tradeoff). Everything in between benefits from letting Claude Code decide.
+  </div>
+
+  <hr />
+
+  <h2 id="when-to-specify-a-model">When to Specify a Model</h2>
+
+  <p>
+    There are clear patterns in the skills that do hardcode a model. They cluster around two opposite extremes — tasks where the stakes demand capability, and tasks where the volume demands economy.
+  </p>
+
+  <h3 id="use-opus-for-high-stakes-reasoning">Use Opus for High-Stakes Reasoning</h3>
+
+  <p>
+    Architecture review skills that evaluate whether a proposed system design is sound. Security audit skills that need to reason about attack surfaces and trust boundaries. Dependency analysis skills that need to understand complex interactions between packages. These are Opus tasks — not because Sonnet couldn't handle them, but because Opus handles them materially better, and the cost of a wrong call exceeds the cost of the model premium.
+  </p>
+
+  <ul>
+    <li>System design evaluation across multiple components</li>
+    <li>Security threat modeling with novel attack patterns</li>
+    <li>Refactoring decisions that affect cross-cutting concerns</li>
+    <li>Ambiguous requirements that need judgment, not just execution</li>
+    <li>Any task where "good enough" isn't acceptable</li>
+  </ul>
+
+  <h3 id="use-haiku-for-high-volume-validation">Use Haiku for High-Volume Validation</h3>
+
+  <p>
+    On the other end: skills that run on every file save, every commit, every pull request. JSON schema validation. Import ordering checks. Docstring format enforcement. Test coverage counting. These tasks have narrow, well-defined correct answers — and Haiku gets them right at one-fifteenth the cost of Opus.
+  </p>
+
+  <ul>
+    <li>Syntax and format validation (JSON, YAML, Markdown)</li>
+    <li>Code style checks (import order, naming conventions)</li>
+    <li>Changelog entry generation from git diff</li>
+    <li>Test file scaffolding from function signatures</li>
+    <li>Quick summarization of structured data</li>
+  </ul>
+
+  <h3 id="sonnet-is-the-right-default-for-everything-else">Sonnet Is the Right Default for Everything Else</h3>
+
+  <p>
+    Code generation. Pull request reviews. Documentation writing. API client scaffolding. Database migration drafting. The full range of developer assistance tasks where you need genuine capability but don't have a reason to spend fifteen times more. Sonnet's cost-capability ratio makes it the obvious anchor for general-purpose skill design.
+  </p>
+
+  <hr />
+
+  <h2 id="the-subagent-cost-multiplier">The Subagent Cost Multiplier</h2>
+
+  <p>
+    Here's where model selection gets genuinely complicated: the <code>Task</code> tool.
+  </p>
+
+  <p>
+    Claude Code skills can include <code>Task</code> in their <code>allowed-tools</code> list. When a skill uses the Task tool, it launches a subagent — a separate model call that runs independently, with its own context window, its own token budget, and its own model selection. That subagent can itself spawn subagents.
+  </p>
+
+  <div class="data-point">
+    <strong>A skill using Task creates at minimum two model calls:</strong> one for the orchestrating skill, one for each spawned subagent. A skill that spawns three parallel subagents, each doing meaningful work, can easily consume 4-6x the tokens of a non-delegating skill.
+  </div>
+
+  <p>
+    This isn't a problem — delegation is how complex skills accomplish things that a single model call can't. But it means the model you specify (or don't specify) for the parent skill doesn't constrain what the subagents run on. Each subagent gets its own model selection, and without explicit guidance, that selection defaults to whatever Claude Code determines appropriate.
+  </p>
+
+  <h3 id="the-compounding-effect">The Compounding Effect</h3>
+
+  <p>
+    Imagine a code review skill that spawns four subagents: one for security issues, one for performance, one for maintainability, and one for test coverage. If each subagent runs on Sonnet and processes a 300-line file, you're looking at five Sonnet calls for a single invocation of the skill. For a PR with ten files, that's fifty model calls.
+  </p>
+
+  <p>
+    That's not inherently wrong — you're getting comprehensive coverage across four dimensions, which has real value. But it's worth knowing before you drop that skill into a CI pipeline that runs on every commit. The cost model for subagent-heavy skills scales differently than for single-call skills.
+  </p>
+
+  <blockquote>
+    Skill authors who use the Task tool should document their delegation pattern clearly. "This skill spawns N subagents" is information a team needs when deciding where to deploy it.
+  </blockquote>
+
+  <h3 id="model-selection-in-subagent-contexts">Model Selection in Subagent Contexts</h3>
+
+  <p>
+    For skills that delegate heavily, consider what each subagent actually needs. A parent orchestrator reasoning about which subtasks to spawn might genuinely need Sonnet or Opus. But the validation subagent it spawns to check output format? That's a Haiku job. Explicit model guidance in the subagent instructions — passed as part of the Task invocation — can produce meaningful savings without affecting quality.
+  </p>
+
+  <hr />
+
+  <h2 id="cicd-vs-interactive-costs">CI/CD vs Interactive Costs</h2>
+
+  <p>
+    The same skill costs very differently depending on where it runs. This isn't just about volume — it's about the cost model and who's optimizing for what.
+  </p>
+
+  <h3 id="interactive-developer-sessions">Interactive Developer Sessions</h3>
+
+  <p>
+    When a developer uses a skill during an active coding session, costs are bounded by attention span. A developer isn't going to invoke a review skill fifty times per hour — there's natural throttling built into human workflow. The cost per session might be a few cents to a few dollars, depending on what they're doing.
+  </p>
+
+  <p>
+    In this context, model quality matters more than model cost. The developer is present, they're evaluating the output, and a better answer from Opus is worth more than a slightly-off answer from Haiku. Interactive sessions are where spending up on model capability tends to pay off.
+  </p>
+
+  <h3 id="automated-pipeline-execution">Automated Pipeline Execution</h3>
+
+  <p>
+    CI/CD changes the calculus completely. A pipeline that runs on every push to a feature branch, processing every changed file, might invoke skills dozens to hundreds of times per day across a team. No human is throttling the invocations. Volume is the governing factor.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Scenario</th>
+        <th>Invocations/Day</th>
+        <th>Model</th>
+        <th>Relative Monthly Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Interactive (5-dev team)</td>
+        <td>~50</td>
+        <td>Sonnet</td>
+        <td>1x</td>
+      </tr>
+      <tr>
+        <td>CI/CD (5-dev team, per-commit)</td>
+        <td>~400</td>
+        <td>Sonnet</td>
+        <td>8x</td>
+      </tr>
+      <tr>
+        <td>CI/CD (5-dev team, per-commit)</td>
+        <td>~400</td>
+        <td>Haiku</td>
+        <td>1.6x</td>
+      </tr>
+      <tr>
+        <td>CI/CD (5-dev team, per-commit)</td>
+        <td>~400</td>
+        <td>Opus</td>
+        <td>24x</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The implication: skills designed for CI/CD contexts should default to Haiku for validation tasks, use Sonnet only when analysis complexity warrants it, and almost never specify Opus unless the task genuinely can't be accomplished at a lower tier. The interactive developer who wants deeper analysis can always invoke a higher-tier variant explicitly.
+  </p>
+
+  <hr />
+
+  <h2 id="category-cost-profiles">Category Cost Profiles</h2>
+
+  <p>
+    Different plugin categories have fundamentally different token appetites. This isn't random — it reflects what those categories are actually doing. Understanding the pattern helps you predict costs before deploying into a new workflow.
+  </p>
+
+  <h3 id="token-heavy-categories">Token-Heavy Categories</h3>
+
+  <p>
+    <strong>AI/ML plugins</strong> are the highest-token category in the ecosystem. They reason about model architectures, training strategies, evaluation frameworks, and deployment tradeoffs — all domains requiring substantial context. A single skill invocation for "review this ML training configuration" can require multi-thousand token responses with meaningful chain-of-thought.
+  </p>
+
+  <p>
+    <strong>Security plugins</strong> are close behind. Security analysis requires the model to hold multiple attack patterns in working memory simultaneously, reason about trust boundaries, and generate specific remediation guidance. Quick answers are often wrong answers in security contexts — thoroughness is the point.
+  </p>
+
+  <p>
+    <strong>Architecture and design plugins</strong> involve open-ended reasoning about tradeoffs. "Help me choose between these two database strategies" doesn't have a lookup-table answer — it requires weighing context, constraints, and futures. These skills naturally produce longer, more expensive outputs.
+  </p>
+
+  <div class="data-point">
+    <strong>High-token categories:</strong> ai-ml, security, architecture, data-engineering. These categories average 2-4x the token consumption of the ecosystem median per invocation.
+  </div>
+
+  <h3 id="token-light-categories">Token-Light Categories</h3>
+
+  <p>
+    <strong>Productivity plugins</strong> handle well-scoped tasks: summarize this meeting, draft this email, organize these notes. The tasks are bounded, the outputs are bounded, and Haiku handles them with high accuracy at minimal cost.
+  </p>
+
+  <p>
+    <strong>Code formatting and style plugins</strong> are the leanest of all. They have a binary answer (this follows the style guide, or it doesn't) and a narrow output (here's the corrected version). These should almost always run on Haiku.
+  </p>
+
+  <p>
+    <strong>Testing scaffold plugins</strong> sit in the middle — they need to understand the existing code structure (reading context) but the output is formulaic enough that Haiku manages well. The exception is integration test design, which involves enough architectural reasoning to benefit from Sonnet.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Category</th>
+        <th>Token Profile</th>
+        <th>Recommended Default</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>AI/ML</td>
+        <td>Very High</td>
+        <td>Sonnet / Opus</td>
+        <td>Reasoning-intensive; Opus worth it for architecture decisions</td>
+      </tr>
+      <tr>
+        <td>Security</td>
+        <td>High</td>
+        <td>Sonnet / Opus</td>
+        <td>Thoroughness matters; don't trade capability for cost here</td>
+      </tr>
+      <tr>
+        <td>Code Review</td>
+        <td>Medium-High</td>
+        <td>Sonnet</td>
+        <td>Good default; Haiku viable for style-only checks</td>
+      </tr>
+      <tr>
+        <td>Documentation</td>
+        <td>Medium</td>
+        <td>Sonnet</td>
+        <td>Haiku works for templated docs; Sonnet for explanatory writing</td>
+      </tr>
+      <tr>
+        <td>Testing</td>
+        <td>Medium</td>
+        <td>Sonnet / Haiku</td>
+        <td>Haiku for scaffolding; Sonnet for integration test design</td>
+      </tr>
+      <tr>
+        <td>Deployment / DevOps</td>
+        <td>Low-Medium</td>
+        <td>Haiku / Sonnet</td>
+        <td>Configuration generation is Haiku territory; incident analysis is Sonnet</td>
+      </tr>
+      <tr>
+        <td>Code Formatting</td>
+        <td>Low</td>
+        <td>Haiku</td>
+        <td>Binary correctness; Haiku excels</td>
+      </tr>
+      <tr>
+        <td>Productivity</td>
+        <td>Low</td>
+        <td>Haiku / Sonnet</td>
+        <td>Most tasks Haiku; anything open-ended bumps to Sonnet</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr />
+
+  <h2 id="practical-recommendations">Practical Recommendations</h2>
+
+  <p>
+    The good news is that getting model tiering right doesn't require perfect upfront knowledge. There's a sensible progression that most teams follow naturally.
+  </p>
+
+  <h3 id="start-with-defaults">Start with Defaults</h3>
+
+  <p>
+    Don't specify a model in your skills unless you have a concrete reason to. The runtime's default selection is calibrated for general use and handles the common case well. Adding explicit model constraints introduces a maintenance burden — you've now tied your skill to a specific model tier that might not be the right call six months from now when model pricing shifts or capabilities improve.
+  </p>
+
+  <h3 id="measure-before-optimizing">Measure Before Optimizing</h3>
+
+  <p>
+    If you're running skills in CI/CD and costs are becoming noticeable, the first step is measurement — not optimization. Which skills are getting invoked most? Which ones produce the longest outputs? That's where the real spend lives. Optimizing rarely-invoked skills first is the classic mistake.
+  </p>
+
+  <h3 id="tier-by-consequence-not-complexity">Tier by Consequence, Not Complexity</h3>
+
+  <p>
+    The intuitive heuristic is "complex task = expensive model." The better heuristic is "high consequence of error = expensive model." A complex but well-defined task (generate all the test stubs for this module) can run on Haiku. A simpler but high-stakes task (verify this authentication change doesn't introduce a bypass) warrants Opus. Consequence, not complexity, should drive the tier decision.
+  </p>
+
+  <div class="data-point">
+    <strong>Practical tiering guide:</strong> If you'd be comfortable shipping without reviewing the output, use Haiku. If you'd review it once, use Sonnet. If you'd have a senior engineer review it and maybe have a conversation about the findings, use Opus.
+  </div>
+
+  <h3 id="document-your-model-choices">Document Your Model Choices</h3>
+
+  <p>
+    When you do specify a model, leave a comment in your SKILL.md explaining why. "Uses haiku — runs on every file save, output is binary" is a gift to future maintainers. "Uses opus — security analysis; we've had issues with Sonnet missing subtle auth bypasses" is even better. Model choices that make sense today will be mysterious next year without context.
+  </p>
+
+  <hr />
+
+  <h2 id="cost-aware-skill-design">Cost-Aware Skill Design</h2>
+
+  <p>
+    Beyond model selection, there are design patterns that meaningfully reduce token consumption without compromising the quality of what the skill produces. These are worth adopting as defaults, especially for skills intended for CI/CD or batch contexts.
+  </p>
+
+  <h3 id="scope-inputs-precisely">Scope Inputs Precisely</h3>
+
+  <p>
+    A skill that asks for "all relevant files" will get more context than a skill that asks for "the specific file containing the function being reviewed." Token consumption scales with context. Be precise about what the skill actually needs to see — not what might theoretically be useful.
+  </p>
+
+  <p>
+    This is especially important for skills using the <code>Read</code> tool. Skills that glob an entire directory when they only need a specific file type are paying for context they won't use. The Glob and Grep tools exist precisely to let skills fetch targeted context rather than broad sweeps.
+  </p>
+
+  <h3 id="structure-output-formats">Structure Output Formats</h3>
+
+  <p>
+    Skills that ask for structured output (JSON, YAML, a specific table format) typically produce shorter responses than skills that ask for prose explanation. "Return findings as a JSON array with fields: issue, severity, location" is almost always cheaper than "explain the issues you found." For machine-consumed outputs especially, structured formats are both cheaper and more useful.
+  </p>
+
+  <h3 id="avoid-echo-in-responses">Avoid Echo in Responses</h3>
+
+  <p>
+    Skills that instruct Claude to repeat back large portions of the input ("here's the file you provided... here's what I found...") are paying tokens to echo content the user already has. Design skills to respond with conclusions and actions, not summaries of what was received. This single pattern accounts for a surprising portion of avoidable token spend in poorly designed skills.
+  </p>
+
+  <h3 id="use-disable-model-invocation-for-pure-behavior-modifiers">Use disable-model-invocation for Pure Behavior Modifiers</h3>
+
+  <p>
+    If your skill exists to change how Claude Code behaves rather than to accomplish a specific task — always add citations, enforce a particular response format, remind to ask before running destructive operations — the <code>disable-model-invocation: true</code> flag eliminates the model call entirely. These skills run as instruction overlays rather than model invocations, costing essentially nothing beyond the context they add.
+  </p>
+
+  <h3 id="batch-related-tasks-within-a-skill">Batch Related Tasks Within a Skill</h3>
+
+  <p>
+    If you need to check five things about a file, a single skill that checks all five in one model call is cheaper than five separate skills each making their own call. The shared context across all five checks is a cost savings — you're not paying to load the file five times. Where skills naturally cluster around a shared context (reviewing a single file, processing a single PR), consolidation pays off.
+  </p>
+
+  <blockquote>
+    The sweet spot for cost-aware skill design is a skill that does exactly one coherent thing, with precisely the context it needs, producing structured output in the most compact form that's useful downstream. Everything beyond that is cost without return.
+  </blockquote>
+
+  <h3 id="right-size-the-skill-for-the-job">Right-Size the Skill for the Job</h3>
+
+  <p>
+    Finally: the most expensive skill is the one that runs when it doesn't need to. Well-crafted trigger phrases in the skill description prevent unnecessary activations. A security audit skill that activates on every file edit (instead of just on changes to authentication logic) will run far more than intended — and at Opus pricing, that gets expensive quickly.
+  </p>
+
+  <p>
+    Specificity in trigger language is free. It costs nothing to write "activate when the user asks to review authentication, authorization, or session management code" instead of "activate when reviewing code." The first version runs when it should. The second version runs whenever it can.
+  </p>
+
+  <div class="data-point">
+    <strong>The three levers for cost control, in order of impact:</strong> (1) trigger specificity — when does the skill activate; (2) model selection — what tier runs when it activates; (3) output structure — how much the model writes when it runs. Most teams focus on model selection first and miss the larger savings available at tier one.
+  </div>
+
+</ResearchTemplate>

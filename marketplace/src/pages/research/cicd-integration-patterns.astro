@@ -1,0 +1,530 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="CI/CD Integration Patterns"
+  description="Validation gates, pre-commit hooks, and automated quality checks — how the plugin ecosystem enforces quality at every stage."
+  domain="Production Deployment"
+  domainSlug="production"
+  wordCount={3300}
+>
+
+  <p>
+    Most quality problems in software are discovered too late. A missed validation, a broken link, a secret accidentally committed — these are the kinds of things that slip through when the only check is "does it look right to me right now?" The Claude Code Plugins ecosystem was designed around the opposite assumption: that every change should be challenged automatically, at multiple layers, before it ever ships.
+  </p>
+
+  <p>
+    What follows is a detailed look at how that challenge system actually works — the five parallel jobs that run on every pull request, the local scripts that catch problems in 30 seconds, the grading rubric that scores every skill out of 100 points, and the two-catalog sync that ensures what contributors edit and what the CLI downloads are never allowed to drift apart.
+  </p>
+
+  <p>
+    This isn't a tutorial on setting up CI/CD. It's an analysis of the specific patterns that emerged from maintaining 270+ plugins and 1,500+ skills — and what each layer of validation actually protects against.
+  </p>
+
+  <h2 id="the-five-job-pipeline">The Five-Job Pipeline</h2>
+
+  <p>
+    Every pull request triggers a GitHub Actions workflow that runs five jobs in parallel. "Parallel" is the key word — each job is independent and starts immediately, so the feedback loop is bounded by the slowest job rather than the sum of all jobs. In practice, this means contributors get a full quality report in roughly the time it takes a single build to complete.
+  </p>
+
+  <p>
+    Here's the full breakdown of what each job checks and why it exists:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Job</th>
+        <th>What It Checks</th>
+        <th>Why It Exists</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>validate</code></td>
+        <td>JSON validity, plugin structure, catalog sync, secret scanning, dangerous patterns</td>
+        <td>Catches structural problems and security issues before any build runs. This is the cheapest check to run and the most expensive to miss.</td>
+      </tr>
+      <tr>
+        <td><code>test</code> (matrix)</td>
+        <td>MCP plugin builds + vitest unit tests, Python pytest, <code>ccpi validate --strict</code>, SKILL.md frontmatter</td>
+        <td>Runs as a matrix so each plugin type gets appropriate tests. TypeScript MCP plugins get a real build; Python utilities get pytest; all skills get strict CLI validation.</td>
+      </tr>
+      <tr>
+        <td><code>check-package-manager</code></td>
+        <td>Enforces pnpm everywhere except <code>marketplace/</code>, which must use npm</td>
+        <td>Prevents lockfile conflicts. The marketplace is excluded from the pnpm workspace intentionally — mixing package managers mid-dependency-tree causes subtle, hard-to-diagnose failures.</td>
+      </tr>
+      <tr>
+        <td><code>marketplace-validation</code></td>
+        <td>Astro build, route validation, internal link checking, smoke tests, cowork download integrity, security scan of zip contents</td>
+        <td>The website is a build artifact. This job treats it like one — verifying every route exists, every link resolves, and every downloadable zip is clean before it's ever served.</td>
+      </tr>
+      <tr>
+        <td><code>playwright-tests</code></td>
+        <td>End-to-end tests on Chromium, WebKit, and mobile viewports (depends on marketplace-validation)</td>
+        <td>Runs after marketplace-validation passes, because there's no point testing browser behavior against a broken build. Tests cover the T1–T9 test suite across all viewport types.</td>
+      </tr>
+      <tr>
+        <td><code>cli-smoke-tests</code></td>
+        <td>CLI build, <code>--help</code>, <code>--version</code>, <code>npm pack</code>, no <code>workspace:</code> dependencies</td>
+        <td>The <code>ccpi</code> CLI is published to npm. It must never reference internal workspace packages that don't exist on the public registry. This job catches that before publish.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="data-point">
+    <strong>6 jobs, 1 PR.</strong> The workflow runs all five primary jobs plus cli-smoke-tests simultaneously. The Playwright tests gate on marketplace-validation, but everything else starts immediately. A contributor knows within minutes whether their change is structurally sound.
+  </div>
+
+  <h3 id="the-dependency-between-jobs">The Dependency Between Jobs</h3>
+
+  <p>
+    The one explicit dependency in the pipeline — Playwright waiting on marketplace-validation — is worth examining. It's not there because of technical necessity alone. It's there because running browser tests against a build that already failed validation would generate misleading failures. You'd see Playwright reporting that certain pages don't exist, when the real problem is that the Astro build never completed successfully.
+  </p>
+
+  <p>
+    This "gate-then-test" pattern shows up repeatedly in the ecosystem's design: validate structure before exercising behavior. Structural failures are cheaper to diagnose and fix. Behavioral failures on top of structural failures compound into noise.
+  </p>
+
+  <h2 id="validation-before-you-commit">Validation Before You Commit</h2>
+
+  <p>
+    The CI pipeline is the last line of defense. The first line is local — a pair of scripts that contributors can run before a single line is pushed.
+  </p>
+
+  <h3 id="quick-test-sh">quick-test.sh: The 30-Second Check</h3>
+
+  <p>
+    The design goal for <code>./scripts/quick-test.sh</code> was simple: give contributors a complete sanity check in roughly the time it takes to make a cup of coffee. In practice it runs in about 30 seconds. It covers the build, linting, and core validation — enough to catch the most common categories of error without requiring a full marketplace build.
+  </p>
+
+  <blockquote>
+    Thirty seconds is a psychological threshold. If a local check takes longer than that, developers start skipping it. Shorter than that, and it often misses too much to be trustworthy. Thirty seconds is the sweet spot where the check is both fast enough to run habitually and thorough enough to matter.
+  </blockquote>
+
+  <p>
+    What quick-test.sh covers:
+  </p>
+
+  <ul>
+    <li>Full workspace build via <code>pnpm build</code></li>
+    <li>ESLint across all packages</li>
+    <li>Core plugin structure validation</li>
+    <li>JSON well-formedness checks</li>
+    <li>Frontmatter presence and format</li>
+  </ul>
+
+  <h3 id="validate-all-plugins-sh">validate-all-plugins.sh: The Full Check</h3>
+
+  <p>
+    When a contributor is adding a new plugin or making significant changes to an existing one, <code>./scripts/validate-all-plugins.sh</code> is the appropriate tool. It takes longer but covers the complete validation surface:
+  </p>
+
+  <ul>
+    <li>JSON validity for every <code>plugin.json</code> and catalog file</li>
+    <li>Required field presence in plugin manifests</li>
+    <li>Catalog sync verification (extended vs generated)</li>
+    <li>Secret scanning for accidentally committed credentials</li>
+    <li>Dangerous pattern detection (shell injection vectors, unsafe permissions)</li>
+    <li>SKILL.md frontmatter completeness</li>
+    <li>Internal reference integrity (skills referencing tools that don't exist, etc.)</li>
+  </ul>
+
+  <p>
+    Both scripts can be scoped to a single plugin by passing its path as an argument. This matters in a repo with 270+ plugins — validating the whole tree when you've only touched one directory is wasteful. The scripts are designed to support focused, incremental validation as the natural workflow.
+  </p>
+
+  <div class="data-point">
+    <strong>Mandatory before commit.</strong> The CLAUDE.md for this repository marks <code>pnpm run sync-marketplace</code> and <code>./scripts/validate-all-plugins.sh</code> as mandatory pre-commit steps, not optional suggestions. The expectation is that CI catches things you miss locally — not things you didn't bother to check.
+  </div>
+
+  <h2 id="the-skills-grading-system">The Skills Grading System</h2>
+
+  <p>
+    Skills are the most complex content type in the ecosystem. Unlike plugin manifests (which are largely structural) or slash commands (which have a simpler schema), skills involve instructional content that Claude actually uses at runtime. Bad skill design doesn't just fail validation — it produces AI behavior that's subtly wrong in ways that are hard to debug.
+  </p>
+
+  <p>
+    The 100-point grading rubric in <code>scripts/validate-skills-schema.py</code> exists to surface that quality gradient before it reaches production.
+  </p>
+
+  <h3 id="what-the-rubric-measures">What the Rubric Measures</h3>
+
+  <p>
+    The rubric grades along two axes: structure and substance. Structure checks whether required sections exist and frontmatter is complete. Substance checks whether the content within those sections actually does what it's supposed to do.
+  </p>
+
+  <p>
+    Required SKILL.md sections:
+  </p>
+
+  <ul>
+    <li><strong>Overview</strong> — What this skill does and when to use it</li>
+    <li><strong>Prerequisites</strong> — What must be true before the skill can run</li>
+    <li><strong>Instructions</strong> — The actual procedural content Claude executes</li>
+    <li><strong>Output</strong> — What the skill produces and in what format</li>
+    <li><strong>Error Handling</strong> — What to do when things go wrong</li>
+    <li><strong>Examples</strong> — Concrete usage examples with expected results</li>
+    <li><strong>Resources</strong> — References and further reading</li>
+  </ul>
+
+  <p>
+    Required frontmatter fields:
+  </p>
+
+  <ul>
+    <li><code>name</code> — Kebab-case skill identifier</li>
+    <li><code>description</code> — Multi-line trigger phrase description (this is what Claude reads to decide whether to activate the skill)</li>
+    <li><code>allowed-tools</code> — Explicit tool permission list</li>
+    <li><code>version</code> — Semantic version string</li>
+    <li><code>author</code> — Name and email</li>
+  </ul>
+
+  <h3 id="what-earns-an-a-vs-an-f">What Earns an A vs. What Gets an F</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Grade</th>
+        <th>Score Range</th>
+        <th>Typical Profile</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>A</td>
+        <td>90–100</td>
+        <td>All sections present and substantive. Description includes multiple trigger phrases. Error handling covers at least 3 failure modes. Examples show both happy path and edge cases.</td>
+      </tr>
+      <tr>
+        <td>B</td>
+        <td>80–89</td>
+        <td>All required sections present. One or two are thin (e.g., minimal examples, sparse error handling). Frontmatter complete.</td>
+      </tr>
+      <tr>
+        <td>C</td>
+        <td>70–79</td>
+        <td>Most sections present but some are placeholders. Description is functional but lacks trigger phrase variety. May be missing one non-critical section.</td>
+      </tr>
+      <tr>
+        <td>D</td>
+        <td>60–69</td>
+        <td>Multiple sections missing or near-empty. Frontmatter may be incomplete. Skill would likely activate but produce poor results.</td>
+      </tr>
+      <tr>
+        <td>F</td>
+        <td>Below 60</td>
+        <td>Structural failure. Missing required frontmatter fields, missing critical sections, or content that indicates the skill was never actually tested.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="data-point">
+    <strong>The description field is disproportionately important.</strong> Claude reads the skill description to determine whether the current task matches what the skill does. A description that says "Helps with code" will never activate reliably. A description that lists specific trigger phrases — "Use when the user asks to refactor a function, extract a method, or improve code readability" — gives Claude the signal it needs to match intent to tool.
+  </div>
+
+  <h3 id="running-the-grader">Running the Grader</h3>
+
+  <p>
+    The validator supports several modes depending on what you want to check:
+  </p>
+
+  <ul>
+    <li><code>python3 scripts/validate-skills-schema.py --verbose</code> — Full report on all content (skills, commands, agents)</li>
+    <li><code>python3 scripts/validate-skills-schema.py --skills-only</code> — SKILL.md files only</li>
+    <li><code>python3 scripts/validate-skills-schema.py --commands-only</code> — Commands only</li>
+  </ul>
+
+  <p>
+    The verbose output shows per-section scores, which is where the diagnostic value actually lives. Knowing a skill scored 74 overall is less useful than knowing it scored full marks on structure and lost points specifically on Error Handling and Examples.
+  </p>
+
+  <h2 id="package-manager-enforcement">Package Manager Enforcement</h2>
+
+  <p>
+    One of the stranger-looking constraints in the repository is the split package manager policy: pnpm everywhere, except the <code>marketplace/</code> directory which must use npm. This isn't an accident and it isn't arbitrary — it reflects a real architectural boundary.
+  </p>
+
+  <h3 id="why-the-split-exists">Why the Split Exists</h3>
+
+  <p>
+    The marketplace is an Astro 5 website that lives in a directory explicitly excluded from the pnpm workspace. This exclusion is intentional: the marketplace has its own dependency graph, its own build pipeline, and its own deployment target. Treating it as a workspace member would pull it into the pnpm lockfile alongside CLI packages and plugin utilities, creating cross-contamination between completely unrelated dependency trees.
+  </p>
+
+  <p>
+    npm inside <code>marketplace/</code> and pnpm everywhere else creates a clean boundary. The two package managers manage two separate <code>node_modules</code> trees with no shared state.
+  </p>
+
+  <h3 id="how-ci-enforces-it">How CI Enforces It</h3>
+
+  <p>
+    The <code>check-package-manager</code> job runs <code>scripts/check-package-manager.mjs</code>, which inspects each directory and verifies the correct package manager is in use. If a contributor accidentally runs <code>pnpm install</code> inside <code>marketplace/</code> (creating a <code>pnpm-lock.yaml</code> where there should be a <code>package-lock.json</code>), this job fails immediately with a clear message.
+  </p>
+
+  <blockquote>
+    Package manager drift is one of those problems that's invisible until it isn't. A mismatched lockfile won't cause an error during development if everyone on the team happens to be running the same version. It will cause reproducibility failures in CI, in deployment, and for any contributor who doesn't know to look for the drift.
+  </blockquote>
+
+  <div class="data-point">
+    <strong>The enforcement is directory-aware.</strong> The check script doesn't just look for one package manager globally — it applies the rule per directory. Root and packages use pnpm. marketplace/ uses npm. Anything else triggers a failure. This makes it easy to add new directories with explicit package manager assignments without rewriting the entire enforcement script.
+  </div>
+
+  <h2 id="the-marketplace-build-pipeline">The Marketplace Build Pipeline</h2>
+
+  <p>
+    The marketplace build is not a single command — it's a five-step sequential pipeline, where each step produces output that the next step depends on. Running <code>npm run build</code> inside <code>marketplace/</code> kicks off all five steps in order via <code>scripts/build.mjs</code>.
+  </p>
+
+  <h3 id="the-five-steps">The Five Steps</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Step</th>
+        <th>Script</th>
+        <th>What It Produces</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>1</td>
+        <td><code>discover-skills.mjs</code></td>
+        <td>Scans all plugins and extracts SKILL.md data into <code>src/data/</code> — the structured representation of every skill in the ecosystem</td>
+      </tr>
+      <tr>
+        <td>2</td>
+        <td><code>sync-catalog.mjs</code></td>
+        <td>Copies catalog JSON (from the auto-generated <code>marketplace.json</code>) into the marketplace data directory so Astro can read it at build time</td>
+      </tr>
+      <tr>
+        <td>3</td>
+        <td><code>generate-unified-search.mjs</code></td>
+        <td>Builds the Fuse.js search index from the discovered skills and catalog data — the search index that powers the site's search UI</td>
+      </tr>
+      <tr>
+        <td>4</td>
+        <td><code>build-cowork-zips.mjs</code></td>
+        <td>Generates plugin zips, category bundles, a mega-zip of everything, and a manifest with download links and checksums for the <code>/cowork</code> page</td>
+      </tr>
+      <tr>
+        <td>5</td>
+        <td><code>astro build</code></td>
+        <td>Static site generation — takes all the data produced in steps 1–4 and renders every page</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="why-order-matters">Why Order Matters</h3>
+
+  <p>
+    The sequential ordering isn't just convenience — each step's output is an input to later steps. Step 1 must run before step 3 because the unified search index is built from the discovered skill data. Step 4 must run before step 5 because Astro needs the cowork manifest to generate the correct download links on the cowork page.
+  </p>
+
+  <p>
+    If these steps ran in parallel, you'd get race conditions: Astro trying to render pages that reference a search index that hasn't been built yet, or download links pointing to zips that aren't generated. Sequential execution trades some parallelism for deterministic correctness.
+  </p>
+
+  <div class="data-point">
+    <strong>One known gotcha in the pipeline:</strong> <code>compressHTML</code> is disabled in the Astro config. This is not an oversight — iOS Safari fails to render HTML lines longer than 5,000 characters. Enabling compression would concatenate HTML onto single lines, producing exactly that condition. The CI pipeline includes a smoke test that verifies this setting remains disabled.
+  </div>
+
+  <h2 id="post-build-safety-nets">Post-Build Safety Nets</h2>
+
+  <p>
+    After Astro completes the static site build, a second layer of validation runs against the generated output — not the source files, but the actual HTML, routes, and assets that would be served in production. This is the layer where assumptions get tested against reality.
+  </p>
+
+  <h3 id="what-runs-after-the-build">What Runs After the Build</h3>
+
+  <ul>
+    <li><strong>validate-routes.mjs</strong> — Verifies that every plugin page referenced in the catalog actually has a corresponding route in the built output. A plugin in the catalog without a page is a broken link waiting to happen.</li>
+    <li><strong>validate-playbook-routes.mjs</strong> — Same check specifically for playbook pages, which have their own URL structure and are validated separately.</li>
+    <li><strong>validate-internal-links.mjs</strong> — Crawls the built site starting from seed pages (index, playbooks, explore, skills, cowork) and verifies every internal link resolves. This catches link rot introduced by page renames, route restructuring, or deleted content.</li>
+    <li><strong>validate-links.mjs</strong> — Specifically checks skill-to-plugin link integrity: does every skill page correctly link back to its parent plugin?</li>
+    <li><strong>validate-cowork-downloads.mjs</strong> — Verifies the cowork zip build output: manifest existence, checksums, download link correctness. Every file advertised for download must exist and match its checksum.</li>
+    <li><strong>validate-cowork-security.mjs</strong> — Scans zip contents for security issues: no secrets, no <code>node_modules</code>, no files that should never be distributed.</li>
+  </ul>
+
+  <h3 id="what-breaks-without-these">What Breaks Without These</h3>
+
+  <p>
+    Each of these checks exists because the corresponding failure actually happened — or the failure mode was identified as high-probability enough to warrant preemptive detection. Route validation catches the case where a plugin is added to the catalog but the Astro page generation logic doesn't pick it up correctly. Link validation catches the case where a page is renamed without updating all the references to it.
+  </p>
+
+  <p>
+    The cowork security scan is particularly important. The cowork feature lets teams download plugin bundles as zips. If a contributor accidentally includes a <code>.env</code> file in their plugin directory, that file would end up in the zip without the security scan. This is the kind of mistake that's obvious in retrospect and invisible in the moment.
+  </p>
+
+  <blockquote>
+    Post-build validation is fundamentally different from pre-build validation. Pre-build checks verify that source files are correct. Post-build checks verify that the build process itself worked correctly — that the transformation from source to artifact didn't introduce new problems. Both layers are necessary.
+  </blockquote>
+
+  <h2 id="the-two-catalog-sync-check">The Two-Catalog Sync Check</h2>
+
+  <p>
+    The most unusual part of the ecosystem's CI design is the two-catalog system — and the sync check that keeps it honest.
+  </p>
+
+  <h3 id="why-two-catalogs">Why Two Catalogs</h3>
+
+  <p>
+    The ecosystem maintains two versions of the plugin catalog:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>File</th>
+        <th>Purpose</th>
+        <th>Who Edits It</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>.claude-plugin/marketplace.extended.json</code></td>
+        <td>Source of truth with full metadata including extended fields: <code>featured</code>, <code>mcpTools</code>, <code>pluginCount</code>, <code>pricing</code>, <code>components</code>, <code>zcf_metadata</code>, <code>external_sync</code></td>
+        <td>Contributors and maintainers — this is the file you edit</td>
+      </tr>
+      <tr>
+        <td><code>.claude-plugin/marketplace.json</code></td>
+        <td>CLI-compatible catalog with extended fields stripped out — exactly what the <code>ccpi</code> CLI fetches and caches</td>
+        <td>Never — auto-generated by <code>pnpm run sync-marketplace</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>
+    The split exists because the CLI and the website need different things from the catalog. The website benefits from rich metadata about pricing, featured status, and component structure. The CLI needs a clean, minimal schema that won't break on fields it doesn't understand. Rather than maintaining two separate files manually (a recipe for drift), the extended file is the canonical source and the CLI file is always derived from it.
+  </p>
+
+  <h3 id="the-sync-command">The Sync Command</h3>
+
+  <p>
+    Running <code>pnpm run sync-marketplace</code> strips the extended-only fields from <code>marketplace.extended.json</code> and writes the result to <code>marketplace.json</code>. It's a deterministic transformation: same input always produces the same output.
+  </p>
+
+  <p>
+    This command is marked as mandatory before every commit in the project's CLAUDE.md. But mandatory instructions get forgotten. The CI check is what actually enforces it.
+  </p>
+
+  <h3 id="what-the-ci-check-does">What the CI Check Does</h3>
+
+  <p>
+    During the <code>validate</code> job, CI runs the sync command and compares the result to the committed <code>marketplace.json</code>. If they differ — if someone edited <code>marketplace.extended.json</code> and committed without running sync — the job fails with a clear message explaining that the catalogs are out of sync.
+  </p>
+
+  <div class="data-point">
+    <strong>Out-of-sync catalogs are a silent failure without this check.</strong> If the catalogs drift, the CLI will fetch an outdated version of the catalog — potentially missing new plugins, showing stale pricing, or referencing removed entries. Contributors who forget to run sync don't see any local error. The CI check is the only reliable detector.
+  </div>
+
+  <h3 id="the-data-flow">The Data Flow</h3>
+
+  <p>
+    Understanding the full data flow explains why the sync matters so much:
+  </p>
+
+  <ol>
+    <li>Contributor edits <code>marketplace.extended.json</code></li>
+    <li>Contributor runs <code>pnpm run sync-marketplace</code> to regenerate <code>marketplace.json</code></li>
+    <li>Both files are committed</li>
+    <li>CI verifies the files are in sync</li>
+    <li>On merge to main, CI deploys <code>marketplace.json</code> to GitHub Pages</li>
+    <li><code>ccpi</code> CLI fetches from GitHub Pages and caches locally</li>
+    <li>Plugin installations use the cached catalog</li>
+  </ol>
+
+  <p>
+    Any break in this chain — especially between steps 2 and 3, or between steps 3 and 4 — produces a stale CLI experience for everyone who runs <code>ccpi</code> after the broken merge. The sync check at step 4 is the last opportunity to catch it.
+  </p>
+
+  <h2 id="setting-up-your-own-gates">Setting Up Your Own Gates</h2>
+
+  <p>
+    If you're a plugin author working in this ecosystem, or building something inspired by these patterns, here's the local workflow that mirrors what CI does — so you're never surprised by a CI failure on something you could have caught in 30 seconds.
+  </p>
+
+  <h3 id="before-any-commit">Before Any Commit</h3>
+
+  <p>
+    Two commands cover the mandatory pre-commit surface:
+  </p>
+
+  <ul>
+    <li><code>pnpm run sync-marketplace</code> — Regenerates the CLI catalog from the extended catalog. Run this every time you touch <code>marketplace.extended.json</code>.</li>
+    <li><code>./scripts/validate-all-plugins.sh</code> — Full plugin validation. Run this when adding or significantly modifying a plugin. For quick changes, <code>./scripts/quick-test.sh</code> is faster.</li>
+  </ul>
+
+  <h3 id="for-skill-authors">For Skill Authors</h3>
+
+  <p>
+    If you're writing or revising a SKILL.md, run the grader before pushing:
+  </p>
+
+  <ul>
+    <li><code>python3 scripts/validate-skills-schema.py --verbose</code> — Full verbose output so you can see exactly which sections are losing points</li>
+    <li><code>python3 scripts/validate-skills-schema.py --skills-only</code> — Scoped to skills if you want faster feedback</li>
+  </ul>
+
+  <p>
+    Target an A or high B before submitting. A C-grade skill will pass validation but will produce inconsistent behavior at runtime — it has enough structure to not fail, but not enough substance to work reliably.
+  </p>
+
+  <h3 id="for-the-ccpi-cli">For the ccpi CLI</h3>
+
+  <p>
+    The <code>ccpi validate</code> command is the same tool CI uses. Running it locally gives you the same feedback CI would give, before CI has to tell you:
+  </p>
+
+  <ul>
+    <li><code>ccpi validate --strict</code> — Full validation, fails on warnings as well as errors</li>
+    <li><code>ccpi validate --skills</code> — Skills-only validation</li>
+    <li><code>ccpi validate --frontmatter</code> — Frontmatter-only check</li>
+    <li><code>ccpi validate --json</code> — Outputs results as JSON, useful for scripting or integrating with other tools</li>
+  </ul>
+
+  <h3 id="for-mcp-plugin-authors">For MCP Plugin Authors</h3>
+
+  <p>
+    MCP plugins have additional requirements that pure-markdown plugins don't. The full local workflow for an MCP plugin:
+  </p>
+
+  <ul>
+    <li><code>cd plugins/mcp/[name]/ && pnpm build</code> — Build the TypeScript source to <code>dist/index.js</code></li>
+    <li><code>chmod +x dist/index.js</code> — Make the built file executable (the shebang line is not enough without this)</li>
+    <li>Verify the <code>.mcp.json</code> file references the correct entry point</li>
+    <li>Verify <code>plugin.json</code> uses only the 8 allowed fields — CI will reject any others</li>
+  </ul>
+
+  <div class="data-point">
+    <strong>The 8-field constraint in plugin.json is a design decision, not an oversight.</strong> The allowed fields are: <code>name</code>, <code>version</code>, <code>description</code>, <code>author</code>, <code>repository</code>, <code>homepage</code>, <code>license</code>, <code>keywords</code>. Any additional field in a submitted <code>plugin.json</code> causes CI to reject the PR. This keeps the CLI schema stable and prevents plugins from encoding runtime state or extended metadata in a file that's meant to be minimal.
+  </div>
+
+  <h3 id="the-marketplace-dev-loop">The Marketplace Dev Loop</h3>
+
+  <p>
+    For contributors working on the marketplace website itself, the dev loop is:
+  </p>
+
+  <ul>
+    <li><code>cd marketplace/ && npm run dev</code> — Dev server at <code>localhost:4321</code></li>
+    <li><code>cd marketplace/ && npm run build</code> — Full production build (all five pipeline steps)</li>
+    <li><code>cd marketplace/ && npm run validate</code> — Route and link validation against the built output</li>
+    <li><code>cd marketplace/ && npx playwright test</code> — E2E tests on Chromium and WebKit</li>
+  </ul>
+
+  <p>
+    Running the full build locally before pushing is the single most effective way to avoid marketplace-validation CI failures. The dev server runs fast but skips some pipeline steps. The production build is slower but validates the complete artifact.
+  </p>
+
+  <hr />
+
+  <p>
+    The pattern that runs through all of these gates is the same: validate at the cheapest possible point, as early as possible, against the most complete model of what "correct" looks like. Local scripts catch things in 30 seconds that would otherwise surface as CI failures 5 minutes after a push. Post-build checks catch things that only become visible in the artifact that would otherwise surface as production errors. The two-catalog sync check catches drift that would otherwise be invisible until someone's CLI installation breaks.
+  </p>
+
+  <p>
+    None of this is novel. It's just disciplined application of the principle that quality is cheaper to maintain than to repair — and that the earlier you catch a problem, the less it costs.
+  </p>
+
+</ResearchTemplate>

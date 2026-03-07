@@ -117,7 +117,7 @@ ccpi validate ./my-plugin
 ### How It Works
 
 - **This repo is the source of truth** — All plugins live in `plugins/` and catalog in `.claude-plugin/marketplace.extended.json`
-- **Website publishes versioned catalog** — On merge to `main`, the catalog JSON is deployed to claudecodeplugins.io
+- **Website publishes versioned catalog** — On merge to `main`, the catalog JSON is deployed to tonsofskills.com
 - **CLI consumes catalog with caching** — Fetches latest catalog on first use, caches locally for speed
 
 ### Update Model
@@ -133,9 +133,9 @@ ccpi validate ./my-plugin
 **Huge thanks to our community contributors who make this marketplace better:**
 
 - **[@mjaskolski](https://github.com/mjaskolski) (Michal Jaskolski)** - 📚 **SKILLS CONTRIBUTOR:** Added 25 externally-synced agent skills from [wondelai/skills](https://github.com/wondelai/skills) covering product strategy, UX design, marketing/CRO, sales/influence, and growth frameworks — each based on a bestselling business book. ([#303](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/303))
-- **[@clowreed](https://github.com/clowreed) (B12.io)** - 🌐 **PLUGIN AUTHOR:** Created [b12-claude-plugin](https://claudecodeplugins.io/plugins/b12-claude-plugin) — an official B12.io plugin that ships a website-generator skill, letting users go from idea to a production-ready website draft in a single conversation. ([#307](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/307))
+- **[@clowreed](https://github.com/clowreed) (B12.io)** - 🌐 **PLUGIN AUTHOR:** Created [b12-claude-plugin](https://tonsofskills.com/plugins/b12-claude-plugin) — an official B12.io plugin that ships a website-generator skill, letting users go from idea to a production-ready website draft in a single conversation. ([#307](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/307))
 - **[@duskfallcrew](https://github.com/duskfallcrew) (Duskfall Crew)** - 🛡️ **SECURITY REPORTER:** Discovered that the penetration-tester plugin README contained literal PHP webshell payloads that triggered Windows Defender false positives. This report drove a complete v2.0.0 rebuild replacing boilerplate stubs with 3 real Python security scanners (~4,500 lines), proper OWASP reference docs, and AV-safe documentation. ([#300](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/300))
-- **[@rowanbrooks100](https://github.com/rowanbrooks100) (Rowan Brooks)** - 📣 **BRAND STRATEGIST:** Created the [brand-strategy-framework](https://claudecodeplugins.io/plugins/brand-strategy-framework) plugin — a 7-part brand strategy methodology used by top agencies with Fortune 500 clients, now available as an AI skill. ([#292](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/292))
+- **[@rowanbrooks100](https://github.com/rowanbrooks100) (Rowan Brooks)** - 📣 **BRAND STRATEGIST:** Created the [brand-strategy-framework](https://tonsofskills.com/plugins/brand-strategy-framework) plugin — a 7-part brand strategy methodology used by top agencies with Fortune 500 clients, now available as an AI skill. ([#292](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/292))
 - **[@RichardHightower](https://github.com/RichardHightower) (Rick Hightower)** - 🎯 **QUALITY CHAMPION:** Creator of [skilz](https://skillzwave.ai/) (universal agent skill installer supporting 14+ coding agents) and co-founder of [SkillzWave](https://skillzwave.ai/), the world's largest agentic skill marketplace with 44,000+ skills. His rigorous skill quality reviews (#293, #294, #295) exposed critical content validation gaps—files listed in READMEs that didn't exist, stub scripts with placeholder code, and generic boilerplate masquerading as documentation. This feedback drove **4,300+ lines** of fixes across 3 skills and spawned new validator checks that catch these issues automatically. Author of the [Claude Code Skills Deep Dive](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) series and extensive AI architecture content on [Medium](https://medium.com/@richardhightower) and [Spillwave Solutions](https://pub.spillwave.com/). ([#293](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/293), [#294](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/294), [#295](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/295))
 - **[@TomLucidor](https://github.com/TomLucidor) (Tom)** - 🏆 **TRANSPARENCY CHAMPION:** His simple question *"Which plugins require paid APIs vs free/self-hosted?"* sparked the entire "Make All Plugins Free" initiative (v4.1.0). His follow-up about rate limits and registration requirements drove **2,400+ lines** of comprehensive constraint documentation across 6 plugins (v4.3.0). Tom doesn't write code, but he keeps projects honest by asking the questions users are afraid to ask. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
 - **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the complete Learning Lab system (v4.0.0). His insights on empirical verification transformed how we teach agent development.
@@ -170,7 +170,7 @@ ccpi install devops-automation-pack
 > Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug.
 
 **Browse the catalog:**
-Visit **[Claude Code Skills & Plugins Marketplace](https://claudecodeplugins.io/)** or explore [`plugins/`](./plugins/)
+Visit **[Claude Code Skills & Plugins Marketplace](https://tonsofskills.com/)** or explore [`plugins/`](./plugins/)
 
 **Learn to build:**
 See [Learning Paths](#-learning-paths) for step-by-step guides
@@ -231,7 +231,7 @@ Agent Skills are intelligent automation tools that Claude Code can invoke automa
 
 ```
 1. DISCOVERY (Marketplace)
-   └─ You browse claudecodeplugins.io
+   └─ You browse tonsofskills.com
    └─ Find "ansible-playbook-creator"
    └─ Install: /plugin install ansible-playbook-creator@claude-code-plugins-plus
 

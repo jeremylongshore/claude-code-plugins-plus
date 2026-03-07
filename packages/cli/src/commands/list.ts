@@ -54,7 +54,7 @@ async function listInstalledPlugins(paths: ClaudePaths): Promise<void> {
   if (plugins.length === 0) {
     console.log(chalk.yellow('No plugins installed'));
     console.log(chalk.gray('\nRun `ccpi install <plugin>` to install a plugin'));
-    console.log(chalk.gray('Or visit https://claudecodeplugins.io to browse'));
+    console.log(chalk.gray('Or visit https://tonsofskills.com to browse'));
     return;
   }
 
@@ -114,7 +114,7 @@ async function listAllPlugins(paths: ClaudePaths): Promise<void> {
   }
 
   console.log(chalk.gray(`\n\nTotal: ${plugins.length} plugins available`));
-  console.log(chalk.gray('Visit https://claudecodeplugins.io for more details'));
+  console.log(chalk.gray('Visit https://tonsofskills.com for more details'));
 }
 
 /**

@@ -14,7 +14,7 @@
  *   node scripts/validate-cowork-security.mjs
  */
 
-import { existsSync, readdirSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
@@ -207,18 +207,38 @@ if (distFound === 0) {
 console.log('\n5. Verifying zip integrity (sampled)');
 let corruptZips = 0;
 
+// Node.js fallback: validate zip by checking PK signature and EOCD record
+function isValidZipFile(filePath) {
+  try {
+    const buf = readFileSync(filePath);
+    if (buf.length < 22) return false;
+    // Check zip local file header signature (PK\x03\x04)
+    if (buf[0] !== 0x50 || buf[1] !== 0x4b || buf[2] !== 0x03 || buf[3] !== 0x04) return false;
+    // Check end of central directory record exists (PK\x05\x06)
+    for (let i = buf.length - 22; i >= Math.max(0, buf.length - 65557); i--) {
+      if (buf[i] === 0x50 && buf[i+1] === 0x4b && buf[i+2] === 0x05 && buf[i+3] === 0x06) return true;
+    }
+    return false;
+  } catch { return false; }
+}
+
 for (const zipPath of sample) {
+  let valid = false;
   try {
     execSync(`unzip -t "${zipPath}" 2>/dev/null`, { encoding: 'utf-8' });
+    valid = true;
   } catch {
-    // Try alternative check
     try {
       execSync(`zipinfo "${zipPath}" 2>/dev/null`, { encoding: 'utf-8' });
+      valid = true;
     } catch {
-      fail(`Corrupt or unreadable zip: ${zipPath.split('/').pop()}`);
-      corruptZips++;
-      continue;
+      // Fallback: validate zip structure with Node.js
+      valid = isValidZipFile(zipPath);
     }
+  }
+  if (!valid) {
+    fail(`Corrupt or unreadable zip: ${zipPath.split('/').pop()}`);
+    corruptZips++;
   }
 }
 

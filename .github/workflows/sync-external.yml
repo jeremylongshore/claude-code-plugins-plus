@@ -1,9 +1,8 @@
 name: Sync External Plugins
 
 on:
-  schedule:
-    # Run daily at midnight UTC
-    - cron: '0 0 * * *'
+  # schedule disabled — burns Actions minutes
+  # - cron: '0 0 * * *'
 
   workflow_dispatch:
     inputs:

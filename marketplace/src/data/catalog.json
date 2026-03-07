@@ -1,15 +1,15 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-02-19T22:45:37.874Z",
+    "generated": "2026-03-05T01:56:05.906Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 314,
-    "totalSkills": 1140,
+    "totalPlugins": 315,
+    "totalSkills": 1141,
     "totalCommands": 66,
-    "pluginsWithSkills": 74,
+    "pluginsWithSkills": 75,
     "byCategory": {
       "productivity": 25,
       "security": 28,
@@ -31,19 +31,19 @@
       "finance": 1,
       "code-quality": 2,
       "automation": 2,
-      "community": 4,
+      "community": 5,
       "development": 1,
       "data-engineering": 2,
       "enterprise": 2,
       "analytics": 1
     },
     "byStatus": {
-      "active": 295,
+      "active": 296,
       "maintained": 19
     },
     "featured": 2,
-    "new": 293,
-    "generatedAt": "2026-02-19T22:45:37.874Z"
+    "new": 294,
+    "generatedAt": "2026-03-05T01:56:05.906Z"
   },
   "plugins": [
     {
@@ -10681,6 +10681,41 @@
       "isNew": true,
       "author": {
         "name": "Claude Code Plugins"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "b12-claude-plugin",
+      "name": "b12-claude-plugin",
+      "displayName": "b12 claude plugin",
+      "description": "B12 Website Generator — an official plugin by B12.io. Ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready B12 website signup link instantly.",
+      "version": "1.0.0",
+      "category": "community",
+      "keywords": [
+        "website",
+        "b12",
+        "hosting",
+        "web-design",
+        "ai-website",
+        "website-generator",
+        "saas"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install b12-claude-plugin",
+      "sourcePath": "./plugins/community/b12-claude-plugin",
+      "lastUpdatedEpoch": 1772180487,
+      "lastUpdatedDate": "2026-02-27T08:21:27.102Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "B12.io",
+        "url": "https://github.com/b12io"
       },
       "type": "instruction-plugin"
     }

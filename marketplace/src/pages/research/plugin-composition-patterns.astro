@@ -1,0 +1,382 @@
+---
+import ResearchTemplate from '../../components/ResearchTemplate.astro';
+---
+<ResearchTemplate
+  title="Plugin Composition Patterns"
+  description="Single-skill, multi-skill, and hybrid — what works when. A taxonomy of 315 plugins across 25 categories."
+  domain="Plugin Architecture"
+  domainSlug="plugin-architecture"
+  wordCount={3000}
+>
+
+  <p>When you install a plugin from the marketplace, you're getting one of four fundamentally different things. There's the lean single-purpose kind that does exactly one thing. There's the workhorse kind that pairs background automation with slash commands. There's the full orchestration suite that deploys agents. And there's the compiled TypeScript server kind that runs as a separate process entirely.</p>
+
+  <p>These aren't arbitrary distinctions. They reflect real decisions made by 315 plugin authors about what their tool actually needed to be. After cataloging the full marketplace — every skill, command, agent definition, and package.json — some patterns are obvious and some are surprising. This is what the data shows.</p>
+
+  <h2 id="four-shapes">The Four Plugin Shapes</h2>
+
+  <p>Every plugin in the marketplace falls into one of four structural categories. The boundaries aren't fuzzy — you can determine which shape a plugin is by looking at what directories it contains.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Shape</th>
+        <th>Components</th>
+        <th>Count</th>
+        <th>Share</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Skills + Commands</strong></td>
+        <td>SKILL.md files + slash commands</td>
+        <td>203</td>
+        <td>46.1%</td>
+      </tr>
+      <tr>
+        <td><strong>Skills only</strong></td>
+        <td>SKILL.md files, no commands</td>
+        <td>62</td>
+        <td>14.1%</td>
+      </tr>
+      <tr>
+        <td><strong>Full-featured</strong></td>
+        <td>Skills + Commands + Agents</td>
+        <td>25</td>
+        <td>5.7%</td>
+      </tr>
+      <tr>
+        <td><strong>Skills + Agents</strong></td>
+        <td>SKILL.md files + agent definitions</td>
+        <td>16</td>
+        <td>3.6%</td>
+      </tr>
+      <tr>
+        <td><strong>Commands only</strong></td>
+        <td>Slash commands, no skills</td>
+        <td>1</td>
+        <td>0.2%</td>
+      </tr>
+      <tr>
+        <td><strong>Agents only</strong></td>
+        <td>Agent definitions only</td>
+        <td>1</td>
+        <td>0.2%</td>
+      </tr>
+      <tr>
+        <td><strong>MCP servers</strong></td>
+        <td>Compiled TypeScript, separate process</td>
+        <td>7</td>
+        <td>1.6%</td>
+      </tr>
+      <tr>
+        <td><strong>Empty/minimal</strong></td>
+        <td>plugin.json only, no content</td>
+        <td>12</td>
+        <td>2.7%</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>A few things jump out immediately. Skills + Commands is so dominant it's effectively the default pattern — nearly half of all plugins use it. Full-featured plugins (with agents) are rare. And the "only" variants — commands only, agents only — are almost non-existent, which tells you something about how these components work in practice. They're not interchangeable. Commands without skills to do the background work tend to be incomplete; agents without skills or commands to coordinate them tend to be orphaned.</p>
+
+  <div class="data-point">
+    <strong>315 plugins. 25 categories. 1,372 skills total.</strong> The median plugin has 4 skills. The most common single-plugin skill count is 1. The maximum is 30.
+  </div>
+
+  <h2 id="skills-commands-dominance">Why Skills + Commands Dominates</h2>
+
+  <p>Nearly half the marketplace — 203 plugins, 46.1% — uses the same pattern: skills for ambient intelligence, commands for explicit invocation. Understanding why this combination became the default requires understanding what each component does on its own.</p>
+
+  <p>A SKILL.md file is passive. It describes a capability in natural language and tells Claude when to apply it. The skill activates when context matches — when you're working on a file that triggers the description, or when you phrase a request that lines up with the skill's trigger phrases. But you can't call a skill directly. There's no <code>/my-skill</code>. The skill surfaces when Claude decides it's relevant.</p>
+
+  <p>A slash command is the opposite. It's a user-controlled entry point. You invoke <code>/deploy-preview</code> or <code>/generate-migration</code> and something specific happens. Commands have YAML frontmatter that defines their behavior precisely, no ambiguity. But without background intelligence, commands tend to be blunt — they do their single thing regardless of context.</p>
+
+  <blockquote>
+    The combination solves a genuine user experience problem: discoverability vs. reliability. Skills make the plugin smart. Commands make the plugin findable. You want both.
+  </blockquote>
+
+  <p>Consider a database plugin. The skills might include awareness of your schema conventions, migration naming patterns, and query optimization preferences. That intelligence runs quietly in the background whenever you're editing SQL or describing a data model. But the user also wants a reliable <code>/generate-migration</code> command they can invoke explicitly when they're ready to ship. Separating these concerns — ambient awareness from explicit triggers — gives you a plugin that's both proactive and controllable.</p>
+
+  <p>The top categories by plugin count all favor this pattern. The ai-ml category (53 plugins) leads the marketplace, followed by devops (37), security (28), database (28), and crypto (26). These are exactly the domains where you want background intelligence — security awareness that notices risky patterns before you ask, database knowledge that surfaces when you're writing queries — combined with reliable commands for the tasks you need to trigger deliberately.</p>
+
+  <div class="data-point">
+    <strong>Top 9 categories by plugin count:</strong> ai-ml (53), devops (37), security (28), database (28), crypto (26), productivity (25), testing (25), performance (25), api-development (25). All favor the Skills + Commands pattern.
+  </div>
+
+  <h3 id="why-skills-only-works">When Skills Only is Enough</h3>
+
+  <p>Sixty-two plugins — 14.1% — use skills without any commands. These tend to fall into a specific category: ambient enhancement that doesn't need a user entry point.</p>
+
+  <p>Think about a plugin that adds context awareness for a specific framework. It teaches Claude about the framework's conventions, patterns, and common pitfalls. That's pure knowledge injection. You don't need a command to "activate" framework knowledge — you want it available all the time, invisibly, whenever you're working in that codebase. Adding a command would just add UI noise for a capability that works better as background intelligence.</p>
+
+  <p>Skills-only plugins also make sense for cross-cutting concerns: coding standards, documentation conventions, commit message patterns. These are behaviors you want woven into every interaction, not something you summon with a slash command.</p>
+
+  <h2 id="full-featured">The Full-Featured Pattern</h2>
+
+  <p>Only 25 plugins — 5.7% of the marketplace — include all three component types: skills, commands, and agents. This is the most structurally complex plugin shape, and its rarity is informative.</p>
+
+  <p>Agents in Claude Code are defined in <code>agents/*.md</code> files. They're named, configured sub-processes that can be spun up to handle a specific scope of work — a code review agent, a documentation agent, a test generation agent. Unlike skills (which activate based on context) or commands (which users invoke directly), agents are orchestrated entities that other parts of your system call.</p>
+
+  <blockquote>
+    Agents make sense when the work is complex enough to need its own focused context window, and structured enough to be delegated. Most plugin tasks aren't.
+  </blockquote>
+
+  <p>The full-featured pattern shows up in orchestration-heavy domains: complex DevOps automation where you might spin up a deployment agent, a validation agent, and a rollback agent in sequence. Security audit workflows that delegate scanning tasks to a specialized agent with different tool permissions. Multi-step data pipeline operations where each stage benefits from a fresh context.</p>
+
+  <p>For the other 94.3% of plugins, the overhead of defining and coordinating agents isn't worth it. A well-written SKILL.md can handle most coordination implicitly. Adding agents to a plugin that doesn't need orchestration just adds complexity without adding capability.</p>
+
+  <div class="data-point">
+    <strong>5.7% of plugins include agent definitions.</strong> 16 more (3.6%) use Skills + Agents without commands — suggesting agent orchestration and user-facing commands serve genuinely different purposes, not just different preferences.
+  </div>
+
+  <h2 id="skill-count-distribution">Single-Skill vs Multi-Skill</h2>
+
+  <p>The decision of how many skills to pack into one plugin is distinct from the question of which component types to include. You could have a Skills + Commands plugin with one skill or thirty. Here's how the marketplace actually distributes:</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Skill Count</th>
+        <th>Plugins</th>
+        <th>Share</th>
+        <th>Notes</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1 skill</strong></td>
+        <td>210</td>
+        <td>47.6%</td>
+        <td>Most common by a wide margin</td>
+      </tr>
+      <tr>
+        <td><strong>2 skills</strong></td>
+        <td>50</td>
+        <td>11.3%</td>
+        <td>Small extension of a core capability</td>
+      </tr>
+      <tr>
+        <td><strong>3–5 skills</strong></td>
+        <td>~30</td>
+        <td>~6.8%</td>
+        <td>Domain coverage plugins</td>
+      </tr>
+      <tr>
+        <td><strong>6–15 skills</strong></td>
+        <td>~12</td>
+        <td>~2.7%</td>
+        <td>Comprehensive toolkits</td>
+      </tr>
+      <tr>
+        <td><strong>30 skills (mega)</strong></td>
+        <td>13</td>
+        <td>2.9%</td>
+        <td>SaaS packs, full-platform coverage</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Nearly half of all plugins have exactly one skill. This might feel like a failure of ambition, but it's usually the opposite — it's a sign that the plugin does one thing well and resists the temptation to sprawl.</p>
+
+  <p>The discipline of single-skill plugins comes from the same thinking as Unix philosophy: a tool that does one thing well is more reliable, more composable, and easier to reason about than one that tries to do everything. When your skills are focused, they activate more precisely. When they're broad, they start misfiring.</p>
+
+  <h3 id="two-skill-pattern">The Two-Skill Pattern</h3>
+
+  <p>Fifty plugins have exactly two skills (11.3%). This is worth noting as its own category because the two-skill shape has a recognizable structure: a primary capability and a supporting context provider.</p>
+
+  <p>You might have a skill that handles the main task — say, generating API tests — paired with a second skill that provides framework-specific context for how those tests should be structured. Or a skill for the happy path and a skill that handles error cases differently. Two skills let you express a capability that has a natural primary/secondary structure without forcing everything into one sprawling SKILL.md.</p>
+
+  <h3 id="mega-skills">The 30-Skill Mega-Plugins</h3>
+
+  <p>Thirteen plugins have 30 skills each — a striking cluster at the maximum end of the distribution. These aren't coincidentally similar; they're the SaaS packs. Each SaaS pack is a comprehensive integration for a specific platform, covering every major workflow that platform supports.</p>
+
+  <p>Thirty skills is a deliberate design choice for platform-level coverage. If you're building a Supabase integration, you need skills for authentication, database operations, storage, edge functions, real-time subscriptions, and more. You can't get full-platform intelligence from a single skill any more than you can document an entire platform in a single paragraph.</p>
+
+  <h2 id="saas-packs">SaaS Packs: A Different Architecture</h2>
+
+  <p>The 42 SaaS packs in the marketplace represent a distinct architectural tier. They're not just big plugins — they're multi-plugin bundles organized as pnpm workspace members, each covering a specific product or platform comprehensively.</p>
+
+  <div class="data-point">
+    <strong>42 SaaS packs total.</strong> Five named packs serve as anchors for major capability domains: ai-ml-engineering-pack, creator-studio-pack, devops-automation-pack, fullstack-starter-pack, and security-pro-pack.
+  </div>
+
+  <p>The packs exist because some integrations can't be served by a single plugin. A platform like Vercel touches deployment, preview environments, DNS configuration, environment variable management, analytics, and edge functions — each of which might warrant its own plugin with its own skills and commands. Bundling them as a pack gives users a coherent installation experience ("install the Vercel pack") while maintaining the modularity benefits of separate plugins internally.</p>
+
+  <p>Structurally, SaaS packs are declared as pnpm workspace members in their own directories under <code>plugins/saas-packs/*-pack</code>. This lets them have their own <code>package.json</code>, their own dependencies, and their own build processes while still participating in the monorepo's validation and CI pipeline.</p>
+
+  <h3 id="pack-composition">How Packs Compose</h3>
+
+  <p>Inside a SaaS pack, you'll typically find a collection of plugins — each following one of the four shapes described above. The pack itself is a container; the plugins inside it are the substance. When you install a pack, you're installing all of its constituent plugins simultaneously.</p>
+
+  <p>This composability is what makes packs different from just a very large plugin. A large single plugin with 100 skills would be unwieldy — every skill loads with every interaction, the scope becomes muddied, and updating one aspect requires touching everything. A pack that bundles 10 focused plugins gives you the same coverage with better separation of concerns.</p>
+
+  <blockquote>
+    The SaaS pack pattern proves that the right unit of composition isn't always a single plugin. Sometimes the right unit is a curated collection of plugins that belong together.
+  </blockquote>
+
+  <h3 id="five-named-packs">The Five Named Packs</h3>
+
+  <p>The five major named packs reflect the domains where comprehensive coverage matters most:</p>
+
+  <ul>
+    <li><strong>ai-ml-engineering-pack</strong> — Covers the full ML engineering workflow: experiment tracking, model evaluation, data pipeline management, deployment, and monitoring. AI/ML is the largest single category in the marketplace (53 plugins), so a dedicated pack makes sense.</li>
+    <li><strong>creator-studio-pack</strong> — Content creation, asset management, publishing workflows, and platform integrations for creators who use Claude for creative work.</li>
+    <li><strong>devops-automation-pack</strong> — CI/CD, infrastructure as code, deployment orchestration, and monitoring. DevOps is the second-largest category (37 plugins) and benefits from tightly coordinated coverage.</li>
+    <li><strong>fullstack-starter-pack</strong> — Frontend, backend, database, auth, and deployment skills bundled for teams starting new projects who want opinionated defaults across the entire stack.</li>
+    <li><strong>security-pro-pack</strong> — Vulnerability scanning, secret detection, compliance checks, and incident response workflows. Security is the third-largest category (28 plugins) with specialized enough concerns to warrant a dedicated bundle.</li>
+  </ul>
+
+  <h2 id="mcp-servers">MCP Server Plugins</h2>
+
+  <p>Seven plugins in the marketplace are MCP servers — a fundamentally different architecture from the instruction-based plugins that make up the rest of the catalog. Where a standard plugin is a collection of Markdown files that Claude reads, an MCP server is a compiled TypeScript program that runs as a separate process and communicates with Claude via the Model Context Protocol.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Aspect</th>
+        <th>Instruction Plugin</th>
+        <th>MCP Server</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Format</strong></td>
+        <td>Markdown files</td>
+        <td>Compiled TypeScript (Node.js)</td>
+      </tr>
+      <tr>
+        <td><strong>Execution</strong></td>
+        <td>Claude reads and applies</td>
+        <td>Separate process, IPC</td>
+      </tr>
+      <tr>
+        <td><strong>Capabilities</strong></td>
+        <td>Instructions + tool use</td>
+        <td>Custom tools exposed to Claude</td>
+      </tr>
+      <tr>
+        <td><strong>Distribution</strong></td>
+        <td>No build step required</td>
+        <td>Must compile, <code>chmod +x dist/index.js</code></td>
+      </tr>
+      <tr>
+        <td><strong>Use case</strong></td>
+        <td>Knowledge + behavior</td>
+        <td>External APIs, system resources</td>
+      </tr>
+      <tr>
+        <td><strong>Complexity</strong></td>
+        <td>Low</td>
+        <td>High</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>MCP servers make sense when you need to expose something to Claude that isn't accessible through the standard tool set. If you want Claude to query a proprietary API, interact with a local database that requires a custom driver, or call system resources in a way that standard Bash access doesn't cleanly support — an MCP server is how you do that.</p>
+
+  <p>The requirement that <code>dist/index.js</code> be executable (shebang line, <code>chmod +x</code>) is a runtime constraint, not an arbitrary rule. The MCP server needs to launch as a process, and the executable flag tells the operating system that this file can be run directly. Without it, Claude can't start the server.</p>
+
+  <blockquote>
+    MCP servers are the escape hatch for when instruction-based plugins can't reach what you need. They're powerful, but they come with operational complexity that most plugins don't need.
+  </blockquote>
+
+  <p>The 2.2% market share of MCP servers is probably right — not because they're less useful when they're needed, but because they're genuinely overkill for most plugin use cases. If you can accomplish your goal with SKILL.md files and commands, that's almost always the better path. MCP servers require a build pipeline, versioning discipline, and more sophisticated error handling. The bar for choosing MCP should be "I need something that is genuinely impossible in Markdown," not just "this would be more elegant in TypeScript."</p>
+
+  <h2 id="eight-field-constraint">The 8-Field Constraint</h2>
+
+  <p><code>plugin.json</code> — the manifest that every plugin must include — accepts exactly eight fields: <code>name</code>, <code>version</code>, <code>description</code>, <code>author</code>, <code>repository</code>, <code>homepage</code>, <code>license</code>, and <code>keywords</code>. CI rejects any others. This isn't an oversight or a lazy default — it's a deliberate architectural constraint.</p>
+
+  <div class="data-point">
+    <strong>8 fields allowed in plugin.json. Zero exceptions.</strong> The CI pipeline catches extra fields before they land in the catalog.
+  </div>
+
+  <p>The history of plugin ecosystems is largely a history of plugin manifests accreting complexity. NPM's <code>package.json</code> now has dozens of recognized fields and hundreds of de facto conventions that tools rely on. Cargo's <code>Cargo.toml</code> is feature-rich in ways that required careful versioning. VS Code's <code>package.json` for extensions has extension-specific sections that overlap and sometimes conflict with npm's own semantics.</p>
+
+  <p>The 8-field constraint keeps plugin.json as pure metadata — identity and discoverability information, not configuration. Here's why each scope of what could be in plugin.json is intentionally excluded:</p>
+
+  <ul>
+    <li><strong>No configuration fields</strong> — Plugin behavior is defined in SKILL.md, command frontmatter, and agent definitions. Putting behavior configuration in plugin.json would create two sources of truth.</li>
+    <li><strong>No dependency declarations</strong> — Plugins aren't npm packages (with the exception of MCP servers, which have their own package.json). Adding dependency resolution to plugins would require a runtime, not just a file reader.</li>
+    <li><strong>No permission declarations</strong> — Tool permissions live in SKILL.md frontmatter (<code>allowed-tools</code>), where they're co-located with the skills that use them. Centralizing them in plugin.json would obscure the relationship between a permission and the skill that needs it.</li>
+    <li><strong>No activation triggers</strong> — These belong in the skill descriptions themselves, where Claude can read them as natural language context.</li>
+  </ul>
+
+  <p>The result is a manifest that takes five minutes to write correctly and never needs to be touched again after the initial setup. For an ecosystem with 315 plugins and counting, that simplicity pays compound dividends in maintainability.</p>
+
+  <blockquote>
+    Configuration lives with the code that uses it. plugin.json is a name tag, not a settings panel.
+  </blockquote>
+
+  <h2 id="choosing-your-pattern">Choosing Your Pattern</h2>
+
+  <p>If you're building a new plugin, the composition question is actually the first real design decision you'll make. Here's a practical decision guide based on what the 315 existing plugins demonstrate.</p>
+
+  <h3 id="start-with-skills">Start with: Do you have behavioral knowledge to encode?</h3>
+
+  <p>If yes, you're writing a SKILL.md (or multiple). If no, you might be looking at a pure command-based utility — but be skeptical of this path, since the marketplace has exactly one plugin that uses commands without any skills, and it's an edge case.</p>
+
+  <h3 id="add-commands">Add commands when: Users need a reliable entry point</h3>
+
+  <p>If the capability you're building is something a user would want to invoke explicitly — "do this thing now, with these parameters" — a command gives them that. If the capability is more ambient (it should just be smart when relevant), stick with skills.</p>
+
+  <p>203 plugins chose Skills + Commands. That's the default. Deviate from it when you have a specific reason.</p>
+
+  <h3 id="add-agents">Add agents when: The work needs orchestration, not just execution</h3>
+
+  <p>Agents are warranted when you're building a workflow that has multiple distinct phases, each of which benefits from focused context. A security audit workflow might have a reconnaissance phase, a vulnerability scanning phase, and a remediation recommendation phase — three separable tasks that could be delegated to three agents with different tool permissions and prompts.</p>
+
+  <p>If your workflow is linear and doesn't benefit from context separation, you don't need agents. Skills + Commands will handle it.</p>
+
+  <h3 id="saas-pack-decision">Consider a SaaS pack when: You're covering an entire platform</h3>
+
+  <p>If you're building integrations for a platform that has 10+ distinct domains of functionality, a single plugin won't give users a coherent experience. Consider organizing as a SaaS pack — a collection of focused plugins that install together.</p>
+
+  <h3 id="mcp-decision">Choose MCP when: You genuinely can't reach what you need</h3>
+
+  <p>MCP is for external APIs that require custom authentication, local system resources that need a dedicated process, or tool interfaces that don't map cleanly to Claude's native tool set. If you're reaching for MCP because it feels cleaner than Markdown, reconsider. The operational overhead is real.</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Your situation</th>
+        <th>Recommended pattern</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Domain knowledge, conventions, best practices</td>
+        <td>Skills only</td>
+      </tr>
+      <tr>
+        <td>Domain knowledge + explicit user actions</td>
+        <td>Skills + Commands (the default)</td>
+      </tr>
+      <tr>
+        <td>Complex multi-phase workflows</td>
+        <td>Full-featured (Skills + Commands + Agents)</td>
+      </tr>
+      <tr>
+        <td>Full platform coverage (10+ domains)</td>
+        <td>SaaS Pack</td>
+      </tr>
+      <tr>
+        <td>External API or system resource access</td>
+        <td>MCP Server</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3 id="skill-count-decision">How many skills?</h3>
+
+  <p>Start with one. The majority of the marketplace (47.6%) proves that single-skill plugins are complete, useful, and well-regarded. Add a second skill only when you have a genuine primary/secondary split in your capability. Resist the temptation to bundle loosely related skills — that's what categories and packs are for.</p>
+
+  <p>The 30-skill mega-plugins exist because SaaS packs need comprehensive coverage. That context is specific. If you're not building a SaaS pack, you almost certainly don't need 30 skills.</p>
+
+  <hr />
+
+  <p>The composition taxonomy isn't a hierarchy where full-featured plugins are better than simple ones. A focused single-skill plugin that activates precisely and never fires when it shouldn't is more valuable than a sprawling full-featured plugin that tries to do everything. The patterns that dominate the marketplace — Skills + Commands, single-skill focus, minimal plugin.json — reflect 315 authors converging on the same practical conclusions about what actually works.</p>
+
+  <p>When in doubt, the default is Skills + Commands with one skill. You can always add more later. Taking things away is harder.</p>
+
+</ResearchTemplate>

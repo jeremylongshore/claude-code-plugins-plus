@@ -425,6 +425,9 @@
         this.stack.push(plugin);
         this.saveToStorage();
         this.updateUI();
+        if ((window as any).trackEvent) {
+          (window as any).trackEvent('stack_action', { action: 'add', plugin_name: pluginName });
+        }
       }
     }
 
@@ -432,6 +435,9 @@
       this.stack = this.stack.filter(p => p.name !== pluginName);
       this.saveToStorage();
       this.updateUI();
+      if ((window as any).trackEvent) {
+        (window as any).trackEvent('stack_action', { action: 'remove', plugin_name: pluginName });
+      }
     }
 
     private clearStack(): void {
@@ -444,6 +450,9 @@
       });
 
       this.updateUI();
+      if ((window as any).trackEvent) {
+        (window as any).trackEvent('stack_action', { action: 'clear' });
+      }
     }
 
     private restoreCheckboxStates(): void {
@@ -531,6 +540,9 @@
             btn.innerHTML = original;
           }, 2000);
         }
+        if ((window as any).trackEvent) {
+          (window as any).trackEvent('stack_action', { action: 'copy', count: this.stack.length });
+        }
       });
     }
 
@@ -560,6 +572,9 @@
 
         // Show toast notification with URL
         this.showToast(`Shareable link copied! (${this.stack.length} plugins)`);
+        if ((window as any).trackEvent) {
+          (window as any).trackEvent('stack_action', { action: 'share', count: this.stack.length });
+        }
       }).catch(() => {
         alert(`Share this link:\n\n${shareUrl}`);
       });
