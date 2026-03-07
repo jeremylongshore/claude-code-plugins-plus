@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-jobs-to-be-done",
+  "version": "1.0.0",
+  "description": "Strategic product innovation framework using JTBD theory",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

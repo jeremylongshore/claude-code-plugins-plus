@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-predictable-revenue",
+  "version": "1.0.0",
+  "description": "Outbound sales methodology for scalable B2B pipeline",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

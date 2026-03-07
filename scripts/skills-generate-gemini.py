@@ -12,7 +12,7 @@ import google.generativeai as genai
 
 # Configure Gemini
 genai.configure(api_key=os.environ.get('GOOGLE_API_KEY') or os.environ.get('GEMINI_API_KEY'))
-model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Fast and cheap!
+model = genai.GenerativeModel('gemini-2.5-flash')  # Fast and cheap!
 
 def read_plugin_context(plugin_path):
     """Read plugin files to understand what it does"""

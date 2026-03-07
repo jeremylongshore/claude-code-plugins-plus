@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-traction-eos",
+  "version": "1.0.0",
+  "description": "Entrepreneurial Operating System for business execution",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

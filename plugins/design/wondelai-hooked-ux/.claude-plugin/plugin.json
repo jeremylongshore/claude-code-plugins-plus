@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-hooked-ux",
+  "version": "1.0.0",
+  "description": "Hook Model framework for building habit-forming products",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills"
+  ]
+}

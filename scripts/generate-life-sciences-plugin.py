@@ -66,7 +66,7 @@ def init_vertex_ai():
     """Initialize Vertex AI with Gemini 2.0 Flash"""
     try:
         vertexai.init(project=PROJECT_ID, location=LOCATION)
-        model = GenerativeModel("gemini-2.0-flash-exp")
+        model = GenerativeModel("gemini-2.5-flash")
         print(f"✅ Vertex AI initialized: {PROJECT_ID} / {LOCATION}")
         return model
     except Exception as e:

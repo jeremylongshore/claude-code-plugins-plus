@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-drive-motivation",
+  "version": "1.0.0",
+  "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose)",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-lean-startup",
+  "version": "1.0.0",
+  "description": "Lean Startup methodology for validated learning and MVPs",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "productivity",
+    "wondelai",
+    "skills"
+  ]
+}

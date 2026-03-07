@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-design-sprint",
+  "version": "1.0.0",
+  "description": "Google Ventures Design Sprint methodology for rapid prototyping",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "productivity",
+    "wondelai",
+    "skills"
+  ]
+}

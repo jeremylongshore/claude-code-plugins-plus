@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-storybrand-messaging",
+  "version": "1.0.0",
+  "description": "StoryBrand messaging framework that positions customer as hero",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

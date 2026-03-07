@@ -7,7 +7,7 @@ set -e
 # Configuration
 PROJECT_ID="ccpi-web-app-prod"
 LOCATION="us-central1"
-MODEL="gemini-2.0-flash-exp"
+MODEL="gemini-2.5-flash"
 RATE_LIMIT_DELAY=90
 BACKUP_DIR="backups/plugin-enhancements"
 PLUGINS_DIR="plugins"

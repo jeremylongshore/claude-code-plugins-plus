@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-blue-ocean-strategy",
+  "version": "1.0.0",
+  "description": "Blue Ocean Strategy framework for creating uncontested market space",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

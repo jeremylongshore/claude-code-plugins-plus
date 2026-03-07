@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-hundred-million-offers",
+  "version": "1.0.0",
+  "description": "Grand Slam Offer creation framework for irresistible pricing",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

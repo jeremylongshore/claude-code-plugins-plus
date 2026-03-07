@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-crossing-the-chasm",
+  "version": "1.0.0",
+  "description": "Technology adoption and go-to-market strategy for mainstream markets",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

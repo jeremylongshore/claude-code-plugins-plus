@@ -53,7 +53,7 @@ def get_agent() -> LlmAgent:
 
     return LlmAgent(
         name="adk-orchestrator",
-        model="models/gemini-2.0-flash-exp",  # Latest Gemini for orchestration
+        model="models/gemini-2.5-flash",  # Latest Gemini for orchestration
         description="Production ADK orchestrator for A2A protocol and multi-agent coordination",
         instruction=system_instruction,
         tools=[
