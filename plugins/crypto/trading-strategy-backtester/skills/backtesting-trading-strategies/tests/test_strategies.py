@@ -3,7 +3,7 @@
 
 import sys
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 import numpy as np
 import pandas as pd
@@ -13,11 +13,8 @@ import pytest
 sys.path.insert(0, str(Path(__file__).parent.parent / "scripts"))
 
 from fetch_data import parse_period
-from strategies import (
-    Signal, get_strategy, list_strategies,
-    SMAcrossover, RSIreversal, MACD, BollingerBands, MeanReversion,
-)
-from metrics import Trade, BacktestResult, calculate_all_metrics, calculate_trade_stats
+from strategies import Signal, get_strategy, list_strategies
+from metrics import Trade, calculate_trade_stats
 from backtest import run_backtest, load_settings
 
 
@@ -353,7 +350,6 @@ class TestBacktestFlow:
         # Mean-reverting data should trigger mean_reversion shorts
         data = make_mean_reverting_data(n=300)
         result = run_backtest("mean_reversion", data, params={"period": 20, "z_threshold": 1.5})
-        directions = {t.direction for t in result.trades}
         # May or may not have shorts depending on data, but should not error
         assert result.final_capital > 0
 
