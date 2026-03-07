@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-refactoring-ui",
+  "version": "1.0.0",
+  "description": "Practical UI design system for professional interfaces",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills"
+  ]
+}

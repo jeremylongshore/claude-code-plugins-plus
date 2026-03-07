@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-cro-methodology",
+  "version": "1.0.0",
+  "description": "Customer-centric conversion rate optimization methodology",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

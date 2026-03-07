@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-contagious",
+  "version": "1.0.0",
+  "description": "Word-of-mouth and virality framework using the STEPPS model",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-obviously-awesome",
+  "version": "1.0.0",
+  "description": "Product positioning framework for competitive differentiation",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

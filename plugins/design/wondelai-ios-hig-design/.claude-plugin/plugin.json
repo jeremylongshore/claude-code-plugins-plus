@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-ios-hig-design",
+  "version": "1.0.0",
+  "description": "Native iOS app design following Apple Human Interface Guidelines",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills"
+  ]
+}

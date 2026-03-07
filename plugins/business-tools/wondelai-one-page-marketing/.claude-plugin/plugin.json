@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-one-page-marketing",
+  "version": "1.0.0",
+  "description": "End-to-end marketing plan framework in a single page",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

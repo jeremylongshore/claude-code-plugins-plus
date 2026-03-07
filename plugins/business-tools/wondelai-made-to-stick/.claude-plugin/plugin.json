@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-made-to-stick",
+  "version": "1.0.0",
+  "description": "Sticky messaging framework using the SUCCESs model",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

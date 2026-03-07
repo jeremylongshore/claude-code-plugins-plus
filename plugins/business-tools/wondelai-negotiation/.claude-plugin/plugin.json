@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-negotiation",
+  "version": "1.0.0",
+  "description": "Tactical negotiation framework based on Chris Voss's techniques",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}
