@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-ux-heuristics",
+  "version": "1.0.0",
+  "description": "Usability heuristics and principles for UX audits",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills"
+  ]
+}

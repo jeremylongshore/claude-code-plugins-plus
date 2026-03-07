@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-scorecard-marketing",
+  "version": "1.0.0",
+  "description": "Lead generation framework using quiz and assessment funnels",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

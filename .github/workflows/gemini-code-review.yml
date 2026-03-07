@@ -106,7 +106,7 @@ jobs:
           Provide your review:"""
 
           # Call Gemini
-          model = GenerativeModel("gemini-2.0-flash-exp")
+          model = GenerativeModel("gemini-2.5-flash")
           response = model.generate_content(prompt)
 
           review_text = response.text

@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-influence-psychology",
+  "version": "1.0.0",
+  "description": "Persuasion science framework based on Cialdini's six principles",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "business-tools",
+    "wondelai",
+    "skills"
+  ]
+}

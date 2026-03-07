@@ -23,7 +23,7 @@ from vertexai.generative_models import GenerativeModel, GenerationConfig
 # Configuration
 PROJECT_ID = os.getenv('GOOGLE_CLOUD_PROJECT', 'diagnostic-pro-start-up')
 LOCATION = 'us-central1'
-MODEL_NAME = 'gemini-2.0-flash-exp'
+MODEL_NAME = 'gemini-2.5-flash'
 OUTPUT_DIR = Path('docs/playbooks')
 
 # Playbook specifications

@@ -1,0 +1,13 @@
+{
+  "name": "wondelai-web-typography",
+  "version": "1.0.0",
+  "description": "Web typography framework for readable, beautiful type",
+  "author": "Wondel.ai",
+  "license": "MIT",
+  "repository": "https://github.com/wondelai/skills",
+  "keywords": [
+    "design",
+    "wondelai",
+    "skills"
+  ]
+}

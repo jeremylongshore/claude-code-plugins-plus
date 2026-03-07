@@ -10,9 +10,9 @@
     "version": "1.6.0",
     "homepage": "https://github.com/jeremylongshore/claude-code-plugins",
     "pluginRoot": "./plugins",
-    "totalPlugins": 315,
-    "skillsEnabled": 242,
-    "lastUpdated": "2026-02-22"
+    "totalPlugins": 340,
+    "skillsEnabled": 267,
+    "lastUpdated": "2026-03-07"
   },
   "plugins": [
     {
@@ -6015,6 +6015,582 @@
         "name": "B12.io",
         "url": "https://github.com/b12io"
       }
+    },
+    {
+      "name": "wondelai-blue-ocean-strategy",
+      "source": "./plugins/business-tools/wondelai-blue-ocean-strategy",
+      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "strategy",
+        "blue-ocean",
+        "value-innovation",
+        "market-creation",
+        "errc",
+        "strategy-canvas",
+        "competition",
+        "positioning"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-contagious",
+      "source": "./plugins/business-tools/wondelai-contagious",
+      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "virality",
+        "word-of-mouth",
+        "stepps",
+        "social-currency",
+        "marketing",
+        "content-strategy",
+        "sharing",
+        "growth"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-cro-methodology",
+      "source": "./plugins/business-tools/wondelai-cro-methodology",
+      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "cro",
+        "conversion",
+        "optimization",
+        "landing-pages",
+        "ab-testing",
+        "copywriting",
+        "persuasion",
+        "funnels"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-crossing-the-chasm",
+      "source": "./plugins/business-tools/wondelai-crossing-the-chasm",
+      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "go-to-market",
+        "technology-adoption",
+        "chasm",
+        "beachhead",
+        "b2b",
+        "saas",
+        "market-strategy",
+        "positioning"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-design-everyday-things",
+      "source": "./plugins/design/wondelai-design-everyday-things",
+      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "design",
+        "ux",
+        "affordances",
+        "signifiers",
+        "human-centered-design",
+        "usability",
+        "don-norman",
+        "hcd"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-design-sprint",
+      "source": "./plugins/productivity/wondelai-design-sprint",
+      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "design-sprint",
+        "prototyping",
+        "user-testing",
+        "validation",
+        "gv",
+        "product-design",
+        "rapid-iteration",
+        "mvp"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-drive-motivation",
+      "source": "./plugins/business-tools/wondelai-drive-motivation",
+      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "motivation",
+        "autonomy",
+        "mastery",
+        "purpose",
+        "engagement",
+        "gamification",
+        "intrinsic-motivation",
+        "team-management"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-hooked-ux",
+      "source": "./plugins/design/wondelai-hooked-ux",
+      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "habits",
+        "engagement",
+        "retention",
+        "hook-model",
+        "triggers",
+        "rewards",
+        "onboarding",
+        "ux"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-hundred-million-offers",
+      "source": "./plugins/business-tools/wondelai-hundred-million-offers",
+      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "offers",
+        "pricing",
+        "value-equation",
+        "guarantees",
+        "bonuses",
+        "scarcity",
+        "sales",
+        "hormozi"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-influence-psychology",
+      "source": "./plugins/business-tools/wondelai-influence-psychology",
+      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "persuasion",
+        "influence",
+        "cialdini",
+        "social-proof",
+        "reciprocity",
+        "scarcity",
+        "psychology",
+        "marketing"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-ios-hig-design",
+      "source": "./plugins/design/wondelai-ios-hig-design",
+      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ios",
+        "apple",
+        "hig",
+        "swiftui",
+        "uikit",
+        "mobile-design",
+        "accessibility",
+        "interface-guidelines"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-jobs-to-be-done",
+      "source": "./plugins/business-tools/wondelai-jobs-to-be-done",
+      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "jtbd",
+        "jobs-to-be-done",
+        "product-strategy",
+        "customer-discovery",
+        "innovation",
+        "christensen",
+        "product-market-fit",
+        "interviews"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-lean-startup",
+      "source": "./plugins/productivity/wondelai-lean-startup",
+      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "lean-startup",
+        "mvp",
+        "validated-learning",
+        "pivot",
+        "metrics",
+        "innovation-accounting",
+        "experimentation",
+        "build-measure-learn"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-made-to-stick",
+      "source": "./plugins/business-tools/wondelai-made-to-stick",
+      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "messaging",
+        "storytelling",
+        "success",
+        "sticky",
+        "communication",
+        "presentations",
+        "copywriting",
+        "branding"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-negotiation",
+      "source": "./plugins/business-tools/wondelai-negotiation",
+      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "negotiation",
+        "chris-voss",
+        "mirroring",
+        "labeling",
+        "ackerman",
+        "salary",
+        "deals",
+        "conflict-resolution"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-obviously-awesome",
+      "source": "./plugins/business-tools/wondelai-obviously-awesome",
+      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "positioning",
+        "differentiation",
+        "competitive-analysis",
+        "market-category",
+        "value-proposition",
+        "april-dunford",
+        "go-to-market",
+        "branding"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-one-page-marketing",
+      "source": "./plugins/business-tools/wondelai-one-page-marketing",
+      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "marketing-plan",
+        "usp",
+        "lead-generation",
+        "nurture",
+        "referral",
+        "advertising",
+        "customer-lifetime-value",
+        "marketing-strategy"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-predictable-revenue",
+      "source": "./plugins/business-tools/wondelai-predictable-revenue",
+      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "sales",
+        "outbound",
+        "sdr",
+        "pipeline",
+        "b2b",
+        "saas",
+        "prospecting",
+        "cold-calling",
+        "revenue"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-refactoring-ui",
+      "source": "./plugins/design/wondelai-refactoring-ui",
+      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ui-design",
+        "visual-hierarchy",
+        "typography",
+        "color-palette",
+        "tailwind",
+        "shadows",
+        "spacing",
+        "refactoring-ui"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-scorecard-marketing",
+      "source": "./plugins/business-tools/wondelai-scorecard-marketing",
+      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "lead-generation",
+        "quiz-funnel",
+        "assessment",
+        "scorecard",
+        "conversion",
+        "segmentation",
+        "lead-magnet",
+        "marketing-automation"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-storybrand-messaging",
+      "source": "./plugins/business-tools/wondelai-storybrand-messaging",
+      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "storybrand",
+        "messaging",
+        "brand-script",
+        "copywriting",
+        "narrative",
+        "website-copy",
+        "one-liner",
+        "donald-miller"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-top-design",
+      "source": "./plugins/design/wondelai-top-design",
+      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "web-design",
+        "awwwards",
+        "animations",
+        "typography",
+        "scroll-effects",
+        "brand-website",
+        "premium-design",
+        "motion"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-traction-eos",
+      "source": "./plugins/business-tools/wondelai-traction-eos",
+      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "eos",
+        "traction",
+        "operating-system",
+        "rocks",
+        "l10-meetings",
+        "accountability",
+        "vision",
+        "execution"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-ux-heuristics",
+      "source": "./plugins/design/wondelai-ux-heuristics",
+      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ux",
+        "usability",
+        "heuristics",
+        "nielsen",
+        "krug",
+        "ux-audit",
+        "evaluation",
+        "accessibility"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
+    },
+    {
+      "name": "wondelai-web-typography",
+      "source": "./plugins/design/wondelai-web-typography",
+      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "typography",
+        "web-fonts",
+        "typeface",
+        "font-pairing",
+        "readability",
+        "responsive-typography",
+        "css",
+        "type-hierarchy"
+      ],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "license": "MIT",
+      "repository": "https://github.com/wondelai/skills"
     }
   ]
 }

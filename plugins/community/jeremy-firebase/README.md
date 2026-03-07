@@ -126,7 +126,7 @@ exports.moderateUserProfile = functions.firestore
   .onCreate(async (snap, context) => {
     const {VertexAI} = require('@google-cloud/vertexai');
     const vertex = new VertexAI({project: 'PROJECT_ID', location: 'us-central1'});
-    const model = vertex.getGenerativeModel({model: 'gemini-2.0-flash-exp'});
+    const model = vertex.getGenerativeModel({model: 'gemini-2.5-flash'});
 
     const userBio = snap.data().bio;
     const result = await model.generateContent(`Moderate this user bio for inappropriate content: ${userBio}`);
@@ -160,7 +160,7 @@ const results = await vectorSearch(queryEmbedding, 10);
 exports.chat = functions.https.onCall(async (data, context) => {
   const {VertexAI} = require('@google-cloud/vertexai');
   const vertex = new VertexAI({project: 'PROJECT_ID'});
-  const model = vertex.getGenerativeModel({model: 'gemini-2.0-flash-exp'});
+  const model = vertex.getGenerativeModel({model: 'gemini-2.5-flash'});
 
   // Get conversation history from Firestore
   const history = await getConversationHistory(context.auth.uid);
