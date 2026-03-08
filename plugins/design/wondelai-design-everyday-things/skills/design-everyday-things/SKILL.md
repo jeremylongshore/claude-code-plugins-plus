@@ -1,10 +1,10 @@
 ---
 name: design-everyday-things
 description: 'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions "why is this confusing", "affordance", "error prevention", "discoverability", "human-centered design", or "fault tolerance". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.0.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # Design of Everyday Things Framework

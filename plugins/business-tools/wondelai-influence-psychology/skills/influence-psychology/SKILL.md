@@ -1,10 +1,10 @@
 ---
 name: influence-psychology
 description: 'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions "social proof", "persuasive copy", "why users don''t convert", or "ethical persuasion". For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.0.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # Influence Psychology Framework

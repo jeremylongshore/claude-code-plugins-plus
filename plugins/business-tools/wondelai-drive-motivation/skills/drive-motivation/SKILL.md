@@ -1,10 +1,10 @@
 ---
 name: drive-motivation
 description: 'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions "intrinsic motivation", "gamification isn''t working", "team incentives", "autonomy", "mastery", or "purpose-driven". Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.0.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # Drive Motivation Framework

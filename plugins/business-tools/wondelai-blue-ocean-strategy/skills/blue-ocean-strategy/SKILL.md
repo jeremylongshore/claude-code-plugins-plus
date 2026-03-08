@@ -1,10 +1,10 @@
 ---
 name: blue-ocean-strategy
 description: 'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions "blue ocean", "red ocean", "strategy canvas", "ERRC framework", "value innovation", or "non-customers". Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.0.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # Blue Ocean Strategy Framework

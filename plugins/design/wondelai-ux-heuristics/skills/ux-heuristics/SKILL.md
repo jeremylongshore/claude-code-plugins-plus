@@ -1,10 +1,10 @@
 ---
 name: ux-heuristics
 description: 'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions "usability audit", "UX review", "users are confused", "heuristic evaluation", "form usability", or "navigation problems". Covers Nielsen''s 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.2.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # UX Heuristics Framework

@@ -1,10 +1,10 @@
 ---
 name: one-page-marketing
 description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", or "referral program". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
+allowed-tools: Read, Glob, Grep
 license: MIT
-metadata:
-  author: wondelai
-  version: "1.0.1"
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 # The 1-Page Marketing Plan Framework
@@ -154,6 +154,8 @@ See: `references/craft-message.md`
 
 See: `references/advertising-media.md`
 
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 ## DURING Phase (Lead to Customer)
@@ -359,6 +361,8 @@ See: `references/lifetime-value.md`
 
 See: `references/referral-systems.md`
 
+author: Wondel.ai <https://github.com/wondelai>
+version: 1.0.1
 ---
 
 ## Direct Response Principles
