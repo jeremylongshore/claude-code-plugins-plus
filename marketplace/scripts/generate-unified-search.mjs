@@ -19,6 +19,7 @@ const SKILLS_FILE = path.join(DATA_DIR, 'skills-catalog.json');
 const OUTPUT_FILE = path.join(DATA_DIR, 'unified-search-index.json');
 
 const PLUGINS_DIR = path.resolve(ROOT_DIR, '..', 'plugins');
+const EXTENDED_CATALOG_FILE = path.resolve(ROOT_DIR, '..', '.claude-plugin', 'marketplace.extended.json');
 
 console.log('🔍 Generating unified search index...\n');
 
@@ -68,26 +69,47 @@ const agentHookStats = countAgentsAndHooks();
 const catalogData = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
 const skillsData = JSON.parse(fs.readFileSync(SKILLS_FILE, 'utf8'));
 
+// Build verification lookup from extended catalog
+const verificationMap = new Map();
+if (fs.existsSync(EXTENDED_CATALOG_FILE)) {
+  const extendedData = JSON.parse(fs.readFileSync(EXTENDED_CATALOG_FILE, 'utf8'));
+  for (const plugin of extendedData.plugins || []) {
+    if (plugin.verification) {
+      verificationMap.set(plugin.name, plugin.verification);
+    }
+  }
+  console.log(`   Verification data loaded for ${verificationMap.size} plugins`);
+}
+
 // Transform plugins for search
-const plugins = catalogData.plugins.map(plugin => ({
-  type: 'plugin',
-  id: plugin.slug,
-  slug: plugin.slug,
-  name: plugin.name,  // FULL plugin name (e.g., "004-jeremy-google-cloud-agent-sdk")
-  displayName: plugin.displayName || plugin.name,  // Display name for UI
-  description: plugin.description,
-  category: plugin.category,
-  keywords: plugin.keywords || plugin.tags || [],
-  author: plugin.author,
-  version: plugin.version,
-  // Trust signals
-  isFeatured: plugin.isFeatured || false,
-  isNew: plugin.isNew || false,
-  badges: plugin.badges || [],
-  skillCount: plugin.skillCount || 0,
-  // Search-specific fields
-  searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.keywords || plugin.tags || []).join(' ')}`.toLowerCase()
-}));
+const plugins = catalogData.plugins.map(plugin => {
+  const verification = verificationMap.get(plugin.name) || null;
+  return {
+    type: 'plugin',
+    id: plugin.slug,
+    slug: plugin.slug,
+    name: plugin.name,  // FULL plugin name (e.g., "004-jeremy-google-cloud-agent-sdk")
+    displayName: plugin.displayName || plugin.name,  // Display name for UI
+    description: plugin.description,
+    category: plugin.category,
+    keywords: plugin.keywords || plugin.tags || [],
+    author: plugin.author,
+    version: plugin.version,
+    // Trust signals
+    isFeatured: plugin.isFeatured || false,
+    isNew: plugin.isNew || false,
+    badges: plugin.badges || [],
+    skillCount: plugin.skillCount || 0,
+    // Verification
+    ...(verification && {
+      verificationScore: verification.score,
+      verificationGrade: verification.grade,
+      verificationBadge: verification.badge,
+    }),
+    // Search-specific fields
+    searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.keywords || plugin.tags || []).join(' ')}`.toLowerCase()
+  };
+});
 
 // Transform skills for search
 const skills = skillsData.skills.map(skill => ({

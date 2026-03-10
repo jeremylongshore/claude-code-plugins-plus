@@ -305,6 +305,35 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--gold);
     }
 
+    .card-badge.verification-gold {
+      background: linear-gradient(135deg, #fbbf24 0%, #d4a017 100%);
+      color: #78350f;
+      text-decoration: none;
+    }
+
+    .card-badge.verification-silver {
+      background: linear-gradient(135deg, #cbd5e1 0%, #8e9aaf 100%);
+      color: #1e293b;
+      text-decoration: none;
+    }
+
+    .card-badge.verification-bronze {
+      background: linear-gradient(135deg, #d4a574 0%, #cd7f32 100%);
+      color: #451a03;
+      text-decoration: none;
+    }
+
+    .verified-toggle {
+      border: 1.5px solid var(--border) !important;
+      transition: all 0.2s;
+    }
+
+    .verified-toggle.active {
+      background: linear-gradient(135deg, #fbbf24, #d4a017) !important;
+      color: #78350f !important;
+      border-color: #d4a017 !important;
+    }
+
     /* Bookmark button */
     .bookmark-btn {
       position: absolute;
@@ -592,11 +621,16 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         ))}
       </select>
 
+      <button class="type-btn verified-toggle" id="verified-toggle" title="Show only verified plugins">
+        Verified Only
+      </button>
+
       <select id="sort-filter" class="filter-select">
         <option value="relevance">Sort: Relevance</option>
         <option value="a-z">Sort: A → Z</option>
         <option value="z-a">Sort: Z → A</option>
         <option value="category">Sort: Category</option>
+        <option value="score">Sort: Verification Score</option>
       </select>
 
       <span id="results-info" class="results-info">
@@ -614,7 +648,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
     <div id="results-grid" class="results-grid">
       {searchIndex.items.map(item => (
         <div
-          class="result-card"
+          class={`result-card ${item.verificationBadge ? 'has-verification' : ''}`}
           data-type={item.type}
           data-category={item.category}
           data-tools={item.type === 'skill' ? JSON.stringify(item.allowedTools) : '[]'}
@@ -624,6 +658,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           data-featured={item.isFeatured || false}
           data-new={item.isNew || false}
           data-skill-count={item.skillCount || 0}
+          data-verification-badge={item.verificationBadge || ''}
+          data-verification-score={item.verificationScore || 0}
         >
           <button
             class="bookmark-btn"
@@ -639,8 +675,13 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
               {item.type}
             </span>
 
-            {(item.isFeatured || item.skillCount > 0) && (
+            {(item.isFeatured || item.skillCount > 0 || item.verificationBadge) && (
               <div class="card-badges">
+                {item.verificationBadge && (
+                  <a href="/verification" class={`card-badge verification-${item.verificationBadge}`} title={`Verified ${item.verificationBadge.charAt(0).toUpperCase() + item.verificationBadge.slice(1)} — ${item.verificationScore}/100`}>
+                    {item.verificationBadge === 'gold' ? '🥇' : item.verificationBadge === 'silver' ? '🥈' : '🥉'} {item.verificationScore}
+                  </a>
+                )}
                 {item.isFeatured && <span class="card-badge featured">★ Featured</span>}
                 {item.skillCount > 0 && <span class="card-badge has-skills">{item.skillCount} skills</span>}
               </div>
@@ -725,7 +766,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       keyword: null,
       tool: null,
       search: '',
-      sort: 'relevance'
+      sort: 'relevance',
+      verifiedOnly: false
     };
 
     function applyFilters() {
@@ -765,6 +807,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         );
       }
 
+      // Apply verified filter
+      if (activeFilters.verifiedOnly) {
+        filtered = filtered.filter(item => item.verificationBadge);
+      }
+
       // Apply sorting
       if (activeFilters.sort !== 'relevance' || !activeFilters.search) {
         filtered = [...filtered].sort((a, b) => {
@@ -779,6 +826,8 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             case 'category':
               const catCompare = a.category.localeCompare(b.category);
               return catCompare !== 0 ? catCompare : nameA.localeCompare(nameB);
+            case 'score':
+              return (b.verificationScore || 0) - (a.verificationScore || 0);
             default:
               return 0; // relevance - keep Fuse.js order
           }
@@ -797,6 +846,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       if (activeFilters.category) params.set('category', activeFilters.category);
       if (activeFilters.keyword) params.set('keyword', activeFilters.keyword);
       if (activeFilters.sort !== 'relevance') params.set('sort', activeFilters.sort);
+      if (activeFilters.verifiedOnly) params.set('verified', '1');
 
       const newURL = params.toString()
         ? `${window.location.pathname}?${params.toString()}`
@@ -902,6 +952,16 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         });
       });
 
+      // Verified toggle
+      document.getElementById('verified-toggle').addEventListener('click', (e) => {
+        activeFilters.verifiedOnly = !activeFilters.verifiedOnly;
+        e.target.classList.toggle('active', activeFilters.verifiedOnly);
+        applyFilters();
+        if (window.trackEvent) {
+          window.trackEvent('filter_applied', { filter_type: 'verified', value: activeFilters.verifiedOnly });
+        }
+      });
+
       // Category filter
       document.getElementById('category-filter').addEventListener('change', (e) => {
         activeFilters.category = e.target.value || null;
@@ -953,9 +1013,15 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         document.getElementById('keyword-filter').value = keywordParam;
       }
 
-      if (sortParam && ['relevance', 'a-z', 'z-a', 'category'].includes(sortParam)) {
+      if (sortParam && ['relevance', 'a-z', 'z-a', 'category', 'score'].includes(sortParam)) {
         activeFilters.sort = sortParam;
         document.getElementById('sort-filter').value = sortParam;
+      }
+
+      const verifiedParam = urlParams.get('verified');
+      if (verifiedParam === '1') {
+        activeFilters.verifiedOnly = true;
+        document.getElementById('verified-toggle').classList.add('active');
       }
 
       // Keyboard shortcuts
