@@ -16,6 +16,14 @@ const totalCategories = searchIndex.stats.categories.length;
     title="Claude Code Skills Hub | Plugins & Agent Skills"
     description={`Search ${totalSkills} skills with fuzzy search and filters. Learn with interactive tutorials. All open source and production-ready.`}
 >
+    <script type="application/ld+json" slot="head" set:html={JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Claude Code Skills Hub",
+        "url": "https://tonsofskills.com",
+        "description": "The largest open-source marketplace for Claude Code plugins and agent skills",
+        "sameAs": ["https://github.com/jeremylongshore/claude-code-plugins-plus-skills"]
+    })} />
     <style>
         /* ========================================
            HOMEPAGE-SPECIFIC STYLES

@@ -48,6 +48,16 @@ const relatedPlugins = await (async () => {
 ---
 
 <BaseLayout title={`${plugin.name} | Claude Code Plugins`} description={plugin.description}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": plugin.name,
+    "description": plugin.description,
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Cross-platform",
+    "author": { "@type": "Organization", "name": (plugin.author?.name || plugin.author) || "Intent Solutions IO" },
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  })} />
   <div class="plugin-page">
     <div class="container">
       <a href="/explore" class="back-link">

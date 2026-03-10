@@ -2,9 +2,10 @@
 interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code." } = Astro.props;
+const { title, description = "Browse 244 searchable agent skills and 259 plugins. Fuzzy search, interactive tutorials, and production-ready tools for Claude Code.", image = "/og-image.png" } = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -14,7 +15,10 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{title}</title>
     <meta name="description" content={description}>
+    <meta name="author" content="Intent Solutions IO">
+    <meta name="theme-color" content="#5436DA">
     <link rel="canonical" content={`https://tonsofskills.com${Astro.url.pathname}`}>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 
     <!-- Security Headers -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -27,12 +31,19 @@ const { title, description = "Browse 244 searchable agent skills and 259 plugins
     <meta property="og:title" content={title}>
     <meta property="og:description" content={description}>
     <meta property="og:site_name" content="Claude Code Plugins">
+    <meta property="og:image" content={`https://tonsofskills.com${image}`}>
+    <meta property="og:image:alt" content={title}>
+    <meta property="og:locale" content="en_US">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:url" content={`https://tonsofskills.com${Astro.url.pathname}`}>
     <meta name="twitter:title" content={title}>
     <meta name="twitter:description" content={description}>
+    <meta name="twitter:image" content={`https://tonsofskills.com${image}`}>
+    <meta name="twitter:creator" content="@jeremylshore">
+
+    <slot name="head" />
 
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-9Z1DTMTT44"></script>
