@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = "Verified Plugins Program — Tons of Skills";
+const description = "Quality verification badges for Claude Code plugins. Gold, Silver, and Bronze tiers based on automated 100-point scoring across security, documentation, and best practices.";
+---
+
+<BaseLayout title={title} description={description}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "Verified Plugins Program",
+      "description": description,
+      "url": "https://tonsofskills.com/verification"
+    })} />
+  </Fragment>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Quality Program</p>
+      <h1>Verified Plugins</h1>
+      <p class="hero-desc">
+        Every plugin is automatically scored on a 100-point scale. Plugins that meet quality thresholds
+        earn Gold, Silver, or Bronze verification badges.
+      </p>
+      <div class="badge-preview">
+        <img src="/images/badges/verified-gold.svg" alt="Gold verified badge" width="120" height="20" />
+        <img src="/images/badges/verified-silver.svg" alt="Silver verified badge" width="120" height="20" />
+        <img src="/images/badges/verified-bronze.svg" alt="Bronze verified badge" width="120" height="20" />
+      </div>
+    </div>
+  </section>
+
+  <section class="tiers">
+    <div class="container">
+      <h2>Verification Tiers</h2>
+      <div class="tier-grid">
+        <div class="tier-card gold">
+          <div class="tier-badge">
+            <img src="/images/badges/verified-gold.svg" alt="Gold" width="120" height="20" />
+          </div>
+          <h3>Gold (90-100)</h3>
+          <p class="tier-desc">Production-ready. Meets all quality standards with excellence.</p>
+          <ul>
+            <li>Complete frontmatter (name, description, version, author, allowed-tools)</li>
+            <li>Description includes trigger phrases and action verbs</li>
+            <li>All required sections present (Overview, Instructions, Output, Error Handling, Examples)</li>
+            <li>Reference files exist and are non-stub</li>
+            <li>Scripts are non-stub implementations</li>
+            <li>No security warnings</li>
+            <li>Proper tool permissions declared</li>
+          </ul>
+        </div>
+
+        <div class="tier-card silver">
+          <div class="tier-badge">
+            <img src="/images/badges/verified-silver.svg" alt="Silver" width="120" height="20" />
+          </div>
+          <h3>Silver (75-89)</h3>
+          <p class="tier-desc">Good quality. Meets core standards with minor gaps.</p>
+          <ul>
+            <li>Valid frontmatter with required fields</li>
+            <li>Most recommended sections present</li>
+            <li>Reasonable description length and quality</li>
+            <li>Basic documentation included</li>
+            <li>Minor warnings acceptable (e.g., missing optional sections)</li>
+          </ul>
+        </div>
+
+        <div class="tier-card bronze">
+          <div class="tier-badge">
+            <img src="/images/badges/verified-bronze.svg" alt="Bronze" width="120" height="20" />
+          </div>
+          <h3>Bronze (60-74)</h3>
+          <p class="tier-desc">Functional. Meets minimum quality bar for inclusion.</p>
+          <ul>
+            <li>Valid YAML frontmatter</li>
+            <li>Name and description present</li>
+            <li>Basic instructions provided</li>
+            <li>Passes CI validation (no errors)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="scoring">
+    <div class="container">
+      <h2>Scoring Rubric (100 Points)</h2>
+      <p class="section-desc">Automated scoring by <code>validate-skills-schema.py</code> across 5 categories.</p>
+
+      <div class="rubric-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Points</th>
+              <th>What's Checked</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Frontmatter</strong></td>
+              <td>30</td>
+              <td>Required fields (name, description, version, author), trigger phrases, action verbs, tool permissions, author email</td>
+            </tr>
+            <tr>
+              <td><strong>Structure</strong></td>
+              <td>25</td>
+              <td>Required sections (Overview, Instructions, Output, Error Handling, Examples, Resources), section depth, content length</td>
+            </tr>
+            <tr>
+              <td><strong>Content Quality</strong></td>
+              <td>25</td>
+              <td>Non-stub scripts, valid reference files, README completeness, code examples present</td>
+            </tr>
+            <tr>
+              <td><strong>Documentation</strong></td>
+              <td>10</td>
+              <td>Word count adequacy, line count, section ordering, prerequisites listed</td>
+            </tr>
+            <tr>
+              <td><strong>Best Practices</strong></td>
+              <td>10</td>
+              <td>Proper tool declarations, description budget, naming conventions, no security anti-patterns</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="grades">
+    <div class="container">
+      <h2>Grade Distribution</h2>
+      <p class="section-desc">Letter grades map to verification tiers.</p>
+
+      <div class="grade-grid">
+        <div class="grade-card">
+          <span class="grade-letter a">A</span>
+          <span class="grade-range">90-100</span>
+          <span class="grade-tier">Gold</span>
+        </div>
+        <div class="grade-card">
+          <span class="grade-letter b">B</span>
+          <span class="grade-range">75-89</span>
+          <span class="grade-tier">Silver</span>
+        </div>
+        <div class="grade-card">
+          <span class="grade-letter c">C</span>
+          <span class="grade-range">60-74</span>
+          <span class="grade-tier">Bronze</span>
+        </div>
+        <div class="grade-card">
+          <span class="grade-letter d">D</span>
+          <span class="grade-range">40-59</span>
+          <span class="grade-tier">No badge</span>
+        </div>
+        <div class="grade-card">
+          <span class="grade-letter f">F</span>
+          <span class="grade-range">0-39</span>
+          <span class="grade-tier">No badge</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how-to">
+    <div class="container">
+      <h2>How to Check Your Score</h2>
+      <div class="code-block">
+        <pre><code># Score all skills
+python3 scripts/validate-skills-schema.py --verbose
+
+# Score a specific plugin
+python3 scripts/validate-skills-schema.py --verbose --skills-only 2>&1 | grep "your-plugin"
+
+# Fail CI if below Silver
+python3 scripts/validate-skills-schema.py --min-grade B
+
+# Show only low-scoring skills
+python3 scripts/validate-skills-schema.py --show-low-grades</code></pre>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-1) 100%);
+    padding: 5rem 1.5rem 3.5rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-inner { max-width: 48rem; margin: 0 auto; }
+  .eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .hero-desc {
+    color: var(--text-2);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+  }
+  .badge-preview {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .container { max-width: 64rem; margin: 0 auto; padding: 0 1.5rem; }
+  .tiers, .scoring, .grades, .how-to { padding: 4rem 0; }
+  .tiers { background: var(--surface-1); }
+  .scoring { background: var(--surface); border-top: 1px solid var(--border); }
+  .grades { background: var(--surface-1); border-top: 1px solid var(--border); }
+  .how-to { background: var(--surface); border-top: 1px solid var(--border); }
+
+  h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .section-desc {
+    text-align: center;
+    color: var(--text-2);
+    margin-bottom: 2.5rem;
+  }
+  .section-desc code {
+    font-family: 'DM Mono', monospace;
+    background: var(--surface-3);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: var(--gold);
+    font-size: 0.9em;
+  }
+
+  .tier-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1.5rem;
+  }
+  .tier-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+  }
+  .tier-card.gold { border-color: #C09300; }
+  .tier-card.silver { border-color: #8C8C8C; }
+  .tier-card.bronze { border-color: #A0522D; }
+  .tier-badge { margin-bottom: 1rem; }
+  .tier-card h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .tier-desc {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .tier-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .tier-card li {
+    color: var(--text-2);
+    font-size: 0.85rem;
+    padding: 0.35rem 0;
+    padding-left: 1.25rem;
+    position: relative;
+    line-height: 1.5;
+  }
+  .tier-card li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--positive);
+    font-weight: 600;
+  }
+
+  .rubric-table-wrap {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  th {
+    background: var(--surface-2);
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+  }
+  td { color: var(--text-2); }
+  td strong { color: var(--text); }
+  tr:last-child td { border-bottom: none; }
+
+  .grade-grid {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 2rem;
+  }
+  .grade-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    min-width: 100px;
+  }
+  .grade-letter {
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2.5rem;
+    line-height: 1;
+  }
+  .grade-letter.a { color: #C09300; }
+  .grade-letter.b { color: #8C8C8C; }
+  .grade-letter.c { color: #A0522D; }
+  .grade-letter.d { color: var(--text-3); }
+  .grade-letter.f { color: var(--danger); }
+  .grade-range {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-3);
+  }
+  .grade-tier {
+    font-size: 0.75rem;
+    color: var(--text-2);
+    font-weight: 500;
+  }
+
+  .code-block {
+    max-width: 48rem;
+    margin: 2rem auto 0;
+  }
+  pre {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    overflow-x: auto;
+  }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--text-2);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .tier-grid { grid-template-columns: 1fr; }
+    .grade-grid { gap: 0.5rem; }
+    .grade-card { padding: 1rem 1.5rem; min-width: 80px; }
+  }
+</style>
