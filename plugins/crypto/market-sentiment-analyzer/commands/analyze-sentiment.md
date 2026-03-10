@@ -2,7 +2,7 @@
 name: analyze-sentiment
 description: >
   Analyze market sentiment from social media, news, and on-chain metrics
-shortcut: as
+shortcut: msa
 ---
 # Analyze Market Sentiment
 

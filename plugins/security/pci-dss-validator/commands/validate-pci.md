@@ -1,7 +1,7 @@
 ---
 name: validate-pci
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: pci
 ---
 # TITLE_PLACEHOLDER
 

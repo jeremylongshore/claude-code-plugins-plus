@@ -2,7 +2,7 @@
 name: express-api-scaffold
 description: >
   Generate production-ready Express.js REST API with TypeScript and auth
-shortcut: eas
+shortcut: beas
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes

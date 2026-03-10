@@ -1,7 +1,7 @@
 ---
 name: check-session
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: ssc
 ---
 # TITLE_PLACEHOLDER
 

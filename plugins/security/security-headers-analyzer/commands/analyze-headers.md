@@ -1,7 +1,7 @@
 ---
 name: analyze-headers
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: sha
 ---
 # TITLE_PLACEHOLDER
 

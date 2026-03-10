@@ -1,7 +1,7 @@
 ---
 name: validate-auth
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: vauth
 ---
 # TITLE_PLACEHOLDER
 

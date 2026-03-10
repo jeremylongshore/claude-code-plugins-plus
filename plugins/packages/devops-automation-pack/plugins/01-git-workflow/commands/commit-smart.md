@@ -1,7 +1,7 @@
 ---
 name: commit-smart
 description: Generate conventional commits with AI-powered messages
-shortcut: gc
+shortcut: dgc
 category: git
 difficulty: beginner
 estimated_time: 30 seconds

@@ -12,7 +12,8 @@
     "typecheck": "pnpm --filter '*' typecheck",
     "sync-marketplace": "node scripts/sync-marketplace.cjs",
     "build-cowork": "node scripts/build-cowork-zips.mjs",
-    "update-metrics": "node scripts/update-metrics.mjs"
+    "update-metrics": "node scripts/update-metrics.mjs",
+    "verify": "node scripts/run-verification-pipeline.mjs"
   },
   "keywords": [
     "claude-code",

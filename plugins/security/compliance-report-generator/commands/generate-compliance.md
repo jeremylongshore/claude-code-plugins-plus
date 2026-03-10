@@ -1,7 +1,7 @@
 ---
 name: generate-compliance
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: crg
 ---
 # TITLE_PLACEHOLDER
 

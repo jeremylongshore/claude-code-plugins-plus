@@ -1,7 +1,7 @@
 ---
 name: audit-access
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: aaud
 ---
 # TITLE_PLACEHOLDER
 

@@ -2,7 +2,7 @@
 name: component-generator
 description: >
   Generate React components from descriptions with TypeScript and tests
-shortcut: cg
+shortcut: fcg
 category: frontend
 difficulty: beginner
 estimated_time: 2-5 minutes

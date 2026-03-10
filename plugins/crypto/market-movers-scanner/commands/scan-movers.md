@@ -3,7 +3,7 @@ name: scan-movers
 description: >
   Scan for top market movers across crypto, stocks, and forex with
   real-time...
-shortcut: sm
+shortcut: mms
 ---
 # Scan Market Movers
 

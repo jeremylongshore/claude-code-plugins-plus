@@ -1,7 +1,7 @@
 ---
 name: soc2-audit
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: soc2
 ---
 # TITLE_PLACEHOLDER
 

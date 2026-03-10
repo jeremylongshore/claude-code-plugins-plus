@@ -1,7 +1,7 @@
 ---
 name: scan-privacy
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: dps
 ---
 # TITLE_PLACEHOLDER
 

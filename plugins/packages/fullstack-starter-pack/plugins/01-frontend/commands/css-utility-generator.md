@@ -2,7 +2,7 @@
 name: css-utility-generator
 description: >
   Generate utility CSS classes for spacing, colors, typography, and layout
-shortcut: cug
+shortcut: fcug
 category: frontend
 difficulty: beginner
 estimated_time: 2-5 minutes

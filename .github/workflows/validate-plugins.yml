@@ -214,6 +214,36 @@ jobs:
           done
           echo "✅ Dependency scan complete"
 
+  # Verification Pipeline (scoring + badge generation)
+  verify:
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install pyyaml
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 20
+
+      - name: Run verification pipeline
+        run: node scripts/run-verification-pipeline.mjs
+
+      - name: Upload verification results
+        uses: actions/upload-artifact@v6
+        with:
+          name: verification-results
+          path: .claude-plugin/verification-summary.json
+          retention-days: 90
+
   test:
     runs-on: ubuntu-latest
     needs: validate

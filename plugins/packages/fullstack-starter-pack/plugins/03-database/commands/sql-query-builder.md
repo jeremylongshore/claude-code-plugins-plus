@@ -2,7 +2,7 @@
 name: sql-query-builder
 description: >
   Generate optimized SQL queries from natural language descriptions
-shortcut: sqb
+shortcut: fsqb
 category: database
 difficulty: beginner
 estimated_time: 2-3 minutes

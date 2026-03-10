@@ -48,6 +48,12 @@
       "components": {
         "skills": 1,
         "commands": 1
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -73,6 +79,12 @@
       "components": {
         "skills": 1,
         "agents": 1
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -102,6 +114,12 @@
       "components": {
         "skills": 1,
         "commands": 1
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -131,6 +149,12 @@
       "components": {
         "skills": 1,
         "commands": 1
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -147,6 +171,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -167,6 +197,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -182,6 +218,12 @@
       ],
       "author": {
         "name": "Jeremy Longshore"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -225,6 +267,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 85,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -272,7 +320,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "pluginCount": 12
+      "pluginCount": 12,
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "ai-sdk-agents",
@@ -304,6 +358,12 @@
         "agents": 1,
         "commands": 3,
         "total": 4
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -321,6 +381,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -339,6 +405,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -357,6 +429,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -374,6 +452,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -391,6 +475,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -408,6 +498,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -425,6 +521,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -443,6 +545,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -460,6 +568,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -478,6 +592,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -497,6 +617,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -514,6 +640,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -531,6 +663,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -548,6 +686,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -565,6 +709,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -582,6 +732,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -599,6 +755,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -616,6 +778,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -633,6 +801,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -651,6 +825,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -668,6 +848,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -685,6 +871,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -704,6 +896,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -721,6 +919,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -738,6 +942,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -756,6 +966,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -773,6 +989,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -792,7 +1014,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "authentication-validator",
@@ -808,6 +1036,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -826,6 +1060,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -844,6 +1084,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -861,6 +1107,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -880,6 +1132,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -897,6 +1155,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -916,6 +1180,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -933,6 +1203,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -966,6 +1242,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -985,6 +1267,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1005,7 +1293,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "classification-model-builder",
@@ -1023,6 +1317,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1042,6 +1342,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1060,6 +1366,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1079,6 +1391,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1095,6 +1413,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1113,6 +1437,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1132,6 +1462,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1151,6 +1487,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1171,6 +1513,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1216,6 +1564,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1233,6 +1587,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1296,6 +1656,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1317,6 +1683,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1335,6 +1707,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 83,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1356,7 +1734,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 83,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "crypto-signal-generator",
@@ -1374,6 +1758,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1393,6 +1783,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1409,6 +1805,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1427,6 +1829,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1443,6 +1851,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1461,6 +1875,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1477,6 +1897,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1495,6 +1921,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1511,6 +1943,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1527,6 +1965,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1545,6 +1989,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 74,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1561,6 +2011,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1579,6 +2035,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1595,6 +2057,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1611,6 +2079,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1627,6 +2101,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1643,6 +2123,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1660,6 +2146,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1678,6 +2170,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1694,6 +2192,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1728,6 +2232,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1746,6 +2256,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1764,6 +2280,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1780,6 +2302,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1796,6 +2324,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1816,6 +2350,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1832,6 +2372,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1850,6 +2396,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1868,6 +2420,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1888,6 +2446,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 80,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1907,6 +2471,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1925,6 +2495,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1943,6 +2519,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -1995,7 +2577,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "dex-aggregator-router",
@@ -2014,6 +2602,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 87,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2031,6 +2625,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2066,6 +2666,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2085,7 +2691,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "domain-memory-agent",
@@ -2132,6 +2744,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2148,6 +2766,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2166,6 +2790,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2183,6 +2813,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2214,6 +2850,12 @@
       "components": {
         "skills": 4,
         "commands": 3
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2239,6 +2881,12 @@
       "repository": "https://github.com/jeremylongshore/claude-code-plugins-plus-skills",
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2257,6 +2905,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2286,7 +2940,13 @@
         "email": "jeremy@intentsolutions.io"
       },
       "featured": false,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "fairdb-ops-manager",
@@ -2319,6 +2979,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2355,6 +3021,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 86,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2367,7 +3039,13 @@
         "formatting",
         "hooks",
         "automation"
-      ]
+      ],
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "fullstack-starter-pack",
@@ -2410,6 +3088,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 88,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2426,6 +3110,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2446,7 +3136,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "gitops-workflow-builder",
@@ -2465,6 +3161,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2485,7 +3187,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "grpc-service-generator",
@@ -2502,6 +3210,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2535,6 +3249,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2551,6 +3271,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2569,6 +3295,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2589,7 +3321,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "infrastructure-drift-detector",
@@ -2607,6 +3345,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2624,6 +3368,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2640,6 +3390,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2658,6 +3414,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2677,7 +3439,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 63,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "liquidity-pool-analyzer",
@@ -2696,6 +3464,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2715,6 +3489,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2733,6 +3513,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2750,6 +3536,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2769,6 +3561,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2786,6 +3584,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2824,6 +3628,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 82,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2844,6 +3654,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 83,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2864,7 +3680,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 83,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "memory-leak-detector",
@@ -2881,6 +3703,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2902,6 +3730,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 85,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2919,6 +3753,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2937,6 +3777,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2958,6 +3804,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2976,6 +3828,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -2994,6 +3852,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3012,6 +3876,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3030,6 +3900,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3048,6 +3924,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3066,6 +3948,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3103,6 +3991,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3121,6 +4015,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 90,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3139,6 +4039,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3158,6 +4064,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 88,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3176,6 +4088,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3203,6 +4121,12 @@
         "skills": 1,
         "commands": 1,
         "total": 2
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3219,6 +4143,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3238,7 +4168,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "openbb-terminal",
@@ -3291,6 +4227,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3309,6 +4251,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3333,7 +4281,13 @@
         "url": "https://intentsolutions.io",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "owasp-compliance-checker",
@@ -3349,6 +4303,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3365,6 +4325,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3383,6 +4349,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 84,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3400,6 +4372,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3417,6 +4395,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3434,6 +4418,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3452,6 +4442,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3480,7 +4476,13 @@
       "components": {
         "skills": 1
       },
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "project-health-auditor",
@@ -3526,6 +4528,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3543,6 +4551,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3561,6 +4575,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3579,6 +4599,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3597,6 +4623,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3629,6 +4661,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3646,6 +4684,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3666,7 +4710,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "roi-calculator",
@@ -3718,6 +4768,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3737,6 +4793,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3749,7 +4811,13 @@
         "security",
         "agent",
         "code-review"
-      ]
+      ],
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "security-audit-reporter",
@@ -3765,6 +4833,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3781,6 +4855,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3797,6 +4877,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3813,6 +4899,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3838,7 +4930,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "pluginCount": 10
+      "pluginCount": 10,
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "security-test-scanner",
@@ -3856,6 +4954,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3874,6 +4978,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3892,6 +5002,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3908,6 +5024,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3932,7 +5054,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "sla-sli-tracker",
@@ -3950,6 +5078,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3968,6 +5102,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -3987,6 +5127,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4003,6 +5149,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4037,6 +5189,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4055,6 +5213,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4071,6 +5235,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4090,6 +5260,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 82,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4106,6 +5282,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 76,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4138,7 +5320,13 @@
         "email": "[email protected]",
         "url": "https://intentsolutions.io"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "sugar",
@@ -4164,7 +5352,13 @@
       },
       "featured": true,
       "mcpTools": 7,
-      "repository": "https://github.com/cdnsteve/sugar"
+      "repository": "https://github.com/cdnsteve/sugar",
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "synthetic-monitoring-setup",
@@ -4181,6 +5375,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4199,6 +5399,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4217,6 +5423,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4235,6 +5447,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4256,6 +5474,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4275,6 +5499,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4294,6 +5524,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4313,6 +5549,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4330,6 +5572,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4348,6 +5596,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4369,6 +5623,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4388,6 +5648,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 82,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4406,6 +5672,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4459,6 +5731,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4479,6 +5757,12 @@
       "author": {
         "name": "Claude Code Plugin Hub",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4497,6 +5781,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4539,7 +5829,13 @@
         "email": "[email protected]"
       },
       "featured": true,
-      "repository": "https://github.com/jeremylongshore/claude-code-plugins"
+      "repository": "https://github.com/jeremylongshore/claude-code-plugins",
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "webhook-handler-creator",
@@ -4556,6 +5852,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4573,6 +5875,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4592,7 +5900,13 @@
         "name": "Jeremy Longshore",
         "email": "[email protected]"
       },
-      "featured": true
+      "featured": true,
+      "verification": {
+        "score": 87,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
+      }
     },
     {
       "name": "workflow-orchestrator",
@@ -4636,6 +5950,12 @@
       "author": {
         "name": "Jeremy Longshore",
         "email": "[email protected]"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4679,6 +5999,12 @@
         "agents": 1,
         "commands": 1,
         "skills": 1
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4702,6 +6028,12 @@
       "components": {
         "agents": 1,
         "skills": 1
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4723,6 +6055,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4744,6 +6082,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4766,6 +6110,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4787,6 +6137,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4810,6 +6166,12 @@
       "components": {
         "agents": 1,
         "skills": 1
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4835,6 +6197,12 @@
       "components": {
         "agents": 1,
         "skills": 1
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4865,6 +6233,12 @@
         "agents": 1,
         "skills": 1,
         "hooks": 1
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -4946,6 +6320,12 @@
         "commands": 3,
         "skills": 1,
         "total": 8
+      },
+      "verification": {
+        "score": 92,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5009,6 +6389,12 @@
         "commands": 6,
         "skills": 4,
         "total": 19
+      },
+      "verification": {
+        "score": 93,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5062,6 +6448,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5092,6 +6484,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 97,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5113,6 +6511,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5198,6 +6602,12 @@
       "components": {
         "skills": 1,
         "commands": 3
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5227,6 +6637,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 87,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5254,6 +6670,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 87,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5278,6 +6700,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5302,6 +6730,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5326,6 +6760,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5350,6 +6790,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5374,6 +6820,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 94,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5397,6 +6849,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5421,6 +6879,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5445,6 +6909,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5469,6 +6939,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5493,6 +6969,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 91,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5517,6 +6999,12 @@
       },
       "components": {
         "skills": 30
+      },
+      "verification": {
+        "score": 79,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5540,6 +7028,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5562,6 +7056,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5586,6 +7086,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5610,6 +7116,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5633,6 +7145,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5656,6 +7174,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5680,6 +7204,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 81,
+        "grade": "B",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5705,6 +7235,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 65,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5730,6 +7266,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 65,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5754,6 +7296,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 71,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5779,6 +7327,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 68,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5804,6 +7358,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 70,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5827,6 +7387,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 75,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5851,6 +7417,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 72,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5875,6 +7447,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 71,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5900,6 +7478,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 69,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5924,6 +7508,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 67,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5949,6 +7539,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 69,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5973,6 +7569,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 68,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -5997,6 +7599,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 67,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6021,6 +7629,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 69,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6045,6 +7659,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 66,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6069,6 +7689,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6093,6 +7719,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6117,6 +7749,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 69,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6141,6 +7779,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6165,6 +7809,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 66,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6189,6 +7839,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 68,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6213,6 +7869,12 @@
       },
       "components": {
         "skills": 24
+      },
+      "verification": {
+        "score": 66,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6245,6 +7907,12 @@
         "enabled": true,
         "source_repo": "numman-ali/n-skills",
         "source_path": "skills/tools/gastown"
+      },
+      "verification": {
+        "score": 95,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6277,6 +7945,12 @@
         "enabled": true,
         "source_repo": "numman-ali/n-skills",
         "source_path": "skills/tools/zai-cli"
+      },
+      "verification": {
+        "score": 96,
+        "grade": "A",
+        "badge": "gold",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6329,6 +8003,12 @@
       "repository": "https://github.com/JackReis/neurodivergent-visual-org",
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 52,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6379,6 +8059,12 @@
         "skills": 5,
         "commands": 7,
         "agents": 3
+      },
+      "verification": {
+        "score": 67,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6402,6 +8088,12 @@
       },
       "components": {
         "skills": 1
+      },
+      "verification": {
+        "score": 75,
+        "grade": "C",
+        "badge": "silver",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6433,6 +8125,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "blue-ocean-strategy"
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6464,6 +8162,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "contagious"
+      },
+      "verification": {
+        "score": 54,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6495,6 +8199,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "cro-methodology"
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6526,6 +8236,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "crossing-the-chasm"
+      },
+      "verification": {
+        "score": 67,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6557,6 +8273,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "design-everyday-things"
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6588,6 +8310,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "design-sprint"
+      },
+      "verification": {
+        "score": 58,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6619,6 +8347,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "drive-motivation"
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6650,6 +8384,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "hooked-ux"
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6681,6 +8421,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "hundred-million-offers"
+      },
+      "verification": {
+        "score": 56,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6712,6 +8458,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "influence-psychology"
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6743,6 +8495,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "ios-hig-design"
+      },
+      "verification": {
+        "score": 57,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6774,6 +8532,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "jobs-to-be-done"
+      },
+      "verification": {
+        "score": 62,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6805,6 +8569,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "lean-startup"
+      },
+      "verification": {
+        "score": 63,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6836,6 +8606,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "made-to-stick"
+      },
+      "verification": {
+        "score": 61,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6867,6 +8643,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "negotiation"
+      },
+      "verification": {
+        "score": 56,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6898,6 +8680,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "obviously-awesome"
+      },
+      "verification": {
+        "score": 67,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6929,6 +8717,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "one-page-marketing"
+      },
+      "verification": {
+        "score": 56,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6961,6 +8755,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "predictable-revenue"
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -6992,6 +8792,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "refactoring-ui"
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7023,6 +8829,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "scorecard-marketing"
+      },
+      "verification": {
+        "score": 70,
+        "grade": "C",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7054,6 +8866,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "storybrand-messaging"
+      },
+      "verification": {
+        "score": 63,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7085,6 +8903,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "top-design"
+      },
+      "verification": {
+        "score": 61,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7116,6 +8940,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "traction-eos"
+      },
+      "verification": {
+        "score": 64,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7147,6 +8977,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "ux-heuristics"
+      },
+      "verification": {
+        "score": 66,
+        "grade": "D",
+        "badge": "bronze",
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {
@@ -7178,6 +9014,12 @@
         "enabled": true,
         "source_repo": "wondelai/skills",
         "source_path": "web-typography"
+      },
+      "verification": {
+        "score": 59,
+        "grade": "F",
+        "badge": null,
+        "lastValidated": "2026-03-10T00:00:00.000Z"
       }
     },
     {

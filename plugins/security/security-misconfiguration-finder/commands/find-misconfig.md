@@ -1,7 +1,7 @@
 ---
 name: find-misconfig
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: smf
 ---
 # TITLE_PLACEHOLDER
 

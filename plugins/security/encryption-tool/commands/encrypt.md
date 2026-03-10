@@ -1,7 +1,7 @@
 ---
 name: encrypt
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: enc
 ---
 # TITLE_PLACEHOLDER
 

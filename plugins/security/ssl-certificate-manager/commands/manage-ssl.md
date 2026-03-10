@@ -1,7 +1,7 @@
 ---
 name: manage-ssl
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: ssl
 ---
 # TITLE_PLACEHOLDER
 

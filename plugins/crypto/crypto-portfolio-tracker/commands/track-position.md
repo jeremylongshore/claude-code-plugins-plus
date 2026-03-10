@@ -3,7 +3,7 @@ name: track-position
 description: >
   Track crypto positions with entry prices, current values, and PnL
   calculations
-shortcut: tp
+shortcut: cpt
 ---
 # Track Crypto Position
 

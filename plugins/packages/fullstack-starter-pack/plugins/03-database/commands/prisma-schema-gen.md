@@ -1,7 +1,7 @@
 ---
 name: prisma-schema-gen
 description: Generate Prisma schema from natural language descriptions
-shortcut: psg
+shortcut: dbpsg
 category: database
 difficulty: beginner
 estimated_time: 3-5 minutes

@@ -1,7 +1,7 @@
 ---
 name: scan-gdpr
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: gdpr
 ---
 # TITLE_PLACEHOLDER
 

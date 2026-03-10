@@ -3,7 +3,7 @@ name: calculate-tax
 description: >
   Calculate cryptocurrency taxes with multi-jurisdiction support, cost
   basis...
-shortcut: ct
+shortcut: ctax
 ---
 # Calculate Crypto Taxes
 

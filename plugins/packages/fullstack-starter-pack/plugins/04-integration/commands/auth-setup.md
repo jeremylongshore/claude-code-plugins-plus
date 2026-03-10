@@ -2,7 +2,7 @@
 name: auth-setup
 description: >
   Generate authentication boilerplate with JWT, OAuth, and session support
-shortcut: as
+shortcut: fsa
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes

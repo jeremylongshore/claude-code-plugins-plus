@@ -19,7 +19,8 @@ const DISALLOWED_KEYS = new Set([
   'pricing',
   'components',
   'zcf_metadata',
-  'external_sync'
+  'external_sync',
+  'verification'
 ]);
 
 if (!fs.existsSync(extendedPath)) {

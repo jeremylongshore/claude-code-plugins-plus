@@ -3,7 +3,7 @@ name: caching
 description: >
   Implement multi-tier database caching with Redis, in-memory, and CDN
   layers...
-shortcut: cach
+shortcut: dcach
 ---
 # Database Cache Layer
 

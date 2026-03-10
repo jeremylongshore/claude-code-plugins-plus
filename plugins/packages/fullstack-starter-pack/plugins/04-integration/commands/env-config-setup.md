@@ -2,7 +2,7 @@
 name: env-config-setup
 description: >
   Generate environment configuration files and validation schemas
-shortcut: ecs
+shortcut: iecs
 category: devops
 difficulty: beginner
 estimated_time: 2-3 minutes

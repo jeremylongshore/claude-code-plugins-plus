@@ -2,7 +2,7 @@
 name: fastapi-scaffold
 description: >
   Generate production-ready FastAPI REST API with async and authentication
-shortcut: fas
+shortcut: bfas
 category: backend
 difficulty: intermediate
 estimated_time: 5-10 minutes

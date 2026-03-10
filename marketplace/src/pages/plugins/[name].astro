@@ -38,6 +38,18 @@ const formatComponents = (components: any) => {
 
 const componentList = formatComponents(plugin.components);
 
+const getBadgeInfo = (verification: any) => {
+  if (!verification?.badge) return null;
+  const badges: Record<string, { label: string; color: string; icon: string }> = {
+    gold: { label: 'Verified Gold', color: '#D4A017', icon: '/images/badges/verified-gold.svg' },
+    silver: { label: 'Verified Silver', color: '#8E9AAF', icon: '/images/badges/verified-silver.svg' },
+    bronze: { label: 'Verified Bronze', color: '#CD7F32', icon: '/images/badges/verified-bronze.svg' },
+  };
+  return badges[verification.badge] || null;
+};
+
+const badgeInfo = getBadgeInfo(plugin.verification);
+
 const relatedPlugins = await (async () => {
   const catalogPath = join(process.cwd(), '../.claude-plugin/marketplace.extended.json');
   const catalog = JSON.parse(readFileSync(catalogPath, 'utf-8'));
@@ -65,9 +77,21 @@ const relatedPlugins = await (async () => {
       </a>
 
       <div class="header">
-        <h1>{plugin.name}</h1>
+        <h1>
+          {plugin.name}
+          {badgeInfo && (
+            <a href="/verification" class="verification-badge" title={`${badgeInfo.label} — Score: ${plugin.verification.score}/100`}>
+              <img src={badgeInfo.icon} alt={badgeInfo.label} width="28" height="28" />
+            </a>
+          )}
+        </h1>
         <div class="meta">
           {plugin.featured && <span class="badge featured">Featured</span>}
+          {badgeInfo && (
+            <a href="/verification" class="badge verified" style={`border-color: ${badgeInfo.color}; color: ${badgeInfo.color};`}>
+              {badgeInfo.label} · {plugin.verification.score}/100
+            </a>
+          )}
           <span class="badge category">{plugin.category}</span>
           <span class="meta-item">v{plugin.version}</span>
           {plugin.author?.name && <span class="meta-item">by {plugin.author.name}</span>}
@@ -247,6 +271,31 @@ const relatedPlugins = await (async () => {
     font-size: 0.85rem;
     font-weight: 500;
     color: var(--brand-dark);
+  }
+
+  .verification-badge {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+    text-decoration: none;
+    transition: transform 0.2s;
+  }
+
+  .verification-badge:hover {
+    transform: scale(1.15);
+  }
+
+  .badge.verified {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .badge.verified:hover {
+    opacity: 0.85;
   }
 
   .badge.featured {

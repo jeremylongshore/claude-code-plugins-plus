@@ -1,7 +1,7 @@
 ---
 name: incident-response
 description: DESCRIPTION_PLACEHOLDER
-shortcut: shor
+shortcut: sir
 ---
 # TITLE_PLACEHOLDER
 

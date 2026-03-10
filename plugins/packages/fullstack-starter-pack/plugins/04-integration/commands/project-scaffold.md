@@ -2,7 +2,7 @@
 name: project-scaffold
 description: >
   Generate complete fullstack project structure with all boilerplate
-shortcut: ps
+shortcut: ips
 category: devops
 difficulty: beginner
 estimated_time: 5-10 minutes
