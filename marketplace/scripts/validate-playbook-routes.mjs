@@ -54,10 +54,15 @@ if (expectedSlugs.length === 0) {
   process.exit(1);
 }
 
-// Get all .astro files in playbooks directory (excluding index.astro)
-const existingPages = readdirSync(PLAYBOOKS_DIR)
-  .filter(f => f.endsWith('.astro') && f !== 'index.astro')
+// Get all page sources: .astro files in pages/playbooks/ OR .md files in content/playbooks/
+const CONTENT_DIR = join(__dirname, '../src/content/playbooks');
+const astroPages = readdirSync(PLAYBOOKS_DIR)
+  .filter(f => f.endsWith('.astro') && f !== 'index.astro' && !f.startsWith('['))
   .map(f => basename(f, '.astro'));
+const contentPages = existsSync(CONTENT_DIR)
+  ? readdirSync(CONTENT_DIR).filter(f => f.endsWith('.md')).map(f => basename(f, '.md'))
+  : [];
+const existingPages = [...new Set([...astroPages, ...contentPages])];
 
 console.log(`📊 Statistics:`);
 console.log(`   Playbooks in index: ${expectedSlugs.length}`);
@@ -96,7 +101,7 @@ if (missingPages.length > 0) {
   console.error(`❌ ${missingPages.length} playbook(s) missing page files:\n`);
   missingPages.forEach(slug => {
     console.error(`   • ${slug}`);
-    console.error(`     Expected: ${PLAYBOOKS_DIR}/${slug}.astro`);
+    console.error(`     Expected: ${PLAYBOOKS_DIR}/${slug}.astro or ${CONTENT_DIR}/${slug}.md`);
     console.error(`     Link: /playbooks/${slug}/\n`);
   });
 }
@@ -104,7 +109,7 @@ if (missingPages.length > 0) {
 if (orphanPages.length > 0) {
   console.warn(`⚠️  ${orphanPages.length} orphan page(s) detected (not in index):\n`);
   orphanPages.forEach(page => {
-    console.warn(`   • ${page}.astro (not listed in index.astro)`);
+    console.warn(`   • ${page} (not listed in index.astro)`);
   });
   console.warn('');
 }
