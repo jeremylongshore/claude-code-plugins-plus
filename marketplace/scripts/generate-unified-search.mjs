@@ -33,7 +33,7 @@ const plugins = catalogData.plugins.map(plugin => ({
   displayName: plugin.displayName || plugin.name,  // Display name for UI
   description: plugin.description,
   category: plugin.category,
-  tags: plugin.tags || [],
+  keywords: plugin.keywords || plugin.tags || [],
   author: plugin.author,
   version: plugin.version,
   // Trust signals
@@ -42,7 +42,7 @@ const plugins = catalogData.plugins.map(plugin => ({
   badges: plugin.badges || [],
   skillCount: plugin.skillCount || 0,
   // Search-specific fields
-  searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.tags || []).join(' ')}`.toLowerCase()
+  searchText: `${plugin.displayName || plugin.name} ${plugin.description} ${plugin.category} ${(plugin.keywords || plugin.tags || []).join(' ')}`.toLowerCase()
 }));
 
 // Transform skills for search
@@ -77,7 +77,8 @@ const unifiedIndex = {
     totalSkills: skills.length,
     totalItems: plugins.length + skills.length,
     categories: [...new Set([...plugins.map(p => p.category), ...skills.map(s => s.category)])].sort(),
-    skillTools: skillsData.allowedToolsUsed || []
+    skillTools: skillsData.allowedToolsUsed || [],
+    allKeywords: [...new Set(plugins.flatMap(p => p.keywords || []))].sort()
   },
   items: [...plugins, ...skills]
 };
