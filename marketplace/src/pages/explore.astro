@@ -210,10 +210,38 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       flex: 1;
     }
 
-    .compare-toggle-btn {
+    .card-actions {
+      display: flex;
+      gap: 0.5rem;
       position: absolute;
       bottom: 1rem;
       right: 1rem;
+    }
+
+    .install-copy-btn {
+      padding: 0.4rem 0.75rem;
+      background: var(--gold);
+      border: 1px solid var(--gold);
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--surface);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+
+    .install-copy-btn:hover {
+      background: var(--brand-orange-dark);
+      border-color: var(--brand-orange-dark);
+    }
+
+    .install-copy-btn.copied {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .compare-toggle-btn {
       padding: 0.4rem 0.75rem;
       background: var(--surface-3);
       border: 1px solid var(--brand-light-gray);
@@ -224,6 +252,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       cursor: pointer;
       transition: all 0.2s;
       font-family: 'DM Sans', system-ui, sans-serif;
+      position: static;
     }
 
     .compare-toggle-btn:hover {
@@ -653,15 +682,24 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             )}
           </a>
 
-          <button
-            class="compare-toggle-btn"
-            data-compare-id={item.id || item.name}
-            data-compare-name={item.displayName || item.name}
-            data-compare-type={item.type}
-            title="Add to comparison"
-          >
-            + Compare
-          </button>
+          <div class="card-actions">
+            <button
+              class="install-copy-btn"
+              data-install-cmd={`/plugin install ${item.type === 'plugin' ? item.name : (item.parentPlugin?.name || item.name)}@claude-code-plugins-plus`}
+              title="Copy install command"
+            >
+              Install
+            </button>
+            <button
+              class="compare-toggle-btn"
+              data-compare-id={item.id || item.name}
+              data-compare-name={item.displayName || item.name}
+              data-compare-type={item.type}
+              title="Add to comparison"
+            >
+              + Compare
+            </button>
+          </div>
         </div>
       ))}
     </div>
@@ -1039,6 +1077,22 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       if (window.CompareManager) {
         window.CompareManager.updateCardStates();
       }
+
+      // Add click handlers to install buttons
+      document.querySelectorAll('.install-copy-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const cmd = btn.dataset.installCmd;
+          navigator.clipboard.writeText(cmd).then(() => {
+            const original = btn.textContent;
+            btn.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+            if (window.trackEvent) window.trackEvent('install_copied', { plugin_name: cmd, source: 'explore_card' });
+          });
+        });
+      });
 
       // Add click handlers to compare buttons
       document.querySelectorAll('.compare-toggle-btn').forEach(btn => {

@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-10T03:38:15.864Z",
+    "generated": "2026-03-10T04:00:59.152Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
@@ -1271,7 +1271,11 @@
       "zapier",
       "zero-cost",
       "zod"
-    ]
+    ],
+    "totalAgents": 116,
+    "totalHooks": 8,
+    "pluginsWithAgents": 38,
+    "pluginsWithHooks": 8
   },
   "items": [
     {

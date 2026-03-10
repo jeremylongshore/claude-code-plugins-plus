@@ -10,6 +10,8 @@ import searchIndex from '../data/unified-search-index.json';
 const totalSkills = searchIndex.stats.totalSkills;
 const totalPlugins = searchIndex.stats.totalPlugins;
 const totalCategories = searchIndex.stats.categories.length;
+const totalAgents = searchIndex.stats.totalAgents || 0;
+const totalHooks = searchIndex.stats.totalHooks || 0;
 ---
 
 <BaseLayout
@@ -1083,6 +1085,14 @@ const totalCategories = searchIndex.stats.categories.length;
                 <div class="stat-item">
                     <div class="stats-number">{totalCategories}</div>
                     <div class="stat-label">Categories</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stats-number">{totalAgents}</div>
+                    <div class="stat-label">Agents</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stats-number">{totalHooks}</div>
+                    <div class="stat-label">Hooks</div>
                 </div>
             </div>
 

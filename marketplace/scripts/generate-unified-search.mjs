@@ -18,7 +18,51 @@ const CATALOG_FILE = path.join(DATA_DIR, 'catalog.json');
 const SKILLS_FILE = path.join(DATA_DIR, 'skills-catalog.json');
 const OUTPUT_FILE = path.join(DATA_DIR, 'unified-search-index.json');
 
+const PLUGINS_DIR = path.resolve(ROOT_DIR, '..', 'plugins');
+
 console.log('🔍 Generating unified search index...\n');
+
+// Count agents and hooks across all plugins
+function countAgentsAndHooks() {
+  let totalAgents = 0;
+  let totalHooks = 0;
+  let pluginsWithAgents = 0;
+  let pluginsWithHooks = 0;
+
+  const categories = fs.readdirSync(PLUGINS_DIR, { withFileTypes: true })
+    .filter(d => d.isDirectory());
+
+  for (const cat of categories) {
+    const catPath = path.join(PLUGINS_DIR, cat.name);
+    const plugins = fs.readdirSync(catPath, { withFileTypes: true })
+      .filter(d => d.isDirectory());
+
+    for (const plugin of plugins) {
+      const agentsDir = path.join(catPath, plugin.name, 'agents');
+      const hooksDir = path.join(catPath, plugin.name, 'hooks');
+
+      if (fs.existsSync(agentsDir)) {
+        const agentFiles = fs.readdirSync(agentsDir).filter(f => f.endsWith('.md'));
+        if (agentFiles.length > 0) {
+          totalAgents += agentFiles.length;
+          pluginsWithAgents++;
+        }
+      }
+
+      if (fs.existsSync(hooksDir)) {
+        const hookFiles = fs.readdirSync(hooksDir).filter(f => f.endsWith('.json') || f.endsWith('.sh'));
+        if (hookFiles.length > 0) {
+          totalHooks += hookFiles.length;
+          pluginsWithHooks++;
+        }
+      }
+    }
+  }
+
+  return { totalAgents, totalHooks, pluginsWithAgents, pluginsWithHooks };
+}
+
+const agentHookStats = countAgentsAndHooks();
 
 // Read source files
 const catalogData = JSON.parse(fs.readFileSync(CATALOG_FILE, 'utf8'));
@@ -78,7 +122,11 @@ const unifiedIndex = {
     totalItems: plugins.length + skills.length,
     categories: [...new Set([...plugins.map(p => p.category), ...skills.map(s => s.category)])].sort(),
     skillTools: skillsData.allowedToolsUsed || [],
-    allKeywords: [...new Set(plugins.flatMap(p => p.keywords || []))].sort()
+    allKeywords: [...new Set(plugins.flatMap(p => p.keywords || []))].sort(),
+    totalAgents: agentHookStats.totalAgents,
+    totalHooks: agentHookStats.totalHooks,
+    pluginsWithAgents: agentHookStats.pluginsWithAgents,
+    pluginsWithHooks: agentHookStats.pluginsWithHooks
   },
   items: [...plugins, ...skills]
 };
@@ -92,5 +140,7 @@ console.log(`   Plugins: ${plugins.length}`);
 console.log(`   Skills: ${skills.length}`);
 console.log(`   Total searchable items: ${unifiedIndex.stats.totalItems}`);
 console.log(`   Categories: ${unifiedIndex.stats.categories.length}`);
-console.log(`   Skill tools: ${unifiedIndex.stats.skillTools.length}\n`);
+console.log(`   Skill tools: ${unifiedIndex.stats.skillTools.length}`);
+console.log(`   Agents: ${unifiedIndex.stats.totalAgents} (across ${unifiedIndex.stats.pluginsWithAgents} plugins)`);
+console.log(`   Hooks: ${unifiedIndex.stats.totalHooks} (across ${unifiedIndex.stats.pluginsWithHooks} plugins)\n`);
 console.log(`📝 Output: ${OUTPUT_FILE}\n`);
