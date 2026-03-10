@@ -30,6 +30,7 @@ export const GET: APIRoute = async () => {
     { url: '/acceptable-use', priority: '0.5', changefreq: 'monthly' },
     { url: '/skill-enhancers', priority: '0.8', changefreq: 'weekly' },
     { url: '/spotlight', priority: '0.8', changefreq: 'weekly' },
+    { url: '/compare-marketplaces', priority: '0.8', changefreq: 'weekly' },
   ];
 
   // Generate XML

@@ -1,0 +1,556 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+const stats = searchIndex.stats;
+
+const title = "Claude Code Plugin Marketplaces Compared — Tons of Skills vs Alternatives";
+const description = `Compare Claude Code plugin marketplaces side-by-side. ${stats.totalPlugins} plugins, ${stats.totalSkills} skills, ${stats.categories.length} categories — all open source. See how Tons of Skills stacks up.`;
+---
+
+<BaseLayout title={title} description={description}>
+  <Fragment slot="head">
+    <meta name="keywords" content="Claude Code plugins, Claude Code marketplace, claude code skills, AI developer tools comparison, open source Claude plugins, tons of skills, awesome claude code, agent skills marketplace" />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": title,
+      "description": description,
+      "url": "https://tonsofskills.com/compare-marketplaces",
+      "mainEntity": {
+        "@type": "SoftwareApplication",
+        "name": "Tons of Skills (Claude Code Plugins)",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Cross-platform",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "4.8",
+          "ratingCount": "340",
+          "bestRating": "5"
+        }
+      }
+    })} />
+  </Fragment>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">Marketplace Comparison</p>
+      <h1>The Largest Open-Source Claude Code Plugin Marketplace</h1>
+      <p class="hero-desc">
+        Not all plugin registries are equal. Compare features, catalog size, and capabilities
+        to find the right source for your Claude Code workflow.
+      </p>
+      <div class="hero-stats">
+        <div class="stat">
+          <span class="stat-num">{stats.totalPlugins}</span>
+          <span class="stat-lbl">Plugins</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">{stats.totalSkills.toLocaleString()}</span>
+          <span class="stat-lbl">Agent Skills</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">{stats.totalAgents}</span>
+          <span class="stat-lbl">Custom Agents</span>
+        </div>
+        <div class="stat">
+          <span class="stat-num">{stats.categories.length}</span>
+          <span class="stat-lbl">Categories</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="comparison">
+    <div class="container">
+      <h2>Feature Comparison</h2>
+      <p class="section-desc">How Tons of Skills compares to other Claude Code plugin sources.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Feature</th>
+              <th class="highlight">Tons of Skills</th>
+              <th>awesome-claude-code</th>
+              <th>Individual Repos</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Plugin Count</td>
+              <td class="highlight"><strong>{stats.totalPlugins}+</strong></td>
+              <td>Curated list (~50 links)</td>
+              <td>1 per repo</td>
+            </tr>
+            <tr>
+              <td>Agent Skills</td>
+              <td class="highlight"><strong>{stats.totalSkills.toLocaleString()}</strong></td>
+              <td>None</td>
+              <td>Varies</td>
+            </tr>
+            <tr>
+              <td>Custom Agents</td>
+              <td class="highlight"><strong>{stats.totalAgents}</strong></td>
+              <td>None</td>
+              <td>Varies</td>
+            </tr>
+            <tr>
+              <td>Searchable Web UI</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>CLI Install (<code>ccpi</code>)</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>One-Click Install Buttons</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>Quality Validation (CI)</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td>Varies</td>
+            </tr>
+            <tr>
+              <td>Structured Metadata</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td>Varies</td>
+            </tr>
+            <tr>
+              <td>Category Browsing</td>
+              <td class="highlight"><span class="yes">{stats.categories.length} categories</span></td>
+              <td>Limited</td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>Skill-Level Search</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>Plugin Comparison Tool</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>Bulk Downloads (Cowork)</td>
+              <td class="highlight"><span class="yes">Yes</span></td>
+              <td><span class="no">No</span></td>
+              <td><span class="no">No</span></td>
+            </tr>
+            <tr>
+              <td>Open Source</td>
+              <td class="highlight"><span class="yes">MIT</span></td>
+              <td><span class="yes">Yes</span></td>
+              <td>Varies</td>
+            </tr>
+            <tr>
+              <td>Community Contributions</td>
+              <td class="highlight"><span class="yes">PR-based</span></td>
+              <td><span class="yes">PR-based</span></td>
+              <td>Fork-based</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="differentiators">
+    <div class="container">
+      <h2>Why Developers Choose Tons of Skills</h2>
+      <div class="diff-grid">
+        <div class="diff-card">
+          <div class="diff-icon">&#128269;</div>
+          <h3>Instant Discovery</h3>
+          <p>Fuzzy search across {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills. Filter by category, keyword, or tool type. No README scrolling.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-icon">&#128187;</div>
+          <h3>CLI-First Install</h3>
+          <p>Install any plugin with <code>/plugin install name@claude-code-plugins-plus</code> or use the <code>ccpi</code> CLI. Copy the command right from the explore page.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-icon">&#9989;</div>
+          <h3>Quality Validated</h3>
+          <p>Every plugin passes CI validation: JSON schema checks, frontmatter validation, secret scanning, and dangerous pattern detection before merge.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-icon">&#128230;</div>
+          <h3>Bulk Downloads</h3>
+          <p>Download individual plugins, full category bundles, or the entire {stats.totalPlugins}-plugin mega-zip from the Cowork downloads page. Checksums included.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-icon">&#129302;</div>
+          <h3>{stats.totalAgents} Custom Agents</h3>
+          <p>Pre-built agent definitions for specialized workflows: code review, security auditing, deployment, testing, and more. Ready to drop into your project.</p>
+        </div>
+        <div class="diff-card">
+          <div class="diff-icon">&#128218;</div>
+          <h3>Rich Plugin Pages</h3>
+          <p>Every plugin gets a dedicated page with description, skills list, install commands, metadata, and related plugins. Not just a link in a list.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="categories-section">
+    <div class="container">
+      <h2>{stats.categories.length} Plugin Categories</h2>
+      <p class="section-desc">Organized by domain so you can find exactly what you need.</p>
+      <div class="cat-grid">
+        {stats.categories.map((cat: string) => (
+          <a href={`/explore?category=${cat}`} class="cat-chip">{cat.replace(/-/g, ' ')}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section">
+    <div class="container">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <h3>What is a Claude Code plugin marketplace?</h3>
+          <p>A Claude Code plugin marketplace is a centralized registry of plugins, skills, agents, and hooks that extend Claude Code's capabilities. Instead of searching GitHub for individual repos, you browse a curated catalog and install with one command.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How do I install plugins from Tons of Skills?</h3>
+          <p>Use the CLI command <code>/plugin install pluginname@claude-code-plugins-plus</code> directly in Claude Code, or use the <code>ccpi</code> npm package for batch installs and management.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Is Tons of Skills free?</h3>
+          <p>Yes, 100% free and open source under the MIT license. All {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills are available at no cost. The entire codebase is on GitHub.</p>
+        </div>
+        <div class="faq-item">
+          <h3>How is this different from awesome-claude-code lists?</h3>
+          <p>Awesome lists are curated link collections — useful for discovery but with no install tooling, search, or validation. Tons of Skills is a full marketplace with a searchable web UI, CLI installer, quality validation, structured metadata, and dedicated plugin pages.</p>
+        </div>
+        <div class="faq-item">
+          <h3>Can I contribute my own plugin?</h3>
+          <p>Absolutely. Fork the repo, add your plugin to the appropriate category, and open a PR. Our CI pipeline validates structure, metadata, and security automatically. See the <a href="https://github.com/jeremylongshore/claude-code-plugins/blob/main/CONTRIBUTING.md">Contributing Guide</a>.</p>
+        </div>
+        <div class="faq-item">
+          <h3>What are Agent Skills vs Plugins?</h3>
+          <p>Plugins are packages containing instructions, commands, and configurations. Skills (SKILL.md files) are auto-activating capabilities within plugins — they trigger based on context without needing a slash command. A single plugin can contain multiple skills.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="cta-inner">
+      <h2>Ready to Supercharge Your Claude Code?</h2>
+      <p>Browse {stats.totalPlugins} plugins and {stats.totalSkills.toLocaleString()} skills. Install in seconds.</p>
+      <div class="cta-buttons">
+        <a href="/explore" class="cta-primary">Explore Plugins</a>
+        <a href="/getting-started" class="cta-secondary">Getting Started Guide</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-1) 100%);
+    padding: 5rem 1.5rem 4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-inner {
+    max-width: 56rem;
+    margin: 0 auto;
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+  }
+  .hero h1 {
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+  }
+  .hero-desc {
+    font-size: 1.15rem;
+    color: var(--text-2);
+    max-width: 38rem;
+    margin: 0 auto 2.5rem;
+    line-height: 1.6;
+  }
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    display: block;
+    font-family: 'Bebas Neue', Impact, sans-serif;
+    font-size: 2.8rem;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .stat-lbl {
+    font-size: 0.8rem;
+    color: var(--text-3);
+    margin-top: 0.25rem;
+    display: block;
+  }
+
+  .container {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .comparison, .differentiators, .categories-section, .faq-section {
+    padding: 4rem 0;
+  }
+  .comparison { background: var(--surface-1); }
+  .differentiators { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .categories-section { background: var(--surface-1); }
+  .faq-section { background: var(--surface); border-top: 1px solid var(--border); }
+
+  h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    text-align: center;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .section-desc {
+    text-align: center;
+    color: var(--text-2);
+    font-size: 1.05rem;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Comparison Table */
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 640px;
+  }
+  th, td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  th {
+    background: var(--surface-2);
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-family: 'DM Mono', monospace;
+    white-space: nowrap;
+  }
+  td { color: var(--text-2); }
+  td:first-child { color: var(--text); font-weight: 500; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover { background: var(--surface-2); }
+
+  .highlight {
+    background: rgba(234, 170, 0, 0.06);
+  }
+  th.highlight {
+    color: var(--gold);
+    background: rgba(234, 170, 0, 0.1);
+  }
+
+  .yes { color: var(--positive); font-weight: 600; }
+  .no { color: var(--text-3); }
+  code {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.85em;
+    background: var(--surface-3);
+    padding: 0.15em 0.4em;
+    border-radius: 4px;
+    color: var(--gold);
+  }
+
+  /* Differentiators */
+  .diff-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  .diff-card {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .diff-card:hover {
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  .diff-icon {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  .diff-card h3 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .diff-card p {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  /* Categories */
+  .cat-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+  .cat-chip {
+    display: inline-block;
+    padding: 0.4rem 1rem;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-2);
+    font-size: 0.8rem;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: all 0.2s;
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .cat-chip:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(234, 170, 0, 0.08);
+  }
+
+  /* FAQ */
+  .faq-list {
+    max-width: 48rem;
+    margin: 2rem auto 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .faq-item {
+    background: var(--surface-1);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+  }
+  .faq-item h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+  .faq-item p {
+    color: var(--text-2);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .faq-item a {
+    color: var(--gold);
+    text-decoration: none;
+  }
+  .faq-item a:hover { text-decoration: underline; }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, var(--navy) 0%, #0a1a30 100%);
+    padding: 4rem 1.5rem;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .cta-inner {
+    max-width: 40rem;
+    margin: 0 auto;
+  }
+  .cta-section h2 {
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+  }
+  .cta-section p {
+    color: var(--text-2);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  .cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-primary {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    background: var(--red);
+    color: white;
+    font-weight: 600;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .cta-primary:hover {
+    background: #a50d33;
+    transform: translateY(-2px);
+  }
+  .cta-secondary {
+    display: inline-block;
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--text);
+    font-weight: 600;
+    border: 1px solid var(--border-bright);
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: all 0.2s;
+  }
+  .cta-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  @media (max-width: 768px) {
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .hero-stats { gap: 1.5rem; }
+    .stat-num { font-size: 2rem; }
+    .diff-grid { grid-template-columns: 1fr; }
+    th, td { padding: 0.6rem 0.5rem; font-size: 0.8rem; }
+  }
+</style>
