@@ -1,6 +1,6 @@
 # Contributing to Claude Code Plugins
 
-Thank you for your interest in contributing to the Claude Code Plugins marketplace. With 339 plugins and 1896 skills, this is a community-driven project and contributions of all sizes are welcome.
+Thank you for your interest in contributing to the Claude Code Plugins marketplace. With hundreds of plugins and thousands of agent skills, this is a community-driven project and contributions of all sizes are welcome.
 
 ## Quick Start
 
