@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-05T01:56:06.353Z",
+    "generated": "2026-03-10T03:12:46.848Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 315,
-    "totalSkills": 1342,
-    "totalItems": 1657,
+    "totalPlugins": 340,
+    "totalSkills": 1367,
+    "totalItems": 1707,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -85,6 +85,7 @@
       "Glob\"",
       "Grep",
       "Grep\"",
+      "Read",
       "WebFetch",
       "WebSearch",
       "Write"
@@ -7011,6 +7012,556 @@
       "searchText": "b12 claude plugin b12 website generator — an official plugin by b12.io. ships a single auto-activating skill (website-generator) that collects a business name and description, then generates a production-ready b12 website signup link instantly. community "
     },
     {
+      "type": "plugin",
+      "id": "wondelai-blue-ocean-strategy",
+      "slug": "wondelai-blue-ocean-strategy",
+      "name": "wondelai-blue-ocean-strategy",
+      "displayName": "wondelai blue ocean strategy",
+      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai blue ocean strategy blue ocean strategy framework for creating uncontested market space. use the strategy canvas, four actions framework (errc), and value innovation to break the value-cost trade-off. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-contagious",
+      "slug": "wondelai-contagious",
+      "name": "wondelai-contagious",
+      "displayName": "wondelai contagious",
+      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai contagious word-of-mouth and virality framework using the stepps model (social currency, triggers, emotion, public, practical value, stories). engineer products and content that people naturally share. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-cro-methodology",
+      "slug": "wondelai-cro-methodology",
+      "name": "wondelai-cro-methodology",
+      "displayName": "wondelai cro methodology",
+      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai cro methodology customer-centric conversion rate optimization methodology. audit landing pages, identify conversion blockers, write persuasive copy, design a/b tests, and optimize funnels. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-crossing-the-chasm",
+      "slug": "wondelai-crossing-the-chasm",
+      "name": "wondelai-crossing-the-chasm",
+      "displayName": "wondelai crossing the chasm",
+      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai crossing the chasm technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. choose beachhead segments, build whole products, and position against incumbents. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-design-everyday-things",
+      "slug": "wondelai-design-everyday-things",
+      "name": "wondelai-design-everyday-things",
+      "displayName": "wondelai design everyday things",
+      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai design everyday things fundamental design principles from don norman. design affordances, signifiers, constraints, and feedback mechanisms. apply human-centered design and fault-tolerant systems. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-design-sprint",
+      "slug": "wondelai-design-sprint",
+      "name": "wondelai-design-sprint",
+      "displayName": "wondelai design sprint",
+      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
+      "category": "productivity",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai design sprint google ventures design sprint methodology. validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making. productivity "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-drive-motivation",
+      "slug": "wondelai-drive-motivation",
+      "name": "wondelai-drive-motivation",
+      "displayName": "wondelai drive motivation",
+      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai drive motivation intrinsic motivation science framework (autonomy, mastery, purpose). design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-hooked-ux",
+      "slug": "wondelai-hooked-ux",
+      "name": "wondelai-hooked-ux",
+      "displayName": "wondelai hooked ux",
+      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai hooked ux hook model framework for building habit-forming products. design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-hundred-million-offers",
+      "slug": "wondelai-hundred-million-offers",
+      "name": "wondelai-hundred-million-offers",
+      "displayName": "wondelai hundred million offers",
+      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai hundred million offers grand slam offer creation framework. create irresistible offers using the value equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-influence-psychology",
+      "slug": "wondelai-influence-psychology",
+      "name": "wondelai-influence-psychology",
+      "displayName": "wondelai influence psychology",
+      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai influence psychology persuasion science framework based on cialdini's six principles (reciprocity, commitment, social proof, authority, liking, scarcity). apply ethical persuasion to product design and marketing. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-ios-hig-design",
+      "slug": "wondelai-ios-hig-design",
+      "name": "wondelai-ios-hig-design",
+      "displayName": "wondelai ios hig design",
+      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai ios hig design native ios app design following apple human interface guidelines. design swiftui/uikit components, implement navigation patterns, and ensure accessibility compliance. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-jobs-to-be-done",
+      "slug": "wondelai-jobs-to-be-done",
+      "name": "wondelai-jobs-to-be-done",
+      "displayName": "wondelai jobs to be done",
+      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai jobs to be done strategic product innovation framework using clayton christensen's jtbd theory. discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-lean-startup",
+      "slug": "wondelai-lean-startup",
+      "name": "wondelai-lean-startup",
+      "displayName": "wondelai lean startup",
+      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
+      "category": "productivity",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai lean startup lean startup methodology for validated learning, mvps, and innovation accounting. design experiments, decide when to pivot vs. persevere, and reduce development waste. productivity "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-made-to-stick",
+      "slug": "wondelai-made-to-stick",
+      "name": "wondelai-made-to-stick",
+      "displayName": "wondelai made to stick",
+      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai made to stick sticky messaging framework using the success model (simple, unexpected, concrete, credible, emotional, stories). make product messaging memorable and create compelling presentations. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-negotiation",
+      "slug": "wondelai-negotiation",
+      "name": "wondelai-negotiation",
+      "displayName": "wondelai negotiation",
+      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai negotiation tactical negotiation framework based on chris voss's techniques. use mirroring, labeling, calibrated questions, the ackerman method, and accusation audits for business and salary negotiations. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-obviously-awesome",
+      "slug": "wondelai-obviously-awesome",
+      "name": "wondelai-obviously-awesome",
+      "displayName": "wondelai obviously awesome",
+      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai obviously awesome product positioning framework for competitive differentiation. define competitive alternatives, identify unique attributes, map value themes, and choose the right market category. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-one-page-marketing",
+      "slug": "wondelai-one-page-marketing",
+      "name": "wondelai-one-page-marketing",
+      "displayName": "wondelai one page marketing",
+      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai one page marketing end-to-end marketing plan framework. define target market, craft usp, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-predictable-revenue",
+      "slug": "wondelai-predictable-revenue",
+      "name": "wondelai-predictable-revenue",
+      "displayName": "wondelai predictable revenue",
+      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai predictable revenue outbound sales methodology for scalable b2b pipeline. implement cold calling 2.0, structure sdr/ae/csm roles, design prospecting sequences, and build predictable revenue engines. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-refactoring-ui",
+      "slug": "wondelai-refactoring-ui",
+      "name": "wondelai-refactoring-ui",
+      "displayName": "wondelai refactoring ui",
+      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai refactoring ui practical ui design system for professional interfaces. fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in tailwind css. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-scorecard-marketing",
+      "slug": "wondelai-scorecard-marketing",
+      "name": "wondelai-scorecard-marketing",
+      "displayName": "wondelai scorecard marketing",
+      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai scorecard marketing lead generation framework using quiz and assessment funnels. create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-storybrand-messaging",
+      "slug": "wondelai-storybrand-messaging",
+      "name": "wondelai-storybrand-messaging",
+      "displayName": "wondelai storybrand messaging",
+      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai storybrand messaging storybrand messaging framework that positions customer as hero. create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-top-design",
+      "slug": "wondelai-top-design",
+      "name": "wondelai-top-design",
+      "displayName": "wondelai top design",
+      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai top design award-winning web design framework for premium brand experiences. build immersive websites with custom animations, dramatic typography, and scroll-based compositions. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-traction-eos",
+      "slug": "wondelai-traction-eos",
+      "name": "wondelai-traction-eos",
+      "displayName": "wondelai traction eos",
+      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
+      "category": "business-tools",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai traction eos entrepreneurial operating system (eos) for business execution. create v/to, set quarterly rocks, run level 10 meetings, build accountability charts, and solve issues with ids. business-tools "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-ux-heuristics",
+      "slug": "wondelai-ux-heuristics",
+      "name": "wondelai-ux-heuristics",
+      "displayName": "wondelai ux heuristics",
+      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai ux heuristics usability heuristics and ux audit framework based on nielsen and krug. conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity. design "
+    },
+    {
+      "type": "plugin",
+      "id": "wondelai-web-typography",
+      "slug": "wondelai-web-typography",
+      "name": "wondelai-web-typography",
+      "displayName": "wondelai web typography",
+      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
+      "category": "design",
+      "tags": [],
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 1,
+      "searchText": "wondelai web typography web typography framework for readable, beautiful type. select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading. design "
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -8404,6 +8955,25 @@
         "category": "crypto"
       },
       "searchText": "backtesting-trading-strategies backtest crypto and traditional trading strategies against historical data. calculates performance metrics (sharpe, sortino, max drawdown), generates equity curves, and optimizes strategy parameters. use when user wants to test a trading strategy, validate signals, or compare approaches. trigger with phrases like \"backtest strategy\", \"test trading strategy\", \"historical performance\", \"simulate trades\", \"optimize parameters\", or \"validate signals\". allowed-tools: read, write, edit, grep, glob, bash(python:*) version: 2.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+    },
+    {
+      "type": "skill",
+      "id": "blue-ocean-strategy",
+      "slug": "blue-ocean-strategy",
+      "name": "blue-ocean-strategy",
+      "description": "'Create uncontested market space using value innovation instead of competing head-to-head. Use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"ERRC framework\", \"value innovation\", or \"non-customers\". Covers the Four Actions Framework, buyer utility map, and value-cost trade-offs. For tech adoption strategy, see crossing-the-chasm. For product positioning, see obviously-awesome.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-blue-ocean-strategy",
+        "category": "business-tools"
+      },
+      "searchText": "blue-ocean-strategy 'create uncontested market space using value innovation instead of competing head-to-head. use when the user mentions \"blue ocean\", \"red ocean\", \"strategy canvas\", \"errc framework\", \"value innovation\", or \"non-customers\". covers the four actions framework, buyer utility map, and value-cost trade-offs. for tech adoption strategy, see crossing-the-chasm. for product positioning, see obviously-awesome.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -9989,6 +10559,25 @@
     },
     {
       "type": "skill",
+      "id": "contagious",
+      "slug": "contagious",
+      "name": "contagious",
+      "description": "'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-contagious",
+        "category": "business-tools"
+      },
+      "searchText": "contagious 'engineer word-of-mouth and virality using the stepps framework (social currency, triggers, emotion, public, practical value, stories). use when the user mentions \"go viral\", \"word of mouth\", \"shareable content\", \"social currency\", or \"why people share\". covers environmental triggers and high-arousal emotional content. for sticky messaging, see made-to-stick. for persuasion tactics, see influence-psychology.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "creating-alerting-rules",
       "slug": "creating-alerting-rules",
       "name": "creating-alerting-rules",
@@ -10091,6 +10680,44 @@
         "category": "api-development"
       },
       "searchText": "creating-webhook-handlers create webhook endpoints with signature verification, retry logic, and payload validation. use when receiving and processing webhook events. trigger with phrases like \"create webhook\", \"handle webhook events\", or \"setup webhook handler\". allowed-tools: read, write, edit, grep, glob, bash(api:webhook-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+    },
+    {
+      "type": "skill",
+      "id": "cro-methodology",
+      "slug": "cro-methodology",
+      "name": "cro-methodology",
+      "description": "'Audit websites and landing pages for conversion issues and design evidence-based A/B tests. Use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"A/B test\", \"why visitors leave\", or \"objection handling\". Covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. For overall marketing strategy, see one-page-marketing. For usability issues, see ux-heuristics.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-cro-methodology",
+        "category": "business-tools"
+      },
+      "searchText": "cro-methodology 'audit websites and landing pages for conversion issues and design evidence-based a/b tests. use when the user mentions \"landing page isn''t converting\", \"conversion rate\", \"a/b test\", \"why visitors leave\", or \"objection handling\". covers funnel mapping, persuasion assets, and objection/counter-objection frameworks. for overall marketing strategy, see one-page-marketing. for usability issues, see ux-heuristics.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
+      "id": "crossing-the-chasm",
+      "slug": "crossing-the-chasm",
+      "name": "crossing-the-chasm",
+      "description": "'Navigate the technology adoption lifecycle from early adopters to mainstream market. Use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". Covers D-Day analogy, bowling-pin strategy, and positioning against incumbents. For product positioning, see obviously-awesome. For new market creation, see blue-ocean-strategy.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-crossing-the-chasm",
+        "category": "business-tools"
+      },
+      "searchText": "crossing-the-chasm 'navigate the technology adoption lifecycle from early adopters to mainstream market. use when the user mentions \"crossing the chasm\", \"beachhead segment\", \"whole product\", \"early adopters vs. mainstream\", or \"tech go-to-market\". covers d-day analogy, bowling-pin strategy, and positioning against incumbents. for product positioning, see obviously-awesome. for new market creation, see blue-ocean-strategy.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -11219,6 +11846,44 @@
     },
     {
       "type": "skill",
+      "id": "design-everyday-things",
+      "slug": "design-everyday-things",
+      "name": "design-everyday-things",
+      "description": "'Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. Use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". Covers the gulfs of execution and evaluation. For usability scoring, see ux-heuristics. For iOS-specific patterns, see ios-hig-design.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-design-everyday-things",
+        "category": "design"
+      },
+      "searchText": "design-everyday-things 'apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models. use when the user mentions \"why is this confusing\", \"affordance\", \"error prevention\", \"discoverability\", \"human-centered design\", or \"fault tolerance\". covers the gulfs of execution and evaluation. for usability scoring, see ux-heuristics. for ios-specific patterns, see ios-hig-design.' design read glob grep"
+    },
+    {
+      "type": "skill",
+      "id": "design-sprint",
+      "slug": "design-sprint",
+      "name": "design-sprint",
+      "description": "'Run a structured 5-day process to prototype, test, and validate product ideas with real users. Use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". Covers mapping, sketching, deciding, prototyping, and testing. For ongoing experimentation, see lean-startup. For customer job analysis, see jobs-to-be-done.'",
+      "category": "productivity",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-design-sprint",
+        "category": "productivity"
+      },
+      "searchText": "design-sprint 'run a structured 5-day process to prototype, test, and validate product ideas with real users. use when the user mentions \"design sprint\", \"validate in a week\", \"rapid prototype\", \"test with users\", or \"de-risk before building\". covers mapping, sketching, deciding, prototyping, and testing. for ongoing experimentation, see lean-startup. for customer job analysis, see jobs-to-be-done.' productivity read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "designing-database-schemas",
       "slug": "designing-database-schemas",
       "name": "designing-database-schemas",
@@ -11713,6 +12378,25 @@
         "category": "saas-packs"
       },
       "searchText": "documenso-webhooks-events implement documenso webhook configuration and event handling. use when setting up webhook endpoints, handling document events, or implementing real-time notifications for document signing. trigger with phrases like \"documenso webhook\", \"documenso events\", \"document completed webhook\", \"signing notification\". allowed-tools: read, write, edit, bash(curl:*), bash(ngrok:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "drive-motivation",
+      "slug": "drive-motivation",
+      "name": "drive-motivation",
+      "description": "'Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams. Use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". Covers why carrot-and-stick fails and how to build progress systems. For habit-forming product loops, see hooked-ux. For retention behavior design, see improve-retention.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-drive-motivation",
+        "category": "business-tools"
+      },
+      "searchText": "drive-motivation 'design motivation systems using autonomy, mastery, and purpose (amp) for products and teams. use when the user mentions \"intrinsic motivation\", \"gamification isn''t working\", \"team incentives\", \"autonomy\", \"mastery\", or \"purpose-driven\". covers why carrot-and-stick fails and how to build progress systems. for habit-forming product loops, see hooked-ux. for retention behavior design, see improve-retention.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -15454,6 +16138,44 @@
     },
     {
       "type": "skill",
+      "id": "hooked-ux",
+      "slug": "hooked-ux",
+      "name": "hooked-ux",
+      "description": "'Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment). Use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". Covers ethics evaluation and onboarding for habits. For friction reduction and B=MAP, see improve-retention. For viral sharing, see contagious.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-hooked-ux",
+        "category": "design"
+      },
+      "searchText": "hooked-ux 'design habit-forming product loops using the hook model (trigger, action, variable reward, investment). use when the user mentions \"users aren''t coming back\", \"engagement loops\", \"habit formation\", \"push notifications\", or \"variable rewards\". covers ethics evaluation and onboarding for habits. for friction reduction and b=map, see improve-retention. for viral sharing, see contagious.' design read glob grep"
+    },
+    {
+      "type": "skill",
+      "id": "hundred-million-offers",
+      "slug": "hundred-million-offers",
+      "name": "hundred-million-offers",
+      "description": "'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-hundred-million-offers",
+        "category": "business-tools"
+      },
+      "searchText": "hundred-million-offers 'create irresistible offers using the value equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. use when the user mentions \"pricing strategy\", \"irresistible offer\", \"bonuses and guarantees\", \"value-to-price ratio\", or \"offer naming\". covers the magic naming formula and starving-crowd targeting. for product positioning, see obviously-awesome. for outbound sales, see predictable-revenue.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "ideogram-ci-integration",
       "slug": "ideogram-ci-integration",
       "name": "ideogram-ci-integration",
@@ -15882,6 +16604,25 @@
     },
     {
       "type": "skill",
+      "id": "influence-psychology",
+      "slug": "influence-psychology",
+      "name": "influence-psychology",
+      "description": "'Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. Use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". For deal negotiation tactics, see negotiation. For viral word-of-mouth, see contagious.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-influence-psychology",
+        "category": "business-tools"
+      },
+      "searchText": "influence-psychology 'apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales. use when the user mentions \"social proof\", \"persuasive copy\", \"why users don''t convert\", or \"ethical persuasion\". for deal negotiation tactics, see negotiation. for viral word-of-mouth, see contagious.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "instantly-ci-integration",
       "slug": "instantly-ci-integration",
       "name": "instantly-ci-integration",
@@ -16254,6 +16995,44 @@
         "category": "devops"
       },
       "searchText": "integrating-secrets-managers manage this skill enables ai assistant to seamlessly integrate with various secrets managers like hashicorp vault and aws secrets manager. it generates configurations and setup code, ensuring best practices for secure credential management. use this skill when... use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, edit, grep, glob, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit devops "
+    },
+    {
+      "type": "skill",
+      "id": "ios-hig-design",
+      "slug": "ios-hig-design",
+      "name": "ios-hig-design",
+      "description": "'Design native iOS interfaces following Apple Human Interface Guidelines. Use when the user mentions \"iPhone app\", \"iPad layout\", \"SwiftUI\", \"UIKit\", \"Dynamic Island\", \"safe areas\", or \"HIG compliance\". Covers navigation patterns, accessibility, SF Symbols, and platform conventions. For general UI polish, see refactoring-ui. For affordance design, see design-everyday-things.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-ios-hig-design",
+        "category": "design"
+      },
+      "searchText": "ios-hig-design 'design native ios interfaces following apple human interface guidelines. use when the user mentions \"iphone app\", \"ipad layout\", \"swiftui\", \"uikit\", \"dynamic island\", \"safe areas\", or \"hig compliance\". covers navigation patterns, accessibility, sf symbols, and platform conventions. for general ui polish, see refactoring-ui. for affordance design, see design-everyday-things.' design read glob grep"
+    },
+    {
+      "type": "skill",
+      "id": "jobs-to-be-done",
+      "slug": "jobs-to-be-done",
+      "name": "jobs-to-be-done",
+      "description": "'Discover what customers truly need by analyzing the \"job\" they hire your product to do. Use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". Covers JTBD interviews, competition analysis, and jobs-oriented roadmaps. For product positioning, see obviously-awesome. For rapid validation, see design-sprint.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-jobs-to-be-done",
+        "category": "business-tools"
+      },
+      "searchText": "jobs-to-be-done 'discover what customers truly need by analyzing the \"job\" they hire your product to do. use when the user mentions \"customer discovery\", \"why customers churn\", \"what job does this solve\", \"competing against luck\", or \"product-market fit\". covers jtbd interviews, competition analysis, and jobs-oriented roadmaps. for product positioning, see obviously-awesome. for rapid validation, see design-sprint.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -17787,6 +18566,25 @@
     },
     {
       "type": "skill",
+      "id": "lean-startup",
+      "slug": "lean-startup",
+      "name": "lean-startup",
+      "description": "'Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn. Use when the user mentions \"MVP scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". Covers innovation accounting and actionable metrics. For 5-day prototype testing, see design-sprint. For customer motivation analysis, see jobs-to-be-done.'",
+      "category": "productivity",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-lean-startup",
+        "category": "productivity"
+      },
+      "searchText": "lean-startup 'design mvps, validated learning experiments, and pivot-or-persevere decisions using build-measure-learn. use when the user mentions \"mvp scope\", \"validated learning\", \"pivot or persevere\", \"vanity metrics\", or \"test assumptions\". covers innovation accounting and actionable metrics. for 5-day prototype testing, see design-sprint. for customer motivation analysis, see jobs-to-be-done.' productivity read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "lindy-ci-integration",
       "slug": "lindy-ci-integration",
       "name": "lindy-ci-integration",
@@ -18894,6 +19692,25 @@
         "category": "saas-packs"
       },
       "searchText": "lokalise-webhooks-events implement lokalise webhook handling and event processing. use when setting up webhook endpoints, handling translation events, or building automation based on lokalise notifications. trigger with phrases like \"lokalise webhook\", \"lokalise events\", \"lokalise notifications\", \"handle lokalise events\", \"lokalise automation\". allowed-tools: read, write, edit, bash(curl:*) version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "made-to-stick",
+      "slug": "made-to-stick",
+      "name": "made-to-stick",
+      "description": "'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-made-to-stick",
+        "category": "business-tools"
+      },
+      "searchText": "made-to-stick 'craft messages that are understood, remembered, and drive action using the success checklist (simple, unexpected, concrete, credible, emotional, stories). use when the user mentions \"make it memorable\", \"sticky messaging\", \"tagline\", \"value proposition\", or \"why the message isn''t landing\". for narrative brand frameworks, see storybrand-messaging. for viral sharing, see contagious.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -20014,6 +20831,25 @@
     },
     {
       "type": "skill",
+      "id": "negotiation",
+      "slug": "negotiation",
+      "name": "negotiation",
+      "description": "'Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method. Use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". Covers accusation audits, Black Swan discovery, and the \"That''s Right\" technique. For persuasion in product/marketing, see influence-psychology.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-negotiation",
+        "category": "business-tools"
+      },
+      "searchText": "negotiation 'prepare and execute negotiations using tactical empathy, calibrated questions, and the ackerman method. use when the user mentions \"salary negotiation\", \"contract terms\", \"handling objections\", \"mirroring and labeling\", or \"difficult conversation\". covers accusation audits, black swan discovery, and the \"that''s right\" technique. for persuasion in product/marketing, see influence-psychology.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "neurodivergent-visual-org",
       "slug": "neurodivergent-visual-org",
       "name": "neurodivergent-visual-org",
@@ -20389,6 +21225,25 @@
     },
     {
       "type": "skill",
+      "id": "obviously-awesome",
+      "slug": "obviously-awesome",
+      "name": "obviously-awesome",
+      "description": "'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-obviously-awesome",
+        "category": "business-tools"
+      },
+      "searchText": "obviously-awesome 'define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. use when the user mentions \"positioning\", \"competitive alternatives\", \"how to position\", \"market category\", or \"why customers don''t get it\". covers positioning canvas and team workshops. for customer jobs analysis, see jobs-to-be-done. for go-to-market, see crossing-the-chasm.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "ollama-setup",
       "slug": "ollama-setup",
       "name": "ollama-setup",
@@ -20401,6 +21256,25 @@
         "category": "ai-ml"
       },
       "searchText": "ollama-setup configure auto-configure ollama when user needs local llm deployment, free ai alternatives, or wants to eliminate hosted api costs. trigger phrases: \"install ollama\", \"local ai\", \"free llm\", \"self-hosted ai\", \"replace openai\", \"no api costs\". use when appropriate context detected. trigger with relevant phrases based on skill purpose. allowed-tools: read, write, bash(cmd:*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit ai-ml "
+    },
+    {
+      "type": "skill",
+      "id": "one-page-marketing",
+      "slug": "one-page-marketing",
+      "name": "one-page-marketing",
+      "description": "'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions \"marketing plan\", \"target market\", \"USP\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-one-page-marketing",
+        "category": "business-tools"
+      },
+      "searchText": "one-page-marketing 'build a complete marketing plan covering the full customer journey from stranger to raving fan. use when the user mentions \"marketing plan\", \"target market\", \"usp\", \"lead nurture\", \"customer lifetime value\", or \"referral program\". covers the pvp index, channel selection, and advocacy systems. for brand messaging, see storybrand-messaging. for conversion optimization, see cro-methodology.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -22362,6 +23236,25 @@
     },
     {
       "type": "skill",
+      "id": "predictable-revenue",
+      "slug": "predictable-revenue",
+      "name": "predictable-revenue",
+      "description": "'Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM). Use when the user mentions \"outbound sales\", \"Cold Calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"SDR process\", or \"B2B SaaS sales\". Covers lead generation, qualification frameworks, and separating prospecting from closing. For offer design, see hundred-million-offers. For persuasion science, see influence-psychology.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-predictable-revenue",
+        "category": "business-tools"
+      },
+      "searchText": "predictable-revenue 'build a scalable outbound b2b sales process with specialized roles (sdr, ae, csm). use when the user mentions \"outbound sales\", \"cold calling 2.0\", \"prospecting emails\", \"sales pipeline\", \"sdr process\", or \"b2b saas sales\". covers lead generation, qualification frameworks, and separating prospecting from closing. for offer design, see hundred-million-offers. for persuasion science, see influence-psychology.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "preprocessing-data-with-automated-pipelines",
       "slug": "preprocessing-data-with-automated-pipelines",
       "name": "preprocessing-data-with-automated-pipelines",
@@ -22457,6 +23350,25 @@
         "category": "api-development"
       },
       "searchText": "rate-limiting-apis implement sophisticated rate limiting with sliding windows, token buckets, and quotas. use when protecting apis from excessive requests. trigger with phrases like \"add rate limiting\", \"limit api requests\", or \"implement rate limits\". allowed-tools: read, write, edit, grep, glob, bash(api:ratelimit-*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit api-development "
+    },
+    {
+      "type": "skill",
+      "id": "refactoring-ui",
+      "slug": "refactoring-ui",
+      "name": "refactoring-ui",
+      "description": "'Audit and fix visual hierarchy, spacing, color, and depth in web UIs. Use when the user mentions \"my UI looks off\", \"fix the design\", \"Tailwind styling\", \"color palette\", or \"visual hierarchy\". Covers grayscale-first workflow, constrained design scales, shadows, and component styling. For typeface selection, see web-typography. For usability audits, see ux-heuristics.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-refactoring-ui",
+        "category": "design"
+      },
+      "searchText": "refactoring-ui 'audit and fix visual hierarchy, spacing, color, and depth in web uis. use when the user mentions \"my ui looks off\", \"fix the design\", \"tailwind styling\", \"color palette\", or \"visual hierarchy\". covers grayscale-first workflow, constrained design scales, shadows, and component styling. for typeface selection, see web-typography. for usability audits, see ux-heuristics.' design read glob grep"
     },
     {
       "type": "skill",
@@ -23721,6 +24633,25 @@
     },
     {
       "type": "skill",
+      "id": "scorecard-marketing",
+      "slug": "scorecard-marketing",
+      "name": "scorecard-marketing",
+      "description": "'Build quiz and assessment funnels that generate qualified leads at 30-50% conversion. Use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". Covers question design, dynamic results by tier, and automated follow-up sequences. For landing page conversion, see cro-methodology. For full marketing plans, see one-page-marketing.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-scorecard-marketing",
+        "category": "business-tools"
+      },
+      "searchText": "scorecard-marketing 'build quiz and assessment funnels that generate qualified leads at 30-50% conversion. use when the user mentions \"lead magnet\", \"quiz funnel\", \"assessment tool\", \"lead generation\", or \"score-based segmentation\". covers question design, dynamic results by tier, and automated follow-up sequences. for landing page conversion, see cro-methodology. for full marketing plans, see one-page-marketing.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "sentry-architecture-variants",
       "slug": "sentry-architecture-variants",
       "name": "sentry-architecture-variants",
@@ -24659,6 +25590,25 @@
     },
     {
       "type": "skill",
+      "id": "storybrand-messaging",
+      "slug": "storybrand-messaging",
+      "name": "storybrand-messaging",
+      "description": "'Clarify brand messaging using narrative structure that positions the customer as hero. Use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". Covers landing page copy, marketing collateral, and consistent communication. For memorable messaging, see made-to-stick. For product positioning, see obviously-awesome.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-storybrand-messaging",
+        "category": "business-tools"
+      },
+      "searchText": "storybrand-messaging 'clarify brand messaging using narrative structure that positions the customer as hero. use when the user mentions \"brand message\", \"website copy\", \"elevator pitch\", \"one-liner\", \"messaging isn''t resonating\", or \"brand script\". covers landing page copy, marketing collateral, and consistent communication. for memorable messaging, see made-to-stick. for product positioning, see obviously-awesome.' business-tools read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "supabase-advanced-troubleshooting",
       "slug": "supabase-advanced-troubleshooting",
       "name": "supabase-advanced-troubleshooting",
@@ -25184,6 +26134,25 @@
     },
     {
       "type": "skill",
+      "id": "top-design",
+      "slug": "top-design",
+      "name": "top-design",
+      "description": "'Create award-winning, immersive web experiences at the level of Awwwards-featured agencies. Use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"Awwwards quality\", or \"brand experience\". Covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. For foundational UI, see refactoring-ui. For type selection, see web-typography.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-top-design",
+        "category": "design"
+      },
+      "searchText": "top-design 'create award-winning, immersive web experiences at the level of awwwards-featured agencies. use when the user mentions \"premium website\", \"portfolio site\", \"scroll animations\", \"awwwards quality\", or \"brand experience\". covers dramatic typography, purposeful motion, scroll-based composition, and performance-optimized animation. for foundational ui, see refactoring-ui. for type selection, see web-typography.' design read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "tracking-application-response-times",
       "slug": "tracking-application-response-times",
       "name": "tracking-application-response-times",
@@ -25340,6 +26309,25 @@
         "category": "crypto"
       },
       "searchText": "tracking-token-launches track new token launches across dexes with risk analysis and contract verification. use when discovering new token launches, monitoring idos, or analyzing token contracts. trigger with phrases like \"track launches\", \"find new tokens\", \"new pairs on uniswap\", \"token risk analysis\", or \"monitor idos\". allowed-tools: read, write, edit, grep, glob, bash(python:*launch_tracker*) version: 1.0.0 author: jeremy longshore <jeremy@intentsolutions.io> license: mit crypto "
+    },
+    {
+      "type": "skill",
+      "id": "traction-eos",
+      "slug": "traction-eos",
+      "name": "traction-eos",
+      "description": "'Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company. Use when the user mentions \"EOS\", \"V/TO\", \"quarterly rocks\", \"Level 10 meetings\", \"accountability chart\", or \"IDS process\". Covers the six EOS components: Vision, People, Data, Issues, Process, Traction. For team motivation design, see drive-motivation. For lean experimentation, see lean-startup.'",
+      "category": "business-tools",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-traction-eos",
+        "category": "business-tools"
+      },
+      "searchText": "traction-eos 'implement the entrepreneurial operating system (eos) to align vision and execution across a company. use when the user mentions \"eos\", \"v/to\", \"quarterly rocks\", \"level 10 meetings\", \"accountability chart\", or \"ids process\". covers the six eos components: vision, people, data, issues, process, traction. for team motivation design, see drive-motivation. for lean experimentation, see lean-startup.' business-tools read glob grep"
     },
     {
       "type": "skill",
@@ -25730,6 +26718,25 @@
         "category": "saas-packs"
       },
       "searchText": "twinmind-webhooks-events handle twinmind webhooks and events for real-time meeting notifications. use when implementing webhook handlers, processing meeting events, or building real-time integrations. trigger with phrases like \"twinmind webhooks\", \"twinmind events\", \"twinmind notifications\", \"meeting webhook handler\". allowed-tools: read, write, edit, bash(npm:*), grep version: 1.0.0 license: mit author: jeremy longshore <jeremy@intentsolutions.io> saas-packs "
+    },
+    {
+      "type": "skill",
+      "id": "ux-heuristics",
+      "slug": "ux-heuristics",
+      "name": "ux-heuristics",
+      "description": "'Evaluate and improve interface usability using heuristic analysis. Use when the user mentions \"usability audit\", \"UX review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". Covers Nielsen''s 10 heuristics, severity ratings, and information architecture. For visual design fixes, see refactoring-ui. For conversion-focused audits, see cro-methodology.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-ux-heuristics",
+        "category": "design"
+      },
+      "searchText": "ux-heuristics 'evaluate and improve interface usability using heuristic analysis. use when the user mentions \"usability audit\", \"ux review\", \"users are confused\", \"heuristic evaluation\", \"form usability\", or \"navigation problems\". covers nielsen''s 10 heuristics, severity ratings, and information architecture. for visual design fixes, see refactoring-ui. for conversion-focused audits, see cro-methodology.' design read glob grep"
     },
     {
       "type": "skill",
@@ -26839,10 +27846,29 @@
     },
     {
       "type": "skill",
+      "id": "web-typography",
+      "slug": "web-typography",
+      "name": "web-typography",
+      "description": "'Select, pair, and implement typefaces for web projects. Use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'",
+      "category": "design",
+      "allowedTools": [
+        "Read",
+        "Glob",
+        "Grep"
+      ],
+      "version": "1.0.1",
+      "parentPlugin": {
+        "name": "wondelai-web-typography",
+        "category": "design"
+      },
+      "searchText": "web-typography 'select, pair, and implement typefaces for web projects. use when the user mentions \"font pairing\", \"which typeface\", \"line height\", \"responsive typography\", \"web font loading\", or \"type hierarchy\". covers readability evaluation, css implementation, and performance optimization. for overall ui design systems, see refactoring-ui. for dramatic typographic experiences, see top-design.' design read glob grep"
+    },
+    {
+      "type": "skill",
       "id": "website-generator",
       "slug": "website-generator",
       "name": "website-generator",
-      "description": "Use when the user asks to create a website, build a site, generate a landing page, or mentions B12. Trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"B12 website\". allowed-tools: AskUserQuestion version: 1.0.0 author: B12.io <https://github.com/b12io>",
+      "description": "Use when the user asks to create a website, build a site, generate a landing page, or mentions B12. Trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"B12 website\". allowed-tools: AskUserQuestion version: 1.0.0 author: B12.io <https://github.com/b12io> license: MIT",
       "category": "community",
       "allowedTools": [],
       "version": "1.0.0",
@@ -26850,7 +27876,7 @@
         "name": "b12-claude-plugin",
         "category": "community"
       },
-      "searchText": "website-generator use when the user asks to create a website, build a site, generate a landing page, or mentions b12. trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"b12 website\". allowed-tools: askuserquestion version: 1.0.0 author: b12.io <https://github.com/b12io> community "
+      "searchText": "website-generator use when the user asks to create a website, build a site, generate a landing page, or mentions b12. trigger phrases: \"create a website\", \"build me a site\", \"website for my business\", \"generate a landing page\", \"b12 website\". allowed-tools: askuserquestion version: 1.0.0 author: b12.io <https://github.com/b12io> license: mit community "
     },
     {
       "type": "skill",

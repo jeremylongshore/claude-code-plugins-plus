@@ -1,17 +1,17 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-05T01:56:05.906Z",
+    "generated": "2026-03-10T03:12:46.692Z",
     "source": "marketplace.extended.json",
     "generator": "scripts/sync-catalog.mjs"
   },
   "stats": {
-    "totalPlugins": 315,
-    "totalSkills": 1141,
+    "totalPlugins": 340,
+    "totalSkills": 1166,
     "totalCommands": 66,
-    "pluginsWithSkills": 75,
+    "pluginsWithSkills": 100,
     "byCategory": {
-      "productivity": 25,
+      "productivity": 27,
       "security": 28,
       "testing": 25,
       "ai-ml": 53,
@@ -23,9 +23,9 @@
       "debugging": 1,
       "packages": 1,
       "database": 28,
-      "design": 1,
+      "design": 8,
       "ai-agency": 6,
-      "business-tools": 8,
+      "business-tools": 24,
       "fullstack": 1,
       "example": 3,
       "finance": 1,
@@ -38,12 +38,12 @@
       "analytics": 1
     },
     "byStatus": {
-      "active": 296,
+      "active": 321,
       "maintained": 19
     },
     "featured": 2,
-    "new": 294,
-    "generatedAt": "2026-03-05T01:56:05.906Z"
+    "new": 319,
+    "generatedAt": "2026-03-10T03:12:46.692Z"
   },
   "plugins": [
     {
@@ -10716,6 +10716,907 @@
       "author": {
         "name": "B12.io",
         "url": "https://github.com/b12io"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-blue-ocean-strategy",
+      "name": "wondelai-blue-ocean-strategy",
+      "displayName": "wondelai blue ocean strategy",
+      "description": "Blue Ocean Strategy framework for creating uncontested market space. Use the Strategy Canvas, Four Actions Framework (ERRC), and value innovation to break the value-cost trade-off.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "strategy",
+        "blue-ocean",
+        "value-innovation",
+        "market-creation",
+        "errc",
+        "strategy-canvas",
+        "competition",
+        "positioning"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-blue-ocean-strategy",
+      "sourcePath": "./plugins/business-tools/wondelai-blue-ocean-strategy",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-contagious",
+      "name": "wondelai-contagious",
+      "displayName": "wondelai contagious",
+      "description": "Word-of-mouth and virality framework using the STEPPS model (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Engineer products and content that people naturally share.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "virality",
+        "word-of-mouth",
+        "stepps",
+        "social-currency",
+        "marketing",
+        "content-strategy",
+        "sharing",
+        "growth"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-contagious",
+      "sourcePath": "./plugins/business-tools/wondelai-contagious",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-cro-methodology",
+      "name": "wondelai-cro-methodology",
+      "displayName": "wondelai cro methodology",
+      "description": "Customer-centric conversion rate optimization methodology. Audit landing pages, identify conversion blockers, write persuasive copy, design A/B tests, and optimize funnels.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "cro",
+        "conversion",
+        "optimization",
+        "landing-pages",
+        "ab-testing",
+        "copywriting",
+        "persuasion",
+        "funnels"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-cro-methodology",
+      "sourcePath": "./plugins/business-tools/wondelai-cro-methodology",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-crossing-the-chasm",
+      "name": "wondelai-crossing-the-chasm",
+      "displayName": "wondelai crossing the chasm",
+      "description": "Technology adoption and go-to-market strategy for crossing from early adopters to mainstream market. Choose beachhead segments, build whole products, and position against incumbents.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "go-to-market",
+        "technology-adoption",
+        "chasm",
+        "beachhead",
+        "b2b",
+        "saas",
+        "market-strategy",
+        "positioning"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-crossing-the-chasm",
+      "sourcePath": "./plugins/business-tools/wondelai-crossing-the-chasm",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-design-everyday-things",
+      "name": "wondelai-design-everyday-things",
+      "displayName": "wondelai design everyday things",
+      "description": "Fundamental design principles from Don Norman. Design affordances, signifiers, constraints, and feedback mechanisms. Apply human-centered design and fault-tolerant systems.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "design",
+        "ux",
+        "affordances",
+        "signifiers",
+        "human-centered-design",
+        "usability",
+        "don-norman",
+        "hcd"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-design-everyday-things",
+      "sourcePath": "./plugins/design/wondelai-design-everyday-things",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-design-sprint",
+      "name": "wondelai-design-sprint",
+      "displayName": "wondelai design sprint",
+      "description": "Google Ventures Design Sprint methodology. Validate product ideas in 5 days with rapid prototyping, user testing, and structured decision-making.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "design-sprint",
+        "prototyping",
+        "user-testing",
+        "validation",
+        "gv",
+        "product-design",
+        "rapid-iteration",
+        "mvp"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-design-sprint",
+      "sourcePath": "./plugins/productivity/wondelai-design-sprint",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-drive-motivation",
+      "name": "wondelai-drive-motivation",
+      "displayName": "wondelai drive motivation",
+      "description": "Intrinsic motivation science framework (Autonomy, Mastery, Purpose). Design features that leverage intrinsic motivation, create progress systems, and craft purpose-driven messaging.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "motivation",
+        "autonomy",
+        "mastery",
+        "purpose",
+        "engagement",
+        "gamification",
+        "intrinsic-motivation",
+        "team-management"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-drive-motivation",
+      "sourcePath": "./plugins/business-tools/wondelai-drive-motivation",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-hooked-ux",
+      "name": "wondelai-hooked-ux",
+      "displayName": "wondelai hooked ux",
+      "description": "Hook Model framework for building habit-forming products. Design trigger-action-reward-investment loops, increase retention, and optimize onboarding for habit formation.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "habits",
+        "engagement",
+        "retention",
+        "hook-model",
+        "triggers",
+        "rewards",
+        "onboarding",
+        "ux"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-hooked-ux",
+      "sourcePath": "./plugins/design/wondelai-hooked-ux",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-hundred-million-offers",
+      "name": "wondelai-hundred-million-offers",
+      "displayName": "wondelai hundred million offers",
+      "description": "Grand Slam Offer creation framework. Create irresistible offers using the Value Equation, stack bonuses, design risk-reversing guarantees, and apply ethical scarcity.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "offers",
+        "pricing",
+        "value-equation",
+        "guarantees",
+        "bonuses",
+        "scarcity",
+        "sales",
+        "hormozi"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-hundred-million-offers",
+      "sourcePath": "./plugins/business-tools/wondelai-hundred-million-offers",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-influence-psychology",
+      "name": "wondelai-influence-psychology",
+      "displayName": "wondelai influence psychology",
+      "description": "Persuasion science framework based on Cialdini's six principles (Reciprocity, Commitment, Social Proof, Authority, Liking, Scarcity). Apply ethical persuasion to product design and marketing.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "persuasion",
+        "influence",
+        "cialdini",
+        "social-proof",
+        "reciprocity",
+        "scarcity",
+        "psychology",
+        "marketing"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-influence-psychology",
+      "sourcePath": "./plugins/business-tools/wondelai-influence-psychology",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-ios-hig-design",
+      "name": "wondelai-ios-hig-design",
+      "displayName": "wondelai ios hig design",
+      "description": "Native iOS app design following Apple Human Interface Guidelines. Design SwiftUI/UIKit components, implement navigation patterns, and ensure accessibility compliance.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ios",
+        "apple",
+        "hig",
+        "swiftui",
+        "uikit",
+        "mobile-design",
+        "accessibility",
+        "interface-guidelines"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-ios-hig-design",
+      "sourcePath": "./plugins/design/wondelai-ios-hig-design",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-jobs-to-be-done",
+      "name": "wondelai-jobs-to-be-done",
+      "displayName": "wondelai jobs to be done",
+      "description": "Strategic product innovation framework using Clayton Christensen's JTBD theory. Discover customer motivations, conduct discovery interviews, and design products around the jobs customers hire them for.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "jtbd",
+        "jobs-to-be-done",
+        "product-strategy",
+        "customer-discovery",
+        "innovation",
+        "christensen",
+        "product-market-fit",
+        "interviews"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-jobs-to-be-done",
+      "sourcePath": "./plugins/business-tools/wondelai-jobs-to-be-done",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-lean-startup",
+      "name": "wondelai-lean-startup",
+      "displayName": "wondelai lean startup",
+      "description": "Lean Startup methodology for validated learning, MVPs, and innovation accounting. Design experiments, decide when to pivot vs. persevere, and reduce development waste.",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "lean-startup",
+        "mvp",
+        "validated-learning",
+        "pivot",
+        "metrics",
+        "innovation-accounting",
+        "experimentation",
+        "build-measure-learn"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-lean-startup",
+      "sourcePath": "./plugins/productivity/wondelai-lean-startup",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-made-to-stick",
+      "name": "wondelai-made-to-stick",
+      "displayName": "wondelai made to stick",
+      "description": "Sticky messaging framework using the SUCCESs model (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Make product messaging memorable and create compelling presentations.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "messaging",
+        "storytelling",
+        "success",
+        "sticky",
+        "communication",
+        "presentations",
+        "copywriting",
+        "branding"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-made-to-stick",
+      "sourcePath": "./plugins/business-tools/wondelai-made-to-stick",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-negotiation",
+      "name": "wondelai-negotiation",
+      "displayName": "wondelai negotiation",
+      "description": "Tactical negotiation framework based on Chris Voss's techniques. Use mirroring, labeling, calibrated questions, the Ackerman method, and accusation audits for business and salary negotiations.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "negotiation",
+        "chris-voss",
+        "mirroring",
+        "labeling",
+        "ackerman",
+        "salary",
+        "deals",
+        "conflict-resolution"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-negotiation",
+      "sourcePath": "./plugins/business-tools/wondelai-negotiation",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-obviously-awesome",
+      "name": "wondelai-obviously-awesome",
+      "displayName": "wondelai obviously awesome",
+      "description": "Product positioning framework for competitive differentiation. Define competitive alternatives, identify unique attributes, map value themes, and choose the right market category.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "positioning",
+        "differentiation",
+        "competitive-analysis",
+        "market-category",
+        "value-proposition",
+        "april-dunford",
+        "go-to-market",
+        "branding"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-obviously-awesome",
+      "sourcePath": "./plugins/business-tools/wondelai-obviously-awesome",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-one-page-marketing",
+      "name": "wondelai-one-page-marketing",
+      "displayName": "wondelai one page marketing",
+      "description": "End-to-end marketing plan framework. Define target market, craft USP, choose channels, design lead capture and nurture sequences, optimize conversion, and build referral systems.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "marketing-plan",
+        "usp",
+        "lead-generation",
+        "nurture",
+        "referral",
+        "advertising",
+        "customer-lifetime-value",
+        "marketing-strategy"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-one-page-marketing",
+      "sourcePath": "./plugins/business-tools/wondelai-one-page-marketing",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-predictable-revenue",
+      "name": "wondelai-predictable-revenue",
+      "displayName": "wondelai predictable revenue",
+      "description": "Outbound sales methodology for scalable B2B pipeline. Implement Cold Calling 2.0, structure SDR/AE/CSM roles, design prospecting sequences, and build predictable revenue engines.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "sales",
+        "outbound",
+        "sdr",
+        "pipeline",
+        "b2b",
+        "saas",
+        "prospecting",
+        "cold-calling",
+        "revenue"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-predictable-revenue",
+      "sourcePath": "./plugins/business-tools/wondelai-predictable-revenue",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-refactoring-ui",
+      "name": "wondelai-refactoring-ui",
+      "displayName": "wondelai refactoring ui",
+      "description": "Practical UI design system for professional interfaces. Fix visual hierarchy, choose typography and color scales, add depth with shadows, and style components in Tailwind CSS.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ui-design",
+        "visual-hierarchy",
+        "typography",
+        "color-palette",
+        "tailwind",
+        "shadows",
+        "spacing",
+        "refactoring-ui"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-refactoring-ui",
+      "sourcePath": "./plugins/design/wondelai-refactoring-ui",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-scorecard-marketing",
+      "name": "wondelai-scorecard-marketing",
+      "displayName": "wondelai scorecard marketing",
+      "description": "Lead generation framework using quiz and assessment funnels. Create lead magnets that convert 30-50%, design qualifying questions, and segment automated follow-up sequences.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "lead-generation",
+        "quiz-funnel",
+        "assessment",
+        "scorecard",
+        "conversion",
+        "segmentation",
+        "lead-magnet",
+        "marketing-automation"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-scorecard-marketing",
+      "sourcePath": "./plugins/business-tools/wondelai-scorecard-marketing",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-storybrand-messaging",
+      "name": "wondelai-storybrand-messaging",
+      "displayName": "wondelai storybrand messaging",
+      "description": "StoryBrand messaging framework that positions customer as hero. Create brand scripts, write website copy that converts, craft one-liners, and build narrative-driven landing pages.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "storybrand",
+        "messaging",
+        "brand-script",
+        "copywriting",
+        "narrative",
+        "website-copy",
+        "one-liner",
+        "donald-miller"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-storybrand-messaging",
+      "sourcePath": "./plugins/business-tools/wondelai-storybrand-messaging",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-top-design",
+      "name": "wondelai-top-design",
+      "displayName": "wondelai top design",
+      "description": "Award-winning web design framework for premium brand experiences. Build immersive websites with custom animations, dramatic typography, and scroll-based compositions.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "web-design",
+        "awwwards",
+        "animations",
+        "typography",
+        "scroll-effects",
+        "brand-website",
+        "premium-design",
+        "motion"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-top-design",
+      "sourcePath": "./plugins/design/wondelai-top-design",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-traction-eos",
+      "name": "wondelai-traction-eos",
+      "displayName": "wondelai traction eos",
+      "description": "Entrepreneurial Operating System (EOS) for business execution. Create V/TO, set quarterly rocks, run Level 10 meetings, build accountability charts, and solve issues with IDS.",
+      "version": "1.0.0",
+      "category": "business-tools",
+      "keywords": [
+        "eos",
+        "traction",
+        "operating-system",
+        "rocks",
+        "l10-meetings",
+        "accountability",
+        "vision",
+        "execution"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-traction-eos",
+      "sourcePath": "./plugins/business-tools/wondelai-traction-eos",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-ux-heuristics",
+      "name": "wondelai-ux-heuristics",
+      "displayName": "wondelai ux heuristics",
+      "description": "Usability heuristics and UX audit framework based on Nielsen and Krug. Conduct heuristic evaluations, identify usability problems, and prioritize fixes by severity.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "ux",
+        "usability",
+        "heuristics",
+        "nielsen",
+        "krug",
+        "ux-audit",
+        "evaluation",
+        "accessibility"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-ux-heuristics",
+      "sourcePath": "./plugins/design/wondelai-ux-heuristics",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
+      },
+      "type": "instruction-plugin"
+    },
+    {
+      "slug": "wondelai-web-typography",
+      "name": "wondelai-web-typography",
+      "displayName": "wondelai web typography",
+      "description": "Web typography framework for readable, beautiful type. Select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading.",
+      "version": "1.0.0",
+      "category": "design",
+      "keywords": [
+        "typography",
+        "web-fonts",
+        "typeface",
+        "font-pairing",
+        "readability",
+        "responsive-typography",
+        "css",
+        "type-hierarchy"
+      ],
+      "hasSkills": true,
+      "skillCount": 1,
+      "commandCount": 0,
+      "installCommand": "/plugin install wondelai-web-typography",
+      "sourcePath": "./plugins/design/wondelai-web-typography",
+      "lastUpdatedEpoch": 1772925651,
+      "lastUpdatedDate": "2026-03-07T23:20:51.072Z",
+      "status": "active",
+      "badges": [
+        "new"
+      ],
+      "isFeatured": false,
+      "isNew": true,
+      "author": {
+        "name": "Wondel.ai",
+        "url": "https://github.com/wondelai"
       },
       "type": "instruction-plugin"
     }

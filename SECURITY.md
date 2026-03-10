@@ -12,7 +12,7 @@ We will acknowledge receipt within 24 hours and provide a remediation timeline w
 
 This policy covers:
 
-- All plugins and skills in the `plugins/` directory (270 plugins, 1537 skills)
+- All plugins and skills in the `plugins/` directory (339 plugins, 1896 skills)
 - The `ccpi` CLI tool (`@intentsolutionsio/ccpi` on npm)
 - Cowork zip distribution packages
 - CI/CD pipelines and GitHub Actions workflows

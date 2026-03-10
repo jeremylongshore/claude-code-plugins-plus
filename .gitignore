@@ -108,3 +108,7 @@ marketplace/src/data/cowork-manifest.json
 **/skills/*/data/
 
 claudes-docs/
+
+# Dolt database files (added by bd init)
+.dolt/
+*.db
