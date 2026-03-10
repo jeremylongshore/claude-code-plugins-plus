@@ -31,6 +31,7 @@ export const GET: APIRoute = async () => {
     { url: '/skill-enhancers', priority: '0.8', changefreq: 'weekly' },
     { url: '/spotlight', priority: '0.8', changefreq: 'weekly' },
     { url: '/compare-marketplaces', priority: '0.8', changefreq: 'weekly' },
+    { url: '/blog', priority: '0.9', changefreq: 'weekly' },
   ];
 
   // Generate XML

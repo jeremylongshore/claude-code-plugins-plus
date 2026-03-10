@@ -57,7 +57,20 @@ const playbooksCollection = defineCollection({
   })
 });
 
+const blogCollection = defineCollection({
+  type: 'content',
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    date: z.string(),
+    version: z.string().optional(),
+    tags: z.array(z.string()).optional().default([]),
+    featured: z.boolean().optional().default(false),
+  })
+});
+
 export const collections = {
   'plugins': pluginsCollection,
-  'playbooks': playbooksCollection
+  'playbooks': playbooksCollection,
+  'blog': blogCollection
 };
