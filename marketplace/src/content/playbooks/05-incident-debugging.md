@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Incident Debugging Playbook",
-  description: "SEV-1/2/3/4 incident response protocols. Log analysis, root cause investigation (5 Whys, Fishbone), postmortem templates, and on-call procedures.",
-  category: "Operations",
-  wordCount: 5000,
-  slug: "05-incident-debugging"
-};
+title: "Incident Debugging Playbook"
+description: "SEV-1/2/3/4 incident response protocols. Log analysis, root cause investigation (5 Whys, Fishbone), postmortem templates, and on-call procedures."
+category: "Operations"
+wordCount: 5000
+readTime: 25
+featured: false
+order: 5
+tags: ["incident-response", "debugging", "postmortem", "log-analysis", "root-cause"]
+prerequisites: []
+relatedPlaybooks: ["01-multi-agent-rate-limits", "03-mcp-reliability"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for DevOps and Plugin Maintainers</strong></p>
+<p><strong>Production Playbook for DevOps and Plugin Maintainers</strong></p>
 
 <p>Debugging production incidents in multi-agent Claude Code workflows requires systematic approaches to log analysis, root cause identification, and rapid remediation. This playbook provides battle-tested debugging techniques, incident response workflows, postmortem templates, and real-world examples of common failure modes.</p>
 
@@ -59,19 +59,19 @@ const meta = {
 <h3>Common Incident Types</h3>
 
 <pre><code class="language-typescript">enum IncidentType {
-  API_FAILURE = &#039;api_failure&#039;,           // Claude API unreachable
-  RATE_LIMIT = &#039;rate_limit&#039;,             // 429 errors from API
-  TIMEOUT = &#039;timeout&#039;,                    // Agent/tool timeouts
-  MEMORY_LEAK = &#039;memory_leak&#039;,           // Process memory exhaustion
-  PLUGIN_CRASH = &#039;plugin_crash&#039;,         // Plugin process died
-  DATA_CORRUPTION = &#039;data_corruption&#039;,   // Invalid data in DB/cache
-  PERFORMANCE = &#039;performance&#039;,           // Slow response times
-  AUTHENTICATION = &#039;authentication&#039;      // Auth failures
+  API_FAILURE = 'api_failure',           // Claude API unreachable
+  RATE_LIMIT = 'rate_limit',             // 429 errors from API
+  TIMEOUT = 'timeout',                    // Agent/tool timeouts
+  MEMORY_LEAK = 'memory_leak',           // Process memory exhaustion
+  PLUGIN_CRASH = 'plugin_crash',         // Plugin process died
+  DATA_CORRUPTION = 'data_corruption',   // Invalid data in DB/cache
+  PERFORMANCE = 'performance',           // Slow response times
+  AUTHENTICATION = 'authentication'      // Auth failures
 }
 
 interface Incident {
 id: string;
-severity: &#039;SEV-1&#039; | &#039;SEV-2&#039; | &#039;SEV-3&#039; | &#039;SEV-4&#039;;
+severity: 'SEV-1' | 'SEV-2' | 'SEV-3' | 'SEV-4';
 type: IncidentType;
 startTime: number;
 affectedUsers: number;
@@ -90,35 +90,35 @@ description: string;
 tail -n 1000 /var/log/claude-code.log | grep -c ERROR
 
 # Check affected users
-grep &quot;ERROR&quot; /var/log/claude-code.log | awk &#039;{print &#36;5}&#039; | sort -u | wc -l
+grep "ERROR" /var/log/claude-code.log | awk '{print $5}' | sort -u | wc -l
 
 # Check service health
 curl http://localhost:3333/api/status</code></pre>
 
 <p><strong>Step 2: Check Obvious Issues</strong></p>
 <pre><code class="language-typescript">// Quick health check script
-async function quickHealthCheck(): Promise&lt;{ healthy: boolean; issues: string[] }&gt; {
+async function quickHealthCheck(): Promise<{ healthy: boolean; issues: string[] }> {
   const issues: string[] = [];
 
 // 1. Check Claude API connectivity
 try {
-const response = await fetch(&#039;https://api.anthropic.com/v1/messages&#039;, {
-method: &#039;POST&#039;,
-headers: { &#039;x-api-key&#039;: process.env.ANTHROPIC_API_KEY },
-body: JSON.stringify({ model: &#039;claude-3-5-haiku-20241022&#039;, messages: [{ role: &#039;user&#039;, content: &#039;test&#039; }], max_tokens: 10 })
+const response = await fetch('https://api.anthropic.com/v1/messages', {
+method: 'POST',
+headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY },
+body: JSON.stringify({ model: 'claude-3-5-haiku-20241022', messages: [{ role: 'user', content: 'test' }], max_tokens: 10 })
 });
-if (!response.ok) issues.push(&#039;Claude API unreachable&#039;);
+if (!response.ok) issues.push('Claude API unreachable');
 } catch (error) {
-issues.push(&#039;Network connectivity issue&#039;);
+issues.push('Network connectivity issue');
 }
 
 // 2. Check disk space
-const { stdout } = await execAsync(&quot;df -h / | tail -1 | awk &#039;{print &#36;5}&#039; | sed &#039;s/%//&#039;&quot;);
-if (parseInt(stdout) &gt; 90) issues.push(&#039;Disk space critical&#039;);
+const { stdout } = await execAsync("df -h / | tail -1 | awk '{print $5}' | sed 's/%//'");
+if (parseInt(stdout) > 90) issues.push('Disk space critical');
 
 // 3. Check memory
 const memUsage = process.memoryUsage();
-if (memUsage.heapUsed / memUsage.heapTotal &gt; 0.9) issues.push(&#039;Memory exhaustion&#039;);
+if (memUsage.heapUsed / memUsage.heapTotal > 0.9) issues.push('Memory exhaustion');
 
 return { healthy: issues.length === 0, issues };
 }</code></pre>
@@ -143,21 +143,21 @@ iptables -A INPUT -p tcp --dport 80 -m limit --limit 25/minute --limit-burst 100
 <strong>Started</strong>: 2025-12-24 14:35 UTC
 <strong>Affected</strong>: ~1,200 users (15% of total)
 
-&lt;h2&gt;Current Impact&lt;/h2&gt;
+<h2>Current Impact</h2>
 <ul>
 <li>Agent execution failing with 429 errors</li>
-<li>Error rate: 68% (normal: &lt;1%)</li>
+<li>Error rate: 68% (normal: <1%)</li>
 <li>No data loss</li>
 </ul>
 
-&lt;h2&gt;Actions Taken&lt;/h2&gt;
+<h2>Actions Taken</h2>
 <ul>
 <li>✅ Identified rate limit exhaustion (14:40)</li>
 <li>✅ Implemented emergency rate limiting (14:42)</li>
 <li>🔄 Monitoring recovery (14:45)</li>
 </ul>
 
-&lt;h2&gt;Next Update&lt;/h2&gt;
+<h2>Next Update</h2>
 In 15 minutes or when resolved.</code></pre>
 
 <hr>
@@ -167,22 +167,22 @@ In 15 minutes or when resolved.</code></pre>
 <h3>1. Rate Limit Exhaustion</h3>
 
 <p><strong>Symptoms</strong>:</p>
-<p>\&#96;\&#96;<code></p>
+<p>\`\`<code></p>
 <p>Error 429: Rate limit exceeded</p>
 <p>anthropic-ratelimit-requests-remaining: 0</p>
 <p>anthropic-ratelimit-requests-reset: 2025-12-24T15:00:00Z</p>
-<code>\&#96;</code>
+<code>\`</code>
 
 <p><strong>Diagnosis</strong>:</p>
-<pre><code class="language-typescript">async function diagnoseRateLimits(): Promise&lt;void&gt; {
+<pre><code class="language-typescript">async function diagnoseRateLimits(): Promise<void> {
   // Check recent API calls
-  const recentCalls = await queryLogs(&#039;SELECT COUNT(*) FROM api_calls WHERE timestamp &gt; NOW() - INTERVAL 1 MINUTE&#039;);
-  console.log(&#96;API calls in last minute: &#36;{recentCalls}&#96;);
+  const recentCalls = await queryLogs('SELECT COUNT(*) FROM api_calls WHERE timestamp > NOW() - INTERVAL 1 MINUTE');
+  console.log(`API calls in last minute: ${recentCalls}`);
 
 // Check rate limit headers from last successful call
 const lastHeaders = await getLastAPIHeaders();
-console.log(&#039;Remaining requests:&#039;, lastHeaders[&#039;anthropic-ratelimit-requests-remaining&#039;]);
-console.log(&#039;Reset time:&#039;, lastHeaders[&#039;anthropic-ratelimit-requests-reset&#039;]);
+console.log('Remaining requests:', lastHeaders['anthropic-ratelimit-requests-remaining']);
+console.log('Reset time:', lastHeaders['anthropic-ratelimit-requests-reset']);
 }</code></pre>
 
 <p><strong>Fix</strong>:</p>
@@ -191,9 +191,9 @@ class EmergencyRateLimiter {
   private tokens = 50; // Match API tier
   private lastRefill = Date.now();
 
-async throttle(): Promise&lt;void&gt; {
+async throttle(): Promise<void> {
 this.refill();
-while (this.tokens &lt; 1) {
+while (this.tokens < 1) {
 await sleep(100);
 this.refill();
 }
@@ -212,11 +212,11 @@ this.lastRefill = now;
 <h3>2. Agent Timeout</h3>
 
 <p><strong>Symptoms</strong>:</p>
-<code>\&#96;</code>
+<code>\`</code>
 <p>Error: Agent execution timed out after 300000ms</p>
 <p>Task: code-review</p>
 <p>Conversation: abc-123-def</p>
-<code>\&#96;</code>
+<code>\`</code>
 
 <p><strong>Diagnosis</strong>:</p>
 <pre><code class="language-bash"># Check for hung processes
@@ -232,14 +232,14 @@ iotop -o -d 5</code></pre>
 <p><strong>Fix</strong>:</p>
 <pre><code class="language-typescript">// Implement aggressive timeouts
 class TimeoutManager {
-  async executeWithTimeout&lt;T&gt;(
-    fn: () =&gt; Promise&lt;T&gt;,
+  async executeWithTimeout<T>(
+    fn: () => Promise<T>,
     timeoutMs: number
-  ): Promise&lt;T&gt; {
+  ): Promise<T> {
     return Promise.race([
       fn(),
-      new Promise&lt;never&gt;((_, reject) =&gt;
-        setTimeout(() =&gt; reject(new Error(&#96;Timeout after &#36;{timeoutMs}ms&#96;)), timeoutMs)
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error(`Timeout after ${timeoutMs}ms`)), timeoutMs)
       )
     ]);
   }
@@ -248,7 +248,7 @@ class TimeoutManager {
 // Usage
 const timeout = new TimeoutManager();
 const result = await timeout.executeWithTimeout(
-() =&gt; agent.execute(task),
+() => agent.execute(task),
 30000 // 30 second hard limit
 );</code></pre>
 
@@ -266,7 +266,7 @@ ps aux --sort=-%mem | head -5
 
 <p><strong>Diagnosis</strong>:</p>
 <pre><code class="language-typescript">// Track memory usage over time
-setInterval(() =&gt; {
+setInterval(() => {
   const usage = process.memoryUsage();
   console.log(JSON.stringify({
     timestamp: Date.now(),
@@ -276,22 +276,22 @@ setInterval(() =&gt; {
     rss: usage.rss / 1024 / 1024
   }));
 
-// Trigger GC if usage &gt; 80%
-if (usage.heapUsed / usage.heapTotal &gt; 0.8) {
+// Trigger GC if usage > 80%
+if (usage.heapUsed / usage.heapTotal > 0.8) {
 global.gc(); // Requires --expose-gc flag
 }
 }, 60000); // Every minute</code></pre>
 
 <p><strong>Common Causes</strong>:</p>
 <pre><code class="language-typescript">// ❌ Leak: Global cache never cleared
-const cache = new Map&lt;string, any&gt;();
+const cache = new Map<string, any>();
 function addToCache(key: string, value: any) {
   cache.set(key, value); // Grows forever!
 }
 
 // ✅ Fix: LRU cache with size limit
-import LRU from &#039;lru-cache&#039;;
-const cache = new LRU&lt;string, any&gt;({ max: 1000 });</code></pre>
+import LRU from 'lru-cache';
+const cache = new LRU<string, any>({ max: 1000 });</code></pre>
 
 <h3>4. Plugin Crash Loop</h3>
 
@@ -319,7 +319,7 @@ netstat -tulpn | grep 5432
 docker-compose up -d postgres
 
 # Verify connectivity
-psql -h localhost -U user -d database -c &quot;SELECT 1&quot;
+psql -h localhost -U user -d database -c "SELECT 1"
 
 # Restart plugin
 pm2 restart plugin-server</code></pre>
@@ -339,7 +339,7 @@ git bisect good v1.2.0           # Last known good version
 
 # Git will check out commits for testing
 # Test each commit:
-npm install &amp;&amp; npm run build &amp;&amp; npm test
+npm install && npm run build && npm test
 
 # Mark results
 git bisect good   # if tests pass
@@ -360,39 +360,39 @@ git bisect bad    # if tests fail
 
 function analyzeFailureCorrelations(failures: FailureEvent[]): void {
 // Group by time windows
-const byHour = groupBy(failures, f =&gt; Math.floor(f.timestamp / 3600000));
+const byHour = groupBy(failures, f => Math.floor(f.timestamp / 3600000));
 
 // Find spike times
 const spikes = Object.entries(byHour)
-.filter(([_, events]) =&gt; events.length &gt; 100)
-.map(([hour, events]) =&gt; ({
+.filter(([_, events]) => events.length > 100)
+.map(([hour, events]) => ({
 hour: new Date(parseInt(hour) * 3600000),
 count: events.length,
-topError: mode(events.map(e =&gt; e.errorType))
+topError: mode(events.map(e => e.errorType))
 }));
 
-console.log(&#039;Failure spikes:&#039;, spikes);
+console.log('Failure spikes:', spikes);
 
 // Find common attributes
-const byPlugin = groupBy(failures, f =&gt; f.pluginName);
+const byPlugin = groupBy(failures, f => f.pluginName);
 const suspiciousPlugin = Object.entries(byPlugin)
-.sort((a, b) =&gt; b[1].length - a[1].length)[0];
+.sort((a, b) => b[1].length - a[1].length)[0];
 
-console.log(&#96;Most failures from plugin: &#36;{suspiciousPlugin[0]} (&#36;{suspiciousPlugin[1].length} errors)&#96;);
+console.log(`Most failures from plugin: ${suspiciousPlugin[0]} (${suspiciousPlugin[1].length} errors)`);
 }</code></pre>
 
 <h3>3. Distributed Tracing</h3>
 
 <p><strong>Track request across services</strong>:</p>
-<pre><code class="language-typescript">import { trace, context, SpanStatusCode } from &#039;@opentelemetry/api&#039;;
+<pre><code class="language-typescript">import { trace, context, SpanStatusCode } from '@opentelemetry/api';
 
-const tracer = trace.getTracer(&#039;claude-code&#039;);
+const tracer = trace.getTracer('claude-code');
 
-async function executeAgent(agentName: string, task: any): Promise&lt;any&gt; {
-const span = tracer.startSpan(&#039;agent.execute&#039;, {
+async function executeAgent(agentName: string, task: any): Promise<any> {
+const span = tracer.startSpan('agent.execute', {
 attributes: {
-&#039;agent.name&#039;: agentName,
-&#039;task.id&#039;: task.id
+'agent.name': agentName,
+'task.id': task.id
 }
 });
 
@@ -401,7 +401,7 @@ try {
 const result = await agent.run(task);
 
 span.setStatus({ code: SpanStatusCode.OK });
-span.setAttribute(&#039;result.success&#039;, true);
+span.setAttribute('result.success', true);
 
 return result;
 } catch (error) {
@@ -423,7 +423,7 @@ span.end();
 <h3>Parsing Claude Code Logs</h3>
 
 <p><strong>Log Format</strong>:</p>
-<code>\&#96;</code>
+<code>\`</code>
 <p>[2025-12-24T14:35:22.123Z] [ERROR] [agent:code-review] Rate limit exceeded</p>
 <p>conversationId: abc-123-def</p>
 <p>userId: user-456</p>
@@ -431,31 +431,31 @@ span.end();
 <p>retryAfter: 12</p>
 <p>stack: Error: Rate limit exceeded</p>
 <p>at callClaude (/app/src/api.ts:45:11)</p>
-<code>\&#96;</code>
+<code>\`</code>
 
 <p><strong>Analysis Script</strong>:</p>
-<pre><code class="language-typescript">import { readFileSync } from &#039;fs&#039;;
+<pre><code class="language-typescript">import { readFileSync } from 'fs';
 
 interface LogEntry {
 timestamp: Date;
-level: &#039;ERROR&#039; | &#039;WARN&#039; | &#039;INFO&#039;;
+level: 'ERROR' | 'WARN' | 'INFO';
 component: string;
 message: string;
-metadata: Record&lt;string, any&gt;;
+metadata: Record<string, any>;
 }
 
 function parseLog(line: string): LogEntry | null {
-const match = line.match(/\[(.<em>?)\] \[(.</em>?)\] \[(.<em>?)\] (.</em>)/);
+const match = line.match(/\[(.*?)\] \[(.*?)\] \[(.*?)\] (.*)/);
 if (!match) return null;
 
 const [, timestamp, level, component, rest] = match;
-const lines = rest.split(&#039;\n&#039;);
+const lines = rest.split('\n');
 const message = lines[0];
 
 // Parse metadata
-const metadata: Record&lt;string, any&gt; = {};
+const metadata: Record<string, any> = {};
 for (const line of lines.slice(1)) {
-const metaMatch = line.match(/^\s*(\w+): (.+)&#36;/);
+const metaMatch = line.match(/^\s*(\w+): (.+)$/);
 if (metaMatch) {
 const [, key, value] = metaMatch;
 metadata[key] = value;
@@ -472,61 +472,61 @@ metadata
 }
 
 function analyzeLogs(logPath: string): void {
-const content = readFileSync(logPath, &#039;utf-8&#039;);
-const logs = content.split(&#039;\n&#039;)
+const content = readFileSync(logPath, 'utf-8');
+const logs = content.split('\n')
 .map(parseLog)
 .filter(Boolean) as LogEntry[];
 
 // Error rate by component
 const errorsByComponent = groupBy(
-logs.filter(l =&gt; l.level === &#039;ERROR&#039;),
-l =&gt; l.component
+logs.filter(l => l.level === 'ERROR'),
+l => l.component
 );
 
-console.log(&#039;Errors by component:&#039;);
+console.log('Errors by component:');
 Object.entries(errorsByComponent)
-.sort((a, b) =&gt; b[1].length - a[1].length)
-.forEach(([component, errors]) =&gt; {
-console.log(&#96;  &#36;{component}: &#36;{errors.length}&#96;);
+.sort((a, b) => b[1].length - a[1].length)
+.forEach(([component, errors]) => {
+console.log(`  ${component}: ${errors.length}`);
 });
 
 // Recent errors (last 5 minutes)
-const recentErrors = logs.filter(l =&gt;
-l.level === &#039;ERROR&#039; &amp;&amp;
-Date.now() - l.timestamp.getTime() &lt; 300000
+const recentErrors = logs.filter(l =>
+l.level === 'ERROR' &&
+Date.now() - l.timestamp.getTime() < 300000
 );
 
-console.log(&#96;\nRecent errors: &#36;{recentErrors.length}&#96;);
-recentErrors.slice(0, 10).forEach(err =&gt; {
-console.log(&#96;  &#36;{err.timestamp.toISOString()} - &#36;{err.message}&#96;);
+console.log(`\nRecent errors: ${recentErrors.length}`);
+recentErrors.slice(0, 10).forEach(err => {
+console.log(`  ${err.timestamp.toISOString()} - ${err.message}`);
 });
 }</code></pre>
 
 <h3>Using Analytics Daemon</h3>
 
 <pre><code class="language-typescript">// Query analytics daemon for incident patterns
-const ws = new WebSocket(&#039;ws://localhost:3456&#039;);
+const ws = new WebSocket('ws://localhost:3456');
 
-ws.onmessage = (event) =&gt; {
+ws.onmessage = (event) => {
 const data = JSON.parse(event.data);
 
 // Track rate limit warnings
-if (data.type === &#039;rate_limit.warning&#039;) {
-console.warn(&#96;⚠️ Rate limit approaching: &#36;{data.current}/&#36;{data.limit}&#96;);
+if (data.type === 'rate_limit.warning') {
+console.warn(`⚠️ Rate limit approaching: ${data.current}/${data.limit}`);
 }
 
 // Track errors
-if (data.type === &#039;llm.call&#039; &amp;&amp; data.error) {
-console.error(&#96;❌ LLM call failed: &#36;{data.error}&#96;);
+if (data.type === 'llm.call' && data.error) {
+console.error(`❌ LLM call failed: ${data.error}`);
 }
 };
 
 // Query historical data
-const response = await fetch(&#039;http://localhost:3333/api/sessions&#039;);
+const response = await fetch('http://localhost:3333/api/sessions');
 const sessions = await response.json();
-const failedSessions = sessions.filter(s =&gt; s.errorCount &gt; 0);
+const failedSessions = sessions.filter(s => s.errorCount > 0);
 
-console.log(&#96;Failed sessions: &#36;{failedSessions.length}/&#36;{sessions.length}&#96;);</code></pre>
+console.log(`Failed sessions: ${failedSessions.length}/${sessions.length}`);</code></pre>
 
 <hr>
 
@@ -559,15 +559,15 @@ console.log(&#96;Failed sessions: &#36;{failedSessions.length}/&#36;{sessions.le
 <ul>
 <li><strong>Why did it include the entire codebase?</strong></li>
 </ul>
-<p>→ <strong>Root Cause</strong>: File globbing pattern </code><em>*/</em><code> matched all files including node_modules (500MB)</p>
+<p>→ <strong>Root Cause</strong>: File globbing pattern </code>**/*<code> matched all files including node_modules (500MB)</p>
 
 <p><strong>Fix</strong>: Update file globbing to exclude node_modules</p>
 <pre><code class="language-typescript">// Before: includes everything
-const files = glob.sync(&#039;<em>*/</em>&#039;);
+const files = glob.sync('**/*');
 
 // After: exclude dependencies
-const files = glob.sync(&#039;<em>*/</em>&#039;, {
-ignore: [&#039;node_modules/<strong>&#039;, &#039;.git/</strong>&#039;, &#039;dist/**&#039;]
+const files = glob.sync('**/*', {
+ignore: ['node_modules/<strong>', '.git/</strong>', 'dist/**']
 });</code></pre>
 
 <h3>Fishbone Diagram (Ishikawa)</h3>
@@ -585,28 +585,28 @@ ignore: [&#039;node_modules/<strong>&#039;, &#039;.git/</strong>&#039;, &#039;di
 }
 
 const analysis: RootCauseAnalysis = {
-problem: &#039;Agent timeout causing 68% error rate&#039;,
+problem: 'Agent timeout causing 68% error rate',
 categories: {
 people: [
-&#039;Developer added file globbing without testing&#039;,
-&#039;No code review caught the issue&#039;
+'Developer added file globbing without testing',
+'No code review caught the issue'
 ],
 process: [
-&#039;No integration tests for large codebases&#039;,
-&#039;No performance testing in CI/CD&#039;
+'No integration tests for large codebases',
+'No performance testing in CI/CD'
 ],
 technology: [
-&#039;Glob pattern included node_modules (500MB)&#039;,
-&#039;No size limit on prompts&#039;,
-&#039;No timeout on file reading&#039;
+'Glob pattern included node_modules (500MB)',
+'No size limit on prompts',
+'No timeout on file reading'
 ],
 environment: [
-&#039;Production codebase larger than test repos&#039;,
-&#039;No staging environment for testing&#039;
+'Production codebase larger than test repos',
+'No staging environment for testing'
 ]
 },
-rootCause: &#039;Missing file size validation and glob pattern filtering&#039;,
-fix: &#039;Add file exclusion patterns and max prompt size validation&#039;
+rootCause: 'Missing file size validation and glob pattern filtering',
+fix: 'Add file exclusion patterns and max prompt size validation'
 };</code></pre>
 
 <hr>
@@ -637,14 +637,14 @@ curl http://api.example.com/health</code></pre>
 
 <pre><code class="language-typescript">// Manually reset circuit breaker after fixing issue
 class CircuitBreakerManager {
-  private breakers = new Map&lt;string, CircuitBreaker&gt;();
+  private breakers = new Map<string, CircuitBreaker>();
 
 reset(serviceName: string): void {
 const breaker = this.breakers.get(serviceName);
 if (breaker) {
-breaker.state = &#039;closed&#039;;
+breaker.state = 'closed';
 breaker.failures = 0;
-console.log(&#96;✓ Reset circuit breaker for &#36;{serviceName}&#96;);
+console.log(`✓ Reset circuit breaker for ${serviceName}`);
 }
 }
 
@@ -652,29 +652,29 @@ resetAll(): void {
 for (const [service, breaker] of this.breakers) {
 this.reset(service);
 }
-console.log(&#039;✓ Reset all circuit breakers&#039;);
+console.log('✓ Reset all circuit breakers');
 }
 }</code></pre>
 
 <h3>Data Recovery</h3>
 
 <pre><code class="language-bash"># Recover from backup
-BACKUP_DATE=&quot;2025-12-24-14:00&quot;
+BACKUP_DATE="2025-12-24-14:00"
 
 # Stop services
 pm2 stop all
 
 # Restore database
-pg_restore -d database_prod backups/backup_&#36;{BACKUP_DATE}.sql
+pg_restore -d database_prod backups/backup_${BACKUP_DATE}.sql
 
 # Restore files
-rsync -av backups/files_&#36;{BACKUP_DATE}/ /var/lib/claude-code/
+rsync -av backups/files_${BACKUP_DATE}/ /var/lib/claude-code/
 
 # Restart
 pm2 restart all
 
 # Verify data integrity
-psql -d database_prod -c &quot;SELECT COUNT(*) FROM conversations&quot;</code></pre>
+psql -d database_prod -c "SELECT COUNT(*) FROM conversations"</code></pre>
 
 <hr>
 
@@ -689,10 +689,10 @@ psql -d database_prod -c &quot;SELECT COUNT(*) FROM conversations&quot;</code></
 <strong>Severity</strong>: SEV-2
 <strong>Impact</strong>: 1,200 users (15%), 68% error rate
 
-&lt;h2&gt;Summary&lt;/h2&gt;
+<h2>Summary</h2>
 Code-reviewer agent began timing out due to excessive file inclusion in prompts, causing 68% error rate for 40 minutes.
 
-&lt;h2&gt;Timeline (UTC)&lt;/h2&gt;
+<h2>Timeline (UTC)</h2>
 <ul>
 <li><strong>14:35</strong> - First timeout alerts</li>
 <li><strong>14:40</strong> - Error rate reaches 68%</li>
@@ -701,34 +701,34 @@ Code-reviewer agent began timing out due to excessive file inclusion in prompts,
 <li><strong>14:50</strong> - Fix deployed to staging</li>
 <li><strong>14:55</strong> - Fix deployed to production</li>
 <li><strong>15:00</strong> - Error rate drops to 5%</li>
-<li><strong>15:15</strong> - Incident resolved, error rate &lt; 1%</li>
+<li><strong>15:15</strong> - Incident resolved, error rate < 1%</li>
 </ul>
 
-&lt;h2&gt;Root Cause&lt;/h2&gt;
-File globbing pattern </code><em>*/</em><code> included </code>node_modules/</code> directory (500MB), creating prompts exceeding Claude API&#039;s context limits and causing timeouts.
+<h2>Root Cause</h2>
+File globbing pattern </code>**/*<code> included </code>node_modules/</code> directory (500MB), creating prompts exceeding Claude API's context limits and causing timeouts.
 
-&lt;h2&gt;Contributing Factors&lt;/h2&gt;
+<h2>Contributing Factors</h2>
 <ul>
 <li>No file size validation before prompt construction</li>
 <li>No integration tests with large codebases</li>
 <li>No staging environment for testing</li>
 </ul>
 
-&lt;h2&gt;What Went Well&lt;/h2&gt;
+<h2>What Went Well</h2>
 <ul>
 <li>Fast root cause identification (10 minutes)</li>
 <li>Effective rollback procedure</li>
 <li>Clear communication to affected users</li>
 </ul>
 
-&lt;h2&gt;What Went Poorly&lt;/h2&gt;
+<h2>What Went Poorly</h2>
 <ul>
 <li>No monitoring alerts before user reports</li>
 <li>No prompt size limits prevented the issue</li>
 <li>Fix took 20 minutes to deploy</li>
 </ul>
 
-&lt;h2&gt;Action Items&lt;/h2&gt;
+<h2>Action Items</h2>
 <ul>
 <li>[ ] <strong>P0</strong>: Add file size validation (Owner: @dev, Due: 2025-12-25)</li>
 <li>[ ] <strong>P0</strong>: Implement max prompt size limit (Owner: @dev, Due: 2025-12-25)</li>
@@ -737,7 +737,7 @@ File globbing pattern </code><em>*/</em><code> included </code>node_modules/</co
 <li>[ ] <strong>P2</strong>: Add integration tests with large repos (Owner: @qa, Due: 2026-01-05)</li>
 </ul>
 
-&lt;h2&gt;Lessons Learned&lt;/h2&gt;
+<h2>Lessons Learned</h2>
 <ul>
 <li>File operations need size limits</li>
 <li>Production testing with realistic data is critical</li>
@@ -754,25 +754,25 @@ File globbing pattern </code><em>*/</em><code> included </code>node_modules/</co
 <li><strong>Log structured data</strong></li>
 </ul>
    <pre><code class="language-typescript">// ✅ Structured logging
-   logger.error(&#039;Agent execution failed&#039;, {
-     agentName: &#039;code-reviewer&#039;,
-     conversationId: &#039;abc-123&#039;,
+   logger.error('Agent execution failed', {
+     agentName: 'code-reviewer',
+     conversationId: 'abc-123',
      errorCode: 429,
      duration: 1234
    });
 
 // ❌ Unstructured
-console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
+console.log('Error in code-reviewer agent');</code></pre>
 
 <ul>
 <li><strong>Set up alerts before incidents</strong></li>
 </ul>
-   <pre><code class="language-typescript">// Alert on error rate &gt; 5%
-   if (errorRate &gt; 0.05) {
+   <pre><code class="language-typescript">// Alert on error rate > 5%
+   if (errorRate > 0.05) {
      pagerDuty.trigger({
-       severity: &#039;critical&#039;,
-       title: &#039;High error rate detected&#039;,
-       details: &#96;Error rate: &#36;{(errorRate * 100).toFixed(1)}%&#96;
+       severity: 'critical',
+       title: 'High error rate detected',
+       details: `Error rate: ${(errorRate * 100).toFixed(1)}%`
      });
    }</code></pre>
 
@@ -783,7 +783,7 @@ console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
 
 1. Check logs: <code>tail -f /var/log/claude-code.log | grep TIMEOUT</code>
 2. Identify pattern: Which agents are timing out?
-3. Check system resources: <code>top, free -m</code>, </code>df -h\&#96;
+3. Check system resources: <code>top, free -m</code>, </code>df -h\`
 4. If rate limits: Implement emergency throttling
 5. If resource exhaustion: Restart services</code></pre>
 
@@ -803,10 +803,10 @@ console.log(&#039;Error in code-reviewer agent&#039;);</code></pre>
 <li><strong>Don't skip postmortems</strong></li>
 </ul>
    <pre><code class="language-typescript">// ❌ Mark as resolved without learning
-   incident.status = &#039;resolved&#039;;
+   incident.status = 'resolved';
 
 // ✅ Document and learn
-incident.status = &#039;resolved&#039;;
+incident.status = 'resolved';
 await createPostmortem(incident);
 await scheduleReview(incident);</code></pre>
 
@@ -823,14 +823,14 @@ Root cause: Missing code review process for file operations</code></pre>
 <li><strong>Don't ignore warning signs</strong></li>
 </ul>
    <pre><code class="language-typescript">// ❌ Suppress warnings
-   if (memoryUsage &gt; 0.8) {
+   if (memoryUsage > 0.8) {
      // TODO: Fix later
    }
 
 // ✅ Alert and track
-if (memoryUsage &gt; 0.8) {
-logger.warn(&#039;High memory usage&#039;, { usage: memoryUsage });
-metrics.gauge(&#039;memory.usage&#039;, memoryUsage);
+if (memoryUsage > 0.8) {
+logger.warn('High memory usage', { usage: memoryUsage });
+metrics.gauge('memory.usage', memoryUsage);
 }</code></pre>
 
 <hr>
@@ -906,5 +906,3 @@ tail -f /var/log/claude-code.log | \
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./01-multi-agent-rate-limits.md">Multi-Agent Rate Limits</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
-`} />
-</PlaybookTemplate>

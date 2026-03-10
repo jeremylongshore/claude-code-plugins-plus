@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Advanced Tool Use",
-  description: "Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture.",
-  category: "AI Architecture",
-  wordCount: 6500,
-  slug: "11-advanced-tool-use"
-};
+title: "Advanced Tool Use"
+description: "Dynamic tool discovery, programmatic orchestration, and parameter guidance. Tool Search Tool (85% token reduction), Programmatic Tool Calling (37% efficiency gains), and Tool Use Examples (90% parameter accuracy). Enterprise-scale agent architecture."
+category: "AI Architecture"
+wordCount: 6500
+readTime: 33
+featured: false
+order: 11
+tags: ["tool-use", "tool-search", "orchestration", "agent-architecture", "mcp"]
+prerequisites: []
+relatedPlaybooks: ["01-multi-agent-rate-limits", "03-mcp-reliability", "09-cost-attribution", "10-progressive-enhancement"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<h2>Introduction</h2>
+<h2>Introduction</h2>
 
 <p>Advanced tool use transforms Claude from a simple function-calling agent into an intelligent orchestrator capable of working with hundreds of tools, processing massive datasets, and executing complex multi-step workflows. Anthropic's three beta features—<strong>Tool Search Tool</strong>, <strong>Programmatic Tool Calling</strong>, and <strong>Tool Use Examples</strong>—solve the fundamental bottlenecks preventing production-scale agent deployments.</p>
 
@@ -26,5 +26,3 @@ const meta = {
 <li><a href="09-cost-attribution.md">Cost Attribution System</a> - Track token usage per feature</li>
 <li><a href="10-progressive-enhancement.md">Progressive Enhancement</a> - Roll out advanced features safely</li>
 </ul>
-`} />
-</PlaybookTemplate>

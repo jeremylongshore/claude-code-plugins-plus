@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Ollama Migration Guide",
-  description: "Switch from OpenAI/Anthropic to self-hosted LLMs. Complete migration path: local setup, prompt translation, performance benchmarks, and cost analysis.",
-  category: "Infrastructure",
-  wordCount: 4500,
-  slug: "04-ollama-migration"
-};
+title: "Ollama Migration Guide"
+description: "Switch from OpenAI/Anthropic to self-hosted LLMs. Complete migration path: local setup, prompt translation, performance benchmarks, and cost analysis."
+category: "Infrastructure"
+wordCount: 4500
+readTime: 23
+featured: false
+order: 4
+tags: ["ollama", "self-hosted", "migration", "local-llm", "cost-savings"]
+prerequisites: []
+relatedPlaybooks: ["02-cost-caps", "03-mcp-reliability"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Teams Migrating to Local AI</strong></p>
+<p><strong>Production Playbook for Teams Migrating to Local AI</strong></p>
 
 <p>Migrating from cloud-based LLM APIs (OpenAI, Anthropic, Google Vertex AI) to self-hosted Ollama deployments reduces costs by 90%+, eliminates API rate limits, ensures data privacy, and provides full control over AI infrastructure. This playbook provides battle-tested migration strategies, model selection guidance, performance benchmarks, and production deployment patterns.</p>
 
@@ -21,14 +21,14 @@ const meta = {
 
 <p><strong>Anthropic Claude Pricing (January 2025)</strong>:</p>
 <ul>
-<li>Claude 3.5 Sonnet: &#36;3.00/1M input tokens, &#36;15.00/1M output tokens</li>
-<li>Claude 3.5 Haiku: &#36;0.80/1M input tokens, &#36;4.00/1M output tokens</li>
+<li>Claude 3.5 Sonnet: $3.00/1M input tokens, $15.00/1M output tokens</li>
+<li>Claude 3.5 Haiku: $0.80/1M input tokens, $4.00/1M output tokens</li>
 </ul>
 
 <p><strong>OpenAI GPT Pricing</strong>:</p>
 <ul>
-<li>GPT-4 Turbo: &#36;10.00/1M input tokens, &#36;30.00/1M output tokens</li>
-<li>GPT-3.5 Turbo: &#36;0.50/1M input tokens, &#36;1.50/1M output tokens</li>
+<li>GPT-4 Turbo: $10.00/1M input tokens, $30.00/1M output tokens</li>
+<li>GPT-3.5 Turbo: $0.50/1M input tokens, $1.50/1M output tokens</li>
 </ul>
 
 <p><strong>Real Cost Example</strong>:</p>
@@ -51,21 +51,21 @@ const meta = {
 <tbody>
 <tr>
 <td><strong>Claude 3.5 Sonnet</strong></td>
-<td>&#36;150</td>
-<td>&#36;300</td>
-<td>&#36;450/month</td>
+<td>$150</td>
+<td>$300</td>
+<td>$450/month</td>
 </tr>
 <tr>
 <td><strong>GPT-4 Turbo</strong></td>
-<td>&#36;500</td>
-<td>&#36;600</td>
-<td>&#36;1,100/month</td>
+<td>$500</td>
+<td>$600</td>
+<td>$1,100/month</td>
 </tr>
 <tr>
 <td><strong>Ollama (self-hosted)</strong></td>
-<td>&#36;0</td>
-<td>&#36;0</td>
-<td><strong>&#36;0/month</strong> ✨</td>
+<td>$0</td>
+<td>$0</td>
+<td><strong>$0/month</strong></td>
 </tr>
 </tbody>
 </table>
@@ -86,7 +86,7 @@ const meta = {
 <p><strong>Stay with cloud APIs if</strong>:</p>
 <ul>
 <li>You need cutting-edge capabilities (Claude 3.5 Opus, GPT-4 Turbo)</li>
-<li>Your workload is < 10,000 requests/month (cloud is cheaper)</li>
+<li>Your workload is &lt; 10,000 requests/month (cloud is cheaper)</li>
 <li>You lack GPU infrastructure (Ollama needs GPU for performance)</li>
 <li>You require 24/7 uptime with enterprise SLAs</li>
 <li>You don't have DevOps resources for self-hosting</li>
@@ -133,7 +133,7 @@ const meta = {
 <tr>
 <td><strong>Llama 3.1 8B</strong></td>
 <td>8B</td>
-<td>Chat, Q&A</td>
+<td>Chat, Q&amp;A</td>
 <td>65% of Claude</td>
 <td>Very Fast</td>
 </tr>
@@ -158,36 +158,36 @@ const meta = {
 
 <pre><code class="language-typescript">// Decision tree for model selection
 interface ModelSelectionCriteria {
-  useCase: &#039;code&#039; | &#039;chat&#039; | &#039;reasoning&#039; | &#039;creative-writing&#039;;
-  hardwareAvailable: &#039;gpu-24gb&#039; | &#039;gpu-16gb&#039; | &#039;gpu-8gb&#039; | &#039;cpu-only&#039;;
-  qualityRequired: &#039;high&#039; | &#039;medium&#039; | &#039;low&#039;;
-  latencyTolerance: &#039;real-time&#039; | &#039;batch&#039;;
+  useCase: 'code' | 'chat' | 'reasoning' | 'creative-writing';
+  hardwareAvailable: 'gpu-24gb' | 'gpu-16gb' | 'gpu-8gb' | 'cpu-only';
+  qualityRequired: 'high' | 'medium' | 'low';
+  latencyTolerance: 'real-time' | 'batch';
 }
 
 function selectModel(criteria: ModelSelectionCriteria): string {
 // High-end hardware (24GB+ GPU)
-if (criteria.hardwareAvailable === &#039;gpu-24gb&#039;) {
-if (criteria.useCase === &#039;code&#039;) {
-return &#039;qwen2.5-coder:32b&#039;;  // Best code model
+if (criteria.hardwareAvailable === 'gpu-24gb') {
+if (criteria.useCase === 'code') {
+return 'qwen2.5-coder:32b';  // Best code model
 }
-return &#039;llama3.3:70b&#039;;  // Best general purpose
+return 'llama3.3:70b';  // Best general purpose
 }
 
 // Mid-range hardware (16GB GPU)
-if (criteria.hardwareAvailable === &#039;gpu-16gb&#039;) {
-if (criteria.useCase === &#039;code&#039;) {
-return &#039;deepseek-coder:33b&#039;;  // Quantized 33B fits in 16GB
+if (criteria.hardwareAvailable === 'gpu-16gb') {
+if (criteria.useCase === 'code') {
+return 'deepseek-coder:33b';  // Quantized 33B fits in 16GB
 }
-return &#039;gemma2:27b&#039;;  // Balanced model
+return 'gemma2:27b';  // Balanced model
 }
 
 // Budget hardware (8GB GPU)
-if (criteria.hardwareAvailable === &#039;gpu-8gb&#039;) {
-return &#039;llama3.1:8b&#039;;  // Fast and efficient
+if (criteria.hardwareAvailable === 'gpu-8gb') {
+return 'llama3.1:8b';  // Fast and efficient
 }
 
 // CPU-only (not recommended for production)
-return &#039;mistral:7b-instruct-q4_0&#039;;  // Smallest viable model
+return 'mistral:7b-instruct-q4_0';  // Smallest viable model
 }</code></pre>
 
 <h3>Hardware Requirements</h3>
@@ -211,14 +211,14 @@ return &#039;mistral:7b-instruct-q4_0&#039;;  // Smallest viable model
 <ul>
 <li><strong>GPU</strong>: NVIDIA A100 (80GB) or H100</li>
 <li><strong>Models</strong>: Run multiple 70B models simultaneously</li>
-<li><strong>Cost</strong>: &#36;10,000-30,000 one-time hardware investment</li>
+<li><strong>Cost</strong>: $10,000-30,000 one-time hardware investment</li>
 </ul>
 
 <hr>
 
 <h2>Performance Benchmarks</h2>
 
-<h3>Latency Comparison (500 input tokens → 200 output tokens)</h3>
+<h3>Latency Comparison (500 input tokens -> 200 output tokens)</h3>
 
 <table>
 <thead>
@@ -281,31 +281,31 @@ return &#039;mistral:7b-instruct-q4_0&#039;;  // Smallest viable model
 <td><strong>Claude 3.5 Sonnet</strong></td>
 <td>9.0</td>
 <td>92%</td>
-<td>&#36;450/month</td>
+<td>$450/month</td>
 </tr>
 <tr>
 <td><strong>GPT-4 Turbo</strong></td>
 <td>9.3</td>
 <td>88%</td>
-<td>&#36;1,100/month</td>
+<td>$1,100/month</td>
 </tr>
 <tr>
 <td><strong>Llama 3.3 70B</strong></td>
 <td>8.5</td>
 <td>81%</td>
-<td>&#36;0</td>
+<td>$0</td>
 </tr>
 <tr>
 <td><strong>Qwen 2.5 Coder 32B</strong></td>
 <td>7.8</td>
 <td>89% (code)</td>
-<td>&#36;0</td>
+<td>$0</td>
 </tr>
 <tr>
 <td><strong>Mistral 7B</strong></td>
 <td>6.5</td>
 <td>40%</td>
-<td>&#36;0</td>
+<td>$0</td>
 </tr>
 </tbody>
 </table>
@@ -315,26 +315,26 @@ return &#039;mistral:7b-instruct-q4_0&#039;;  // Smallest viable model
 <h3>Real-World Performance Test</h3>
 
 <pre><code class="language-typescript">// Benchmark script: Compare Ollama vs Claude
-import Anthropic from &#039;@anthropic-ai/sdk&#039;;
-import fetch from &#039;node-fetch&#039;;
+import Anthropic from '@anthropic-ai/sdk';
+import fetch from 'node-fetch';
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 async function testClaude(prompt: string): Promise&lt;number&gt; {
 const start = Date.now();
 const response = await anthropic.messages.create({
-model: &#039;claude-3-5-sonnet-20241022&#039;,
+model: 'claude-3-5-sonnet-20241022',
 max_tokens: 1024,
-messages: [{ role: &#039;user&#039;, content: prompt }]
+messages: [{ role: 'user', content: prompt }]
 });
 return Date.now() - start;
 }
 
 async function testOllama(prompt: string, model: string): Promise&lt;number&gt; {
 const start = Date.now();
-const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
-method: &#039;POST&#039;,
-headers: { &#039;Content-Type&#039;: &#039;application/json&#039; },
+const response = await fetch('http://localhost:11434/api/generate', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify({ model, prompt, stream: false })
 });
 await response.json();
@@ -342,19 +342,19 @@ return Date.now() - start;
 }
 
 // Run benchmark
-const prompt = &quot;Write a TypeScript function to implement binary search&quot;;
+const prompt = "Write a TypeScript function to implement binary search";
 const results = {
 claude: await testClaude(prompt),
-llama70b: await testOllama(prompt, &#039;llama3.3:70b&#039;),
-qwen32b: await testOllama(prompt, &#039;qwen2.5-coder:32b&#039;)
+llama70b: await testOllama(prompt, 'llama3.3:70b'),
+qwen32b: await testOllama(prompt, 'qwen2.5-coder:32b')
 };
 
 console.log(JSON.stringify(results, null, 2));
 // Output:
 // {
-//   &quot;claude&quot;: 4500,     // 4.5 seconds
-//   &quot;llama70b&quot;: 3800,   // 3.8 seconds (16% faster)
-//   &quot;qwen32b&quot;: 1600     // 1.6 seconds (64% faster!)
+//   "claude": 4500,     // 4.5 seconds
+//   "llama70b": 3800,   // 3.8 seconds (16% faster)
+//   "qwen32b": 1600     // 1.6 seconds (64% faster!)
 // }</code></pre>
 
 <hr>
@@ -366,28 +366,24 @@ console.log(JSON.stringify(results, null, 2));
 <p><strong>Scenario</strong>: 100,000 requests/month, 500 input + 200 output tokens</p>
 
 <h4>Cloud API Costs (Claude 3.5 Sonnet)</h4>
-<p>\&#96;\&#96;<code></p>
-<p>Monthly cost: &#36;450</p>
-<p>Annual cost: &#36;5,400</p>
-<p>3-year cost: &#36;16,200</p>
-<code>\&#96;</code>
+<pre><code>Monthly cost: $450
+Annual cost: $5,400
+3-year cost: $16,200</code></pre>
 
 <h4>Self-Hosted Ollama Costs</h4>
-<code>\&#96;</code>
-<p>Hardware (one-time):</p>
-- NVIDIA RTX 4090 (24GB): &#36;1,600
-- Workstation PC (CPU, RAM, SSD): &#36;2,000
-- Total: &#36;3,600
+<pre><code>Hardware (one-time):
+- NVIDIA RTX 4090 (24GB): $1,600
+- Workstation PC (CPU, RAM, SSD): $2,000
+- Total: $3,600
 
-<p>Operating costs (annual):</p>
-- Electricity (24/7, 450W GPU): &#36;400/year
-- Maintenance: &#36;200/year
-- Total: &#36;600/year
+Operating costs (annual):
+- Electricity (24/7, 450W GPU): $400/year
+- Maintenance: $200/year
+- Total: $600/year
 
-<p>3-year total: &#36;3,600 + (&#36;600 × 3) = &#36;5,400</p>
+3-year total: $3,600 + ($600 x 3) = $5,400
 
-<p>Savings vs Claude: &#36;16,200 - &#36;5,400 = &#36;10,800 (67% savings)</p>
-<code>\&#96;</code>
+Savings vs Claude: $16,200 - $5,400 = $10,800 (67% savings)</code></pre>
 
 <p><strong>Break-even point</strong>: 12 months</p>
 
@@ -405,30 +401,30 @@ console.log(JSON.stringify(results, null, 2));
 <tbody>
 <tr>
 <td><strong>Claude 3.5 Sonnet</strong></td>
-<td>&#36;3.00</td>
-<td>&#36;15.00</td>
-<td>&#36;18.00/1M</td>
+<td>$3.00</td>
+<td>$15.00</td>
+<td>$18.00/1M</td>
 </tr>
 <tr>
 <td><strong>GPT-4 Turbo</strong></td>
-<td>&#36;10.00</td>
-<td>&#36;30.00</td>
-<td>&#36;40.00/1M</td>
+<td>$10.00</td>
+<td>$30.00</td>
+<td>$40.00/1M</td>
 </tr>
 <tr>
 <td><strong>Ollama (amortized)</strong></td>
-<td>&#36;0.00</td>
-<td>&#36;0.00</td>
-<td><strong>&#36;0.00/1M</strong></td>
+<td>$0.00</td>
+<td>$0.00</td>
+<td><strong>$0.00/1M</strong></td>
 </tr>
 </tbody>
 </table>
 
 <p><strong>At scale</strong> (1B tokens/year):</p>
 <ul>
-<li>Claude: &#36;18,000/year</li>
-<li>Ollama: &#36;600/year (electricity + maintenance)</li>
-<li><strong>Savings: &#36;17,400/year (97%)</strong></li>
+<li>Claude: $18,000/year</li>
+<li>Ollama: $600/year (electricity + maintenance)</li>
+<li><strong>Savings: $17,400/year (97%)</strong></li>
 </ul>
 
 <hr>
@@ -466,28 +462,28 @@ console.log(JSON.stringify(results, null, 2));
 <tbody>
 <tr>
 <td><strong>GDPR</strong> (EU data residency)</td>
-<td>⚠️ Risky (US servers)</td>
-<td>✅ Full control</td>
+<td>Risky (US servers)</td>
+<td>Full control</td>
 </tr>
 <tr>
 <td><strong>HIPAA</strong> (healthcare data)</td>
-<td>⚠️ Requires BAA</td>
-<td>✅ On-prem compliant</td>
+<td>Requires BAA</td>
+<td>On-prem compliant</td>
 </tr>
 <tr>
 <td><strong>SOC 2</strong> (security controls)</td>
-<td>✅ Vendor certified</td>
-<td>✅ Self-certified</td>
+<td>Vendor certified</td>
+<td>Self-certified</td>
 </tr>
 <tr>
 <td><strong>Government</strong> (classified data)</td>
-<td>❌ Not allowed</td>
-<td>✅ Air-gapped OK</td>
+<td>Not allowed</td>
+<td>Air-gapped OK</td>
 </tr>
 <tr>
 <td><strong>Finance</strong> (PCI DSS)</td>
-<td>⚠️ Requires assessment</td>
-<td>✅ Internal only</td>
+<td>Requires assessment</td>
+<td>Internal only</td>
 </tr>
 </tbody>
 </table>
@@ -497,23 +493,23 @@ console.log(JSON.stringify(results, null, 2));
 <pre><code class="language-typescript">// Before: Send patient data to Claude API (HIPAA violation!)
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const response = await anthropic.messages.create({
-  model: &#039;claude-3-5-sonnet-20241022&#039;,
+  model: 'claude-3-5-sonnet-20241022',
   messages: [{
-    role: &#039;user&#039;,
-    content: &#96;Analyze patient record: &#36;{patientData}&#96; // ❌ HIPAA violation!
+    role: 'user',
+    content: `Analyze patient record: ${patientData}` // HIPAA violation!
   }]
 });
 
 // After: Process locally with Ollama (HIPAA compliant)
-const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
-method: &#039;POST&#039;,
+const response = await fetch('http://localhost:11434/api/generate', {
+method: 'POST',
 body: JSON.stringify({
-model: &#039;llama3.3:70b&#039;,
-prompt: &#96;Analyze patient record: &#36;{patientData}&#96; // ✅ Never leaves network
+model: 'llama3.3:70b',
+prompt: `Analyze patient record: ${patientData}` // Never leaves network
 })
 });</code></pre>
 
-<p><strong>Result</strong>: Company saves &#36;8,000/month in API costs + eliminates HIPAA compliance risk.</p>
+<p><strong>Result</strong>: Company saves $8,000/month in API costs + eliminates HIPAA compliance risk.</p>
 
 <hr>
 
@@ -527,7 +523,7 @@ async function routeRequest(prompt: string): Promise&lt;string&gt; {
   const useOllama = Math.random() &lt; 0.05; // 5% to Ollama
 
 if (useOllama) {
-return await callOllama(prompt, &#039;llama3.3:70b&#039;);
+return await callOllama(prompt, 'llama3.3:70b');
 } else {
 return await callClaude(prompt);
 }
@@ -556,16 +552,16 @@ return await callClaude(prompt);
 
 <p><strong>Phase 1</strong>: Simple tasks to Ollama</p>
 <pre><code class="language-typescript">const taskRouting = {
-  &#039;code-completion&#039;: &#039;ollama&#039;,      // Qwen 2.5 Coder
-  &#039;summarization&#039;: &#039;ollama&#039;,        // Mistral 7B
-  &#039;chat&#039;: &#039;ollama&#039;,                 // Llama 3.1 8B
-  &#039;complex-reasoning&#039;: &#039;claude&#039;,    // Keep Claude for hard tasks
-  &#039;creative-writing&#039;: &#039;claude&#039;      // Keep Claude for creative work
+  'code-completion': 'ollama',      // Qwen 2.5 Coder
+  'summarization': 'ollama',        // Mistral 7B
+  'chat': 'ollama',                 // Llama 3.1 8B
+  'complex-reasoning': 'claude',    // Keep Claude for hard tasks
+  'creative-writing': 'claude'      // Keep Claude for creative work
 };
 
 async function route(task: string, prompt: string): Promise&lt;string&gt; {
-const provider = taskRouting[task] || &#039;claude&#039;;
-return provider === &#039;ollama&#039;
+const provider = taskRouting[task] || 'claude';
+return provider === 'ollama'
 ? await callOllama(prompt, selectBestModel(task))
 : await callClaude(prompt);
 }</code></pre>
@@ -578,12 +574,12 @@ return provider === &#039;ollama&#039;
 
 <pre><code class="language-typescript">// Use Ollama for cost-sensitive workloads, Claude for quality-critical
 class HybridLLMRouter {
-  async execute(prompt: string, options: { priority: &#039;cost&#039; | &#039;quality&#039; }): Promise&lt;string&gt; {
-    if (options.priority === &#039;cost&#039;) {
+  async execute(prompt: string, options: { priority: 'cost' | 'quality' }): Promise&lt;string&gt; {
+    if (options.priority === 'cost') {
       try {
         return await this.callOllama(prompt);
       } catch (error) {
-        console.warn(&#039;Ollama failed, falling back to Claude&#039;);
+        console.warn('Ollama failed, falling back to Claude');
         return await this.callClaude(prompt);
       }
     } else {
@@ -592,10 +588,10 @@ class HybridLLMRouter {
   }
 
 private async callOllama(prompt: string): Promise&lt;string&gt; {
-const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
-method: &#039;POST&#039;,
+const response = await fetch('http://localhost:11434/api/generate', {
+method: 'POST',
 body: JSON.stringify({
-model: &#039;llama3.3:70b&#039;,
+model: 'llama3.3:70b',
 prompt,
 stream: false
 })
@@ -607,9 +603,9 @@ return data.response;
 private async callClaude(prompt: string): Promise&lt;string&gt; {
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const response = await anthropic.messages.create({
-model: &#039;claude-3-5-sonnet-20241022&#039;,
+model: 'claude-3-5-sonnet-20241022',
 max_tokens: 4096,
-messages: [{ role: &#039;user&#039;, content: prompt }]
+messages: [{ role: 'user', content: prompt }]
 });
 return response.content[0].text;
 }
@@ -650,16 +646,16 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
 CMD curl -f http://localhost:11434/api/tags || exit 1
 
 # Run Ollama server
-CMD [&quot;ollama&quot;, &quot;serve&quot;]</code></pre>
+CMD ["ollama", "serve"]</code></pre>
 
 <p><strong>Deploy with Docker Compose</strong>:</p>
 <pre><code class="language-yaml"># docker-compose.yml
-version: &#039;3.8&#039;
+version: '3.8'
 services:
   ollama:
     build: .
     ports:
-      - &quot;11434:11434&quot;
+      - "11434:11434"
     volumes:
       - ollama_models:/root/.ollama
     deploy:
@@ -705,28 +701,28 @@ spec:
             port: 11434
           initialDelaySeconds: 60
           periodSeconds: 30
-<hr>
+---
 apiVersion: v1
 kind: Service
 metadata:
-name: ollama-service
+  name: ollama-service
 spec:
-selector:
-app: ollama
-ports:
-- protocol: TCP
-port: 80
-targetPort: 11434
-type: LoadBalancer</code></pre>
+  selector:
+    app: ollama
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 11434
+  type: LoadBalancer</code></pre>
 
 <h3>Load Balancing Multiple GPUs</h3>
 
 <pre><code class="language-typescript">// Round-robin load balancer for multiple Ollama instances
 class OllamaLoadBalancer {
   private instances = [
-    &#039;http://gpu-1.local:11434&#039;,
-    &#039;http://gpu-2.local:11434&#039;,
-    &#039;http://gpu-3.local:11434&#039;
+    'http://gpu-1.local:11434',
+    'http://gpu-2.local:11434',
+    'http://gpu-3.local:11434'
   ];
   private currentIndex = 0;
 
@@ -734,8 +730,8 @@ async generate(prompt: string, model: string): Promise&lt;string&gt; {
 const instance = this.instances[this.currentIndex];
 this.currentIndex = (this.currentIndex + 1) % this.instances.length;
 
-const response = await fetch(&#96;&#36;{instance}/api/generate&#96;, {
-method: &#039;POST&#039;,
+const response = await fetch(`${instance}/api/generate`, {
+method: 'POST',
 body: JSON.stringify({ model, prompt, stream: false })
 });
 
@@ -753,106 +749,26 @@ return data.response;
 
 <h2>Best Practices</h2>
 
-<h3>DO ✅</h3>
+<h3>DO</h3>
 
 <ul>
-<li><strong>Start with pilot testing</strong></li>
+<li><strong>Start with pilot testing</strong> - Test Ollama on non-critical workloads first</li>
+<li><strong>Use appropriate models for tasks</strong> - Match model size to task complexity</li>
+<li><strong>Implement fallback to cloud</strong> - Always have a fallback path to Claude</li>
+<li><strong>Monitor GPU utilization</strong> - Track GPU usage with nvidia-smi</li>
+<li><strong>Pre-download models</strong> - Download models during deployment, not runtime</li>
+<li><strong>Use quantized models for budget hardware</strong> - Q4 quantization fits in 8GB GPU</li>
 </ul>
-   <pre><code class="language-typescript">// Test Ollama on non-critical workloads first
-   const isPilotUser = [&#039;user-123&#039;, &#039;user-456&#039;].includes(userId);
-   const provider = isPilotUser ? &#039;ollama&#039; : &#039;claude&#039;;</code></pre>
+
+<h3>DON'T</h3>
 
 <ul>
-<li><strong>Use appropriate models for tasks</strong></li>
+<li><strong>Don't migrate without testing</strong> - Use gradual rollout with monitoring</li>
+<li><strong>Don't use CPU-only in production</strong> - CPU inference is 50-100x slower</li>
+<li><strong>Don't expect identical quality</strong> - Set realistic expectations for local models</li>
+<li><strong>Don't skip monitoring</strong> - Track metrics for every request</li>
+<li><strong>Don't ignore hardware limits</strong> - Use appropriate model size for your GPU</li>
 </ul>
-   <pre><code class="language-typescript">// Match model size to task complexity
-   const modelSelection = {
-     &#039;simple-chat&#039;: &#039;mistral:7b&#039;,          // Fast
-     &#039;code-completion&#039;: &#039;qwen2.5-coder:32b&#039;, // Specialized
-     &#039;complex-reasoning&#039;: &#039;llama3.3:70b&#039;    // High quality
-   };</code></pre>
-
-<ul>
-<li><strong>Implement fallback to cloud</strong></li>
-</ul>
-   <pre><code class="language-typescript">async function withFallback(prompt: string): Promise&lt;string&gt; {
-     try {
-       return await callOllama(prompt);
-     } catch (error) {
-       console.warn(&#039;Ollama failed, using Claude&#039;);
-       return await callClaude(prompt);
-     }
-   }</code></pre>
-
-<ul>
-<li><strong>Monitor GPU utilization</strong></li>
-</ul>
-   <pre><code class="language-bash"># Track GPU usage
-   nvidia-smi --query-gpu=utilization.gpu,memory.used --format=csv -l 1</code></pre>
-
-<ul>
-<li><strong>Pre-download models</strong></li>
-</ul>
-   <pre><code class="language-bash"># Download models during deployment, not runtime
-   ollama pull llama3.3:70b
-   ollama pull qwen2.5-coder:32b</code></pre>
-
-<ul>
-<li><strong>Use quantized models for budget hardware</strong></li>
-</ul>
-   <pre><code class="language-bash"># Q4 quantization fits in 8GB GPU
-   ollama pull llama3.1:8b-instruct-q4_0</code></pre>
-
-<h3>DON'T ❌</h3>
-
-<ul>
-<li><strong>Don't migrate without testing</strong></li>
-</ul>
-   <pre><code class="language-typescript">// ❌ Instant switch - risky
-   const response = await callOllama(prompt);
-
-// ✅ Gradual rollout with monitoring
-const response = canaryPercentage &gt; Math.random()
-? await callOllama(prompt)
-: await callClaude(prompt);</code></pre>
-
-<ul>
-<li><strong>Don't use CPU-only in production</strong></li>
-</ul>
-   <pre><code class="language-bash"># ❌ CPU inference is 50-100x slower
-   ollama run llama3.3:70b  # On CPU: 2-5 tokens/sec
-
-# ✅ Use GPU
-ollama run llama3.3:70b  # On RTX 4090: 50-60 tokens/sec</code></pre>
-
-<ul>
-<li><strong>Don't expect identical quality</strong></li>
-</ul>
-   <pre><code class="language-typescript">// ❌ Expecting Claude-level reasoning
-   const analysis = await callOllama(&#039;Solve complex logic puzzle&#039;);
-
-// ✅ Set realistic expectations
-const analysis = await callOllama(&#039;Summarize this text&#039;); // Better fit</code></pre>
-
-<ul>
-<li><strong>Don't skip monitoring</strong></li>
-</ul>
-   <pre><code class="language-typescript">// ❌ No visibility
-   await callOllama(prompt);
-
-// ✅ Track metrics
-const start = Date.now();
-const response = await callOllama(prompt);
-metrics.recordLatency(&#039;ollama&#039;, Date.now() - start);</code></pre>
-
-<ul>
-<li><strong>Don't ignore hardware limits</strong></li>
-</ul>
-   <pre><code class="language-typescript">// ❌ Run 70B model on 8GB GPU
-   ollama run llama3.3:70b  // Out of memory!
-
-// ✅ Use appropriate model size
-ollama run llama3.1:8b   // Fits comfortably</code></pre>
 
 <hr>
 
@@ -862,10 +778,6 @@ ollama run llama3.1:8b   // Fits comfortably</code></pre>
 
 <p><strong>macOS/Linux</strong>:</p>
 <pre><code class="language-bash">curl -fsSL https://ollama.com/install.sh | sh</code></pre>
-
-<strong>Windows</strong>:
-<pre><code class="language-powershell"># Download from https://ollama.com/download/windows
-ollama-windows-amd64.exe</code></pre>
 
 <p><strong>Verify installation</strong>:</p>
 <pre><code class="language-bash">ollama --version
@@ -889,12 +801,12 @@ ollama show llama3.3:70b</code></pre>
 <h3>API Usage</h3>
 
 <pre><code class="language-typescript">// JavaScript/TypeScript
-const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
-  method: &#039;POST&#039;,
-  headers: { &#039;Content-Type&#039;: &#039;application/json&#039; },
+const response = await fetch('http://localhost:11434/api/generate', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
   body: JSON.stringify({
-    model: &#039;llama3.3:70b&#039;,
-    prompt: &#039;Write a hello world function&#039;,
+    model: 'llama3.3:70b',
+    prompt: 'Write a hello world function',
     stream: false
   })
 });
@@ -905,22 +817,13 @@ console.log(data.response);</code></pre>
 <pre><code class="language-python"># Python
 import requests
 
-response = requests.post(&#039;http://localhost:11434/api/generate&#039;, json={
-&#039;model&#039;: &#039;llama3.3:70b&#039;,
-&#039;prompt&#039;: &#039;Write a hello world function&#039;,
-&#039;stream&#039;: False
+response = requests.post('http://localhost:11434/api/generate', json={
+'model': 'llama3.3:70b',
+'prompt': 'Write a hello world function',
+'stream': False
 })
 
-print(response.json()[&#039;response&#039;])</code></pre>
-
-<h3>Claude Code Plugins with Ollama</h3>
-
-<p>From this marketplace (258 plugins):</p>
-<ul>
-<li><code>ai-sdk-agents</code> - Supports Ollama for multi-agent workflows</li>
-<li><code>ollama-local-ai</code> - Ollama integration examples</li>
-<li></code>local-llm-wrapper\&#96; - Generic local model wrapper</li>
-</ul>
+print(response.json()['response'])</code></pre>
 
 <h3>External Resources</h3>
 
@@ -965,5 +868,3 @@ print(response.json()[&#039;response&#039;])</code></pre>
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
-`} />
-</PlaybookTemplate>

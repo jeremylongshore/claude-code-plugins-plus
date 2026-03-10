@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Compliance & Audit Guide",
-  description: "SOC 2, GDPR, HIPAA, PCI DSS implementation. Audit logging with immutable signatures, RBAC, data privacy (PII redaction), and regulatory compliance.",
-  category: "Security",
-  wordCount: 6000,
-  slug: "07-compliance-audit"
-};
+title: "Compliance & Audit Guide"
+description: "SOC 2, GDPR, HIPAA, PCI DSS implementation. Audit logging with immutable signatures, RBAC, data privacy (PII redaction), and regulatory compliance."
+category: "Security"
+wordCount: 6000
+readTime: 30
+featured: false
+order: 7
+tags: ["compliance", "audit", "gdpr", "hipaa", "soc2", "security"]
+prerequisites: []
+relatedPlaybooks: ["06-self-hosted-stack", "03-mcp-reliability"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Security Teams and Compliance Officers</strong></p>
+<p><strong>Production Playbook for Security Teams and Compliance Officers</strong></p>
 
 <p>Ensuring Claude Code plugin workflows meet SOC 2, GDPR, HIPAA, and other regulatory requirements is critical for enterprise deployments. This playbook provides audit logging implementation, compliance checklists, data privacy patterns, access controls, and security hardening procedures for AI-powered automation.</p>
 
@@ -65,30 +65,30 @@ const meta = {
 <h3>Risk Assessment</h3>
 
 <pre><code class="language-typescript">interface ComplianceRisk {
-  framework: &#039;SOC2&#039; | &#039;GDPR&#039; | &#039;HIPAA&#039; | &#039;PCI&#039; | &#039;ISO27001&#039;;
+  framework: 'SOC2' | 'GDPR' | 'HIPAA' | 'PCI' | 'ISO27001';
   requirement: string;
-  currentState: &#039;compliant&#039; | &#039;non-compliant&#039; | &#039;partial&#039;;
-  risk: &#039;critical&#039; | &#039;high&#039; | &#039;medium&#039; | &#039;low&#039;;
+  currentState: 'compliant' | 'non-compliant' | 'partial';
+  risk: 'critical' | 'high' | 'medium' | 'low';
   remediation: string;
   dueDate: Date;
 }
 
 const risks: ComplianceRisk[] = [
 {
-framework: &#039;GDPR&#039;,
-requirement: &#039;Right to erasure (Article 17)&#039;,
-currentState: &#039;non-compliant&#039;,
-risk: &#039;high&#039;,
-remediation: &#039;Implement conversation deletion API&#039;,
-dueDate: new Date(&#039;2025-12-31&#039;)
+framework: 'GDPR',
+requirement: 'Right to erasure (Article 17)',
+currentState: 'non-compliant',
+risk: 'high',
+remediation: 'Implement conversation deletion API',
+dueDate: new Date('2025-12-31')
 },
 {
-framework: &#039;SOC2&#039;,
-requirement: &#039;Audit logging (CC6.1)&#039;,
-currentState: &#039;partial&#039;,
-risk: &#039;medium&#039;,
-remediation: &#039;Enable immutable audit logs with timestamps&#039;,
-dueDate: new Date(&#039;2025-12-28&#039;)
+framework: 'SOC2',
+requirement: 'Audit logging (CC6.1)',
+currentState: 'partial',
+risk: 'medium',
+remediation: 'Enable immutable audit logs with timestamps',
+dueDate: new Date('2025-12-28')
 }
 ];</code></pre>
 
@@ -101,27 +101,27 @@ dueDate: new Date(&#039;2025-12-28&#039;)
 <p><strong>Required Events to Log</strong>:</p>
 <pre><code class="language-typescript">enum AuditEventType {
   // Authentication
-  USER_LOGIN = &#039;user.login&#039;,
-  USER_LOGOUT = &#039;user.logout&#039;,
-  API_KEY_CREATED = &#039;api_key.created&#039;,
-  API_KEY_REVOKED = &#039;api_key.revoked&#039;,
+  USER_LOGIN = 'user.login',
+  USER_LOGOUT = 'user.logout',
+  API_KEY_CREATED = 'api_key.created',
+  API_KEY_REVOKED = 'api_key.revoked',
 
 // Data Access
-CONVERSATION_READ = &#039;conversation.read&#039;,
-CONVERSATION_CREATED = &#039;conversation.created&#039;,
-CONVERSATION_DELETED = &#039;conversation.deleted&#039;,
-DATA_EXPORT = &#039;data.export&#039;,
+CONVERSATION_READ = 'conversation.read',
+CONVERSATION_CREATED = 'conversation.created',
+CONVERSATION_DELETED = 'conversation.deleted',
+DATA_EXPORT = 'data.export',
 
 // Configuration Changes
-PLUGIN_INSTALLED = &#039;plugin.installed&#039;,
-PLUGIN_UNINSTALLED = &#039;plugin.uninstalled&#039;,
-SETTINGS_CHANGED = &#039;settings.changed&#039;,
+PLUGIN_INSTALLED = 'plugin.installed',
+PLUGIN_UNINSTALLED = 'plugin.uninstalled',
+SETTINGS_CHANGED = 'settings.changed',
 
 // Security Events
-AUTHENTICATION_FAILED = &#039;auth.failed&#039;,
-AUTHORIZATION_DENIED = &#039;authz.denied&#039;,
-ENCRYPTION_KEY_ROTATED = &#039;encryption.key_rotated&#039;,
-SUSPICIOUS_ACTIVITY = &#039;security.suspicious&#039;
+AUTHENTICATION_FAILED = 'auth.failed',
+AUTHORIZATION_DENIED = 'authz.denied',
+ENCRYPTION_KEY_ROTATED = 'encryption.key_rotated',
+SUSPICIOUS_ACTIVITY = 'security.suspicious'
 }
 
 interface AuditLog {
@@ -136,14 +136,14 @@ type: string;
 id: string;
 };
 action: string;
-outcome: &#039;success&#039; | &#039;failure&#039;;
-metadata: Record&lt;string, any&gt;;
+outcome: 'success' | 'failure';
+metadata: Record<string, any>;
 signature: string;  // HMAC for tamper detection
 }</code></pre>
 
 <h3>Implementation</h3>
 
-<pre><code class="language-typescript">import crypto from &#039;crypto&#039;;
+<pre><code class="language-typescript">import crypto from 'crypto';
 
 class AuditLogger {
 private readonly secretKey: string;
@@ -152,12 +152,12 @@ constructor(secretKey: string) {
 this.secretKey = secretKey;
 }
 
-async log(event: Omit&lt;AuditLog, &#039;id&#039; | &#039;timestamp&#039; | &#039;signature&#039;&gt;): Promise&lt;void&gt; {
+async log(event: Omit<AuditLog, 'id' | 'timestamp' | 'signature'>): Promise<void> {
 const auditLog: AuditLog = {
 id: crypto.randomUUID(),
 timestamp: Date.now(),
 ...event,
-signature: &#039;&#039; // Computed below
+signature: '' // Computed below
 };
 
 // Generate HMAC signature for tamper detection
@@ -172,33 +172,33 @@ outcome: auditLog.outcome
 });
 
 auditLog.signature = crypto
-.createHmac(&#039;sha256&#039;, this.secretKey)
+.createHmac('sha256', this.secretKey)
 .update(data)
-.digest(&#039;hex&#039;);
+.digest('hex');
 
 // Write to immutable log storage
 await this.writeToStorage(auditLog);
 }
 
-private async writeToStorage(log: AuditLog): Promise&lt;void&gt; {
+private async writeToStorage(log: AuditLog): Promise<void> {
 // Option 1: Append-only file (WORM - Write Once Read Many)
-await appendFile(&#039;/var/log/audit/audit.jsonl&#039;, JSON.stringify(log) + &#039;\n&#039;);
+await appendFile('/var/log/audit/audit.jsonl', JSON.stringify(log) + '\n');
 
 // Option 2: PostgreSQL with audit triggers
 await db.query(
-&#039;INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES (&#36;1, &#36;2, &#36;3, &#36;4, &#36;5, &#36;6)&#039;,
+'INSERT INTO audit_logs (id, timestamp, event_type, user_id, data, signature) VALUES ($1, $2, $3, $4, $5, $6)',
 [log.id, log.timestamp, log.eventType, log.userId, log, log.signature]
 );
 
 // Option 3: Send to SIEM (Splunk, ELK)
-await fetch(&#039;https://siem.example.com/audit&#039;, {
-method: &#039;POST&#039;,
-headers: { &#039;Content-Type&#039;: &#039;application/json&#039; },
+await fetch('https://siem.example.com/audit', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
 body: JSON.stringify(log)
 });
 }
 
-async verify(log: AuditLog): Promise&lt;boolean&gt; {
+async verify(log: AuditLog): Promise<boolean> {
 const data = JSON.stringify({
 id: log.id,
 timestamp: log.timestamp,
@@ -210,9 +210,9 @@ outcome: log.outcome
 });
 
 const expectedSignature = crypto
-.createHmac(&#039;sha256&#039;, this.secretKey)
+.createHmac('sha256', this.secretKey)
 .update(data)
-.digest(&#039;hex&#039;);
+.digest('hex');
 
 return log.signature === expectedSignature;
 }
@@ -225,37 +225,37 @@ return log.signature === expectedSignature;
 // Log authentication event
 await auditor.log({
 eventType: AuditEventType.USER_LOGIN,
-userId: &#039;user-123&#039;,
-ipAddress: &#039;192.168.1.100&#039;,
-userAgent: &#039;Mozilla/5.0...&#039;,
-resource: { type: &#039;session&#039;, id: &#039;session-abc&#039; },
-action: &#039;authenticate&#039;,
-outcome: &#039;success&#039;,
-metadata: { method: &#039;api_key&#039; }
+userId: 'user-123',
+ipAddress: '192.168.1.100',
+userAgent: 'Mozilla/5.0...',
+resource: { type: 'session', id: 'session-abc' },
+action: 'authenticate',
+outcome: 'success',
+metadata: { method: 'api_key' }
 });
 
 // Log data access
 await auditor.log({
 eventType: AuditEventType.CONVERSATION_READ,
-userId: &#039;user-123&#039;,
-ipAddress: &#039;192.168.1.100&#039;,
-userAgent: &#039;Claude Code CLI/1.0&#039;,
-resource: { type: &#039;conversation&#039;, id: &#039;conv-xyz&#039; },
-action: &#039;read&#039;,
-outcome: &#039;success&#039;,
+userId: 'user-123',
+ipAddress: '192.168.1.100',
+userAgent: 'Claude Code CLI/1.0',
+resource: { type: 'conversation', id: 'conv-xyz' },
+action: 'read',
+outcome: 'success',
 metadata: { messageCount: 42 }
 });
 
 // Log deletion (GDPR right to erasure)
 await auditor.log({
 eventType: AuditEventType.CONVERSATION_DELETED,
-userId: &#039;user-123&#039;,
-ipAddress: &#039;192.168.1.100&#039;,
-userAgent: &#039;Claude Code CLI/1.0&#039;,
-resource: { type: &#039;conversation&#039;, id: &#039;conv-xyz&#039; },
-action: &#039;delete&#039;,
-outcome: &#039;success&#039;,
-metadata: { reason: &#039;user_request&#039;, gdpr_article: &#039;17&#039; }
+userId: 'user-123',
+ipAddress: '192.168.1.100',
+userAgent: 'Claude Code CLI/1.0',
+resource: { type: 'conversation', id: 'conv-xyz' },
+action: 'delete',
+outcome: 'success',
+metadata: { reason: 'user_request', gdpr_article: '17' }
 });</code></pre>
 
 <hr>
@@ -276,12 +276,12 @@ metadata: { reason: &#039;user_request&#039;, gdpr_article: &#039;17&#039; }
 }
 
 class GDPRCompliantStorage {
-// Data minimization: Only store what&#039;s necessary
-async storeConversation(data: ConversationData): Promise&lt;void&gt; {
+// Data minimization: Only store what's necessary
+async storeConversation(data: ConversationData): Promise<void> {
 const minimized = {
 id: data.id,
 userId: data.userId,  // Keep for right to access
-messages: data.messages.map(m =&gt; ({
+messages: data.messages.map(m => ({
 role: m.role,
 content: this.redactPII(m.content),  // Remove PII
 timestamp: m.timestamp
@@ -300,13 +300,13 @@ await db.conversations.insert(minimized);
 private redactPII(text: string): string {
 return text
 // Email addresses
-.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, &#039;[EMAIL_REDACTED]&#039;)
+.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL_REDACTED]')
 // Phone numbers
-.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, &#039;[PHONE_REDACTED]&#039;)
+.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE_REDACTED]')
 // SSN
-.replace(/\b\d{3}-\d{2}-\d{4}\b/g, &#039;[SSN_REDACTED]&#039;)
+.replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN_REDACTED]')
 // Credit cards
-.replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, &#039;[CC_REDACTED]&#039;);
+.replace(/\b\d{4}[-\s]?\d{4}[-\s]?\d{4}[-\s]?\d{4}\b/g, '[CC_REDACTED]');
 }
 }</code></pre>
 
@@ -320,37 +320,37 @@ return text
 }
 
 class RetentionManager {
-async enforceRetention(): Promise&lt;void&gt; {
+async enforceRetention(): Promise<void> {
 const now = Date.now();
 
 // Delete old conversations (GDPR: storage limitation)
 const cutoff = now - (RetentionPolicy.CONVERSATIONS * 86400000);
 await db.conversations.deleteMany({
-lastModified: { &#36;lt: cutoff }
+lastModified: { $lt: cutoff }
 });
 
 // Archive (not delete) audit logs
 const auditCutoff = now - (RetentionPolicy.AUDIT_LOGS * 86400000);
 const oldLogs = await db.auditLogs.find({
-timestamp: { &#36;lt: auditCutoff }
+timestamp: { $lt: auditCutoff }
 });
 await this.archiveToS3(oldLogs);
 await db.auditLogs.deleteMany({
-timestamp: { &#36;lt: auditCutoff }
+timestamp: { $lt: auditCutoff }
 });
 
 // Delete old analytics
 const analyticsCutoff = now - (RetentionPolicy.ANALYTICS * 86400000);
 await db.analytics.deleteMany({
-timestamp: { &#36;lt: analyticsCutoff }
+timestamp: { $lt: analyticsCutoff }
 });
 }
 
-private async archiveToS3(logs: any[]): Promise&lt;void&gt; {
+private async archiveToS3(logs: any[]): Promise<void> {
 const archive = JSON.stringify(logs);
 await s3.putObject({
-Bucket: &#039;audit-logs-archive&#039;,
-Key: &#96;archive-&#36;{Date.now()}.json.gz&#96;,
+Bucket: 'audit-logs-archive',
+Key: `archive-${Date.now()}.json.gz`,
 Body: gzip(archive)
 });
 }
@@ -359,17 +359,17 @@ Body: gzip(archive)
 <h3>Right to Erasure (GDPR Article 17)</h3>
 
 <pre><code class="language-typescript">class GDPRErasureHandler {
-  async processErasureRequest(userId: string, requestId: string): Promise&lt;void&gt; {
+  async processErasureRequest(userId: string, requestId: string): Promise<void> {
     // Log the request
     await auditor.log({
       eventType: AuditEventType.DATA_EXPORT,
       userId,
-      ipAddress: &#039;internal&#039;,
-      userAgent: &#039;erasure-service&#039;,
-      resource: { type: &#039;user&#039;, id: userId },
-      action: &#039;gdpr_erasure&#039;,
-      outcome: &#039;success&#039;,
-      metadata: { requestId, article: &#039;17&#039; }
+      ipAddress: 'internal',
+      userAgent: 'erasure-service',
+      resource: { type: 'user', id: userId },
+      action: 'gdpr_erasure',
+      outcome: 'success',
+      metadata: { requestId, article: '17' }
     });
 
 // Delete all user data
@@ -377,19 +377,19 @@ await db.conversations.deleteMany({ userId });
 await db.analytics.deleteMany({ userId });
 await db.preferences.deleteMany({ userId });
 
-// Anonymize audit logs (can&#039;t delete due to legal requirements)
+// Anonymize audit logs (can't delete due to legal requirements)
 await db.auditLogs.updateMany(
 { userId },
-{ &#36;set: { userId: &#96;ANONYMIZED_&#36;{crypto.randomUUID()}&#96; } }
+{ $set: { userId: `ANONYMIZED_${crypto.randomUUID()}` } }
 );
 
 // Generate confirmation
 await this.sendErasureConfirmation(userId, requestId);
 }
 
-private async sendErasureConfirmation(userId: string, requestId: string): Promise&lt;void&gt; {
+private async sendErasureConfirmation(userId: string, requestId: string): Promise<void> {
 // Email or other notification confirming erasure
-console.log(</code>Erasure completed for &#36;{userId}, request &#36;{requestId}</code>);
+console.log(</code>Erasure completed for ${userId}, request ${requestId}</code>);
 }
 }</code></pre>
 
@@ -400,23 +400,23 @@ console.log(</code>Erasure completed for &#36;{userId}, request &#36;{requestId}
 <h3>Role-Based Access Control (RBAC)</h3>
 
 <pre><code class="language-typescript">enum Role {
-  ADMIN = &#039;admin&#039;,
-  DEVELOPER = &#039;developer&#039;,
-  AUDITOR = &#039;auditor&#039;,
-  USER = &#039;user&#039;
+  ADMIN = 'admin',
+  DEVELOPER = 'developer',
+  AUDITOR = 'auditor',
+  USER = 'user'
 }
 
 enum Permission {
-CONVERSATIONS_READ = &#039;conversations:read&#039;,
-CONVERSATIONS_WRITE = &#039;conversations:write&#039;,
-CONVERSATIONS_DELETE = &#039;conversations:delete&#039;,
-PLUGINS_INSTALL = &#039;plugins:install&#039;,
-SETTINGS_MODIFY = &#039;settings:modify&#039;,
-AUDIT_LOGS_READ = &#039;audit_logs:read&#039;,
-USERS_MANAGE = &#039;users:manage&#039;
+CONVERSATIONS_READ = 'conversations:read',
+CONVERSATIONS_WRITE = 'conversations:write',
+CONVERSATIONS_DELETE = 'conversations:delete',
+PLUGINS_INSTALL = 'plugins:install',
+SETTINGS_MODIFY = 'settings:modify',
+AUDIT_LOGS_READ = 'audit_logs:read',
+USERS_MANAGE = 'users:manage'
 }
 
-const rolePermissions: Record&lt;Role, Permission[]&gt; = {
+const rolePermissions: Record<Role, Permission[]> = {
 [Role.ADMIN]: [
 Permission.CONVERSATIONS_READ,
 Permission.CONVERSATIONS_WRITE,
@@ -449,23 +449,23 @@ return rolePermissions[userRole].includes(permission);
 async enforcePermission(
 userId: string,
 permission: Permission,
-action: () =&gt; Promise&lt;void&gt;
-): Promise&lt;void&gt; {
+action: () => Promise<void>
+): Promise<void> {
 const user = await db.users.findOne({ id: userId });
 
 if (!this.hasPermission(user.role, permission)) {
 await auditor.log({
 eventType: AuditEventType.AUTHORIZATION_DENIED,
 userId,
-ipAddress: &#039;0.0.0.0&#039;,
-userAgent: &#039;internal&#039;,
-resource: { type: &#039;permission&#039;, id: permission },
-action: &#039;check&#039;,
-outcome: &#039;failure&#039;,
+ipAddress: '0.0.0.0',
+userAgent: 'internal',
+resource: { type: 'permission', id: permission },
+action: 'check',
+outcome: 'failure',
 metadata: { role: user.role }
 });
 
-throw new Error(&#96;Permission denied: &#36;{permission}&#96;);
+throw new Error(`Permission denied: ${permission}`);
 }
 
 await action();
@@ -482,7 +482,7 @@ await action();
 
 <pre><code class="language-typescript">// CC6.1: Access granted based on job function
 class SOC2AccessControl {
-  async grantAccess(userId: string, role: Role): Promise&lt;void&gt; {
+  async grantAccess(userId: string, role: Role): Promise<void> {
     // Verify user identity
     const user = await this.verifyIdentity(userId);
 
@@ -492,81 +492,81 @@ const permissions = rolePermissions[role];
 // Log access grant
 await auditor.log({
 eventType: AuditEventType.SETTINGS_CHANGED,
-userId: &#039;system&#039;,
-ipAddress: &#039;internal&#039;,
-userAgent: &#039;access-control&#039;,
-resource: { type: &#039;user&#039;, id: userId },
-action: &#039;grant_access&#039;,
-outcome: &#039;success&#039;,
+userId: 'system',
+ipAddress: 'internal',
+userAgent: 'access-control',
+resource: { type: 'user', id: userId },
+action: 'grant_access',
+outcome: 'success',
 metadata: { role, permissions }
 });
 }
 
 // CC6.2: Access removed when no longer needed
-async revokeAccess(userId: string): Promise&lt;void&gt; {
+async revokeAccess(userId: string): Promise<void> {
 await db.users.update(
 { id: userId },
-{ &#36;set: { status: &#039;inactive&#039;, accessRevoked: Date.now() } }
+{ $set: { status: 'inactive', accessRevoked: Date.now() } }
 );
 
 await auditor.log({
 eventType: AuditEventType.SETTINGS_CHANGED,
-userId: &#039;system&#039;,
-ipAddress: &#039;internal&#039;,
-userAgent: &#039;access-control&#039;,
-resource: { type: &#039;user&#039;, id: userId },
-action: &#039;revoke_access&#039;,
-outcome: &#039;success&#039;,
-metadata: { reason: &#039;employment_termination&#039; }
+userId: 'system',
+ipAddress: 'internal',
+userAgent: 'access-control',
+resource: { type: 'user', id: userId },
+action: 'revoke_access',
+outcome: 'success',
+metadata: { reason: 'employment_termination' }
 });
 }
 
 // CC6.7: Detection and response to security incidents
-async detectSuspiciousActivity(userId: string): Promise&lt;void&gt; {
+async detectSuspiciousActivity(userId: string): Promise<void> {
 const recentLogins = await db.auditLogs.find({
 userId,
 eventType: AuditEventType.USER_LOGIN,
-timestamp: { &#36;gte: Date.now() - 3600000 } // Last hour
+timestamp: { $gte: Date.now() - 3600000 } // Last hour
 });
 
 // Multiple failed logins
-const failedLogins = recentLogins.filter(l =&gt; l.outcome === &#039;failure&#039;);
-if (failedLogins.length &gt;= 5) {
+const failedLogins = recentLogins.filter(l => l.outcome === 'failure');
+if (failedLogins.length >= 5) {
 await this.lockAccount(userId);
-await this.alertSecurityTeam(userId, &#039;brute_force_detected&#039;);
+await this.alertSecurityTeam(userId, 'brute_force_detected');
 }
 
 // Login from unusual location
-const locations = recentLogins.map(l =&gt; l.ipAddress);
-if (new Set(locations).size &gt; 3) {
-await this.alertSecurityTeam(userId, &#039;multiple_locations&#039;);
+const locations = recentLogins.map(l => l.ipAddress);
+if (new Set(locations).size > 3) {
+await this.alertSecurityTeam(userId, 'multiple_locations');
 }
 }
 
-private async lockAccount(userId: string): Promise&lt;void&gt; {
+private async lockAccount(userId: string): Promise<void> {
 await db.users.update(
 { id: userId },
-{ &#36;set: { locked: true, lockedReason: &#039;suspicious_activity&#039; } }
+{ $set: { locked: true, lockedReason: 'suspicious_activity' } }
 );
 
 await auditor.log({
 eventType: AuditEventType.SUSPICIOUS_ACTIVITY,
-userId: &#039;system&#039;,
-ipAddress: &#039;internal&#039;,
-userAgent: &#039;security-monitor&#039;,
-resource: { type: &#039;user&#039;, id: userId },
-action: &#039;lock_account&#039;,
-outcome: &#039;success&#039;,
-metadata: { reason: &#039;brute_force_detected&#039; }
+userId: 'system',
+ipAddress: 'internal',
+userAgent: 'security-monitor',
+resource: { type: 'user', id: userId },
+action: 'lock_account',
+outcome: 'success',
+metadata: { reason: 'brute_force_detected' }
 });
 }
 
-private async alertSecurityTeam(userId: string, reason: string): Promise&lt;void&gt; {
+private async alertSecurityTeam(userId: string, reason: string): Promise<void> {
 // Send to PagerDuty, Slack, email, etc.
-console.log(&#96;SECURITY ALERT: &#36;{reason} for user &#36;{userId}&#96;);
+console.log(`SECURITY ALERT: ${reason} for user ${userId}`);
 }
 
-private async verifyIdentity(userId: string): Promise&lt;any&gt; {
+private async verifyIdentity(userId: string): Promise<any> {
 // Multi-factor authentication check
 return await db.users.findOne({ id: userId });
 }
@@ -577,27 +577,27 @@ return await db.users.findOne({ id: userId });
 <pre><code class="language-bash">#!/bin/bash
 # collect-soc2-evidence.sh - Automated evidence gathering
 
-EVIDENCE_DIR=&quot;/compliance/soc2/evidence-&#36;(date +%Y-%m-%d)&quot;
-mkdir -p &#36;EVIDENCE_DIR
+EVIDENCE_DIR="/compliance/soc2/evidence-$(date +%Y-%m-%d)"
+mkdir -p $EVIDENCE_DIR
 
 # 1. Access control logs (CC6.1, CC6.2)
-pg_dump -t audit_logs --data-only &gt; &#36;EVIDENCE_DIR/access_logs.sql
+pg_dump -t audit_logs --data-only > $EVIDENCE_DIR/access_logs.sql
 
 # 2. Configuration changes (CC7.2)
-git log --since=&quot;30 days ago&quot; --pretty=format:&quot;%h %an %ad %s&quot; \
-&gt; &#36;EVIDENCE_DIR/config_changes.txt
+git log --since="30 days ago" --pretty=format:"%h %an %ad %s" \
+> $EVIDENCE_DIR/config_changes.txt
 
 # 3. Backup verification (A1.2)
-ls -lh /backups/postgres/ &gt; &#36;EVIDENCE_DIR/backup_verification.txt
+ls -lh /backups/postgres/ > $EVIDENCE_DIR/backup_verification.txt
 
 # 4. Encryption status (CC6.6)
-openssl s_client -connect claude.example.com:443 &lt; /dev/null \
-| openssl x509 -text &gt; &#36;EVIDENCE_DIR/ssl_certificate.txt
+openssl s_client -connect claude.example.com:443 < /dev/null \
+| openssl x509 -text > $EVIDENCE_DIR/ssl_certificate.txt
 
 # 5. Vulnerability scans (CC7.1)
-docker scan ollama:latest &gt; &#36;EVIDENCE_DIR/vulnerability_scan.txt
+docker scan ollama:latest > $EVIDENCE_DIR/vulnerability_scan.txt
 
-echo &quot;Evidence collected: &#36;EVIDENCE_DIR&quot;</code></pre>
+echo "Evidence collected: $EVIDENCE_DIR"</code></pre>
 
 <hr>
 
@@ -656,7 +656,7 @@ echo &quot;Evidence collected: &#36;EVIDENCE_DIR&quot;</code></pre>
 
 <pre><code class="language-typescript">class GDPRDataSubjectRights {
   // Article 15: Right of access
-  async exportUserData(userId: string): Promise&lt;any&gt; {
+  async exportUserData(userId: string): Promise<any> {
     const data = {
       profile: await db.users.findOne({ id: userId }),
       conversations: await db.conversations.find({ userId }),
@@ -667,25 +667,25 @@ echo &quot;Evidence collected: &#36;EVIDENCE_DIR&quot;</code></pre>
 await auditor.log({
 eventType: AuditEventType.DATA_EXPORT,
 userId,
-ipAddress: &#039;internal&#039;,
-userAgent: &#039;gdpr-export-service&#039;,
-resource: { type: &#039;user&#039;, id: userId },
-action: &#039;export_data&#039;,
-outcome: &#039;success&#039;,
-metadata: { gdpr_article: &#039;15&#039; }
+ipAddress: 'internal',
+userAgent: 'gdpr-export-service',
+resource: { type: 'user', id: userId },
+action: 'export_data',
+outcome: 'success',
+metadata: { gdpr_article: '15' }
 });
 
 return data;
 }
 
 // Article 17: Right to erasure
-async deleteUserData(userId: string): Promise&lt;void&gt; {
+async deleteUserData(userId: string): Promise<void> {
 const erasure = new GDPRErasureHandler();
 await erasure.processErasureRequest(userId, crypto.randomUUID());
 }
 
 // Article 20: Right to data portability
-async exportPortableData(userId: string): Promise&lt;string&gt; {
+async exportPortableData(userId: string): Promise<string> {
 const data = await this.exportUserData(userId);
 
 // Export in machine-readable format (JSON)
@@ -702,19 +702,19 @@ return JSON.stringify(data, null, 2);
 <p><strong>PHI (Protected Health Information) must never be sent to cloud APIs</strong>:</p>
 
 <pre><code class="language-typescript">class HIPAACompliantLLM {
-  async processHealthcareData(patientData: any): Promise&lt;string&gt; {
+  async processHealthcareData(patientData: any): Promise<string> {
     // ❌ HIPAA VIOLATION: Sending PHI to cloud
     // const response = await anthropic.messages.create({
-    //   model: &#039;claude-3-5-sonnet-20241022&#039;,
-    //   messages: [{ role: &#039;user&#039;, content: &#96;Analyze: &#36;{patientData}&#96; }]
+    //   model: 'claude-3-5-sonnet-20241022',
+    //   messages: [{ role: 'user', content: `Analyze: ${patientData}` }]
     // });
 
 // ✅ HIPAA COMPLIANT: Self-hosted Ollama
-const response = await fetch(&#039;http://localhost:11434/api/generate&#039;, {
-method: &#039;POST&#039;,
+const response = await fetch('http://localhost:11434/api/generate', {
+method: 'POST',
 body: JSON.stringify({
-model: &#039;llama3.3:70b&#039;,
-prompt: </code>Analyze patient data: &#36;{patientData}</code>,
+model: 'llama3.3:70b',
+prompt: </code>Analyze patient data: ${patientData}</code>,
 stream: false
 })
 });
@@ -724,13 +724,13 @@ const result = await response.json();
 // Audit log (required by HIPAA)
 await auditor.log({
 eventType: AuditEventType.CONVERSATION_CREATED,
-userId: &#039;healthcare-worker-123&#039;,
-ipAddress: &#039;10.0.0.5&#039;,
-userAgent: &#039;medical-app/1.0&#039;,
-resource: { type: &#039;patient_analysis&#039;, id: &#039;patient-456&#039; },
-action: &#039;process_phi&#039;,
-outcome: &#039;success&#039;,
-metadata: { model: &#039;llama3.3:70b&#039;, local: true }
+userId: 'healthcare-worker-123',
+ipAddress: '10.0.0.5',
+userAgent: 'medical-app/1.0',
+resource: { type: 'patient_analysis', id: 'patient-456' },
+action: 'process_phi',
+outcome: 'success',
+metadata: { model: 'llama3.3:70b', local: true }
 });
 
 return result.response;
@@ -760,7 +760,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 
 <h3>Security Checklist</h3>
 
-<pre><code class="language-markdown">&lt;h2&gt;Infrastructure Security&lt;/h2&gt;
+<pre><code class="language-markdown"><h2>Infrastructure Security</h2>
 <ul>
 <li>[ ] All services run with least privilege (non-root users)</li>
 <li>[ ] Firewall configured (UFW/iptables) with default-deny</li>
@@ -769,7 +769,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 <li>[ ] Intrusion detection system deployed (OSSEC, Fail2ban)</li>
 </ul>
 
-&lt;h2&gt;Application Security&lt;/h2&gt;
+<h2>Application Security</h2>
 <ul>
 <li>[ ] Input validation on all endpoints</li>
 <li>[ ] SQL injection prevention (parameterized queries)</li>
@@ -778,7 +778,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 <li>[ ] Rate limiting on APIs (429 responses)</li>
 </ul>
 
-&lt;h2&gt;Data Security&lt;/h2&gt;
+<h2>Data Security</h2>
 <ul>
 <li>[ ] Encryption at rest (LUKS for disks)</li>
 <li>[ ] Encryption in transit (TLS 1.3)</li>
@@ -787,7 +787,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 <li>[ ] Backups encrypted with separate key</li>
 </ul>
 
-&lt;h2&gt;Monitoring &amp; Response&lt;/h2&gt;
+<h2>Monitoring & Response</h2>
 <ul>
 <li>[ ] SIEM configured (Splunk, ELK)</li>
 <li>[ ] Intrusion alerts sent to security team</li>
@@ -807,7 +807,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 </ul>
    <pre><code class="language-typescript">await auditor.log({
      eventType: AuditEventType.AUTHENTICATION_FAILED,
-     userId: &#039;unknown&#039;,
+     userId: 'unknown',
      ipAddress,
      // ... full details
    });</code></pre>
@@ -821,7 +821,7 @@ tail -f /var/log/audit/audit.log | grep PHI_ACCESS</code></pre>
 <li><strong>Implement data retention</strong></li>
 </ul>
    <pre><code class="language-typescript">const retention = new RetentionManager();
-   setInterval(() =&gt; retention.enforceRetention(), 86400000); // Daily</code></pre>
+   setInterval(() => retention.enforceRetention(), 86400000); // Daily</code></pre>
 
 <h3>DON'T ❌</h3>
 
@@ -841,7 +841,7 @@ await db.save({ userId, messages: redacted });</code></pre>
    await db.conversations.delete({ id });
 
 // ✅ Log deletion
-await auditor.log({ eventType: &#039;conversation.deleted&#039;, ... });
+await auditor.log({ eventType: 'conversation.deleted', ... });
 await db.conversations.delete({ id });</code></pre>
 
 <hr>
@@ -901,5 +901,3 @@ await db.conversations.delete({ id });</code></pre>
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./06-self-hosted-stack.md">Self-Hosted Stack Setup</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
-`} />
-</PlaybookTemplate>

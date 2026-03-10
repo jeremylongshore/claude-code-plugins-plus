@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "MCP Server Reliability",
-  description: "Self-healing MCP servers with circuit breakers, exponential backoff, health checks, and automatic recovery. Production-grade Model Context Protocol implementations.",
-  category: "Infrastructure",
-  wordCount: 3500,
-  slug: "03-mcp-reliability"
-};
+title: "MCP Server Reliability"
+description: "Self-healing MCP servers with circuit breakers, exponential backoff, health checks, and automatic recovery. Production-grade Model Context Protocol implementations."
+category: "Infrastructure"
+wordCount: 3500
+readTime: 18
+featured: false
+order: 3
+tags: ["mcp", "reliability", "circuit-breaker", "health-checks", "self-healing"]
+prerequisites: []
+relatedPlaybooks: ["01-multi-agent-rate-limits", "02-cost-caps"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Model Context Protocol Developers</strong></p>
+<p><strong>Production Playbook for Model Context Protocol Developers</strong></p>
 
 <p>Building reliable MCP (Model Context Protocol) servers is critical for production Claude Code deployments. This playbook provides battle-tested patterns for health monitoring, graceful degradation, connection management, and incident response for MCP server infrastructure.</p>
 
@@ -31,13 +31,13 @@ const meta = {
 <h3>MCP Server Lifecycle</h3>
 
 <pre><code class="language-typescript">// packages/mcp/example-server/src/index.ts
-import { Server } from &#039;@modelcontextprotocol/sdk/server/index.js&#039;;
-import { StdioServerTransport } from &#039;@modelcontextprotocol/sdk/server/stdio.js&#039;;
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 
 const server = new Server(
 {
-name: &#039;example-server&#039;,
-version: &#039;1.0.0&#039;,
+name: 'example-server',
+version: '1.0.0',
 },
 {
 capabilities: {
@@ -51,15 +51,15 @@ resources: {},
 server.setRequestHandler(ListToolsRequestSchema, async () =&gt; ({
 tools: [
 {
-name: &#039;analyze-code&#039;,
-description: &#039;Analyze code quality&#039;,
+name: 'analyze-code',
+description: 'Analyze code quality',
 inputSchema: {
-type: &#039;object&#039;,
+type: 'object',
 properties: {
-code: { type: &#039;string&#039; },
-language: { type: &#039;string&#039; }
+code: { type: 'string' },
+language: { type: 'string' }
 },
-required: [&#039;code&#039;]
+required: ['code']
 }
 }
 ]
@@ -67,14 +67,14 @@ required: [&#039;code&#039;]
 
 // 2. Tool Execution
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;analyze-code&#039;) {
+if (request.params.name === 'analyze-code') {
 return {
 content: [
-{ type: &#039;text&#039;, text: &#039;Analysis result...&#039; }
+{ type: 'text', text: 'Analysis result...' }
 ]
 };
 }
-throw new Error(&#039;Unknown tool&#039;);
+throw new Error('Unknown tool');
 });
 
 // 3. Start Server
@@ -128,7 +128,7 @@ api: checks[1].healthy,
 memory: checks[2].healthy
 },
 uptime: Date.now() - this.startTime,
-version: &#039;1.0.0&#039;
+version: '1.0.0'
 };
 
 this.lastCheck = status;
@@ -138,17 +138,17 @@ return status;
 private async checkDatabase(): Promise&lt;{ healthy: boolean }&gt; {
 try {
 // Example: SQLite query
-await db.get(&#039;SELECT 1&#039;);
+await db.get('SELECT 1');
 return { healthy: true };
 } catch (error) {
-console.error(&#039;Database health check failed:&#039;, error);
+console.error('Database health check failed:', error);
 return { healthy: false };
 }
 }
 
 private async checkExternalAPI(): Promise&lt;{ healthy: boolean }&gt; {
 try {
-const response = await fetch(&#039;https://api.example.com/health&#039;, {
+const response = await fetch('https://api.example.com/health', {
 timeout: 5000
 });
 return { healthy: response.ok };
@@ -159,7 +159,7 @@ return { healthy: false };
 
 private async checkMemory(): Promise&lt;{ healthy: boolean }&gt; {
 const used = process.memoryUsage();
-const heapLimit = 512 <em> 1024 </em> 1024; // 512MB
+const heapLimit = 512 * 1024 * 1024; // 512MB
 return { healthy: used.heapUsed &lt; heapLimit };
 }
 
@@ -175,19 +175,19 @@ const healthChecker = new HealthChecker();
 server.setRequestHandler(ListToolsRequestSchema, async () =&gt; ({
 tools: [
 {
-name: &#039;health-check&#039;,
-description: &#039;Check MCP server health&#039;,
-inputSchema: { type: &#039;object&#039;, properties: {} }
+name: 'health-check',
+description: 'Check MCP server health',
+inputSchema: { type: 'object', properties: {} }
 }
 ]
 }));
 
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;health-check&#039;) {
+if (request.params.name === 'health-check') {
 const status = await healthChecker.check();
 return {
 content: [{
-type: &#039;text&#039;,
+type: 'text',
 text: JSON.stringify(status, null, 2)
 }]
 };
@@ -197,7 +197,7 @@ text: JSON.stringify(status, null, 2)
 <h3>Strategy 2: Watchdog Process</h3>
 
 <pre><code class="language-typescript">// src/watchdog.ts
-import { spawn } from &#039;child_process&#039;;
+import { spawn } from 'child_process';
 
 class MCPWatchdog {
 private process: any;
@@ -207,25 +207,25 @@ private restartWindow = 60000; // 1 minute
 private restartTimes: number[] = [];
 
 async start(serverPath: string) {
-this.process = spawn(&#039;node&#039;, [serverPath], {
-stdio: [&#039;pipe&#039;, &#039;pipe&#039;, &#039;pipe&#039;]
+this.process = spawn('node', [serverPath], {
+stdio: ['pipe', 'pipe', 'pipe']
 });
 
-this.process.on(&#039;exit&#039;, (code: number) =&gt; {
-console.error(&#96;MCP server exited with code &#36;{code}&#96;);
+this.process.on('exit', (code: number) =&gt; {
+console.error(`MCP server exited with code ${code}`);
 this.handleExit();
 });
 
-this.process.on(&#039;error&#039;, (error: Error) =&gt; {
-console.error(&#039;MCP server error:&#039;, error);
+this.process.on('error', (error: Error) =&gt; {
+console.error('MCP server error:', error);
 this.handleExit();
 });
 
 // Monitor stdout for health
-this.process.stdout.on(&#039;data&#039;, (data: Buffer) =&gt; {
+this.process.stdout.on('data', (data: Buffer) =&gt; {
 const message = data.toString();
-if (message.includes(&#039;ERROR&#039;)) {
-console.warn(&#039;MCP server error detected:&#039;, message);
+if (message.includes('ERROR')) {
+console.warn('MCP server error detected:', message);
 }
 });
 }
@@ -241,12 +241,12 @@ t =&gt; now - t &lt; this.restartWindow
 
 if (this.restartTimes.length &gt;= this.maxRestarts) {
 console.error(
-&#96;MCP server crashed &#36;{this.maxRestarts} times in &#36;{this.restartWindow}ms. Giving up.&#96;
+`MCP server crashed ${this.maxRestarts} times in ${this.restartWindow}ms. Giving up.`
 );
 process.exit(1);
 }
 
-console.log(&#96;Restarting MCP server (attempt &#36;{this.restartTimes.length}/&#36;{this.maxRestarts})&#96;);
+console.log(`Restarting MCP server (attempt ${this.restartTimes.length}/${this.maxRestarts})`);
 setTimeout(() =&gt; this.start(this.process.spawnfile), 1000);
 }
 
@@ -264,8 +264,8 @@ this.process.kill();
 <h3>Connection Pooling for Database Access</h3>
 
 <pre><code class="language-typescript">// src/storage.ts
-import sqlite3 from &#039;sqlite3&#039;;
-import { open, Database } from &#039;sqlite&#039;;
+import sqlite3 from 'sqlite3';
+import { open, Database } from 'sqlite';
 
 class ConnectionPool {
 private pool: Database[] = [];
@@ -334,13 +334,13 @@ this.inUse.clear();
 
 // Usage in tool handler
 const pool = new ConnectionPool();
-await pool.initialize(&#039;./data/metrics.db&#039;);
+await pool.initialize('./data/metrics.db');
 
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
 const db = await pool.acquire();
 try {
-const result = await db.get(&#039;SELECT * FROM metrics&#039;);
-return { content: [{ type: &#039;text&#039;, text: JSON.stringify(result) }] };
+const result = await db.get('SELECT * FROM metrics');
+return { content: [{ type: 'text', text: JSON.stringify(result) }] };
 } finally {
 pool.release(db);
 }
@@ -356,7 +356,7 @@ pool.release(db);
   ): Promise&lt;T&gt; {
     const timeout = new Promise&lt;never&gt;((_, reject) =&gt; {
       setTimeout(() =&gt; {
-        reject(new Error(&#96;&#36;{operation} timed out after &#36;{timeoutMs}ms&#96;));
+        reject(new Error(`${operation} timed out after ${timeoutMs}ms`));
       }, timeoutMs);
     });
 
@@ -371,15 +371,15 @@ try {
 const result = await timeout.withTimeout(
 expensiveOperation(),
 30000, // 30 second timeout
-&#039;Tool execution&#039;
+'Tool execution'
 );
-return { content: [{ type: &#039;text&#039;, text: result }] };
+return { content: [{ type: 'text', text: result }] };
 } catch (error) {
-if (error.message.includes(&#039;timed out&#039;)) {
+if (error.message.includes('timed out')) {
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#039;Error: Operation timed out. Please try again.&#039;
+type: 'text',
+text: 'Error: Operation timed out. Please try again.'
 }],
 isError: true
 };
@@ -408,25 +408,25 @@ fallback: () =&gt; Promise&lt;string&gt;
 try {
 const result = await primary();
 return {
-content: [{ type: &#039;text&#039;, text: result }]
+content: [{ type: 'text', text: result }]
 };
 } catch (error) {
-console.warn(&#039;Primary operation failed, using fallback:&#039;, error);
+console.warn('Primary operation failed, using fallback:', error);
 
 try {
 const result = await fallback();
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#96;⚠️ Primary method failed. Using cached/fallback data:\n\n&#36;{result}&#96;
+type: 'text',
+text: `Warning: Primary method failed. Using cached/fallback data:\n\n${result}`
 }],
 fallback: true
 };
 } catch (fallbackError) {
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#96;Error: Both primary and fallback methods failed.\nPrimary: &#36;{error.message}\nFallback: &#36;{fallbackError.message}&#96;
+type: 'text',
+text: `Error: Both primary and fallback methods failed.\nPrimary: ${error.message}\nFallback: ${fallbackError.message}`
 }],
 isError: true
 };
@@ -440,22 +440,22 @@ const degradation = new GracefulDegradation();
 const cache = new Map&lt;string, { data: any; timestamp: number }&gt;();
 
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;fetch-data&#039;) {
+if (request.params.name === 'fetch-data') {
 return await degradation.executeWithFallback(
 // Primary: Fetch from API
 async () =&gt; {
-const response = await fetch(&#039;https://api.example.com/data&#039;);
+const response = await fetch('https://api.example.com/data');
 const data = await response.json();
-cache.set(&#039;latest&#039;, { data, timestamp: Date.now() });
+cache.set('latest', { data, timestamp: Date.now() });
 return JSON.stringify(data);
 },
 // Fallback: Use cached data
 async () =&gt; {
-const cached = cache.get(&#039;latest&#039;);
-if (!cached) throw new Error(&#039;No cache available&#039;);
+const cached = cache.get('latest');
+if (!cached) throw new Error('No cache available');
 
 const age = Date.now() - cached.timestamp;
-return &#96;&#36;{JSON.stringify(cached.data)}\n\n(Cached &#36;{Math.floor(age / 1000)}s ago)&#96;;
+return `${JSON.stringify(cached.data)}\n\n(Cached ${Math.floor(age / 1000)}s ago)`;
 }
 );
 }
@@ -464,7 +464,7 @@ return &#96;&#36;{JSON.stringify(cached.data)}\n\n(Cached &#36;{Math.floor(age /
 <h3>Circuit Breaker Pattern</h3>
 
 <pre><code class="language-typescript">class CircuitBreaker {
-  private state: &#039;closed&#039; | &#039;open&#039; | &#039;half-open&#039; = &#039;closed&#039;;
+  private state: 'closed' | 'open' | 'half-open' = 'closed';
   private failures = 0;
   private lastFailure = 0;
   private successes = 0;
@@ -476,24 +476,24 @@ private halfOpenAttempts = 3
 ) {}
 
 async execute&lt;T&gt;(fn: () =&gt; Promise&lt;T&gt;): Promise&lt;T&gt; {
-if (this.state === &#039;open&#039;) {
+if (this.state === 'open') {
 if (Date.now() - this.lastFailure &gt; this.timeout) {
-console.log(&#039;Circuit breaker: Transitioning to half-open&#039;);
-this.state = &#039;half-open&#039;;
+console.log('Circuit breaker: Transitioning to half-open');
+this.state = 'half-open';
 this.successes = 0;
 } else {
-throw new Error(&#039;Circuit breaker is OPEN - service unavailable&#039;);
+throw new Error('Circuit breaker is OPEN - service unavailable');
 }
 }
 
 try {
 const result = await fn();
 
-if (this.state === &#039;half-open&#039;) {
+if (this.state === 'half-open') {
 this.successes++;
 if (this.successes &gt;= this.halfOpenAttempts) {
-console.log(&#039;Circuit breaker: Closing (recovered)&#039;);
-this.state = &#039;closed&#039;;
+console.log('Circuit breaker: Closing (recovered)');
+this.state = 'closed';
 this.failures = 0;
 }
 }
@@ -503,12 +503,12 @@ return result;
 this.failures++;
 this.lastFailure = Date.now();
 
-if (this.state === &#039;half-open&#039;) {
-console.log(&#039;Circuit breaker: Re-opening (recovery failed)&#039;);
-this.state = &#039;open&#039;;
+if (this.state === 'half-open') {
+console.log('Circuit breaker: Re-opening (recovery failed)');
+this.state = 'open';
 } else if (this.failures &gt;= this.threshold) {
-console.log(&#96;Circuit breaker: Opening (&#36;{this.failures} failures)&#96;);
-this.state = &#039;open&#039;;
+console.log(`Circuit breaker: Opening (${this.failures} failures)`);
+this.state = 'open';
 }
 
 throw error;
@@ -530,17 +530,17 @@ const breaker = new CircuitBreaker(3, 30000, 2);
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
 try {
 const result = await breaker.execute(async () =&gt; {
-const response = await fetch(&#039;https://external-api.com/data&#039;);
+const response = await fetch('https://external-api.com/data');
 return await response.json();
 });
 
-return { content: [{ type: &#039;text&#039;, text: JSON.stringify(result) }] };
+return { content: [{ type: 'text', text: JSON.stringify(result) }] };
 } catch (error) {
-if (error.message.includes(&#039;Circuit breaker is OPEN&#039;)) {
+if (error.message.includes('Circuit breaker is OPEN')) {
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#039;Service temporarily unavailable due to repeated failures. Please try again later.&#039;
+type: 'text',
+text: 'Service temporarily unavailable due to repeated failures. Please try again later.'
 }],
 isError: true
 };
@@ -601,9 +601,9 @@ return {
 tool,
 calls,
 errors,
-errorRate: errorRate.toFixed(2) + &#039;%&#039;,
-avgLatency: avgLatency.toFixed(0) + &#039;ms&#039;,
-p95Latency: this.percentile(latencies, 95).toFixed(0) + &#039;ms&#039;
+errorRate: errorRate.toFixed(2) + '%',
+avgLatency: avgLatency.toFixed(0) + 'ms',
+p95Latency: this.percentile(latencies, 95).toFixed(0) + 'ms'
 };
 });
 
@@ -635,29 +635,6 @@ const latency = Date.now() - startTime;
 metrics.recordToolCall(toolName, latency, error);
 throw error;
 }
-});
-
-// Add metrics tool
-server.setRequestHandler(ListToolsRequestSchema, async () =&gt; ({
-tools: [
-{
-name: &#039;get-metrics&#039;,
-description: &#039;Get MCP server performance metrics&#039;,
-inputSchema: { type: &#039;object&#039;, properties: {} }
-}
-]
-}));
-
-server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;get-metrics&#039;) {
-const summary = metrics.getMetrics();
-return {
-content: [{
-type: &#039;text&#039;,
-text: &#039;# MCP Server Metrics\n\n&#039; + JSON.stringify(summary, null, 2)
-}]
-};
-}
 });</code></pre>
 
 <hr>
@@ -683,31 +660,31 @@ RUN pnpm build
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-CMD node -e &quot;require(&#039;./dist/health.js&#039;).check()&quot;
+CMD node -e "require('./dist/health.js').check()"
 
 # Run server
-CMD [&quot;node&quot;, &quot;dist/index.js&quot;]</code></pre>
+CMD ["node", "dist/index.js"]</code></pre>
 
 <h3>Process Manager (PM2)</h3>
 
 <pre><code class="language-javascript">// ecosystem.config.js
 module.exports = {
   apps: [{
-    name: &#039;mcp-server&#039;,
-    script: &#039;./dist/index.js&#039;,
+    name: 'mcp-server',
+    script: './dist/index.js',
     instances: 1,
-    exec_mode: &#039;fork&#039;,
+    exec_mode: 'fork',
     autorestart: true,
     watch: false,
-    max_memory_restart: &#039;512M&#039;,
+    max_memory_restart: '512M',
     env: {
-      NODE_ENV: &#039;production&#039;
+      NODE_ENV: 'production'
     },
-    error_file: &#039;./logs/error.log&#039;,
-    out_file: &#039;./logs/out.log&#039;,
-    log_date_format: &#039;YYYY-MM-DD HH:mm:ss Z&#039;,
+    error_file: './logs/error.log',
+    out_file: './logs/out.log',
+    log_date_format: 'YYYY-MM-DD HH:mm:ss Z',
     merge_logs: true,
-    min_uptime: &#039;10s&#039;,
+    min_uptime: '10s',
     max_restarts: 10
   }]
 };</code></pre>
@@ -721,16 +698,16 @@ module.exports = {
 <pre><code class="language-typescript">// Real-world plugin: conversational-api-debugger
 // Handles API testing with health monitoring and circuit breakers
 
-import { Server } from &#039;@modelcontextprotocol/sdk/server/index.js&#039;;
-import { CircuitBreaker } from &#039;./circuit-breaker.js&#039;;
-import { MetricsCollector } from &#039;./metrics.js&#039;;
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { CircuitBreaker } from './circuit-breaker.js';
+import { MetricsCollector } from './metrics.js';
 
-const server = new Server({ name: &#039;api-debugger&#039;, version: &#039;1.0.0&#039; });
+const server = new Server({ name: 'api-debugger', version: '1.0.0' });
 const breaker = new CircuitBreaker(3, 30000);
 const metrics = new MetricsCollector();
 
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;test-api&#039;) {
+if (request.params.name === 'test-api') {
 const startTime = Date.now();
 const { url, method, headers } = request.params.arguments;
 
@@ -751,23 +728,23 @@ body: await response.text()
 });
 
 const latency = Date.now() - startTime;
-metrics.recordToolCall(&#039;test-api&#039;, latency);
+metrics.recordToolCall('test-api', latency);
 
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#96;✓ API Response (&#36;{latency}ms)\n\n&#36;{JSON.stringify(result, null, 2)}&#96;
+type: 'text',
+text: `API Response (${latency}ms)\n\n${JSON.stringify(result, null, 2)}`
 }]
 };
 } catch (error) {
 const latency = Date.now() - startTime;
-metrics.recordToolCall(&#039;test-api&#039;, latency, error);
+metrics.recordToolCall('test-api', latency, error);
 
-if (error.message.includes(&#039;Circuit breaker is OPEN&#039;)) {
+if (error.message.includes('Circuit breaker is OPEN')) {
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#96;⚠️ API temporarily unavailable (circuit breaker triggered)\n\nThe API has failed &#36;{breaker.getState().failures} times. Waiting 30s before retry.&#96;
+type: 'text',
+text: `API temporarily unavailable (circuit breaker triggered)\n\nThe API has failed ${breaker.getState().failures} times. Waiting 30s before retry.`
 }],
 isError: true
 };
@@ -775,8 +752,8 @@ isError: true
 
 return {
 content: [{
-type: &#039;text&#039;,
-text: &#96;❌ API Error (&#36;{latency}ms)\n\n&#36;{error.message}&#96;
+type: 'text',
+text: `API Error (${latency}ms)\n\n${error.message}`
 }],
 isError: true
 };
@@ -805,7 +782,7 @@ const degradation = new GracefulDegradation();
 const cache = new Map&lt;string, { data: any; timestamp: number }&gt;();
 
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;audit-project&#039;) {
+if (request.params.name === 'audit-project') {
 const { projectPath } = request.params.arguments;
 
 return await degradation.executeWithFallback(
@@ -814,7 +791,7 @@ async () =&gt; {
 const ast = await parseProjectAST(projectPath);
 const issues = await analyzeAST(ast);
 const result = {
-method: &#039;full-ast-analysis&#039;,
+method: 'full-ast-analysis',
 issues: issues.length,
 details: issues
 };
@@ -828,16 +805,16 @@ const cached = cache.get(projectPath);
 
 if (cached &amp;&amp; Date.now() - cached.timestamp &lt; 3600000) {
 // Use cache if less than 1 hour old
-return &#96;&#36;{JSON.stringify(cached.data, null, 2)}\n\n(Cached &#36;{Math.floor((Date.now() - cached.timestamp) / 1000)}s ago)&#96;;
+return `${JSON.stringify(cached.data, null, 2)}\n\n(Cached ${Math.floor((Date.now() - cached.timestamp) / 1000)}s ago)`;
 }
 
 // Simple grep-based scan
 const issues = await simplePatternScan(projectPath);
 return JSON.stringify({
-method: &#039;pattern-scan-fallback&#039;,
+method: 'pattern-scan-fallback',
 issues: issues.length,
 details: issues,
-note: &#039;Full AST analysis unavailable, using pattern matching&#039;
+note: 'Full AST analysis unavailable, using pattern matching'
 }, null, 2);
 }
 );
@@ -856,7 +833,7 @@ note: &#039;Full AST analysis unavailable, using pattern matching&#039;
 
 <h2>Best Practices</h2>
 
-<h3>DO ✅</h3>
+<h3>DO</h3>
 
 <ul>
 <li><strong>Implement comprehensive health checks</strong></li>
@@ -866,7 +843,7 @@ note: &#039;Full AST analysis unavailable, using pattern matching&#039;
    setInterval(async () =&gt; {
      const status = await healthChecker.check();
      if (!status.healthy) {
-       console.error(&#039;Health check failed:&#039;, status);
+       console.error('Health check failed:', status);
      }
    }, 30000); // Every 30 seconds</code></pre>
 
@@ -875,12 +852,12 @@ note: &#039;Full AST analysis unavailable, using pattern matching&#039;
 </ul>
    <pre><code class="language-typescript">// Avoid connection exhaustion
    const pool = new ConnectionPool();
-   await pool.initialize(&#039;./data.db&#039;);
+   await pool.initialize('./data.db');
 
 // Always release connections
 const db = await pool.acquire();
 try {
-await db.run(&#039;INSERT INTO logs VALUES (?)&#039;);
+await db.run('INSERT INTO logs VALUES (?)');
 } finally {
 pool.release(db); // Critical!
 }</code></pre>
@@ -890,9 +867,9 @@ pool.release(db); // Critical!
 </ul>
    <pre><code class="language-typescript">const timeout = new TimeoutManager();
    const result = await timeout.withTimeout(
-     fetch(&#039;https://api.example.com&#039;),
+     fetch('https://api.example.com'),
      5000, // 5 second max
-     &#039;External API call&#039;
+     'External API call'
    );</code></pre>
 
 <ul>
@@ -926,41 +903,41 @@ console.log(JSON.stringify(summary));</code></pre>
 <li><strong>Log stderr separately from stdout</strong></li>
 </ul>
    <pre><code class="language-typescript">// MCP uses stdout for protocol, stderr for logs
-   console.error(&#039;Error occurred:&#039;, error); // ✅ stderr
-   console.log(&#039;Result:&#039;, data);            // ❌ breaks MCP</code></pre>
+   console.error('Error occurred:', error); // stderr
+   console.log('Result:', data);            // breaks MCP</code></pre>
 
 <ul>
 <li><strong>Implement structured logging</strong></li>
 </ul>
    <pre><code class="language-typescript">const logger = {
      error: (msg: string, meta?: any) =&gt; {
-       console.error(JSON.stringify({ level: &#039;error&#039;, message: msg, ...meta }));
+       console.error(JSON.stringify({ level: 'error', message: msg, ...meta }));
      }
    };</code></pre>
 
-<h3>DON'T ❌</h3>
+<h3>DON'T</h3>
 
 <ul>
 <li><strong>Don't write to stdout except MCP responses</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ Breaks MCP protocol
-   console.log(&#039;Debug message&#039;);
+   <pre><code class="language-typescript">// Bad: Breaks MCP protocol
+   console.log('Debug message');
 
-// ✅ Use stderr
-console.error(&#039;Debug message&#039;);</code></pre>
+// Good: Use stderr
+console.error('Debug message');</code></pre>
 
 <ul>
 <li><strong>Don't hold database connections indefinitely</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ Connection leak
+   <pre><code class="language-typescript">// Bad: Connection leak
    const db = await pool.acquire();
-   await db.get(&#039;SELECT * FROM data&#039;);
+   await db.get('SELECT * FROM data');
    // Never released!
 
-// ✅ Always use try/finally
+// Good: Always use try/finally
 const db = await pool.acquire();
 try {
-await db.get(&#039;SELECT * FROM data&#039;);
+await db.get('SELECT * FROM data');
 } finally {
 pool.release(db);
 }</code></pre>
@@ -968,50 +945,50 @@ pool.release(db);
 <ul>
 <li><strong>Don't ignore timeout errors</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ Silent failure
+   <pre><code class="language-typescript">// Bad: Silent failure
    try {
      await expensiveOperation();
    } catch (error) {
      // Error swallowed
    }
 
-// ✅ Log and return error
+// Good: Log and return error
 catch (error) {
-console.error(&#039;Operation failed:&#039;, error);
-return { content: [{ type: &#039;text&#039;, text: &#039;Error: &#039; + error.message }], isError: true };
+console.error('Operation failed:', error);
+return { content: [{ type: 'text', text: 'Error: ' + error.message }], isError: true };
 }</code></pre>
 
 <ul>
 <li><strong>Don't skip health monitoring in production</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ No visibility
+   <pre><code class="language-typescript">// Bad: No visibility
    await server.connect(transport);
 
-// ✅ Add health check tool
+// Good: Add health check tool
 server.setRequestHandler(CallToolRequestSchema, async (request) =&gt; {
-if (request.params.name === &#039;health-check&#039;) {
-return { content: [{ type: &#039;text&#039;, text: JSON.stringify(await healthChecker.check()) }] };
+if (request.params.name === 'health-check') {
+return { content: [{ type: 'text', text: JSON.stringify(await healthChecker.check()) }] };
 }
 });</code></pre>
 
 <ul>
 <li><strong>Don't use synchronous file I/O</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ Blocks event loop
-   const data = fs.readFileSync(&#039;./data.json&#039;);
+   <pre><code class="language-typescript">// Bad: Blocks event loop
+   const data = fs.readFileSync('./data.json');
 
-// ✅ Async
-const data = await fs.promises.readFile(&#039;./data.json&#039;);</code></pre>
+// Good: Async
+const data = await fs.promises.readFile('./data.json');</code></pre>
 
 <ul>
 <li><strong>Don't restart on every error</strong></li>
 </ul>
-   <pre><code class="language-typescript">// ❌ Restart loop
-   process.on(&#039;uncaughtException&#039;, () =&gt; {
+   <pre><code class="language-typescript">// Bad: Restart loop
+   process.on('uncaughtException', () =&gt; {
      process.exit(1); // PM2 restarts immediately
    });
 
-// ✅ Circuit breaker + graceful degradation
+// Good: Circuit breaker + graceful degradation
 try {
 await operation();
 } catch (error) {
@@ -1041,11 +1018,11 @@ pnpm start
 # HTTP API: http://localhost:3333/api/status</code></pre>
 
 <p><strong>Monitor MCP Server Events</strong>:</p>
-<pre><code class="language-typescript">const ws = new WebSocket(&#039;ws://localhost:3456&#039;);
+<pre><code class="language-typescript">const ws = new WebSocket('ws://localhost:3456');
 ws.onmessage = (event) =&gt; {
   const data = JSON.parse(event.data);
-  if (data.type === &#039;plugin.activation&#039;) {
-    console.log(&#96;MCP server &#36;{data.pluginName} activated&#96;);
+  if (data.type === 'plugin.activation') {
+    console.log(`MCP server ${data.pluginName} activated`);
   }
 };</code></pre>
 
@@ -1103,5 +1080,3 @@ ws.onmessage = (event) =&gt; {
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./01-multi-agent-rate-limits.md">Multi-Agent Rate Limits</a>, <a href="./02-cost-caps.md">Cost Caps & Budget Management</a></p>
-`} />
-</PlaybookTemplate>

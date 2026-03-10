@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Progressive Enhancement Patterns",
-  description: "Safe AI feature rollout strategies. Feature flags (0% → 100%), A/B testing, canary deployments, graceful degradation, and automated rollback on failures.",
-  category: "Operations",
-  wordCount: 5500,
-  slug: "10-progressive-enhancement"
-};
+title: "Progressive Enhancement Patterns"
+description: "Safe AI feature rollout strategies. Feature flags (0% → 100%), A/B testing, canary deployments, graceful degradation, and automated rollback on failures."
+category: "Operations"
+wordCount: 5500
+readTime: 28
+featured: false
+order: 10
+tags: ["feature-flags", "a-b-testing", "canary", "rollout", "degradation"]
+prerequisites: []
+relatedPlaybooks: ["02-cost-caps", "05-incident-debugging"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Product Engineers and SREs</strong></p>
+<p><strong>Production Playbook for Product Engineers and SREs</strong></p>
 
 <p>Rolling out AI features requires progressive enhancement strategies to minimize risk, gather feedback, and ensure graceful degradation. This playbook provides feature flag implementation, A/B testing frameworks, canary deployment patterns, and fallback strategies for Claude Code AI features.</p>
 
@@ -20,17 +20,17 @@ const meta = {
 <h3>Rollout Phases</h3>
 
 <pre><code class="language-mermaid">graph LR
-    A[Development] --&gt; B[Internal Alpha]
-    B --&gt; C[Canary 1%]
-    C --&gt; D[Gradual 5%]
-    D --&gt; E[Gradual 25%]
-    E --&gt; F[Gradual 50%]
-    F --&gt; G[Full 100%]
+    A[Development] --> B[Internal Alpha]
+    B --> C[Canary 1%]
+    C --> D[Gradual 5%]
+    D --> E[Gradual 25%]
+    E --> F[Gradual 50%]
+    F --> G[Full 100%]
 
-<p>G -.Rollback.-&gt; F</p>
-<p>F -.Rollback.-&gt; E</p>
-<p>E -.Rollback.-&gt; D</p>
-<p>D -.Rollback.-&gt; C</code></pre></p>
+<p>G -.Rollback.-> F</p>
+<p>F -.Rollback.-> E</p>
+<p>E -.Rollback.-> D</p>
+<p>D -.Rollback.-> C</code></pre></p>
 
 <p><strong>Phase Durations</strong> (for SEV-2 or lower changes):</p>
 <ul>
@@ -58,10 +58,10 @@ const meta = {
 <h3>Feature Flag Implementation</h3>
 
 <pre><code class="language-typescript">enum FeatureFlag {
-  AI_CODE_REVIEW = &#039;ai_code_review&#039;,
-  OLLAMA_MIGRATION = &#039;ollama_migration&#039;,
-  ADVANCED_ANALYTICS = &#039;advanced_analytics&#039;,
-  EXPERIMENTAL_AGENT = &#039;experimental_agent&#039;
+  AI_CODE_REVIEW = 'ai_code_review',
+  OLLAMA_MIGRATION = 'ollama_migration',
+  ADVANCED_ANALYTICS = 'advanced_analytics',
+  EXPERIMENTAL_AGENT = 'experimental_agent'
 }
 
 <p>interface FeatureFlagConfig {</p>
@@ -74,14 +74,14 @@ const meta = {
 <p>}</p>
 
 <p>class FeatureFlagManager {</p>
-<p>private flags: Map&lt;FeatureFlag, FeatureFlagConfig&gt; = new Map();</p>
+<p>private flags: Map<FeatureFlag, FeatureFlagConfig> = new Map();</p>
 
 <p>constructor() {</p>
 <p>// Load from database or config file</p>
 <p>this.loadFlags();</p>
 <p>}</p>
 
-<p>async isEnabled(flag: FeatureFlag, userId: string): Promise&lt;boolean&gt; {</p>
+<p>async isEnabled(flag: FeatureFlag, userId: string): Promise<boolean> {</p>
 <p>const config = this.flags.get(flag);</p>
 <p>if (!config) return false;</p>
 
@@ -97,8 +97,8 @@ const meta = {
 
 <p>// Time-based gating</p>
 <p>const now = Date.now();</p>
-<p>if (config.startDate &amp;&amp; now &lt; config.startDate) return false;</p>
-<p>if (config.endDate &amp;&amp; now &gt; config.endDate) return false;</p>
+<p>if (config.startDate && now < config.startDate) return false;</p>
+<p>if (config.endDate && now > config.endDate) return false;</p>
 
 <p>// Percentage rollout (deterministic based on user ID)</p>
 <p>if (!config.enabled) return false;</p>
@@ -106,34 +106,34 @@ const meta = {
 <p>const hash = this.hashUserId(userId);</p>
 <p>const userPercentile = (hash % 100) + 1;  // 1-100</p>
 
-<p>return userPercentile &lt;= config.rolloutPercentage;</p>
+<p>return userPercentile <= config.rolloutPercentage;</p>
 <p>}</p>
 
-<p>async setFlag(flag: FeatureFlag, config: FeatureFlagConfig): Promise&lt;void&gt; {</p>
+<p>async setFlag(flag: FeatureFlag, config: FeatureFlagConfig): Promise<void> {</p>
 <p>this.flags.set(flag, config);</p>
 <p>await this.saveFlags();</p>
 <p>}</p>
 
-<p>async incrementRollout(flag: FeatureFlag, step: number = 5): Promise&lt;void&gt; {</p>
+<p>async incrementRollout(flag: FeatureFlag, step: number = 5): Promise<void> {</p>
 <p>const config = this.flags.get(flag);</p>
-<p>if (!config) throw new Error(<code>Flag not found: &#36;{flag}</code>);</p>
+<p>if (!config) throw new Error(<code>Flag not found: ${flag}</code>);</p>
 
 <p>config.rolloutPercentage = Math.min(100, config.rolloutPercentage + step);</p>
 <p>await this.setFlag(flag, config);</p>
 
-<p>console.log(<code>🚀 Increased &#36;{flag} rollout to &#36;{config.rolloutPercentage}%</code>);</p>
+<p>console.log(<code>🚀 Increased ${flag} rollout to ${config.rolloutPercentage}%</code>);</p>
 <p>}</p>
 
 <p>private hashUserId(userId: string): number {</p>
 <p>let hash = 0;</p>
-<p>for (let i = 0; i &lt; userId.length; i++) {</p>
-<p>hash = ((hash &lt;&lt; 5) - hash) + userId.charCodeAt(i);</p>
-<p>hash = hash &amp; hash;  // Convert to 32-bit integer</p>
+<p>for (let i = 0; i < userId.length; i++) {</p>
+<p>hash = ((hash << 5) - hash) + userId.charCodeAt(i);</p>
+<p>hash = hash & hash;  // Convert to 32-bit integer</p>
 <p>}</p>
 <p>return Math.abs(hash);</p>
 <p>}</p>
 
-<p>private async loadFlags(): Promise&lt;void&gt; {</p>
+<p>private async loadFlags(): Promise<void> {</p>
 <p>// Load from database or config file</p>
 <p>const configs = await db.featureFlags.find();</p>
 <p>for (const config of configs) {</p>
@@ -141,7 +141,7 @@ const meta = {
 <p>}</p>
 <p>}</p>
 
-<p>private async saveFlags(): Promise&lt;void&gt; {</p>
+<p>private async saveFlags(): Promise<void> {</p>
 <p>for (const [flag, config] of this.flags) {</p>
 <p>await db.featureFlags.upsert({ flag, config });</p>
 <p>}</p>
@@ -159,7 +159,7 @@ const meta = {
 <p>});</p>
 
 <p>// Check flag before using feature</p>
-<p>async function reviewCode(userId: string, code: string): Promise&lt;string&gt; {</p>
+<p>async function reviewCode(userId: string, code: string): Promise<string> {</p>
 <p>const useAI = await flags.isEnabled(FeatureFlag.AI_CODE_REVIEW, userId);</p>
 
 <p>if (useAI) {</p>
@@ -172,7 +172,7 @@ const meta = {
 <p>}</p>
 
 <p>// Gradual rollout (automated)</p>
-<p>setInterval(async () =&gt; {</p>
+<p>setInterval(async () => {</p>
 <p>await flags.incrementRollout(FeatureFlag.AI_CODE_REVIEW, 5);  // +5% every hour</p>
 <p>}, 3600000);</code></pre></p>
 
@@ -183,8 +183,8 @@ const meta = {
 <h3>A/B Test Framework</h3>
 
 <pre><code class="language-typescript">enum Variant {
-  CONTROL = &#039;control&#039;,
-  TREATMENT = &#039;treatment&#039;
+  CONTROL = 'control',
+  TREATMENT = 'treatment'
 }
 
 <p>interface ABTest {</p>
@@ -193,19 +193,19 @@ const meta = {
 <p>endDate: number;</p>
 <p>controlPercentage: number;  // e.g., 50</p>
 <p>treatmentPercentage: number; // e.g., 50</p>
-<p>metrics: string[];  // [&#039;conversion_rate&#039;, &#039;latency&#039;, &#039;satisfaction&#039;]</p>
+<p>metrics: string[];  // ['conversion_rate', 'latency', 'satisfaction']</p>
 <p>}</p>
 
 <p>class ABTestManager {</p>
-<p>private tests: Map&lt;string, ABTest&gt; = new Map();</p>
+<p>private tests: Map<string, ABTest> = new Map();</p>
 
-<p>async assignVariant(testName: string, userId: string): Promise&lt;Variant&gt; {</p>
+<p>async assignVariant(testName: string, userId: string): Promise<Variant> {</p>
 <p>const test = this.tests.get(testName);</p>
-<p>if (!test) throw new Error(<code>Test not found: &#36;{testName}</code>);</p>
+<p>if (!test) throw new Error(<code>Test not found: ${testName}</code>);</p>
 
 <p>// Check if test is active</p>
 <p>const now = Date.now();</p>
-<p>if (now &lt; test.startDate || now &gt; test.endDate) {</p>
+<p>if (now < test.startDate || now > test.endDate) {</p>
 <p>return Variant.CONTROL;</p>
 <p>}</p>
 
@@ -213,16 +213,16 @@ const meta = {
 <p>const hash = this.hashUserId(userId);</p>
 <p>const percentile = (hash % 100) + 1;</p>
 
-<p>if (percentile &lt;= test.controlPercentage) {</p>
+<p>if (percentile <= test.controlPercentage) {</p>
 <p>return Variant.CONTROL;</p>
-<p>} else if (percentile &lt;= test.controlPercentage + test.treatmentPercentage) {</p>
+<p>} else if (percentile <= test.controlPercentage + test.treatmentPercentage) {</p>
 <p>return Variant.TREATMENT;</p>
 <p>} else {</p>
 <p>return Variant.CONTROL;</p>
 <p>}</p>
 <p>}</p>
 
-<p>async recordMetric(testName: string, userId: string, metric: string, value: number): Promise&lt;void&gt; {</p>
+<p>async recordMetric(testName: string, userId: string, metric: string, value: number): Promise<void> {</p>
 <p>const variant = await this.assignVariant(testName, userId);</p>
 
 <p>await db.abTestMetrics.insert({</p>
@@ -235,15 +235,15 @@ const meta = {
 <p>});</p>
 <p>}</p>
 
-<p>async analyzeResults(testName: string): Promise&lt;{</p>
-<p>control: Record&lt;string, number&gt;;</p>
-<p>treatment: Record&lt;string, number&gt;;</p>
+<p>async analyzeResults(testName: string): Promise<{</p>
+<p>control: Record<string, number>;</p>
+<p>treatment: Record<string, number>;</p>
 <p>significant: boolean;</p>
-<p>}&gt; {</p>
+<p>}> {</p>
 <p>const metrics = await db.abTestMetrics.find({ test: testName });</p>
 
-<p>const controlMetrics = metrics.filter(m =&gt; m.variant === Variant.CONTROL);</p>
-<p>const treatmentMetrics = metrics.filter(m =&gt; m.variant === Variant.TREATMENT);</p>
+<p>const controlMetrics = metrics.filter(m => m.variant === Variant.CONTROL);</p>
+<p>const treatmentMetrics = metrics.filter(m => m.variant === Variant.TREATMENT);</p>
 
 <p>const controlAvg = this.calculateAverages(controlMetrics);</p>
 <p>const treatmentAvg = this.calculateAverages(treatmentMetrics);</p>
@@ -258,20 +258,20 @@ const meta = {
 <p>};</p>
 <p>}</p>
 
-<p>private calculateAverages(metrics: any[]): Record&lt;string, number&gt; {</p>
-<p>const grouped = this.groupBy(metrics, &#039;metric&#039;);</p>
-<p>const averages: Record&lt;string, number&gt; = {};</p>
+<p>private calculateAverages(metrics: any[]): Record<string, number> {</p>
+<p>const grouped = this.groupBy(metrics, 'metric');</p>
+<p>const averages: Record<string, number> = {};</p>
 
 <p>for (const [metric, values] of Object.entries(grouped)) {</p>
-<p>const sum = values.reduce((acc: number, v: any) =&gt; acc + v.value, 0);</p>
+<p>const sum = values.reduce((acc: number, v: any) => acc + v.value, 0);</p>
 <p>averages[metric] = sum / values.length;</p>
 <p>}</p>
 
 <p>return averages;</p>
 <p>}</p>
 
-<p>private groupBy(items: any[], key: string): Record&lt;string, any[]&gt; {</p>
-<p>return items.reduce((acc, item) =&gt; {</p>
+<p>private groupBy(items: any[], key: string): Record<string, any[]> {</p>
+<p>return items.reduce((acc, item) => {</p>
 <p>const groupKey = item[key];</p>
 <p>if (!acc[groupKey]) acc[groupKey] = [];</p>
 <p>acc[groupKey].push(item);</p>
@@ -281,14 +281,14 @@ const meta = {
 
 <p>private checkSignificance(control: any[], treatment: any[]): boolean {</p>
 <p>// Simplified: Check if sample sizes are sufficient</p>
-<p>return control.length &gt;= 100 &amp;&amp; treatment.length &gt;= 100;</p>
+<p>return control.length >= 100 && treatment.length >= 100;</p>
 <p>}</p>
 
 <p>private hashUserId(userId: string): number {</p>
 <p>let hash = 0;</p>
-<p>for (let i = 0; i &lt; userId.length; i++) {</p>
-<p>hash = ((hash &lt;&lt; 5) - hash) + userId.charCodeAt(i);</p>
-<p>hash = hash &amp; hash;</p>
+<p>for (let i = 0; i < userId.length; i++) {</p>
+<p>hash = ((hash << 5) - hash) + userId.charCodeAt(i);</p>
+<p>hash = hash & hash;</p>
 <p>}</p>
 <p>return Math.abs(hash);</p>
 <p>}</p>
@@ -300,17 +300,17 @@ const meta = {
 
 <p>// Create A/B test: Claude Sonnet vs Ollama Llama</p>
 <p>await abTest.createTest({</p>
-<p>name: &#039;ollama-vs-claude&#039;,</p>
+<p>name: 'ollama-vs-claude',</p>
 <p>startDate: Date.now(),</p>
 <p>endDate: Date.now() + 7 * 86400000,  // 7 days</p>
 <p>controlPercentage: 50,    // Claude (control)</p>
 <p>treatmentPercentage: 50,  // Ollama (treatment)</p>
-<p>metrics: [&#039;latency&#039;, &#039;quality&#039;, &#039;cost&#039;]</p>
+<p>metrics: ['latency', 'quality', 'cost']</p>
 <p>});</p>
 
 <p>// Assign variant and execute</p>
-<p>async function generateCode(userId: string, prompt: string): Promise&lt;string&gt; {</p>
-<p>const variant = await abTest.assignVariant(&#039;ollama-vs-claude&#039;, userId);</p>
+<p>async function generateCode(userId: string, prompt: string): Promise<string> {</p>
+<p>const variant = await abTest.assignVariant('ollama-vs-claude', userId);</p>
 
 <p>const start = Date.now();</p>
 <p>let result: string;</p>
@@ -319,31 +319,31 @@ const meta = {
 <p>if (variant === Variant.CONTROL) {</p>
 <p>// Control: Claude 3.5 Sonnet</p>
 <p>result = await callClaude(prompt);</p>
-<p>cost = 0.015;  // &#36;0.015 per request (example)</p>
+<p>cost = 0.015;  // $0.015 per request (example)</p>
 <p>} else {</p>
 <p>// Treatment: Ollama Llama 3.3 70B</p>
-<p>result = await callOllama(prompt, &#039;llama3.3:70b&#039;);</p>
+<p>result = await callOllama(prompt, 'llama3.3:70b');</p>
 <p>cost = 0;  // Free</p>
 <p>}</p>
 
 <p>const latency = Date.now() - start;</p>
 
 <p>// Record metrics</p>
-<p>await abTest.recordMetric(&#039;ollama-vs-claude&#039;, userId, &#039;latency&#039;, latency);</p>
-<p>await abTest.recordMetric(&#039;ollama-vs-claude&#039;, userId, &#039;cost&#039;, cost);</p>
+<p>await abTest.recordMetric('ollama-vs-claude', userId, 'latency', latency);</p>
+<p>await abTest.recordMetric('ollama-vs-claude', userId, 'cost', cost);</p>
 
 <p>return result;</p>
 <p>}</p>
 
 <p>// Analyze after 7 days</p>
-<p>const results = await abTest.analyzeResults(&#039;ollama-vs-claude&#039;);</p>
-<p>console.log(&#039;Control (Claude):&#039;, results.control);</p>
+<p>const results = await abTest.analyzeResults('ollama-vs-claude');</p>
+<p>console.log('Control (Claude):', results.control);</p>
 <p>// { latency: 4500, cost: 0.015, quality: 9.2 }</p>
 
-<p>console.log(&#039;Treatment (Ollama):&#039;, results.treatment);</p>
+<p>console.log('Treatment (Ollama):', results.treatment);</p>
 <p>// { latency: 3800, cost: 0, quality: 8.5 }</p>
 
-<p>console.log(&#039;Statistically significant?&#039;, results.significant);</p>
+<p>console.log('Statistically significant?', results.significant);</p>
 <p>// true (if sample size sufficient)</code></pre></p>
 
 <hr>
@@ -363,8 +363,8 @@ const meta = {
 }
 
 <p>class CanaryDeployment {</p>
-<p>async deploy(newVersion: string, config: CanaryConfig): Promise&lt;boolean&gt; {</p>
-<p>console.log(<code>🐤 Starting canary deployment: &#36;{newVersion} (&#36;{config.percentage}%)</code>);</p>
+<p>async deploy(newVersion: string, config: CanaryConfig): Promise<boolean> {</p>
+<p>console.log(<code>🐤 Starting canary deployment: ${newVersion} (${config.percentage}%)</code>);</p>
 
 <p>// Route traffic</p>
 <p>await this.routeTraffic(newVersion, config.percentage);</p>
@@ -378,71 +378,71 @@ const meta = {
 <p>const healthy = this.evaluateHealth(metrics, config.thresholds);</p>
 
 <p>if (healthy) {</p>
-<p>console.log(<code>✅ Canary healthy. Promoting &#36;{newVersion}</code>);</p>
+<p>console.log(<code>✅ Canary healthy. Promoting ${newVersion}</code>);</p>
 <p>if (config.autoPromote) {</p>
 <p>await this.promote(newVersion);</p>
 <p>}</p>
 <p>return true;</p>
 <p>} else {</p>
-<p>console.error(<code>❌ Canary failed. Rolling back &#36;{newVersion}</code>);</p>
+<p>console.error(<code>❌ Canary failed. Rolling back ${newVersion}</code>);</p>
 <p>await this.rollback(newVersion);</p>
 <p>return false;</p>
 <p>}</p>
 <p>}</p>
 
-<p>private async routeTraffic(version: string, percentage: number): Promise&lt;void&gt; {</p>
+<p>private async routeTraffic(version: string, percentage: number): Promise<void> {</p>
 <p>// Update load balancer routing rules</p>
 <p>await updateLoadBalancer({</p>
 <p>versions: [</p>
-<p>{ version: &#039;stable&#039;, weight: 100 - percentage },</p>
+<p>{ version: 'stable', weight: 100 - percentage },</p>
 <p>{ version, weight: percentage }</p>
 <p>]</p>
 <p>});</p>
 <p>}</p>
 
-<p>private async collectMetrics(version: string, duration: number): Promise&lt;any&gt; {</p>
+<p>private async collectMetrics(version: string, duration: number): Promise<any> {</p>
 <p>// Query Prometheus for metrics</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[&#36;{duration / 1000}s])</code></p>
+<p><code>rate(http_requests_errors{version="${version}"}[${duration / 1000}s])</code></p>
 <p>);</p>
 
 <p>const latencyP95 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[&#36;{duration / 1000}s]))</code></p>
+<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version="${version}"}[${duration / 1000}s]))</code></p>
 <p>);</p>
 
 <p>return { errorRate, latencyP95 };</p>
 <p>}</p>
 
 <p>private evaluateHealth(metrics: any, thresholds: any): boolean {</p>
-<p>if (metrics.errorRate &gt; thresholds.errorRate) {</p>
-<p>console.warn(<code>Error rate too high: &#36;{metrics.errorRate} &gt; &#36;{thresholds.errorRate}</code>);</p>
+<p>if (metrics.errorRate > thresholds.errorRate) {</p>
+<p>console.warn(<code>Error rate too high: ${metrics.errorRate} > ${thresholds.errorRate}</code>);</p>
 <p>return false;</p>
 <p>}</p>
 
-<p>if (metrics.latencyP95 &gt; thresholds.latencyP95) {</p>
-<p>console.warn(<code>Latency too high: &#36;{metrics.latencyP95}ms &gt; &#36;{thresholds.latencyP95}ms</code>);</p>
+<p>if (metrics.latencyP95 > thresholds.latencyP95) {</p>
+<p>console.warn(<code>Latency too high: ${metrics.latencyP95}ms > ${thresholds.latencyP95}ms</code>);</p>
 <p>return false;</p>
 <p>}</p>
 
 <p>return true;</p>
 <p>}</p>
 
-<p>private async promote(version: string): Promise&lt;void&gt; {</p>
+<p>private async promote(version: string): Promise<void> {</p>
 <p>// Gradually increase traffic to 100%</p>
 <p>await this.routeTraffic(version, 100);</p>
-<p>console.log(<code>🚀 Promoted &#36;{version} to 100%</code>);</p>
+<p>console.log(<code>🚀 Promoted ${version} to 100%</code>);</p>
 <p>}</p>
 
-<p>private async rollback(version: string): Promise&lt;void&gt; {</p>
+<p>private async rollback(version: string): Promise<void> {</p>
 <p>// Route all traffic back to stable</p>
-<p>await this.routeTraffic(&#039;stable&#039;, 100);</p>
-<p>console.log(<code>⏪ Rolled back &#36;{version}</code>);</p>
+<p>await this.routeTraffic('stable', 100);</p>
+<p>console.log(<code>⏪ Rolled back ${version}</code>);</p>
 <p>}</p>
 <p>}</p>
 
 <p>// Usage</p>
 <p>const canary = new CanaryDeployment();</p>
-<p>await canary.deploy(&#039;v2.5.0&#039;, {</p>
+<p>await canary.deploy('v2.5.0', {</p>
 <p>percentage: 5,           // 5% of traffic</p>
 <p>duration: 600000,        // 10 minutes</p>
 <p>autoPromote: false,      // Manual promotion</p>
@@ -459,24 +459,24 @@ const meta = {
 <h3>Fallback Strategies</h3>
 
 <pre><code class="language-typescript">enum FallbackStrategy {
-  SIMPLER_MODEL = &#039;simpler_model&#039;,
-  CACHED_RESPONSE = &#039;cached_response&#039;,
-  TRADITIONAL_METHOD = &#039;traditional_method&#039;,
-  REDUCED_FUNCTIONALITY = &#039;reduced_functionality&#039;
+  SIMPLER_MODEL = 'simpler_model',
+  CACHED_RESPONSE = 'cached_response',
+  TRADITIONAL_METHOD = 'traditional_method',
+  REDUCED_FUNCTIONALITY = 'reduced_functionality'
 }
 
 <p>class GracefulDegradation {</p>
-<p>async executeWithFallback&lt;T&gt;(</p>
-<p>primary: () =&gt; Promise&lt;T&gt;,</p>
-<p>fallback: () =&gt; Promise&lt;T&gt;,</p>
+<p>async executeWithFallback<T>(</p>
+<p>primary: () => Promise<T>,</p>
+<p>fallback: () => Promise<T>,</p>
 <p>strategy: FallbackStrategy</p>
-<p>): Promise&lt;{ result: T; usedFallback: boolean }&gt; {</p>
+<p>): Promise<{ result: T; usedFallback: boolean }> {</p>
 <p>try {</p>
 <p>const result = await primary();</p>
 <p>return { result, usedFallback: false };</p>
 <p>} catch (error) {</p>
-<p>console.warn(<code>Primary method failed: &#36;{error.message}</code>);</p>
-<p>console.log(<code>Using fallback strategy: &#36;{strategy}</code>);</p>
+<p>console.warn(<code>Primary method failed: ${error.message}</code>);</p>
+<p>console.log(<code>Using fallback strategy: ${strategy}</code>);</p>
 
 <p>const result = await fallback();</p>
 <p>return { result, usedFallback: true };</p>
@@ -485,56 +485,56 @@ const meta = {
 <p>}</p>
 
 <p>// Strategy 1: Simpler Model</p>
-<p>async function codeReviewWithFallback(code: string): Promise&lt;string&gt; {</p>
+<p>async function codeReviewWithFallback(code: string): Promise<string> {</p>
 <p>const degradation = new GracefulDegradation();</p>
 
 <p>return (await degradation.executeWithFallback(</p>
 <p>// Primary: Claude 3.5 Sonnet (high quality)</p>
-<p>async () =&gt; {</p>
-<p>return await callClaude(code, &#039;claude-3-5-sonnet-20241022&#039;);</p>
+<p>async () => {</p>
+<p>return await callClaude(code, 'claude-3-5-sonnet-20241022');</p>
 <p>},</p>
 <p>// Fallback: Claude 3.5 Haiku (faster, cheaper)</p>
-<p>async () =&gt; {</p>
-<p>return await callClaude(code, &#039;claude-3-5-haiku-20241022&#039;);</p>
+<p>async () => {</p>
+<p>return await callClaude(code, 'claude-3-5-haiku-20241022');</p>
 <p>},</p>
 <p>FallbackStrategy.SIMPLER_MODEL</p>
 <p>)).result;</p>
 <p>}</p>
 
 <p>// Strategy 2: Cached Response</p>
-<p>async function summarizeWithCache(text: string): Promise&lt;string&gt; {</p>
-<p>const cache = new Map&lt;string, string&gt;();</p>
+<p>async function summarizeWithCache(text: string): Promise<string> {</p>
+<p>const cache = new Map<string, string>();</p>
 <p>const degradation = new GracefulDegradation();</p>
 
 <p>return (await degradation.executeWithFallback(</p>
 <p>// Primary: Fresh AI summary</p>
-<p>async () =&gt; {</p>
-<p>const summary = await callClaude(text, &#039;claude-3-5-haiku-20241022&#039;);</p>
+<p>async () => {</p>
+<p>const summary = await callClaude(text, 'claude-3-5-haiku-20241022');</p>
 <p>cache.set(text, summary);</p>
 <p>return summary;</p>
 <p>},</p>
 <p>// Fallback: Cached summary</p>
-<p>async () =&gt; {</p>
+<p>async () => {</p>
 <p>const cached = cache.get(text);</p>
-<p>if (!cached) throw new Error(&#039;No cache available&#039;);</p>
-<p>return cached + &#039;\n\n(Cached response)&#039;;</p>
+<p>if (!cached) throw new Error('No cache available');</p>
+<p>return cached + '\n\n(Cached response)';</p>
 <p>},</p>
 <p>FallbackStrategy.CACHED_RESPONSE</p>
 <p>)).result;</p>
 <p>}</p>
 
 <p>// Strategy 3: Traditional Method</p>
-<p>async function formatCodeWithFallback(code: string): Promise&lt;string&gt; {</p>
+<p>async function formatCodeWithFallback(code: string): Promise<string> {</p>
 <p>const degradation = new GracefulDegradation();</p>
 
 <p>return (await degradation.executeWithFallback(</p>
 <p>// Primary: AI-powered formatting with context awareness</p>
-<p>async () =&gt; {</p>
-<p>return await callClaude(<code>Format this code:\n&#36;{code}</code>, &#039;claude-3-5-haiku-20241022&#039;);</p>
+<p>async () => {</p>
+<p>return await callClaude(<code>Format this code:\n${code}</code>, 'claude-3-5-haiku-20241022');</p>
 <p>},</p>
 <p>// Fallback: Traditional Prettier</p>
-<p>async () =&gt; {</p>
-<p>return prettier.format(code, { parser: &#039;typescript&#039; });</p>
+<p>async () => {</p>
+<p>return prettier.format(code, { parser: 'typescript' });</p>
 <p>},</p>
 <p>FallbackStrategy.TRADITIONAL_METHOD</p>
 <p>)).result;</p>
@@ -550,48 +550,48 @@ const meta = {
   private readonly errorRateThreshold = 0.05;  // 5%
   private readonly checkInterval = 60000;      // 1 minute
 
-<p>async monitorAndRollback(version: string): Promise&lt;void&gt; {</p>
+<p>async monitorAndRollback(version: string): Promise<void> {</p>
 <p>const startTime = Date.now();</p>
 
-<p>const monitor = setInterval(async () =&gt; {</p>
+<p>const monitor = setInterval(async () => {</p>
 <p>const metrics = await this.collectMetrics(version, this.checkInterval);</p>
 
 <p>// Check error rate</p>
-<p>if (metrics.errorRate &gt; this.errorRateThreshold) {</p>
-<p>console.error(<code>🚨 Error rate &#36;{metrics.errorRate} &gt; threshold &#36;{this.errorRateThreshold}</code>);</p>
-<p>console.error(<code>⏪ Auto-rolling back &#36;{version}</code>);</p>
+<p>if (metrics.errorRate > this.errorRateThreshold) {</p>
+<p>console.error(<code>🚨 Error rate ${metrics.errorRate} > threshold ${this.errorRateThreshold}</code>);</p>
+<p>console.error(<code>⏪ Auto-rolling back ${version}</code>);</p>
 
 <p>clearInterval(monitor);</p>
 <p>await this.rollback(version);</p>
-<p>await this.alertTeam(<code>Auto-rollback triggered for &#36;{version}: error rate &#36;{metrics.errorRate}</code>);</p>
+<p>await this.alertTeam(<code>Auto-rollback triggered for ${version}: error rate ${metrics.errorRate}</code>);</p>
 <p>}</p>
 
 <p>// Stop monitoring after 1 hour if healthy</p>
-<p>if (Date.now() - startTime &gt; 3600000) {</p>
-<p>console.log(<code>✅ &#36;{version} stable after 1 hour. Stopping auto-rollback monitor.</code>);</p>
+<p>if (Date.now() - startTime > 3600000) {</p>
+<p>console.log(<code>✅ ${version} stable after 1 hour. Stopping auto-rollback monitor.</code>);</p>
 <p>clearInterval(monitor);</p>
 <p>}</p>
 <p>}, this.checkInterval);</p>
 <p>}</p>
 
-<p>private async collectMetrics(version: string, window: number): Promise&lt;any&gt; {</p>
+<p>private async collectMetrics(version: string, window: number): Promise<any> {</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[&#36;{window / 1000}s])</code></p>
+<p><code>rate(http_requests_errors{version="${version}"}[${window / 1000}s])</code></p>
 <p>);</p>
 
 <p>return { errorRate };</p>
 <p>}</p>
 
-<p>private async rollback(version: string): Promise&lt;void&gt; {</p>
+<p>private async rollback(version: string): Promise<void> {</p>
 <p>// Route traffic back to stable</p>
 <p>await updateLoadBalancer({</p>
-<p>versions: [{ version: &#039;stable&#039;, weight: 100 }]</p>
+<p>versions: [{ version: 'stable', weight: 100 }]</p>
 <p>});</p>
 <p>}</p>
 
-<p>private async alertTeam(message: string): Promise&lt;void&gt; {</p>
+<p>private async alertTeam(message: string): Promise<void> {</p>
 <p>// Send to PagerDuty, Slack, etc.</p>
-<p>console.log(<code>ALERT: &#36;{message}</code>);</p>
+<p>console.log(<code>ALERT: ${message}</code>);</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -613,25 +613,25 @@ const meta = {
 }
 
 <p>class RolloutMonitor {</p>
-<p>async getMetrics(version: string): Promise&lt;RolloutMetrics&gt; {</p>
+<p>async getMetrics(version: string): Promise<RolloutMetrics> {</p>
 <p>const errorRate = await prometheus.query(</p>
-<p><code>rate(http_requests_errors{version=&quot;&#36;{version}&quot;}[5m])</code></p>
+<p><code>rate(http_requests_errors{version="${version}"}[5m])</code></p>
 <p>);</p>
 
 <p>const latencyP50 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.50, rate(http_request_duration_seconds_bucket{version="${version}"}[5m]))</code></p>
 <p>);</p>
 
 <p>const latencyP95 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.95, rate(http_request_duration_seconds_bucket{version="${version}"}[5m]))</code></p>
 <p>);</p>
 
 <p>const latencyP99 = await prometheus.query(</p>
-<p><code>histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
+<p><code>histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{version="${version}"}[5m]))</code></p>
 <p>);</p>
 
 <p>const requestCount = await prometheus.query(</p>
-<p><code>sum(rate(http_requests_total{version=&quot;&#36;{version}&quot;}[5m]))</code></p>
+<p><code>sum(rate(http_requests_total{version="${version}"}[5m]))</code></p>
 <p>);</p>
 
 <p>const userSatisfaction = await this.calculateSatisfaction(version);</p>
@@ -648,14 +648,14 @@ const meta = {
 <p>};</p>
 <p>}</p>
 
-<p>private async calculateSatisfaction(version: string): Promise&lt;number&gt; {</p>
+<p>private async calculateSatisfaction(version: string): Promise<number> {</p>
 <p>// Calculate from user feedback</p>
 <p>const ratings = await db.userRatings.find({ version });</p>
-<p>const avg = ratings.reduce((sum, r) =&gt; sum + r.rating, 0) / ratings.length;</p>
+<p>const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;</p>
 <p>return avg || 0;</p>
 <p>}</p>
 
-<p>private async getCurrentRolloutPercentage(version: string): Promise&lt;number&gt; {</p>
+<p>private async getCurrentRolloutPercentage(version: string): Promise<number> {</p>
 <p>// Get from load balancer config</p>
 <p>return 50;  // Example</p>
 <p>}</p>
@@ -671,19 +671,19 @@ const meta = {
 <li><strong>Use feature flags</strong></li>
 </ul>
    <pre><code class="language-typescript">const enabled = await flags.isEnabled(FeatureFlag.AI_CODE_REVIEW, userId);
-   if (enabled) { /<em> new feature </em>/ } else { /<em> old feature </em>/ }</code></pre>
+   if (enabled) { /* new feature */ } else { /* old feature */ }</code></pre>
 
 <ul>
 <li><strong>Test with real users</strong></li>
 </ul>
-   <pre><code class="language-typescript">const variant = await abTest.assignVariant(&#039;experiment&#039;, userId);
+   <pre><code class="language-typescript">const variant = await abTest.assignVariant('experiment', userId);
    // Run both variants, measure results</code></pre>
 
 <ul>
 <li><strong>Monitor metrics</strong></li>
 </ul>
-   <pre><code class="language-typescript">const metrics = await monitor.getMetrics(&#039;v2.0&#039;);
-   if (metrics.errorRate &gt; 0.01) await rollback();</code></pre>
+   <pre><code class="language-typescript">const metrics = await monitor.getMetrics('v2.0');
+   if (metrics.errorRate > 0.01) await rollback();</code></pre>
 
 <ul>
 <li><strong>Gradual rollouts</strong></li>
@@ -697,19 +697,19 @@ const meta = {
 <li><strong>Don't skip canary phase</strong></li>
 </ul>
    <pre><code class="language-typescript">// ❌ Deploy directly to 100%
-   await deploy(&#039;v2.0&#039;, { percentage: 100 });
+   await deploy('v2.0', { percentage: 100 });
 
 <p>// ✅ Start with canary</p>
-<p>await deploy(&#039;v2.0&#039;, { percentage: 1 });</code></pre></p>
+<p>await deploy('v2.0', { percentage: 1 });</code></pre></p>
 
 <ul>
 <li><strong>Don't ignore metrics</strong></li>
 </ul>
    <pre><code class="language-typescript">// ❌ No monitoring
-   await deploy(&#039;v2.0&#039;);
+   await deploy('v2.0');
 
 <p>// ✅ Monitor and auto-rollback</p>
-<p>await monitorAndRollback(&#039;v2.0&#039;);</code></pre></p>
+<p>await monitorAndRollback('v2.0');</code></pre></p>
 
 <ul>
 <li><strong>Don't forget fallbacks</strong></li>
@@ -783,5 +783,3 @@ const meta = {
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./05-incident-debugging.md">Incident Debugging Playbook</a></p>
-`} />
-</PlaybookTemplate>

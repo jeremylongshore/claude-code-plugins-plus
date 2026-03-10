@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Self-Hosted Stack Setup",
-  description: "Full infrastructure deployment with Docker/Kubernetes. Ollama, PostgreSQL, Redis, Prometheus, Grafana, Nginx - complete production stack with monitoring and backups.",
-  category: "Infrastructure",
-  wordCount: 5500,
-  slug: "06-self-hosted-stack"
-};
+title: "Self-Hosted Stack Setup"
+description: "Full infrastructure deployment with Docker/Kubernetes. Ollama, PostgreSQL, Redis, Prometheus, Grafana, Nginx - complete production stack with monitoring and backups."
+category: "Infrastructure"
+wordCount: 5500
+readTime: 28
+featured: false
+order: 6
+tags: ["self-hosted", "docker", "kubernetes", "monitoring", "infrastructure"]
+prerequisites: []
+relatedPlaybooks: ["04-ollama-migration", "03-mcp-reliability"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Infrastructure Engineers and DevOps</strong></p>
+<p><strong>Production Playbook for Infrastructure Engineers and DevOps</strong></p>
 
 <p>Building a complete self-hosted AI infrastructure for Claude Code plugins eliminates cloud dependencies, ensures data privacy, and provides full control. This playbook provides production-ready Docker Compose configurations, Kubernetes deployments, monitoring with Prometheus/Grafana, automated backups, and disaster recovery procedures.</p>
 
@@ -20,23 +20,23 @@ const meta = {
 <h3>Self-Hosted Stack Components</h3>
 
 <pre><code class="language-mermaid">graph TB
-    A[Claude Code CLI] --&gt; B[Analytics Daemon]
-    A --&gt; C[Ollama LLM Server]
-    A --&gt; D[PostgreSQL Database]
-    A --&gt; E[Redis Cache]
+    A[Claude Code CLI] --> B[Analytics Daemon]
+    A --> C[Ollama LLM Server]
+    A --> D[PostgreSQL Database]
+    A --> E[Redis Cache]
 
-B --&gt; F[Prometheus Metrics]
-C --&gt; F
+B --> F[Prometheus Metrics]
+C --> F
 
-F --&gt; G[Grafana Dashboard]
+F --> G[Grafana Dashboard]
 
-D --&gt; H[Backup Service]
-E --&gt; H
+D --> H[Backup Service]
+E --> H
 
-I[Nginx Reverse Proxy] --&gt; B
-I --&gt; C
+I[Nginx Reverse Proxy] --> B
+I --> C
 
-J[Let&#039;s Encrypt] --&gt; I</code></pre>
+J[Let's Encrypt] --> I</code></pre>
 
 <h3>Infrastructure Tiers</h3>
 
@@ -104,7 +104,7 @@ J[Let&#039;s Encrypt] --&gt; I</code></pre>
 <h3>Complete Stack (docker-compose.yml)</h3>
 
 <pre><code class="language-yaml"># docker-compose.yml
-version: &#039;3.8&#039;
+version: '3.8'
 
 services:
 # Ollama LLM Server
@@ -112,7 +112,7 @@ ollama:
 image: ollama/ollama:latest
 container_name: ollama
 ports:
-- &quot;11434:11434&quot;
+- "11434:11434"
 volumes:
 - ollama_models:/root/.ollama
 deploy:
@@ -124,7 +124,7 @@ count: 1
 capabilities: [gpu]
 restart: unless-stopped
 healthcheck:
-test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:11434/api/tags&quot;]
+test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
 interval: 30s
 timeout: 10s
 retries: 3
@@ -134,18 +134,18 @@ analytics:
 build: ./packages/analytics-daemon
 container_name: analytics-daemon
 ports:
-- &quot;3333:3333&quot;  # HTTP API
-- &quot;3456:3456&quot;  # WebSocket
+- "3333:3333"  # HTTP API
+- "3456:3456"  # WebSocket
 volumes:
 - analytics_data:/data
-- &#36;{HOME}/.claude:/root/.claude:ro
+- ${HOME}/.claude:/root/.claude:ro
 environment:
 - NODE_ENV=production
 - PORT=3333
 - WS_PORT=3456
 restart: unless-stopped
 healthcheck:
-test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:3333/health&quot;]
+test: ["CMD", "curl", "-f", "http://localhost:3333/health"]
 interval: 30s
 timeout: 5s
 retries: 3
@@ -155,17 +155,17 @@ postgres:
 image: postgres:16-alpine
 container_name: postgres
 ports:
-- &quot;5432:5432&quot;
+- "5432:5432"
 volumes:
 - postgres_data:/var/lib/postgresql/data
 - ./backups/postgres:/backups
 environment:
 - POSTGRES_USER=claude
-- POSTGRES_PASSWORD=&#36;{POSTGRES_PASSWORD}
+- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 - POSTGRES_DB=claude_prod
 restart: unless-stopped
 healthcheck:
-test: [&quot;CMD-SHELL&quot;, &quot;pg_isready -U claude&quot;]
+test: ["CMD-SHELL", "pg_isready -U claude"]
 interval: 10s
 timeout: 5s
 retries: 5
@@ -175,13 +175,13 @@ redis:
 image: redis:7-alpine
 container_name: redis
 ports:
-- &quot;6379:6379&quot;
+- "6379:6379"
 volumes:
 - redis_data:/data
 command: redis-server --appendonly yes --maxmemory 2gb --maxmemory-policy allkeys-lru
 restart: unless-stopped
 healthcheck:
-test: [&quot;CMD&quot;, &quot;redis-cli&quot;, &quot;ping&quot;]
+test: ["CMD", "redis-cli", "ping"]
 interval: 10s
 timeout: 3s
 retries: 3
@@ -191,14 +191,14 @@ prometheus:
 image: prom/prometheus:latest
 container_name: prometheus
 ports:
-- &quot;9090:9090&quot;
+- "9090:9090"
 volumes:
 - ./prometheus.yml:/etc/prometheus/prometheus.yml
 - prometheus_data:/prometheus
 command:
-- &#039;--config.file=/etc/prometheus/prometheus.yml&#039;
-- &#039;--storage.tsdb.path=/prometheus&#039;
-- &#039;--storage.tsdb.retention.time=30d&#039;
+- '--config.file=/etc/prometheus/prometheus.yml'
+- '--storage.tsdb.path=/prometheus'
+- '--storage.tsdb.retention.time=30d'
 restart: unless-stopped
 
 # Grafana Dashboards
@@ -206,13 +206,13 @@ grafana:
 image: grafana/grafana:latest
 container_name: grafana
 ports:
-- &quot;3000:3000&quot;
+- "3000:3000"
 volumes:
 - grafana_data:/var/lib/grafana
 - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
 - ./grafana/datasources:/etc/grafana/provisioning/datasources
 environment:
-- GF_SECURITY_ADMIN_PASSWORD=&#36;{GRAFANA_PASSWORD}
+- GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
 - GF_INSTALL_PLUGINS=redis-datasource
 restart: unless-stopped
 depends_on:
@@ -223,8 +223,8 @@ nginx:
 image: nginx:alpine
 container_name: nginx
 ports:
-- &quot;80:80&quot;
-- &quot;443:443&quot;
+- "80:80"
+- "443:443"
 volumes:
 - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 - ./nginx/ssl:/etc/nginx/ssl:ro
@@ -245,31 +245,31 @@ volumes:
 - analytics_data:/source/analytics:ro
 - ./backups:/backups
 command: |
-sh -c &#039;
+sh -c '
 apk add --no-cache postgresql-client redis
 while true; do
-DATE=&#36;(date +%Y-%m-%d_%H-%M-%S)
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
 
 # Backup PostgreSQL
-PGPASSWORD=&#36;&#36;POSTGRES_PASSWORD pg_dump -h postgres -U claude claude_prod &gt; /backups/postgres/backup_&#36;&#36;DATE.sql
+PGPASSWORD=$$POSTGRES_PASSWORD pg_dump -h postgres -U claude claude_prod > /backups/postgres/backup_$$DATE.sql
 
 # Backup Redis
-redis-cli -h redis --rdb /backups/redis/dump_&#36;&#36;DATE.rdb
+redis-cli -h redis --rdb /backups/redis/dump_$$DATE.rdb
 
 # Backup Analytics
-tar -czf /backups/analytics/backup_&#36;&#36;DATE.tar.gz /source/analytics
+tar -czf /backups/analytics/backup_$$DATE.tar.gz /source/analytics
 
 # Delete old backups (keep 7 days)
-find /backups -name &quot;backup_*.sql&quot; -mtime +7 -delete
-find /backups -name &quot;dump_*.rdb&quot; -mtime +7 -delete
-find /backups -name &quot;backup_*.tar.gz&quot; -mtime +7 -delete
+find /backups -name "backup_*.sql" -mtime +7 -delete
+find /backups -name "dump_*.rdb" -mtime +7 -delete
+find /backups -name "backup_*.tar.gz" -mtime +7 -delete
 
-echo &quot;Backup completed: &#36;&#36;DATE&quot;
+echo "Backup completed: $$DATE"
 sleep 86400  # Daily backups
 done
-&#039;
+'
 environment:
-- POSTGRES_PASSWORD=&#36;{POSTGRES_PASSWORD}
+- POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 restart: unless-stopped
 
 volumes:
@@ -311,11 +311,11 @@ upstream grafana {
 server grafana:3000;
 }
 
-# HTTP -&gt; HTTPS redirect
+# HTTP -> HTTPS redirect
 server {
 listen 80;
 server_name claude.example.com;
-return 301 https://&#36;server_name&#36;request_uri;
+return 301 https://$server_name$request_uri;
 }
 
 # HTTPS
@@ -331,29 +331,29 @@ ssl_ciphers HIGH:!aNULL:!MD5;
 # Ollama API
 location /api/ollama/ {
 proxy_pass http://ollama/;
-proxy_set_header Host &#36;host;
-proxy_set_header X-Real-IP &#36;remote_addr;
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
 }
 
 # Analytics API
 location /api/analytics/ {
 proxy_pass http://analytics/api/;
-proxy_set_header Host &#36;host;
-proxy_set_header X-Real-IP &#36;remote_addr;
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
 }
 
 # Analytics WebSocket
 location /ws/ {
 proxy_pass http://analytics/;
 proxy_http_version 1.1;
-proxy_set_header Upgrade &#36;http_upgrade;
-proxy_set_header Connection &quot;upgrade&quot;;
+proxy_set_header Upgrade $http_upgrade;
+proxy_set_header Connection "upgrade";
 }
 
 # Grafana
 location / {
 proxy_pass http://grafana/;
-proxy_set_header Host &#36;host;
+proxy_set_header Host $host;
 }
 }
 }</code></pre>
@@ -421,8 +421,8 @@ spec:
           limits:
             nvidia.com/gpu: 1
           requests:
-            memory: &quot;16Gi&quot;
-            cpu: &quot;4&quot;
+            memory: "16Gi"
+            cpu: "4"
         volumeMounts:
         - name: models
           mountPath: /root/.ollama
@@ -489,29 +489,29 @@ spec:
         - containerPort: 5432
         env:
         - name: POSTGRES_USER
-          value: &quot;claude&quot;
+          value: "claude"
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: postgres-secret
               key: password
         - name: POSTGRES_DB
-          value: &quot;claude_prod&quot;
+          value: "claude_prod"
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
         resources:
           requests:
-            memory: &quot;4Gi&quot;
-            cpu: &quot;2&quot;
+            memory: "4Gi"
+            cpu: "2"
           limits:
-            memory: &quot;8Gi&quot;
-            cpu: &quot;4&quot;
+            memory: "8Gi"
+            cpu: "4"
   volumeClaimTemplates:
   - metadata:
       name: postgres-data
     spec:
-      accessModes: [ &quot;ReadWriteOnce&quot; ]
+      accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
           storage: 50Gi
@@ -559,8 +559,8 @@ spec:
         - name: data
           mountPath: /prometheus
         args:
-          - &#039;--config.file=/etc/prometheus/prometheus.yml&#039;
-          - &#039;--storage.tsdb.retention.time=30d&#039;
+          - '--config.file=/etc/prometheus/prometheus.yml'
+          - '--storage.tsdb.retention.time=30d'
       volumes:
       - name: config
         configMap:
@@ -579,15 +579,15 @@ prometheus.yml: |
 global:
 scrape_interval: 15s
 scrape_configs:
-- job_name: &#039;ollama&#039;
+- job_name: 'ollama'
 static_configs:
-- targets: [&#039;ollama-service:11434&#039;]
-- job_name: &#039;postgres&#039;
+- targets: ['ollama-service:11434']
+- job_name: 'postgres'
 static_configs:
-- targets: [&#039;postgres:5432&#039;]
-- job_name: &#039;analytics&#039;
+- targets: ['postgres:5432']
+- job_name: 'analytics'
 static_configs:
-- targets: [&#039;analytics-service:3333&#039;]</code></pre>
+- targets: ['analytics-service:3333']</code></pre>
 
 <h3>Deploy to Kubernetes</h3>
 
@@ -596,7 +596,7 @@ kubectl apply -f namespace.yaml
 
 # Create secrets
 kubectl create secret generic postgres-secret \
---from-literal=password=&#039;your-secure-password&#039; \
+--from-literal=password='your-secure-password' \
 -n claude-stack
 
 # Deploy services
@@ -621,39 +621,39 @@ global:
 
 scrape_configs:
 # Ollama metrics
-- job_name: &#039;ollama&#039;
+- job_name: 'ollama'
 static_configs:
-- targets: [&#039;ollama:11434&#039;]
-metrics_path: &#039;/metrics&#039;
+- targets: ['ollama:11434']
+metrics_path: '/metrics'
 
 # Analytics daemon metrics
-- job_name: &#039;analytics&#039;
+- job_name: 'analytics'
 static_configs:
-- targets: [&#039;analytics:3333&#039;]
-metrics_path: &#039;/metrics&#039;
+- targets: ['analytics:3333']
+metrics_path: '/metrics'
 
 # PostgreSQL metrics (using postgres_exporter)
-- job_name: &#039;postgres&#039;
+- job_name: 'postgres'
 static_configs:
-- targets: [&#039;postgres-exporter:9187&#039;]
+- targets: ['postgres-exporter:9187']
 
 # Redis metrics (using redis_exporter)
-- job_name: &#039;redis&#039;
+- job_name: 'redis'
 static_configs:
-- targets: [&#039;redis-exporter:9121&#039;]
+- targets: ['redis-exporter:9121']
 
 # Node metrics
-- job_name: &#039;node&#039;
+- job_name: 'node'
 static_configs:
-- targets: [&#039;localhost:9100&#039;]
+- targets: ['localhost:9100']
 
 alerting:
 alertmanagers:
 - static_configs:
-- targets: [&#039;alertmanager:9093&#039;]
+- targets: ['alertmanager:9093']
 
 rule_files:
-- &#039;/etc/prometheus/rules/*.yml&#039;</code></pre>
+- '/etc/prometheus/rules/*.yml'</code></pre>
 
 <h3>Alert Rules</h3>
 
@@ -664,93 +664,93 @@ groups:
     rules:
       # High error rate
       - alert: HighErrorRate
-        expr: rate(llm_errors_total[5m]) &gt; 0.05
+        expr: rate(llm_errors_total[5m]) > 0.05
         for: 5m
         labels:
           severity: critical
         annotations:
-          summary: &quot;High LLM error rate&quot;
-          description: &quot;Error rate is {{ &#36;value | humanizePercentage }}&quot;
+          summary: "High LLM error rate"
+          description: "Error rate is {{ $value | humanizePercentage }}"
 
 # Ollama down
 - alert: OllamaDown
-expr: up{job=&quot;ollama&quot;} == 0
+expr: up{job="ollama"} == 0
 for: 1m
 labels:
 severity: critical
 annotations:
-summary: &quot;Ollama is down&quot;
+summary: "Ollama is down"
 
 # High memory usage
 - alert: HighMemoryUsage
-expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes &gt; 0.9
+expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes > 0.9
 for: 5m
 labels:
 severity: warning
 annotations:
-summary: &quot;High memory usage&quot;
-description: &quot;Memory usage is {{ &#36;value | humanizePercentage }}&quot;
+summary: "High memory usage"
+description: "Memory usage is {{ $value | humanizePercentage }}"
 
 # Database connection issues
 - alert: PostgreSQLDown
-expr: up{job=&quot;postgres&quot;} == 0
+expr: up{job="postgres"} == 0
 for: 1m
 labels:
 severity: critical
 annotations:
-summary: &quot;PostgreSQL is down&quot;</code></pre>
+summary: "PostgreSQL is down"</code></pre>
 
 <h3>Grafana Dashboards</h3>
 
 <p><strong>Claude Stack Dashboard (JSON)</strong>:</p>
 <pre><code class="language-json">{
-  &quot;dashboard&quot;: {
-    &quot;title&quot;: &quot;Claude Code Self-Hosted Stack&quot;,
-    &quot;panels&quot;: [
+  "dashboard": {
+    "title": "Claude Code Self-Hosted Stack",
+    "panels": [
       {
-        &quot;title&quot;: &quot;LLM Requests/sec&quot;,
-        &quot;targets&quot;: [
+        "title": "LLM Requests/sec",
+        "targets": [
           {
-            &quot;expr&quot;: &quot;rate(llm_requests_total[5m])&quot;
+            "expr": "rate(llm_requests_total[5m])"
           }
         ],
-        &quot;type&quot;: &quot;graph&quot;
+        "type": "graph"
       },
       {
-        &quot;title&quot;: &quot;Error Rate&quot;,
-        &quot;targets&quot;: [
+        "title": "Error Rate",
+        "targets": [
           {
-            &quot;expr&quot;: &quot;rate(llm_errors_total[5m]) / rate(llm_requests_total[5m])&quot;
+            "expr": "rate(llm_errors_total[5m]) / rate(llm_requests_total[5m])"
           }
         ],
-        &quot;type&quot;: &quot;graph&quot;
+        "type": "graph"
       },
       {
-        &quot;title&quot;: &quot;Response Latency (p95)&quot;,
-        &quot;targets&quot;: [
+        "title": "Response Latency (p95)",
+        "targets": [
           {
-            &quot;expr&quot;: &quot;histogram_quantile(0.95, rate(llm_request_duration_seconds_bucket[5m]))&quot;
+            "expr": "histogram_quantile(0.95, rate(llm_request_duration_seconds_bucket[5m]))"
           }
         ],
-        &quot;type&quot;: &quot;graph&quot;
+        "type": "graph"
       },
       {
-        &quot;title&quot;: &quot;GPU Utilization&quot;,
-        &quot;targets&quot;: [
+        "title": "GPU Utilization",
+        "targets": [
           {
-            &quot;expr&quot;: &quot;nvidia_gpu_duty_cycle&quot;
+            "expr": "nvidia_gpu_duty_cycle"
           }
         ],
-        &quot;type&quot;: &quot;gauge&quot;
+        "type": "gauge"
       },
       {
-        &quot;title&quot;: &quot;Database Connections&quot;,
-        &quot;targets&quot;: [
+        "title": "Database Connections",
+        "targets": [
           {
-            &quot;expr&quot;: &quot;pg_stat_database_numbackends&quot;
+            "expr": "pg_stat_database_numbackends"
           }
         ],
-        &quot;type&quot;: &quot;graph&quot;
+        "type": "graph"
       }
     ]
   }
@@ -765,47 +765,47 @@ summary: &quot;PostgreSQL is down&quot;</code></pre>
 <pre><code class="language-bash">#!/bin/bash
 # backup.sh - Automated backup script
 
-DATE=&#36;(date +%Y-%m-%d_%H-%M-%S)
-BACKUP_DIR=&quot;/backups&quot;
+DATE=$(date +%Y-%m-%d_%H-%M-%S)
+BACKUP_DIR="/backups"
 
 # PostgreSQL backup
-echo &quot;Backing up PostgreSQL...&quot;
-PGPASSWORD=&#36;POSTGRES_PASSWORD pg_dump -h localhost -U claude claude_prod | \
-gzip &gt; &#36;BACKUP_DIR/postgres/backup_&#36;DATE.sql.gz
+echo "Backing up PostgreSQL..."
+PGPASSWORD=$POSTGRES_PASSWORD pg_dump -h localhost -U claude claude_prod | \
+gzip > $BACKUP_DIR/postgres/backup_$DATE.sql.gz
 
 # Redis backup
-echo &quot;Backing up Redis...&quot;
-redis-cli --rdb &#36;BACKUP_DIR/redis/dump_&#36;DATE.rdb
+echo "Backing up Redis..."
+redis-cli --rdb $BACKUP_DIR/redis/dump_$DATE.rdb
 
 # Analytics data
-echo &quot;Backing up Analytics...&quot;
-tar -czf &#36;BACKUP_DIR/analytics/backup_&#36;DATE.tar.gz /var/lib/analytics
+echo "Backing up Analytics..."
+tar -czf $BACKUP_DIR/analytics/backup_$DATE.tar.gz /var/lib/analytics
 
 # Ollama models (weekly only)
-if [ &#36;(date +%u) -eq 1 ]; then
-echo &quot;Backing up Ollama models (weekly)...&quot;
-tar -czf &#36;BACKUP_DIR/ollama/models_&#36;DATE.tar.gz /root/.ollama
+if [ $(date +%u) -eq 1 ]; then
+echo "Backing up Ollama models (weekly)..."
+tar -czf $BACKUP_DIR/ollama/models_$DATE.tar.gz /root/.ollama
 fi
 
 # Upload to S3 (optional)
-aws s3 sync &#36;BACKUP_DIR s3://my-backups/claude-stack/
+aws s3 sync $BACKUP_DIR s3://my-backups/claude-stack/
 
 # Delete old local backups (keep 7 days)
-find &#36;BACKUP_DIR -name &quot;backup_*.sql.gz&quot; -mtime +7 -delete
-find &#36;BACKUP_DIR -name &quot;dump_*.rdb&quot; -mtime +7 -delete
-find &#36;BACKUP_DIR -name &quot;backup_*.tar.gz&quot; -mtime +7 -delete
+find $BACKUP_DIR -name "backup_*.sql.gz" -mtime +7 -delete
+find $BACKUP_DIR -name "dump_*.rdb" -mtime +7 -delete
+find $BACKUP_DIR -name "backup_*.tar.gz" -mtime +7 -delete
 
-echo &quot;Backup completed: &#36;DATE&quot;</code></pre>
+echo "Backup completed: $DATE"</code></pre>
 
 <h3>Restore Procedures</h3>
 
 <pre><code class="language-bash">#!/bin/bash
 # restore.sh - Restore from backup
 
-BACKUP_FILE=&#36;1
+BACKUP_FILE=$1
 
-if [ -z &quot;&#36;BACKUP_FILE&quot; ]; then
-echo &quot;Usage: ./restore.sh &lt;backup_file&gt;&quot;
+if [ -z "$BACKUP_FILE" ]; then
+echo "Usage: ./restore.sh <backup_file>"
 exit 1
 fi
 
@@ -813,25 +813,25 @@ fi
 docker-compose down
 
 # Restore PostgreSQL
-if [[ &#36;BACKUP_FILE == <em>&quot;postgres&quot;</em> ]]; then
-gunzip -c &#36;BACKUP_FILE | \
-PGPASSWORD=&#36;POSTGRES_PASSWORD psql -h localhost -U claude claude_prod
+if [[ $BACKUP_FILE == *"postgres"* ]]; then
+gunzip -c $BACKUP_FILE | \
+PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -U claude claude_prod
 fi
 
 # Restore Redis
-if [[ &#36;BACKUP_FILE == <em>&quot;redis&quot;</em> ]]; then
-cp &#36;BACKUP_FILE /var/lib/redis/dump.rdb
+if [[ $BACKUP_FILE == *"redis"* ]]; then
+cp $BACKUP_FILE /var/lib/redis/dump.rdb
 fi
 
 # Restore Analytics
-if [[ &#36;BACKUP_FILE == <em>&quot;analytics&quot;</em> ]]; then
-tar -xzf &#36;BACKUP_FILE -C /
+if [[ $BACKUP_FILE == *"analytics"* ]]; then
+tar -xzf $BACKUP_FILE -C /
 fi
 
 # Restart services
 docker-compose up -d
 
-echo &quot;Restore completed from: &#36;BACKUP_FILE&quot;</code></pre>
+echo "Restore completed from: $BACKUP_FILE"</code></pre>
 
 <hr>
 
@@ -864,25 +864,25 @@ sudo apt-get install certbot
 sudo certbot certonly --standalone -d claude.example.com
 
 # Auto-renewal cron
-echo &quot;0 0 <em> </em> * certbot renew --quiet&quot; | sudo crontab -</code></pre>
+echo "0 0 * * * certbot renew --quiet" | sudo crontab -</code></pre>
 
 <h3>Database Security</h3>
 
 <pre><code class="language-sql">-- PostgreSQL hardening
 
 -- Create read-only user
-CREATE USER claude_readonly WITH PASSWORD &#039;readonly-password&#039;;
+CREATE USER claude_readonly WITH PASSWORD 'readonly-password';
 GRANT CONNECT ON DATABASE claude_prod TO claude_readonly;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO claude_readonly;
 
 -- Disable remote root access
-ALTER USER postgres PASSWORD &#039;strong-random-password&#039;;
+ALTER USER postgres PASSWORD 'strong-random-password';
 REVOKE ALL ON DATABASE postgres FROM PUBLIC;
 
 -- Enable SSL
 ALTER SYSTEM SET ssl = on;
-ALTER SYSTEM SET ssl_cert_file = &#039;/etc/ssl/certs/server.crt&#039;;
-ALTER SYSTEM SET ssl_key_file = &#039;/etc/ssl/private/server.key&#039;;</code></pre>
+ALTER SYSTEM SET ssl_cert_file = '/etc/ssl/certs/server.crt';
+ALTER SYSTEM SET ssl_key_file = '/etc/ssl/private/server.key';</code></pre>
 
 <hr>
 
@@ -954,9 +954,9 @@ spec:
         image: postgres:16-alpine
         env:
         - name: PATRONI_SCOPE
-          value: &quot;postgres-cluster&quot;
+          value: "postgres-cluster"
         - name: PATRONI_REPLICATION_USERNAME
-          value: &quot;replicator&quot;
+          value: "replicator"
         - name: PATRONI_REPLICATION_PASSWORD
           valueFrom:
             secretKeyRef:
@@ -981,7 +981,7 @@ spec:
 <li><strong>Implement health checks</strong></li>
 </ul>
    <pre><code class="language-yaml">healthcheck:
-     test: [&quot;CMD&quot;, &quot;curl&quot;, &quot;-f&quot;, &quot;http://localhost:11434/api/tags&quot;]
+     test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
      interval: 30s
      timeout: 10s
      retries: 3
@@ -992,18 +992,18 @@ spec:
 </ul>
    <pre><code class="language-yaml">resources:
      limits:
-       memory: &quot;16Gi&quot;
-       cpu: &quot;4&quot;
+       memory: "16Gi"
+       cpu: "4"
        nvidia.com/gpu: 1
      requests:
-       memory: &quot;8Gi&quot;
-       cpu: &quot;2&quot;</code></pre>
+       memory: "8Gi"
+       cpu: "2"</code></pre>
 
 <ul>
 <li><strong>Automate backups</strong></li>
 </ul>
    <pre><code class="language-bash"># Daily cron
-   0 2 <em> </em> * /opt/backup.sh</code></pre>
+   0 2 * * * /opt/backup.sh</code></pre>
 
 <h3>DON'T ❌</h3>
 
@@ -1012,7 +1012,7 @@ spec:
 </ul>
    <pre><code class="language-yaml"># ❌ Direct internet exposure
    ports:
-     - &quot;5432:5432&quot;  # PostgreSQL exposed!
+     - "5432:5432"  # PostgreSQL exposed!
 
 # ✅ Use reverse proxy
 # Access via Nginx only</code></pre>
@@ -1033,7 +1033,7 @@ listen 443 ssl http2;</code></pre>
    POSTGRES_PASSWORD=password
 
 # ✅ Strong random password
-POSTGRES_PASSWORD=&#36;(openssl rand -base64 32)</code></pre>
+POSTGRES_PASSWORD=$(openssl rand -base64 32)</code></pre>
 
 <hr>
 
@@ -1043,12 +1043,12 @@ POSTGRES_PASSWORD=&#36;(openssl rand -base64 32)</code></pre>
 
 <p><strong>Terraform</strong> (provision cloud resources):</p>
 <pre><code class="language-hcl"># main.tf
-resource &quot;aws_instance&quot; &quot;ollama_server&quot; {
-  ami           = &quot;ami-0c55b159cbfafe1f0&quot;
-  instance_type = &quot;g4dn.xlarge&quot;  # GPU instance
+resource "aws_instance" "ollama_server" {
+  ami           = "ami-0c55b159cbfafe1f0"
+  instance_type = "g4dn.xlarge"  # GPU instance
 
 tags = {
-Name = &quot;ollama-production&quot;
+Name = "ollama-production"
 }
 }</code></pre>
 
@@ -1114,5 +1114,3 @@ state: present</code></pre>
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./04-ollama-migration.md">Ollama Migration Guide</a>, <a href="./03-mcp-reliability.md">MCP Server Reliability</a></p>
-`} />
-</PlaybookTemplate>

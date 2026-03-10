@@ -1,17 +1,17 @@
 ---
-import PlaybookTemplate from '../../components/PlaybookTemplate.astro';
-
-const meta = {
-  title: "Cost Attribution System",
-  description: "Multi-dimensional cost tracking (team/project/user/workflow). Automatic tagging, chargeback models, budget enforcement, and usage analytics for AI operations.",
-  category: "Cost",
-  wordCount: 5500,
-  slug: "09-cost-attribution"
-};
+title: "Cost Attribution System"
+description: "Multi-dimensional cost tracking (team/project/user/workflow). Automatic tagging, chargeback models, budget enforcement, and usage analytics for AI operations."
+category: "Cost"
+wordCount: 5500
+readTime: 28
+featured: false
+order: 9
+tags: ["cost", "attribution", "chargeback", "budget", "analytics"]
+prerequisites: []
+relatedPlaybooks: ["02-cost-caps", "08-team-presets"]
 ---
 
-<PlaybookTemplate {...meta}>
-  <div set:html={`<p><strong>Production Playbook for Finance Teams and Engineering Managers</strong></p>
+<p><strong>Production Playbook for Finance Teams and Engineering Managers</strong></p>
 
 <p>Tracking AI infrastructure costs by team, project, user, and workflow enables accurate chargeback, budget management, and cost optimization. This playbook provides cost tagging strategies, budget enforcement, chargeback models, usage analytics, and optimization recommendations for Claude Code deployments.</p>
 
@@ -27,12 +27,12 @@ const meta = {
   workflow: string;          // code-review
 
 <p>// Secondary dimensions</p>
-<p>environment: &#039;dev&#039; | &#039;staging&#039; | &#039;production&#039;;</p>
+<p>environment: 'dev' | 'staging' | 'production';</p>
 <p>region: string;            // us-east-1</p>
 <p>costCenter: string;        // eng-001</p>
 
 <p>// Cost details</p>
-<p>provider: &#039;anthropic&#039; | &#039;ollama&#039; | &#039;self-hosted&#039;;</p>
+<p>provider: 'anthropic' | 'ollama' | 'self-hosted';</p>
 <p>model: string;             // claude-3-5-sonnet-20241022</p>
 <p>inputTokens: number;</p>
 <p>outputTokens: number;</p>
@@ -43,21 +43,21 @@ const meta = {
 <h3>Attribution Hierarchy</h3>
 
 <pre><code class="language-mermaid">graph TB
-    A[Organization] --&gt; B[Cost Center]
-    B --&gt; C[Team]
-    C --&gt; D[Project]
-    D --&gt; E[User]
-    E --&gt; F[Workflow]
-    F --&gt; G[API Call]</code></pre>
+    A[Organization] --> B[Cost Center]
+    B --> C[Team]
+    C --> D[Project]
+    D --> E[User]
+    E --> F[Workflow]
+    F --> G[API Call]</code></pre>
 
 <p><strong>Roll-up Example</strong>:</p>
 <ul>
-<li><strong>API Call</strong>: &#36;0.015 (Claude API call)</li>
-<li><strong>Workflow</strong> (code-review): &#36;0.045 (3 API calls)</li>
-<li><strong>User</strong> (alice): &#36;2.50/day (multiple workflows)</li>
-<li><strong>Project</strong> (api-server): &#36;75/day (multiple users)</li>
-<li><strong>Team</strong> (backend): &#36;300/day (4 projects)</li>
-<li><strong>Cost Center</strong> (eng-001): &#36;1,200/day (4 teams)</li>
+<li><strong>API Call</strong>: $0.015 (Claude API call)</li>
+<li><strong>Workflow</strong> (code-review): $0.045 (3 API calls)</li>
+<li><strong>User</strong> (alice): $2.50/day (multiple workflows)</li>
+<li><strong>Project</strong> (api-server): $75/day (multiple users)</li>
+<li><strong>Team</strong> (backend): $300/day (4 projects)</li>
+<li><strong>Cost Center</strong> (eng-001): $1,200/day (4 teams)</li>
 </ul>
 
 <hr>
@@ -75,10 +75,10 @@ const meta = {
       projectId: string;
       workflow: string;
     }
-  ): Promise&lt;CostAttribution&gt; {
+  ): Promise<CostAttribution> {
     // Calculate cost
-    const inputCost = (request.inputTokens / 1_000_000) * 3.00;  // &#36;3/1M
-    const outputCost = (request.outputTokens / 1_000_000) * 15.00; // &#36;15/1M
+    const inputCost = (request.inputTokens / 1_000_000) * 3.00;  // $3/1M
+    const outputCost = (request.outputTokens / 1_000_000) * 15.00; // $15/1M
     const totalCost = inputCost + outputCost;
 
 <p>// Create attribution record</p>
@@ -88,9 +88,9 @@ const meta = {
 <p>user: context.userId,</p>
 <p>workflow: context.workflow,</p>
 <p>environment: process.env.NODE_ENV as any,</p>
-<p>region: process.env.AWS_REGION || &#039;us-east-1&#039;,</p>
+<p>region: process.env.AWS_REGION || 'us-east-1',</p>
 <p>costCenter: await this.getCostCenter(context.teamId),</p>
-<p>provider: &#039;anthropic&#039;,</p>
+<p>provider: 'anthropic',</p>
 <p>model: request.model,</p>
 <p>inputTokens: request.inputTokens,</p>
 <p>outputTokens: request.outputTokens,</p>
@@ -104,24 +104,24 @@ const meta = {
 <p>return attribution;</p>
 <p>}</p>
 
-<p>private async getCostCenter(teamId: string): Promise&lt;string&gt; {</p>
-<p>const teamMapping: Record&lt;string, string&gt; = {</p>
-<p>&#039;engineering-backend&#039;: &#039;eng-001&#039;,</p>
-<p>&#039;engineering-frontend&#039;: &#039;eng-002&#039;,</p>
-<p>&#039;product&#039;: &#039;prod-001&#039;,</p>
-<p>&#039;marketing&#039;: &#039;mkt-001&#039;</p>
+<p>private async getCostCenter(teamId: string): Promise<string> {</p>
+<p>const teamMapping: Record<string, string> = {</p>
+<p>'engineering-backend': 'eng-001',</p>
+<p>'engineering-frontend': 'eng-002',</p>
+<p>'product': 'prod-001',</p>
+<p>'marketing': 'mkt-001'</p>
 <p>};</p>
 
-<p>return teamMapping[teamId] || &#039;unallocated&#039;;</p>
+<p>return teamMapping[teamId] || 'unallocated';</p>
 <p>}</p>
 
-<p>private async storeCostData(attribution: CostAttribution): Promise&lt;void&gt; {</p>
+<p>private async storeCostData(attribution: CostAttribution): Promise<void> {</p>
 <p>// Option 1: PostgreSQL</p>
 <p>await db.costs.insert(attribution);</p>
 
 <p>// Option 2: Time-series database (InfluxDB)</p>
 <p>await influx.writePoint({</p>
-<p>measurement: &#039;api_costs&#039;,</p>
+<p>measurement: 'api_costs',</p>
 <p>tags: {</p>
 <p>team: attribution.team,</p>
 <p>project: attribution.project,</p>
@@ -139,7 +139,7 @@ const meta = {
 <p>await this.appendToCSV(attribution);</p>
 <p>}</p>
 
-<p>private async appendToCSV(attribution: CostAttribution): Promise&lt;void&gt; {</p>
+<p>private async appendToCSV(attribution: CostAttribution): Promise<void> {</p>
 <p>const line = [</p>
 <p>new Date(attribution.timestamp).toISOString(),</p>
 <p>attribution.team,</p>
@@ -151,9 +151,9 @@ const meta = {
 <p>attribution.inputTokens,</p>
 <p>attribution.outputTokens,</p>
 <p>attribution.cost.toFixed(4)</p>
-<p>].join(&#039;,&#039;) + &#039;\n&#039;;</p>
+<p>].join(',') + '\n';</p>
 
-<p>await appendFile(&#039;/var/log/costs/costs.csv&#039;, line);</p>
+<p>await appendFile('/var/log/costs/costs.csv', line);</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -162,18 +162,18 @@ const meta = {
 <pre><code class="language-typescript">// Intercept all API calls and tag costs
 const tagger = new CostTagger();
 
-<p>async function callClaudeWithTagging(prompt: string, context: any): Promise&lt;string&gt; {</p>
+<p>async function callClaudeWithTagging(prompt: string, context: any): Promise<string> {</p>
 <p>const startTime = Date.now();</p>
 
 <p>const response = await anthropic.messages.create({</p>
-<p>model: &#039;claude-3-5-sonnet-20241022&#039;,</p>
+<p>model: 'claude-3-5-sonnet-20241022',</p>
 <p>max_tokens: 1024,</p>
-<p>messages: [{ role: &#039;user&#039;, content: prompt }]</p>
+<p>messages: [{ role: 'user', content: prompt }]</p>
 <p>});</p>
 
 <p>// Tag costs</p>
 <p>await tagger.tagAPICall({</p>
-<p>model: &#039;claude-3-5-sonnet-20241022&#039;,</p>
+<p>model: 'claude-3-5-sonnet-20241022',</p>
 <p>inputTokens: response.usage.input_tokens,</p>
 <p>outputTokens: response.usage.output_tokens</p>
 <p>}, {</p>
@@ -194,25 +194,25 @@ const tagger = new CostTagger();
 
 <pre><code class="language-typescript">interface Budget {
   id: string;
-  entity: { type: &#039;team&#039; | &#039;project&#039; | &#039;user&#039;; id: string };
-  period: &#039;daily&#039; | &#039;weekly&#039; | &#039;monthly&#039;;
+  entity: { type: 'team' | 'project' | 'user'; id: string };
+  period: 'daily' | 'weekly' | 'monthly';
   limit: number;  // USD
   alertThresholds: number[];  // [0.5, 0.8, 0.9]
   enforced: boolean;
 }
 
 <p>class BudgetManager {</p>
-<p>private budgets: Map&lt;string, Budget&gt; = new Map();</p>
+<p>private budgets: Map<string, Budget> = new Map();</p>
 
-<p>async setBudget(budget: Budget): Promise&lt;void&gt; {</p>
+<p>async setBudget(budget: Budget): Promise<void> {</p>
 <p>this.budgets.set(budget.id, budget);</p>
 <p>await db.budgets.upsert(budget);</p>
 <p>}</p>
 
 <p>async checkBudget(</p>
-<p>entityType: &#039;team&#039; | &#039;project&#039; | &#039;user&#039;,</p>
+<p>entityType: 'team' | 'project' | 'user',</p>
 <p>entityId: string</p>
-<p>): Promise&lt;{ allowed: boolean; spent: number; limit: number; remaining: number }&gt; {</p>
+<p>): Promise<{ allowed: boolean; spent: number; limit: number; remaining: number }> {</p>
 <p>// Find budget</p>
 <p>const budget = await this.findBudget(entityType, entityId);</p>
 <p>if (!budget) {</p>
@@ -224,13 +224,13 @@ const tagger = new CostTagger();
 <p>const spent = await this.calculateSpend(entityType, entityId, periodStart);</p>
 
 <p>// Check against limit</p>
-<p>const allowed = !budget.enforced || spent &lt; budget.limit;</p>
+<p>const allowed = !budget.enforced || spent < budget.limit;</p>
 <p>const remaining = budget.limit - spent;</p>
 
 <p>// Check alert thresholds</p>
 <p>const utilizationRate = spent / budget.limit;</p>
 <p>for (const threshold of budget.alertThresholds) {</p>
-<p>if (utilizationRate &gt;= threshold &amp;&amp; utilizationRate &lt; threshold + 0.01) {</p>
+<p>if (utilizationRate >= threshold && utilizationRate < threshold + 0.01) {</p>
 <p>await this.sendBudgetAlert(budget, spent, utilizationRate);</p>
 <p>}</p>
 <p>}</p>
@@ -238,17 +238,17 @@ const tagger = new CostTagger();
 <p>return { allowed, spent, limit: budget.limit, remaining };</p>
 <p>}</p>
 
-<p>private getPeriodStart(period: &#039;daily&#039; | &#039;weekly&#039; | &#039;monthly&#039;): number {</p>
+<p>private getPeriodStart(period: 'daily' | 'weekly' | 'monthly'): number {</p>
 <p>const now = new Date();</p>
 
 <p>switch (period) {</p>
-<p>case &#039;daily&#039;:</p>
+<p>case 'daily':</p>
 <p>return new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();</p>
-<p>case &#039;weekly&#039;:</p>
+<p>case 'weekly':</p>
 <p>const weekStart = new Date(now);</p>
 <p>weekStart.setDate(now.getDate() - now.getDay());</p>
 <p>return weekStart.getTime();</p>
-<p>case &#039;monthly&#039;:</p>
+<p>case 'monthly':</p>
 <p>return new Date(now.getFullYear(), now.getMonth(), 1).getTime();</p>
 <p>}</p>
 <p>}</p>
@@ -257,31 +257,31 @@ const tagger = new CostTagger();
 <p>entityType: string,</p>
 <p>entityId: string,</p>
 <p>since: number</p>
-<p>): Promise&lt;number&gt; {</p>
+<p>): Promise<number> {</p>
 <p>const costs = await db.costs.find({</p>
 <p>[entityType]: entityId,</p>
-<p>timestamp: { &#36;gte: since }</p>
+<p>timestamp: { $gte: since }</p>
 <p>});</p>
 
-<p>return costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>return costs.reduce((sum, c) => sum + c.cost, 0);</p>
 <p>}</p>
 
-<p>private async findBudget(entityType: string, entityId: string): Promise&lt;Budget | null&gt; {</p>
+<p>private async findBudget(entityType: string, entityId: string): Promise<Budget | null> {</p>
 <p>return await db.budgets.findOne({</p>
-<p>&#039;entity.type&#039;: entityType,</p>
-<p>&#039;entity.id&#039;: entityId</p>
+<p>'entity.type': entityType,</p>
+<p>'entity.id': entityId</p>
 <p>});</p>
 <p>}</p>
 
-<p>private async sendBudgetAlert(budget: Budget, spent: number, rate: number): Promise&lt;void&gt; {</p>
+<p>private async sendBudgetAlert(budget: Budget, spent: number, rate: number): Promise<void> {</p>
 <p>const message = <code></p>
-<p>Budget Alert: &#36;{budget.entity.type} &#36;{budget.entity.id}</p>
+<p>Budget Alert: ${budget.entity.type} ${budget.entity.id}</p>
 
-<p>Current spend: &#36;&#36;{spent.toFixed(2)}</p>
-<p>Budget limit: &#36;&#36;{budget.limit.toFixed(2)}</p>
-<p>Utilization: &#36;{(rate * 100).toFixed(1)}%</p>
+<p>Current spend: $${spent.toFixed(2)}</p>
+<p>Budget limit: $${budget.limit.toFixed(2)}</p>
+<p>Utilization: ${(rate * 100).toFixed(1)}%</p>
 
-<p>Period: &#36;{budget.period}</p>
+<p>Period: ${budget.period}</p>
     </code>.trim();
 
 <p>// Send to Slack, email, PagerDuty, etc.</p>
@@ -293,22 +293,22 @@ const tagger = new CostTagger();
 
 <pre><code class="language-typescript">const budgetManager = new BudgetManager();
 
-<p>// Set team budget: &#36;500/month</p>
+<p>// Set team budget: $500/month</p>
 <p>await budgetManager.setBudget({</p>
-<p>id: &#039;budget-backend-monthly&#039;,</p>
-<p>entity: { type: &#039;team&#039;, id: &#039;engineering-backend&#039; },</p>
-<p>period: &#039;monthly&#039;,</p>
+<p>id: 'budget-backend-monthly',</p>
+<p>entity: { type: 'team', id: 'engineering-backend' },</p>
+<p>period: 'monthly',</p>
 <p>limit: 500,</p>
 <p>alertThresholds: [0.5, 0.8, 0.9],  // Alert at 50%, 80%, 90%</p>
 <p>enforced: true</p>
 <p>});</p>
 
 <p>// Check budget before API call</p>
-<p>async function callWithBudgetCheck(prompt: string, teamId: string): Promise&lt;string&gt; {</p>
-<p>const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);</p>
+<p>async function callWithBudgetCheck(prompt: string, teamId: string): Promise<string> {</p>
+<p>const budget = await budgetManager.checkBudget('team', teamId);</p>
 
 <p>if (!budget.allowed) {</p>
-<p>throw new Error(&#96;Budget exceeded for team &#36;{teamId}. Spent: &#36;&#36;{budget.spent.toFixed(2)}, Limit: &#36;&#36;{budget.limit.toFixed(2)}&#96;);</p>
+<p>throw new Error(`Budget exceeded for team ${teamId}. Spent: $${budget.spent.toFixed(2)}, Limit: $${budget.limit.toFixed(2)}`);</p>
 <p>}</p>
 
 <p>return await callClaude(prompt);</p>
@@ -321,27 +321,27 @@ const tagger = new CostTagger();
 <h3>Model 1: Direct Chargeback (Pay-per-use)</h3>
 
 <pre><code class="language-typescript">interface ChargebackModel {
-  type: &#039;direct&#039; | &#039;allocated&#039; | &#039;tiered&#039;;
+  type: 'direct' | 'allocated' | 'tiered';
   rates: {
-    inputTokens: number;   // &#36;/1M tokens
-    outputTokens: number;  // &#36;/1M tokens
+    inputTokens: number;   // $/1M tokens
+    outputTokens: number;  // $/1M tokens
   };
   markup?: number;  // e.g., 1.2 for 20% markup
 }
 
 <p>class DirectChargeback {</p>
-<p>async calculateMonthlyChargeback(teamId: string, month: string): Promise&lt;number&gt; {</p>
+<p>async calculateMonthlyChargeback(teamId: string, month: string): Promise<number> {</p>
 <p>// Get all costs for team in month</p>
 <p>const costs = await db.costs.find({</p>
 <p>team: teamId,</p>
 <p>timestamp: {</p>
-<p>&#36;gte: new Date(&#96;&#36;{month}-01&#96;).getTime(),</p>
-<p>&#36;lt: new Date(&#96;&#36;{month}-01&#96;).getTime() + 30 * 86400000</p>
+<p>$gte: new Date(`${month}-01`).getTime(),</p>
+<p>$lt: new Date(`${month}-01`).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
 <p>// Sum costs</p>
-<p>const total = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>const total = costs.reduce((sum, c) => sum + c.cost, 0);</p>
 
 <p>// Apply markup (if infrastructure overhead)</p>
 <p>const markup = 1.2;  // 20% overhead</p>
@@ -352,12 +352,12 @@ const tagger = new CostTagger();
 <h3>Model 2: Allocated Chargeback (Fixed budgets)</h3>
 
 <pre><code class="language-typescript">class AllocatedChargeback {
-  async allocateBudget(totalBudget: number, teams: string[]): Promise&lt;Record&lt;string, number&gt;&gt; {
+  async allocateBudget(totalBudget: number, teams: string[]): Promise<Record<string, number>> {
     // Get usage share for each team
     const usageShares = await this.calculateUsageShares(teams);
 
 <p>// Allocate budget proportionally</p>
-<p>const allocations: Record&lt;string, number&gt; = {};</p>
+<p>const allocations: Record<string, number> = {};</p>
 <p>for (const team of teams) {</p>
 <p>allocations[team] = totalBudget * usageShares[team];</p>
 <p>}</p>
@@ -365,19 +365,19 @@ const tagger = new CostTagger();
 <p>return allocations;</p>
 <p>}</p>
 
-<p>private async calculateUsageShares(teams: string[]): Promise&lt;Record&lt;string, number&gt;&gt; {</p>
-<p>const usage: Record&lt;string, number&gt; = {};</p>
+<p>private async calculateUsageShares(teams: string[]): Promise<Record<string, number>> {</p>
+<p>const usage: Record<string, number> = {};</p>
 <p>let total = 0;</p>
 
 <p>for (const team of teams) {</p>
 <p>const costs = await db.costs.find({ team });</p>
-<p>const teamCost = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>const teamCost = costs.reduce((sum, c) => sum + c.cost, 0);</p>
 <p>usage[team] = teamCost;</p>
 <p>total += teamCost;</p>
 <p>}</p>
 
 <p>// Convert to shares (0-1)</p>
-<p>const shares: Record&lt;string, number&gt; = {};</p>
+<p>const shares: Record<string, number> = {};</p>
 <p>for (const team of teams) {</p>
 <p>shares[team] = usage[team] / total;</p>
 <p>}</p>
@@ -396,9 +396,9 @@ const tagger = new CostTagger();
 
 <p>class TieredChargeback {</p>
 <p>private tiers: PricingTier[] = [</p>
-<p>{ minTokens: 0, maxTokens: 1_000_000, pricePerMillion: 15 },        // 0-1M: &#36;15/M</p>
-<p>{ minTokens: 1_000_000, maxTokens: 10_000_000, pricePerMillion: 12 }, // 1M-10M: &#36;12/M</p>
-<p>{ minTokens: 10_000_000, maxTokens: Infinity, pricePerMillion: 10 }   // 10M+: &#36;10/M</p>
+<p>{ minTokens: 0, maxTokens: 1_000_000, pricePerMillion: 15 },        // 0-1M: $15/M</p>
+<p>{ minTokens: 1_000_000, maxTokens: 10_000_000, pricePerMillion: 12 }, // 1M-10M: $12/M</p>
+<p>{ minTokens: 10_000_000, maxTokens: Infinity, pricePerMillion: 10 }   // 10M+: $10/M</p>
 <p>];</p>
 
 <p>calculateCost(tokens: number): number {</p>
@@ -409,7 +409,7 @@ const tagger = new CostTagger();
 <p>const tierSize = tier.maxTokens - tier.minTokens;</p>
 <p>const tokensInTier = Math.min(remaining, tierSize);</p>
 
-<p>if (tokensInTier &gt; 0) {</p>
+<p>if (tokensInTier > 0) {</p>
 <p>cost += (tokensInTier / 1_000_000) * tier.pricePerMillion;</p>
 <p>remaining -= tokensInTier;</p>
 <p>}</p>
@@ -424,10 +424,10 @@ const tagger = new CostTagger();
 <p>// Example</p>
 <p>const tiered = new TieredChargeback();</p>
 <p>console.log(tiered.calculateCost(15_000_000));</p>
-<p>// 0-1M: &#36;15</p>
-<p>// 1M-10M: &#36;108 (9M × &#36;12)</p>
-<p>// 10M-15M: &#36;50 (5M × &#36;10)</p>
-<p>// Total: &#36;173</code></pre></p>
+<p>// 0-1M: $15</p>
+<p>// 1M-10M: $108 (9M × $12)</p>
+<p>// 10M-15M: $50 (5M × $10)</p>
+<p>// Total: $173</code></pre></p>
 
 <hr>
 
@@ -439,55 +439,55 @@ const tagger = new CostTagger();
   totalCost: number;
   totalTokens: number;
   avgCostPerRequest: number;
-  topProjects: Array&lt;{ project: string; cost: number }&gt;;
-  topUsers: Array&lt;{ user: string; cost: number }&gt;;
-  costTrend: Array&lt;{ date: string; cost: number }&gt;;
+  topProjects: Array<{ project: string; cost: number }>;
+  topUsers: Array<{ user: string; cost: number }>;
+  costTrend: Array<{ date: string; cost: number }>;
 }
 
 <p>class UsageAnalytics {</p>
-<p>async generateMonthlyReport(month: string): Promise&lt;UsageMetrics&gt; {</p>
+<p>async generateMonthlyReport(month: string): Promise<UsageMetrics> {</p>
 <p>const costs = await db.costs.find({</p>
 <p>timestamp: {</p>
-<p>&#36;gte: new Date(&#96;&#36;{month}-01&#96;).getTime(),</p>
-<p>&#36;lt: new Date(&#96;&#36;{month}-01&#96;).getTime() + 30 * 86400000</p>
+<p>$gte: new Date(`${month}-01`).getTime(),</p>
+<p>$lt: new Date(`${month}-01`).getTime() + 30 * 86400000</p>
 <p>}</p>
 <p>});</p>
 
 <p>// Total cost</p>
-<p>const totalCost = costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
-<p>const totalTokens = costs.reduce((sum, c) =&gt; sum + c.inputTokens + c.outputTokens, 0);</p>
+<p>const totalCost = costs.reduce((sum, c) => sum + c.cost, 0);</p>
+<p>const totalTokens = costs.reduce((sum, c) => sum + c.inputTokens + c.outputTokens, 0);</p>
 
 <p>// Average cost per request</p>
 <p>const avgCostPerRequest = totalCost / costs.length;</p>
 
 <p>// Top projects by cost</p>
-<p>const projectCosts = this.groupBy(costs, &#039;project&#039;);</p>
+<p>const projectCosts = this.groupBy(costs, 'project');</p>
 <p>const topProjects = Object.entries(projectCosts)</p>
-<p>.map(([project, costs]) =&gt; ({</p>
+<p>.map(([project, costs]) => ({</p>
 <p>project,</p>
-<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>cost: costs.reduce((sum: number, c: any) => sum + c.cost, 0)</p>
 <p>}))</p>
-<p>.sort((a, b) =&gt; b.cost - a.cost)</p>
+<p>.sort((a, b) => b.cost - a.cost)</p>
 <p>.slice(0, 10);</p>
 
 <p>// Top users by cost</p>
-<p>const userCosts = this.groupBy(costs, &#039;user&#039;);</p>
+<p>const userCosts = this.groupBy(costs, 'user');</p>
 <p>const topUsers = Object.entries(userCosts)</p>
-<p>.map(([user, costs]) =&gt; ({</p>
+<p>.map(([user, costs]) => ({</p>
 <p>user,</p>
-<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>cost: costs.reduce((sum: number, c: any) => sum + c.cost, 0)</p>
 <p>}))</p>
-<p>.sort((a, b) =&gt; b.cost - a.cost)</p>
+<p>.sort((a, b) => b.cost - a.cost)</p>
 <p>.slice(0, 10);</p>
 
 <p>// Daily cost trend</p>
 <p>const dailyCosts = this.groupByDate(costs);</p>
 <p>const costTrend = Object.entries(dailyCosts)</p>
-<p>.map(([date, costs]) =&gt; ({</p>
+<p>.map(([date, costs]) => ({</p>
 <p>date,</p>
-<p>cost: costs.reduce((sum: number, c: any) =&gt; sum + c.cost, 0)</p>
+<p>cost: costs.reduce((sum: number, c: any) => sum + c.cost, 0)</p>
 <p>}))</p>
-<p>.sort((a, b) =&gt; a.date.localeCompare(b.date));</p>
+<p>.sort((a, b) => a.date.localeCompare(b.date));</p>
 
 <p>return {</p>
 <p>totalCost,</p>
@@ -499,8 +499,8 @@ const tagger = new CostTagger();
 <p>};</p>
 <p>}</p>
 
-<p>private groupBy(items: any[], key: string): Record&lt;string, any[]&gt; {</p>
-<p>return items.reduce((acc, item) =&gt; {</p>
+<p>private groupBy(items: any[], key: string): Record<string, any[]> {</p>
+<p>return items.reduce((acc, item) => {</p>
 <p>const groupKey = item[key];</p>
 <p>if (!acc[groupKey]) acc[groupKey] = [];</p>
 <p>acc[groupKey].push(item);</p>
@@ -508,9 +508,9 @@ const tagger = new CostTagger();
 <p>}, {});</p>
 <p>}</p>
 
-<p>private groupByDate(costs: any[]): Record&lt;string, any[]&gt; {</p>
-<p>return costs.reduce((acc, cost) =&gt; {</p>
-<p>const date = new Date(cost.timestamp).toISOString().split(&#039;T&#039;)[0];</p>
+<p>private groupByDate(costs: any[]): Record<string, any[]> {</p>
+<p>return costs.reduce((acc, cost) => {</p>
+<p>const date = new Date(cost.timestamp).toISOString().split('T')[0];</p>
 <p>if (!acc[date]) acc[date] = [];</p>
 <p>acc[date].push(cost);</p>
 <p>return acc;</p>
@@ -525,15 +525,15 @@ const tagger = new CostTagger();
 <h3>Optimization Recommendations</h3>
 
 <pre><code class="language-typescript">interface OptimizationRecommendation {
-  category: &#039;model-selection&#039; | &#039;caching&#039; | &#039;batching&#039; | &#039;workflow&#039;;
+  category: 'model-selection' | 'caching' | 'batching' | 'workflow';
   description: string;
   potentialSavings: number;  // USD/month
-  effort: &#039;low&#039; | &#039;medium&#039; | &#039;high&#039;;
+  effort: 'low' | 'medium' | 'high';
   implementation: string;
 }
 
 <p>class CostOptimizer {</p>
-<p>async analyzeAndRecommend(teamId: string): Promise&lt;OptimizationRecommendation[]&gt; {</p>
+<p>async analyzeAndRecommend(teamId: string): Promise<OptimizationRecommendation[]> {</p>
 <p>const recommendations: OptimizationRecommendation[] = [];</p>
 
 <p>// Analyze model usage</p>
@@ -548,85 +548,85 @@ const tagger = new CostTagger();
 <p>const batchRecommendation = await this.analyzeBatchingOpportunities(teamId);</p>
 <p>if (batchRecommendation) recommendations.push(batchRecommendation);</p>
 
-<p>return recommendations.sort((a, b) =&gt; b.potentialSavings - a.potentialSavings);</p>
+<p>return recommendations.sort((a, b) => b.potentialSavings - a.potentialSavings);</p>
 <p>}</p>
 
-<p>private async analyzeModelUsage(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>private async analyzeModelUsage(teamId: string): Promise<OptimizationRecommendation | null> {</p>
 <p>// Check if using expensive model for simple tasks</p>
 <p>const costs = await db.costs.find({ team: teamId });</p>
 
-<p>const sonnetUsage = costs.filter(c =&gt; c.model.includes(&#039;sonnet&#039;));</p>
-<p>const simplePrompts = sonnetUsage.filter(c =&gt;</p>
-<p>c.inputTokens &lt; 1000 &amp;&amp; c.outputTokens &lt; 500</p>
+<p>const sonnetUsage = costs.filter(c => c.model.includes('sonnet'));</p>
+<p>const simplePrompts = sonnetUsage.filter(c =></p>
+<p>c.inputTokens < 1000 && c.outputTokens < 500</p>
 <p>);</p>
 
-<p>if (simplePrompts.length &gt; sonnetUsage.length * 0.5) {</p>
-<p>const currentCost = simplePrompts.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>if (simplePrompts.length > sonnetUsage.length * 0.5) {</p>
+<p>const currentCost = simplePrompts.reduce((sum, c) => sum + c.cost, 0);</p>
 <p>const haikuCost = currentCost * (0.8 / 3.0);  // Haiku is cheaper</p>
 <p>const monthlySavings = (currentCost - haikuCost) * 30;</p>
 
 <p>return {</p>
-<p>category: &#039;model-selection&#039;,</p>
-<p>description: &#96;&#36;{simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.&#96;,</p>
+<p>category: 'model-selection',</p>
+<p>description: `${simplePrompts.length} simple prompts use Claude 3.5 Sonnet. Switch to Claude 3.5 Haiku for 73% cost reduction.`,</p>
 <p>potentialSavings: monthlySavings,</p>
-<p>effort: &#039;low&#039;,</p>
-<p>implementation: &#039;Update model parameter in simple workflows to claude-3-5-haiku-20241022&#039;</p>
+<p>effort: 'low',</p>
+<p>implementation: 'Update model parameter in simple workflows to claude-3-5-haiku-20241022'</p>
 <p>};</p>
 <p>}</p>
 
 <p>return null;</p>
 <p>}</p>
 
-<p>private async analyzeCachingOpportunities(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>private async analyzeCachingOpportunities(teamId: string): Promise<OptimizationRecommendation | null> {</p>
 <p>const costs = await db.costs.find({ team: teamId });</p>
 
 <p>// Find duplicate prompts</p>
-<p>const promptCounts = new Map&lt;string, number&gt;();</p>
+<p>const promptCounts = new Map<string, number>();</p>
 <p>for (const cost of costs) {</p>
 <p>const hash = this.hashPrompt(cost);</p>
 <p>promptCounts.set(hash, (promptCounts.get(hash) || 0) + 1);</p>
 <p>}</p>
 
-<p>const duplicates = Array.from(promptCounts.entries()).filter(([_, count]) =&gt; count &gt; 1);</p>
-<p>const duplicateCost = duplicates.reduce((sum, [hash, count]) =&gt; {</p>
-<p>const prompt = costs.find(c =&gt; this.hashPrompt(c) === hash);</p>
+<p>const duplicates = Array.from(promptCounts.entries()).filter(([_, count]) => count > 1);</p>
+<p>const duplicateCost = duplicates.reduce((sum, [hash, count]) => {</p>
+<p>const prompt = costs.find(c => this.hashPrompt(c) === hash);</p>
 <p>return sum + (prompt?.cost || 0) * (count - 1);</p>
 <p>}, 0);</p>
 
-<p>if (duplicateCost &gt; 10) {</p>
+<p>if (duplicateCost > 10) {</p>
 <p>return {</p>
-<p>category: &#039;caching&#039;,</p>
-<p>description: &#96;&#36;{duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.&#96;,</p>
+<p>category: 'caching',</p>
+<p>description: `${duplicates.length} prompts are duplicated. Implement caching to avoid redundant API calls.`,</p>
 <p>potentialSavings: duplicateCost * 30,</p>
-<p>effort: &#039;medium&#039;,</p>
-<p>implementation: &#039;Add Redis cache for LLM responses with 1-hour TTL&#039;</p>
+<p>effort: 'medium',</p>
+<p>implementation: 'Add Redis cache for LLM responses with 1-hour TTL'</p>
 <p>};</p>
 <p>}</p>
 
 <p>return null;</p>
 <p>}</p>
 
-<p>private async analyzeBatchingOpportunities(teamId: string): Promise&lt;OptimizationRecommendation | null&gt; {</p>
+<p>private async analyzeBatchingOpportunities(teamId: string): Promise<OptimizationRecommendation | null> {</p>
 <p>// Find sequential requests that could be batched</p>
 <p>const costs = await db.costs.find({ team: teamId }).sort({ timestamp: 1 });</p>
 
 <p>let batchableCount = 0;</p>
-<p>for (let i = 0; i &lt; costs.length - 1; i++) {</p>
+<p>for (let i = 0; i < costs.length - 1; i++) {</p>
 <p>const timeDiff = costs[i + 1].timestamp - costs[i].timestamp;</p>
-<p>if (timeDiff &lt; 1000) {  // Within 1 second</p>
+<p>if (timeDiff < 1000) {  // Within 1 second</p>
 <p>batchableCount++;</p>
 <p>}</p>
 <p>}</p>
 
-<p>if (batchableCount &gt; costs.length * 0.3) {</p>
-<p>const savings = (batchableCount / costs.length) * costs.reduce((sum, c) =&gt; sum + c.cost, 0);</p>
+<p>if (batchableCount > costs.length * 0.3) {</p>
+<p>const savings = (batchableCount / costs.length) * costs.reduce((sum, c) => sum + c.cost, 0);</p>
 
 <p>return {</p>
-<p>category: &#039;batching&#039;,</p>
-<p>description: &#96;&#36;{batchableCount} requests could be batched. Combine multiple prompts into single API call.&#96;,</p>
-<p>potentialSavings: savings <em> 30 </em> 0.3,  // 30% reduction from batching</p>
-<p>effort: &#039;high&#039;,</p>
-<p>implementation: &#039;Implement request batching with 100ms window&#039;</p>
+<p>category: 'batching',</p>
+<p>description: `${batchableCount} requests could be batched. Combine multiple prompts into single API call.`,</p>
+<p>potentialSavings: savings * 30 * 0.3,  // 30% reduction from batching</p>
+<p>effort: 'high',</p>
+<p>implementation: 'Implement request batching with 100ms window'</p>
 <p>};</p>
 <p>}</p>
 
@@ -634,7 +634,7 @@ const tagger = new CostTagger();
 <p>}</p>
 
 <p>private hashPrompt(cost: any): string {</p>
-<p>return &#96;&#36;{cost.workflow}-&#36;{cost.inputTokens}-&#36;{cost.outputTokens}&#96;;</p>
+<p>return `${cost.workflow}-${cost.inputTokens}-${cost.outputTokens}`;</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -645,46 +645,46 @@ const tagger = new CostTagger();
 <h3>Monthly Cost Report</h3>
 
 <pre><code class="language-typescript">class CostReporter {
-  async generateMonthlyReport(month: string): Promise&lt;string&gt; {
+  async generateMonthlyReport(month: string): Promise<string> {
     const analytics = new UsageAnalytics();
     const metrics = await analytics.generateMonthlyReport(month);
 
 <p>const report = <code></p>
-<p># Cost Report - &#36;{month}</p>
+<p># Cost Report - ${month}</p>
 
-<p>&lt;h2&gt;Summary&lt;/h2&gt;</p>
+<p><h2>Summary</h2></p>
 <ul>
-<li><strong>Total Cost</strong>: &#36;&#36;{metrics.totalCost.toFixed(2)}</li>
-<li><strong>Total Tokens</strong>: &#36;{metrics.totalTokens.toLocaleString()}</li>
-<li><strong>Avg Cost/Request</strong>: &#36;&#36;{metrics.avgCostPerRequest.toFixed(4)}</li>
+<li><strong>Total Cost</strong>: $${metrics.totalCost.toFixed(2)}</li>
+<li><strong>Total Tokens</strong>: ${metrics.totalTokens.toLocaleString()}</li>
+<li><strong>Avg Cost/Request</strong>: $${metrics.avgCostPerRequest.toFixed(4)}</li>
 </ul>
 
-<p>&lt;h2&gt;Top Projects by Cost&lt;/h2&gt;</p>
-<p>&#36;{metrics.topProjects.map((p, i) =&gt; &#96;&#36;{i + 1}. &#36;{p.project}: &#36;&#36;{p.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
+<p><h2>Top Projects by Cost</h2></p>
+<p>${metrics.topProjects.map((p, i) => `${i + 1}. ${p.project}: $${p.cost.toFixed(2)}`).join('\n')}</p>
 
-<p>&lt;h2&gt;Top Users by Cost&lt;/h2&gt;</p>
-<p>&#36;{metrics.topUsers.map((u, i) =&gt; &#96;&#36;{i + 1}. &#36;{u.user}: &#36;&#36;{u.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
+<p><h2>Top Users by Cost</h2></p>
+<p>${metrics.topUsers.map((u, i) => `${i + 1}. ${u.user}: $${u.cost.toFixed(2)}`).join('\n')}</p>
 
-<p>&lt;h2&gt;Daily Cost Trend&lt;/h2&gt;</p>
-<p>&#36;{metrics.costTrend.map(d =&gt; &#96;&#36;{d.date}: &#36;&#36;{d.cost.toFixed(2)}&#96;).join(&#039;\n&#039;)}</p>
+<p><h2>Daily Cost Trend</h2></p>
+<p>${metrics.costTrend.map(d => `${d.date}: $${d.cost.toFixed(2)}`).join('\n')}</p>
 
-<p>&lt;h2&gt;Optimization Recommendations&lt;/h2&gt;</p>
-<p>&#36;{await this.getOptimizationRecommendations()}</p>
+<p><h2>Optimization Recommendations</h2></p>
+<p>${await this.getOptimizationRecommendations()}</p>
 
 <hr>
-<p>Generated: &#36;{new Date().toISOString()}</p>
+<p>Generated: ${new Date().toISOString()}</p>
     </code>.trim();
 
 <p>return report;</p>
 <p>}</p>
 
-<p>private async getOptimizationRecommendations(): Promise&lt;string&gt; {</p>
+<p>private async getOptimizationRecommendations(): Promise<string> {</p>
 <p>const optimizer = new CostOptimizer();</p>
-<p>const recommendations = await optimizer.analyzeAndRecommend(&#039;engineering-backend&#039;);</p>
+<p>const recommendations = await optimizer.analyzeAndRecommend('engineering-backend');</p>
 
 <p>return recommendations</p>
-<p>.map(r =&gt; &#96;- <strong>&#36;{r.category}</strong>: &#36;{r.description} (Savings: &#36;&#36;{r.potentialSavings.toFixed(2)}/month, Effort: &#36;{r.effort})&#96;)</p>
-<p>.join(&#039;\n&#039;);</p>
+<p>.map(r => `- <strong>${r.category}</strong>: ${r.description} (Savings: $${r.potentialSavings.toFixed(2)}/month, Effort: ${r.effort})`)</p>
+<p>.join('\n');</p>
 <p>}</p>
 <p>}</code></pre></p>
 
@@ -702,13 +702,13 @@ const tagger = new CostTagger();
 <ul>
 <li><strong>Enforce budgets</strong></li>
 </ul>
-   <pre><code class="language-typescript">const budget = await budgetManager.checkBudget(&#039;team&#039;, teamId);
-   if (!budget.allowed) throw new Error(&#039;Budget exceeded&#039;);</code></pre>
+   <pre><code class="language-typescript">const budget = await budgetManager.checkBudget('team', teamId);
+   if (!budget.allowed) throw new Error('Budget exceeded');</code></pre>
 
 <ul>
 <li><strong>Monitor trends</strong></li>
 </ul>
-   <pre><code class="language-typescript">const report = await analytics.generateMonthlyReport(&#039;2025-12&#039;);</code></pre>
+   <pre><code class="language-typescript">const report = await analytics.generateMonthlyReport('2025-12');</code></pre>
 
 <h3>DON'T ❌</h3>
 
@@ -783,5 +783,3 @@ const tagger = new CostTagger();
 <p><strong>Last Updated</strong>: 2025-12-24</p>
 <p><strong>Author</strong>: Jeremy Longshore</p>
 <p><strong>Related Playbooks</strong>: <a href="./02-cost-caps.md">Cost Caps & Budget Management</a>, <a href="./08-team-presets.md">Team Presets & Workflows</a></p>
-`} />
-</PlaybookTemplate>
