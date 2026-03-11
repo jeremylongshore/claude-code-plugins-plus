@@ -25,347 +25,32 @@ Enterprise reference architecture patterns for Guidewire InsuranceSuite Cloud de
 - Familiarity with Guidewire InsuranceSuite components
 - Knowledge of cloud architecture patterns
 
-## High-Level Architecture
+## Instructions
 
-```
-                              ┌─────────────────────────────────────────────┐
-                              │         External Users & Channels           │
-                              │  (Agents, Customers, Partners, Regulators)  │
-                              └─────────────────┬───────────────────────────┘
-                                                │
-                              ┌─────────────────▼───────────────────────────┐
-                              │           Digital Experience Layer          │
-                              │  ┌─────────┐ ┌─────────┐ ┌─────────────┐   │
-                              │  │  Agent  │ │Customer │ │  Partner    │   │
-                              │  │ Portal  │ │ Portal  │ │   Portal    │   │
-                              │  │ (Jutro) │ │ (Jutro) │ │   (API)     │   │
-                              │  └────┬────┘ └────┬────┘ └──────┬──────┘   │
-                              └───────┼──────────┼─────────────┼───────────┘
-                                      │          │             │
-                              ┌───────▼──────────▼─────────────▼───────────┐
-                              │              API Gateway                    │
-                              │      (Authentication, Rate Limiting)        │
-                              └────────────────────┬────────────────────────┘
-                                                   │
-  ┌────────────────────────────────────────────────┼────────────────────────────────────────────────┐
-  │                                    Guidewire Cloud Platform                                     │
-  │                                                │                                                │
-  │  ┌─────────────────┐  ┌─────────────────┐  ┌──┴──────────────┐  ┌─────────────────┐            │
-  │  │   PolicyCenter  │  │   ClaimCenter   │  │  BillingCenter  │  │  Contact        │            │
-  │  │                 │  │                 │  │                 │  │  Manager        │            │
-  │  │ • Submissions   │  │ • FNOL          │  │ • Invoicing     │  │                 │            │
-  │  │ • Quoting       │  │ • Investigation │  │ • Payments      │  │ • Contacts      │            │
-  │  │ • Binding       │  │ • Settlement    │  │ • Collections   │  │ • Addresses     │            │
-  │  │ • Issuance      │  │ • Payments      │  │ • Commissions   │  │ • Roles         │            │
-  │  │ • Endorsements  │  │ • Litigation    │  │                 │  │                 │            │
-  │  │ • Renewals      │  │                 │  │                 │  │                 │            │
-  │  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘  └────────┬────────┘            │
-  │           │                    │                    │                    │                     │
-  │           └────────────────────┴────────────────────┴────────────────────┘                     │
-  │                                           │                                                    │
-  │                              ┌────────────▼────────────┐                                       │
-  │                              │     Shared Services     │                                       │
-  │                              │ • Document Management   │                                       │
-  │                              │ • Workflow Engine       │                                       │
-  │                              │ • Rules Engine          │                                       │
-  │                              │ • Reporting             │                                       │
-  │                              └────────────┬────────────┘                                       │
-  │                                           │                                                    │
-  │  ┌────────────────────────────────────────┴────────────────────────────────────────┐          │
-  │  │                         Integration Layer                                        │          │
-  │  │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐        │          │
-  │  │  │   Cloud API  │  │  App Events  │  │  Integration │  │    Batch     │        │          │
-  │  │  │   (REST)     │  │   (Kafka)    │  │   Gateway    │  │   Services   │        │          │
-  │  │  └──────────────┘  └──────────────┘  └──────────────┘  └──────────────┘        │          │
-  │  └─────────────────────────────────────────────────────────────────────────────────┘          │
-  │                                                                                                │
-  └────────────────────────────────────────────────────────────────────────────────────────────────┘
-                                                │
-  ┌─────────────────────────────────────────────┼─────────────────────────────────────────────────┐
-  │                              Enterprise Integration Layer                                      │
-  │                                             │                                                  │
-  │  ┌───────────┐  ┌───────────┐  ┌───────────┴───────────┐  ┌───────────┐  ┌───────────┐       │
-  │  │    CRM    │  │  ERP/GL   │  │   Rating Engines      │  │  Document │  │  Legacy   │       │
-  │  │ (Salesforce) │ (SAP/Oracle) │  (External/Internal)   │  │   Mgmt    │  │  Systems  │       │
-  │  └───────────┘  └───────────┘  └───────────────────────┘  └───────────┘  └───────────┘       │
-  │                                                                                                │
-  └────────────────────────────────────────────────────────────────────────────────────────────────┘
-```
+### Step 1: Understand the Architecture Layers
 
-## Integration Patterns
+The system consists of five layers: Digital Experience (Jutro portals), API Gateway (auth and rate limiting), Guidewire Cloud Platform (PC, CC, BC, Contact Manager), Integration Layer (REST, Kafka, batch), and Enterprise Integration (CRM, ERP, rating engines).
 
-### Pattern 1: Synchronous API Integration
+### Step 2: Choose Integration Patterns
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Client    │────▶│  Cloud API  │────▶│  External   │
-│ Application │     │             │     │   Service   │
-│             │◀────│             │◀────│             │
-└─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │
-       │   HTTP Request    │   HTTP Request    │
-       │──────────────────▶│──────────────────▶│
-       │                   │                   │
-       │   HTTP Response   │   HTTP Response   │
-       │◀──────────────────│◀──────────────────│
-```
+- **Synchronous API**: Real-time quoting, address validation, credit scoring
+- **Asynchronous Event-Driven**: Policy notifications, claims updates via Kafka
+- **Batch**: Nightly updates, bulk imports, regulatory reporting via SFTP
 
-**Use Cases:**
-- Real-time policy quoting
-- Address validation
-- Credit scoring
-- Real-time fraud detection
+### Step 3: Design Data Flows
 
-```typescript
-// Synchronous integration example
-async function getRealTimeQuote(submissionId: string): Promise<Quote> {
-  // Call external rating engine
-  const ratingResponse = await ratingService.calculatePremium({
-    submissionId,
-    effectiveDate: submission.effectiveDate,
-    coverages: submission.coverages
-  });
+Map policy lifecycle (submission -> underwriting -> binding -> documents -> distribution) and claims lifecycle (FNOL -> investigation -> settlement -> reporting) through system components.
 
-  // Update Guidewire with results
-  return await guidewireClient.updateQuote(submissionId, {
-    premium: ratingResponse.premium,
-    taxes: ratingResponse.taxes,
-    fees: ratingResponse.fees
-  });
-}
-```
+### Step 4: Implement Security Layers
 
-### Pattern 2: Asynchronous Event-Driven
+Stack WAF/DDoS, API Gateway (OAuth2/JWT), Guidewire Hub (MFA, RBAC), AES-256 encryption, PII masking, and TDE for database encryption.
 
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│ InsuranceSuite │──▶│  App Events │──▶│    Kafka    │──▶│  Consumer   │
-│             │     │   Service   │     │   Topic     │     │  Service    │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │                   │
-       │  Business Event   │   Publish Event   │   Consume Event   │
-       │──────────────────▶│──────────────────▶│──────────────────▶│
-       │                   │                   │                   │
-       │                   │                   │   Process Async   │
-       │                   │                   │                   │
-```
+### Step 5: Configure Scalability
 
-**Use Cases:**
-- Policy issued notifications
-- Claims status updates
-- Billing events
-- Data warehouse synchronization
+Set auto-scaling (2-10 instances, 70% CPU target), L1/L2 caching (in-memory + Redis), connection pooling (10-50), and multi-region deployment for DR.
 
-### Pattern 3: Batch Integration
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│    SFTP     │────▶│    Batch    │────▶│  Transform  │────▶│ InsuranceSuite │
-│   Server    │     │   Pickup    │     │   & Load    │     │             │
-└─────────────┘     └─────────────┘     └─────────────┘     └─────────────┘
-       │                   │                   │                   │
-       │   Drop File       │   Schedule Job    │   Process Data    │
-       │──────────────────▶│──────────────────▶│──────────────────▶│
-```
-
-**Use Cases:**
-- Nightly policy updates
-- Bulk claims import
-- Premium bordereaux
-- Regulatory reporting
-
-## Data Flow Architecture
-
-### Policy Lifecycle Data Flow
-
-```yaml
-# Policy data flow through system components
-policy_flow:
-  1_submission:
-    source: Agent Portal / Direct Customer
-    target: PolicyCenter
-    data:
-      - applicant_info
-      - coverage_requests
-      - risk_data
-
-  2_underwriting:
-    source: PolicyCenter
-    integrations:
-      - external_rating_engine
-      - credit_bureau
-      - mvr_service
-      - loss_history
-    data:
-      - risk_scores
-      - premium_calculations
-      - underwriting_decision
-
-  3_binding:
-    source: PolicyCenter
-    target: BillingCenter
-    data:
-      - policy_terms
-      - premium_schedule
-      - payment_plan
-
-  4_document_generation:
-    source: PolicyCenter
-    target: Document Service
-    data:
-      - policy_documents
-      - dec_pages
-      - endorsements
-
-  5_distribution:
-    source: Document Service
-    targets:
-      - customer_email
-      - agent_portal
-      - document_archive
-```
-
-### Claims Data Flow
-
-```yaml
-claims_flow:
-  1_fnol:
-    source: Customer Portal / Call Center
-    target: ClaimCenter
-    data:
-      - loss_details
-      - policy_verification
-      - initial_reserve
-
-  2_investigation:
-    source: ClaimCenter
-    integrations:
-      - fraud_detection
-      - medical_records
-      - police_reports
-    data:
-      - investigation_results
-      - liability_assessment
-
-  3_settlement:
-    source: ClaimCenter
-    target: BillingCenter
-    data:
-      - payment_authorization
-      - vendor_payments
-      - subrogation_recovery
-
-  4_reporting:
-    source: ClaimCenter
-    target: Data Warehouse
-    data:
-      - claim_metrics
-      - loss_ratios
-      - regulatory_reports
-```
-
-## Security Architecture
-
-```
-┌──────────────────────────────────────────────────────────────────────┐
-│                        Security Perimeter                            │
-│  ┌────────────────────────────────────────────────────────────────┐  │
-│  │                         WAF / DDoS                              │  │
-│  └────────────────────────────────────────────────────────────────┘  │
-│                                   │                                  │
-│  ┌────────────────────────────────▼───────────────────────────────┐  │
-│  │                      API Gateway                                │  │
-│  │  • Rate Limiting    • OAuth2/JWT    • Request Validation       │  │
-│  └────────────────────────────────────────────────────────────────┘  │
-│                                   │                                  │
-│  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │                    Guidewire Hub (IdP)                          │ │
-│  │  • Identity Federation   • MFA    • Role-Based Access          │ │
-│  └─────────────────────────────────────────────────────────────────┘ │
-│                                   │                                  │
-│  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │              InsuranceSuite Applications                        │ │
-│  │  • Data Encryption (AES-256)  • PII Masking   • Audit Logging  │ │
-│  └─────────────────────────────────────────────────────────────────┘ │
-│                                   │                                  │
-│  ┌─────────────────────────────────────────────────────────────────┐ │
-│  │                     Database Layer                              │ │
-│  │  • TDE (Transparent Data Encryption)  • Backup Encryption      │ │
-│  └─────────────────────────────────────────────────────────────────┘ │
-└──────────────────────────────────────────────────────────────────────┘
-```
-
-## Scalability Patterns
-
-### Horizontal Scaling
-
-```yaml
-# Auto-scaling configuration
-scaling:
-  application_tier:
-    min_instances: 2
-    max_instances: 10
-    target_cpu: 70%
-    scale_up_cooldown: 300s
-    scale_down_cooldown: 600s
-
-  batch_processing:
-    strategy: parallel_workers
-    worker_count: 4
-    queue_threshold: 1000
-
-  database:
-    read_replicas: 2
-    connection_pool:
-      min: 10
-      max: 50
-```
-
-### Caching Strategy
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         Cache Tiers                              │
-│                                                                  │
-│  ┌─────────────┐     ┌─────────────┐     ┌─────────────┐       │
-│  │  L1 Cache   │────▶│  L2 Cache   │────▶│  Database   │       │
-│  │  (In-Memory)│     │   (Redis)   │     │             │       │
-│  │  TTL: 60s   │     │  TTL: 300s  │     │             │       │
-│  └─────────────┘     └─────────────┘     └─────────────┘       │
-│        │                   │                   │                │
-│  • Product Models    • API Responses    • Transactional        │
-│  • Typelists         • Session Data     • Master Data          │
-│  • User Preferences  • Rate Tables      • Historical           │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-## Deployment Topology
-
-### Multi-Region Architecture
-
-```
-                    ┌─────────────────────────────────────┐
-                    │          Global Load Balancer       │
-                    │              (CDN/DNS)               │
-                    └─────────────────┬───────────────────┘
-                                      │
-          ┌───────────────────────────┼───────────────────────────┐
-          │                           │                           │
-          ▼                           ▼                           ▼
-┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
-│   US East       │       │   US West       │       │   EU West       │
-│   Region        │       │   Region        │       │   Region        │
-│                 │       │                 │       │                 │
-│ ┌─────────────┐ │       │ ┌─────────────┐ │       │ ┌─────────────┐ │
-│ │ App Cluster │ │       │ │ App Cluster │ │       │ │ App Cluster │ │
-│ └─────────────┘ │       │ └─────────────┘ │       │ └─────────────┘ │
-│ ┌─────────────┐ │       │ ┌─────────────┐ │       │ ┌─────────────┐ │
-│ │  Database   │◀───────▶│ │  Database   │◀───────▶│ │  Database   │ │
-│ │  (Primary)  │ │       │ │  (Replica)  │ │       │ │  (Replica)  │ │
-│ └─────────────┘ │       │ └─────────────┘ │       │ └─────────────┘ │
-└─────────────────┘       └─────────────────┘       └─────────────────┘
-```
+For full architecture diagrams, data flow specifications, and configuration details, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Environment Strategy
 
@@ -377,19 +62,23 @@ scaling:
 | Staging | Pre-production | Prod subset | Production endpoints |
 | Production | Live system | Production | Production endpoints |
 
-## Technology Stack Summary
+## Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
 | Frontend | Jutro Digital Platform | React-based portals |
 | API Gateway | Guidewire Hub | Auth, routing |
 | Core Apps | InsuranceSuite | PC, CC, BC |
-| Integration | Integration Gateway | Apache Camel |
 | Messaging | Apache Kafka | Event streaming |
 | Database | PostgreSQL/Oracle | Relational data |
 | Cache | Redis | Session, API cache |
-| Search | Elasticsearch | Full-text search |
-| Monitoring | Datadog/Splunk | Observability |
+
+## Output
+
+- Architecture diagrams for all layers
+- Integration pattern selection guidance
+- Data flow specifications
+- Security and scalability configurations
 
 ## Resources
 

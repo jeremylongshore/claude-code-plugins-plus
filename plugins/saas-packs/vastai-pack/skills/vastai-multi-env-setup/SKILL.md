@@ -1,11 +1,11 @@
 ---
 name: vastai-multi-env-setup
 description: |
-  Configure Vast.ai across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Vast.ai configurations.
-  Trigger with phrases like "vastai environments", "vastai staging",
-  "vastai dev prod", "vastai environment setup", "vastai config by env".
+  Configure Vast.ai GPU cloud across development, staging, and production environments.
+  Use when setting up isolated GPU pools per team, managing API key separation by env,
+  or implementing spending controls and GPU type restrictions per deployment tier.
+  Trigger with phrases like "vastai environments", "vastai staging", "vastai dev prod",
+  "vastai environment setup", "vastai multi-env gpu config".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
@@ -16,181 +16,172 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Multi-Environment Setup
 
 ## Overview
-Configure Vast.ai across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
+Vast.ai "environments" for GPU workloads map to separate API keys with different spending limits, allowed GPU types, and maximum instance counts. Development experiments should be restricted to cost-efficient spot instances with low spending caps. Production training jobs get access to premium GPUs (A100, H100) with higher spending. The `vastai` CLI and Python SDK both read API keys from environment variables or the `~/.vast_api_key` file, enabling clean environment separation.
 
 ## Prerequisites
-- Separate Vast.ai API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+- Vast.ai account with API key from cloud.vast.ai
+- `vastai` CLI installed (`pip install vastai`)
+- Different API keys or spending limits configured per team/environment
 
 ## Environment Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+| Environment | GPU Types | Max Instances | Spending Cap | Instance Type |
+|-------------|-----------|---------------|--------------|---------------|
+| Development | RTX 3090, RTX 4090 | 2 | $50/month | Spot only |
+| Staging | RTX 4090, A6000 | 5 | $200/month | Spot preferred |
+| Production | A100, H100 | 20 | $5000/month | On-demand + spot |
 
 ## Instructions
 
-### Step 1: Configuration Structure
-```
-config/
-  vastai/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
-
-### Step 2: Base Configuration
-```typescript
-// config/vastai/base.ts
-export const baseConfig = {
-  timeout: 30000,
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,
-  },
-};
-```
-
-### Step 3: Environment-Specific Configs
-```typescript
-// config/vastai/development.ts
-import { baseConfig } from "./base";
-
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.VASTAI_API_KEY_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
-
-// config/vastai/staging.ts
-import { baseConfig } from "./base";
-
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.VASTAI_API_KEY_STAGING,
-  debug: false,
-};
-
-// config/vastai/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.VASTAI_API_KEY_PROD,
-  debug: false,
-  timeout: 60000,
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/vastai/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getVastaiConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config.apiKey) {
-    throw new Error(`VASTAI_API_KEY not set for environment: ${env}`);
-  }
-
-  return { ...config, environment: env };
-}
-```
-
-### Step 5: Secret Management
+### Step 1: API Key Management Per Environment
 ```bash
-# Local development (.env.local - git-ignored)
-VASTAI_API_KEY_DEV=your-dev-key
+# Development: store in .env.local
+echo "VAST_API_KEY=dev_key_abc123" >> .env.local
+echo "VAST_MAX_PRICE_PER_HR=0.40" >> .env.local   # max $/hr for dev instances
 
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add VASTAI_API_KEY_STAGING and VASTAI_API_KEY_PROD
+# Staging: GitHub Actions environment secrets
+# Add VAST_API_KEY_STAGING to staging environment
 
-# AWS Secrets Manager
+# Production: AWS Secrets Manager or similar
 aws secretsmanager create-secret \
-  --name vastai/production/api-key \
-  --secret-string "your-prod-key"
-
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create vastai-api-key-prod --data-file=-
+  --name vast/production/api-key \
+  --secret-string "prod_key_xyz789"
 ```
 
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      VASTAI_API_KEY_STAGING: ${{ secrets.VASTAI_API_KEY_STAGING }}
+### Step 2: Environment-Aware Vast.ai Configuration
+```python
+# config/vastai.py
+import os
+from dataclasses import dataclass
 
-  deploy-production:
-    environment: production
-    env:
-      VASTAI_API_KEY_PROD: ${{ secrets.VASTAI_API_KEY_PROD }}
+@dataclass
+class VastAIConfig:
+    api_key: str
+    max_price_per_hr: float       # maximum $/hr to spend on an instance
+    allowed_gpu_types: list[str]  # GPU whitelist
+    max_instances: int
+    spot_only: bool               # restrict to interruptible spot instances
+
+ENV_CONFIGS = {
+    "development": VastAIConfig(
+        api_key=os.environ.get("VAST_API_KEY", ""),
+        max_price_per_hr=0.40,    # RTX 3090 range
+        allowed_gpu_types=["RTX_3090", "RTX_4090", "RTX_3080"],
+        max_instances=2,
+        spot_only=True,           # spot only in dev to minimize cost
+    ),
+    "staging": VastAIConfig(
+        api_key=os.environ.get("VAST_API_KEY_STAGING", ""),
+        max_price_per_hr=1.00,
+        allowed_gpu_types=["RTX_4090", "A6000", "A100_PCIE_40GB"],
+        max_instances=5,
+        spot_only=False,
+    ),
+    "production": VastAIConfig(
+        api_key=os.environ.get("VAST_API_KEY_PROD", ""),
+        max_price_per_hr=4.00,    # up to H100 range
+        allowed_gpu_types=["A100_SXM4_80GB", "H100_SXM5_80GB", "A100_PCIE_40GB"],
+        max_instances=20,
+        spot_only=False,
+    ),
+}
+
+def get_vastai_config() -> VastAIConfig:
+    env = os.environ.get("APP_ENV", "development")
+    config = ENV_CONFIGS.get(env, ENV_CONFIGS["development"])
+    if not config.api_key:
+        raise ValueError(f"VAST_API_KEY not configured for {env}")
+    return config
+```
+
+### Step 3: Policy-Enforced Instance Creation
+```python
+# lib/vastai_service.py
+import vastai
+from config.vastai import get_vastai_config
+
+def find_cheapest_valid_instance(gpu_count: int = 1):
+    """Find cheapest instance matching environment policy."""
+    cfg = get_vastai_config()
+    vastai.api_key = cfg.api_key
+
+    # Build search query respecting environment policy
+    gpu_filter = " || ".join(f"gpu_name={g}" for g in cfg.allowed_gpu_types)
+    query = f"({gpu_filter}) num_gpus={gpu_count} dph_total<{cfg.max_price_per_hr}"
+
+    if cfg.spot_only:
+        query += " reliability>0.9"  # spot instances with high reliability
+
+    offers = vastai.search_offers(query, order="dph_total", limit=5)
+
+    if not offers:
+        raise ValueError(f"No instances matching policy under ${cfg.max_price_per_hr}/hr")
+
+    return offers[0]
+```
+
+### Step 4: Environment Variable Setup
+```bash
+# .env.local (development)
+VAST_API_KEY=dev_key_abc123
+APP_ENV=development
+
+# GitHub Actions staging
+VAST_API_KEY_STAGING=staging_key_def456
+APP_ENV=staging
+
+# GitHub Actions production
+VAST_API_KEY_PROD=prod_key_xyz789
+APP_ENV=production
+```
+
+### Step 5: Startup Validation
+```python
+# scripts/validate-vastai-env.py
+from config.vastai import get_vastai_config
+
+cfg = get_vastai_config()
+print(f"Environment: {os.environ.get('APP_ENV', 'development')}")
+print(f"Max price/hr: ${cfg.max_price_per_hr}")
+print(f"Allowed GPUs: {', '.join(cfg.allowed_gpu_types)}")
+print(f"Max instances: {cfg.max_instances}")
+print(f"Spot only: {cfg.spot_only}")
+
+# Verify key is valid
+import vastai
+vastai.api_key = cfg.api_key
+try:
+    vastai.whoami()
+    print("API key: VALID")
+except Exception as e:
+    print(f"API key: INVALID - {e}")
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
-| Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
+| `insufficient_funds` | Account balance depleted | Add credits to vast.ai account |
+| No instances found | GPU type not available | Broaden allowed GPU types or wait |
+| Policy violation: GPU not allowed | Wrong env config loaded | Check `APP_ENV` variable is set correctly |
+| Spending cap exceeded | Max instances hit | Destroy idle instances before provisioning new ones |
 
 ## Examples
 
-### Quick Environment Check
-```typescript
-const config = getVastaiConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
+### Quick Environment Validation
+```bash
+APP_ENV=production python3 scripts/validate-vastai-env.py
 ```
 
-### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "VASTAI_API_KEY is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getVastaiConfig());
+### Find Cheapest Dev Instance
+```bash
+# Development: find RTX 3090 under $0.40/hr
+vastai search offers 'gpu_name=RTX_3090 num_gpus=1 dph_total<0.40' --order dph_total --limit 3
 ```
 
 ## Resources
-- [Vast.ai Documentation](https://vast.ai/docs)
-- [Vast.ai CLI](https://vast.ai/docs/cli)
+- [Vast.ai API Documentation](https://vast.ai/docs/api)
+- [Vast.ai CLI Reference](https://vast.ai/docs/cli)
+- [Vast.ai Python API](https://github.com/vast-ai/vast-python)
 
 ## Next Steps
-For deployment, see `vastai-deploy-integration`.
+For enterprise access control, see `vastai-enterprise-rbac`.

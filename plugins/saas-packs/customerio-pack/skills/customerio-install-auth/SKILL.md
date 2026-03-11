@@ -27,44 +27,11 @@ Set up Customer.io SDK and configure authentication credentials for email, push,
 ## Instructions
 
 ### Step 1: Install SDK
-```bash
-# Node.js (Track API)
-npm install customerio-node
-
-# Node.js (Journeys Track API - recommended)
-npm install @customerio/track
-
-# Python
-pip install customerio
-```
-
 ### Step 2: Configure Authentication
-```bash
-# Set environment variables
-export CUSTOMERIO_SITE_ID="your-site-id"
-export CUSTOMERIO_API_KEY="your-api-key"
-
-# Or create .env file
-cat >> .env << 'EOF'
-CUSTOMERIO_SITE_ID=your-site-id
-CUSTOMERIO_API_KEY=your-api-key
-EOF
-```
-
 ### Step 3: Verify Connection
-```typescript
-import { TrackClient, RegionUS } from '@customerio/track';
 
-const client = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID,
-  process.env.CUSTOMERIO_API_KEY,
-  { region: RegionUS }
-);
-
-// Test by identifying a user
-await client.identify('test-user', { email: 'test@example.com' });
-console.log('Customer.io connection successful');
-```
+For detailed implementation code and configurations, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Output
 - Installed SDK package in node_modules or site-packages
@@ -83,35 +50,7 @@ console.log('Customer.io connection successful');
 ## Examples
 
 ### TypeScript Setup
-```typescript
-import { TrackClient, RegionUS, RegionEU } from '@customerio/track';
-
-// US region (default)
-const client = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_API_KEY!,
-  { region: RegionUS }
-);
-
-// EU region
-const euClient = new TrackClient(
-  process.env.CUSTOMERIO_SITE_ID!,
-  process.env.CUSTOMERIO_API_KEY!,
-  { region: RegionEU }
-);
-```
-
 ### Python Setup
-```python
-import os
-from customerio import CustomerIO
-
-cio = CustomerIO(
-    site_id=os.environ.get('CUSTOMERIO_SITE_ID'),
-    api_key=os.environ.get('CUSTOMERIO_API_KEY')
-)
-```
-
 ## Resources
 - [Customer.io Documentation](https://customer.io/docs/)
 - [Track API Reference](https://customer.io/docs/api/track/)

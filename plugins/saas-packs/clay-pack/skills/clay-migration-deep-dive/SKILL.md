@@ -16,9 +16,11 @@ compatible-with: claude-code, codex, openclaw
 # Clay Migration Deep Dive
 
 ## Overview
-Comprehensive guide for migrating to or from Clay, or major version upgrades.
+
+Comprehensive guide for migrating to or from Clay, or major version upgrades using the strangler fig pattern.
 
 ## Prerequisites
+
 - Current system documentation
 - Clay SDK installed
 - Feature flag infrastructure
@@ -33,194 +35,44 @@ Comprehensive guide for migrating to or from Clay, or major version upgrades.
 | Major version | Medium | Weeks | Medium |
 | Full replatform | High | Months | High |
 
-## Pre-Migration Assessment
-
-### Step 1: Current State Analysis
-```bash
-# Document current implementation
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "clay" > clay-files.txt
-
-# Count integration points
-wc -l clay-files.txt
-
-# Identify dependencies
-npm list | grep clay
-pip freeze | grep clay
-```
-
-### Step 2: Data Inventory
-```typescript
-interface MigrationInventory {
-  dataTypes: string[];
-  recordCounts: Record<string, number>;
-  dependencies: string[];
-  integrationPoints: string[];
-  customizations: string[];
-}
-
-async function assessClayMigration(): Promise<MigrationInventory> {
-  return {
-    dataTypes: await getDataTypes(),
-    recordCounts: await getRecordCounts(),
-    dependencies: await analyzeDependencies(),
-    integrationPoints: await findIntegrationPoints(),
-    customizations: await documentCustomizations(),
-  };
-}
-```
-
-## Migration Strategy: Strangler Fig Pattern
-
-```
-Phase 1: Parallel Run
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   System    │ ──▶ │  Clay   │
-│   (100%)    │     │   (0%)      │
-└─────────────┘     └─────────────┘
-
-Phase 2: Gradual Shift
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (50%)     │ ──▶ │   (50%)     │
-└─────────────┘     └─────────────┘
-
-Phase 3: Complete
-┌─────────────┐     ┌─────────────┐
-│   Old       │     │   New       │
-│   (0%)      │ ──▶ │   (100%)    │
-└─────────────┘     └─────────────┘
-```
-
-## Implementation Plan
-
-### Phase 1: Setup (Week 1-2)
-```bash
-# Install Clay SDK
-npm install @clay/sdk
-
-# Configure credentials
-cp .env.example .env.clay
-# Edit with new credentials
-
-# Verify connectivity
-node -e "require('@clay/sdk').ping()"
-```
-
-### Phase 2: Adapter Layer (Week 3-4)
-```typescript
-// src/adapters/clay.ts
-interface ServiceAdapter {
-  create(data: CreateInput): Promise<Resource>;
-  read(id: string): Promise<Resource>;
-  update(id: string, data: UpdateInput): Promise<Resource>;
-  delete(id: string): Promise<void>;
-}
-
-class ClayAdapter implements ServiceAdapter {
-  async create(data: CreateInput): Promise<Resource> {
-    const clayData = this.transform(data);
-    return clayClient.create(clayData);
-  }
-
-  private transform(data: CreateInput): ClayInput {
-    // Map from old format to Clay format
-  }
-}
-```
-
-### Phase 3: Data Migration (Week 5-6)
-```typescript
-async function migrateClayData(): Promise<MigrationResult> {
-  const batchSize = 100;
-  let processed = 0;
-  let errors: MigrationError[] = [];
-
-  for await (const batch of oldSystem.iterateBatches(batchSize)) {
-    try {
-      const transformed = batch.map(transform);
-      await clayClient.batchCreate(transformed);
-      processed += batch.length;
-    } catch (error) {
-      errors.push({ batch, error });
-    }
-
-    // Progress update
-    console.log(`Migrated ${processed} records`);
-  }
-
-  return { processed, errors };
-}
-```
-
-### Phase 4: Traffic Shift (Week 7-8)
-```typescript
-// Feature flag controlled traffic split
-function getServiceAdapter(): ServiceAdapter {
-  const clayPercentage = getFeatureFlag('clay_migration_percentage');
-
-  if (Math.random() * 100 < clayPercentage) {
-    return new ClayAdapter();
-  }
-
-  return new LegacyAdapter();
-}
-```
-
-## Rollback Plan
-
-```bash
-# Immediate rollback
-kubectl set env deployment/app CLAY_ENABLED=false
-kubectl rollout restart deployment/app
-
-# Data rollback (if needed)
-./scripts/restore-from-backup.sh --date YYYY-MM-DD
-
-# Verify rollback
-curl https://app.yourcompany.com/health | jq '.services.clay'
-```
-
-## Post-Migration Validation
-
-```typescript
-async function validateClayMigration(): Promise<ValidationReport> {
-  const checks = [
-    { name: 'Data count match', fn: checkDataCounts },
-    { name: 'API functionality', fn: checkApiFunctionality },
-    { name: 'Performance baseline', fn: checkPerformance },
-    { name: 'Error rates', fn: checkErrorRates },
-  ];
-
-  const results = await Promise.all(
-    checks.map(async c => ({ name: c.name, result: await c.fn() }))
-  );
-
-  return { checks: results, passed: results.every(r => r.result.success) };
-}
-```
-
 ## Instructions
 
-### Step 1: Assess Current State
-Document existing implementation and data inventory.
+### Step 1: Assess Current State (Week 1-2)
 
-### Step 2: Build Adapter Layer
-Create abstraction layer for gradual migration.
+Inventory all files referencing Clay, count integration points, and document dependencies. Build a `MigrationInventory` with data types, record counts, and customizations.
 
-### Step 3: Migrate Data
-Run batch data migration with error handling.
+### Step 2: Build Adapter Layer (Week 3-4)
 
-### Step 4: Shift Traffic
-Gradually route traffic to new Clay integration.
+Create a `ServiceAdapter` interface with CRUD operations. Implement `ClayAdapter` with data transformation from old format to Clay format. This enables gradual migration.
+
+### Step 3: Migrate Data (Week 5-6)
+
+Run batch data migration (100 records per batch) with error collection. Track progress and log failed batches for retry.
+
+### Step 4: Shift Traffic (Week 7-8)
+
+Use feature flags to gradually route traffic: start at 0%, increase to 10%, 50%, then 100%. Use `getServiceAdapter()` to select Clay vs legacy based on flag percentage.
+
+### Step 5: Validate and Cut Over
+
+Run validation checks: data count match, API functionality, performance baseline, and error rates. All must pass before completing the migration.
+
+### Rollback Plan
+
+Disable Clay via environment variable and restart pods. For data rollback, restore from backup. Verify via health endpoint.
+
+For complete TypeScript implementations, assessment scripts, and validation code, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Output
+
 - Migration assessment complete
 - Adapter layer implemented
 - Data migrated successfully
 - Traffic fully shifted to Clay
 
 ## Error Handling
+
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Data mismatch | Transform errors | Validate transform logic |
@@ -228,18 +80,11 @@ Gradually route traffic to new Clay integration.
 | Rollback triggered | Errors spiked | Reduce traffic percentage |
 | Validation failed | Missing data | Check batch processing |
 
-## Examples
-
-### Quick Migration Status
-```typescript
-const status = await validateClayMigration();
-console.log(`Migration ${status.passed ? 'PASSED' : 'FAILED'}`);
-status.checks.forEach(c => console.log(`  ${c.name}: ${c.result.success}`));
-```
-
 ## Resources
+
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 - [Clay Migration Guide](https://docs.clay.com/migration)
 
-## Flagship+ Skills
+## Next Steps
+
 For advanced troubleshooting, see `clay-advanced-troubleshooting`.

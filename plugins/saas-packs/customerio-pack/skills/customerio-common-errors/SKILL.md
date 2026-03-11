@@ -18,193 +18,13 @@ compatible-with: claude-code, codex, openclaw
 ## Overview
 Diagnose and resolve common Customer.io integration errors, delivery issues, and API problems.
 
-## Error Categories
+## Prerequisites
+- Access to Customer.io dashboard
+- API credentials configured
+- Access to application logs
 
-### Authentication Errors
+## Error Reference
 
-#### Error: 401 Unauthorized
-```json
-{
-  "meta": {
-    "error": "Unauthorized"
-  }
-}
-```
-**Cause**: Invalid Site ID or API Key
-**Solution**:
-1. Verify credentials in Customer.io Settings > API Credentials
-2. Check you're using Track API key (not App API key) for identify/track
-3. Ensure environment variables are loaded correctly
-```bash
-# Verify environment variables
-echo "Site ID: ${CUSTOMERIO_SITE_ID:0:8}..."
-echo "API Key: ${CUSTOMERIO_API_KEY:0:8}..."
-```
-
-#### Error: 403 Forbidden
-**Cause**: API key doesn't have required permissions
-**Solution**: Generate new API key with correct scope (Track vs App API)
-
-### Request Errors
-
-#### Error: 400 Bad Request - Invalid identifier
-```json
-{
-  "meta": {
-    "error": "identifier is required"
-  }
-}
-```
-**Cause**: Missing or empty user ID
-**Solution**:
-```typescript
-// Wrong
-await client.identify('', { email: 'user@example.com' });
-
-// Correct
-await client.identify('user-123', { email: 'user@example.com' });
-```
-
-#### Error: 400 Bad Request - Invalid timestamp
-```json
-{
-  "meta": {
-    "error": "timestamp must be a valid unix timestamp"
-  }
-}
-```
-**Cause**: Using milliseconds instead of seconds
-**Solution**:
-```typescript
-// Wrong
-{ created_at: Date.now() } // 1704067200000
-
-// Correct
-{ created_at: Math.floor(Date.now() / 1000) } // 1704067200
-```
-
-#### Error: 400 Bad Request - Invalid email
-**Cause**: Malformed email address
-**Solution**:
-```typescript
-// Validate email before sending
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-if (!emailRegex.test(email)) {
-  throw new Error('Invalid email format');
-}
-```
-
-### Rate Limiting
-
-#### Error: 429 Too Many Requests
-```json
-{
-  "meta": {
-    "error": "Rate limit exceeded"
-  }
-}
-```
-**Cause**: Exceeded API rate limits
-**Solution**:
-```typescript
-// Implement exponential backoff
-async function withBackoff(fn: () => Promise<any>, maxRetries = 3) {
-  for (let i = 0; i < maxRetries; i++) {
-    try {
-      return await fn();
-    } catch (error: any) {
-      if (error.status === 429 && i < maxRetries - 1) {
-        const delay = Math.pow(2, i) * 1000;
-        await new Promise(r => setTimeout(r, delay));
-        continue;
-      }
-      throw error;
-    }
-  }
-}
-```
-
-### Delivery Issues
-
-#### Issue: Email not delivered
-**Diagnostic steps**:
-1. Check People > User > Activity for event receipt
-2. Verify campaign is active and user matches segment
-3. Check Deliverability > Suppression list
-4. Review message preview for errors
-
-```bash
-# Check user exists via API
-curl -X GET "https://track.customer.io/api/v1/customers/user-123" \
-  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY"
-```
-
-#### Issue: Event not triggering campaign
-**Cause**: Event name mismatch or missing attributes
-**Solution**:
-```typescript
-// Check exact event name in dashboard
-// Event names are case-sensitive
-await client.track(userId, {
-  name: 'signed_up',  // Must match exactly
-  data: { source: 'web' }
-});
-```
-
-#### Issue: User not in segment
-**Cause**: Missing or incorrect attributes
-**Solution**:
-1. Check segment conditions in dashboard
-2. Verify user has required attributes
-3. Check attribute types match (string vs number)
-
-### SDK-Specific Errors
-
-#### Node.js: TypeError - Cannot read property
-```typescript
-// Wrong - SDK not initialized
-const client = new TrackClient(undefined, undefined);
-
-// Correct - Check env vars exist
-if (!process.env.CUSTOMERIO_SITE_ID) {
-  throw new Error('CUSTOMERIO_SITE_ID not set');
-}
-```
-
-#### Python: ConnectionError
-```python
-# Handle network errors
-import customerio
-from customerio.errors import CustomerIOError
-
-try:
-    cio.identify(id='user-123', email='user@example.com')
-except CustomerIOError as e:
-    print(f"Customer.io error: {e}")
-except ConnectionError as e:
-    print(f"Network error: {e}")
-```
-
-## Diagnostic Commands
-
-### Check API Connectivity
-```bash
-curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
-  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com"}' \
-  -w "\nHTTP Status: %{http_code}\n"
-```
-
-### Verify Event Delivery
-```bash
-curl -X POST "https://track.customer.io/api/v1/customers/test-user/events" \
-  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"test_event","data":{"test":true}}'
-```
-
-## Error Handling
 | Error Code | Meaning | Action |
 |------------|---------|--------|
 | 400 | Bad Request | Check request format and data |
@@ -214,10 +34,50 @@ curl -X POST "https://track.customer.io/api/v1/customers/test-user/events" \
 | 429 | Rate Limited | Implement backoff |
 | 500 | Server Error | Retry with backoff |
 
+## Instructions
+
+### Step 1: Identify the Error Category
+Check error response code and message. Authentication errors (401/403) need credential review. Request errors (400) need payload fixes. Rate limits (429) need backoff logic.
+
+### Step 2: Fix Authentication Issues
+Verify correct API key type (Track vs App). Check environment variables are loaded. Ensure credentials match the workspace.
+
+### Step 3: Fix Request Errors
+Check for empty user IDs, millisecond timestamps (use Unix seconds), and malformed email addresses. Validate payloads before sending.
+
+### Step 4: Handle Rate Limiting
+Implement exponential backoff with jitter. Start at 1s delay and double on each retry. Skip retries on 4xx errors (except 429).
+
+### Step 5: Debug Delivery Issues
+Check user activity in dashboard, verify campaign is active and user matches segment, review suppression list, and check message preview.
+
+### Step 6: Fix SDK-Specific Errors
+For Node.js, check env vars exist before creating client. For Python, catch both `CustomerIOError` and `ConnectionError`.
+
+For detailed code examples and diagnostic commands, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
+
+## Diagnostic Commands
+```bash
+# Check API connectivity
+curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
+  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com"}' \
+  -w "\nHTTP Status: %{http_code}\n"
+```
+
+## Error Handling
+| Issue | Solution |
+|-------|----------|
+| Events not triggering campaigns | Check exact event name (case-sensitive) |
+| User not in segment | Verify required attributes and types |
+| SDK initialization error | Check env vars exist before creating client |
+
 ## Resources
 - [API Error Reference](https://customer.io/docs/api/track/#section/Errors)
 - [Troubleshooting Guide](https://customer.io/docs/troubleshooting/)
 - [Status Page](https://status.customer.io/)
 
 ## Next Steps
-After resolving errors, proceed to `customerio-debug-bundle` to create comprehensive debug reports.
+After resolving errors, proceed to `customerio-debug-bundle` for comprehensive debug reports.

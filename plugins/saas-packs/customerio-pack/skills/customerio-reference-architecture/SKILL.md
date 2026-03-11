@@ -16,430 +16,48 @@ compatible-with: claude-code, codex, openclaw
 # Customer.io Reference Architecture
 
 ## Overview
-Enterprise-grade reference architecture for Customer.io integration with proper separation of concerns, reliability, and scalability.
+Enterprise-grade reference architecture for Customer.io integration with proper separation of concerns, event-driven processing, and infrastructure as code.
 
-## Architecture Diagram
-
-```
-                                    Customer.io
-                                        |
-                    +-------------------+-------------------+
-                    |                   |                   |
-              Track API            App API            Webhooks
-                    |                   |                   |
-                    v                   v                   v
-            +-------+-------+   +-------+-------+   +-------+-------+
-            |   Event Bus   |   |  Transactional |   | Webhook Handler|
-            |   (Kafka)     |   |    Service     |   |   (Express)   |
-            +-------+-------+   +-------+-------+   +-------+-------+
-                    |                   |                   |
-                    v                   v                   v
-            +-------+-------+   +-------+-------+   +-------+-------+
-            | CustomerIO    |   |    Email       |   |   Event       |
-            | Worker        |   |    Templates   |   |   Processor   |
-            +-------+-------+   +-------+-------+   +-------+-------+
-                    |                   |                   |
-                    +-------------------+-------------------+
-                                        |
-                                        v
-                                +-------+-------+
-                                |   Data Lake   |
-                                |  (BigQuery)   |
-                                +---------------+
-```
+## Architecture Principles
+1. **Separation of Concerns**: Track API, App API, and Webhooks handled by separate services
+2. **Event-Driven**: Message queues for reliable async processing
+3. **Idempotency**: All operations safely retryable
+4. **Observability**: Events emitted for monitoring and debugging
+5. **Infrastructure as Code**: All resources defined in Terraform
 
 ## Instructions
 
-### Step 1: Core Service Layer
-```typescript
-// src/services/customerio/index.ts
-import { TrackClient, APIClient, RegionUS } from '@customerio/track';
-import { EventEmitter } from 'events';
+### Step 1: Build Core Service Layer
+Create a `CustomerIOService` class extending EventEmitter with typed config, Track and App API clients, and lifecycle events for identify, track, and transactional operations.
 
-export interface CustomerIOConfig {
-  trackSiteId: string;
-  trackApiKey: string;
-  appApiKey: string;
-  region: 'us' | 'eu';
-  environment: 'development' | 'staging' | 'production';
-}
+### Step 2: Add Event Bus Integration
+Implement Kafka-based event processing with topics for identify, track, and transactional operations, plus dead letter queue for failures.
 
-export class CustomerIOService extends EventEmitter {
-  private trackClient: TrackClient;
-  private apiClient: APIClient;
-  private config: CustomerIOConfig;
+### Step 3: Create Repository Pattern
+Build a `UserMessagingRepository` that syncs user data from your database to Customer.io and manages messaging preferences.
 
-  constructor(config: CustomerIOConfig) {
-    super();
-    this.config = config;
+### Step 4: Implement Webhook Handler
+Create an EventEmitter-based webhook handler with signature verification, per-event-type listeners, and wildcard streaming to data warehouse.
 
-    this.trackClient = new TrackClient(
-      config.trackSiteId,
-      config.trackApiKey,
-      { region: config.region === 'eu' ? RegionEU : RegionUS }
-    );
+### Step 5: Define Infrastructure as Code
+Write Terraform for GCP Secret Manager secrets, Cloud Run service, Pub/Sub topics, and BigQuery tables for event analytics.
 
-    this.apiClient = new APIClient(config.appApiKey, {
-      region: config.region === 'eu' ? RegionEU : RegionUS
-    });
-  }
-
-  // User management
-  async identifyUser(userId: string, attributes: UserAttributes): Promise<void> {
-    this.emit('identify:start', { userId, attributes });
-
-    try {
-      await this.trackClient.identify(userId, {
-        ...attributes,
-        _env: this.config.environment,
-        _updated_at: Math.floor(Date.now() / 1000)
-      });
-      this.emit('identify:success', { userId });
-    } catch (error) {
-      this.emit('identify:error', { userId, error });
-      throw error;
-    }
-  }
-
-  // Event tracking
-  async trackEvent(userId: string, event: EventPayload): Promise<void> {
-    this.emit('track:start', { userId, event });
-
-    try {
-      await this.trackClient.track(userId, {
-        name: event.name,
-        data: {
-          ...event.data,
-          _env: this.config.environment
-        }
-      });
-      this.emit('track:success', { userId, event: event.name });
-    } catch (error) {
-      this.emit('track:error', { userId, event: event.name, error });
-      throw error;
-    }
-  }
-
-  // Transactional messaging
-  async sendTransactional(request: TransactionalRequest): Promise<void> {
-    return this.apiClient.sendEmail(request);
-  }
-}
-```
-
-### Step 2: Event Bus Integration
-```typescript
-// src/services/customerio/event-bus.ts
-import { Kafka, Producer, Consumer } from 'kafkajs';
-import { CustomerIOService } from './index';
-
-interface CustomerIOEvent {
-  type: 'identify' | 'track' | 'transactional';
-  userId: string;
-  payload: any;
-  timestamp: number;
-  correlationId: string;
-}
-
-export class CustomerIOEventBus {
-  private producer: Producer;
-  private consumer: Consumer;
-  private service: CustomerIOService;
-
-  constructor(kafka: Kafka, service: CustomerIOService) {
-    this.producer = kafka.producer();
-    this.consumer = kafka.consumer({ groupId: 'customerio-worker' });
-    this.service = service;
-  }
-
-  async start(): Promise<void> {
-    await this.producer.connect();
-    await this.consumer.connect();
-
-    await this.consumer.subscribe({
-      topics: ['customerio.identify', 'customerio.track', 'customerio.transactional']
-    });
-
-    await this.consumer.run({
-      eachMessage: async ({ topic, message }) => {
-        const event: CustomerIOEvent = JSON.parse(message.value!.toString());
-        await this.processEvent(topic, event);
-      }
-    });
-  }
-
-  private async processEvent(topic: string, event: CustomerIOEvent): Promise<void> {
-    const startTime = Date.now();
-
-    try {
-      switch (event.type) {
-        case 'identify':
-          await this.service.identifyUser(event.userId, event.payload);
-          break;
-        case 'track':
-          await this.service.trackEvent(event.userId, event.payload);
-          break;
-        case 'transactional':
-          await this.service.sendTransactional(event.payload);
-          break;
-      }
-
-      // Emit success metrics
-      await this.producer.send({
-        topic: 'customerio.processed',
-        messages: [{
-          key: event.correlationId,
-          value: JSON.stringify({
-            ...event,
-            status: 'success',
-            processingTime: Date.now() - startTime
-          })
-        }]
-      });
-    } catch (error) {
-      // Dead letter queue for failed events
-      await this.producer.send({
-        topic: 'customerio.dlq',
-        messages: [{
-          key: event.correlationId,
-          value: JSON.stringify({
-            ...event,
-            status: 'failed',
-            error: error.message,
-            processingTime: Date.now() - startTime
-          })
-        }]
-      });
-    }
-  }
-
-  // Publish events to be processed
-  async publish(event: CustomerIOEvent): Promise<void> {
-    await this.producer.send({
-      topic: `customerio.${event.type}`,
-      messages: [{
-        key: event.userId,
-        value: JSON.stringify(event)
-      }]
-    });
-  }
-}
-```
-
-### Step 3: Repository Pattern
-```typescript
-// src/repositories/user-messaging.ts
-import { CustomerIOService } from '../services/customerio';
-import { UserRepository } from './user';
-
-export interface MessagingPreferences {
-  email: boolean;
-  push: boolean;
-  sms: boolean;
-  inApp: boolean;
-}
-
-export class UserMessagingRepository {
-  constructor(
-    private cio: CustomerIOService,
-    private users: UserRepository
-  ) {}
-
-  async syncUser(userId: string): Promise<void> {
-    const user = await this.users.findById(userId);
-    if (!user) throw new Error(`User ${userId} not found`);
-
-    const preferences = await this.getPreferences(userId);
-
-    await this.cio.identifyUser(userId, {
-      email: user.email,
-      first_name: user.firstName,
-      last_name: user.lastName,
-      created_at: Math.floor(user.createdAt.getTime() / 1000),
-      plan: user.subscription?.plan || 'free',
-      // Preferences
-      email_opt_in: preferences.email,
-      push_opt_in: preferences.push,
-      sms_opt_in: preferences.sms
-    });
-  }
-
-  async getPreferences(userId: string): Promise<MessagingPreferences> {
-    // Load from your preferences store
-    return {
-      email: true,
-      push: false,
-      sms: false,
-      inApp: true
-    };
-  }
-
-  async updatePreferences(
-    userId: string,
-    preferences: Partial<MessagingPreferences>
-  ): Promise<void> {
-    // Update local store
-    await this.savePreferences(userId, preferences);
-
-    // Sync to Customer.io
-    await this.cio.identifyUser(userId, {
-      email_opt_in: preferences.email,
-      push_opt_in: preferences.push,
-      sms_opt_in: preferences.sms
-    });
-  }
-}
-```
-
-### Step 4: Webhook Handler
-```typescript
-// src/webhooks/customerio.ts
-import { Router } from 'express';
-import { EventEmitter } from 'events';
-
-export class CustomerIOWebhooks extends EventEmitter {
-  private router: Router;
-  private signingSecret: string;
-
-  constructor(signingSecret: string) {
-    super();
-    this.signingSecret = signingSecret;
-    this.router = Router();
-    this.setupRoutes();
-  }
-
-  private setupRoutes(): void {
-    this.router.post('/', async (req, res) => {
-      // Verify signature
-      if (!this.verifySignature(req)) {
-        return res.status(401).send('Invalid signature');
-      }
-
-      // Process events
-      const events = req.body.events || [];
-
-      for (const event of events) {
-        this.emit(event.metric, event);
-        this.emit('*', event);
-      }
-
-      res.status(200).json({ received: events.length });
-    });
-  }
-
-  getRouter(): Router {
-    return this.router;
-  }
-}
-
-// Usage
-const webhooks = new CustomerIOWebhooks(process.env.WEBHOOK_SECRET!);
-
-webhooks.on('email_delivered', (event) => {
-  // Update delivery status
-});
-
-webhooks.on('email_bounced', async (event) => {
-  // Handle bounce - suppress user
-  await cio.suppress(event.data.customer_id);
-});
-
-webhooks.on('*', (event) => {
-  // Stream all events to data warehouse
-  await streamToDataWarehouse(event);
-});
-
-app.use('/webhooks/customerio', webhooks.getRouter());
-```
-
-### Step 5: Infrastructure as Code
-```hcl
-# terraform/customerio.tf
-resource "google_secret_manager_secret" "customerio_site_id" {
-  secret_id = "customerio-site-id"
-
-  replication {
-    auto {}
-  }
-}
-
-resource "google_secret_manager_secret" "customerio_api_key" {
-  secret_id = "customerio-api-key"
-
-  replication {
-    auto {}
-  }
-}
-
-resource "google_cloud_run_service" "customerio_worker" {
-  name     = "customerio-worker"
-  location = var.region
-
-  template {
-    spec {
-      containers {
-        image = "gcr.io/${var.project}/customerio-worker:latest"
-
-        env {
-          name = "CUSTOMERIO_SITE_ID"
-          value_from {
-            secret_key_ref {
-              name = google_secret_manager_secret.customerio_site_id.secret_id
-              key  = "latest"
-            }
-          }
-        }
-
-        env {
-          name = "CUSTOMERIO_API_KEY"
-          value_from {
-            secret_key_ref {
-              name = google_secret_manager_secret.customerio_api_key.secret_id
-              key  = "latest"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-resource "google_pubsub_topic" "customerio_events" {
-  name = "customerio-events"
-}
-
-resource "google_bigquery_dataset" "customerio" {
-  dataset_id = "customerio_events"
-  location   = var.region
-}
-
-resource "google_bigquery_table" "delivery_events" {
-  dataset_id = google_bigquery_dataset.customerio.dataset_id
-  table_id   = "delivery_events"
-
-  schema = file("${path.module}/schemas/delivery_events.json")
-
-  time_partitioning {
-    type  = "DAY"
-    field = "timestamp"
-  }
-}
-```
-
-## Architecture Principles
-
-1. **Separation of Concerns**: Track API, App API, and Webhooks are handled by separate services
-2. **Event-Driven**: Use message queues for reliable async processing
-3. **Idempotency**: All operations can be safely retried
-4. **Observability**: Events are emitted for monitoring and debugging
-5. **Infrastructure as Code**: All resources defined in Terraform
+For detailed implementation code and Terraform configurations, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Output
-- Core Customer.io service layer
-- Event bus integration (Kafka)
+- Core Customer.io service layer with EventEmitter
+- Kafka event bus integration with DLQ
 - Repository pattern for user messaging
 - Webhook handler with signature verification
-- Terraform infrastructure code
+- Terraform infrastructure definitions
+
+## Error Handling
+| Issue | Solution |
+|-------|----------|
+| Event processing failure | Routes to dead letter queue |
+| Secret rotation needed | Update via Terraform + secrets manager |
+| Webhook signature invalid | Verify secret matches dashboard |
 
 ## Resources
 - [Customer.io API Reference](https://customer.io/docs/api/)

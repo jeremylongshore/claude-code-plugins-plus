@@ -1,12 +1,12 @@
 ---
 name: windsurf-multi-env-setup
 description: |
-  Configure Windsurf across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific Windsurf configurations.
-  Trigger with phrases like "windsurf environments", "windsurf staging",
-  "windsurf dev prod", "windsurf environment setup", "windsurf config by env".
-allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
+  Configure Windsurf IDE and Cascade AI across team members and project environments.
+  Use when onboarding teams to Windsurf, setting up per-project Cascade configuration,
+  or managing Windsurf settings across development, staging, and production contexts.
+  Trigger with phrases like "windsurf team setup", "windsurf environments",
+  "windsurf multi-project", "windsurf team config", "cascade rules per env".
+allowed-tools: Read, Write, Edit
 version: 1.0.0
 license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -16,181 +16,168 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Multi-Environment Setup
 
 ## Overview
-Configure Windsurf across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
+Windsurf is an IDE, not a cloud API -- "multi-environment setup" means configuring Cascade AI context and behavior consistently across team members, projects, and deployment targets. The key configuration files are `.windsurfrules` (AI context per project), `.windsurf/settings.json` (IDE preferences), and `.windsurfignore` (indexing exclusions). Each project gets its own rules file; team-wide defaults live in shared dotfiles or onboarding scripts.
 
 ## Prerequisites
-- Separate Windsurf API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+- Windsurf IDE installed on developer machines
+- Shared git repository for `.windsurfrules` and team config templates
+- Team agreement on coding standards per service
 
-## Environment Strategy
+## Configuration Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+| Scope | Config File | Controls |
+|-------|------------|---------|
+| Per project | `.windsurfrules` | Cascade AI context, coding patterns |
+| Per workspace | `.windsurf/settings.json` | IDE behavior, model selection |
+| Indexing | `.windsurfignore` | What Cascade can see |
+| CI context | `CODEIUM_API_KEY` env var | Codeium API authentication |
 
 ## Instructions
 
-### Step 1: Configuration Structure
-```
-config/
-  windsurf/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
+### Step 1: Per-Project Cascade Rules
+```markdown
+<!-- .windsurfrules - Committed to repo root -->
 
-### Step 2: Base Configuration
-```typescript
-// config/windsurf/base.ts
-export const baseConfig = {
-  timeout: 30000,
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,
-  },
-};
-```
+# Project: PaymentService
 
-### Step 3: Environment-Specific Configs
-```typescript
-// config/windsurf/development.ts
-import { baseConfig } from "./base";
+## Stack
+- Language: TypeScript (strict)
+- Framework: Fastify v4
+- Database: PostgreSQL with Prisma
+- Testing: Vitest
 
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.WINDSURF_API_KEY_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
+## Architecture Rules
+- All handlers in src/routes/ - never business logic
+- Business logic in src/services/ only
+- Database queries in src/repositories/ only
+- Use Result<T, E> pattern for errors, never throw in services
 
-// config/windsurf/staging.ts
-import { baseConfig } from "./base";
+## Naming Conventions
+- Route handlers: GET/POST/PUT/DELETE prefix
+- Service methods: verb + noun (createUser, findOrder)
+- Repository methods: db operations (findById, upsert)
 
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.WINDSURF_API_KEY_STAGING,
-  debug: false,
-};
-
-// config/windsurf/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.WINDSURF_API_KEY_PROD,
-  debug: false,
-  timeout: 60000,
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },
-};
+## Testing Requirements
+- Unit tests for all service methods
+- Integration tests for all route handlers
+- No mocking of repositories in integration tests
 ```
 
-### Step 4: Environment Resolver
-```typescript
-// config/windsurf/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getWindsurfConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config.apiKey) {
-    throw new Error(`WINDSURF_API_KEY not set for environment: ${env}`);
-  }
-
-  return { ...config, environment: env };
+### Step 2: Team-Wide IDE Settings Template
+```json
+{
+  "codeium.indexing.excludePatterns": [
+    "node_modules/**",
+    "dist/**",
+    ".next/**",
+    "coverage/**",
+    "*.min.js",
+    "**/*.map",
+    "**/*.lock"
+  ],
+  "codeium.autocomplete.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "codeium.chat.preferredModel": "claude-sonnet"
 }
 ```
+Store as `.windsurf/settings.json` and commit. Developers can extend with personal overrides in their local settings.
 
-### Step 5: Secret Management
+### Step 3: Monorepo Multi-Service Setup
 ```bash
-# Local development (.env.local - git-ignored)
-WINDSURF_API_KEY_DEV=your-dev-key
-
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add WINDSURF_API_KEY_STAGING and WINDSURF_API_KEY_PROD
-
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name windsurf/production/api-key \
-  --secret-string "your-prod-key"
-
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create windsurf-api-key-prod --data-file=-
+# Each service gets its own .windsurfrules
+monorepo/
+  services/
+    auth/
+      .windsurfrules    # Auth service context (JWT, OAuth flows)
+      .windsurfignore
+    payments/
+      .windsurfrules    # Payments context (Stripe, PCI rules)
+      .windsurfignore
+    notifications/
+      .windsurfrules    # Notification context (queues, templates)
+      .windsurfignore
+  .windsurf/
+    settings.json       # Shared IDE settings
+    team-config.md      # Team usage guidelines
 ```
 
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      WINDSURF_API_KEY_STAGING: ${{ secrets.WINDSURF_API_KEY_STAGING }}
+### Step 4: Onboarding Script for New Developers
+```bash
+#!/bin/bash
+# scripts/setup-windsurf.sh
 
-  deploy-production:
-    environment: production
+echo "Setting up Windsurf for this project..."
+
+# Install recommended extensions
+windsurf --install-extension esbenp.prettier-vscode
+windsurf --install-extension dbaeumer.vscode-eslint
+
+# Verify .windsurfrules exists
+if [ ! -f ".windsurfrules" ]; then
+  echo "WARNING: .windsurfrules not found. Cascade will lack project context."
+fi
+
+# Set Codeium API key if provided
+if [ -n "$CODEIUM_API_KEY" ]; then
+  windsurf --set "codeium.apiKey" "$CODEIUM_API_KEY"
+fi
+
+echo "Windsurf setup complete. Open your service directory (not the monorepo root) for best Cascade performance."
+```
+
+### Step 5: CI Environment for Cascade Batch Tasks
+```yaml
+# .github/workflows/cascade-tasks.yml
+# Run Windsurf Cascade in headless mode for automated tasks
+name: Cascade Automation
+on: workflow_dispatch
+  inputs:
+    task:
+      description: "Cascade task to run"
+
+jobs:
+  cascade:
+    runs-on: ubuntu-latest
     env:
-      WINDSURF_API_KEY_PROD: ${{ secrets.WINDSURF_API_KEY_PROD }}
+      CODEIUM_API_KEY: ${{ secrets.CODEIUM_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Cascade task
+        run: windsurf --cascade --task "${{ inputs.task }}" --output cascade-output.md
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
-| Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
+| Cascade lacks project context | `.windsurfrules` missing or empty | Add stack + patterns to rules file |
+| Slow indexing | Monorepo root open with no ignore rules | Open service subdirectory, add `.windsurfignore` |
+| Inconsistent team suggestions | No shared settings | Commit `.windsurf/settings.json` to repo |
+| Cascade touches wrong files | Too broad workspace scope | Open specific service directory per task |
 
 ## Examples
 
-### Quick Environment Check
-```typescript
-const config = getWindsurfConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
+### Quick Project Health Check
+```bash
+# Verify Windsurf config is in place
+ls -la .windsurfrules .windsurfignore .windsurf/settings.json
 ```
 
-### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "WINDSURF_API_KEY is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getWindsurfConfig());
+### Per-Environment .windsurfrules
+```markdown
+<!-- For staging/production deployment scripts -->
+# Deployment Context
+- Target: AWS ECS on us-east-1
+- Container registry: 123456789.dkr.ecr.us-east-1.amazonaws.com/myapp
+- Secrets: AWS Secrets Manager (prefix: myapp/production/)
+- Do NOT hardcode credentials or environment-specific values
 ```
 
 ## Resources
-- [Windsurf Documentation](https://docs.windsurf.ai)
-- [VS Code Extension API](https://code.visualstudio.com/api)
+- [Windsurf Rules Documentation](https://docs.windsurf.com/windsurf/rules)
+- [Codeium Team Configuration](https://codeium.com/blog/team-configuration)
+- [Windsurf IDE Documentation](https://docs.windsurf.com)
 
 ## Next Steps
-For deployment, see `windsurf-deploy-integration`.
+For architecture best practices, see `windsurf-reference-architecture`.

@@ -35,128 +35,13 @@ Configure Lindy AI across development, staging, and production environments with
 ## Instructions
 
 ### Step 1: Configuration Structure
-```
-config/
-  lindy/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
-```
-
 ### Step 2: Base Configuration
-```typescript
-// config/lindy/base.ts
-export const baseConfig = {
-  timeout: 30000,
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,
-  },
-};
-```
-
 ### Step 3: Environment-Specific Configs
-```typescript
-// config/lindy/development.ts
-import { baseConfig } from "./base";
-
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.LINDY_API_KEY_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
-
-// config/lindy/staging.ts
-import { baseConfig } from "./base";
-
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.LINDY_API_KEY_STAGING,
-  debug: false,
-};
-
-// config/lindy/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.LINDY_API_KEY_PROD,
-  debug: false,
-  timeout: 60000,
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },
-};
-```
-
 ### Step 4: Environment Resolver
-```typescript
-// config/lindy/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getLindyAIConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
-  if (!config.apiKey) {
-    throw new Error(`LINDY_API_KEY not set for environment: ${env}`);
-  }
-
-  return { ...config, environment: env };
-}
-```
-
 ### Step 5: Secret Management
-```bash
-# Local development (.env.local - git-ignored)
-LINDY_API_KEY_DEV=your-dev-key
 
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add LINDY_API_KEY_STAGING and LINDY_API_KEY_PROD
-
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name lindy/production/api-key \
-  --secret-string "your-prod-key"
-
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create lindy-api-key-prod --data-file=-
-```
-
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      LINDY_API_KEY_STAGING: ${{ secrets.LINDY_API_KEY_STAGING }}
-
-  deploy-production:
-    environment: production
-    env:
-      LINDY_API_KEY_PROD: ${{ secrets.LINDY_API_KEY_PROD }}
-```
+For detailed implementation code and configurations, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |
@@ -169,25 +54,7 @@ jobs:
 ## Examples
 
 ### Quick Environment Check
-```typescript
-const config = getLindyAIConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
-```
-
 ### Startup Validation
-```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "LINDY_API_KEY is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getLindyAIConfig());
-```
-
 ## Resources
 - [Lindy AI Documentation](https://docs.lindy.ai)
 - [Lindy API Reference](https://docs.lindy.ai/api)

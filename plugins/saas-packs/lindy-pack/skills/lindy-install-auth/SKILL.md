@@ -27,31 +27,14 @@ Set up Lindy AI SDK and configure authentication credentials for AI agent automa
 ## Instructions
 
 ### Step 1: Install SDK
-```bash
-# Node.js
-npm install @lindy-ai/sdk
-
-# Python
-pip install lindy-sdk
-```
 
 ### Step 2: Configure Authentication
-```bash
-# Set environment variable
-export LINDY_API_KEY="your-api-key"
-
-# Or create .env file
-echo 'LINDY_API_KEY=your-api-key' >> .env
-```
 
 ### Step 3: Verify Connection
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
 
-const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-const agents = await lindy.agents.list();
-console.log(agents.length > 0 ? 'Connected!' : 'No agents yet');
-```
+
+For detailed implementation code and configurations, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
 
 ## Output
 - Installed SDK package in node_modules or site-packages
@@ -69,28 +52,8 @@ console.log(agents.length > 0 ? 'Connected!' : 'No agents yet');
 ## Examples
 
 ### TypeScript Setup
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
-
-const lindy = new Lindy({
-  apiKey: process.env.LINDY_API_KEY,
-});
-
-// Verify connection
-const me = await lindy.users.me();
-console.log(`Connected as: ${me.email}`);
-```
 
 ### Python Setup
-```python
-from lindy import Lindy
-
-client = Lindy(api_key=os.environ.get('LINDY_API_KEY'))
-
-# Verify connection
-me = client.users.me()
-print(f"Connected as: {me.email}")
-```
 
 ## Resources
 - [Lindy Documentation](https://docs.lindy.ai)

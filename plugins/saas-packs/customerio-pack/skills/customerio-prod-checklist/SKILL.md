@@ -16,208 +16,25 @@ compatible-with: claude-code, codex, openclaw
 # Customer.io Production Checklist
 
 ## Overview
-Comprehensive checklist for deploying Customer.io integrations to production.
+Comprehensive checklist for deploying Customer.io integrations to production covering credentials, integration quality, campaigns, deliverability, monitoring, and rollback.
 
 ## Prerequisites
 - Customer.io integration complete
 - Access to production credentials
 - Testing completed in staging environment
 
-## Pre-Production Checklist
-
-### 1. Credentials & Configuration
-
-```bash
-# Verify production credentials are set
-echo "Checking credentials..."
-[ -n "$CUSTOMERIO_SITE_ID" ] && echo "Site ID: OK" || echo "Site ID: MISSING"
-[ -n "$CUSTOMERIO_API_KEY" ] && echo "API Key: OK" || echo "API Key: MISSING"
-
-# Verify correct region
-echo "Region: ${CUSTOMERIO_REGION:-us}"
-```
-
-**Checklist:**
-- [ ] Production Site ID configured (different from dev)
-- [ ] Production API Key configured (different from dev)
-- [ ] Correct region selected (US or EU)
-- [ ] Credentials stored in secrets manager
-- [ ] API keys have appropriate permissions
-
-### 2. Integration Quality
-
-```typescript
-// scripts/integration-audit.ts
-async function auditIntegration(): Promise<AuditResult> {
-  const results: AuditResult = {
-    passed: [],
-    warnings: [],
-    failures: []
-  };
-
-  // Check identify calls have required attributes
-  // Check event names follow naming convention
-  // Check timestamps are Unix seconds
-  // Check no PII in unsafe fields
-
-  return results;
-}
-```
-
-**Checklist:**
-- [ ] All identify calls include email attribute
-- [ ] User IDs are consistent across systems
-- [ ] Event names follow `snake_case` convention
-- [ ] Timestamps are Unix seconds (not milliseconds)
-- [ ] No PII in event names or segment names
-- [ ] Error handling implemented for all API calls
-
-### 3. Campaign Configuration
-
-**In Customer.io Dashboard:**
-- [ ] Production campaigns created (not draft)
-- [ ] Sender email verified and authenticated
-- [ ] SPF/DKIM/DMARC configured for sending domain
-- [ ] Unsubscribe links included in all emails
-- [ ] Physical address included (CAN-SPAM)
-- [ ] Test sends completed and reviewed
-
-### 4. Deliverability
-
-**Checklist:**
-- [ ] Sender domain authenticated
-- [ ] Dedicated IP warmed up (if applicable)
-- [ ] Suppression list imported
-- [ ] Bounce handling configured
-- [ ] Complaint handling configured
-- [ ] Reply-to address monitored
-
-### 5. Monitoring & Alerting
-
-```typescript
-// lib/monitoring.ts
-import { metrics } from './metrics';
-
-// Key metrics to monitor
-const customerIOMetrics = {
-  // API metrics
-  'customerio.api.latency': 'histogram',
-  'customerio.api.errors': 'counter',
-  'customerio.api.rate_limited': 'counter',
-
-  // Delivery metrics
-  'customerio.email.sent': 'counter',
-  'customerio.email.delivered': 'counter',
-  'customerio.email.bounced': 'counter',
-  'customerio.email.complained': 'counter',
-
-  // Business metrics
-  'customerio.users.identified': 'counter',
-  'customerio.events.tracked': 'counter'
-};
-
-// Recommended alerts
-const alertThresholds = {
-  'api_error_rate': { threshold: 0.01, window: '5m' },
-  'bounce_rate': { threshold: 0.05, window: '1h' },
-  'complaint_rate': { threshold: 0.001, window: '1h' },
-  'delivery_latency_p99': { threshold: 5000, window: '5m' }
-};
-```
-
-**Checklist:**
-- [ ] API error rate alerting configured
-- [ ] Delivery rate monitoring enabled
-- [ ] Bounce rate alerting (threshold: 5%)
-- [ ] Complaint rate alerting (threshold: 0.1%)
-- [ ] Dashboard for key metrics created
-
-### 6. Testing & Validation
-
-```bash
-#!/bin/bash
-# production-smoke-test.sh
-
-echo "Running production smoke tests..."
-
-# Test 1: API connectivity
-curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "https://track.customer.io/api/v1/customers/smoke-test-$(date +%s)" \
-  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"smoketest@example.com","_test":true}' | grep -q "200" && \
-  echo "API: OK" || echo "API: FAILED"
-
-# Test 2: Event tracking
-curl -s -o /dev/null -w "%{http_code}" \
-  -X POST "https://track.customer.io/api/v1/customers/smoke-test/events" \
-  -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \
-  -H "Content-Type: application/json" \
-  -d '{"name":"smoke_test","data":{"timestamp":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"}}' | grep -q "200" && \
-  echo "Events: OK" || echo "Events: FAILED"
-
-echo "Smoke tests complete"
-```
-
-**Checklist:**
-- [ ] End-to-end test in staging passed
-- [ ] Production smoke test passed
-- [ ] Load test completed (if high volume)
-- [ ] Failover test completed
-- [ ] Manual campaign test send reviewed
-
-### 7. Documentation & Runbooks
-
-**Checklist:**
-- [ ] Integration documentation updated
-- [ ] Event catalog documented
-- [ ] Attribute schema documented
-- [ ] Runbook for common issues created
-- [ ] Escalation path defined
-- [ ] On-call rotation aware of integration
-
-### 8. Rollback Plan
-
-```typescript
-// Rollback procedure documented
-const rollbackPlan = {
-  trigger: 'Error rate > 5% or delivery rate < 90%',
-  steps: [
-    '1. Disable new user identify calls',
-    '2. Pause triggered campaigns',
-    '3. Switch to backup messaging provider (if available)',
-    '4. Notify stakeholders',
-    '5. Investigate root cause',
-    '6. Fix and redeploy',
-    '7. Resume campaigns with reduced volume',
-    '8. Monitor closely for 24 hours'
-  ],
-  contacts: {
-    engineering: 'engineering@company.com',
-    customerio_support: 'support@customer.io',
-    escalation: 'oncall@company.com'
-  }
-};
-```
-
-**Checklist:**
-- [ ] Rollback procedure documented
-- [ ] Feature flags for quick disable
-- [ ] Backup messaging path available
-- [ ] Stakeholder notification plan ready
-
 ## Production Checklist Summary
 
-| Category | Status | Notes |
-|----------|--------|-------|
-| Credentials | [ ] | Prod keys in secrets manager |
-| Integration | [ ] | Code reviewed and tested |
-| Campaigns | [ ] | All campaigns production-ready |
-| Deliverability | [ ] | Domain authenticated |
-| Monitoring | [ ] | Alerts configured |
-| Testing | [ ] | All tests passing |
-| Documentation | [ ] | Runbooks complete |
-| Rollback | [ ] | Plan documented |
+| Category | Key Items |
+|----------|-----------|
+| Credentials | Prod keys in secrets manager, correct region |
+| Integration | Email attribute set, snake_case events, Unix timestamps |
+| Campaigns | Sender verified, SPF/DKIM/DMARC, unsubscribe links |
+| Deliverability | Domain authenticated, bounce/complaint handling |
+| Monitoring | Error rate alerts, delivery metrics dashboard |
+| Testing | End-to-end, smoke tests, load tests |
+| Documentation | Runbooks, event catalog, escalation path |
+| Rollback | Feature flags, backup messaging, notification plan |
 
 ## Go-Live Procedure
 
@@ -228,6 +45,36 @@ const rollbackPlan = {
 5. **T+1h**: Verify metrics, increase to 50%
 6. **T+2h**: Full traffic if healthy
 7. **T+24h**: Post-launch review
+
+## Instructions
+
+### Step 1: Verify Credentials
+Confirm production Site ID and API Key are configured, stored in secrets manager, and different from dev/staging.
+
+### Step 2: Audit Integration Quality
+Run integration audit script checking email attributes, event naming, timestamps, PII handling, and error handling.
+
+### Step 3: Review Campaign Configuration
+Verify sender email, SPF/DKIM/DMARC, unsubscribe links, CAN-SPAM compliance, and test sends.
+
+### Step 4: Set Up Monitoring and Alerts
+Configure alerts for API error rate (>1%), bounce rate (>5%), complaint rate (>0.1%), and p99 latency (>5s).
+
+### Step 5: Run Smoke Tests
+Execute production smoke tests verifying API connectivity and event tracking.
+
+### Step 6: Prepare Rollback Plan
+Document rollback triggers, steps, and contacts. Set up feature flags for quick disable.
+
+For detailed audit scripts, smoke test commands, and monitoring configuration, load the reference guide:
+`Read({baseDir}/references/implementation-guide.md)`
+
+## Error Handling
+| Issue | Solution |
+|-------|----------|
+| Smoke test fails | Check credentials and network |
+| High error rate post-launch | Trigger rollback procedure |
+| Deliverability issues | Review sender reputation |
 
 ## Resources
 - [Customer.io Launch Checklist](https://customer.io/docs/launch-checklist/)
