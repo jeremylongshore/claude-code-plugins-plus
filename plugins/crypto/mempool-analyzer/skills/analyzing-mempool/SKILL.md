@@ -13,16 +13,19 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Analyzing Mempool
 
+## Contents
+
+[Overview](#overview) | [Prerequisites](#prerequisites) | [Instructions](#instructions) | [Output](#output) | [Error Handling](#error-handling) | [Examples](#examples) | [Resources](#resources)
+
 ## Overview
 
 Monitor Ethereum mempool for pending transactions, analyze gas prices, detect DEX swaps, and identify potential MEV opportunities. Useful for traders, MEV researchers, and protocol developers.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- Python 3.8+ with requests library
-- Ethereum RPC URL (default: public endpoint, or set ETH_RPC_URL)
-- Internet access for RPC calls
+1. Install Python 3.8+ with requests library
+2. Configure Ethereum RPC URL (default: public endpoint, or set `ETH_RPC_URL`)
+3. Verify internet access for RPC calls
 
 ## Instructions
 
@@ -32,42 +35,20 @@ Before using this skill, ensure you have:
 cd ${CLAUDE_SKILL_DIR}/scripts
 ```
 
-### Step 2: Choose Your Command
+### Step 2: Choose a Command
 
-**View Pending Transactions:**
-```bash
-python mempool_analyzer.py pending
-python mempool_analyzer.py pending --limit 100
-```
+1. View pending transactions: `python mempool_analyzer.py pending`
+2. Analyze gas prices: `python mempool_analyzer.py gas`
+3. Detect pending DEX swaps: `python mempool_analyzer.py swaps`
+4. Scan MEV opportunities: `python mempool_analyzer.py mev`
+5. Get mempool summary: `python mempool_analyzer.py summary`
+6. Watch specific contract: `python mempool_analyzer.py watch 0x7a250d...`
 
-**Gas Price Analysis:**
+Alternatively, customize with flags:
 ```bash
-python mempool_analyzer.py gas
-# Shows distribution, recommendations for slow/standard/fast/instant
-```
-
-**Pending DEX Swaps:**
-```bash
-python mempool_analyzer.py swaps
-# Detects Uniswap, SushiSwap, 1inch pending swaps
-```
-
-**MEV Opportunity Scan:**
-```bash
-python mempool_analyzer.py mev
-# Detects sandwich, arbitrage, liquidation opportunities
-```
-
-**Mempool Summary:**
-```bash
-python mempool_analyzer.py summary
-# Quick overview of pending count, gas, opportunities
-```
-
-**Watch Specific Contract:**
-```bash
-python mempool_analyzer.py watch 0x7a250d...
-# Monitor pending transactions to specific contract
+python mempool_analyzer.py pending --limit 100    # Limit results
+python mempool_analyzer.py --chain polygon gas     # Use different chain
+python mempool_analyzer.py --chain arbitrum pending # Or use Arbitrum
 ```
 
 ### Step 3: Interpret Results
@@ -89,44 +70,39 @@ python mempool_analyzer.py watch 0x7a250d...
 - Gas price distribution and recommendations
 - Detected DEX swaps with amounts and DEX identification
 - MEV opportunity analysis with estimated profits
-- JSON output for programmatic use
+- JSON output for programmatic use (`--format json`)
 
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
-- RPC connection issues
-- Mempool access limitations
-- Transaction decoding errors
-- Gas analysis fallbacks
+- RPC connection issues and timeout recovery
+- Mempool access limitations per chain
+- Transaction decoding errors and fallbacks
+- Gas analysis edge cases
 
 ## Examples
 
-**Check gas before sending transaction:**
+**Example 1: Check gas before sending transaction:**
 ```bash
 python mempool_analyzer.py gas
 # Use "Fast" for quick confirmation
 ```
 
-**Monitor for large pending swaps:**
+**Example 2: Monitor for large pending swaps:**
 ```bash
-python mempool_analyzer.py swaps --limit 200  # HTTP 200 OK
+python mempool_analyzer.py swaps --limit 200  # 200: max results to scan
 ```
 
-**Research MEV opportunities:**
+**Example 3: Research MEV opportunities:**
 ```bash
 python mempool_analyzer.py mev -v
-```
-
-**Use different chain:**
-```bash
-python mempool_analyzer.py --chain polygon gas
-python mempool_analyzer.py --chain arbitrum pending
 ```
 
 See `${CLAUDE_SKILL_DIR}/references/examples.md` for more usage patterns.
 
 ## Resources
 
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Gas analysis, MEV detection, multi-chain details
 - [Ethereum JSON-RPC](https://ethereum.org/en/developers/docs/apis/json-rpc/) - RPC specification
 - [Flashbots](https://flashbots.net) - MEV research and infrastructure
 - [DEX Subgraphs](https://thegraph.com) - Pool and swap data

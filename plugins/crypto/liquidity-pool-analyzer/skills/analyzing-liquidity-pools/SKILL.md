@@ -15,11 +15,9 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Analyze DEX liquidity pools to understand TVL, trading volume, fee income, and impermanent loss risk. Compare pools across protocols (Uniswap, Curve, Balancer) and chains to identify optimal LP opportunities.
+Analyze DEX liquidity pools across Uniswap, Curve, and Balancer to evaluate TVL, trading volume, fee income, and impermanent loss risk. Compare pools across protocols and chains to identify optimal LP opportunities.
 
 ## Prerequisites
-
-Before using this skill, ensure you have:
 
 - Python 3.8+ installed
 - Internet access for subgraph/API queries
@@ -27,174 +25,78 @@ Before using this skill, ensure you have:
 
 ## Instructions
 
-### Step 1: Analyze a Specific Pool
+1. **Analyze a specific pool** by address or token pair:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
+   ```
 
-Analyze pool by address:
+2. **Calculate impermanent loss** for a price change:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 2000/3000 = ETH price at entry/now in USD
+   ```
+   Project IL for various scenarios:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
+   ```
 
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
-```
+3. **Estimate LP returns** with fee APR and position projections:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10000 = LP position size in USD
+   ```
 
-Analyze by token pair:
+4. **Compare pools** across protocols or fee tiers:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
+   ```
 
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
-```
-
-### Step 2: Calculate Impermanent Loss
-
-Calculate IL for a price change:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 3000: 2000: 2 seconds in ms
-```
-
-Project IL for various scenarios:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
-```
-
-### Step 3: Estimate LP Returns
-
-Calculate fee APR:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
-```
-
-Project returns for position size:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10000: 10 seconds in ms
-```
-
-### Step 4: Compare Pools
-
-Compare same pair across protocols:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
-```
-
-Compare fee tiers:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
-```
-
-### Step 5: Export Results
-
-Export to JSON:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --format json --output pool_analysis.json
-```
-
-Export comparison to CSV:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv --output pools.csv
-```
+5. **Export results** to JSON or CSV:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --format json --output pool_analysis.json
+   python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv --output pools.csv
+   ```
 
 ## Output
 
-### Pool Analysis Summary
-```
-==============================================================================
-  LIQUIDITY POOL ANALYZER                           2026-01-15 15:30 UTC  # 2026 year
-==============================================================================
+Pool analysis reports include chain, TVL, 24h volume, fee tier, fee APR, volume/TVL ratio, and token composition with current price. Impermanent loss reports show IL percentage, dollar impact, HODL vs LP value comparison, and breakeven analysis with days-to-recover based on fee income.
 
-  POOL: USDC/WETH (Uniswap V3 - 0.05%)
-------------------------------------------------------------------------------
-  Chain:          Ethereum
-  TVL:            $500.5M
-  24h Volume:     $125.3M
-  Fee Tier:       0.05%
-
-  FEE METRICS
-------------------------------------------------------------------------------
-  24h Fees:       $62,650  # 650 = configured value
-  Fee APR:        4.57%
-  Volume/TVL:     0.25
-
-  TOKEN COMPOSITION
-------------------------------------------------------------------------------
-  USDC:           $252.1M (50.4%)
-  WETH:           $248.4M (49.6%)
-  Current Price:  $2,450/ETH  # 450 = configured value
-==============================================================================
-```
-
-### Impermanent Loss Report
-```
-  IMPERMANENT LOSS CALCULATION
-------------------------------------------------------------------------------
-  Entry Price:    $2,000/ETH
-  Current Price:  $3,000/ETH
-  Price Change:   +50%
-
-  IL (%)          -5.72%
-  IL ($1000 LP):  -$57.20  # 1000: 1 second in ms
-
-  Value if HODL:  $1,250.00
-  Value in LP:    $1,192.80
-
-  BREAKEVEN ANALYSIS (0.05% fee tier)
-------------------------------------------------------------------------------
-  Daily Fees:     $0.63 (at $500M TVL, $125M vol)
-  Days to Break:  91 days
-  Monthly Fees:   $18.90
-==============================================================================
-```
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output format examples.
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
-
-Common issues:
-- **Pool not found**: Verify address and chain
-- **Subgraph timeout**: Uses cached data with warning
-- **Invalid pair**: Check supported protocols
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Pool not found | Wrong address or chain | Verify address and target chain |
+| Subgraph timeout | API latency or downtime | Uses cached data with warning |
+| Invalid pair | Unsupported protocol | Check supported protocols list |
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
-
-### Quick Examples
-
-**Analyze top ETH/USDC pool**:
+**Analyze top ETH/USDC pool** - Full TVL, volume, and fee breakdown on Uniswap V3:
 ```bash
 python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --chain ethereum
 ```
 
-**Calculate IL for 2x price increase**:
+**Calculate IL for 2x price increase** - See dollar impact vs holding:
 ```bash
-python pool_analyzer.py --il-calc --entry-price 100 --current-price 200  # HTTP 200 OK
+python pool_analyzer.py --il-calc --entry-price 100 --current-price 200  # 100/200 = token price at entry/now in USD
 ```
 
-**Compare Uniswap fee tiers**:
+**Compare Uniswap fee tiers** - Find optimal fee tier for ETH/USDC:
 ```bash
 python pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
 ```
 
-**Export all ETH pairs**:
+**Export all ETH pairs** - Dump pool data for further analysis:
 ```bash
 python pool_analyzer.py --token ETH --format json --output eth_pools.json
 ```
-
-## Configuration
-
-Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
-
-- **Default chain**: Primary chain to query
-- **Cache TTL**: How long to cache subgraph data
-- **Subgraph endpoints**: URLs for each protocol
-- **Fee tier defaults**: Common fee tier options
 
 ## Resources
 
 - The Graph: https://thegraph.com/ - Subgraph queries
 - Uniswap Info: https://info.uniswap.org/ - Pool explorer
 - DeFiLlama: https://defillama.com/ - TVL data
-- Impermanent Loss Calculator: https://dailydefi.org/tools/impermanent-loss-calculator/
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Detailed output formats, configuration, cross-protocol comparison guide

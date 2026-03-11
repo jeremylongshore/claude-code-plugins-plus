@@ -15,13 +15,11 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Calculate cryptocurrency tax obligations from transaction history. Supports multiple cost basis methods (FIFO, LIFO, HIFO), identifies taxable events (trades, staking, airdrops), and generates Form 8949 compatible reports.
+Calculate cryptocurrency tax obligations from transaction history. Supports FIFO, LIFO, and HIFO cost basis methods, identifies taxable events (trades, staking, airdrops), and generates Form 8949 compatible reports.
 
-**DISCLAIMER**: This tool provides informational calculations only, not tax advice. Consult a qualified tax professional for your specific situation.
+**DISCLAIMER**: This tool provides informational calculations only, not tax advice. Consult a qualified tax professional.
 
 ## Prerequisites
-
-Before using this skill, ensure you have:
 
 - Transaction history exported as CSV from your exchanges (Coinbase, Binance, Kraken, etc.)
 - Python 3.8+ installed
@@ -29,184 +27,79 @@ Before using this skill, ensure you have:
 
 ## Instructions
 
-### Step 1: Prepare Transaction Data
+1. **Prepare transaction data** by exporting CSV from each exchange:
+   | Exchange | Export Location |
+   |----------|-----------------|
+   | Coinbase | Reports > Tax documents > Transaction history CSV |
+   | Binance | Orders > Trade History > Export |
+   | Kraken | History > Export |
+   | Generic | See `${CLAUDE_SKILL_DIR}/references/exchange_formats.md` for column mapping |
 
-Export your transaction history from each exchange as CSV. Supported formats:
+2. **Run basic tax calculation** using FIFO (IRS default):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 = tax year
+   ```
 
-| Exchange | Export Location |
-|----------|-----------------|
-| Coinbase | Reports → Tax documents → Transaction history CSV |
-| Binance | Orders → Trade History → Export |
-| Kraken | History → Export |
-| Generic | See `${CLAUDE_SKILL_DIR}/references/exchange_formats.md` for column mapping |
+3. **Compare cost basis methods** to understand tax implications:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
+   ```
+   Methods: `--method fifo` (IRS default), `--method lifo` (Last In First Out), `--method hifo` (minimize gains)
 
-### Step 2: Run Basic Tax Calculation
+4. **Generate Form 8949 report** as CSV:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 = tax year
+   ```
 
-Execute the tax calculator with your transaction file:
+5. **Handle income events** (staking, airdrops, mining, DeFi yield):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions all_events.csv --income-report
+   ```
 
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025  # 2025 year
-```
-
-This uses FIFO (IRS default) and outputs:
-- Total capital gains/losses
-- Short-term vs long-term breakdown
-- Summary of taxable events
-
-### Step 3: Choose Cost Basis Method
-
-Compare different methods to understand tax implications:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
-```
-
-Or specify a method:
-
-| Method | Flag | Description |
-|--------|------|-------------|
-| FIFO | `--method fifo` | First In First Out (IRS default) |
-| LIFO | `--method lifo` | Last In First Out |
-| HIFO | `--method hifo` | Highest In First Out (minimize gains) |
-
-### Step 4: Generate Tax Report
-
-Create Form 8949 compatible CSV:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv  # 2025 year
-```
-
-Output includes:
-- Description of property
-- Date acquired
-- Date sold
-- Proceeds
-- Cost basis
-- Gain or loss
-
-### Step 5: Handle Income Events (Optional)
-
-For staking, airdrops, or mining income:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions all_events.csv --income-report
-```
-
-This identifies:
-- Staking rewards (valued at receipt)
-- Airdrops (valued at receipt)
-- Mining income
-- DeFi yield
-
-### Step 6: Multi-Exchange Consolidation
-
-Combine multiple exchange exports:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 year
-```
-
-The tool:
-- Merges all transactions
-- Sorts by date
-- Calculates unified cost basis
-- Handles transfers between exchanges
+6. **Consolidate multi-exchange data** into a unified report:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025  # 2025 = tax year
+   ```
 
 ## Output
 
-### Tax Report (Form 8949)
-```
-set -euo pipefail
-============================================================
-  CRYPTO TAX REPORT - 2025  # 2025 year
-============================================================
+Reports include short-term and long-term capital gains/losses broken down by transaction, with proceeds, cost basis, and gain/loss per disposal. Summary shows total proceeds, total cost basis, net capital gain, and short/long-term split. Income report lists staking, airdrop, and mining income with fair market values.
 
-SHORT-TERM CAPITAL GAINS/LOSSES (< 1 year)
-------------------------------------------------------------
-Description      Acquired    Sold        Proceeds    Cost      Gain/Loss
-0.5 BTC          03/15/25    06/20/25    $52,500     $47,500   $5,000  # HTTP 500 Internal Server Error
-2.0 ETH          04/01/25    08/15/25    $7,200      $6,400    $800  # 400: 800: HTTP 200 OK
-------------------------------------------------------------
-Short-term Total:                                              $5,800
-
-LONG-TERM CAPITAL GAINS/LOSSES (>= 1 year)
-------------------------------------------------------------
-Description      Acquired    Sold        Proceeds    Cost      Gain/Loss
-1.0 BTC          01/10/24    02/15/25    $95,000     $42,000   $53,000
-------------------------------------------------------------
-Long-term Total:                                               $53,000
-
-============================================================
-SUMMARY
-------------------------------------------------------------
-Total Proceeds:           $154,700  # 700 = configured value
-Total Cost Basis:         $95,900  # 900: timeout: 15 minutes
-Net Capital Gain:         $58,800
-
-Short-term Gains:         $5,800
-Long-term Gains:          $53,000
-============================================================
-```
-
-### Income Report
-```
-CRYPTO INCOME - 2025  # 2025 year
-------------------------------------------------------------
-Type            Date        Asset    Quantity    FMV (USD)
-Staking         01/15/25    ETH      0.05        $160.00
-Staking         02/15/25    ETH      0.05        $175.00
-Airdrop         03/01/25    ARB      100         $150.00
-------------------------------------------------------------
-Total Income:                                     $485.00
-```
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed output format examples.
 
 ## Error Handling
 
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
-
-Common issues:
-- **Missing columns**: Verify CSV format matches exchange template
-- **Unknown transaction type**: Review and manually categorize
-- **Insufficient lots**: Check for missing buy transactions
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Missing columns | CSV format mismatch | Verify format matches exchange template |
+| Unknown transaction type | Unrecognized event category | Review and manually categorize |
+| Insufficient lots | Missing buy transactions | Check for missing imports or transfers |
 
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
-
-### Quick Examples
-
-**Basic tax calculation**:
+**Basic FIFO tax calculation** - Standard IRS-default method for a single exchange:
 ```bash
-python tax_calculator.py --transactions trades.csv --year 2025  # 2025 year
+python tax_calculator.py --transactions trades.csv --year 2025  # 2025 = tax year
 ```
 
-**HIFO to minimize gains**:
+**HIFO to minimize gains** - Highest-cost lots disposed first to reduce taxable gain:
 ```bash
-python tax_calculator.py --transactions trades.csv --method hifo --year 2025  # 2025 year
+python tax_calculator.py --transactions trades.csv --method hifo --year 2025  # 2025 = tax year
 ```
 
-**JSON output for processing**:
+**JSON output for processing** - Machine-readable export for tax software integration:
 ```bash
 python tax_calculator.py --transactions trades.csv --format json --output tax_data.json
 ```
 
-**Verbose with lot details**:
+**Verbose with lot details** - See which specific lots were matched to each disposal:
 ```bash
 python tax_calculator.py --transactions trades.csv --verbose --show-lots
 ```
-
-## Configuration
-
-Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
-
-- **Default method**: Cost basis method (fifo, lifo, hifo)
-- **Tax year start**: January 1 (US) or fiscal year
-- **Exchange formats**: Column mappings for CSV parsing
-- **Holding period**: Days for long-term (default: 365)
 
 ## Resources
 
 - IRS Virtual Currency Guidance: https://www.irs.gov/businesses/small-businesses-self-employed/virtual-currencies
 - Form 8949 Instructions: https://www.irs.gov/instructions/i8949
 - CoinGecko API for historical prices
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Detailed output formats, configuration, advanced usage

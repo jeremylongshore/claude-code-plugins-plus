@@ -1,33 +1,64 @@
-# Implementation Guide
+# Implementation Details
 
-### Step 1: Configure Data Sources
-Set up connections to crypto data providers:
-1. Use Read tool to load API credentials from ${CLAUDE_SKILL_DIR}/config/crypto-apis.env
-2. Configure blockchain RPC endpoints for target networks
-3. Set up exchange API connections if required
-4. Verify rate limits and subscription tiers
-5. Test connectivity and authentication
+## Gas Price Distribution Analysis
 
-### Step 2: Query Crypto Data
-Retrieve relevant blockchain and market data:
-1. Use Bash(crypto:mempool-*) to execute crypto data queries
-2. Fetch real-time prices, volumes, and market cap data
-3. Query blockchain for on-chain metrics and transactions
-4. Retrieve exchange order book and trade history
-5. Aggregate data from multiple sources for accuracy
+The gas analysis command calculates percentile-based recommendations from pending transactions:
 
-### Step 3: Analyze and Process
-Process crypto data to generate insights:
-- Calculate key metrics (returns, volatility, correlation)
-- Identify patterns and anomalies in data
-- Apply technical indicators or on-chain signals
-- Compare across timeframes and assets
-- Generate actionable insights and alerts
+**Gas Recommendations:**
+- Slow (10th percentile): May take 10+ blocks
+- Standard (50th percentile): 2-5 blocks
+- Fast (75th percentile): 1-2 blocks
+- Instant (90th percentile): Next block likely
 
-### Step 4: Generate Reports
-Document findings in ${CLAUDE_SKILL_DIR}/crypto-reports/:
-- Market summary with key price movements
-- Detailed analysis with charts and metrics
-- Trading signals or opportunity recommendations
-- Risk assessment and position sizing guidance
-- Historical context and trend analysis
+## MEV Detection Details
+
+MEV detection scans for common patterns:
+- **Sandwich attacks**: Detects front-run + back-run pairs targeting the same swap
+- **Arbitrage**: Identifies circular token paths (A→B→A) across DEXs
+- **Liquidation**: Finds health-factor monitoring and repay+seize patterns
+
+**Important:** MEV detection is for educational purposes only. Real MEV extraction requires:
+- Specialized block-builder infrastructure (Flashbots, MEV-Boost)
+- Sub-millisecond execution timing
+- Significant capital for gas auctions
+
+## DEX Swap Detection
+
+The `swaps` command identifies pending DEX transactions by matching method selectors:
+- Uniswap V2/V3: `swapExactTokensForTokens`, `exactInputSingle`
+- SushiSwap: Same interface as Uniswap V2
+- 1inch: `swap`, `unoswap` aggregation methods
+
+## Multi-Chain Support
+
+Supported chains and their mempool characteristics:
+| Chain | Mempool Access | Block Time | Notes |
+|-------|---------------|------------|-------|
+| Ethereum | Full | ~12s | Richest MEV environment |
+| Polygon | Full | ~2s | Lower gas, faster blocks |
+| Arbitrum | Limited | ~0.25s | Sequencer-based, less MEV |
+| Optimism | Limited | ~2s | Sequencer-based |
+| Base | Limited | ~2s | Coinbase sequencer |
+
+## Contract Watching
+
+The `watch` command monitors pending transactions to a specific contract address:
+1. Filters mempool by `to` address
+2. Decodes known method selectors
+3. Estimates gas cost in USD
+4. Identifies transaction type (swap, approve, transfer, etc.)
+
+## Configuration
+
+Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
+```yaml
+rpc_endpoints:
+  ethereum: "https://rpc.ankr.com/eth"
+  polygon: "https://rpc.ankr.com/polygon"
+  arbitrum: "https://rpc.ankr.com/arbitrum"
+
+defaults:
+  chain: ethereum
+  limit: 50
+  output_format: table
+```

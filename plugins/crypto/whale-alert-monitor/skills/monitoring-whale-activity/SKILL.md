@@ -13,16 +13,19 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Monitoring Whale Activity
 
+## Contents
+
+[Overview](#overview) | [Prerequisites](#prerequisites) | [Instructions](#instructions) | [Output](#output) | [Error Handling](#error-handling) | [Examples](#examples) | [Resources](#resources)
+
 ## Overview
 
-Track large cryptocurrency transactions and whale wallet movements across multiple blockchains. Monitor exchange inflows/outflows, manage watchlists, and identify known wallets (exchanges, funds, bridges).
+Track large cryptocurrency transactions and whale wallet movements across multiple blockchains. Monitor exchange inflows/outflows, manage custom watchlists, and identify known wallets (exchanges, funds, bridges).
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- Python 3.8+ with requests library
-- Whale Alert API key (optional, for live data - free tier available)
-- Internet access for API calls
+1. Install Python 3.8+ with requests library
+2. Optionally obtain Whale Alert API key (free tier available for live data)
+3. Verify internet access for API calls
 
 ## Instructions
 
@@ -32,45 +35,28 @@ Before using this skill, ensure you have:
 cd ${CLAUDE_SKILL_DIR}/scripts
 ```
 
-### Step 2: Choose Your Command
+### Step 2: Choose a Command
 
-**Recent Whale Transactions:**
-```bash
-python whale_monitor.py recent                    # All chains
-python whale_monitor.py recent --chain ethereum   # Specific chain
-python whale_monitor.py recent --min-value 10000000  # 10000000: $10M+ only
-```
+1. View recent whale transactions: `python whale_monitor.py recent`
+2. Analyze exchange flows: `python whale_monitor.py flows`
+3. Manage watchlist: `python whale_monitor.py watchlist`
+4. Track specific wallet: `python whale_monitor.py track 0x123...`
+5. Search known labels: `python whale_monitor.py labels --query binance`
 
-**Exchange Flow Analysis:**
+Alternatively, customize with chain and threshold filters:
 ```bash
-python whale_monitor.py flows                     # Overall exchange flows
-python whale_monitor.py flows --chain ethereum    # Chain-specific
-```
-
-**Watchlist Management:**
-```bash
-python whale_monitor.py watchlist                 # View watchlist
-python whale_monitor.py watch 0x123... --name "My Whale"  # Add to watchlist
-python whale_monitor.py unwatch 0x123...          # Remove from watchlist
-```
-
-**Track Specific Wallet:**
-```bash
-python whale_monitor.py track 0x123...            # Track wallet activity
-```
-
-**Search Known Labels:**
-```bash
-python whale_monitor.py labels --query binance    # Search by name
-python whale_monitor.py labels --type exchange    # List by type
+python whale_monitor.py recent --chain ethereum              # Specific chain
+python whale_monitor.py recent --min-value 10000000          # 10000000: $10M+ only
+python whale_monitor.py watch 0x123... --name "My Whale"     # Add to watchlist
+python whale_monitor.py labels --type exchange               # Or use type filter
 ```
 
 ### Step 3: Interpret Results
 
 **Transaction Types:**
-- 🔴 DEPOSIT → Exchange (potential selling pressure)
-- 🟢 WITHDRAWAL → From exchange (accumulation signal)
-- 🐋 TRANSFER → Wallet to wallet (whale movement)
+- DEPOSIT: Sent to exchange (potential selling pressure)
+- WITHDRAWAL: From exchange (accumulation signal)
+- TRANSFER: Wallet to wallet (whale movement)
 
 **Flow Analysis:**
 - Net positive flow to exchanges = selling pressure
@@ -82,35 +68,35 @@ python whale_monitor.py labels --type exchange    # List by type
 - Labeled wallets (exchanges, funds, bridges, protocols)
 - Exchange inflow/outflow summaries
 - Custom watchlist tracking
-- JSON, table, or alert format output
+- JSON, table, or alert format output (`--format json`)
 
 ## Error Handling
 
 See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
-- API rate limit handling
+- API rate limit handling and backoff
 - Network timeout recovery
-- Invalid address formats
+- Invalid address format validation
 - Price service fallbacks
 
 ## Examples
 
-**View $10M+ whale transactions on Ethereum:**
+**Example 1: View $10M+ whale transactions on Ethereum:**
 ```bash
 python whale_monitor.py recent --chain ethereum --min-value 10000000  # 10000000 = 10M limit
 ```
 
-**Analyze if whales are selling (depositing to exchanges):**
+**Example 2: Analyze if whales are selling:**
 ```bash
 python whale_monitor.py flows --chain ethereum
 ```
 
-**Track a known whale wallet:**
+**Example 3: Track a known whale wallet:**
 ```bash
 python whale_monitor.py watch 0x28c6c... --name "Binance Cold"
 python whale_monitor.py track 0x28c6c...
 ```
 
-**Export to JSON for further analysis:**
+**Example 4: Export to JSON for further analysis:**
 ```bash
 python whale_monitor.py recent --format json > whales.json
 ```
@@ -119,7 +105,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for more usage patterns.
 
 ## Resources
 
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Flow analysis, wallet database, multi-chain details
 - [Whale Alert](https://whale-alert.io) - Real-time whale transaction API
 - [Etherscan](https://etherscan.io) - Ethereum blockchain explorer
 - [CoinGecko](https://coingecko.com) - Price data API
-- Known wallet database with 100+ labeled exchanges and protocols
