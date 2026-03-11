@@ -16,200 +16,123 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Performance Tuning
 
 ## Overview
-Optimize CodeRabbit API performance with caching, batching, and connection pooling.
+Optimize CodeRabbit review speed, relevance, and developer workflow integration. CodeRabbit reviews typically take 2-10 minutes depending on PR size, with large PRs (1000+ lines) taking up to 15 minutes. The main performance levers are: keeping PRs small (smaller diffs = faster, more relevant reviews), configuring path-specific instructions (reduces noise, increases signal), and using incremental reviews (only review changed files on push, not the full PR again).
 
 ## Prerequisites
-- CodeRabbit SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedCodeRabbitRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const coderabbitLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from CodeRabbit
-    const results = await coderabbitClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  coderabbitLoader.load('id-1'),
-  coderabbitLoader.load('id-2'),
-  coderabbitLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new CodeRabbitClient({
-  apiKey: process.env.CODERABBIT_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedCodeRabbitList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedCodeRabbitList(cursor =>
-  coderabbitClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredCodeRabbitCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- CodeRabbit installed on GitHub/GitLab organization
+- `.coderabbit.yaml` configuration file in repositories
+- Understanding of review patterns and team feedback
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical CodeRabbit operations.
+### Step 1: Keep PRs Small for Faster Reviews
+```yaml
+# PR size directly impacts review speed and quality
+size_guidelines:
+  small:    # <200 lines changed
+    review_time: "2-3 minutes"
+    quality: "High - focused, actionable comments"
+  medium:   # 200-500 lines
+    review_time: "3-7 minutes"
+    quality: "Good - may miss nuanced issues"
+  large:    # 500-1000 lines
+    review_time: "7-12 minutes"
+    quality: "Moderate - broad strokes only"
+  huge:     # 1000+ lines
+    review_time: "12-15+ minutes"
+    quality: "Low - too much context to process well"
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+# Best practice: enforce PR size limits with CI checks
+# max_lines_changed: 500
+```
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+### Step 2: Use Path-Specific Instructions for Relevance
+```yaml
+# .coderabbit.yaml - Give context so reviews are actionable
+reviews:
+  path_instructions:
+    - path: "src/api/**"
+      instructions: |
+        Check for: proper error handling, input validation, auth middleware.
+        Ignore: logging format, import order.
+    - path: "src/components/**"
+      instructions: |
+        Check for: accessibility (aria labels), performance (no inline styles).
+        Ignore: CSS naming conventions (handled by linter).
+    - path: "tests/**"
+      instructions: |
+        Check for: assertion completeness, edge cases.
+        Ignore: test structure (handled by testing framework conventions).
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+### Step 3: Configure Incremental Reviews
+```yaml
+# .coderabbit.yaml - Only re-review changed files on push
+reviews:
+  auto_review:
+    enabled: true
+    incremental: true    # Re-review only changed files on new pushes
+    drafts: false        # Skip draft PRs (work in progress)
+    base_branches: [main, develop]  # Only PRs targeting these branches
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 4: Reduce Noise with Smart Exclusions
+```yaml
+# .coderabbit.yaml - Skip files that don't benefit from AI review
+reviews:
+  auto_review:
+    ignore_paths:
+      - "**/*.lock"             # Package lock files
+      - "**/*.snap"             # Test snapshots
+      - "**/*.generated.*"      # Generated code
+      - "**/*.min.js"           # Minified files
+      - "**/vendor/**"          # Third-party code
+      - "**/__mocks__/**"       # Test mocks
+      - "**/fixtures/**"        # Test fixtures
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+      - "chore: bump"
+```
+
+### Step 5: Tune Review Profile for Your Team
+```yaml
+# Match review aggressiveness to team preferences
+profiles:
+  chill:       # Few comments, only major issues
+    best_for: "Senior teams, high-trust environments"
+    comment_count: "1-3 per PR"
+
+  assertive:   # Balanced signal-to-noise
+    best_for: "Most teams (recommended default)"
+    comment_count: "3-8 per PR"
+
+  nitpicky:    # Detailed comments on style and best practices
+    best_for: "Junior teams, onboarding, compliance-critical"
+    comment_count: "8-15 per PR"
+    warning: "May cause review fatigue if team isn't expecting it"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Review takes 15+ minutes | PR too large (1000+ lines) | Split into smaller PRs |
+| Too many irrelevant comments | No path_instructions configured | Add context-specific instructions |
+| Reviews on generated files | No ignore_paths configured | Add generated file patterns to exclusions |
+| Team ignoring reviews | Profile too nitpicky | Switch to `assertive` or `chill` profile |
 
 ## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredCodeRabbitCall(name, () =>
-    cachedCodeRabbitRequest(`cache:${name}`, fn)
-  );
+```yaml
+# Optimized .coderabbit.yaml for a typical backend service
+reviews:
+  profile: "assertive"
+  auto_review:
+    enabled: true
+    incremental: true
+    drafts: false
+    base_branches: [main]
+    ignore_paths: ["**/*.lock", "**/*.snap", "**/vendor/**", "dist/**"]
+  path_instructions:
+    - path: "src/auth/**"
+      instructions: "Security-critical. Check for auth bypass and injection."
 ```
-
-## Resources
-- [CodeRabbit Performance Guide](https://docs.coderabbit.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `coderabbit-cost-tuning`.

@@ -16,200 +16,106 @@ compatible-with: claude-code, codex, openclaw
 # Clay Performance Tuning
 
 ## Overview
-Optimize Clay API performance with caching, batching, and connection pooling.
+Optimize Clay data enrichment throughput and reduce table processing times. Clay tables process enrichments row-by-row with each enrichment making external API calls (Clearbit, Apollo, Hunter, etc.). The main performance bottlenecks are: enrichment provider rate limits (each provider has its own rate cap), sequential row processing (Clay processes rows in batches internally), and API response times from third-party enrichment providers (100ms to 5s depending on provider).
 
 ## Prerequisites
-- Clay SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedClayRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const clayLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Clay
-    const results = await clayClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  clayLoader.load('id-1'),
-  clayLoader.load('id-2'),
-  clayLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new ClayClient({
-  apiKey: process.env.CLAY_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedClayList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedClayList(cursor =>
-  clayClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredClayCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Clay account with active tables
+- Understanding of enrichment provider rate limits
+- API access for programmatic table management
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Clay operations.
+### Step 1: Optimize Table Structure for Throughput
+```yaml
+# Design tables for efficient processing
+best_practices:
+  pre_filter_rows: true
+    # Remove invalid rows BEFORE enrichment (saves time and credits)
+    # Filter: valid domains, non-personal emails, non-duplicate entries
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+  order_enrichments_by_speed: true
+    # Fast enrichments first (email lookup ~100ms)
+    # Slow enrichments last (company profile ~2-5s)
+    # Allows fast columns to complete while slow ones process
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+  limit_waterfall_depth: 2
+    # Each waterfall step adds 1-5s per row
+    # 5-step waterfall = 5-25s per row
+    # 2-step waterfall = 2-10s per row
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+### Step 2: Use the Map Endpoint for Parallel Lookups
+```bash
+# Instead of enriching row-by-row via the UI:
+# Use the API to submit bulk enrichment requests
+curl -X POST "https://api.clay.com/v1/tables/tbl_abc123/enrich-batch" \
+  -H "Authorization: Bearer $CLAY_API_KEY" \
+  -d '{
+    "rows": [
+      {"domain": "stripe.com"},
+      {"domain": "linear.app"},
+      {"domain": "vercel.com"}
+    ],
+    "enrichments": ["company_profile"],
+    "async": true
+  }'
+# Batch API processes in parallel internally
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 3: Pre-Validate Input Data
+```typescript
+// Clean data before submitting to Clay to avoid wasted processing time
+function preValidateRows(rows: any[]): any[] {
+  return rows.filter(row => {
+    // Remove rows with invalid domains
+    if (!row.domain || !row.domain.includes('.')) return false;
+    // Remove personal email domains (won't enrich company data)
+    const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com'];
+    if (personalDomains.includes(row.domain)) return false;
+    // Remove duplicates
+    return true;
+  });
+}
+// Typical filtering removes 20-40% of rows, directly speeding up processing
+```
+
+### Step 4: Schedule Large Tables for Off-Peak Hours
+```yaml
+# Clay's enrichment providers have variable response times
+# Processing during off-peak hours (US nighttime) often sees faster provider responses
+scheduling:
+  large_tables:  # 1000+ rows
+    preferred_time: "02:00-06:00 UTC"
+    reason: "Less contention on enrichment provider APIs"
+  small_tables:  # <100 rows
+    time: "Any time"
+    reason: "Minimal impact from rate limits"
+```
+
+### Step 5: Monitor Processing Progress
+```bash
+# Track table enrichment progress
+curl "https://api.clay.com/v1/tables/tbl_abc123/status" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '{
+    total_rows, rows_enriched, rows_pending, rows_failed,
+    progress_pct: (.rows_enriched / .total_rows * 100),
+    estimated_remaining_min: (.rows_pending * 3 / 60)  # ~3s per row average
+  }'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Table processing stuck | Enrichment provider rate limit | Wait for rate limit reset, or reduce table concurrency |
+| Slow enrichment (>10s/row) | Waterfall trying many providers | Reduce waterfall depth to 2 steps |
+| Batch fails halfway | Network timeout | Use async batch endpoint, check status via polling |
+| Duplicate results | Same domain enriched multiple times | Deduplicate input data before enrichment |
 
 ## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredClayCall(name, () =>
-    cachedClayRequest(`cache:${name}`, fn)
-  );
+```bash
+# Estimate processing time for a new table
+ROWS=5000
+echo "Estimated time at 3s/row average: $(echo "$ROWS * 3 / 60" | bc) minutes"
+echo "With pre-validation (remove ~30%): $(echo "$ROWS * 0.7 * 3 / 60" | bc) minutes"
 ```
-
-## Resources
-- [Clay Performance Guide](https://docs.clay.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `clay-cost-tuning`.

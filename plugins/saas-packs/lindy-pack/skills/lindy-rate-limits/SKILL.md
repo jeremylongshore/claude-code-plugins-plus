@@ -16,188 +16,126 @@ compatible-with: claude-code, codex, openclaw
 # Lindy Rate Limits
 
 ## Overview
-Comprehensive guide to understanding and managing Lindy API rate limits.
+Rate limit management for Lindy AI agent API. Lindy's agent execution model involves orchestrating multiple service calls per request, making rate limits apply at both the API level and the agent action level.
 
 ## Prerequisites
-- Lindy SDK installed
-- Understanding of your plan's limits
-- Access to usage dashboard
+- Lindy API configured
+- Understanding of agent execution costs
+- Monitoring for action-level limits
 
-## Rate Limit Tiers
+## Lindy Rate Limits
 
-### Free Tier
 | Resource | Limit | Window |
 |----------|-------|--------|
-| API Requests | 100/min | Rolling |
-| Agent Runs | 50/day | Daily |
-| Concurrent Runs | 2 | Instant |
-
-### Pro Tier
-| Resource | Limit | Window |
-|----------|-------|--------|
-| API Requests | 1000/min | Rolling |
-| Agent Runs | 1000/day | Daily |
-| Concurrent Runs | 10 | Instant |
-
-### Enterprise
-| Resource | Limit | Window |
-|----------|-------|--------|
-| API Requests | Custom | Rolling |
-| Agent Runs | Unlimited | - |
-| Concurrent Runs | 100+ | Instant |
+| API Requests | 100/min | Per API key |
+| Agent Triggers | 50/min | Per agent |
+| Actions Per Agent | 200/hour | Per agent |
+| Webhook Deliveries | 500/min | Per endpoint |
 
 ## Instructions
 
-### Step 1: Check Current Usage
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
+### Step 1: API-Level Rate Limiter
 
-const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
+```python
+import time
 
-async function checkUsage() {
-  const usage = await lindy.usage.current();
+class LindyRateLimiter:
+    def __init__(self, rpm: int = 100):
+        self.rpm = rpm
+        self.timestamps = []
 
-  console.log('Current Usage:');
-  console.log(`  API Requests: ${usage.apiRequests.used}/${usage.apiRequests.limit}`);
-  console.log(`  Agent Runs: ${usage.agentRuns.used}/${usage.agentRuns.limit}`);
-  console.log(`  Concurrent: ${usage.concurrent.active}/${usage.concurrent.limit}`);
+    def wait(self):
+        now = time.time()
+        self.timestamps = [t for t in self.timestamps if now - t < 60]
+        if len(self.timestamps) >= self.rpm:
+            sleep_time = 60 - (now - self.timestamps[0])
+            time.sleep(sleep_time + 0.1)
+        self.timestamps.append(time.time())
 
-  return usage;
-}
+limiter = LindyRateLimiter(rpm=100)
+
+def call_lindy_api(endpoint: str, payload: dict):
+    limiter.wait()
+    response = requests.post(
+        f"https://api.lindy.ai/v1/{endpoint}",
+        json=payload, headers={"Authorization": f"Bearer {API_KEY}"}
+    )
+    if response.status_code == 429:
+        retry_after = int(response.headers.get("Retry-After", 10))
+        time.sleep(retry_after)
+        return call_lindy_api(endpoint, payload)
+    response.raise_for_status()
+    return response.json()
 ```
 
-### Step 2: Implement Rate Limiter
-```typescript
-class RateLimiter {
-  private tokens: number;
-  private lastRefill: number;
-  private readonly maxTokens: number;
-  private readonly refillRate: number; // tokens per second
+### Step 2: Agent Action Budget
 
-  constructor(maxTokens: number, refillRate: number) {
-    this.maxTokens = maxTokens;
-    this.tokens = maxTokens;
-    this.refillRate = refillRate;
-    this.lastRefill = Date.now();
-  }
+Track actions per agent to prevent hitting hourly limits.
 
-  async acquire(): Promise<void> {
-    this.refill();
+```python
+class AgentActionBudget:
+    def __init__(self, hourly_limit: int = 200):
+        self.limit = hourly_limit
+        self.actions = {}  # agent_id -> [(timestamp, action)]
 
-    if (this.tokens < 1) {
-      const waitTime = (1 - this.tokens) / this.refillRate * 1000;
-      await new Promise(r => setTimeout(r, waitTime));
-      this.refill();
-    }
+    def can_execute(self, agent_id: str) -> bool:
+        now = time.time()
+        history = self.actions.get(agent_id, [])
+        recent = [t for t, _ in history if now - t < 3600]
+        return len(recent) < self.limit
 
-    this.tokens -= 1;
-  }
+    def record(self, agent_id: str, action: str):
+        if agent_id not in self.actions:
+            self.actions[agent_id] = []
+        self.actions[agent_id].append((time.time(), action))
 
-  private refill(): void {
-    const now = Date.now();
-    const elapsed = (now - this.lastRefill) / 1000;
-    this.tokens = Math.min(this.maxTokens, this.tokens + elapsed * this.refillRate);
-    this.lastRefill = now;
-  }
-}
+    def remaining(self, agent_id: str) -> int:
+        now = time.time()
+        recent = [t for t, _ in self.actions.get(agent_id, []) if now - t < 3600]
+        return max(0, self.limit - len(recent))
 
-// Usage: 100 requests per minute
-const limiter = new RateLimiter(100, 100 / 60);
-
-async function rateLimitedRequest<T>(fn: () => Promise<T>): Promise<T> {
-  await limiter.acquire();
-  return fn();
-}
+budget = AgentActionBudget()
 ```
 
-### Step 3: Handle Rate Limit Errors
-```typescript
-async function withRetryOnRateLimit<T>(
-  fn: () => Promise<T>,
-  maxRetries = 5
-): Promise<T> {
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      return await fn();
-    } catch (error: any) {
-      if (error.code === 'LINDY_RATE_LIMITED') {
-        const retryAfter = error.retryAfter || Math.pow(2, attempt);
-        console.log(`Rate limited. Retrying in ${retryAfter}s...`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
-        continue;
-      }
-      throw error;
-    }
-  }
-  throw new Error('Max retries exceeded');
-}
-```
+### Step 3: Webhook Rate Management
 
-## Output
-- Usage monitoring implementation
-- Client-side rate limiter
-- Retry logic for rate limit errors
-- Optimized API usage patterns
+```python
+from collections import defaultdict
+
+class WebhookRateTracker:
+    def __init__(self, max_per_minute: int = 500):
+        self.limit = max_per_minute
+        self.counts = defaultdict(list)
+
+    def should_process(self, endpoint: str) -> bool:
+        now = time.time()
+        self.counts[endpoint] = [t for t in self.counts[endpoint] if now - t < 60]
+        if len(self.counts[endpoint]) >= self.limit:
+            return False
+        self.counts[endpoint].append(now)
+        return True
+```
 
 ## Error Handling
-| Scenario | Strategy | Code |
-|----------|----------|------|
-| Near limit | Slow down | Reduce request rate |
-| Hit limit | Wait | Respect Retry-After |
-| Burst | Queue | Implement request queue |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 429 API response | Exceeded 100 RPM | Rate limiter with backoff |
+| Agent actions blocked | Exceeded 200 actions/hour | Track and budget agent actions |
+| Webhook flood | External trigger storm | Rate limit webhook processing |
+| Agent stalled | Hit action limit mid-workflow | Monitor remaining budget |
 
 ## Examples
 
-### Queue-Based Rate Limiting
-```typescript
-class RequestQueue {
-  private queue: Array<() => Promise<void>> = [];
-  private processing = false;
-  private requestsThisMinute = 0;
-  private lastMinuteStart = Date.now();
-
-  async enqueue<T>(fn: () => Promise<T>): Promise<T> {
-    return new Promise((resolve, reject) => {
-      this.queue.push(async () => {
-        try {
-          resolve(await fn());
-        } catch (e) {
-          reject(e);
-        }
-      });
-      this.processQueue();
-    });
-  }
-
-  private async processQueue(): Promise<void> {
-    if (this.processing) return;
-    this.processing = true;
-
-    while (this.queue.length > 0) {
-      if (Date.now() - this.lastMinuteStart > 60000) {
-        this.requestsThisMinute = 0;
-        this.lastMinuteStart = Date.now();
-      }
-
-      if (this.requestsThisMinute >= 100) {
-        await new Promise(r => setTimeout(r, 1000));
-        continue;
-      }
-
-      const request = this.queue.shift()!;
-      this.requestsThisMinute++;
-      await request();
+### Status Dashboard
+```python
+status = {
+    "api_rpm_used": len(limiter.timestamps),
+    "agents": {
+        agent_id: {"actions_remaining": budget.remaining(agent_id)}
+        for agent_id in budget.actions
     }
-
-    this.processing = false;
-  }
 }
 ```
 
 ## Resources
-- [Lindy Rate Limits](https://docs.lindy.ai/rate-limits)
-- [Usage Dashboard](https://app.lindy.ai/usage)
-- [Upgrade Plans](https://lindy.ai/pricing)
-
-## Next Steps
-Proceed to `lindy-security-basics` for security configuration.
+- [Lindy API Docs](https://docs.lindy.ai)

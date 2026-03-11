@@ -16,333 +16,122 @@ compatible-with: claude-code, codex, openclaw
 # Speak Rate Limits
 
 ## Overview
-Handle Speak rate limits gracefully with exponential backoff and session management for language learning applications.
+Rate limit management for Speak's language learning API. Audio processing endpoints are computationally expensive, with stricter limits on pronunciation assessment than text-based endpoints.
 
 ## Prerequisites
-- Speak SDK installed
-- Understanding of async/await patterns
-- Access to rate limit headers
+- Speak API access configured
+- Understanding of audio processing latency
+- Queue infrastructure for batch assessments
+
+## Speak API Rate Limits
+
+| Endpoint | Limit | Notes |
+|----------|-------|-------|
+| Pronunciation Assessment | 30/min | Audio processing intensive |
+| Conversation Start | 20/min | Creates session state |
+| Conversation Turn | 60/min | Within active sessions |
+| Translation | 120/min | Text-only, faster |
 
 ## Instructions
 
-### Step 1: Understand Rate Limit Tiers
+### Step 1: Audio-Aware Rate Limiter
 
-| Tier | Sessions/hour | API Calls/min | Audio Processing/min | Burst |
-|------|---------------|---------------|---------------------|-------|
-| Free | 10 | 60 | 20 | 5 |
-| Premium | 100 | 300 | 100 | 25 |
-| Education | 500 | 1000 | 300 | 50 |
-| Enterprise | Unlimited | Custom | Custom | Custom |
+Audio endpoints are slower and more resource-intensive. Track per-endpoint.
 
-### Step 2: Implement Exponential Backoff with Jitter
+```python
+import time, threading
 
-```typescript
-interface BackoffConfig {
-  maxRetries: number;
-  baseDelayMs: number;
-  maxDelayMs: number;
-  jitterMs: number;
-}
+class SpeakRateLimiter:
+    def __init__(self):
+        self.limits = {
+            "pronunciation": 30,
+            "conversation_start": 20,
+            "conversation_turn": 60,
+            "translation": 120,
+        }
+        self.windows = {k: [] for k in self.limits}
+        self.lock = threading.Lock()
 
-async function withExponentialBackoff<T>(
-  operation: () => Promise<T>,
-  config: BackoffConfig = {
-    maxRetries: 5,
-    baseDelayMs: 1000,
-    maxDelayMs: 32000,
-    jitterMs: 500,
-  }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error: any) {
-      if (attempt === config.maxRetries) throw error;
+    def wait_if_needed(self, endpoint: str):
+        with self.lock:
+            now = time.time()
+            self.windows[endpoint] = [t for t in self.windows[endpoint] if now - t < 60]
+            if len(self.windows[endpoint]) >= self.limits[endpoint]:
+                sleep_time = 60 - (now - self.windows[endpoint][0])
+                time.sleep(sleep_time + 0.1)
+            self.windows[endpoint].append(time.time())
 
-      const status = error.status || error.response?.status;
-      const isRetryable = status === 429 || (status >= 500 && status < 600);
+limiter = SpeakRateLimiter()
 
-      if (!isRetryable) throw error;
-
-      // Check for Retry-After header
-      const retryAfter = error.headers?.['retry-after'];
-      let delay: number;
-
-      if (retryAfter) {
-        delay = parseInt(retryAfter) * 1000;
-      } else {
-        // Exponential backoff with jitter
-        const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-        const jitter = Math.random() * config.jitterMs;
-        delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-      }
-
-      console.log(`Rate limited. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
-    }
-  }
-  throw new Error('Unreachable');
-}
+def assess_pronunciation(client, audio_path, text):
+    limiter.wait_if_needed("pronunciation")
+    return client.assess_pronunciation(audio_path, text)
 ```
 
-### Step 3: Session-Aware Rate Limiting
+### Step 2: Batch Assessment Queue
 
-```typescript
-// Speak uses session-based rate limits for lesson interactions
-class SessionRateLimiter {
-  private sessionCounts: Map<string, { count: number; windowStart: Date }> = new Map();
-  private readonly maxSessionsPerHour: number;
-  private readonly maxResponsesPerSession: number;
+Queue multiple student recordings and process within rate limits.
 
-  constructor(tier: 'free' | 'premium' | 'education' = 'premium') {
-    const limits = {
-      free: { sessions: 10, responses: 50 },
-      premium: { sessions: 100, responses: 200 },
-      education: { sessions: 500, responses: 500 },
-    };
-    this.maxSessionsPerHour = limits[tier].sessions;
-    this.maxResponsesPerSession = limits[tier].responses;
-  }
+```python
+from queue import PriorityQueue
+import threading
 
-  canStartSession(userId: string): boolean {
-    const now = new Date();
-    const windowMs = 60 * 60 * 1000; // 1 hour
+class AssessmentQueue:
+    def __init__(self, client, limiter):
+        self.queue = PriorityQueue()
+        self.client = client
+        self.limiter = limiter
+        self.results = {}
 
-    const userLimits = this.sessionCounts.get(userId);
-    if (!userLimits) return true;
+    def submit(self, student_id: str, audio_path: str, text: str, priority: int = 5):
+        self.queue.put((priority, student_id, audio_path, text))
 
-    // Check if window has reset
-    if (now.getTime() - userLimits.windowStart.getTime() > windowMs) {
-      this.sessionCounts.set(userId, { count: 0, windowStart: now });
-      return true;
-    }
-
-    return userLimits.count < this.maxSessionsPerHour;
-  }
-
-  recordSessionStart(userId: string): void {
-    const now = new Date();
-    const current = this.sessionCounts.get(userId);
-
-    if (!current || now.getTime() - current.windowStart.getTime() > 60 * 60 * 1000) {
-      this.sessionCounts.set(userId, { count: 1, windowStart: now });
-    } else {
-      current.count++;
-    }
-  }
-
-  getRemainingSession(userId: string): number {
-    const current = this.sessionCounts.get(userId);
-    if (!current) return this.maxSessionsPerHour;
-    return Math.max(0, this.maxSessionsPerHour - current.count);
-  }
-}
+    def process_all(self) -> dict:
+        while not self.queue.empty():
+            priority, student_id, audio_path, text = self.queue.get()
+            self.limiter.wait_if_needed("pronunciation")
+            try:
+                result = self.client.assess_pronunciation(audio_path, text)
+                self.results[student_id] = {"score": result["score"], "status": "ok"}
+            except Exception as e:
+                self.results[student_id] = {"error": str(e), "status": "failed"}
+        return self.results
 ```
 
-### Step 4: Audio Processing Queue
+### Step 3: Handle 429 with Retry-After
 
-```typescript
-import PQueue from 'p-queue';
-
-// Audio processing has stricter limits
-const audioQueue = new PQueue({
-  concurrency: 2, // Max 2 concurrent audio requests
-  interval: 1000, // Per second
-  intervalCap: 3, // Max 3 per second
-});
-
-async function queuedAudioProcessing(
-  client: SpeakClient,
-  audioData: ArrayBuffer,
-  options: AudioProcessingOptions
-): Promise<PronunciationResult> {
-  return audioQueue.add(async () => {
-    return client.speech.analyze(audioData, options);
-  });
-}
-
-// Monitor queue status
-audioQueue.on('idle', () => {
-  console.log('Audio queue idle');
-});
-
-audioQueue.on('add', () => {
-  console.log(`Audio queue size: ${audioQueue.size}, pending: ${audioQueue.pending}`);
-});
+```python
+def speak_with_retry(fn, *args, max_retries=3):
+    for attempt in range(max_retries):
+        try:
+            return fn(*args)
+        except requests.HTTPError as e:
+            if e.response.status_code == 429:
+                wait = int(e.response.headers.get("Retry-After", 5))
+                time.sleep(wait)
+            else:
+                raise
+    raise Exception("Max retries exceeded")
 ```
-
-### Step 5: Rate Limit Monitor
-
-```typescript
-class SpeakRateLimitMonitor {
-  private apiRemaining: number = 60;
-  private audioRemaining: number = 20;
-  private apiResetAt: Date = new Date();
-  private audioResetAt: Date = new Date();
-
-  updateFromHeaders(headers: Headers): void {
-    // API limits
-    if (headers.has('X-RateLimit-Remaining')) {
-      this.apiRemaining = parseInt(headers.get('X-RateLimit-Remaining')!);
-    }
-    if (headers.has('X-RateLimit-Reset')) {
-      this.apiResetAt = new Date(parseInt(headers.get('X-RateLimit-Reset')!) * 1000);
-    }
-
-    // Audio-specific limits
-    if (headers.has('X-Audio-RateLimit-Remaining')) {
-      this.audioRemaining = parseInt(headers.get('X-Audio-RateLimit-Remaining')!);
-    }
-    if (headers.has('X-Audio-RateLimit-Reset')) {
-      this.audioResetAt = new Date(parseInt(headers.get('X-Audio-RateLimit-Reset')!) * 1000);
-    }
-  }
-
-  shouldThrottleApi(): boolean {
-    return this.apiRemaining < 5 && new Date() < this.apiResetAt;
-  }
-
-  shouldThrottleAudio(): boolean {
-    return this.audioRemaining < 3 && new Date() < this.audioResetAt;
-  }
-
-  getApiWaitTime(): number {
-    return Math.max(0, this.apiResetAt.getTime() - Date.now());
-  }
-
-  getAudioWaitTime(): number {
-    return Math.max(0, this.audioResetAt.getTime() - Date.now());
-  }
-
-  getStatus(): RateLimitStatus {
-    return {
-      api: {
-        remaining: this.apiRemaining,
-        resetAt: this.apiResetAt,
-        throttled: this.shouldThrottleApi(),
-      },
-      audio: {
-        remaining: this.audioRemaining,
-        resetAt: this.audioResetAt,
-        throttled: this.shouldThrottleAudio(),
-      },
-    };
-  }
-}
-```
-
-### Step 6: Idempotency for Lesson Responses
-
-```typescript
-import crypto from 'crypto';
-
-// Generate deterministic key for lesson responses
-function generateIdempotencyKey(
-  sessionId: string,
-  responseText: string,
-  timestamp: number
-): string {
-  const data = JSON.stringify({ sessionId, responseText, timestamp });
-  return crypto.createHash('sha256').update(data).digest('hex').slice(0, 32);
-}
-
-async function idempotentSubmitResponse(
-  session: LessonSession,
-  response: LessonResponse,
-  idempotencyKey?: string
-): Promise<TutorFeedback> {
-  const key = idempotencyKey || generateIdempotencyKey(
-    session.id,
-    response.text,
-    Math.floor(Date.now() / 10000) // 10-second buckets
-  );
-
-  return session.submitResponse(response, {
-    headers: { 'Idempotency-Key': key },
-  });
-}
-```
-
-## Output
-- Reliable API calls with automatic retry
-- Session-aware rate limiting
-- Audio processing queue
-- Rate limit monitoring
-- Idempotent lesson responses
 
 ## Error Handling
-| Header | Description | Action |
-|--------|-------------|--------|
-| X-RateLimit-Limit | Max requests | Monitor usage |
-| X-RateLimit-Remaining | Remaining requests | Throttle if low |
-| X-RateLimit-Reset | Reset timestamp | Wait until reset |
-| X-Audio-RateLimit-Remaining | Audio requests left | Queue audio processing |
-| Retry-After | Seconds to wait | Honor this value |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| 429 on assessment | Exceeded 30/min | Queue assessments, spread over time |
+| Slow batch processing | Sequential audio processing | Respect rate limits, don't parallelize too much |
+| Session timeout | Conversation idle too long | Send turns within session timeout |
+| Audio upload rejected | File too large | Compress audio, limit to 25MB |
 
 ## Examples
 
-### Pre-flight Rate Check
-```typescript
-async function safeSpeakCall<T>(
-  monitor: SpeakRateLimitMonitor,
-  operation: () => Promise<T>,
-  isAudioOperation: boolean = false
-): Promise<T> {
-  // Check if we should wait
-  if (isAudioOperation && monitor.shouldThrottleAudio()) {
-    const waitTime = monitor.getAudioWaitTime();
-    console.log(`Audio rate limit - waiting ${waitTime}ms`);
-    await new Promise(r => setTimeout(r, waitTime));
-  } else if (monitor.shouldThrottleApi()) {
-    const waitTime = monitor.getApiWaitTime();
-    console.log(`API rate limit - waiting ${waitTime}ms`);
-    await new Promise(r => setTimeout(r, waitTime));
-  }
-
-  return withExponentialBackoff(operation);
-}
-```
-
-### Batch Lesson Processing
-```typescript
-async function batchProcessLessons(
-  client: SpeakClient,
-  lessons: LessonConfig[],
-  rateLimiter: SessionRateLimiter
-): Promise<LessonResult[]> {
-  const results: LessonResult[] = [];
-
-  for (const lesson of lessons) {
-    // Check rate limit before starting
-    if (!rateLimiter.canStartSession(lesson.userId)) {
-      console.log(`Rate limited for user ${lesson.userId}, skipping`);
-      results.push({ success: false, error: 'RATE_LIMITED' });
-      continue;
-    }
-
-    rateLimiter.recordSessionStart(lesson.userId);
-
-    try {
-      const result = await withExponentialBackoff(() =>
-        client.tutor.runLesson(lesson)
-      );
-      results.push({ success: true, data: result });
-    } catch (error) {
-      results.push({ success: false, error });
-    }
-
-    // Small delay between lessons
-    await new Promise(r => setTimeout(r, 100));
-  }
-
-  return results;
-}
+### Rate Status Check
+```python
+status = {endpoint: {
+    "used": len(limiter.windows[endpoint]),
+    "limit": limiter.limits[endpoint],
+    "available": limiter.limits[endpoint] - len(limiter.windows[endpoint])
+} for endpoint in limiter.limits}
 ```
 
 ## Resources
-- [Speak Rate Limits](https://developer.speak.com/docs/rate-limits)
-- [p-queue Documentation](https://github.com/sindresorhus/p-queue)
-- [Speak API Headers](https://developer.speak.com/docs/headers)
-
-## Next Steps
-For security configuration, see `speak-security-basics`.
+- [Speak API Docs](https://docs.speak.com)

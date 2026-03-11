@@ -13,170 +13,196 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Juicebox Candidate Enrichment Workflow
+# Juicebox Core Workflow B: Candidate Enrichment
 
 ## Overview
-Enrich candidate profiles with additional data including contact information, work history, and skills verification.
+Build comprehensive candidate profiles using Juicebox people search and enrichment. Covers profile data extraction, multi-source enrichment, experience timeline construction, and CRM-ready candidate record generation.
 
 ## Prerequisites
-- Juicebox SDK configured
-- Search workflow implemented (`juicebox-core-workflow-a`)
-- Data storage for enriched profiles
+- Juicebox API key
+- Understanding of people search parameters
+- CRM or ATS for candidate export
+- Data validation rules for enriched profiles
 
 ## Instructions
 
-### Step 1: Define Enrichment Schema
+### Step 1: Search and Retrieve Candidate Profiles
 ```typescript
-// types/enrichment.ts
-export interface EnrichedProfile {
-  id: string;
-  basicInfo: {
-    name: string;
-    title: string;
-    company: string;
-    location: string;
-  };
-  contact: {
-    email?: string;
-    phone?: string;
-    linkedin?: string;
-  };
-  experience: WorkExperience[];
-  education: Education[];
-  skills: Skill[];
-  lastEnriched: Date;
-}
+const JUICEBOX_API = 'https://api.juicebox.ai/v1';
 
-export interface WorkExperience {
-  company: string;
-  title: string;
-  startDate: string;
-  endDate?: string;
-  description?: string;
+async function searchCandidates(query: {
+  title?: string;
+  company?: string;
+  location?: string;
+  skills?: string[];
+  yearsExperience?: number;
+}) {
+  const response = await fetch(`${JUICEBOX_API}/people/search`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.JUICEBOX_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      query: query.title,
+      filters: {
+        current_company: query.company,
+        location: query.location,
+        skills: query.skills,
+        min_years_experience: query.yearsExperience,
+      },
+      limit: 25,
+    }),
+  });
+
+  return response.json();
 }
 ```
 
-### Step 2: Implement Enrichment Service
+### Step 2: Enrich Profile with Full Details
 ```typescript
-// services/enrichment.ts
-import { JuiceboxService } from '../lib/juicebox-client';
+interface EnrichedProfile {
+  name: string;
+  headline: string;
+  location: string;
+  email?: string;
+  linkedin_url?: string;
+  current_company: string;
+  current_title: string;
+  experience: Array<{
+    company: string;
+    title: string;
+    startDate: string;
+    endDate?: string;
+    duration: string;
+  }>;
+  skills: string[];
+  education: Array<{ school: string; degree: string; year?: number }>;
+}
 
-export class ProfileEnrichmentService {
-  constructor(private juicebox: JuiceboxService) {}
+async function enrichProfile(profileId: string): Promise<EnrichedProfile> {
+  const response = await fetch(`${JUICEBOX_API}/people/${profileId}/enrich`, {
+    headers: {
+      'Authorization': `Bearer ${process.env.JUICEBOX_API_KEY}`,
+    },
+  });
 
-  async enrichProfile(profileId: string): Promise<EnrichedProfile> {
-    // Fetch full profile details
-    const fullProfile = await this.juicebox.getProfile(profileId, {
-      include: ['contact', 'experience', 'education', 'skills']
-    });
+  const data = await response.json();
 
-    // Validate and structure data
-    const enriched: EnrichedProfile = {
-      id: profileId,
-      basicInfo: {
-        name: fullProfile.name,
-        title: fullProfile.title,
-        company: fullProfile.company,
-        location: fullProfile.location
-      },
-      contact: {
-        email: fullProfile.email,
-        phone: fullProfile.phone,
-        linkedin: fullProfile.linkedinUrl
-      },
-      experience: this.parseExperience(fullProfile.workHistory),
-      education: this.parseEducation(fullProfile.education),
-      skills: this.parseSkills(fullProfile.skills),
-      lastEnriched: new Date()
-    };
+  return {
+    name: data.full_name,
+    headline: data.headline || '',
+    location: data.location || '',
+    email: data.email,
+    linkedin_url: data.linkedin_url,
+    current_company: data.current_company?.name || '',
+    current_title: data.current_title || '',
+    experience: (data.experience || []).map((exp: any) => ({
+      company: exp.company_name,
+      title: exp.title,
+      startDate: exp.start_date,
+      endDate: exp.end_date,
+      duration: calculateDuration(exp.start_date, exp.end_date),
+    })),
+    skills: data.skills || [],
+    education: data.education || [],
+  };
+}
 
-    return enriched;
-  }
+function calculateDuration(start: string, end?: string): string {
+  const startDate = new Date(start);
+  const endDate = end ? new Date(end) : new Date();
+  const months = Math.round((endDate.getTime() - startDate.getTime()) / (30 * 86400000));
+  const years = Math.floor(months / 12);
+  const remainingMonths = months % 12;
+  return years > 0 ? `${years}y ${remainingMonths}m` : `${remainingMonths}m`;
+}
+```
 
-  async batchEnrich(profileIds: string[]): Promise<EnrichedProfile[]> {
-    const batchSize = 10;
-    const results: EnrichedProfile[] = [];
+### Step 3: Batch Enrichment Pipeline
+```typescript
+async function batchEnrich(profileIds: string[], concurrency = 3) {
+  const results: EnrichedProfile[] = [];
+  const errors: Array<{ id: string; error: string }> = [];
 
-    for (let i = 0; i < profileIds.length; i += batchSize) {
-      const batch = profileIds.slice(i, i + batchSize);
-      const enriched = await Promise.all(
-        batch.map(id => this.enrichProfile(id))
-      );
-      results.push(...enriched);
+  for (let i = 0; i < profileIds.length; i += concurrency) {
+    const batch = profileIds.slice(i, i + concurrency);
+    const batchResults = await Promise.allSettled(
+      batch.map(id => enrichProfile(id))
+    );
 
-      // Rate limit protection
-      if (i + batchSize < profileIds.length) {
-        await sleep(1000);
+    for (let j = 0; j < batchResults.length; j++) {
+      const result = batchResults[j];
+      if (result.status === 'fulfilled') {
+        results.push(result.value);
+      } else {
+        errors.push({ id: batch[j], error: result.reason?.message || 'Unknown' });
       }
     }
 
-    return results;
+    // Rate limiting
+    if (i + concurrency < profileIds.length) {
+      await new Promise(r => setTimeout(r, 1000));
+    }
   }
+
+  return { enriched: results, errors };
 }
 ```
 
-### Step 3: Store Enriched Data
+### Step 4: Generate CRM-Ready Candidate Records
 ```typescript
-// storage/profiles.ts
-export class ProfileStorage {
-  async saveEnrichedProfile(profile: EnrichedProfile): Promise<void> {
-    await db.profiles.upsert({
-      where: { id: profile.id },
-      create: profile,
-      update: {
-        ...profile,
-        lastEnriched: new Date()
-      }
-    });
-  }
+function toCRMRecord(profile: EnrichedProfile) {
+  return {
+    first_name: profile.name.split(' ')[0],
+    last_name: profile.name.split(' ').slice(1).join(' '),
+    email: profile.email,
+    title: profile.current_title,
+    company: profile.current_company,
+    location: profile.location,
+    linkedin: profile.linkedin_url,
+    source: 'juicebox',
+    total_experience_years: calculateTotalExperience(profile.experience),
+    top_skills: profile.skills.slice(0, 10).join(', '),
+    notes: `${profile.headline}\n\nExperience: ${profile.experience.length} roles`,
+  };
+}
 
-  async getStaleProfiles(olderThan: Date): Promise<string[]> {
-    const stale = await db.profiles.findMany({
-      where: {
-        lastEnriched: { lt: olderThan }
-      },
-      select: { id: true }
-    });
-    return stale.map(p => p.id);
-  }
+function calculateTotalExperience(experience: any[]): number {
+  const totalMonths = experience.reduce((sum, exp) => {
+    const start = new Date(exp.startDate);
+    const end = exp.endDate ? new Date(exp.endDate) : new Date();
+    return sum + Math.round((end.getTime() - start.getTime()) / (30 * 86400000));
+  }, 0);
+  return Math.round(totalMonths / 12);
 }
 ```
-
-## Output
-- Enriched profile schema
-- Batch enrichment service
-- Data persistence layer
-- Freshness tracking
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Profile Not Found | Invalid ID | Verify profile exists |
-| Partial Data | Limited access | Handle optional fields |
-| Rate Limited | Too many requests | Implement backoff |
+| No email found | Profile has no public email | Try alternative enrichment sources |
+| Profile not found | Invalid profile ID | Validate IDs from search results |
+| Rate limit | Too many concurrent requests | Reduce concurrency, add delays |
+| Incomplete experience | Partial profile data | Mark as incomplete, flag for manual review |
 
 ## Examples
 
-### Enrichment Pipeline
+### Full Candidate Pipeline
 ```typescript
-const enrichmentService = new ProfileEnrichmentService(juicebox);
-const storage = new ProfileStorage();
+const candidates = await searchCandidates({
+  title: 'Senior Software Engineer',
+  skills: ['TypeScript', 'React'],
+  location: 'San Francisco',
+});
 
-// Enrich search results
-const candidates = await searchPipeline.searchCandidates(criteria);
-const profileIds = candidates.slice(0, 20).map(c => c.id);
+const ids = candidates.results.map((c: any) => c.id);
+const { enriched, errors } = await batchEnrich(ids);
+const crmRecords = enriched.map(toCRMRecord);
 
-const enriched = await enrichmentService.batchEnrich(profileIds);
-
-for (const profile of enriched) {
-  await storage.saveEnrichedProfile(profile);
-  console.log(`Enriched: ${profile.basicInfo.name}`);
-}
+console.log(`Enriched ${enriched.length} candidates, ${errors.length} errors`);
 ```
 
 ## Resources
-- [Profile API Reference](https://juicebox.ai/docs/api/profiles)
-- [Enrichment Guide](https://juicebox.ai/docs/enrichment)
-
-## Next Steps
-After enrichment, explore `juicebox-common-errors` for error handling patterns.
+- [Juicebox API Documentation](https://docs.juicebox.ai)
+- [Juicebox People Search](https://docs.juicebox.ai/people-search)

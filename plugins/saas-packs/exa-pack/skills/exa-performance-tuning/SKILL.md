@@ -16,200 +16,124 @@ compatible-with: claude-code, codex, openclaw
 # Exa Performance Tuning
 
 ## Overview
-Optimize Exa API performance with caching, batching, and connection pooling.
+Optimize Exa AI search API response times and throughput for production RAG pipelines and search integrations. Exa search latency varies by type: keyword search (200-500ms), neural search (500-2000ms), and auto mode (300-1500ms). The biggest performance levers are: using keyword search for structured queries (3-4x faster than neural), caching results for repeated queries, limiting `numResults` to what's actually needed, and parallelizing independent searches.
 
 ## Prerequisites
-- Exa SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedExaRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const exaLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Exa
-    const results = await exaClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  exaLoader.load('id-1'),
-  exaLoader.load('id-2'),
-  exaLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new ExaClient({
-  apiKey: process.env.EXA_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedExaList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedExaList(cursor =>
-  exaClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredExaCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Exa API integration (`exa-js` SDK or REST API)
+- Cache infrastructure (Redis or in-memory LRU)
+- Understanding of search patterns in your application
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Exa operations.
+### Step 1: Choose Search Type by Latency Requirement
+```typescript
+import Exa from 'exa-js';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+// Match search type to latency budget
+function optimizedSearch(exa: Exa, query: string, latencyBudgetMs: number) {
+  if (latencyBudgetMs < 500) {
+    // Fast path: keyword search for structured/exact queries
+    return exa.search(query, { type: 'keyword', numResults: 3 });
+  } else if (latencyBudgetMs < 1500) {
+    // Balanced: auto mode picks best approach
+    return exa.search(query, { type: 'auto', numResults: 5 });
+  } else {
+    // Quality: neural search for semantic understanding
+    return exa.search(query, { type: 'neural', numResults: 10 });
+  }
+}
+```
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+### Step 2: Cache Search Results
+```typescript
+import { LRUCache } from 'lru-cache';
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+const searchCache = new LRUCache<string, any>({
+  max: 10000,
+  ttl: 2 * 3600_000, // 2-hour TTL for most searches
+});
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+async function cachedSearch(exa: Exa, query: string, options: any) {
+  const key = `${query}:${options.type}:${options.numResults}`;
+  const cached = searchCache.get(key);
+  if (cached) return cached; // Cache hit: 0ms vs 500-2000ms
+
+  const results = await exa.search(query, options);
+  searchCache.set(key, results);
+  return results;
+}
+```
+
+### Step 3: Minimize Result Count
+```typescript
+// Each additional result adds latency (content retrieval)
+const RESULT_CONFIGS: Record<string, number> = {
+  'rag-context':     3,   // Only need top 3 for RAG
+  'autocomplete':    5,   // Quick suggestions
+  'deep-research':  10,   // Comprehensive coverage
+};
+
+// Don't default to numResults: 10 when 3 suffices
+// Reducing from 10 to 3 results saves ~200-500ms per search
+```
+
+### Step 4: Parallelize Independent Searches
+```typescript
+// When RAG needs multiple search contexts, run them in parallel
+async function parallelContextSearch(exa: Exa, queries: string[]) {
+  const searches = queries.map(q =>
+    cachedSearch(exa, q, { type: 'auto', numResults: 3 })
+  );
+  return Promise.all(searches);
+  // 3 parallel searches: ~600ms total
+  // 3 sequential searches: ~1800ms total
+}
+```
+
+### Step 5: Use Content Retrieval Selectively
+```typescript
+// The /get-contents endpoint is separate from search
+// Only fetch full content for results you'll actually use
+async function searchThenFetch(exa: Exa, query: string) {
+  // Step 1: Fast search for URLs only
+  const results = await exa.search(query, { type: 'auto', numResults: 5 });
+
+  // Step 2: Only fetch content for top 2 results
+  const topUrls = results.results.slice(0, 2).map(r => r.url);
+  const contents = await exa.getContents(topUrls, { text: { maxCharacters: 2000 } });
+
+  return contents;
+}
+// Saves content retrieval time for 3 results you won't use
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Search taking 3s+ | Neural search on complex query | Switch to keyword or auto mode |
+| Timeout on content retrieval | Large pages, slow source servers | Set `maxCharacters` limit on content |
+| Cache miss rate high | Unique queries every time | Normalize queries before caching |
+| Rate limit (429) | Too many concurrent searches | Add request queue with concurrency limit |
 
 ## Examples
+```bash
+# Benchmark: keyword vs neural latency on same query
+echo "Keyword:"
+time curl -s -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -d '{"query": "GraphQL best practices 2024", "type": "keyword", "numResults": 3}' -o /dev/null
 
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredExaCall(name, () =>
-    cachedExaRequest(`cache:${name}`, fn)
-  );
+echo "Neural:"
+time curl -s -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -d '{"query": "GraphQL best practices 2024", "type": "neural", "numResults": 3}' -o /dev/null
 ```
 
-## Resources
-- [Exa Performance Guide](https://docs.exa.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `exa-cost-tuning`.
+```typescript
+// Optimized RAG pipeline search
+const context = await parallelContextSearch(exa, [
+  `${topic} technical overview`,
+  `${topic} implementation examples`,
+]);
+// Total latency: max(search1, search2) + cache overhead ~= 600ms
+```

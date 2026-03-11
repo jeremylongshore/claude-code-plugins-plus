@@ -16,310 +16,206 @@ compatible-with: claude-code, codex, openclaw
 # Langfuse Core Workflow B: Evaluation & Scoring
 
 ## Overview
-Secondary workflow for Langfuse: evaluating and scoring LLM outputs for quality monitoring.
+Implement LLM output evaluation and scoring with Langfuse. Covers manual user feedback collection, automated evaluation functions, A/B testing prompts with score comparison, and building evaluation datasets.
 
 ## Prerequisites
-- Completed `langfuse-core-workflow-a` (tracing setup)
+- Langfuse instance (Cloud or self-hosted)
+- Langfuse SDK configured with API keys
+- Traces already being collected (see workflow A)
 - Understanding of evaluation metrics
-- (Optional) Evaluation framework like RAGAS or custom evaluators
 
 ## Instructions
 
-### Step 1: Add Manual Scores to Traces
-
+### Step 1: Manual User Feedback Scoring
 ```typescript
-import { Langfuse } from "langfuse";
+import { Langfuse } from 'langfuse';
 
 const langfuse = new Langfuse();
 
-async function scoreTrace(
+// Score a specific trace with user feedback
+async function submitUserFeedback(
   traceId: string,
-  scores: { name: string; value: number; comment?: string }[]
+  rating: 'positive' | 'negative',
+  comment?: string
 ) {
-  for (const score of scores) {
-    await langfuse.score({
-      traceId,
-      name: score.name,
-      value: score.value,
-      comment: score.comment,
-    });
-  }
-}
-
-// Usage after generating a response
-const trace = langfuse.trace({ name: "chat" });
-// ... do LLM work ...
-
-// Add scores
-await scoreTrace(trace.id, [
-  { name: "relevance", value: 0.9, comment: "Directly answers question" },
-  { name: "accuracy", value: 0.85, comment: "Minor factual imprecision" },
-  { name: "helpfulness", value: 1.0, comment: "Very helpful response" },
-]);
-```
-
-### Step 2: Capture User Feedback
-
-```typescript
-// API endpoint for user feedback
-async function handleFeedback(req: {
-  traceId: string;
-  rating: "good" | "bad";
-  comment?: string;
-}) {
-  await langfuse.score({
-    traceId: req.traceId,
-    name: "user-feedback",
-    value: req.rating === "good" ? 1 : 0,
-    comment: req.comment,
-    dataType: "BOOLEAN", // Renders as thumbs up/down in UI
+  langfuse.score({
+    traceId,
+    name: 'user-feedback',
+    value: rating === 'positive' ? 1 : 0,
+    comment,
   });
 
-  return { success: true };
+  await langfuse.flushAsync();
 }
 
-// Frontend integration
-function FeedbackButtons({ traceId }: { traceId: string }) {
-  const submitFeedback = async (rating: "good" | "bad") => {
-    await fetch("/api/feedback", {
-      method: "POST",
-      body: JSON.stringify({ traceId, rating }),
-    });
-  };
+// Score with granular rating (1-5 stars)
+async function submitStarRating(
+  traceId: string,
+  stars: number,
+  observationId?: string
+) {
+  langfuse.score({
+    traceId,
+    observationId, // Optional: score a specific generation
+    name: 'star-rating',
+    value: stars / 5, // Normalize to 0-1
+    comment: `${stars}/5 stars`,
+  });
+}
+```
 
-  return (
-    <div>
-      <button onClick={() => submitFeedback("good")}>👍</button>
-      <button onClick={() => submitFeedback("bad")}>👎</button>
-    </div>
+### Step 2: Automated Evaluation Functions
+```typescript
+// Evaluate response quality automatically
+function evaluateResponse(response: string, expectedTopics: string[]): number {
+  const topicsFound = expectedTopics.filter(topic =>
+    response.toLowerCase().includes(topic.toLowerCase())
   );
+  return topicsFound.length / expectedTopics.length;
+}
+
+function evaluateLength(response: string, minWords: number, maxWords: number): number {
+  const wordCount = response.split(/\s+/).length;
+  if (wordCount < minWords) return wordCount / minWords;
+  if (wordCount > maxWords) return maxWords / wordCount;
+  return 1.0;
+}
+
+// Score traces automatically after generation
+async function autoScore(
+  traceId: string,
+  generationId: string,
+  response: string,
+  expectedTopics: string[]
+) {
+  const topicScore = evaluateResponse(response, expectedTopics);
+  const lengthScore = evaluateLength(response, 50, 500);
+
+  langfuse.score({
+    traceId,
+    observationId: generationId,
+    name: 'topic-coverage',
+    value: topicScore,
+  });
+
+  langfuse.score({
+    traceId,
+    observationId: generationId,
+    name: 'length-quality',
+    value: lengthScore,
+  });
+
+  await langfuse.flushAsync();
 }
 ```
 
-### Step 3: Automated Evaluation with LLM-as-Judge
-
+### Step 3: LLM-as-Judge Evaluation
 ```typescript
-async function evaluateWithLLM(
-  traceId: string,
+import OpenAI from 'openai';
+
+const openai = new OpenAI();
+
+async function llmJudge(
   question: string,
-  answer: string,
-  context: string[]
-) {
-  const evaluationPrompt = `
-You are evaluating an AI assistant's response.
-
-Question: ${question}
-Context provided: ${context.join("\n")}
-AI Response: ${answer}
-
-Rate the response on these criteria (0.0 to 1.0):
-1. Relevance: Does it answer the question?
-2. Accuracy: Is it factually correct based on context?
-3. Completeness: Does it fully address the question?
-
-Respond in JSON: {"relevance": 0.X, "accuracy": 0.X, "completeness": 0.X}
-`;
-
-  // Create evaluation trace linked to original
-  const evalTrace = langfuse.trace({
-    name: "llm-evaluation",
-    metadata: { evaluatedTraceId: traceId },
-    tags: ["evaluation", "automated"],
+  response: string,
+  criteria: string
+): Promise<{ score: number; reasoning: string }> {
+  const result = await openai.chat.completions.create({
+    model: 'gpt-4o-mini',
+    temperature: 0,
+    messages: [
+      {
+        role: 'system',
+        content: `You are an AI evaluator. Score the response on a scale of 0-10 based on: ${criteria}.
+Return JSON: {"score": <number>, "reasoning": "<explanation>"}`,
+      },
+      {
+        role: 'user',
+        content: `Question: ${question}\nResponse: ${response}`,
+      },
+    ],
+    response_format: { type: 'json_object' },
   });
 
-  const generation = evalTrace.generation({
-    name: "judge-response",
-    model: "gpt-4",
-    input: evaluationPrompt,
+  return JSON.parse(result.choices[0].message.content || '{}');
+}
+
+// Use with Langfuse scoring
+async function judgeAndScore(traceId: string, question: string, response: string) {
+  const evaluation = await llmJudge(question, response, 'accuracy, helpfulness, and clarity');
+
+  langfuse.score({
+    traceId,
+    name: 'llm-judge',
+    value: evaluation.score / 10, // Normalize to 0-1
+    comment: evaluation.reasoning,
   });
-
-  const response = await openai.chat.completions.create({
-    model: "gpt-4",
-    messages: [{ role: "user", content: evaluationPrompt }],
-    response_format: { type: "json_object" },
-  });
-
-  const scores = JSON.parse(response.choices[0].message.content!);
-
-  generation.end({
-    output: scores,
-    usage: {
-      promptTokens: response.usage?.prompt_tokens || 0,
-      completionTokens: response.usage?.completion_tokens || 0,
-    },
-  });
-
-  // Apply scores to original trace
-  for (const [name, value] of Object.entries(scores)) {
-    await langfuse.score({
-      traceId,
-      name: `llm-judge/${name}`,
-      value: value as number,
-      comment: "Automated LLM evaluation",
-    });
-  }
-
-  return scores;
 }
 ```
 
-### Step 4: Score Specific Generations
-
+### Step 4: A/B Prompt Comparison
 ```typescript
-async function scoreGeneration(
-  traceId: string,
-  observationId: string, // Generation ID
-  scores: Record<string, number>
+async function comparePrompts(
+  testCases: Array<{ input: string; expectedTopics: string[] }>,
+  promptA: string,
+  promptB: string
 ) {
-  for (const [name, value] of Object.entries(scores)) {
-    await langfuse.score({
-      traceId,
-      observationId, // Links score to specific generation
-      name,
-      value,
-    });
-  }
-}
+  const results = { promptA: { scores: [] as number[] }, promptB: { scores: [] as number[] } };
 
-// Usage
-const trace = langfuse.trace({ name: "multi-step" });
-
-const gen1 = trace.generation({ name: "step-1", model: "gpt-4" });
-// ... LLM call ...
-gen1.end({ output: result1 });
-
-const gen2 = trace.generation({ name: "step-2", model: "gpt-4" });
-// ... LLM call ...
-gen2.end({ output: result2 });
-
-// Score each generation separately
-await scoreGeneration(trace.id, gen1.id, { quality: 0.9 });
-await scoreGeneration(trace.id, gen2.id, { quality: 0.7 });
-```
-
-### Step 5: Dataset-Based Evaluation
-
-```typescript
-// Create evaluation dataset in Langfuse
-async function runDatasetEvaluation(datasetName: string) {
-  // Fetch dataset from Langfuse
-  const dataset = await langfuse.getDataset(datasetName);
-
-  const results = [];
-
-  for (const item of dataset.items) {
-    // Run your pipeline
-    const trace = langfuse.trace({
-      name: "dataset-eval",
-      metadata: { datasetItemId: item.id },
+  for (const testCase of testCases) {
+    // Test Prompt A
+    const traceA = langfuse.trace({ name: 'ab-test-prompt-a' });
+    const genA = traceA.generation({
+      name: 'generate',
+      input: testCase.input,
+      model: 'gpt-4o-mini',
+      metadata: { promptVersion: 'A' },
     });
 
-    const output = await runPipeline(item.input);
+    const responseA = await callLLM(promptA, testCase.input);
+    genA.end({ output: responseA });
 
-    trace.update({ output });
+    const scoreA = evaluateResponse(responseA, testCase.expectedTopics);
+    traceA.score({ name: 'topic-coverage', value: scoreA });
+    results.promptA.scores.push(scoreA);
 
-    // Compare to expected output
-    const score = compareOutputs(output, item.expectedOutput);
-
-    await langfuse.score({
-      traceId: trace.id,
-      name: "dataset-match",
-      value: score,
-    });
-
-    // Link trace to dataset item
-    await langfuse.datasetItem.link({
-      datasetItemId: item.id,
-      traceId: trace.id,
-    });
-
-    results.push({ input: item.input, output, score });
+    // Test Prompt B
+    const traceB = langfuse.trace({ name: 'ab-test-prompt-b' });
+    const responseB = await callLLM(promptB, testCase.input);
+    const scoreB = evaluateResponse(responseB, testCase.expectedTopics);
+    traceB.score({ name: 'topic-coverage', value: scoreB });
+    results.promptB.scores.push(scoreB);
   }
 
-  return results;
+  const avgA = results.promptA.scores.reduce((a, b) => a + b, 0) / results.promptA.scores.length;
+  const avgB = results.promptB.scores.reduce((a, b) => a + b, 0) / results.promptB.scores.length;
+
+  await langfuse.flushAsync();
+  return { promptA: avgA.toFixed(3), promptB: avgB.toFixed(3), winner: avgA > avgB ? 'A' : 'B' };
 }
 ```
-
-## Output
-- Manual scoring for human evaluation
-- User feedback capture (thumbs up/down)
-- Automated LLM-as-judge evaluation
-- Generation-level scoring
-- Dataset-based evaluation runs
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Score not appearing | Wrong traceId | Verify trace ID exists |
-| Invalid score value | Out of range | Use 0.0-1.0 or define range |
-| Feedback delayed | Not flushed | Call `flushAsync()` if needed |
-| Eval trace missing | Not linked | Use metadata to link traces |
+| Scores not appearing | Flush not called | Always call `flushAsync` after scoring |
+| Score out of range | Value not normalized | Normalize all scores to 0-1 range |
+| LLM judge inconsistent | High temperature | Set temperature to 0 for evaluations |
+| Missing trace ID | Score submitted without trace | Ensure trace exists before scoring |
 
 ## Examples
 
-### RAGAS Integration (Python)
-```python
-from langfuse import Langfuse
-from ragas import evaluate
-from ragas.metrics import faithfulness, answer_relevancy
-
-langfuse = Langfuse()
-
-async def ragas_evaluation(trace_id: str, question: str, answer: str, contexts: list):
-    # Run RAGAS evaluation
-    result = evaluate(
-        questions=[question],
-        answers=[answer],
-        contexts=[contexts],
-        metrics=[faithfulness, answer_relevancy],
-    )
-
-    # Send scores to Langfuse
-    for metric_name, score in result.items():
-        langfuse.score(
-            trace_id=trace_id,
-            name=f"ragas/{metric_name}",
-            value=score,
-            comment="RAGAS automated evaluation",
-        )
-
-    return result
-```
-
-### Evaluation Dashboard Query
+### Quick Feedback Widget Integration
 ```typescript
-// Fetch traces with scores for analysis
-const traces = await langfuse.fetchTraces({
-  name: "chat",
-  fromTimestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-  toTimestamp: new Date(),
+// API endpoint for frontend feedback
+app.post('/api/feedback', async (req, res) => {
+  const { traceId, rating, comment } = req.body;
+  await submitUserFeedback(traceId, rating, comment);
+  res.json({ success: true });
 });
-
-// Calculate average scores
-const scoresByName: Record<string, number[]> = {};
-
-for (const trace of traces.data) {
-  for (const score of trace.scores || []) {
-    if (!scoresByName[score.name]) scoresByName[score.name] = [];
-    scoresByName[score.name].push(score.value);
-  }
-}
-
-const averages = Object.fromEntries(
-  Object.entries(scoresByName).map(([name, values]) => [
-    name,
-    values.reduce((a, b) => a + b, 0) / values.length,
-  ])
-);
-
-console.log("Average scores:", averages);
 ```
 
 ## Resources
 - [Langfuse Scores](https://langfuse.com/docs/scores)
+- [Langfuse Evaluation](https://langfuse.com/docs/scores/model-based-evals)
 - [Langfuse Datasets](https://langfuse.com/docs/datasets)
-- [RAGAS Integration](https://langfuse.com/docs/scores/model-based-evals/ragas)
-- [Evaluation Best Practices](https://langfuse.com/docs/scores/overview)
-
-## Next Steps
-For debugging issues, see `langfuse-common-errors`.

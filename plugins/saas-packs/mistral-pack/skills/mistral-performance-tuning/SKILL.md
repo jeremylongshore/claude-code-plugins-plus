@@ -16,342 +16,120 @@ compatible-with: claude-code, codex, openclaw
 # Mistral AI Performance Tuning
 
 ## Overview
-Optimize Mistral AI API performance with caching, batching, and latency reduction techniques.
+Optimize Mistral AI API response times and throughput for production integrations. Key performance factors include model selection (mistral-small: ~200-500ms, mistral-large: ~500-2000ms), prompt length (directly affects time-to-first-token), streaming vs non-streaming (streaming gives perceived speed), and concurrent request management against per-key rate limits. The biggest throughput lever is using mistral-small for latency-sensitive paths and batching non-urgent requests.
 
 ## Prerequisites
-- Mistral AI SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Model | P50 | P95 | P99 | Use Case |
-|-------|-----|-----|-----|----------|
-| mistral-small-latest | 200ms | 500ms | 1s | Fast responses |
-| mistral-large-latest | 500ms | 1.5s | 3s | Complex reasoning |
-| mistral-embed | 50ms | 150ms | 300ms | Embeddings |
+- Mistral API integration in production
+- Understanding of per-endpoint rate limits (RPM and TPM)
+- Application architecture that supports streaming responses
 
 ## Instructions
 
-### Step 1: Response Caching
-
+### Step 1: Choose the Right Model for Latency Requirements
 ```typescript
-import { LRUCache } from 'lru-cache';
-import crypto from 'crypto';
+// Model selection by latency budget
+const MODEL_BY_LATENCY: Record<string, { model: string; typicalMs: string }> = {
+  'realtime_chat':     { model: 'mistral-small-latest',  typicalMs: '200-500ms' },
+  'code_completion':   { model: 'codestral-latest',      typicalMs: '150-400ms' },
+  'background_analysis': { model: 'mistral-large-latest', typicalMs: '500-2000ms' },
+  'embeddings':        { model: 'mistral-embed',         typicalMs: '50-150ms' },
+};
 
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 5 * 60 * 1000, // 5 minutes
-  updateAgeOnGet: true,
-});
-
-function getCacheKey(messages: any[], model: string, options?: any): string {
-  const data = JSON.stringify({ messages, model, options });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-async function cachedChat(
-  client: Mistral,
-  messages: any[],
-  model: string,
-  options?: { temperature?: number; maxTokens?: number }
-): Promise<string> {
-  // Only cache deterministic requests (temperature = 0)
-  const isCacheable = (options?.temperature ?? 0.7) === 0;
-
-  if (isCacheable) {
-    const key = getCacheKey(messages, model, options);
-    const cached = cache.get(key);
-    if (cached) {
-      console.log('Cache hit');
-      return cached;
-    }
-  }
-
-  const response = await client.chat.complete({
-    model,
-    messages,
-    ...options,
-  });
-
-  const content = response.choices?.[0]?.message?.content ?? '';
-
-  if (isCacheable) {
-    const key = getCacheKey(messages, model, options);
-    cache.set(key, content);
-  }
-
-  return content;
+function selectModel(useCase: string): string {
+  return MODEL_BY_LATENCY[useCase]?.model || 'mistral-small-latest';
 }
 ```
 
-### Step 2: Redis Distributed Caching
-
+### Step 2: Enable Streaming for User-Facing Responses
 ```typescript
-import Redis from 'ioredis';
-import crypto from 'crypto';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 300
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) {
-    return JSON.parse(cached);
-  }
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-
-// Semantic cache for similar queries
-async function semanticCache(
-  client: Mistral,
-  query: string,
-  threshold = 0.95
-): Promise<string | null> {
-  // Get embedding for query
-  const queryEmbed = await client.embeddings.create({
-    model: 'mistral-embed',
-    inputs: [query],
-  });
-  const queryVector = queryEmbed.data[0].embedding;
-
-  // Check cache for similar queries
-  const cachedQueries = await redis.keys('semantic:*');
-
-  for (const key of cachedQueries) {
-    const cached = JSON.parse(await redis.get(key) || '{}');
-    const similarity = cosineSimilarity(queryVector, cached.embedding);
-
-    if (similarity >= threshold) {
-      console.log(`Semantic cache hit (similarity: ${similarity.toFixed(3)})`);
-      return cached.response;
-    }
-  }
-
-  return null;
-}
-```
-
-### Step 3: Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-// Batch embedding requests
-const embeddingLoader = new DataLoader<string, number[]>(
-  async (texts) => {
-    const response = await client.embeddings.create({
-      model: 'mistral-embed',
-      inputs: texts as string[],
-    });
-    return response.data.map(d => d.embedding);
-  },
-  {
-    maxBatchSize: 100, // Mistral limit
-    batchScheduleFn: callback => setTimeout(callback, 10), // 10ms window
-  }
-);
-
-// Usage - automatically batched
-const [embed1, embed2, embed3] = await Promise.all([
-  embeddingLoader.load('Text 1'),
-  embeddingLoader.load('Text 2'),
-  embeddingLoader.load('Text 3'),
-]);
-```
-
-### Step 4: Connection Optimization
-
-```typescript
-import { Agent } from 'https';
 import Mistral from '@mistralai/mistralai';
 
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 60000,
-});
+const client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
 
-// Note: Check if Mistral client supports custom agents
-// If not, connection pooling happens at the HTTP level
-```
-
-### Step 5: Streaming for Perceived Performance
-
-```typescript
-// Streaming reduces Time to First Token (TTFT)
-async function* streamWithMetrics(
-  client: Mistral,
-  messages: any[],
-  model: string
-): AsyncGenerator<{ content: string; metrics: any }> {
-  const startTime = Date.now();
-  let firstTokenTime: number | null = null;
-  let tokenCount = 0;
-
+// Streaming delivers first tokens in ~200ms vs waiting 1-2s for full response
+async function* streamChat(model: string, messages: any[]) {
   const stream = await client.chat.stream({ model, messages });
-
-  for await (const event of stream) {
-    const content = event.data?.choices?.[0]?.delta?.content;
-    if (content) {
-      if (!firstTokenTime) {
-        firstTokenTime = Date.now();
-      }
-      tokenCount++;
-      yield {
-        content,
-        metrics: {
-          ttft: firstTokenTime - startTime,
-          tokensPerSecond: tokenCount / ((Date.now() - startTime) / 1000),
-        },
-      };
-    }
+  for await (const chunk of stream) {
+    const content = chunk.data.choices[0]?.delta?.content;
+    if (content) yield content;
   }
 }
-
-// Usage
-let fullResponse = '';
-for await (const { content, metrics } of streamWithMetrics(client, messages, 'mistral-small-latest')) {
-  fullResponse += content;
-  process.stdout.write(content);
-}
-console.log(`\nTTFT: ${metrics.ttft}ms, Speed: ${metrics.tokensPerSecond.toFixed(1)} tok/s`);
+// TTFT (time to first token) drops from 500-2000ms to ~200ms with streaming
 ```
 
-### Step 6: Model Selection for Speed
-
+### Step 3: Cache Identical Requests
 ```typescript
-type SpeedTier = 'fastest' | 'balanced' | 'quality';
+import { createHash } from 'crypto';
+import { LRUCache } from 'lru-cache';
 
-function selectModelForSpeed(tier: SpeedTier, taskComplexity: 'low' | 'medium' | 'high'): string {
-  const matrix = {
-    fastest: {
-      low: 'mistral-small-latest',
-      medium: 'mistral-small-latest',
-      high: 'mistral-small-latest',
-    },
-    balanced: {
-      low: 'mistral-small-latest',
-      medium: 'mistral-small-latest',
-      high: 'mistral-large-latest',
-    },
-    quality: {
-      low: 'mistral-small-latest',
-      medium: 'mistral-large-latest',
-      high: 'mistral-large-latest',
-    },
-  };
+const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });
 
-  return matrix[tier][taskComplexity];
+async function cachedCompletion(model: string, messages: any[], temperature: number = 0) {
+  // Only cache deterministic requests (temperature=0)
+  if (temperature > 0) return client.chat.complete({ model, messages, temperature });
+
+  const key = createHash('md5').update(JSON.stringify({ model, messages })).digest('hex');
+  const cached = responseCache.get(key);
+  if (cached) return cached;
+
+  const result = await client.chat.complete({ model, messages, temperature: 0 });
+  responseCache.set(key, result);
+  return result;
 }
 ```
 
-### Step 7: Performance Monitoring
-
+### Step 4: Optimize Prompt Length
 ```typescript
-interface PerformanceMetrics {
-  model: string;
-  latencyMs: number;
-  ttftMs?: number;
-  tokensPerSecond?: number;
-  inputTokens: number;
-  outputTokens: number;
-  cached: boolean;
+// Reduce input tokens to decrease TTFT and total latency
+const OPTIMIZATION = {
+  // Keep system prompts concise
+  systemPrompt: 'You are a helpful assistant. Be brief.',  // ~10 tokens, not 200
+
+  // Limit context window usage
+  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices
+
+  // Trim conversation history
+  maxHistoryTurns: 5,       // Keep last 5 turns, not entire conversation
+};
+
+function trimMessages(messages: any[], maxTurns: number = 5): any[] {
+  const system = messages.filter(m => m.role === 'system');
+  const history = messages.filter(m => m.role !== 'system').slice(-maxTurns * 2);
+  return [...system, ...history];
 }
-
-async function measurePerformance(
-  operation: () => Promise<any>,
-  metadata: Partial<PerformanceMetrics>
-): Promise<{ result: any; metrics: PerformanceMetrics }> {
-  const start = Date.now();
-
-  const result = await operation();
-
-  const metrics: PerformanceMetrics = {
-    model: metadata.model || 'unknown',
-    latencyMs: Date.now() - start,
-    inputTokens: result.usage?.promptTokens || 0,
-    outputTokens: result.usage?.completionTokens || 0,
-    cached: metadata.cached || false,
-    ...metadata,
-  };
-
-  // Log to monitoring system
-  console.log('[PERF]', JSON.stringify(metrics));
-
-  return { result, metrics };
-}
-
-// Usage
-const { result, metrics } = await measurePerformance(
-  () => client.chat.complete({ model, messages }),
-  { model, cached: false }
-);
 ```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Performance monitoring active
+### Step 5: Manage Concurrent Requests
+```typescript
+import PQueue from 'p-queue';
+
+// Respect RPM limits while maximizing throughput
+const requestQueue = new PQueue({
+  concurrency: 10,     // Max parallel requests
+  interval: 60_000,    // Per minute
+  intervalCap: 100,    // RPM limit for your key
+});
+
+async function queuedCompletion(model: string, messages: any[]) {
+  return requestQueue.add(() => client.chat.complete({ model, messages }));
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Memory pressure | Cache too large | Set max cache entries |
-| Slow TTFT | Large prompts | Reduce prompt size or use smaller model |
+| `429 rate_limit_exceeded` | RPM or TPM cap hit | Use PQueue with RPM limit, add exponential backoff |
+| High TTFT (>1s) | Prompt too long or model too large | Trim prompt, use mistral-small for latency-sensitive |
+| Streaming connection dropped | Network timeout | Implement reconnection with resume from last chunk |
+| Cache ineffective | High temperature (non-deterministic) | Only cache temperature=0 requests |
 
 ## Examples
-
-### Quick Performance Wrapper
-```typescript
-const withPerformance = async <T>(
-  name: string,
-  fn: () => Promise<T>
-): Promise<T> => {
-  const start = Date.now();
-  const result = await fn();
-  console.log(`[${name}] ${Date.now() - start}ms`);
-  return result;
-};
-
-// Usage
-const response = await withPerformance('chat', () =>
-  client.chat.complete({ model, messages })
-);
+```bash
+# Benchmark: compare model latency
+for model in mistral-small-latest mistral-large-latest; do
+  echo -n "$model: "
+  time curl -s -X POST https://api.mistral.ai/v1/chat/completions \
+    -H "Authorization: Bearer $MISTRAL_API_KEY" \
+    -d "{\"model\": \"$model\", \"messages\": [{\"role\": \"user\", \"content\": \"Say hello\"}], \"max_tokens\": 10}" -o /dev/null
+done
 ```
-
-### Parallel Requests with Concurrency Limit
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5); // Max 5 concurrent requests
-
-const results = await Promise.all(
-  prompts.map(prompt =>
-    limit(() => client.chat.complete({
-      model: 'mistral-small-latest',
-      messages: [{ role: 'user', content: prompt }],
-    }))
-  )
-);
-```
-
-## Resources
-- [Mistral AI Models](https://docs.mistral.ai/getting-started/models/)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-
-## Next Steps
-For cost optimization, see `mistral-cost-tuning`.

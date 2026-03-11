@@ -16,184 +16,110 @@ compatible-with: claude-code, codex, openclaw
 # Lindy Security Basics
 
 ## Overview
-Essential security practices for Lindy AI integrations.
+Security practices for Lindy AI agent integrations. Lindy creates autonomous AI agents that can access external services, execute actions, and handle data -- making security boundaries and permission controls essential.
 
 ## Prerequisites
-- Lindy account with admin access
-- Understanding of security requirements
-- Access to secret management solution
+- Lindy account with API access
+- Understanding of Lindy's agent execution model
+- Awareness of connected service permissions
 
 ## Instructions
 
-### Step 1: Secure API Key Storage
-```typescript
-// NEVER do this
-const apiKey = 'lnd_abc123...'; // Hardcoded - BAD!
+### Step 1: API Key Protection
 
-// DO this instead
-const apiKey = process.env.LINDY_API_KEY;
+```python
+import os
 
-// Or use secret management
-import { SecretManager } from '@google-cloud/secret-manager';
+# Store Lindy API key securely
+LINDY_API_KEY = os.environ.get("LINDY_API_KEY")
+if not LINDY_API_KEY:
+    raise RuntimeError("LINDY_API_KEY not set")
 
-async function getApiKey(): Promise<string> {
-  const client = new SecretManager();
-  const [secret] = await client.accessSecretVersion({
-    name: 'projects/my-project/secrets/lindy-api-key/versions/latest',
-  });
-  return secret.payload?.data?.toString() || '';
-}
+# For production: use secret manager
+# NEVER commit keys or pass them as CLI arguments
 ```
 
-### Step 2: Environment-Specific Keys
-```bash
-# .env.development
-LINDY_API_KEY=lnd_dev_xxx
-LINDY_ENVIRONMENT=development
+### Step 2: Agent Permission Boundaries
 
-# .env.production
-LINDY_API_KEY=lnd_prod_xxx
-LINDY_ENVIRONMENT=production
-```
+Lindy agents can connect to external services. Limit what each agent can access.
 
-```typescript
-// Validate environment
-function validateEnvironment(): void {
-  const env = process.env.LINDY_ENVIRONMENT;
-  const key = process.env.LINDY_API_KEY;
-
-  if (!key) {
-    throw new Error('LINDY_API_KEY not set');
-  }
-
-  if (env === 'production' && key.startsWith('lnd_dev_')) {
-    throw new Error('Development key used in production!');
-  }
-}
-```
-
-### Step 3: Configure Agent Permissions
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
-
-const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-
-async function createSecureAgent() {
-  const agent = await lindy.agents.create({
-    name: 'Secure Agent',
-    instructions: 'Handle data securely.',
-    permissions: {
-      // Restrict to specific tools
-      allowedTools: ['email', 'calendar'],
-      // Prevent external network access
-      networkAccess: 'internal-only',
-      // Limit data access
-      dataScopes: ['read:users', 'write:tickets'],
+```python
+# Define explicit permission boundaries per agent
+AGENT_PERMISSIONS = {
+    "email-assistant": {
+        "allowed_services": ["gmail"],
+        "can_send": True,
+        "can_delete": False,
+        "max_emails_per_hour": 20
     },
-  });
-
-  return agent;
+    "data-analyst": {
+        "allowed_services": ["google_sheets"],
+        "can_write": False,  # read-only
+        "can_delete": False
+    }
 }
+
+def validate_agent_action(agent_id: str, action: str, service: str) -> bool:
+    perms = AGENT_PERMISSIONS.get(agent_id, {})
+    if service not in perms.get("allowed_services", []):
+        raise PermissionError(f"Agent {agent_id} not authorized for {service}")
+    if action == "delete" and not perms.get("can_delete", False):
+        raise PermissionError(f"Agent {agent_id} cannot delete")
+    return True
 ```
 
-### Step 4: Audit Logging
-```typescript
-async function withAuditLog<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = Date.now();
-  const requestId = crypto.randomUUID();
+### Step 3: Webhook Signature Verification
 
-  console.log(JSON.stringify({
-    type: 'audit',
-    operation,
-    requestId,
-    timestamp: new Date().toISOString(),
-    status: 'started',
-  }));
+```python
+import hmac, hashlib
 
-  try {
-    const result = await fn();
-    console.log(JSON.stringify({
-      type: 'audit',
-      operation,
-      requestId,
-      duration: Date.now() - start,
-      status: 'completed',
-    }));
-    return result;
-  } catch (error: any) {
-    console.log(JSON.stringify({
-      type: 'audit',
-      operation,
-      requestId,
-      duration: Date.now() - start,
-      status: 'failed',
-      error: error.message,
-    }));
-    throw error;
-  }
-}
+def verify_lindy_webhook(payload: bytes, signature: str, secret: str) -> bool:
+    expected = hmac.new(secret.encode(), payload, hashlib.sha256).hexdigest()
+    return hmac.compare_digest(expected, signature)
+
+@app.route('/lindy-webhook', methods=['POST'])
+def handle_webhook():
+    signature = request.headers.get('X-Lindy-Signature', '')
+    if not verify_lindy_webhook(request.data, signature, WEBHOOK_SECRET):
+        return {"error": "Invalid signature"}, 401
+    return process_webhook(request.json)
 ```
 
-## Security Checklist
-```markdown
-[ ] API keys stored in environment variables or secret manager
-[ ] Different keys for dev/staging/prod environments
-[ ] Key validation on startup
-[ ] Agent permissions configured (least privilege)
-[ ] Audit logging enabled
-[ ] Network access restricted where possible
-[ ] Regular key rotation scheduled
-[ ] Access reviewed quarterly
-```
+### Step 4: Audit Agent Actions
 
-## Output
-- Secure API key storage patterns
-- Environment-specific configuration
-- Agent permission controls
-- Audit logging implementation
+Log all agent actions for security review and debugging.
+
+```python
+def audit_agent_action(agent_id: str, action: str, target: str, result: str):
+    logger.info("Agent action", extra={
+        "agent_id": agent_id,
+        "action": action,
+        "target": target,
+        "result": result,
+        "timestamp": datetime.utcnow().isoformat()
+    })
+```
 
 ## Error Handling
-| Risk | Mitigation | Implementation |
-|------|------------|----------------|
-| Key exposure | Secret manager | Use cloud secrets |
-| Wrong env | Validation | Check key prefix |
-| Over-permission | Least privilege | Restrict agent tools |
-| No audit | Logging | Log all operations |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Agent accesses wrong service | No permission boundaries | Define explicit agent permissions |
+| Fake webhook processed | No signature verification | Verify HMAC signatures |
+| Key exposure | Hardcoded in source | Use environment variables |
+| Runaway agent | No action limits | Set per-hour action quotas |
 
 ## Examples
 
-### Production-Ready Security
-```typescript
-// security/index.ts
-export async function initializeLindy(): Promise<Lindy> {
-  // Validate environment
-  validateEnvironment();
-
-  // Get key from secret manager
-  const apiKey = await getApiKey();
-
-  // Initialize with security options
-  const lindy = new Lindy({
-    apiKey,
-    timeout: 30000,
-    retries: 3,
-  });
-
-  // Verify connection
-  await lindy.users.me();
-
-  console.log('Lindy initialized securely');
-  return lindy;
-}
+### Permission Check Middleware
+```python
+@app.before_request
+def check_agent_permissions():
+    agent_id = request.json.get("agent_id")
+    action = request.json.get("action")
+    service = request.json.get("service")
+    validate_agent_action(agent_id, action, service)
 ```
 
 ## Resources
-- [Lindy Security](https://docs.lindy.ai/security)
-- [API Key Best Practices](https://docs.lindy.ai/security/api-keys)
-- [SOC 2 Compliance](https://lindy.ai/security)
-
-## Next Steps
-Proceed to `lindy-prod-checklist` for production readiness.
+- [Lindy API Docs](https://docs.lindy.ai)
+- [Lindy Security](https://www.lindy.ai/security)

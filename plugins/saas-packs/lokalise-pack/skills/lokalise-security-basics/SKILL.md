@@ -16,262 +16,117 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Security Basics
 
 ## Overview
-Security best practices for Lokalise API tokens, webhook secrets, and access control.
+Security practices for Lokalise translation management integrations. Lokalise handles translation strings that may contain user-facing content, brand messaging, and occasionally PII embedded in translation keys.
 
 ## Prerequisites
-- Lokalise SDK installed
-- Understanding of environment variables
-- Access to Lokalise profile settings
+- Lokalise API token provisioned
+- Understanding of token permission scopes
+- Secret management infrastructure
 
 ## Instructions
 
-### Step 1: Configure Environment Variables
-```bash
-# .env (NEVER commit to git)
-LOKALISE_API_TOKEN=abc123...
-LOKALISE_WEBHOOK_SECRET=whsec_***
-LOKALISE_PROJECT_ID=123456789.abcdef
+### Step 1: Token Scope Management
 
-# .gitignore (MUST include)
-.env
-.env.local
-.env.*.local
-*.env
+Lokalise tokens can have different permission levels. Use the minimum scope needed.
+
+```python
+import os
+
+# BAD: using admin token for read-only operations
+# GOOD: create scoped tokens per use case
+
+LOKALISE_READ_TOKEN = os.environ.get("LOKALISE_READ_TOKEN")    # read-only
+LOKALISE_WRITE_TOKEN = os.environ.get("LOKALISE_WRITE_TOKEN")  # read + write
+LOKALISE_ADMIN_TOKEN = os.environ.get("LOKALISE_ADMIN_TOKEN")  # admin (CI only)
+
+def get_client(scope: str = "read"):
+    import lokalise
+    tokens = {"read": LOKALISE_READ_TOKEN, "write": LOKALISE_WRITE_TOKEN, "admin": LOKALISE_ADMIN_TOKEN}
+    token = tokens.get(scope)
+    if not token:
+        raise RuntimeError(f"LOKALISE_{scope.upper()}_TOKEN not configured")
+    return lokalise.Client(token)
 ```
 
-### Step 2: Token Types and Permissions
-| Token Type | Use Case | Permissions |
-|------------|----------|-------------|
-| Read-only | CI builds, reporting | Read projects, keys, translations |
-| Read-write | Full integration | All CRUD operations |
-| OAuth2 | User-facing apps | Scoped per user consent |
+### Step 2: Protect Translation Content
 
-```typescript
-// Use appropriate token type
-const readOnlyClient = new LokaliseApi({
-  apiKey: process.env.LOKALISE_READ_TOKEN!,
-});
+Translation strings may contain interpolation variables. Validate before processing.
 
-const fullAccessClient = new LokaliseApi({
-  apiKey: process.env.LOKALISE_WRITE_TOKEN!,
-});
+```python
+import re
+
+def validate_translation(key: str, value: str) -> list[str]:
+    issues = []
+    # Check for potential code injection in translations
+    if re.search(r'<script|javascript:|on\w+=', value, re.IGNORECASE):
+        issues.append(f"Potential XSS in translation {key}")
+    # Check for leaked credentials
+    if re.search(r'(api_key|password|secret|token)\s*[:=]', value, re.IGNORECASE):
+        issues.append(f"Possible credential in translation {key}")
+    # Validate interpolation variables match expected format
+    placeholders = re.findall(r'\{[^}]+\}|%[sd]|\$\{[^}]+\}', value)
+    for p in placeholders:
+        if re.search(r'[<>\'"]', p):
+            issues.append(f"Suspicious placeholder in {key}: {p}")
+    return issues
 ```
 
-### Step 3: Implement Token Rotation
-```bash
-# Token rotation procedure:
-# 1. Generate new token in Profile Settings -> API tokens
-# 2. Update environment variable in all environments
-# 3. Test new token
-# 4. Revoke old token
+### Step 3: CI/CD Token Security
 
-# Verify new token works
-curl -X GET "https://api.lokalise.com/api2/projects" \
-  -H "X-Api-Token: $LOKALISE_API_TOKEN_NEW" \
-  | jq '.projects | length'
-
-# If successful, update and revoke old token
-export LOKALISE_API_TOKEN="$LOKALISE_API_TOKEN_NEW"
+```yaml
+# GitHub Actions: use repository secrets
+name: Sync Translations
+on: push
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Pull translations
+        env:
+          LOKALISE_TOKEN: ${{ secrets.LOKALISE_READ_TOKEN }}
+        run: |
+          lokalise2 file download \
+            --token $LOKALISE_TOKEN \
+            --project-id ${{ vars.LOKALISE_PROJECT_ID }} \
+            --format json \
+            --dest ./locales/
 ```
 
-### Step 4: Webhook Secret Verification
-```typescript
-import crypto from "crypto";
+### Step 4: Audit Translation Changes
 
-function verifyWebhookSignature(
-  payload: string,
-  receivedSecret: string,
-  expectedSecret: string
-): boolean {
-  // Lokalise sends secret in X-Secret header
-  return crypto.timingSafeEqual(
-    Buffer.from(receivedSecret),
-    Buffer.from(expectedSecret)
-  );
-}
+Track who changed what translations for compliance.
 
-// Express middleware
-app.post("/webhooks/lokalise", (req, res) => {
-  const receivedSecret = req.headers["x-secret"] as string;
-  const expectedSecret = process.env.LOKALISE_WEBHOOK_SECRET!;
-
-  if (!verifyWebhookSignature(req.body, receivedSecret, expectedSecret)) {
-    console.error("Invalid webhook signature");
-    return res.status(401).json({ error: "Invalid signature" });
-  }
-
-  // Process webhook
-  handleWebhook(req.body);
-  res.status(200).json({ received: true });
-});
+```python
+def audit_translation_change(project_id: str, key: str, old_value: str, new_value: str, user: str):
+    log_entry = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "project_id": project_id,
+        "key": key,
+        "user": user,
+        "action": "update",
+        "changes": {"old_length": len(old_value), "new_length": len(new_value)}
+        # Don't log actual content if it may contain PII
+    }
+    audit_logger.info("Translation changed", extra=log_entry)
 ```
-
-### Step 5: Apply Least Privilege
-```typescript
-// Project-level access control
-// Use Team settings to limit user access to specific projects
-
-// Environment-specific tokens
-const tokenConfig = {
-  development: {
-    token: process.env.LOKALISE_DEV_TOKEN,
-    projectId: process.env.LOKALISE_DEV_PROJECT,
-  },
-  staging: {
-    token: process.env.LOKALISE_STAGING_TOKEN,
-    projectId: process.env.LOKALISE_STAGING_PROJECT,
-  },
-  production: {
-    token: process.env.LOKALISE_PROD_TOKEN,
-    projectId: process.env.LOKALISE_PROD_PROJECT,
-  },
-};
-
-function getLokaliseConfig() {
-  const env = process.env.NODE_ENV || "development";
-  return tokenConfig[env as keyof typeof tokenConfig];
-}
-```
-
-## Output
-- Secure API token storage
-- Environment-specific access controls
-- Webhook signature verification
-- Token rotation procedure documented
 
 ## Error Handling
-| Security Issue | Detection | Mitigation |
-|----------------|-----------|------------|
-| Exposed API token | Git scanning, logs | Rotate immediately |
-| Missing .gitignore | Code review | Add .env to ignore |
-| Webhook without verification | Security audit | Add signature check |
-| Single token for all envs | Config review | Separate per environment |
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Token leaked in CI logs | Token in command output | Use environment variables, mask in CI |
+| XSS via translations | Unsanitized translation content | Validate translations before use |
+| Overprivileged access | Using admin token everywhere | Create scoped read/write tokens |
+| Unauthorized changes | No audit trail | Log translation changes with user info |
 
 ## Examples
 
-### Service Account Pattern
-```typescript
-// Use different clients for different operations
-const clients = {
-  reader: new LokaliseApi({
-    apiKey: process.env.LOKALISE_READ_TOKEN!,
-  }),
-  writer: new LokaliseApi({
-    apiKey: process.env.LOKALISE_WRITE_TOKEN!,
-  }),
-};
-
-// Read operations use read-only token
-async function getTranslations(projectId: string) {
-  return clients.reader.translations().list({ project_id: projectId });
-}
-
-// Write operations use write token
-async function updateTranslation(projectId: string, translationId: number, text: string) {
-  return clients.writer.translations().update(translationId, {
-    project_id: projectId,
-    translation: text,
-  });
-}
-```
-
-### Secret Scanning Prevention
-```typescript
-// Pre-commit hook to prevent token leaks
-// .husky/pre-commit
-
-const dangerousPatterns = [
-  /LOKALISE_API_TOKEN\s*=\s*["']?[a-zA-Z0-9]{40,}/,
-  /X-Api-Token:\s*[a-zA-Z0-9]{40,}/,
-];
-
-function scanForSecrets(content: string): boolean {
-  return dangerousPatterns.some(pattern => pattern.test(content));
-}
-```
-
-### Audit Logging
-```typescript
-interface AuditEntry {
-  timestamp: Date;
-  action: string;
-  userId?: string;
-  projectId: string;
-  resource: string;
-  result: "success" | "failure";
-  metadata?: Record<string, any>;
-}
-
-async function auditLog(entry: Omit<AuditEntry, "timestamp">): Promise<void> {
-  const log: AuditEntry = { ...entry, timestamp: new Date() };
-
-  // Log locally for compliance
-  console.log("[AUDIT]", JSON.stringify(log));
-
-  // Optional: Send to logging service
-  await sendToLoggingService(log);
-}
-
-// Usage
-await auditLog({
-  action: "lokalise.keys.create",
-  projectId: "123456.abc",
-  resource: "/keys",
-  result: "success",
-  metadata: { keyCount: 5 },
-});
-```
-
-### Security Checklist
-```markdown
-## Lokalise Security Checklist
-
-### Token Management
-- [ ] API tokens stored in environment variables
-- [ ] .env files in .gitignore
-- [ ] Different tokens for dev/staging/prod
-- [ ] Read-only tokens where possible
-- [ ] Token rotation schedule (quarterly)
-
-### Webhook Security
-- [ ] HTTPS-only webhook endpoints
-- [ ] X-Secret header validated
-- [ ] Timing-safe comparison for secrets
-
-### Access Control
-- [ ] Minimal team member permissions
-- [ ] Project-level access restrictions
-- [ ] Regular access audits
-
-### Monitoring
-- [ ] Audit logging enabled
-- [ ] Failed auth attempts monitored
-- [ ] Unusual API usage alerts
-```
-
-### CI/CD Secret Management
-```yaml
-# GitHub Actions
-jobs:
-  deploy:
-    steps:
-      - name: Download translations
-        env:
-          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-        run: npm run i18n:pull
-
-# GitLab CI
-deploy:
-  variables:
-    LOKALISE_API_TOKEN: $LOKALISE_API_TOKEN  # From CI/CD settings
-  script:
-    - npm run i18n:pull
+### Security Check Script
+```bash
+# Scan for hardcoded tokens
+grep -rn "LOKALISE" --include="*.py" --include="*.ts" src/ | grep -v "os.environ\|process.env"
 ```
 
 ## Resources
-- [Lokalise API Authentication](https://developers.lokalise.com/reference/api-authentication)
-- [Lokalise Team Management](https://docs.lokalise.com/en/articles/1400472-team-management)
-- [OAuth2 Guide](https://developers.lokalise.com/reference/oauth2-authentication)
-
-## Next Steps
-For production deployment, see `lokalise-prod-checklist`.
+- [Lokalise API Auth](https://developers.lokalise.com/reference/api-authentication)
+- [Lokalise Security](https://lokalise.com/security)

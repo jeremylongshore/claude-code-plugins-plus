@@ -13,202 +13,117 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Lindy Performance Tuning
+# Lindy AI Performance Tuning
 
 ## Overview
-Optimize Lindy AI agent performance for faster response times and higher throughput.
+Optimize Lindy AI agent execution speed and reliability. Lindy agents run as multi-step automations where each step (LLM call, tool execution, API call) adds latency. A typical 5-step agent takes 10-30 seconds total. The biggest performance levers are: reducing step count (combine LLM calls), using faster tool configurations, implementing parallel step execution where possible, and caching frequently-accessed data in agent memory.
 
 ## Prerequisites
-- Production Lindy integration
-- Baseline performance metrics
-- Access to monitoring tools
+- Lindy workspace with active agents
+- Access to agent configuration and run history
+- Understanding of agent step execution flow
 
 ## Instructions
 
-### Step 1: Measure Baseline Performance
-```typescript
-import { Lindy } from '@lindy-ai/sdk';
-
-interface PerformanceMetrics {
-  avgLatency: number;
-  p95Latency: number;
-  p99Latency: number;
-  throughput: number;
-  errorRate: number;
-}
-
-async function measureBaseline(agentId: string, iterations = 100): Promise<PerformanceMetrics> {
-  const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-  const latencies: number[] = [];
-  let errors = 0;
-
-  const start = Date.now();
-
-  for (let i = 0; i < iterations; i++) {
-    const runStart = Date.now();
-    try {
-      await lindy.agents.run(agentId, { input: 'Benchmark test' });
-      latencies.push(Date.now() - runStart);
-    } catch (e) {
-      errors++;
-    }
-  }
-
-  const totalTime = (Date.now() - start) / 1000;
-  latencies.sort((a, b) => a - b);
-
-  return {
-    avgLatency: latencies.reduce((a, b) => a + b, 0) / latencies.length,
-    p95Latency: latencies[Math.floor(latencies.length * 0.95)],
-    p99Latency: latencies[Math.floor(latencies.length * 0.99)],
-    throughput: iterations / totalTime,
-    errorRate: errors / iterations,
-  };
-}
+### Step 1: Identify Slow Steps
+```bash
+# Analyze step-level timing for recent agent runs
+curl "https://api.lindy.ai/v1/runs?limit=20&expand=steps" \
+  -H "Authorization: Bearer $LINDY_API_KEY" | \
+  jq '.runs[] | {agent: .agent_name, total_ms: .duration_ms, steps: [.steps[] | {name: .step_name, duration_ms: .duration_ms, status}]} | {agent, total_ms, slowest_step: (.steps | max_by(.duration_ms))}'
 ```
 
-### Step 2: Optimize Agent Instructions
-```typescript
-// BEFORE: Verbose instructions (slow)
-const slowAgent = {
-  instructions: `
-    You are a helpful assistant that should carefully consider
-    each request and provide detailed, comprehensive responses.
-    Think step by step about each query. Consider all possibilities.
-    Provide examples and explanations for everything.
-  `,
-};
+### Step 2: Consolidate LLM Steps
+```yaml
+# Before: 3 separate LLM calls (3 * 2-5s = 6-15s total)
+steps_before:
+  - name: "Classify email"
+    type: llm_call
+    prompt: "Classify this email as sales/support/spam"
+  - name: "Extract entities"
+    type: llm_call
+    prompt: "Extract company name and person from email"
+  - name: "Draft response"
+    type: llm_call
+    prompt: "Draft a response to this email"
 
-// AFTER: Concise instructions (fast)
-const fastAgent = {
-  instructions: `
-    Be concise. Answer directly. Skip pleasantries.
-    Format: [Answer] (1-2 sentences)
-  `,
-  config: {
-    maxTokens: 100, // Limit response length
-  },
-};
+# After: 1 LLM call with structured output (2-5s total)
+steps_after:
+  - name: "Process email"
+    type: llm_call
+    prompt: |
+      Analyze this email and return JSON:
+      {"classification": "sales|support|spam", "company": "", "person": "", "draft_response": ""}
+# Saves: 4-10 seconds per run
 ```
 
-### Step 3: Enable Streaming
-```typescript
-// Non-streaming (waits for full response)
-const result = await lindy.agents.run(agentId, { input });
-console.log(result.output); // Logs after full response
-
-// Streaming (immediate partial responses)
-const stream = await lindy.agents.runStream(agentId, { input });
-
-for await (const chunk of stream) {
-  process.stdout.write(chunk.delta); // Real-time output
-}
+### Step 3: Cache Agent Context Data
+```yaml
+# Instead of fetching reference data every run:
+# Store frequently-accessed data as agent memory
+agent_memory:
+  team_directory:
+    refresh: daily
+    data: "List of team members, roles, and email addresses"
+  product_catalog:
+    refresh: weekly
+    data: "Current product names, prices, and descriptions"
+  faq_responses:
+    refresh: weekly
+    data: "Common customer questions and approved responses"
+# Eliminates 1-3 API calls per run
 ```
 
-### Step 4: Implement Caching
-```typescript
-import NodeCache from 'node-cache';
+### Step 4: Parallelize Independent Steps
+```yaml
+# Steps that don't depend on each other should run in parallel
+parallel_execution:
+  step_group_1:
+    parallel: true
+    steps:
+      - "Fetch CRM data"       # API call: 500ms
+      - "Fetch calendar data"   # API call: 300ms
+      - "Fetch email thread"    # API call: 400ms
+    # Parallel: 500ms total (max of 3)
+    # Sequential: 1200ms total (sum of 3)
 
-const cache = new NodeCache({ stdTTL: 300 }); // 5 minute TTL
-
-async function runWithCache(agentId: string, input: string) {
-  const cacheKey = `${agentId}:${crypto.createHash('md5').update(input).digest('hex')}`;
-
-  // Check cache
-  const cached = cache.get(cacheKey);
-  if (cached) {
-    return cached;
-  }
-
-  // Run agent
-  const lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-  const result = await lindy.agents.run(agentId, { input });
-
-  // Cache result
-  cache.set(cacheKey, result);
-
-  return result;
-}
+  step_group_2:
+    depends_on: step_group_1
+    steps:
+      - "Analyze combined data"  # LLM call: 2-5s
 ```
 
-### Step 5: Optimize Concurrency
-```typescript
-// Poor: Sequential execution
-for (const input of inputs) {
-  await lindy.agents.run(agentId, { input }); // Slow!
-}
+### Step 5: Optimize Trigger Configuration
+```yaml
+# Reduce unnecessary agent invocations
+trigger_optimization:
+  email_trigger:
+    bad: "Trigger on every email received"
+    good: "Trigger only on emails from known contacts, skip newsletters"
+    filter: "from != *@newsletter.* AND from != *@noreply.*"
 
-// Better: Parallel with controlled concurrency
-import pLimit from 'p-limit';
-
-const limit = pLimit(5); // Max 5 concurrent
-
-const results = await Promise.all(
-  inputs.map(input =>
-    limit(() => lindy.agents.run(agentId, { input }))
-  )
-);
+  schedule_trigger:
+    bad: "Run every 5 minutes"
+    good: "Run every 30 minutes (batch process)"
+    impact: "6x fewer runs, same total throughput"
 ```
-
-## Performance Checklist
-```markdown
-[ ] Baseline metrics captured
-[ ] Instructions are concise
-[ ] Max tokens configured appropriately
-[ ] Streaming enabled for long responses
-[ ] Caching implemented for repeated queries
-[ ] Concurrency optimized
-[ ] Connection pooling enabled
-[ ] Timeout values tuned
-```
-
-## Output
-- Baseline performance metrics
-- Optimized agent configuration
-- Caching implementation
-- Concurrency patterns
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| High latency | Verbose instructions | Simplify prompts |
-| Timeouts | Response too long | Add max tokens |
-| Throttling | Too concurrent | Limit parallelism |
+| Agent timeout (>60s) | Too many sequential steps | Consolidate steps, add parallel execution |
+| Step retry loop | Transient API failure | Set max retries to 2, add fallback step |
+| Slow LLM step | Prompt too long or complex | Shorten prompt, use focused instructions |
+| High run frequency | Trigger firing too often | Add filters to trigger configuration |
 
 ## Examples
-
-### Complete Performance Client
-```typescript
-class PerformantLindyClient {
-  private lindy: Lindy;
-  private cache: NodeCache;
-  private limiter: any;
-
-  constructor() {
-    this.lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-    this.cache = new NodeCache({ stdTTL: 300 });
-    this.limiter = pLimit(5);
-  }
-
-  async run(agentId: string, input: string) {
-    const cacheKey = `${agentId}:${input}`;
-    const cached = this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    const result = await this.limiter(() =>
-      this.lindy.agents.run(agentId, { input })
-    );
-
-    this.cache.set(cacheKey, result);
-    return result;
-  }
-}
+```bash
+# Benchmark: average agent run time over last 50 runs
+curl -s "https://api.lindy.ai/v1/runs?limit=50" \
+  -H "Authorization: Bearer $LINDY_API_KEY" | \
+  jq '{
+    avg_duration_ms: ([.runs[].duration_ms] | add / length),
+    p95_duration_ms: ([.runs[].duration_ms] | sort | .[47]),
+    slowest_agent: (.runs | max_by(.duration_ms) | {agent: .agent_name, ms: .duration_ms})
+  }'
 ```
-
-## Resources
-- [Lindy Performance Guide](https://docs.lindy.ai/performance)
-- [Best Practices](https://docs.lindy.ai/best-practices)
-- [Caching Strategies](https://docs.lindy.ai/performance/caching)
-
-## Next Steps
-Proceed to `lindy-cost-tuning` for cost optimization.
