@@ -5,126 +5,69 @@ description: |
   This skill provides cost analysis and optimization with comprehensive guidance and automation.
   Trigger with phrases like "optimize costs", "analyze spending",
   or "reduce costs".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(aws:*), Bash(gcloud:*), Bash(az:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Cloud Cost Optimizer
 
-This skill provides automated assistance for cloud cost optimizer tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/cloud-cost-optimizer/`
-
-**Documentation and Guides**: `{baseDir}/docs/cloud-cost-optimizer/`
-
-**Example Scripts and Code**: `{baseDir}/examples/cloud-cost-optimizer/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/cloud-cost-optimizer-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/cloud-cost-optimizer-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/cloud-cost-optimizer-dashboard.json`
+# Optimizing Cloud Costs
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Analyze cloud spending across AWS, GCP, and Azure to identify waste, recommend rightsizing, and generate cost-saving configurations. Covers reserved instances, spot/preemptible workloads, storage tiering, idle resource cleanup, and budget alerting using cloud-native cost management APIs.
+
+## Prerequisites
+
+- Cloud provider CLI authenticated with billing/cost-explorer read access
+- AWS: `ce:GetCostAndUsage`, `ec2:DescribeInstances`, `cloudwatch:GetMetricData` permissions
+- GCP: Billing Account Viewer and Compute Viewer roles
+- Azure: Cost Management Reader role
+- Access to current infrastructure-as-code (Terraform, CloudFormation) for rightsizing changes
+- At least 30 days of billing data for meaningful analysis
+
+## Instructions
+
+1. Pull current cost data using cloud cost APIs (`aws ce get-cost-and-usage`, `gcloud billing budgets list`)
+2. Identify the top 10 cost drivers by service, region, and resource tag
+3. Detect idle resources: instances with < 5% average CPU over 14 days, unattached EBS volumes, unused Elastic IPs, orphaned snapshots
+4. Recommend rightsizing: compare instance utilization against available instance types and suggest downsizing
+5. Evaluate reserved instance or savings plan coverage against on-demand spend; recommend commitments for steady-state workloads
+6. Identify spot/preemptible candidates: stateless, fault-tolerant workloads (batch jobs, CI runners, dev environments)
+7. Review storage costs: recommend S3 Intelligent-Tiering, lifecycle policies for infrequent access, or Glacier for archives
+8. Generate Terraform/IaC changes to implement approved optimizations
+9. Set up budget alerts with thresholds at 50%, 80%, and 100% of monthly budget
+10. Create a cost optimization report summarizing findings, savings estimates, and implementation priority
+
+## Output
+
+- Cost analysis report with per-service breakdown and savings recommendations
+- Terraform/CloudFormation changes for rightsizing and reserved instance purchases
+- S3 lifecycle policy configurations for storage tiering
+- Budget alert configurations (CloudWatch, GCP Budget, Azure Cost Alerts)
+- Cleanup scripts for idle resources (with dry-run mode for safety)
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Access Denied on Cost Explorer API` | Missing `ce:*` IAM permissions | Attach the `AWSBillingReadOnlyAccess` managed policy to the IAM user/role |
+| `No billing data available` | Account is too new or cost export not enabled | Enable Cost Explorer (takes 24h to populate) or set up CUR (Cost and Usage Report) |
+| `Rightsizing recommendation breaks workload` | Instance too small for peak load | Base sizing on P95 utilization, not average; keep a 20% headroom buffer |
+| `Spot instance terminated mid-job` | Spot capacity reclaimed by provider | Use spot fleet with diversified instance types and implement checkpointing |
+| `Budget alert not firing` | SNS topic or notification channel misconfigured | Verify SNS subscription is confirmed and test with a low threshold |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Analyze AWS costs for the last 3 months, identify the top waste areas, and generate a cleanup script for unattached EBS volumes and unused Elastic IPs."
+- "Compare on-demand EC2 spend against Savings Plans pricing and recommend 1-year commitments for steady-state workloads."
+- "Create S3 lifecycle policies to move objects older than 90 days to Glacier and delete after 365 days across all buckets tagged `env:production`."
+
+## Resources
+
+- AWS Cost Explorer: https://docs.aws.amazon.com/cost-management/latest/userguide/ce-what-is.html
+- GCP Cost Management: https://cloud.google.com/billing/docs/how-to/budgets
+- Azure Cost Management: https://learn.microsoft.com/en-us/azure/cost-management-billing/
+- FinOps Foundation: https://www.finops.org/framework/

@@ -8,126 +8,60 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Network Policy Manager
 
-This skill provides automated assistance for network policy manager tasks.
+# Managing Network Policies
 
 ## Overview
 
-Creates Kubernetes NetworkPolicy manifests to enforce least-privilege ingress/egress between pods and namespaces, and helps validate connectivity after changes.
+Create and manage Kubernetes NetworkPolicy manifests to enforce zero-trust networking between pods, namespaces, and external endpoints. Generate ingress and egress rules with label selectors, namespace selectors, CIDR blocks, and port specifications following the principle of least privilege.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Kubernetes cluster has network policy support enabled
-- Network plugin supports policies (Calico, Cilium, Weave)
-- Pod labels are properly defined for policy selectors
-- Understanding of application communication patterns
-- Namespace isolation strategy is defined
+- Kubernetes cluster with a CNI plugin that supports NetworkPolicy (Calico, Cilium, Weave Net)
+- `kubectl` configured with permissions to create and manage NetworkPolicy resources
+- Pod labels consistently defined across deployments for accurate selector targeting
+- Service communication map documenting which pods need to talk to which pods on which ports
+- Understanding of DNS requirements (pods need egress to kube-dns on port 53 for name resolution)
 
 ## Instructions
 
-1. **Identify Requirements**: Determine which pods need to communicate
-2. **Define Selectors**: Use pod/namespace labels for policy targeting
-3. **Configure Ingress**: Specify allowed incoming traffic sources and ports
-4. **Configure Egress**: Define allowed outgoing traffic destinations
-5. **Test Policies**: Verify connectivity works as expected
-6. **Monitor Denials**: Check for blocked traffic in network plugin logs
-7. **Iterate**: Refine policies based on application behavior
+1. Map the application communication patterns: identify all service-to-service, service-to-database, and service-to-external connections
+2. Start with a default-deny policy for both ingress and egress in each namespace to establish zero-trust baseline
+3. Add explicit allow rules for each legitimate communication path: specify source pod labels, destination pod labels, and ports
+4. Always include a DNS egress rule allowing traffic to `kube-system` namespace on UDP/TCP port 53 for CoreDNS
+5. Define egress rules for external API access: use CIDR blocks or namespaceSelector for known external services
+6. Apply policies to a test namespace first and verify connectivity with `kubectl exec` curl/wget commands
+7. Monitor for blocked traffic in the CNI plugin logs (Calico: `calicoctl node status`, Cilium: `cilium monitor`)
+8. Iterate on policies: add missing allow rules for any legitimate traffic that gets blocked
+9. Document each policy with annotations explaining the business reason for the allowed communication
 
 ## Output
 
-**Network Policy Examples:**
-```yaml
-# {baseDir}/network-policies/allow-frontend-to-backend.yaml
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-frontend-to-backend
-  namespace: production
-spec:
-  podSelector:
-    matchLabels:
-      app: backend
-  policyTypes:
-    - Ingress
-  ingress:
-    - from:
-      - podSelector:
-          matchLabels:
-            app: frontend
-      ports:
-      - protocol: TCP
-        port: 8080
----
-# Deny all ingress by default
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: default-deny-ingress
-  namespace: production
-spec:
-  podSelector: {}
-  policyTypes:
-    - Ingress
-```
-
-**Egress Policy:**
-```yaml
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: allow-external-api
-spec:
-  podSelector:
-    matchLabels:
-      app: api-client
-  policyTypes:
-    - Egress
-  egress:
-    - to:
-      - namespaceSelector:
-          matchLabels:
-            name: external-services
-      ports:
-      - protocol: TCP
-        port: 443
-```
+- Default-deny NetworkPolicy manifests for ingress and egress per namespace
+- Allow-list NetworkPolicy manifests for each service communication path
+- DNS egress policy allowing pod name resolution
+- External access egress policies with CIDR blocks
+- Connectivity test commands for validation
 
 ## Error Handling
 
-**Policy Not Applied**
-- Error: Traffic still blocked/allowed contrary to policy
-- Solution: Verify network plugin supports policies and policy is applied to correct namespace
-
-**DNS Resolution Fails**
-- Error: Pods cannot resolve DNS after applying policy
-- Solution: Add egress rule allowing DNS traffic to kube-dns/coredns
-
-**No Communication After Policy**
-- Error: All traffic blocked unexpectedly
-- Solution: Check for default-deny policies and ensure explicit allow rules exist
-
-**Label Mismatch**
-- Error: Policy not targeting intended pods
-- Solution: Verify pod labels match policy selectors using `kubectl get pods --show-labels`
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `All traffic blocked after applying policy` | Default-deny applied without corresponding allow rules | Apply allow rules before or simultaneously with deny policies; verify with `kubectl exec` tests |
+| `DNS resolution fails after network policy` | Missing egress rule for kube-dns/CoreDNS | Add egress policy allowing UDP and TCP port 53 to `kube-system` namespace |
+| `Policy not targeting intended pods` | Label mismatch between policy selector and pod labels | Verify labels with `kubectl get pods --show-labels`; match selectors exactly |
+| `Traffic still allowed despite deny policy` | CNI plugin does not support NetworkPolicy or policy in wrong namespace | Verify CNI support with `kubectl get networkpolicy -A`; ensure policy is in the correct namespace |
+| `Intermittent connection failures` | Policy allows traffic but connection pool or timeout settings too aggressive | Check if the issue is network policy or application-level; test with `kubectl exec` during failures |
 
 ## Examples
 
-- "Restrict namespace `prod` so only the ingress controller can reach the web pods on 443."
-- "Create egress rules that allow the API to talk only to Postgres and Redis."
+- "Create a default-deny policy for the `production` namespace, then add allow rules so only the ingress controller can reach web pods on port 443."
+- "Generate egress policies that restrict the API pods to communicate only with PostgreSQL (port 5432), Redis (port 6379), and external HTTPS APIs."
+- "Build a complete set of network policies for a 3-tier app: frontend -> API (8080), API -> database (5432), API -> cache (6379), all pods -> DNS (53)."
 
 ## Resources
 
 - Kubernetes NetworkPolicy: https://kubernetes.io/docs/concepts/services-networking/network-policies/
-- Calico documentation: https://docs.projectcalico.org/
-- Example policies in {baseDir}/network-policy-examples/
+- Calico network policy: https://docs.tigera.io/calico/latest/network-policy/
+- Cilium network policy: https://docs.cilium.io/en/stable/security/policy/
+- Network policy editor (visual): https://editor.networkpolicy.io/

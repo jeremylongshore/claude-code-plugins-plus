@@ -5,7 +5,7 @@ description: |
   This skill provides query performance analysis with comprehensive guidance and automation.
   Trigger with phrases like "optimize queries", "analyze performance",
   or "improve query speed".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,76 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Query Performance Analyzer
 
-This skill provides automated assistance for query performance analyzer tasks.
+## Overview
+
+Analyze slow database queries using execution plans, wait statistics, and I/O metrics across PostgreSQL, MySQL, and MongoDB. This skill captures EXPLAIN output, identifies sequential scans on large tables, detects missing indexes, measures buffer cache hit ratios, and produces actionable optimization recommendations ranked by expected performance impact.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Database credentials with permissions to run `EXPLAIN ANALYZE` (PostgreSQL), `EXPLAIN FORMAT=JSON` (MySQL), or `explain()` (MongoDB)
+- `pg_stat_statements` extension enabled for PostgreSQL (provides aggregated query statistics)
+- Access to slow query logs or performance_schema (MySQL)
+- Baseline query execution times for comparison
+- `psql`, `mysql`, or `mongosh` CLI tools installed
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Identify the slowest queries by examining `pg_stat_statements` (PostgreSQL): `SELECT query, calls, mean_exec_time, total_exec_time FROM pg_stat_statements ORDER BY mean_exec_time DESC LIMIT 20`. For MySQL, enable and query the slow query log or `performance_schema.events_statements_summary_by_digest`.
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. Run `EXPLAIN (ANALYZE, BUFFERS, FORMAT JSON)` on each slow query in PostgreSQL, or `EXPLAIN ANALYZE FORMAT=JSON` in MySQL. Capture the full execution plan including actual row counts, loop iterations, and buffer usage.
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Analyze the execution plan for these red flags:
+   - **Sequential scans** on tables with >10,000 rows (indicates missing index)
+   - **Nested loop joins** with high outer row counts (consider hash join or merge join)
+   - **Sort operations** without index support (adding a covering index eliminates the sort)
+   - **High `rows_removed_by_filter`** relative to `rows` (predicate not selective enough)
+   - **Bitmap heap scans** with high recheck rate (index selectivity too low)
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. Check buffer cache performance: `SELECT heap_blks_read, heap_blks_hit, heap_blks_hit::float / (heap_blks_hit + heap_blks_read) AS cache_hit_ratio FROM pg_statio_user_tables WHERE relname = 'table_name'`. A ratio below 0.95 suggests the working set exceeds available shared_buffers.
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Evaluate index usage with `SELECT indexrelname, idx_scan, idx_tup_read, idx_tup_fetch FROM pg_stat_user_indexes WHERE schemaname = 'public' ORDER BY idx_scan ASC`. Indexes with zero scans are unused and waste write performance.
+
+6. Check for table bloat using `SELECT relname, n_live_tup, n_dead_tup, n_dead_tup::float / GREATEST(n_live_tup, 1) AS dead_ratio FROM pg_stat_user_tables WHERE n_dead_tup > 1000 ORDER BY dead_ratio DESC`. A dead tuple ratio above 0.2 indicates the table needs VACUUM.
+
+7. For each identified issue, generate a specific recommendation: CREATE INDEX statement with the exact columns, query rewrite suggestions, or configuration parameter adjustments.
+
+8. Estimate the performance impact of each recommendation by comparing the EXPLAIN plan before and after applying the change on a staging database or by analyzing the expected row reduction from new indexes.
+
+9. Prioritize recommendations by impact-to-effort ratio: index additions (high impact, low effort) before query rewrites (medium impact, medium effort) before schema changes (high impact, high effort).
+
+10. Generate a performance analysis report with before/after execution plans, estimated improvements, and implementation priority ranking.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Slow query inventory** with execution frequency, mean/P95 duration, and total time consumed
+- **Annotated execution plans** highlighting sequential scans, sort bottlenecks, and join inefficiencies
+- **Index recommendations** as ready-to-execute CREATE INDEX statements with expected impact
+- **Query rewrite suggestions** with original and optimized SQL side by side
+- **Buffer cache analysis** with shared_buffers sizing recommendations
+- **Performance report** ranking all findings by severity and implementation priority
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/query-performance-analyzer/`
-
-**Documentation and Guides**: `{baseDir}/docs/query-performance-analyzer/`
-
-**Example Scripts and Code**: `{baseDir}/examples/query-performance-analyzer/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/query-performance-analyzer-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/query-performance-analyzer-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/query-performance-analyzer-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `EXPLAIN ANALYZE` takes too long on production | Query modifies data or runs for minutes | Use `EXPLAIN` without `ANALYZE` for estimated plans; run `EXPLAIN ANALYZE` on staging with representative data |
+| `pg_stat_statements` not available | Extension not installed or not in shared_preload_libraries | Run `CREATE EXTENSION pg_stat_statements`; add to `shared_preload_libraries` in postgresql.conf and restart |
+| Execution plan differs between staging and production | Different data distribution, statistics, or configuration | Run `ANALYZE` on staging tables to update statistics; match `work_mem`, `random_page_cost`, and `effective_cache_size` settings |
+| Index recommendation causes slow writes | Too many indexes on a write-heavy table | Limit indexes to 5-7 per table; use partial indexes to reduce scope; consider covering indexes to replace multiple single-column indexes |
+| Query plan uses wrong index | Stale statistics or cost model miscalculation | Run `ANALYZE table_name` to refresh statistics; adjust `random_page_cost` for SSD storage; use `SET enable_seqscan = off` to test index plans |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Optimizing a dashboard aggregate query**: A query computing daily revenue with `GROUP BY date` and `JOIN` across orders and line_items takes 12 seconds. EXPLAIN reveals a sequential scan on line_items (5M rows). Adding a composite index on `(order_id, created_at)` with `INCLUDE (amount)` reduces execution to 200ms by enabling an index-only scan.
+
+**Diagnosing N+1 query pattern**: Application loads a list page showing 50 products, each with a separate query for category name. `pg_stat_statements` reveals `SELECT name FROM categories WHERE id = $1` called 50 times per page load. Resolution: rewrite as a single JOIN query or implement eager loading in the ORM.
+
+**Identifying bloated table causing cache misses**: Buffer cache hit ratio drops to 0.78 on the sessions table. Investigation reveals 80% dead tuples due to aggressive INSERT/DELETE cycling without autovacuum tuning. Setting `autovacuum_vacuum_scale_factor = 0.01` and running `VACUUM FULL` restores cache hit ratio to 0.99.
+
+## Resources
+
+- PostgreSQL EXPLAIN documentation: https://www.postgresql.org/docs/current/using-explain.html
+- pg_stat_statements reference: https://www.postgresql.org/docs/current/pgstatstatements.html
+- MySQL EXPLAIN output format: https://dev.mysql.com/doc/refman/8.0/en/explain-output.html
+- Use The Index, Luke (SQL indexing guide): https://use-the-index-luke.com/
+- pgMustard EXPLAIN visualizer: https://www.pgmustard.com/

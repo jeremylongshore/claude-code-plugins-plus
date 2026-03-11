@@ -5,126 +5,67 @@ description: |
   This skill provides deployment automation and orchestration with comprehensive guidance and automation.
   Trigger with phrases like "deploy application", "create pipeline",
   or "automate deployment".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Deployment Pipeline Orchestrator
 
-This skill provides automated assistance for deployment pipeline orchestrator tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/deployment-pipeline-orchestrator/`
-
-**Documentation and Guides**: `{baseDir}/docs/deployment-pipeline-orchestrator/`
-
-**Example Scripts and Code**: `{baseDir}/examples/deployment-pipeline-orchestrator/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/deployment-pipeline-orchestrator-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/deployment-pipeline-orchestrator-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/deployment-pipeline-orchestrator-dashboard.json`
+# Orchestrating Deployment Pipelines
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Orchestrate multi-stage deployment pipelines that coordinate builds, tests, approvals, and releases across environments (dev, staging, production). Implement deployment strategies including blue-green, canary, rolling updates, and feature flags using Kubernetes, cloud-native services, and CI/CD platforms.
+
+## Prerequisites
+
+- CI/CD platform configured (GitHub Actions, GitLab CI, Jenkins, ArgoCD)
+- Kubernetes cluster with `kubectl` access or cloud deployment target (ECS, Cloud Run, App Engine)
+- Container registry with built and tagged images ready for deployment
+- Environment-specific configuration (secrets, environment variables) stored securely
+- Monitoring and alerting configured to detect deployment failures
+
+## Instructions
+
+1. Define the deployment topology: target environments, promotion flow (dev -> staging -> production), and approval gates
+2. Select deployment strategy per environment: rolling update for staging, canary or blue-green for production
+3. Generate deployment manifests (Kubernetes Deployments, Services, Ingress) or cloud service configurations
+4. Implement pre-deployment checks: database migration status, dependency health, configuration validation
+5. Configure canary analysis: route 5-10% of traffic to new version, monitor error rate and latency for 15 minutes before full rollout
+6. Add post-deployment verification: smoke tests, health check endpoints, synthetic monitoring
+7. Implement automated rollback triggers: revert if error rate exceeds 1% or P99 latency doubles during canary phase
+8. Set up deployment notifications: Slack messages with deployment status, version, environment, and commit link
+9. Document the deployment runbook with manual intervention procedures for edge cases
+
+## Output
+
+- Deployment pipeline configurations (GitHub Actions workflows, ArgoCD Applications)
+- Kubernetes manifests with deployment strategy annotations
+- Canary analysis configuration (Flagger, Argo Rollouts)
+- Pre/post-deployment hook scripts
+- Deployment runbook with rollback procedures
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `ImagePullBackOff` | Image tag not found in registry or auth failure | Verify image exists with `docker manifest inspect`; check `imagePullSecrets` |
+| `CrashLoopBackOff` | Application failing to start in new version | Check pod logs with `kubectl logs`; verify environment variables and config maps |
+| `Canary analysis failed` | Error rate or latency exceeded threshold during canary | Automatic rollback triggered; investigate logs from canary pods before retrying |
+| `Deployment stuck in Progressing` | Insufficient resources or pod scheduling failure | Check `kubectl describe deployment` for events; verify resource requests and node capacity |
+| `Database migration failed` | Schema conflict or lock timeout | Run migrations independently before deployment; add retry logic and connection timeout |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create a deployment pipeline that builds on PR merge, deploys to staging automatically, runs integration tests, then requires manual approval for production with canary rollout."
+- "Set up Argo Rollouts for a Kubernetes deployment with 10% canary traffic, Prometheus-based analysis, and automatic rollback on error rate > 0.5%."
+- "Generate a blue-green deployment for an ECS service with ALB target group switching and automatic rollback on health check failure."
+
+## Resources
+
+- Kubernetes deployment strategies: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+- Argo Rollouts: https://argoproj.github.io/argo-rollouts/
+- Flagger (progressive delivery): https://flagger.app/
+- AWS ECS blue-green: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-bluegreen.html

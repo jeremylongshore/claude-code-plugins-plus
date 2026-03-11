@@ -12,61 +12,69 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Generating Grpc Services
+# Generating gRPC Services
 
 ## Overview
 
-
-This skill provides automated assistance for grpc service generator tasks.
-This skill provides automated assistance for the described functionality.
+Generate gRPC service definitions, client/server stubs, and implementations from Protocol Buffer (protobuf) `.proto` files. Scaffold unary, server-streaming, client-streaming, and bidirectional-streaming RPC methods with proper error status codes, interceptors for auth/logging, and health check service registration.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Protocol Buffers compiler (`protoc`) v3.21+ installed
+- Language-specific gRPC plugin: `grpc_tools_node_protoc_plugin` (Node.js), `grpcio-tools` (Python), or Go gRPC plugin
+- `buf` CLI for proto linting and breaking change detection (recommended)
+- gRPC testing tool: `grpcurl`, `evans`, or BloomRPC
+- TLS certificates for production transport security (mTLS recommended for service-to-service)
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:grpc-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Read existing `.proto` files using Glob and Read, or design new service definitions with message types, RPC methods, and streaming patterns per service requirements.
+2. Define proto3 message types with appropriate field types, using `google.protobuf.Timestamp` for dates, `google.protobuf.Struct` for dynamic fields, and `oneof` for polymorphic messages.
+3. Compile `.proto` files with `protoc` to generate language-specific stubs, server interfaces, and client libraries using the appropriate gRPC plugin.
+4. Implement server-side RPC handlers for each method, returning proper gRPC status codes (`OK`, `NOT_FOUND`, `INVALID_ARGUMENT`, `PERMISSION_DENIED`) instead of generic errors.
+5. Add server interceptors for authentication (extracting JWT from metadata), request logging with correlation IDs, and deadline propagation across service calls.
+6. Implement health check service (`grpc.health.v1.Health`) and reflection service for runtime introspection by tools like `grpcurl`.
+7. Configure TLS transport security, preferring mutual TLS (mTLS) for service-to-service communication with certificate rotation support.
+8. Write integration tests using an in-process test server, validating all RPC methods including streaming scenarios with multiple messages and error conditions.
+9. Generate a REST-to-gRPC gateway using `grpc-gateway` annotations for HTTP/JSON clients that need to access gRPC services.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/proto/` - Protocol Buffer service and message definitions
+- `{baseDir}/generated/` - Auto-generated stubs and client/server code
+- `{baseDir}/src/services/` - RPC method handler implementations
+- `{baseDir}/src/interceptors/` - Auth, logging, and metrics interceptors
+- `{baseDir}/src/health/` - Health check service implementation
+- `{baseDir}/gateway/` - REST-to-gRPC gateway configuration (optional)
+- `{baseDir}/tests/` - Integration tests with in-process test server
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| INVALID_ARGUMENT (3) | Request message fails field validation constraints | Return detailed `BadRequest` error details with field-level violation descriptions |
+| NOT_FOUND (5) | Requested resource does not exist | Include resource type and ID in error message metadata for client debugging |
+| PERMISSION_DENIED (7) | Caller lacks required role or scope in JWT metadata | Return required permission in error details; log denied access attempt |
+| DEADLINE_EXCEEDED (4) | RPC took longer than client-specified deadline | Propagate deadlines to downstream calls; implement cascading timeout budgets |
+| UNAVAILABLE (14) | Server overloaded or downstream dependency unreachable | Client should retry with exponential backoff; server should implement backpressure |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**User management service**: Define `UserService` with `CreateUser`, `GetUser`, `ListUsers` (server-streaming for large result sets), and `UpdateUser` RPCs with field mask support for partial updates.
+
+**Real-time event stream**: Bidirectional streaming RPC where clients subscribe to event topics and the server pushes filtered events, with flow control via client-side backpressure signals.
+
+**gRPC-Web frontend**: Generate gRPC-Web compatible stubs for browser clients using Envoy proxy for HTTP/2 to gRPC translation, enabling direct proto-based communication from React/Vue applications.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- gRPC documentation: https://grpc.io/docs/
+- Protocol Buffers Language Guide: https://protobuf.dev/programming-guides/proto3/
+- Buf CLI for proto management: https://buf.build/
+- gRPC-Gateway: https://grpc-ecosystem.github.io/grpc-gateway/

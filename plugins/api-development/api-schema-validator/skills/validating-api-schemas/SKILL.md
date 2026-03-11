@@ -12,61 +12,67 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Validating Api Schemas
+# Validating API Schemas
 
 ## Overview
 
-
-This skill provides automated assistance for api schema validator tasks.
-This skill provides automated assistance for the described functionality.
+Validate API specifications against OpenAPI 3.0/3.1, JSON Schema Draft 2020-12, and GraphQL SDL standards using linting rules, structural analysis, and best-practice enforcement. Detect incomplete schemas, undocumented endpoints, inconsistent naming conventions, and breaking changes before they reach consumers.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- OpenAPI specification files (YAML or JSON) or GraphQL SDL schema files
+- Schema linting tool: Spectral (OpenAPI), `graphql-schema-linter` (GraphQL), or `ajv-cli` (JSON Schema)
+- Version control for schema files to enable diff-based breaking change detection
+- CI pipeline for automated schema validation on every pull request
+- `oasdiff` or `openapi-diff` for breaking change detection between versions
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:schema-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Locate all API specification files using Glob, identifying OpenAPI specs, JSON Schema definitions, and GraphQL SDL files across the project.
+2. Run structural validation to verify the specification conforms to the declared standard (OpenAPI 3.0, 3.1, or JSON Schema Draft 2020-12) and is syntactically valid.
+3. Apply Spectral linting rules to enforce naming conventions (camelCase properties, kebab-case paths), required descriptions on all operations, and example values for request/response schemas.
+4. Verify schema completeness: every endpoint has documented request schemas, all response status codes have schemas (including 400, 401, 404, 500), and all `$ref` references resolve.
+5. Check for security scheme coverage: every endpoint either declares a security requirement or is explicitly marked as public with rationale.
+6. Detect breaking changes by comparing the current schema against the previous released version: removed endpoints, removed required fields, type changes, and narrowed enum values.
+7. Validate consistency across endpoints: pagination parameters use the same naming (`page`/`limit` vs `offset`/`count`), error response envelopes follow a single standard, and date formats are consistent.
+8. Generate a validation report with severity levels (error, warning, info) and specific file:line references for each finding.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/reports/schema-validation.json` - Machine-readable validation findings with severity
+- `{baseDir}/reports/schema-validation.md` - Human-readable report with fix recommendations
+- `{baseDir}/reports/breaking-changes.md` - Breaking change analysis between schema versions
+- `{baseDir}/.spectral.yaml` - Custom Spectral linting rule configuration
+- `{baseDir}/scripts/validate-schema.sh` - CI-ready schema validation script
+- `{baseDir}/reports/schema-coverage.md` - Endpoint documentation completeness matrix
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Unresolved $ref | Schema references a component that does not exist or has a typo | List all `$ref` targets and verify each resolves; check for circular references |
+| Missing response schema | Endpoint returns undocumented status codes | Add schemas for all observed response codes; use `default` response as fallback |
+| Inconsistent naming | Mix of camelCase and snake_case property names across endpoints | Define naming convention in Spectral ruleset; apply auto-fix where possible |
+| Breaking change detected | Required field added to existing request schema | Make new field optional with default value; or create new API version for breaking changes |
+| Schema too permissive | Use of `additionalProperties: true` or missing type constraints | Set `additionalProperties: false` by default; require explicit type and format on all properties |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Pre-commit schema lint**: Git pre-commit hook runs Spectral against all modified OpenAPI files, blocking commits that introduce undocumented endpoints, missing descriptions, or inconsistent naming.
+
+**Breaking change CI gate**: On pull requests modifying API specs, `oasdiff` compares against the main branch version, failing the build if backward-incompatible changes are detected without a version bump.
+
+**Schema completeness audit**: Generate a matrix showing every endpoint vs. documentation status (description, request schema, response schemas for 200/400/401/404/500, examples), highlighting gaps with coverage percentage.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Spectral OpenAPI linter: https://stoplight.io/open-source/spectral
+- OpenAPI Specification: https://spec.openapis.org/oas/v3.1.0
+- JSON Schema specification: https://json-schema.org/
+- oasdiff breaking change detection: https://github.com/Tufin/oasdiff

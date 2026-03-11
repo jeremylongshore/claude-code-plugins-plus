@@ -5,7 +5,7 @@ description: |
   This skill provides replication and sharding with comprehensive guidance and automation.
   Trigger with phrases like "set up replication", "implement sharding",
   or "scale database".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,84 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Replication Manager
 
-This skill provides automated assistance for database replication manager tasks.
+## Overview
+
+Configure and manage database replication topologies for PostgreSQL (streaming replication, logical replication), MySQL (source-replica, group replication), and MongoDB (replica sets). This skill covers primary-replica setup, read scaling through replica routing, failover automation, replication lag monitoring, and conflict resolution for multi-primary configurations.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Superuser or replication-role credentials on primary and replica servers
+- Network connectivity between all replication nodes (verify with `pg_isready` or `mysqladmin ping`)
+- `psql`, `mysql`, or `mongosh` CLI tools installed on all nodes
+- Matching major database versions across all replication nodes
+- Sufficient disk space on replicas (equal to or greater than primary)
+- SSH access to replica servers for initial base backup transfer
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Choose the replication topology based on requirements:
+   - **Single primary + read replicas**: Best for read-heavy workloads. All writes go to primary; reads distributed across replicas.
+   - **Multi-primary (active-active)**: Best for geographic distribution. Requires conflict resolution. Use PostgreSQL logical replication or MySQL Group Replication.
+   - **Cascading replication**: Replica A replicates from primary, Replica B replicates from Replica A. Reduces primary load for many replicas.
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. For PostgreSQL streaming replication, configure the primary:
+   - Set `wal_level = replica`, `max_wal_senders = 10`, `max_replication_slots = 10`
+   - Create replication user: `CREATE ROLE replicator WITH REPLICATION LOGIN PASSWORD 'secure_password'`
+   - Add replication entry to `pg_hba.conf`: `host replication replicator replica_ip/32 scram-sha-256`
+   - Reload configuration: `SELECT pg_reload_conf()`
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Initialize the replica with a base backup: `pg_basebackup -h primary_host -U replicator -D /var/lib/postgresql/data -Fp -Xs -P -R`. The `-R` flag creates `standby.signal` and configures `primary_conninfo` automatically.
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. For MySQL source-replica replication, configure the source:
+   - Set `server-id = 1`, `log_bin = mysql-bin`, `binlog_format = ROW`
+   - Create replication user: `CREATE USER 'replicator'@'replica_ip' IDENTIFIED BY 'secure_password'; GRANT REPLICATION SLAVE ON *.* TO 'replicator'@'replica_ip'`
+   - Record binary log position: `SHOW MASTER STATUS`
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Configure the MySQL replica: `CHANGE REPLICATION SOURCE TO SOURCE_HOST='primary_host', SOURCE_USER='replicator', SOURCE_PASSWORD='...', SOURCE_LOG_FILE='mysql-bin.000001', SOURCE_LOG_POS=154; START REPLICA`.
+
+6. For MongoDB replica sets: initialize with `rs.initiate({_id: "rs0", members: [{_id: 0, host: "node1:27017"}, {_id: 1, host: "node2:27017"}, {_id: 2, host: "node3:27017"}]})`. MongoDB handles leader election and failover automatically.
+
+7. Monitor replication lag continuously:
+   - PostgreSQL: `SELECT client_addr, state, sent_lsn, write_lsn, flush_lsn, replay_lsn, (sent_lsn - replay_lsn) AS lag_bytes FROM pg_stat_replication`
+   - MySQL: `SHOW REPLICA STATUS\G` (check `Seconds_Behind_Source`)
+   - MongoDB: `rs.printReplicationInfo()` and `rs.printSecondaryReplicationInfo()`
+
+8. Configure application-level read routing: direct write queries to the primary connection and read queries to a load-balanced replica pool. Use connection poolers (PgBouncer, ProxySQL) or application middleware for automatic routing.
+
+9. Set up automated failover using Patroni (PostgreSQL), MySQL InnoDB Cluster + MySQL Router, or MongoDB's built-in election mechanism. Test failover by stopping the primary and verifying the replica promotes automatically within the target RTO.
+
+10. Configure alerting for replication lag exceeding 10 seconds, replication slot inactive for more than 1 hour, and replica connection drops. Stale replication slots in PostgreSQL cause WAL accumulation and can fill the disk.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Replication configuration files** for primary and replica nodes
+- **Base backup and initialization scripts** for setting up new replicas
+- **Replication monitoring queries** with lag measurement and health checks
+- **Failover runbook** with manual and automated promotion procedures
+- **Read routing configuration** for application or connection pooler
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/database-replication-manager/`
-
-**Documentation and Guides**: `{baseDir}/docs/database-replication-manager/`
-
-**Example Scripts and Code**: `{baseDir}/examples/database-replication-manager/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/database-replication-manager-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/database-replication-manager-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/database-replication-manager-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Replication lag increasing steadily | Replica cannot keep up with primary write volume | Check replica I/O and CPU; increase `max_parallel_workers` on replica; consider upgrading replica hardware; reduce write-heavy batch operations on primary |
+| `replication slot is inactive` warning | Replica disconnected or paused, WAL accumulating on primary | Reconnect replica; if permanently removed, drop the slot with `SELECT pg_drop_replication_slot('slot_name')` to prevent disk fill |
+| `could not connect to primary` on replica | Network partition, primary down, or authentication failure | Verify network connectivity; check `pg_hba.conf` entries; confirm replication user credentials; check primary process status |
+| Replica has diverged from primary | Split-brain after failed failover or manual writes to replica | Re-initialize replica from fresh base backup; for PostgreSQL, use `pg_rewind` if timeline divergence is small |
+| Conflict in logical replication | Same row modified on both publisher and subscriber | Configure conflict resolution policy; use `UPDATE` conflict handler; design schema to avoid cross-node writes to same rows |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Setting up PostgreSQL read replicas for a web application**: A primary database handles 2,000 writes/second but read traffic is 10x higher. Two streaming replicas are added with PgBouncer routing read queries to replicas in round-robin. Result: primary CPU drops from 90% to 40%, read latency improves by 60%.
+
+**Automated failover with Patroni**: A 3-node PostgreSQL cluster managed by Patroni with etcd for consensus. When the primary fails, Patroni promotes the most up-to-date replica within 10 seconds. Application reconnects automatically through the Patroni-managed VIP or DNS endpoint.
+
+**Cross-region logical replication for compliance**: EU customer data must stay in EU region. Logical replication publishes only non-PII tables to the US region replica. EU application reads locally; US analytics queries use the replicated subset. Publication filter: `CREATE PUBLICATION us_analytics FOR TABLE orders, products, categories`.
+
+## Resources
+
+- PostgreSQL streaming replication: https://www.postgresql.org/docs/current/warm-standby.html
+- PostgreSQL logical replication: https://www.postgresql.org/docs/current/logical-replication.html
+- MySQL replication: https://dev.mysql.com/doc/refman/8.0/en/replication.html
+- Patroni (PostgreSQL HA): https://patroni.readthedocs.io/
+- MongoDB replica sets: https://www.mongodb.com/docs/manual/replication/

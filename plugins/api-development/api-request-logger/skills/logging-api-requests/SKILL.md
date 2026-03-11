@@ -12,61 +12,68 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Logging Api Requests
+# Logging API Requests
 
 ## Overview
 
-
-This skill provides automated assistance for api request logger tasks.
-This skill provides automated assistance for the described functionality.
+Implement structured API request logging with correlation IDs, performance timing, security audit trails, and PII redaction. Capture request/response metadata in JSON format suitable for aggregation in ELK Stack, Loki, or CloudWatch Logs, enabling debugging, performance analysis, and compliance auditing across distributed services.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Structured logging library: Pino or Winston (Node.js), structlog (Python), Logback with JSON encoder (Java)
+- Log aggregation system: ELK Stack (Elasticsearch, Logstash, Kibana), Grafana Loki, or CloudWatch Logs
+- Correlation ID propagation mechanism (middleware-injected or from incoming `X-Request-ID` header)
+- PII data classification for the API domain (which fields contain personal data requiring redaction)
+- Log retention and rotation policy defined per compliance requirements
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:log-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Examine existing logging configuration using Grep and Read to identify current log format, output destinations, and any structured logging already in place.
+2. Implement request logging middleware that captures: timestamp (ISO 8601), correlation ID, HTTP method, URL path (without query string PII), status code, response time (ms), request size, response size, and client IP.
+3. Generate a unique correlation ID (`X-Request-ID`) for each request if not provided by the caller, and propagate it to all downstream service calls and log entries within the request scope.
+4. Add PII redaction rules that mask sensitive fields (passwords, tokens, SSNs, email addresses) in logged request/response bodies using configurable field-path patterns.
+5. Implement log levels per context: `info` for successful requests, `warn` for 4xx client errors, `error` for 5xx server errors with stack traces, and `debug` for request/response bodies (development only).
+6. Configure response body logging for error responses only (4xx/5xx), capturing the error payload for debugging while skipping successful response bodies to reduce log volume.
+7. Add security audit logging for sensitive operations: authentication attempts, permission changes, data exports, and admin actions, tagged with `audit: true` for separate indexing.
+8. Set up log rotation and retention policies: 30 days for application logs, 90 days for audit logs, with automatic compression of logs older than 7 days.
+9. Write tests verifying that PII redaction works correctly, correlation IDs propagate through nested calls, and log output matches expected JSON structure.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/middleware/request-logger.js` - Structured request/response logging middleware
+- `{baseDir}/src/middleware/correlation-id.js` - Correlation ID generation and propagation
+- `{baseDir}/src/utils/pii-redactor.js` - Field-level PII redaction with configurable patterns
+- `{baseDir}/src/utils/audit-logger.js` - Security audit event logger for sensitive operations
+- `{baseDir}/src/config/logging.js` - Log level, format, and output destination configuration
+- `{baseDir}/tests/logging/` - Logging middleware tests including PII redaction verification
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Log volume overwhelming storage | High-traffic endpoint logging full request/response bodies | Log bodies only for errors; sample successful request bodies at configurable rate (1%) |
+| PII leak in logs | New field added to API response containing personal data not covered by redaction rules | Maintain allowlist of loggable fields rather than blocklist; audit log output regularly |
+| Correlation ID missing | Upstream service does not propagate X-Request-ID header | Generate new correlation ID when header is absent; log warning about missing upstream propagation |
+| Log parsing failure | Log message contains unescaped characters breaking JSON structure | Use structured logging library that handles serialization; never concatenate user input into log strings |
+| Audit log gap | Async logging dropped events during high-load period | Use synchronous logging for audit events; implement write-ahead buffer for audit trail completeness |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Structured JSON log entry**: `{"timestamp":"2026-03-10T14:30:00Z","correlationId":"abc-123","method":"POST","path":"/api/users","status":201,"durationMs":45,"userId":"usr_456","audit":false}` -- every field queryable in log aggregation.
+
+**Distributed tracing correlation**: Propagate `X-Request-ID` from API gateway through 3 microservices, enabling a single Kibana query to show the complete request lifecycle across all services.
+
+**Compliance audit trail**: Tag all data modification operations (POST, PUT, DELETE) with `audit: true`, capturing the authenticated user, modified resource ID, and change summary for SOC 2 compliance evidence.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Structured logging best practices (12-Factor App: Logs)
+- ELK Stack documentation: https://www.elastic.co/guide/
+- Pino logger: https://getpino.io/
+- OpenTelemetry for distributed tracing context propagation

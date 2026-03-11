@@ -12,61 +12,70 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Building Api Gateway
+# Building API Gateway
 
 ## Overview
 
-
-This skill provides automated assistance for api gateway builder tasks.
-This skill provides automated assistance for the described functionality.
+Create an API gateway that provides unified entry point routing, load balancing, authentication enforcement, rate limiting, request transformation, and response aggregation across multiple backend microservices. Support path-based and header-based routing, circuit breaker protection for downstream services, and centralized cross-cutting concern management.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Multiple backend API services with known endpoints, health check URLs, and authentication requirements
+- Gateway framework: Express Gateway, Kong (declarative config), KrakenD, or custom Node.js/Go implementation
+- Service registry or static upstream configuration for backend service discovery
+- TLS certificates for gateway termination and optional mTLS for backend communication
+- Centralized logging and metrics collection for gateway-level observability
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:gateway-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Inventory all backend services using Read and Grep, documenting their base URLs, endpoint paths, authentication requirements, and health check endpoints.
+2. Define routing rules that map public-facing URL patterns to backend service endpoints: path-based (`/users/*` -> user-service), header-based (`X-API-Version: 2` -> v2-service), or method-based routing.
+3. Implement authentication at the gateway layer: validate JWT tokens, API keys, or OAuth2 tokens once at the gateway and forward authenticated user context to backend services via headers (`X-User-ID`, `X-User-Roles`).
+4. Add rate limiting at the gateway level with per-consumer quotas, applying limits before requests reach backend services to protect all downstream services uniformly.
+5. Configure request transformation: strip internal headers from incoming requests, add correlation IDs, rewrite URL paths for backend routing, and inject service-specific headers.
+6. Implement response aggregation for composite endpoints that fan out to multiple backend services, merge responses, and return a unified payload to the client.
+7. Add circuit breaker protection per backend service: open the circuit after configurable failure thresholds, return 503 with the failed service identified, and auto-recover after health check success.
+8. Configure health check aggregation: gateway `/health` endpoint reports overall status based on individual backend service health, with degraded state support for non-critical service failures.
+9. Write integration tests covering routing correctness, auth enforcement, rate limiting, circuit breaker behavior, and response aggregation.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/gateway/config/routes.yaml` - Route mapping definitions (path -> service)
+- `{baseDir}/gateway/middleware/auth.js` - Gateway-level authentication enforcement
+- `{baseDir}/gateway/middleware/rate-limiter.js` - Centralized rate limiting
+- `{baseDir}/gateway/middleware/circuit-breaker.js` - Per-service circuit breaker
+- `{baseDir}/gateway/middleware/transform.js` - Request/response transformation logic
+- `{baseDir}/gateway/aggregators/` - Response aggregation for composite endpoints
+- `{baseDir}/gateway/health.js` - Aggregated health check endpoint
+- `{baseDir}/tests/gateway/` - Gateway integration test suite
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 502 Bad Gateway | Backend service returned invalid response or connection refused | Return descriptive error identifying the failed backend; trigger circuit breaker if threshold met |
+| 503 Circuit Open | Backend service circuit breaker is open due to repeated failures | Return `Retry-After` header; serve cached response if available; route to fallback service if configured |
+| 504 Gateway Timeout | Backend service response exceeded gateway timeout threshold | Configure per-route timeout limits; implement timeout cascading shorter than client timeout |
+| Routing miss | Request path does not match any configured route | Return 404 with list of available API paths; log unmatched routes for route configuration review |
+| Auth header stripping | Proxy strips Authorization header before forwarding to backend | Configure gateway to preserve or transform auth headers; verify proxy `proxy_pass_header` settings |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Microservices gateway**: Route `/users/*` to user-service (port 3001), `/orders/*` to order-service (port 3002), and `/products/*` to product-service (port 3003), with unified JWT validation and per-service circuit breakers.
+
+**BFF (Backend for Frontend)**: Gateway aggregates data from user-service, preferences-service, and notification-service into a single `/dashboard` response, reducing frontend API calls from 3 to 1.
+
+**API versioning gateway**: Route requests to different backend deployments based on `Accept-Version` header, enabling blue-green deployments and gradual version migration without client-side URL changes.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Kong API Gateway: https://konghq.com/
+- Express Gateway: https://www.express-gateway.io/
+- KrakenD: https://www.krakend.io/
+- API Gateway pattern: Microservices.io

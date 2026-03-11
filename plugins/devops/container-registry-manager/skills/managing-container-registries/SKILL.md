@@ -5,126 +5,68 @@ description: |
   This skill provides container management and orchestration with comprehensive guidance and automation.
   Trigger with phrases like "containerize app", "manage containers",
   or "orchestrate deployment".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Container Registry Manager
 
-This skill provides automated assistance for container registry manager tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/container-registry-manager/`
-
-**Documentation and Guides**: `{baseDir}/docs/container-registry-manager/`
-
-**Example Scripts and Code**: `{baseDir}/examples/container-registry-manager/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/container-registry-manager-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/container-registry-manager-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/container-registry-manager-dashboard.json`
+# Managing Container Registries
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Manage container registries across Docker Hub, AWS ECR, GCP Artifact Registry, Azure ACR, and self-hosted registries (Harbor, Nexus). Automate image tagging, lifecycle policies, cross-region replication, vulnerability scanning integration, and access control for container image storage and distribution.
+
+## Prerequisites
+
+- Docker CLI installed and authenticated to the target registry
+- Cloud provider CLI (`aws`, `gcloud`, `az`) for managed registries
+- Registry credentials configured (`docker login` or credential helpers)
+- Understanding of image naming conventions (registry/namespace/image:tag)
+- IAM permissions for registry operations (push, pull, delete, admin)
+
+## Instructions
+
+1. Identify the target registry type: ECR, Artifact Registry, ACR, Docker Hub, or self-hosted
+2. Configure authentication: set up credential helpers for automated access (`docker-credential-ecr-login`, `gcloud auth configure-docker`)
+3. Define image naming and tagging strategy: use semantic versioning for releases, git SHA for CI builds, `latest` only for development
+4. Create repository/namespace structure organized by team, application, or environment
+5. Configure lifecycle policies to auto-delete untagged images and images older than retention threshold (e.g., keep last 10 tagged images, delete untagged after 7 days)
+6. Set up vulnerability scanning: enable automatic scanning on push (ECR scan-on-push, GCP Container Analysis)
+7. Configure cross-region replication for disaster recovery and latency reduction
+8. Implement access control: read-only for CI pull, push access for CI build agents, admin for operators
+9. Generate Terraform/IaC for registry infrastructure and policies
+
+## Output
+
+- Terraform/CloudFormation for registry creation with lifecycle and replication policies
+- Docker credential helper configuration scripts
+- CI/CD pipeline steps for building, tagging, and pushing images
+- Lifecycle policy JSON (ECR) or cleanup scripts (Docker Hub, Harbor)
+- RBAC configurations for registry access control
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `denied: requested access to the resource is denied` | Missing push/pull permissions or expired token | Re-authenticate with `docker login` or refresh credential helper; verify IAM policies |
+| `manifest unknown: manifest unknown` | Image tag does not exist in the registry | Verify image name and tag; check if lifecycle policy deleted the image |
+| `no space left on device` during push | Registry storage quota exceeded | Increase quota, run lifecycle cleanup, or delete unused images |
+| `unauthorized: authentication required` | Credential helper not configured or token expired | Set up credential helper (`aws ecr get-login-password`, `gcloud auth configure-docker`) |
+| `toomanyrequests: rate limit exceeded` | Docker Hub pull rate limit hit | Use authenticated pulls, mirror images to private registry, or upgrade Docker Hub plan |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Set up an AWS ECR repository with scan-on-push enabled, lifecycle policy to keep last 20 tagged images, and cross-region replication to us-west-2."
+- "Configure GCP Artifact Registry with Docker credential helper and a cleanup policy for images not pulled in 90 days."
+- "Create a CI pipeline step that builds a Docker image, tags it with the git SHA and `latest`, pushes to ECR, and fails if Critical vulnerabilities are found."
+
+## Resources
+
+- AWS ECR: https://docs.aws.amazon.com/AmazonECR/latest/userguide/
+- GCP Artifact Registry: https://cloud.google.com/artifact-registry/docs
+- Azure ACR: https://learn.microsoft.com/en-us/azure/container-registry/
+- Harbor registry: https://goharbor.io/docs/
+- Docker Hub: https://docs.docker.com/docker-hub/

@@ -12,61 +12,68 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Rate Limiting Apis
+# Rate Limiting APIs
 
 ## Overview
 
-
-This skill provides automated assistance for api rate limiter tasks.
-This skill provides automated assistance for the described functionality.
+Implement sophisticated rate limiting using sliding window, token bucket, and fixed window counter algorithms with Redis-backed distributed state. Configure per-endpoint, per-user, and per-API-key limits with tiered quotas, burst allowances, and standard response headers that communicate limit status to API consumers.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Redis 6+ for distributed rate limit state (required for multi-instance deployments)
+- Rate limiting library: `rate-limiter-flexible` (Node.js), `slowapi` (Python/FastAPI), or Bucket4j (Java)
+- API key or user identification mechanism for per-consumer tracking
+- Monitoring for rate limit hit rates and rejected request metrics
+- Documentation system for publishing rate limit policies to API consumers
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:ratelimit-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Analyze endpoint traffic patterns using Read and Grep on access logs or metrics to determine appropriate rate limits per endpoint category (read-heavy, write-heavy, resource-intensive).
+2. Select the rate limiting algorithm per endpoint: token bucket for bursty traffic allowance, sliding window log for precise per-second limits, or fixed window counter for simple quota enforcement.
+3. Implement rate limiting middleware that extracts the client identifier (API key from header, user ID from JWT, or IP address as fallback) and checks against the configured limit.
+4. Configure tiered rate limits per API consumer plan: Free (100 req/min), Pro (1000 req/min), Enterprise (10000 req/min) with per-endpoint overrides for expensive operations.
+5. Add burst allowance using token bucket: allow 2x the sustained rate for 10 seconds to handle legitimate traffic spikes without penalizing well-behaved clients.
+6. Set standard rate limit response headers on every response: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset` (Unix timestamp), and `RateLimit-Policy` (draft IETF standard).
+7. Return 429 Too Many Requests with `Retry-After` header (seconds until next allowed request) and a JSON body explaining the limit, current usage, and reset time.
+8. Implement rate limit bypass for internal service-to-service calls using shared secret or mutual TLS identification to prevent internal traffic from consuming consumer quotas.
+9. Write tests that verify rate limits engage at exact thresholds, headers reflect correct remaining counts, and limits reset at the configured window boundary.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/middleware/rate-limiter.js` - Rate limiting middleware with algorithm selection
+- `{baseDir}/src/config/rate-limits.js` - Per-endpoint and per-tier rate limit configuration
+- `{baseDir}/src/utils/rate-limit-store.js` - Redis-backed distributed counter implementation
+- `{baseDir}/src/middleware/rate-limit-headers.js` - Standard rate limit response header injection
+- `{baseDir}/tests/rate-limiting/` - Rate limit threshold verification tests
+- `{baseDir}/docs/rate-limits.md` - Consumer-facing rate limit documentation
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 429 Too Many Requests | Client exceeded configured rate limit for the endpoint | Return `Retry-After` header with seconds until reset; include limit details in JSON body |
+| Redis connection failure | Rate limit state store unavailable | Fail open (allow requests) or fail closed (reject all) based on security posture; alert immediately |
+| Clock skew between instances | Distributed rate limit windows misaligned across servers | Use Redis server time (`TIME` command) as canonical clock; avoid relying on application server clocks |
+| Inconsistent counts | Race condition in read-check-increment cycle | Use Redis `MULTI/EXEC` transaction or Lua script for atomic increment-and-check operations |
+| Bypass abuse | Internal bypass mechanism exploited by external client | Validate bypass credentials per-request; restrict bypass to specific IP ranges or mTLS certificates |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Sliding window with Redis**: Implement a sliding window rate limiter using Redis sorted sets, where each request adds a timestamped entry and the window count is computed by `ZRANGEBYSCORE` over the last 60 seconds.
+
+**Tiered SaaS quotas**: Free tier gets 100 requests/minute with no burst, Pro tier gets 1000 requests/minute with 2x burst for 10 seconds, Enterprise tier gets 10000 requests/minute with custom per-endpoint overrides.
+
+**Login endpoint protection**: Apply strict rate limit of 5 attempts per minute per IP on `/auth/login` to prevent brute force attacks, with progressive lockout (15 min, 1 hour, 24 hours) after repeated violations.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- IETF RateLimit header fields draft: https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/
+- Token bucket algorithm explained
+- `rate-limiter-flexible` library: https://github.com/animir/node-rate-limiter-flexible
+- Redis rate limiting patterns with Lua scripts

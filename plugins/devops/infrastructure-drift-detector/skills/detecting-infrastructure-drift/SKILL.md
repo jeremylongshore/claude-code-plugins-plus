@@ -8,113 +8,60 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Infrastructure Drift Detector
 
-This skill provides automated assistance for infrastructure drift detector tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Infrastructure as Code (IaC) files are up to date in {baseDir}
-- Cloud provider CLI is installed and authenticated
-- IaC tool (Terraform/CloudFormation/Pulumi) is installed
-- Remote state storage is configured and accessible
-- Appropriate read permissions for infrastructure resources
-
-## Instructions
-
-1. **Identify IaC Tool**: Determine if using Terraform, CloudFormation, Pulumi, or ARM
-2. **Fetch Current State**: Retrieve actual infrastructure state from cloud provider
-3. **Load Desired State**: Read IaC configuration from {baseDir}/terraform or equivalent
-4. **Compare States**: Execute drift detection command for the IaC platform
-5. **Analyze Differences**: Identify added, modified, or removed resources
-6. **Generate Report**: Create detailed report of drift with affected resources
-7. **Suggest Remediation**: Provide commands to resolve drift (apply or import)
-8. **Document Findings**: Save drift report to {baseDir}/drift-reports/
-
-## Output
-
-Generates drift detection reports:
-
-**Terraform Drift Report:**
-```
-Drift Detection Report - 2025-12-10 10:30:00
-==============================================
-
-Resources with Drift: 3
-
-1. aws_instance.web_server
-   Status: Modified
-   Drift: instance_type changed from "t3.micro" to "t3.small"
-   Action: Update IaC to match or revert instance type
-
-2. aws_s3_bucket.assets
-   Status: Modified
-   Drift: versioning_enabled changed from true to false
-   Action: Re-enable versioning or update IaC
-
-3. aws_iam_role.lambda_exec
-   Status: Deleted
-   Drift: Role no longer exists in AWS
-   Action: terraform apply to recreate
-
-Remediation Command:
-terraform plan -out=drift-fix.tfplan
-terraform apply drift-fix.tfplan
-```
-
-**CloudFormation Drift:**
-```yaml
-StackName: production-vpc
-DriftStatus: DRIFTED
-Resources:
-  - LogicalResourceId: VPC
-    ResourceType: AWS::EC2::VPC
-    DriftStatus: IN_SYNC
-  - LogicalResourceId: PublicSubnet
-    ResourceType: AWS::EC2::Subnet
-    DriftStatus: MODIFIED
-    PropertyDifferences:
-      - PropertyPath: /Tags
-        ExpectedValue: [{Key: Env, Value: prod}]
-        ActualValue: [{Key: Env, Value: production}]
-```
-
-## Error Handling
-
-Common issues and solutions:
-
-**State Lock Error**
-- Error: "Error acquiring state lock"
-- Solution: Ensure no other terraform process is running, or force-unlock if safe
-
-**Authentication Failure**
-- Error: "Unable to authenticate to cloud provider"
-- Solution: Refresh credentials with `aws configure` or `gcloud auth login`
-
-**Missing State File**
-- Error: "No state file found"
-- Solution: Initialize terraform with `terraform init` or specify remote backend
-
-**Permission Denied**
-- Error: "Access denied reading resource"
-- Solution: Grant read-only IAM permissions to service account
-
-**State Version Mismatch**
-- Error: "State file version too new"
-- Solution: Upgrade Terraform version or use compatible state version
-
-## Resources
-
-- Terraform drift documentation: https://www.terraform.io/docs/cli/state/
-- AWS CloudFormation drift detection: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html
-- Drift remediation best practices in {baseDir}/docs/drift-remediation.md
-- Automated drift detection scripts in {baseDir}/scripts/drift-check.sh
+# Detecting Infrastructure Drift
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Detect discrepancies between actual cloud infrastructure state and the desired state defined in IaC (Terraform, CloudFormation, Pulumi). Run drift detection commands, analyze modified/added/deleted resources, generate drift reports with affected resources, and provide remediation steps to bring infrastructure back into compliance.
+
+## Prerequisites
+
+- IaC configuration files up to date in the project directory
+- Cloud provider CLI installed and authenticated with read access to all managed resources
+- IaC tool installed: Terraform 1.0+, AWS CLI (for CloudFormation drift), or Pulumi
+- Remote state storage accessible and current (S3 backend, Terraform Cloud, Pulumi Cloud)
+- Read-only IAM permissions for all resource types managed by IaC
+
+## Instructions
+
+1. Identify the IaC tool in use by scanning for `.tf` files, `template.yaml`, or `Pulumi.yaml`
+2. Initialize the IaC tool if needed: `terraform init` to download providers and configure backend
+3. Run drift detection: `terraform plan -detailed-exitcode` (exit code 2 = drift detected), `aws cloudformation detect-stack-drift`, or `pulumi preview`
+4. Parse the output to identify resources with drift: added (exists in cloud but not in IaC), modified (attributes changed), or deleted (in IaC but missing from cloud)
+5. For each drifted resource, determine if the drift is intentional (manual hotfix) or unintentional (configuration error, unauthorized change)
+6. Generate a structured drift report with resource identifiers, attribute differences, and severity classification
+7. Provide remediation options per resource: `terraform apply` to enforce desired state, `terraform import` to adopt changes, or update IaC to match reality
+8. Schedule recurring drift detection: configure a cron job or CI pipeline to run daily and alert on drift
+9. Investigate the root cause: determine who made the manual change and implement guardrails (SCPs, IAM restrictions) to prevent recurrence
+
+## Output
+
+- Drift detection report with resource-level detail: resource type, ID, drifted attributes, expected vs. actual values
+- Remediation commands: `terraform apply`, `terraform import`, or IaC code updates
+- CI/CD pipeline step for automated drift detection on a schedule
+- Alert configuration for drift detection results (Slack, email, PagerDuty)
+- Prevention recommendations: IAM policy restrictions, SCP guardrails, automated enforcement
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Error acquiring state lock` | Another Terraform process is running or stale lock | Wait for the other process; use `terraform force-unlock <ID>` if the lock is stale |
+| `Unable to authenticate to cloud provider` | Expired or missing credentials | Refresh with `aws configure`, `gcloud auth login`, or `az login` |
+| `No state file found` | Backend not initialized or state file deleted | Run `terraform init` to configure the backend; restore state from backup if deleted |
+| `Access denied reading resource` | IAM policy missing read permissions for some resource types | Grant read-only access for all resource types managed by IaC (`ReadOnlyAccess` or specific policies) |
+| `State file version mismatch` | Terraform version newer than state format | Upgrade Terraform to match the state version or use `terraform state replace-provider` |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Run drift detection against all Terraform-managed infrastructure and generate a report of resources that have changed since last apply."
+- "Set up a daily GitHub Actions workflow that runs `terraform plan` and posts drift results to Slack if any resources are out of sync."
+- "Detect CloudFormation stack drift for the production VPC stack and provide remediation steps for any MODIFIED resources."
+
+## Resources
+
+- Terraform drift detection: https://developer.hashicorp.com/terraform/tutorials/state/resource-drift
+- CloudFormation drift detection: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/detect-drift-stack.html
+- Pulumi drift detection: https://www.pulumi.com/docs/using-pulumi/pulumi-packages/guides/drift-detection/
+- Preventing drift: https://developer.hashicorp.com/terraform/tutorials/state/refresh

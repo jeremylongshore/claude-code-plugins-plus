@@ -16,49 +16,61 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Aggregate vulnerability scan results, configuration analyses, and compliance assessments into a structured, auditor-ready security report. Map every finding to a CVSS severity, applicable compliance control (PCI-DSS, HIPAA, SOC 2, GDPR), and a prioritized remediation timeline. Produce output in Markdown, HTML, or JSON for integration with ticketing systems.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Security scan data or logs are available in {baseDir}/security/
-- Access to application configuration files
-- Security tool outputs (e.g., vulnerability scanners, SAST/DAST results)
-- Compliance framework documentation (if applicable)
-- Write permissions for generating report files
+- Vulnerability scanner outputs (Nmap, Nessus, OpenVAS, OWASP ZAP) available in `{baseDir}/security/`
+- Application and infrastructure configuration files accessible
+- SAST/DAST tool results (e.g., Semgrep, Snyk, Trivy, Bandit)
+- Applicable compliance framework documentation identified (PCI-DSS v4.0, HIPAA Security Rule, SOC 2 TSC, GDPR)
+- Write permissions for report output directory `{baseDir}/reports/`
 
 ## Instructions
 
-1. Collect available security signals (scanner outputs, configs, logs).
-2. Analyze findings and map to risk + compliance requirements.
-3. Generate a report with prioritized remediation guidance.
-4. Format outputs (Markdown/HTML/PDF) and include evidence links.
+1. Inventory all available security data sources by scanning `{baseDir}/security/` for scanner outputs, log files, and configuration exports.
+2. Parse vulnerability findings and normalize severity using CVSS 3.1 base scores: Critical (9.0-10.0), High (7.0-8.9), Medium (4.0-6.9), Low (0.1-3.9).
+3. Cross-reference each finding against applicable compliance controls. Map to specific PCI-DSS requirements (e.g., Req 6.5 for injection flaws), HIPAA safeguards, or SOC 2 Common Criteria.
+4. Deduplicate findings across scanners and merge related vulnerabilities into consolidated entries with all affected assets listed.
+5. Classify access control weaknesses, encryption gaps, and authentication deficiencies into separate report sections.
+6. Generate an executive summary including total findings by severity, overall risk score, and top-5 critical remediation priorities.
+7. Build a detailed findings table: finding ID, CWE number, affected component, CVSS score, compliance mapping, remediation steps, and evidence links.
+8. Produce a compliance status matrix showing pass/fail/partial for each applicable standard requirement.
+9. Create remediation recommendations with effort estimates (hours), priority ranking, and suggested timelines.
+10. Format the final report as Markdown to `{baseDir}/reports/security-audit-YYYYMMDD.md`. Optionally produce JSON for Jira/ServiceNow import.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the detailed four-phase implementation workflow.
 
 ## Output
 
-The skill produces:
-
-**Primary Output**: Comprehensive security audit report saved to {baseDir}/reports/security-audit-YYYYMMDD.md
-
-**Report Structure**:
-```
-# Security Audit Report - [System Name]
+- **Audit Report**: `{baseDir}/reports/security-audit-YYYYMMDD.md` containing executive summary, detailed findings, compliance matrix, and remediation plan
+- **Findings JSON**: Machine-readable findings for ticketing system import
+- **Compliance Matrix**: Per-requirement pass/fail/partial status for each applicable framework
+- **Remediation Backlog**: Prioritized list with effort estimates and owner assignments
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| No security scan results found | Scanner outputs missing from `{baseDir}/security/` | Specify alternate data source paths or run preliminary scans with `nmap -sV` or `trivy fs .` |
+| Cannot assess compliance -- requirements unavailable | Compliance framework checklist not provided | Fall back to OWASP Top 10 and CWE Top 25 as baseline; note limitation in report |
+| Permission denied reading config files | Insufficient filesystem access | Request elevated permissions or provide exported configuration snapshots |
+| Scan results exceed processing capacity | Thousands of findings from multiple scanners | Process in batches by severity (Critical/High first), then merge |
+| Conflicting severity ratings across scanners | Different tools score the same vulnerability differently | Use CVSS 3.1 base score as canonical severity; note discrepancies in appendix |
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+- "Generate a SOC 2 security audit report for the API using scan results in `{baseDir}/security/`."
+- "Create a PCI-DSS compliance-focused security assessment with a prioritized remediation plan for all Critical and High findings."
+- "Produce a HIPAA security audit from the Nessus and Trivy outputs, mapping each finding to the relevant HIPAA safeguard."
 
 ## Resources
 
 - OWASP Top 10: https://owasp.org/www-project-top-ten/
 - CWE Top 25: https://cwe.mitre.org/top25/
 - NIST Cybersecurity Framework: https://www.nist.gov/cyberframework
-- PCI-DSS Requirements: https://www.pcisecuritystandards.org/
-- GDPR Compliance Checklist: https://gdpr.eu/checklist/
+- PCI-DSS v4.0 Requirements: https://www.pcisecuritystandards.org/
+- CVSS 3.1 Calculator: https://www.first.org/cvss/calculator/3.1
+- `{baseDir}/references/errors.md` -- full error handling reference
+- `{baseDir}/references/examples.md` -- additional usage examples
+- https://intentsolutions.io

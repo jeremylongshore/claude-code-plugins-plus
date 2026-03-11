@@ -12,61 +12,69 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Processing Api Batches
+# Processing API Batches
 
 ## Overview
 
-
-This skill provides automated assistance for api batch processor tasks.
-This skill provides automated assistance for the described functionality.
+Optimize bulk API operations with batch request endpoints, parallel execution with concurrency control, partial failure handling, and progress tracking. Implement batch processing patterns that accept arrays of operations in a single request, execute them efficiently with database bulk operations, and return per-item results with individual success/failure status.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Web framework capable of handling large request bodies (configure body size limits: 10MB+ for batch payloads)
+- Database with bulk operation support (bulk insert, bulk update, transactions)
+- Queue system for async batch processing: Bull/BullMQ (Node.js), Celery (Python), or SQS
+- Progress tracking store (Redis) for long-running batch status polling
+- Rate limiting aware of batch operations (count individual operations, not just requests)
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:batch-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Examine existing API endpoints using Read and Grep to identify operations frequently called in loops by consumers, which are candidates for batch equivalents.
+2. Design the batch request format: accept an array of operations in the request body, each with an optional client-provided `id` for result correlation, e.g., `POST /batch` with `{operations: [{method: "POST", path: "/users", body: {...}, id: "op1"}]}`.
+3. Implement synchronous batch processing for small batches (< 100 items): validate all items, execute in a database transaction, and return per-item results with `{id, status, result|error}` for each operation.
+4. Add asynchronous batch processing for large batches (> 100 items): accept the batch, return 202 Accepted with a `batchId` and status polling URL, process in a background worker, and update progress in Redis.
+5. Implement concurrency control: process batch items in parallel with configurable concurrency limit (default: 10) using `p-limit` or `asyncio.Semaphore` to prevent database connection exhaustion.
+6. Handle partial failures: do not abort the entire batch when individual items fail; collect per-item results with success/failure status, and return the batch result with summary counts (`succeeded`, `failed`, `total`).
+7. Add progress tracking for async batches: expose `GET /batch/:batchId/status` returning `{total, completed, failed, progress: 0.75, status: "processing|completed|failed"}`.
+8. Implement batch size limits and validation: maximum 1000 items per batch, reject oversized batches with 413, validate all items before processing any, and return all validation errors upfront.
+9. Write tests covering: small sync batches, large async batches, partial failure handling, progress tracking, concurrency limits, and batch size validation.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/routes/batch.js` - Batch request endpoint with sync/async routing
+- `{baseDir}/src/batch/processor.js` - Batch execution engine with concurrency control
+- `{baseDir}/src/batch/validator.js` - Batch request validation and size limit enforcement
+- `{baseDir}/src/batch/progress.js` - Redis-backed progress tracking for async batches
+- `{baseDir}/src/batch/workers/` - Background worker for async batch processing
+- `{baseDir}/src/batch/results.js` - Per-item result aggregation with summary statistics
+- `{baseDir}/tests/batch/` - Batch processing integration tests
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 413 Payload Too Large | Batch exceeds maximum item count (1000) or body size limit | Return clear error with maximum allowed count; suggest splitting into multiple batch requests |
+| 207 Multi-Status | Some batch items succeeded while others failed | Return per-item status array; include error details for failed items; provide summary counts |
+| 408 Batch Timeout | Synchronous batch processing exceeded request timeout | Switch to async processing for large batches; return 202 with status polling URL |
+| Partial transaction failure | Database transaction rolls back all items due to one failure | Use savepoints for per-item isolation; or process items individually outside a wrapping transaction |
+| Progress tracking stale | Worker crashed mid-batch; progress stops updating | Implement heartbeat monitoring; mark batch as failed after heartbeat timeout; enable retry from last checkpoint |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Bulk user import**: Accept a CSV-uploaded batch of 5000 user records via `POST /batch/users/import`, return 202 with `batchId`, process asynchronously with progress updates, and provide a downloadable results file when complete.
+
+**Multi-resource batch**: Accept mixed operations in a single batch: `[{method:"POST",path:"/users",...}, {method:"PUT",path:"/orders/123",...}, {method:"DELETE",path:"/products/456"}]`, executing each against the appropriate handler.
+
+**Idempotent batch retry**: Client includes `idempotencyKey` per batch item; on retry, already-completed items return their cached result without re-execution, while failed items are re-attempted.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Google Cloud batch request format: https://cloud.google.com/storage/docs/json_api/v1/how-tos/batch
+- Facebook Graph API batch requests pattern
+- HTTP 207 Multi-Status (WebDAV) for partial success responses
+- Bull queue documentation: https://docs.bullmq.io/

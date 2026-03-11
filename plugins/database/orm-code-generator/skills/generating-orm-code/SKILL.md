@@ -5,126 +5,91 @@ description: |
   This skill provides ORM model and code generation with comprehensive guidance and automation.
   Trigger with phrases like "generate ORM models", "create entity classes",
   or "scaffold database models".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Orm Code Generator
-
-This skill provides automated assistance for orm code generator tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/orm-code-generator/`
-
-**Documentation and Guides**: `{baseDir}/docs/orm-code-generator/`
-
-**Example Scripts and Code**: `{baseDir}/examples/orm-code-generator/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/orm-code-generator-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/orm-code-generator-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/orm-code-generator-dashboard.json`
+# ORM Code Generator
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Generate type-safe ORM model classes, migration files, and repository patterns from existing database schemas or domain specifications. Supports Prisma, TypeORM, Sequelize, SQLAlchemy, Django ORM, and Drizzle ORM. This skill introspects live databases to produce model code that matches the actual schema, including relationships, constraints, indexes, and custom types.
+
+## Prerequisites
+
+- Database connection string or credentials for schema introspection
+- `psql` or `mysql` CLI for querying `information_schema`
+- Target ORM framework already installed in the project (`prisma`, `typeorm`, `sqlalchemy`, etc.)
+- Node.js/Python/Go runtime matching the target ORM
+- Existing project structure to place generated models in the correct directory
+
+## Instructions
+
+1. Introspect the database schema by querying `information_schema.COLUMNS`, `information_schema.TABLE_CONSTRAINTS`, and `information_schema.KEY_COLUMN_USAGE` to extract all tables, columns, data types, nullable flags, defaults, primary keys, foreign keys, and unique constraints.
+
+2. For PostgreSQL, additionally query `pg_catalog.pg_type` for custom enum types and `pg_catalog.pg_index` for index definitions. For MySQL, query `information_schema.STATISTICS` for index details.
+
+3. Map database column types to ORM field types:
+   - `varchar/text` -> `String` / `@Column('text')`
+   - `integer/bigint` -> `Int` / `@Column('int')`
+   - `boolean` -> `Boolean` / `@Column('boolean')`
+   - `timestamp/datetime` -> `DateTime` / `@Column('timestamp')`
+   - `jsonb/json` -> `Json` / `@Column('jsonb')`
+   - `uuid` -> `String` with `@default(uuid())` or `uuid.uuid4`
+   - Custom enums -> Generate enum type definitions
+
+4. Generate model classes with proper decorators/attributes:
+   - For **Prisma**: Generate `schema.prisma` with `model` blocks, `@id`, `@unique`, `@relation`, and `@default` directives.
+   - For **TypeORM**: Generate entity classes with `@Entity()`, `@Column()`, `@PrimaryGeneratedColumn()`, `@ManyToOne()`, `@OneToMany()` decorators.
+   - For **SQLAlchemy**: Generate model classes extending `Base` with `Column()`, `ForeignKey()`, `relationship()`, and `__tablename__`.
+   - For **Drizzle**: Generate table definitions with `pgTable()`, `serial()`, `varchar()`, `timestamp()`, and `relations()`.
+
+5. Generate relationship mappings from foreign key constraints. Detect one-to-one (unique FK), one-to-many, and many-to-many (junction table with two FKs) patterns automatically. Add both sides of each relationship with proper cascade options.
+
+6. Create migration files that capture the current schema state. For Prisma: `npx prisma migrate dev --name init`. For TypeORM: generate migration with `typeorm migration:generate`. For Alembic: `alembic revision --autogenerate`.
+
+7. Generate repository/service layer with common CRUD operations: `findById`, `findAll` with pagination, `create`, `update`, `delete`, and relationship-aware queries (`findWithRelations`).
+
+8. Add validation decorators or constraints matching database CHECK constraints and NOT NULL columns. Use `class-validator` for TypeORM, Pydantic validators for SQLAlchemy, or Zod schemas for Prisma.
+
+9. Generate TypeScript/Python type definitions or interfaces for API layer consumption, ensuring the ORM models and API types stay synchronized.
+
+10. Validate generated models by running a test migration against a temporary database or by comparing the generated schema against the live database schema with a diff tool.
+
+## Output
+
+- **Model/entity files** with full type annotations, decorators, and relationship mappings
+- **Migration files** capturing the initial schema state
+- **Enum type definitions** for database enum columns
+- **Repository/service classes** with typed CRUD operations
+- **Validation schemas** (Zod, class-validator, Pydantic) matching database constraints
+- **Type definition files** for API layer consumption
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Circular relationship dependency | Two entities reference each other, causing import cycles | Use lazy loading (`() => RelatedEntity`) in TypeORM; use `ForwardRef` in SQLAlchemy; split into separate files with deferred imports |
+| Unknown column type mapping | Database uses custom types, extensions, or domain types not in the standard mapping | Add custom type mapping in generator config; use `@Column({ type: 'text' })` as fallback; register custom transformers |
+| Migration conflicts with existing data | Generated migration adds NOT NULL columns without defaults | Add default values to new columns; create a two-phase migration (add nullable, backfill, set NOT NULL) |
+| Junction table not detected as many-to-many | Junction table has extra columns beyond the two foreign keys | Model as an explicit entity with two ManyToOne relationships instead of an implicit ManyToMany |
+| Schema drift between ORM models and database | Manual database changes not reflected in ORM code | Run introspection again; use `prisma db pull` or `sqlacodegen` to regenerate; diff against existing models |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Prisma schema from PostgreSQL e-commerce database**: Introspect 15 tables including users, orders, products, and categories. Generate `schema.prisma` with proper `@relation` directives, enum types for order status, and `@default(autoincrement())` for serial columns. Output includes Zod validation schemas for each model.
+
+**TypeORM entities from MySQL SaaS application**: Generate entity classes for a multi-tenant application with tenant isolation. Each entity includes a `tenantId` column with a custom `@TenantAware` decorator. Repository layer includes tenant-scoped query methods.
+
+**SQLAlchemy models from legacy database with naming conventions**: Introspect a database with inconsistent naming (mix of camelCase and snake_case). Generate models with `__tablename__` preserving original names while using Pythonic property names. Alembic migration captures the full schema.
+
+## Resources
+
+- Prisma introspection: https://www.prisma.io/docs/orm/prisma-schema/introspection
+- TypeORM entity documentation: https://typeorm.io/entities
+- SQLAlchemy ORM tutorial: https://docs.sqlalchemy.org/en/20/orm/
+- Drizzle ORM schema: https://orm.drizzle.team/docs/sql-schema-declaration
+- Django inspectdb command: https://docs.djangoproject.com/en/5.0/howto/legacy-databases/

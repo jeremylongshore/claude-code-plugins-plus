@@ -5,7 +5,7 @@ description: |
   This skill provides database schema diff and sync with comprehensive guidance and automation.
   Trigger with phrases like "compare schemas", "diff databases",
   or "sync database schemas".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,95 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Diff Tool
 
-This skill provides automated assistance for database diff tool tasks.
+## Overview
+
+Compare database schemas between two environments (development vs. staging, staging vs. production) to detect structural differences in tables, columns, indexes, constraints, functions, and triggers. This skill generates SQL migration scripts to synchronize schemas, identifies drift caused by manual changes, and validates that migration files produce the expected schema state. Supports PostgreSQL and MySQL schema comparison using `information_schema` queries.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Connection credentials to both source and target databases
+- `psql` or `mysql` CLI configured to connect to both environments
+- Read access to `information_schema` and `pg_catalog` (PostgreSQL) or `information_schema` (MySQL)
+- Permission to run `pg_dump --schema-only` for full schema extraction
+- Understanding of which environment is the "source of truth" (typically the migration-managed environment)
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Extract the full schema from both databases for comparison:
+   - PostgreSQL: `pg_dump --schema-only --no-owner --no-privileges -f schema_source.sql source_db` and repeat for target_db
+   - MySQL: `mysqldump --no-data --routines --triggers source_db > schema_source.sql`
+   - Alternatively, query `information_schema` directly for programmatic comparison
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. Compare tables present in each database:
+   - `SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_catalog = 'source_db' EXCEPT SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_catalog = 'target_db'`
+   - This reveals tables that exist in source but not in target (and vice versa)
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Compare columns for each shared table:
+   - Query `information_schema.columns` from both databases for: `column_name`, `data_type`, `character_maximum_length`, `is_nullable`, `column_default`, `ordinal_position`
+   - Flag differences in data type, nullability, default values, and column ordering
+   - Detect added columns (in source, not target) and dropped columns (in target, not source)
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. Compare indexes:
+   - PostgreSQL: Query `pg_indexes` for `indexname`, `indexdef` on each database
+   - MySQL: Query `information_schema.STATISTICS` for `INDEX_NAME`, `COLUMN_NAME`, `NON_UNIQUE`
+   - Flag missing, extra, or differently-defined indexes
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Compare constraints (primary keys, foreign keys, unique, check):
+   - Query `information_schema.table_constraints` and `information_schema.key_column_usage`
+   - Detect missing foreign keys, changed constraint names, and altered check constraint expressions
+
+6. Compare functions, stored procedures, and triggers:
+   - PostgreSQL: Query `pg_proc` for function signatures and `pg_trigger` for trigger definitions
+   - MySQL: Query `information_schema.ROUTINES` and `information_schema.TRIGGERS`
+   - Compare function bodies for logical differences
+
+7. Compare enum types and custom types (PostgreSQL):
+   - Query `pg_type` and `pg_enum` for enum label differences
+   - Detect added or removed enum values (note: PostgreSQL only supports adding enum values, not removing)
+
+8. Generate a structured diff report categorizing differences as:
+   - **Added**: Objects in source not present in target (require CREATE statements)
+   - **Removed**: Objects in target not present in source (require DROP statements, confirm intentional)
+   - **Modified**: Objects differing between source and target (require ALTER statements)
+
+9. Generate migration SQL to synchronize the target database to match the source:
+   - CREATE TABLE for new tables, ALTER TABLE ADD COLUMN for new columns
+   - ALTER TABLE ALTER COLUMN for type changes, ALTER TABLE DROP COLUMN for removed columns
+   - CREATE INDEX / DROP INDEX for index differences
+   - Include transaction wrapping and rollback-safe operations
+
+10. Validate the generated migration by applying it to a copy of the target database and re-running the diff. The second diff should report zero differences, confirming the migration produces the expected state.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Schema diff report** listing all differences categorized by type (added, removed, modified)
+- **Migration SQL script** to synchronize target schema to match source
+- **Rollback SQL script** to reverse the migration if needed
+- **Side-by-side comparison** of differing object definitions
+- **Drift detection summary** highlighting changes not tracked in migration files
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/database-diff-tool/`
-
-**Documentation and Guides**: `{baseDir}/docs/database-diff-tool/`
-
-**Example Scripts and Code**: `{baseDir}/examples/database-diff-tool/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/database-diff-tool-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/database-diff-tool-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/database-diff-tool-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Connection refused to one database | Network or credential issue on source or target | Verify connection strings; check firewall rules; confirm credentials work with direct `psql` or `mysql` connection |
+| Permission denied on `pg_catalog` queries | User lacks read access to system catalogs | Grant `pg_read_all_settings` role; or use `pg_dump --schema-only` which requires fewer privileges |
+| False positive differences from default value formatting | PostgreSQL normalizes default expressions differently in different versions | Normalize default value strings before comparison; ignore whitespace differences; compare semantic equivalence |
+| Enum type modification blocked | PostgreSQL does not support removing enum values or reordering | Create a new enum type, migrate the column, drop the old type; document this as a multi-step migration |
+| Generated migration fails on target | Target has data that violates new constraints | Add data validation queries before constraint creation; backfill default values; handle edge cases in migration |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Detecting schema drift between staging and production**: After 3 months without auditing, the diff reveals: 2 columns added to production manually (not in migrations), 1 index missing from staging, and 3 functions with different implementations. A migration script is generated to bring staging in sync, and the manual production changes are backported into migration files.
+
+**Pre-deployment schema validation**: Before deploying a release with 5 migration files, run the diff between the post-migration staging schema and the expected schema. The diff catches a migration that accidentally dropped a constraint that a later migration depends on. The migration ordering is fixed before production deployment.
+
+**Comparing PostgreSQL schemas across major version upgrade**: Schema extracted from PostgreSQL 14 and compared against PostgreSQL 16 after migration. Diff reveals function signature changes for built-in function calls, updated default values for new parameters, and deprecated syntax in stored procedures. Migration script updates function definitions for the new version.
+
+## Resources
+
+- PostgreSQL information_schema: https://www.postgresql.org/docs/current/information-schema.html
+- MySQL information_schema: https://dev.mysql.com/doc/refman/8.0/en/information-schema.html
+- pg_dump schema-only mode: https://www.postgresql.org/docs/current/app-pgdump.html
+- migra (PostgreSQL schema diff tool): https://github.com/djrobstep/migra
+- Skeema (MySQL schema management): https://www.skeema.io/

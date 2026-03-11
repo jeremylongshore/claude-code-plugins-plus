@@ -5,126 +5,68 @@ description: |
   This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
   Trigger with phrases like "create backups", "automate backups",
   or "implement disaster recovery".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Backup Strategy Implementor
 
-This skill provides automated assistance for backup strategy implementor tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/backup-strategy-implementor/`
-
-**Documentation and Guides**: `{baseDir}/docs/backup-strategy-implementor/`
-
-**Example Scripts and Code**: `{baseDir}/examples/backup-strategy-implementor/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/backup-strategy-implementor-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/backup-strategy-implementor-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/backup-strategy-implementor-dashboard.json`
+# Implementing Backup Strategies
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Design and implement backup strategies for databases, file systems, and cloud resources using tools like `tar`, `rsync`, `pg_dump`, `mysqldump`, AWS S3, and cloud-native snapshot APIs. Covers full, incremental, and differential backup schemes with retention policies, encryption, and automated verification.
+
+## Prerequisites
+
+- `tar`, `rsync`, or `restic` installed for file-level backups
+- Database client tools (`pg_dump`, `mysqldump`, `mongodump`) for database backups
+- AWS CLI configured with S3 write permissions (or equivalent GCP/Azure storage access)
+- Sufficient storage capacity at backup destination (local, NFS, or object storage)
+- Cron or systemd timer access for scheduling automated backups
+- GPG or OpenSSL for backup encryption at rest
+
+## Instructions
+
+1. Inventory all data sources requiring backup: databases, application data directories, configuration files, secrets/certificates
+2. Classify data by RPO (Recovery Point Objective) and RTO (Recovery Time Objective) requirements
+3. Select backup strategy per data class: full daily + incremental hourly for databases, snapshot-based for block storage, rsync for file systems
+4. Generate backup scripts using appropriate tools (`pg_dump --format=custom`, `tar czf`, `rsync -avz --delete`)
+5. Configure retention policy: daily backups kept 7 days, weekly kept 4 weeks, monthly kept 12 months
+6. Add encryption for backups containing sensitive data (`gpg --encrypt` or S3 server-side encryption with KMS)
+7. Set up automated scheduling via cron jobs or systemd timers with proper logging
+8. Implement backup verification: restore to a test environment on a weekly schedule and validate data integrity
+9. Configure alerting for backup failures via email, Slack, or PagerDuty
+
+## Output
+
+- Backup shell scripts with logging, error handling, and lock files to prevent concurrent runs
+- Cron entries or systemd timer/service unit files
+- Retention policy configuration (lifecycle rules for S3, cleanup scripts for local)
+- Restore runbook with step-by-step recovery procedures
+- Monitoring configuration for backup success/failure alerts
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `No space left on device` | Backup destination full | Verify retention cleanup is running; increase storage or reduce retention window |
+| `pg_dump: connection refused` | Database not accepting connections or wrong credentials | Check `pg_hba.conf`, verify connection string, and test with `psql` first |
+| `rsync: connection unexpectedly closed` | Network interruption or SSH timeout | Add `--timeout=300` and `--partial` flags; use persistent SSH tunnel |
+| `S3 upload failed: Access Denied` | IAM policy missing `s3:PutObject` permission | Attach proper IAM policy; verify bucket policy allows writes from the backup source |
+| `Backup file corrupted on restore` | Incomplete write or disk error during backup | Add checksum verification (`sha256sum`) after backup; test restores regularly |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create a backup strategy for a PostgreSQL database: full dump nightly to S3, WAL archiving for point-in-time recovery, 30-day retention."
+- "Generate rsync scripts to mirror `/var/www` to a remote NAS with incremental daily backups and weekly full backups."
+- "Implement encrypted backups for a MongoDB replica set with automated restore testing every Sunday."
+
+## Resources
+
+- PostgreSQL backup guide: https://www.postgresql.org/docs/current/backup.html
+- AWS S3 lifecycle policies: https://docs.aws.amazon.com/AmazonS3/latest/userguide/object-lifecycle-mgmt.html
+- Restic backup tool: https://restic.readthedocs.io/
+- Backup best practices (3-2-1 rule): https://www.veeam.com/blog/321-backup-rule.html

@@ -12,61 +12,68 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Mocking Apis
+# Mocking APIs
 
 ## Overview
 
-
-This skill provides automated assistance for api mock server tasks.
-This skill provides automated assistance for the described functionality.
+Generate mock API servers from OpenAPI specifications that return realistic, schema-compliant response data for development and testing. Support dynamic response generation with Faker.js data, configurable latency simulation, stateful CRUD behavior, and request recording for contract testing validation.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- OpenAPI 3.0+ specification file with response schema definitions
+- Mock server runtime: Prism (Stoplight), json-server, MSW (Mock Service Worker), or WireMock
+- Faker.js or equivalent for realistic test data generation
+- Docker for containerized mock server deployment (optional but recommended)
+- Frontend or consumer application needing API stubs for parallel development
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:mock-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Read the OpenAPI specification using Read and extract all endpoint definitions, response schemas, and example values to build the mock response inventory.
+2. Generate response fixtures for each endpoint using schema-aware data generation: realistic names (Faker), valid emails, properly formatted dates, and relational IDs that reference other mock entities.
+3. Configure the mock server to match requests by method, path pattern, query parameters, and request body content type, returning the appropriate fixture.
+4. Add stateful behavior for CRUD operations: POST creates a record in memory, GET returns it, PUT updates it, DELETE removes it -- enabling realistic integration testing flows.
+5. Implement configurable response delays (50-500ms per endpoint) to simulate real-world latency and test client timeout handling.
+6. Add error scenario mocking: configure specific request patterns to return 400, 401, 404, 429, or 500 responses for testing error handling paths.
+7. Enable request recording that captures all incoming requests with timestamps and headers for later replay in contract tests.
+8. Create a startup script that launches the mock server on a configurable port with hot-reload when fixture files change.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/mocks/server.js` - Mock server entry point with route registration
+- `{baseDir}/mocks/fixtures/` - Per-endpoint response fixture JSON files
+- `{baseDir}/mocks/generators/` - Dynamic response generators using Faker.js
+- `{baseDir}/mocks/scenarios/` - Error scenario configurations (4xx, 5xx responses)
+- `{baseDir}/mocks/state.js` - In-memory state store for CRUD behavior
+- `{baseDir}/mocks/recordings/` - Captured request logs for contract testing
+- `{baseDir}/docker-compose.mock.yml` - Docker configuration for mock server
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Schema mismatch | Mock response does not match updated OpenAPI spec | Run spec-to-fixture sync on spec change; add CI check comparing fixture schemas |
+| Missing endpoint | Consumer requests path not defined in OpenAPI spec | Return 501 with message listing available endpoints; log unknown path for spec update |
+| Stale fixtures | Mock data becomes unrealistic after API schema evolution | Regenerate fixtures from latest spec; use generators over static fixtures for evolving APIs |
+| Port conflict | Mock server port already in use by another dev service | Make port configurable via environment variable; default to spec-defined server URL port |
+| State leak between tests | Stateful mock retains data from previous test run | Reset in-memory state before each test suite; expose `POST /mock/reset` admin endpoint |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Frontend parallel development**: Launch a Prism mock server from the OpenAPI spec so frontend developers can build against realistic API responses while backend implementation is in progress.
+
+**Integration test isolation**: Use MSW (Mock Service Worker) to intercept HTTP requests in Node.js test suites, returning fixture responses without network calls, with per-test response customization.
+
+**Contract testing**: Record all requests to the mock server during frontend E2E tests, then replay them against the real backend to verify the mock accurately represents actual API behavior.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Prism (Stoplight): https://stoplight.io/open-source/prism
+- Mock Service Worker (MSW): https://mswjs.io/
+- WireMock: https://wiremock.org/
+- Faker.js for realistic data generation: https://fakerjs.dev/

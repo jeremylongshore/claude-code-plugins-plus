@@ -5,7 +5,7 @@ description: |
   This skill provides health monitoring and alerting with comprehensive guidance and automation.
   Trigger with phrases like "monitor system health", "set up alerts",
   or "track metrics".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,70 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Transaction Monitor
 
-This skill provides automated assistance for database transaction monitor tasks.
+## Overview
+
+Monitor active database transactions in real time to detect long-running queries, lock contention, uncommitted transactions, and transaction throughput anomalies across PostgreSQL, MySQL, and MongoDB. This skill instruments transaction lifecycle tracking, identifies transactions holding locks beyond acceptable thresholds, and generates alerts before stalled transactions cascade into application-wide failures.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Database credentials with access to system catalogs (`pg_stat_activity`, `information_schema.PROCESSLIST`, or MongoDB `currentOp`)
+- `psql`, `mysql`, or `mongosh` CLI installed
+- Permissions to view other sessions' transactions (PostgreSQL: `pg_monitor` role; MySQL: `PROCESS` privilege)
+- Baseline metrics for normal transaction duration and throughput
+- Alerting infrastructure (email, Slack webhook, or PagerDuty) for notifications
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Query the active transaction view to establish a baseline. For PostgreSQL: `SELECT pid, state, query_start, now() - query_start AS duration, query FROM pg_stat_activity WHERE state != 'idle' ORDER BY duration DESC`. For MySQL: `SELECT id, user, host, db, command, time, state, info FROM information_schema.PROCESSLIST WHERE command != 'Sleep'`.
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. Identify long-running transactions by filtering for duration exceeding the application's expected transaction time. Set initial thresholds at 30 seconds for OLTP workloads or 5 minutes for batch/reporting workloads.
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Detect idle-in-transaction sessions that hold locks without executing queries. For PostgreSQL: `SELECT pid, state, query_start, now() - state_change AS idle_duration FROM pg_stat_activity WHERE state = 'idle in transaction' AND now() - state_change > interval '5 minutes'`.
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. Monitor lock contention by querying the lock manager. For PostgreSQL: `SELECT blocked_locks.pid AS blocked_pid, blocking_locks.pid AS blocking_pid, blocked_activity.query AS blocked_query FROM pg_catalog.pg_locks blocked_locks JOIN pg_catalog.pg_locks blocking_locks ON blocking_locks.locktype = blocked_locks.locktype`. For MySQL: `SELECT * FROM information_schema.INNODB_LOCK_WAITS`.
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Track transaction throughput by sampling `pg_stat_database` (xact_commit, xact_rollback) or MySQL `Com_commit` / `Com_rollback` status variables at regular intervals. Calculate commits/second and rollback ratio.
+
+6. Create monitoring scripts that run on a cron schedule (every 30-60 seconds) to capture transaction metrics and write to a time-series store or log file.
+
+7. Configure alerting thresholds: transactions exceeding 60 seconds, idle-in-transaction sessions exceeding 5 minutes, lock wait queues exceeding 10 waiters, and rollback ratio exceeding 5%.
+
+8. Build a transaction summary dashboard query that shows: active transaction count, average duration, longest running transaction, lock wait count, and commits-per-second over the last hour.
+
+9. Implement automatic remediation for known-safe scenarios: terminate idle-in-transaction sessions older than 30 minutes using `SELECT pg_terminate_backend(pid)` (PostgreSQL) or `KILL connection_id` (MySQL), with logging of terminated sessions.
+
+10. Generate weekly transaction health reports summarizing peak transaction counts, P95/P99 duration percentiles, deadlock occurrences, and long-running transaction incidents.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Transaction monitoring queries** tailored to the specific database engine in use
+- **Monitoring scripts** (shell or Python) for scheduled transaction health checks
+- **Alert configuration** with threshold definitions and notification channel setup
+- **Dashboard queries** showing transaction throughput, duration distribution, and lock metrics
+- **Weekly health report template** with transaction performance trends and anomaly highlights
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/database-transaction-monitor/`
-
-**Documentation and Guides**: `{baseDir}/docs/database-transaction-monitor/`
-
-**Example Scripts and Code**: `{baseDir}/examples/database-transaction-monitor/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/database-transaction-monitor-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/database-transaction-monitor-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/database-transaction-monitor-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `pg_stat_activity` returns no rows for other sessions | Missing `pg_monitor` role or `track_activities` disabled | Grant `pg_monitor` role; set `track_activities = on` in postgresql.conf |
+| Lock monitoring query times out | Massive lock table during contention storm | Query `pg_locks` with a statement_timeout; reduce monitoring frequency during incidents |
+| False positive alerts for long-running transactions | Batch jobs or maintenance operations trigger duration alerts | Create an exclusion list for known batch job PIDs or application users; use separate thresholds for batch vs OLTP |
+| Transaction throughput drops to zero | Connection pool exhaustion or database crash | Check `max_connections` usage; verify database process is running; check for full disk or OOM conditions |
+| Monitoring queries add overhead | High-frequency polling of system catalogs | Reduce polling interval to every 60 seconds; use `pg_stat_statements` for aggregated stats instead of per-query monitoring |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Detecting a connection leak in a web application**: Transaction count steadily increases over hours while commit rate remains flat. Monitoring reveals hundreds of `idle in transaction` sessions from the application server. Root cause: missing `connection.close()` in error handling paths. Resolution: terminate stale sessions and fix application connection management.
+
+**Identifying lock contention during peak hours**: Dashboard shows lock wait count spiking from 0 to 50+ between 2-4 PM daily. Lock analysis reveals a nightly reporting query overlapping with high-volume order processing. Resolution: reschedule reporting queries to off-peak hours and add `NOWAIT` hints to critical transaction paths.
+
+**Tracking transaction rollback ratio spike**: Rollback ratio jumps from 1% to 15% after a deployment. Transaction monitor logs show serialization failures on a frequently updated inventory table. Resolution: reduce transaction isolation level from SERIALIZABLE to READ COMMITTED for non-critical paths and add retry logic for serialization failures.
+
+## Resources
+
+- PostgreSQL monitoring views: https://www.postgresql.org/docs/current/monitoring-stats.html
+- MySQL performance schema: https://dev.mysql.com/doc/refman/8.0/en/performance-schema.html
+- MongoDB currentOp: https://www.mongodb.com/docs/manual/reference/method/db.currentOp/
+- pg_stat_statements extension: https://www.postgresql.org/docs/current/pgstatstatements.html
+- Lock monitoring best practices: https://wiki.postgresql.org/wiki/Lock_Monitoring

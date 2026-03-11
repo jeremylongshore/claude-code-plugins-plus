@@ -16,52 +16,60 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Audit session management implementations in web applications to identify vulnerabilities including session fixation (CWE-384), insufficient session expiration (CWE-613), and cleartext transmission of session tokens (CWE-319). Analyze session ID generation entropy, cookie security attributes, session lifecycle handling, and storage backend security across common frameworks (Express, Django, Spring, Rails, ASP.NET).
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Source code accessible in {baseDir}/
-- Session management code locations known (auth modules, middleware)
-- Framework information (Express, Django, Spring, etc.)
-- Configuration files for session settings
-- Write permissions for security report in {baseDir}/security-reports/
+- Application source code accessible in `{baseDir}/`
+- Session management code locations identified (auth modules, middleware, session stores)
+- Framework and language identified (Express.js, Django, Spring Boot, Rails, ASP.NET, etc.)
+- Session configuration files available (`session.config.*`, `settings.py`, `application.yml`)
+- Write permissions for reports in `{baseDir}/security-reports/`
 
 ## Instructions
 
-1. Review session creation, storage, and transport security controls.
-2. Validate cookie flags, rotation, expiration, and invalidation behavior.
-3. Identify common attack paths (fixation, CSRF, replay) and mitigations.
-4. Provide prioritized fixes with configuration/code examples.
+1. Locate session management code by searching for patterns: `**/auth/**`, `**/session/**`, `**/middleware/**`, and framework-specific files (`settings.py`, `application.yml`, `web.config`).
+2. **Analyze session ID generation**: verify use of a cryptographically secure random generator with at least 128 bits of entropy. Flag predictable patterns such as `Date.now()`, `Math.random()`, sequential IDs, or timestamp-based tokens (CWE-330).
+3. **Check session fixation protections**: confirm the session ID is regenerated after authentication (`req.session.regenerate()` in Express, `request.session.cycle_key()` in Django). Flag any login handler that sets `authenticated = true` without regenerating the session ID.
+4. **Validate cookie security attributes**: verify `HttpOnly` (prevents XSS-based token theft), `Secure` (HTTPS-only transmission), `SameSite=Lax|Strict` (CSRF mitigation), and `__Host-`/`__Secure-` prefix usage. Flag any missing attribute.
+5. **Review session expiration**: check idle timeout (recommend 15-30 min for sensitive apps), absolute timeout (recommend 4-8 hours), and sliding window configuration. Flag sessions without any expiration.
+6. **Audit session invalidation**: verify logout handlers destroy server-side session state and clear client cookies. Confirm password reset and privilege escalation flows invalidate existing sessions.
+7. **Inspect session storage**: flag in-memory stores in production (no persistence across restarts), unencrypted session data at rest, and missing integrity checks on session payloads (e.g., unsigned JWT session tokens).
+8. **Identify attack vectors**: assess exposure to session fixation, CSRF via session riding, replay attacks from stolen tokens, and session prediction from weak ID generation.
+9. Produce the session security report at `{baseDir}/security-reports/session-security-YYYYMMDD.md` with per-finding severity, CWE mapping, vulnerable code snippet, and remediated code example.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the detailed implementation guide. See `{baseDir}/references/critical-findings.md` for example vulnerability patterns with before/after code.
 
 ## Output
 
-The skill produces:
-
-**Primary Output**: Session security report saved to {baseDir}/security-reports/session-security-YYYYMMDD.md
-
-**Report Structure**:
-```
-# Session Security Analysis Report
-Analysis Date: 2024-01-15
-Application: Web Portal
-Framework: Express.js
+- **Session Security Report**: `{baseDir}/security-reports/session-security-YYYYMMDD.md` with findings by severity
+- **Cookie Attribute Matrix**: per-cookie compliance table (HttpOnly, Secure, SameSite, prefix)
+- **Vulnerable Code Listings**: each finding with file path, line number, vulnerable snippet, and fix
+- **Framework-Specific Remediation**: configuration changes tailored to the detected framework
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| No session handling code found in `{baseDir}/` | Unusual file structure or framework | Search for framework-specific patterns; request explicit file paths |
+| Unknown session framework | Custom or uncommon session library | Apply fundamental session security principles; note limited framework-specific guidance |
+| Cannot analyze minified/compiled code | Production bundles instead of source | Request unminified source code; document limitation |
+| Non-standard session implementation | Custom session management bypassing framework | Apply extra scrutiny; custom implementations are higher risk (CWE-384, CWE-613) |
+| Session config in environment variables, not code | Externalized configuration | Request `.env.example` or deployment config documentation |
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+- "Audit session cookie flags and rotation logic for fixation and CSRF risks in the Express.js application."
+- "Review logout and password reset flows to confirm sessions are invalidated correctly and old tokens cannot be replayed."
+- "Check session ID generation entropy and storage backend security for the Django application."
 
 ## Resources
 
-- Session Management Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
-- OWASP Top 10 - Broken Authentication: https://owasp.org/www-project-top-ten/
-- NIST 800-63B Authentication: https://pages.nist.gov/800-63-3/sp800-63b.html
-- PCI-DSS Session Requirements: https://www.pcisecuritystandards.org/
-- Express.js Session Security: https://expressjs.com/en/advanced/best-practice-security.html
+- OWASP Session Management Cheat Sheet: https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html
+- CWE-384 Session Fixation: https://cwe.mitre.org/data/definitions/384.html
+- CWE-613 Insufficient Session Expiration: https://cwe.mitre.org/data/definitions/613.html
+- CWE-319 Cleartext Transmission: https://cwe.mitre.org/data/definitions/319.html
+- NIST 800-63B Digital Authentication: https://pages.nist.gov/800-63-3/sp800-63b.html
+- `{baseDir}/references/critical-findings.md` -- example vulnerability patterns
+- `{baseDir}/references/errors.md` -- full error handling reference
+- https://intentsolutions.io

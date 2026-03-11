@@ -5,126 +5,67 @@ description: |
   This skill provides deployment automation and pipeline orchestration with comprehensive guidance and automation.
   Trigger with phrases like "deploy application", "create pipeline",
   or "automate deployment".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Ci Cd Pipeline Builder
 
-This skill provides automated assistance for ci cd pipeline builder tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/ci-cd-pipeline-builder/`
-
-**Documentation and Guides**: `{baseDir}/docs/ci-cd-pipeline-builder/`
-
-**Example Scripts and Code**: `{baseDir}/examples/ci-cd-pipeline-builder/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/ci-cd-pipeline-builder-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/ci-cd-pipeline-builder-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/ci-cd-pipeline-builder-dashboard.json`
+# Building CI/CD Pipelines
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Generate CI/CD pipeline configurations for GitHub Actions, GitLab CI, Jenkins, CircleCI, and Azure DevOps. Produce multi-stage workflows covering linting, testing, building container images, security scanning, and deploying to staging/production with proper gating and rollback mechanisms.
+
+## Prerequisites
+
+- Git repository hosted on a supported platform (GitHub, GitLab, Bitbucket, Azure DevOps)
+- Container runtime (Docker) if building images
+- Target deployment environment credentials configured as pipeline secrets
+- Test suite that can run headlessly (`npm test`, `pytest`, `go test`, etc.)
+- Understanding of branching strategy (trunk-based, GitFlow, or environment branches)
+
+## Instructions
+
+1. Scan the project for existing CI/CD configuration files (`.github/workflows/`, `.gitlab-ci.yml`, `Jenkinsfile`, `.circleci/config.yml`)
+2. Identify the application stack: language, framework, test runner, package manager, and deployment target
+3. Define pipeline stages: `lint` -> `test` -> `build` -> `security-scan` -> `deploy-staging` -> `integration-test` -> `deploy-production`
+4. Generate the pipeline configuration file with appropriate triggers (push to main, PR events, tags)
+5. Add caching for dependencies (`node_modules`, `.pip-cache`, Go modules) to reduce build times
+6. Configure matrix builds for multiple language versions or OS targets where appropriate
+7. Add secret references for deployment credentials, container registry tokens, and API keys (never hardcode)
+8. Implement deployment gates: manual approval for production, automated rollback on health check failure
+9. Add status badges and notifications (Slack, email) for build results
+10. Validate the pipeline syntax using platform-specific tools (`actionlint`, `gitlab-ci-lint`)
+
+## Output
+
+- Pipeline configuration files (`.github/workflows/*.yml`, `.gitlab-ci.yml`, `Jenkinsfile`)
+- Dockerfile for container builds (multi-stage, minimal base image)
+- Deployment scripts or Kubernetes manifests referenced by the pipeline
+- Environment-specific variable files for staging vs. production
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Pipeline triggered but no jobs run` | Trigger conditions (paths, branches) do not match | Review `on:` / `only:` / `rules:` filters and verify branch names |
+| `Docker build failed: layer cache miss` | Cache key changed or cache storage expired | Use content-based cache keys (`hashFiles('**/package-lock.json')`) and verify cache backend |
+| `Secret not found` | Secret name mismatch or not set in pipeline settings | Check secret names match exactly (case-sensitive) in repository/project settings |
+| `Deploy failed: unauthorized` | Expired or incorrect deployment credentials | Rotate credentials, update pipeline secrets, and verify IAM role/service account permissions |
+| `Tests pass locally but fail in CI` | Environment differences (OS, node version, timezone) | Pin runtime versions in pipeline config; use `matrix` to test across environments |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create a GitHub Actions workflow for a Node.js app: lint with ESLint, test with Jest, build Docker image, push to ECR, deploy to EKS staging on PR merge."
+- "Generate a GitLab CI pipeline with parallel test jobs, SAST scanning, and manual production deployment gate."
+- "Build a Jenkins pipeline that runs Python tests in a Docker agent, publishes coverage to SonarQube, and deploys via Terraform."
+
+## Resources
+
+- GitHub Actions: https://docs.github.com/en/actions
+- GitLab CI/CD: https://docs.gitlab.com/ee/ci/
+- Jenkins Pipeline: https://www.jenkins.io/doc/book/pipeline/
+- CI/CD best practices: https://martinfowler.com/articles/continuousIntegration.html

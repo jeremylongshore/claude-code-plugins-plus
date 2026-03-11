@@ -7,93 +7,81 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-# Cors Policy Validator
 
-This skill provides automated assistance for cors policy validator tasks.
+# Validating CORS Policies
 
 ## Overview
 
-This skill empowers Claude to assess the security and correctness of CORS policies. By leveraging the cors-policy-validator plugin, it identifies misconfigurations and potential vulnerabilities in CORS settings, helping developers build more secure web applications.
-
-## How It Works
-
-1. **Analyze CORS Configuration**: The skill receives the CORS configuration details, such as headers or policy files.
-2. **Validate Policy**: It utilizes the cors-policy-validator plugin to analyze the provided configuration against established security best practices.
-3. **Report Findings**: The skill presents a detailed report outlining any identified vulnerabilities or misconfigurations in the CORS policy.
-
-## When to Use This Skill
-
-This skill activates when you need to:
-- Validate a CORS policy for a web application.
-- Check the CORS configuration of an API endpoint.
-- Identify potential security vulnerabilities in existing CORS implementations.
-
-## Examples
-
-### Example 1: Validating a CORS Policy File
-
-User request: "Validate the CORS policy in `cors_policy.json`"
-
-The skill will:
-1. Read the `cors_policy.json` file.
-2. Use the cors-policy-validator plugin to analyze the CORS configuration.
-3. Output a report detailing any identified vulnerabilities or misconfigurations.
-
-### Example 2: Checking CORS Headers for an API Endpoint
-
-User request: "Check CORS headers for the API endpoint at `https://example.com/api`"
-
-The skill will:
-1. Fetch the CORS headers from the specified API endpoint.
-2. Use the cors-policy-validator plugin to analyze the headers.
-3. Output a report summarizing the CORS configuration and any potential issues.
-
-## Best Practices
-
-- **Configuration Source**: Always specify the source of the CORS configuration (e.g., file path, URL) for accurate validation.
-- **Regular Validation**: Regularly validate CORS policies, especially after making changes to the application or API.
-- **Heuristic Analysis**: Consider supplementing validation with manual review and heuristic analysis to catch subtle vulnerabilities.
-
-## Integration
-
-This skill can be integrated with other security-related plugins to provide a more comprehensive security assessment. For example, it can be used in conjunction with vulnerability scanning tools to identify potential cross-site scripting (XSS) vulnerabilities related to CORS misconfigurations.
+Validate Cross-Origin Resource Sharing configurations in web applications and
+APIs for security misconfigurations that enable unauthorized cross-origin access.
+This skill analyzes CORS headers, middleware configurations, and server response
+behavior to detect wildcard origins, reflected origins, credential leakage, and
+overly permissive header/method exposure.
 
 ## Prerequisites
 
-- Access to codebase and configuration files in {baseDir}/
-- Security scanning tools installed as needed
-- Understanding of security standards and best practices
-- Permissions for security analysis operations
+- Access to the target codebase and configuration files in `{baseDir}/`
+- For live endpoint testing: WebFetch tool available and target URLs accessible
+- Familiarity with the web framework in use (Express, Django, Flask, Spring, ASP.NET, etc.)
+- Reference: `{baseDir}/references/README.md` for CORS specification details, common vulnerability patterns, and example policies
 
 ## Instructions
 
-1. Identify security scan scope and targets
-2. Configure scanning parameters and thresholds
-3. Execute security analysis systematically
-4. Analyze findings for vulnerabilities and compliance gaps
-5. Prioritize issues by severity and impact
-6. Generate detailed security report with remediation steps
+1. Locate all CORS configuration points by scanning for `Access-Control-Allow-Origin`, `cors()` middleware, `@CrossOrigin` annotations, CORS policy builders, and server config directives (nginx `add_header`, Apache `Header set`) using Grep.
+2. Check for wildcard origin (`Access-Control-Allow-Origin: *`) -- flag as severity high when combined with `Access-Control-Allow-Credentials: true`, which browsers reject but indicates a misunderstanding of the security model.
+3. Detect origin reflection patterns where the server echoes back the `Origin` request header without validation -- search for code that reads the `Origin` header and sets it directly in the response. Flag as CWE-942 (Permissive Cross-domain Policy), severity critical.
+4. Validate the origin allowlist: check that allowed origins use exact string matching rather than substring or regex patterns vulnerable to bypass (e.g., `example.com.evil.com` matching a check for `example.com`).
+5. Assess `Access-Control-Allow-Methods` -- flag if dangerous methods (`PUT`, `DELETE`, `PATCH`) are exposed without necessity. Verify that preflight (`OPTIONS`) responses include appropriate method restrictions.
+6. Evaluate `Access-Control-Allow-Headers` -- flag wildcard header allowance or exposure of sensitive headers like `Authorization`, `Cookie`, or custom auth headers to broader origins than necessary.
+7. Check `Access-Control-Expose-Headers` for leakage of internal headers (e.g., `X-Request-Id`, `X-Internal-Trace`) to cross-origin consumers.
+8. Verify `Access-Control-Max-Age` is set to a reasonable value (600-86400 seconds) to balance security with performance -- missing or excessively long max-age values deserve a low-severity note.
+9. For live endpoints, issue preflight requests via WebFetch with various `Origin` values (legitimate, malicious, null) and analyze the response headers to confirm server behavior matches the codebase configuration.
+10. Compile findings with severity ratings, map to OWASP Testing Guide OTG-CLIENT-007, and provide remediation with correct CORS middleware configuration examples.
 
 ## Output
 
-- Security scan results with vulnerability details
-- Compliance status reports by standard
-- Prioritized list of security issues by severity
-- Remediation recommendations with code examples
-- Executive summary for stakeholders
+- **CORS configuration inventory**: Table of all CORS-enabled endpoints, their allowed origins, methods, headers, and credentials settings
+- **Findings report**: Each finding includes severity, affected endpoint/file, CWE reference (CWE-942, CWE-346), observed behavior, and remediation code
+- **Preflight test results**: For live endpoints, a table of Origin values tested and the corresponding server responses
+- **Remediation examples**: Framework-specific CORS configuration snippets (Express `cors()`, Django `django-cors-headers`, Spring `@CrossOrigin`, nginx headers)
 
 ## Error Handling
 
-If security scanning fails:
-- Verify tool installation and configuration
-- Check file and directory permissions
-- Validate scan target paths
-- Review tool-specific error messages
-- Ensure network access for dependency checks
+| Error | Cause | Solution |
+|-------|-------|----------|
+| No CORS configuration found | CORS handled at infrastructure layer (CDN, API gateway) | Check CDN/gateway configs (Cloudflare, AWS API Gateway, nginx) for CORS header injection |
+| WebFetch blocked or timed out | Target endpoint unreachable or rate-limited | Verify URL accessibility; fall back to static codebase analysis of CORS middleware configuration |
+| Inconsistent CORS behavior across endpoints | Multiple CORS configurations at different layers | Map each layer (application, reverse proxy, CDN) and document the effective policy per endpoint |
+| Origin reflection false positive | Dynamic origin validation with a secure allowlist | Verify the allowlist logic uses exact matching; mark as informational if the implementation is secure |
+| Preflight not triggering | Request classified as "simple request" by the browser | Note that simple GET/POST requests bypass preflight; test with custom headers to force preflight |
+
+## Examples
+
+### Express.js CORS Middleware Audit
+
+Scan `{baseDir}/src/app.js` and `{baseDir}/src/middleware/` for `cors()`
+configuration. Flag `origin: true` (reflects any origin) as CWE-942, severity
+critical. Recommend replacing with an explicit allowlist:
+`origin: ['https://app.example.com', 'https://admin.example.com']`.
+
+### Nginx CORS Header Review
+
+Grep `{baseDir}/nginx/` for `add_header Access-Control-Allow-Origin`. Flag any
+`$http_origin` variable usage that reflects the origin without validation. Verify
+that `Access-Control-Allow-Credentials` is only set for origins in the allowlist
+using an `if` block or `map` directive.
+
+### API Gateway CORS Configuration
+
+Review `{baseDir}/infra/api-gateway.yaml` or equivalent IaC definitions for
+CORS settings. Flag wildcard `*` in allowed origins when credentials are enabled.
+Verify that `Access-Control-Allow-Methods` is scoped to only the HTTP methods
+each endpoint actually supports.
 
 ## Resources
 
-- Security standard documentation (OWASP, CWE, CVE)
-- Compliance framework guidelines (GDPR, HIPAA, PCI-DSS)
-- Security scanning tool documentation
-- Vulnerability remediation best practices
+- [MDN: Cross-Origin Resource Sharing](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
+- [OWASP Testing for CORS (OTG-CLIENT-007)](https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/11-Client-side_Testing/07-Testing_Cross_Origin_Resource_Sharing)
+- [CWE-942: Permissive Cross-domain Policy](https://cwe.mitre.org/data/definitions/942.html)
+- [CWE-346: Origin Validation Error](https://cwe.mitre.org/data/definitions/346.html)
+- [Fetch Standard: CORS Protocol](https://fetch.spec.whatwg.org/#http-cors-protocol)

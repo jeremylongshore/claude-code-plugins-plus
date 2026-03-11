@@ -8,111 +8,63 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Helm Chart Generator
 
-This skill provides automated assistance for helm chart generator tasks.
+# Generating Helm Charts
+
+## Overview
+
+Generate production-ready Helm 3 charts for Kubernetes applications with Chart.yaml, values.yaml, Go templates, and helper functions. Support multi-environment deployments with values overrides, dependency management, security contexts, health probes, and resource limits following Helm best practices.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Helm 3+ is installed on the system
-- Kubernetes cluster access is configured
-- Application container images are available
-- Understanding of application resource requirements
-- Chart repository access (if publishing)
+- Helm 3.x installed (`helm version`)
+- `kubectl` configured with cluster access for testing chart installation
+- Container images available in a registry accessible from the cluster
+- Understanding of application resource requirements (CPU, memory, ports, volumes)
+- Chart repository access if publishing (ChartMuseum, OCI registry, or GitHub Pages)
 
 ## Instructions
 
-1. **Gather Requirements**: Identify application type, dependencies, configuration needs
-2. **Create Chart Structure**: Generate Chart.yaml with metadata and version info
-3. **Define Values**: Create values.yaml with configurable parameters and defaults
-4. **Build Templates**: Generate deployment, service, ingress, and configmap templates
-5. **Add Helpers**: Create _helpers.tpl for reusable template functions
-6. **Configure Resources**: Set resource limits, security contexts, and health checks
-7. **Test Chart**: Validate with `helm lint` and `helm template` commands
-8. **Document Usage**: Add README with installation instructions and configuration options
+1. Analyze the application: identify container images, ports, environment variables, volumes, and dependencies
+2. Scaffold the chart structure: `Chart.yaml`, `values.yaml`, `templates/`, `charts/`, `.helmignore`
+3. Create `Chart.yaml` with `apiVersion: v2`, name, version, appVersion, and dependency declarations
+4. Define `values.yaml` with sensible production defaults: replica count, image config, resource limits, ingress settings
+5. Build templates using Go template syntax with proper `.Values` references and `_helpers.tpl` for reusable named templates
+6. Add health checks: `livenessProbe` and `readinessProbe` in the deployment template with configurable paths and thresholds
+7. Configure security context: `runAsNonRoot: true`, `readOnlyRootFilesystem: true`, and drop all capabilities
+8. Create environment-specific values files: `values-dev.yaml`, `values-staging.yaml`, `values-prod.yaml`
+9. Add `NOTES.txt` with post-install instructions showing how to access the application
+10. Validate with `helm lint .` and test rendering with `helm template . --values values-prod.yaml`
 
 ## Output
 
-Generates complete Helm chart structure:
-
-```
-{baseDir}/helm-charts/app-name/
-├── Chart.yaml          # Chart metadata
-├── values.yaml         # Default configuration
-├── templates/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   ├── ingress.yaml
-│   ├── configmap.yaml
-│   ├── _helpers.tpl    # Template helpers
-│   └── NOTES.txt       # Post-install notes
-├── charts/             # Dependencies
-└── README.md
-```
-
-**Example Chart.yaml:**
-```yaml
-apiVersion: v2
-name: my-app
-description: Production-ready application chart
-type: application
-version: 1.0.0
-appVersion: "1.0.0"
-```
-
-**Example values.yaml:**
-```yaml
-replicaCount: 3
-image:
-  repository: registry/app
-  tag: "1.0.0"
-  pullPolicy: IfNotPresent
-resources:
-  limits:
-    cpu: 500m
-    memory: 512Mi
-  requests:
-    cpu: 250m
-    memory: 256Mi
-```
+- Complete Helm chart directory structure
+- `Chart.yaml` with metadata and dependencies
+- `values.yaml` with documented, configurable defaults
+- Template files: `deployment.yaml`, `service.yaml`, `ingress.yaml`, `configmap.yaml`, `serviceaccount.yaml`, `hpa.yaml`
+- `_helpers.tpl` with name, label, and selector helper templates
+- `NOTES.txt` with post-install access instructions
+- Environment-specific values override files
 
 ## Error Handling
 
-Common issues and solutions:
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Chart.yaml: version is required` | Missing or malformed `version` field | Add a valid SemVer version string to Chart.yaml |
+| `parse error in template` | Go template syntax error (missing `end`, wrong function) | Run `helm template .` to pinpoint the error; check bracket matching and function names |
+| `dependency not found` | Chart dependency not downloaded | Run `helm dependency update` to fetch dependencies into `charts/` |
+| `release failed: timed out waiting for condition` | Pods not reaching ready state during install | Check pod logs; verify image exists, resource limits are sufficient, and probes are correct |
+| `values override not applied` | Wrong values file path or key mismatch | Verify `--values` file path and that keys match the structure in `values.yaml` exactly |
 
-**Chart Validation Errors**
-- Error: "Chart.yaml: version is required"
-- Solution: Ensure Chart.yaml contains valid apiVersion, name, and version fields
+## Examples
 
-**Template Rendering Failures**
-- Error: "parse error in deployment.yaml"
-- Solution: Validate template syntax with `helm template` and check Go template formatting
-
-**Missing Dependencies**
-- Error: "dependency not found"
-- Solution: Run `helm dependency update` in chart directory
-
-**Values Override Issues**
-- Error: "failed to render values"
-- Solution: Check values.yaml syntax and ensure proper YAML indentation
-
-**Installation Failures**
-- Error: "release failed: timed out waiting for condition"
-- Solution: Increase timeout or check pod logs for application startup issues
+- "Generate a Helm chart for a Node.js API with 3 replicas, an Nginx ingress, PostgreSQL subchart dependency, and environment-specific values for dev and prod."
+- "Create a Helm chart for a stateful application with PersistentVolumeClaim, headless service, and configurable storage class."
+- "Package an existing set of Kubernetes manifests into a Helm chart with parameterized image tag, replica count, and resource limits."
 
 ## Resources
 
 - Helm documentation: https://helm.sh/docs/
-- Chart best practices guide: https://helm.sh/docs/chart_best_practices/
-- Template function reference: https://helm.sh/docs/chart_template_guide/
-- Example charts repository: https://github.com/helm/charts
-- Chart testing guide in {baseDir}/docs/helm-testing.md
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
+- Chart best practices: https://helm.sh/docs/chart_best_practices/
+- Template function reference: https://helm.sh/docs/chart_template_guide/function_list/
+- Artifact Hub (chart discovery): https://artifacthub.io/

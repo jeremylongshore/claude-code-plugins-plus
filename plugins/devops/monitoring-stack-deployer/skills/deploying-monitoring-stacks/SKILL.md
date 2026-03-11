@@ -8,128 +8,62 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Monitoring Stack Deployer
 
-This skill provides automated assistance for monitoring stack deployer tasks.
+# Deploying Monitoring Stacks
 
 ## Overview
 
-Deploys monitoring stacks (Prometheus/Grafana/Datadog) including collectors, scraping config, dashboards, and alerting rules for production systems.
+Deploy production monitoring stacks (Prometheus + Grafana, Datadog, or Victoria Metrics) with metric collection, custom dashboards, and alerting rules. Configure exporters, scrape targets, recording rules, and notification channels for comprehensive infrastructure and application observability.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Target infrastructure is identified (Kubernetes, Docker, bare metal)
-- Metric endpoints are accessible from monitoring platform
-- Storage backend is configured for time-series data
-- Alert notification channels are defined (email, Slack, PagerDuty)
-- Resource requirements are calculated based on scale
+- Target infrastructure identified: Kubernetes cluster, Docker hosts, or bare-metal servers
+- Metric endpoints accessible from the monitoring platform (application `/metrics`, node exporters)
+- Storage backend capacity planned for time-series data (Prometheus TSDB, Thanos, or Cortex for long-term)
+- Alert notification channels defined: Slack webhook, PagerDuty integration key, or email SMTP
+- Helm 3+ for Kubernetes deployments using kube-prometheus-stack or similar charts
 
 ## Instructions
 
-1. **Select Platform**: Choose Prometheus/Grafana, Datadog, or hybrid approach
-2. **Deploy Collectors**: Install exporters and agents on monitored systems
-3. **Configure Scraping**: Define metric collection endpoints and intervals
-4. **Set Up Storage**: Configure retention policies and data compaction
-5. **Create Dashboards**: Build visualization panels for key metrics
-6. **Define Alerts**: Create alerting rules with appropriate thresholds
-7. **Test Monitoring**: Verify metrics flow and alert triggering
+1. Select the monitoring platform: Prometheus + Grafana for open-source self-hosted, Datadog for managed SaaS, Victoria Metrics for high-cardinality workloads
+2. Deploy the monitoring stack: `helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack` or Docker Compose for non-Kubernetes
+3. Install exporters on monitored systems: node-exporter for host metrics, kube-state-metrics for Kubernetes object states, application-specific exporters
+4. Configure scrape targets in `prometheus.yml`: define job names, scrape intervals, and relabeling rules for service discovery
+5. Create recording rules for frequently queried aggregations to reduce dashboard query load
+6. Define alerting rules with meaningful thresholds: high CPU (>80% for 5m), high memory (>90%), error rate (>1%), latency P99 (>500ms)
+7. Configure Alertmanager with routing, grouping, and notification channels (Slack, PagerDuty, email)
+8. Build Grafana dashboards: RED metrics (Rate, Errors, Duration) for services, USE metrics (Utilization, Saturation, Errors) for resources
+9. Set up data retention: configure TSDB retention period (15-30 days local), set up Thanos/Cortex for long-term storage if needed
+10. Test the full pipeline: trigger a test alert and verify notification delivery
 
 ## Output
 
-**Prometheus + Grafana (Kubernetes):**
-```yaml
-# {baseDir}/monitoring/prometheus.yaml
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: prometheus-config
-data:
-  prometheus.yml: |
-    global:
-      scrape_interval: 15s
-      evaluation_interval: 15s
-    scrape_configs:
-      - job_name: 'kubernetes-pods'
-        kubernetes_sd_configs:
-          - role: pod
-        relabel_configs:
-          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
-            action: keep
-            regex: true
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: prometheus
-spec:
-  replicas: 1
-  template:
-    spec:
-      containers:
-      - name: prometheus
-        image: prom/prometheus:latest
-        args:
-          - '--config.file=/etc/prometheus/prometheus.yml'
-          - '--storage.tsdb.retention.time=30d'
-        ports:
-        - containerPort: 9090
-```
-
-**Grafana Dashboard Configuration:**
-```json
-{
-  "dashboard": {
-    "title": "Application Metrics",
-    "panels": [
-      {
-        "title": "CPU Usage",
-        "type": "graph",
-        "targets": [
-          {
-            "expr": "rate(container_cpu_usage_seconds_total[5m])"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
+- Helm values file or Docker Compose for the monitoring stack
+- Prometheus configuration with scrape targets, recording rules, and alerting rules
+- Alertmanager configuration with routing tree and notification receivers
+- Grafana dashboard JSON files for infrastructure and application metrics
+- Exporter deployment manifests (node-exporter DaemonSet, application ServiceMonitor)
 
 ## Error Handling
 
-**Metrics Not Appearing**
-- Error: "No data points"
-- Solution: Verify scrape targets are accessible and returning metrics
-
-**High Cardinality**
-- Error: "Too many time series"
-- Solution: Reduce label combinations or increase Prometheus resources
-
-**Alert Not Firing**
-- Error: "Alert condition met but no notification"
-- Solution: Check Alertmanager configuration and notification channels
-
-**Dashboard Load Failure**
-- Error: "Failed to load dashboard"
-- Solution: Verify Grafana datasource configuration and permissions
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `No data points in dashboard` | Scrape target not reachable or metric name wrong | Check `Targets` page in Prometheus UI; verify service discovery and metric name |
+| `Too many time series (high cardinality)` | Labels with unbounded values (user IDs, request IDs) | Remove high-cardinality labels with `metric_relabel_configs`; use recording rules for aggregation |
+| `Alert condition met but no notification` | Alertmanager routing or receiver misconfigured | Verify Alertmanager config with `amtool check-config`; test receiver with `amtool silence` |
+| `Prometheus OOMKilled` | Insufficient memory for series count | Increase memory limits; reduce scrape targets or retention; add WAL compression |
+| `Grafana datasource connection failed` | Wrong Prometheus URL or network policy blocking access | Verify datasource URL in Grafana; check Kubernetes service name and port; review network policies |
 
 ## Examples
 
-- "Deploy Prometheus + Grafana on Kubernetes and add alerts for high error rate and latency."
-- "Install Datadog agents across hosts and configure a dashboard for CPU/memory saturation."
+- "Deploy kube-prometheus-stack on Kubernetes with alerts for node CPU > 80%, pod restart count > 5, and API error rate > 1%, sending to Slack."
+- "Set up Prometheus + Grafana on Docker Compose for monitoring 10 application servers with node-exporter and custom application metrics."
+- "Create Grafana dashboards for the four golden signals (latency, traffic, errors, saturation) for a microservices application."
 
 ## Resources
 
 - Prometheus documentation: https://prometheus.io/docs/
-- Grafana documentation: https://grafana.com/docs/
-- Example dashboards in {baseDir}/monitoring-examples/
+- Grafana documentation: https://grafana.com/docs/grafana/latest/
+- kube-prometheus-stack: https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+- Alerting best practices: https://prometheus.io/docs/practices/alerting/
+- Datadog documentation: https://docs.datadoghq.com/

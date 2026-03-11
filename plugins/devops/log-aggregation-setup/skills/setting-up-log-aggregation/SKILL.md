@@ -8,127 +8,61 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Log Aggregation Setup
 
-This skill provides automated assistance for log aggregation setup tasks.
+# Setting Up Log Aggregation
 
 ## Overview
 
-Sets up centralized log aggregation (ELK/Loki/Splunk) including ingestion pipelines, parsing, retention policies, dashboards, and security controls.
+Deploy centralized log aggregation platforms (ELK Stack, Grafana Loki, Splunk) with ingestion pipelines, structured parsing, retention policies, visualization dashboards, and alerting. Configure log shippers (Filebeat, Promtail, Fluentd) to collect from applications, containers, and system logs with proper security and scalability.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Target infrastructure is identified (Kubernetes, Docker, VMs)
-- Storage requirements are calculated based on log volume
-- Network connectivity between log sources and aggregation platform
-- Authentication mechanism is defined (LDAP, OAuth, basic auth)
-- Resource allocation planned (CPU, memory, disk)
+- Target infrastructure identified: Kubernetes, Docker Compose, or VMs
+- Storage requirements calculated: estimate daily log volume and multiply by retention period
+- Network connectivity between log sources and aggregation platform (typically ports 9200, 3100, 8088)
+- Authentication mechanism defined (LDAP, OAuth, API tokens, or basic auth)
+- Resource allocation planned: Elasticsearch needs significant heap memory (minimum 4GB per node)
 
 ## Instructions
 
-1. **Select Platform**: Choose ELK, Loki, Grafana Loki, or Splunk
-2. **Configure Ingestion**: Set up log shippers (Filebeat, Promtail, Fluentd)
-3. **Define Storage**: Configure retention policies and index lifecycle
-4. **Set Up Processing**: Create parsing rules and field extractions
-5. **Deploy Visualization**: Configure Kibana/Grafana dashboards
-6. **Implement Security**: Enable authentication, encryption, and RBAC
-7. **Test Pipeline**: Verify logs flow from sources to visualization
+1. Select the log aggregation platform: ELK for full-text search and complex queries, Loki for lightweight Kubernetes-native logging, Splunk for enterprise with advanced analytics
+2. Deploy the storage backend: Elasticsearch cluster, Loki with object storage (S3/GCS), or Splunk indexers
+3. Configure log shippers on sources: Filebeat for ELK, Promtail for Loki, Fluentd/Fluent Bit for multi-destination
+4. Define parsing rules: Logstash grok patterns for unstructured logs, JSON parsing for structured logs, multiline handling for stack traces
+5. Set retention policies: Index Lifecycle Management (ILM) for Elasticsearch, chunk retention for Loki, index rotation for Splunk
+6. Deploy visualization: Kibana dashboards for ELK, Grafana dashboards for Loki, Splunk Search for Splunk
+7. Configure alerting: define log-based alerts for error spikes, application exceptions, and security events
+8. Implement RBAC: restrict dashboard access and log visibility by team and environment
+9. Test the full pipeline: generate test logs, verify ingestion, confirm parsing, and validate dashboard display
 
 ## Output
 
-**ELK Stack (Docker Compose):**
-```yaml
-# {baseDir}/elk/docker-compose.yml
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
-version: '3.8'
-services:
-  elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=true
-    volumes:
-      - es-data:/usr/share/elasticsearch/data
-    ports:
-      - "9200:9200"
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:8.11.0
-    volumes:
-      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf
-    depends_on:
-      - elasticsearch
-
-  kibana:
-    image: docker.elastic.co/kibana/kibana:8.11.0
-    ports:
-      - "5601:5601"
-    depends_on:
-      - elasticsearch
-```
-
-**Loki Configuration:**
-```yaml
-# {baseDir}/loki/loki-config.yaml
-auth_enabled: false
-
-server:
-  http_listen_port: 3100
-
-ingester:
-  lifecycler:
-    ring:
-      kvstore:
-        store: inmemory
-      replication_factor: 1
-  chunk_idle_period: 5m
-  chunk_retain_period: 30s
-
-schema_config:
-  configs:
-    - from: 2024-01-01
-      store: boltdb-shipper
-      object_store: filesystem
-      schema: v11
-      index:
-        prefix: index_
-        period: 24h
-```
+- Docker Compose or Kubernetes manifests for the log aggregation stack
+- Log shipper configuration files (Filebeat YAML, Promtail config, Fluentd conf)
+- Parsing and field extraction rules (Logstash pipeline, grok patterns)
+- Retention policy configuration (ILM, lifecycle rules)
+- Dashboard JSON exports for Kibana or Grafana
+- Alert rule definitions for error rate monitoring
 
 ## Error Handling
 
-**Out of Memory**
-- Error: "Elasticsearch heap space exhausted"
-- Solution: Increase heap size in elasticsearch.yml or add more nodes
-
-**Connection Refused**
-- Error: "Cannot connect to Elasticsearch"
-- Solution: Verify network connectivity and firewall rules
-
-**Index Creation Failed**
-- Error: "Failed to create index"
-- Solution: Check disk space and index template configuration
-
-**Log Parsing Errors**
-- Error: "Failed to parse log line"
-- Solution: Review grok patterns or JSON parsing configuration
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Elasticsearch heap space exhausted` | JVM heap too small for index volume | Increase `ES_JAVA_OPTS` heap size (set to 50% of available RAM, max 32GB) or add nodes |
+| `Cannot connect to Elasticsearch` | Network issue or Elasticsearch not started | Verify Elasticsearch is running and healthy; check firewall rules and bind address |
+| `Failed to create index` | Disk space full or index template misconfigured | Check disk usage with `df -h`; review index template settings and shard allocation |
+| `Failed to parse log line` | Grok pattern mismatch or unexpected log format | Test grok patterns with Kibana Grok Debugger; add fallback pattern for unmatched lines |
+| `Promtail: too many open files` | System file descriptor limit too low for log tailing | Increase `ulimit -n` to 65536; reduce the number of watched paths |
 
 ## Examples
 
-- "Deploy Loki + Promtail on Kubernetes with 14-day retention and basic auth."
-- "Set up an ELK stack for app + nginx logs and create a dashboard for 5xx errors."
+- "Deploy an ELK stack on Docker Compose with Filebeat collecting Nginx and application logs, Logstash parsing with grok, and a Kibana dashboard for 5xx error monitoring."
+- "Set up Loki + Promtail on Kubernetes with 14-day retention, basic auth, and a Grafana dashboard showing logs per namespace."
+- "Configure Fluentd to ship logs from 20 application servers to both Elasticsearch (hot storage, 7 days) and S3 (cold storage, 1 year)."
 
 ## Resources
 
-- ELK Stack guide: https://www.elastic.co/guide/
-- Loki documentation: https://grafana.com/docs/loki/
-- Example configurations in {baseDir}/log-aggregation-examples/
+- Elastic Stack guide: https://www.elastic.co/guide/
+- Grafana Loki: https://grafana.com/docs/loki/latest/
+- Fluentd documentation: https://docs.fluentd.org/
+- Promtail configuration: https://grafana.com/docs/loki/latest/send-data/promtail/

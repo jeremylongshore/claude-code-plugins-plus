@@ -5,7 +5,7 @@ description: |
   This skill validates data types, ranges, formats, referential integrity, and business rules.
   Trigger with phrases like "validate database data", "implement data validation rules",
   "enforce data integrity constraints", or "validate data formats".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,115 +14,86 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Data Validation Engine
 
-This skill provides automated assistance for data validation engine tasks.
+## Overview
+
+Implement and enforce data integrity rules at the database level using CHECK constraints, triggers, foreign keys, and custom validation functions across PostgreSQL and MySQL. This skill audits existing data for constraint violations, generates validation rules from business requirements, creates migration scripts to apply constraints safely on tables with existing data, and produces data quality reports identifying orphaned records, format violations, and business rule breaches.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Database connection credentials are available
-- Appropriate database permissions for schema modifications
-- Backup of production databases before applying constraints
-- Understanding of existing data that may violate new constraints
-- Access to database documentation for column specifications
+- Database credentials with ALTER TABLE and CREATE FUNCTION permissions
+- `psql` or `mysql` CLI for executing validation queries
+- Current schema documentation or access to `information_schema` for column specifications
+- Business rules document describing valid data ranges, formats, and relationships
+- Backup of production data before applying new constraints (constraints may reject existing invalid data)
 
 ## Instructions
 
-### Step 1: Analyze Validation Requirements
-1. Review database schema and identify columns requiring validation
-2. Determine validation types needed (data type, range, format, referential)
-3. Document existing data patterns that may conflict with new rules
-4. Prioritize validation rules by business criticality
+1. Audit existing data quality by running validation queries before adding constraints. Check for NULL values in columns that should be required: `SELECT column_name, COUNT(*) FILTER (WHERE column_name IS NULL) AS null_count, COUNT(*) AS total FROM table_name GROUP BY column_name`.
 
-### Step 2: Define Validation Rules
-1. Create validation rule definitions for each column
-2. Specify data types, constraints, and acceptable ranges
-3. Define regular expressions for format validation
-4. Map foreign key relationships for referential integrity
-5. Document business rule logic for complex validations
+2. Detect orphaned records (broken referential integrity): `SELECT c.id FROM child_table c LEFT JOIN parent_table p ON c.parent_id = p.id WHERE p.id IS NULL`. Document all orphaned records for cleanup or archival before adding foreign key constraints.
 
-### Step 3: Implement Database Constraints
-1. Generate SQL constraints for data type validation
-2. Add CHECK constraints for range and format validation
-3. Create foreign key constraints for referential integrity
-4. Implement triggers for complex business rule validation
-5. Test constraints with valid and invalid sample data
+3. Validate data format compliance:
+   - Email format: `SELECT email FROM users WHERE email !~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$'`
+   - Phone format: `SELECT phone FROM contacts WHERE phone !~ '^\+?[1-9]\d{6,14}$'`
+   - URL format: `SELECT url FROM links WHERE url !~ '^https?://.+'`
+   - Date ranges: `SELECT * FROM events WHERE start_date > end_date`
 
-### Step 4: Validate Existing Data
-1. Query existing data to identify constraint violations
-2. Generate reports of data that would fail new constraints
-3. Create data cleanup scripts to fix violations
-4. Execute cleanup scripts in staging environment first
-5. Re-validate cleaned data before applying constraints
+4. Check numeric range violations: `SELECT * FROM products WHERE price < 0 OR price > 999999.99` and `SELECT * FROM users WHERE age < 0 OR age > 150`. Map each column to its valid range based on business rules.
 
-### Step 5: Apply Validation Rules
-1. Apply constraints to staging database first
-2. Monitor for any application errors or failures
-3. Validate that legitimate operations still function
-4. Apply constraints to production database during maintenance window
-5. Monitor database logs for constraint violation attempts
+5. Identify duplicate records that violate intended uniqueness: `SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1`. Determine which duplicate to keep (most recent, most complete) and plan deduplication.
+
+6. Generate CHECK constraints for validated rules:
+   - `ALTER TABLE products ADD CONSTRAINT chk_price_positive CHECK (price >= 0)`
+   - `ALTER TABLE users ADD CONSTRAINT chk_email_format CHECK (email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$')`
+   - `ALTER TABLE events ADD CONSTRAINT chk_date_order CHECK (start_date <= end_date)`
+   - `ALTER TABLE orders ADD CONSTRAINT chk_status_valid CHECK (status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled'))`
+
+7. Create foreign key constraints with appropriate cascade behavior:
+   - `ALTER TABLE orders ADD CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE RESTRICT`
+   - Use `ON DELETE CASCADE` for dependent data (order_items when order is deleted)
+   - Use `ON DELETE SET NULL` for optional relationships (assigned_to when user is deactivated)
+
+8. Implement complex business rule validation using database triggers when CHECK constraints are insufficient:
+   - Trigger that prevents order total from exceeding customer credit limit
+   - Trigger that enforces at least one admin user per organization
+   - Trigger that validates JSON schema for JSONB columns
+
+9. Apply constraints in a safe two-phase approach:
+   - Phase 1: Run validation queries to find all violations. Generate data cleanup scripts. Execute cleanup.
+   - Phase 2: Apply constraints with `NOT VALID` option (PostgreSQL): `ALTER TABLE users ADD CONSTRAINT chk_email CHECK (email ~ '...') NOT VALID` then `ALTER TABLE users VALIDATE CONSTRAINT chk_email` (validates existing data without blocking writes).
+
+10. Generate a data quality report summarizing: total records per table, violation counts by constraint type, cleanup actions taken, constraints applied, and remaining data quality issues requiring manual review.
 
 ## Output
 
-This skill produces:
-
-**Database Constraints**: SQL DDL statements with CHECK, FOREIGN KEY, and NOT NULL constraints
-
-**Validation Reports**: Analysis of existing data showing constraint violations with counts and examples
-
-**Data Cleanup Scripts**: SQL UPDATE/DELETE statements to fix existing data that violates new constraints
-
-**Test Results**: Documentation of constraint testing with valid/invalid data samples and outcomes
-
-**Implementation Log**: Timestamped record of constraint application with success/failure status
+- **Data quality audit report** with violation counts, examples, and severity ratings
+- **Data cleanup scripts** (SQL) to fix violations before constraint application
+- **Constraint DDL scripts** with CHECK, FOREIGN KEY, NOT NULL, and UNIQUE constraints
+- **Validation triggers** for complex business rules beyond simple constraints
+- **Ongoing validation queries** for periodic data quality monitoring
 
 ## Error Handling
 
-**Constraint Violation Errors**:
-- Review existing data that violates the constraint
-- Create data cleanup scripts to fix violations
-- Re-run constraint application after cleanup
-- Document exceptions that require manual review
-
-**Permission Errors**:
-- Verify database user has ALTER TABLE privileges
-- Request elevated permissions from database administrator
-- Use separate admin connection for schema changes
-- Document permission requirements for future deployments
-
-**Circular Dependency Errors**:
-- Map all foreign key relationships before implementation
-- Apply constraints in dependency order (referenced tables first)
-- Use ALTER TABLE ADD CONSTRAINT for deferred constraint creation
-- Consider disabling foreign key checks temporarily during bulk operations
-
-**Performance Degradation**:
-- Analyze constraint checking overhead with EXPLAIN ANALYZE
-- Add appropriate indexes to support constraint validation
-- Consider batch validation for large data updates
-- Monitor query performance after constraint implementation
-
-## Resources
-
-**Database-Specific Constraint Syntax**:
-- PostgreSQL: `{baseDir}/docs/postgresql-constraints.md`
-- MySQL: `{baseDir}/docs/mysql-constraints.md`
-- SQL Server: `{baseDir}/docs/sqlserver-constraints.md`
-
-**Validation Rule Templates**: `{baseDir}/templates/validation-rules/`
-- Email format validation
-- Phone number validation
-- Date range validation
-- Numeric range validation
-- Custom business rules
-
-**Testing Guidelines**: `{baseDir}/docs/validation-testing.md`
-**Constraint Performance Analysis**: `{baseDir}/docs/constraint-performance.md`
-**Data Cleanup Procedures**: `{baseDir}/docs/data-cleanup-procedures.md`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `check constraint violated by existing row` | Existing data fails the new constraint | Run the validation query first to find violations; clean up data; use `NOT VALID` option to add constraint without checking existing data, then validate separately |
+| `cannot add foreign key: referenced row not found` | Orphaned child records reference non-existent parent | Clean up orphaned records first with DELETE or UPDATE to valid parent; or insert missing parent records |
+| `column cannot be made NOT NULL: contains NULL values` | Existing rows have NULL in the target column | Backfill NULLs with `UPDATE table SET column = default_value WHERE column IS NULL` before adding NOT NULL |
+| Trigger function causes performance regression | Complex validation logic executes on every INSERT/UPDATE | Optimize trigger function; use WHEN clause to limit trigger firing; consider CHECK constraints instead of triggers for simple rules |
+| Circular foreign key prevents constraint creation | Tables reference each other, preventing creation order | Use `ALTER TABLE ADD CONSTRAINT` after both tables exist; or use `DEFERRABLE INITIALLY DEFERRED` constraints |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Auditing a legacy database with 50,000 invalid email addresses**: Validation query reveals 50,000 of 2M user records have invalid email formats (missing @, double dots, spaces). A cleanup script normalizes common issues (trim whitespace, lowercase) and flags 3,000 unfixable records for manual review. After cleanup, a CHECK constraint with regex validation is applied.
+
+**Enforcing referential integrity on a database without foreign keys**: An application relied on application-level FK enforcement, resulting in 12,000 orphaned order_items, 800 orphaned payments, and 200 orphaned reviews. Cleanup scripts archive orphaned records to backup tables, then foreign key constraints with `ON DELETE CASCADE` are added. A nightly validation job monitors for new orphans.
+
+**Implementing business rules for a financial application**: Constraints enforce: account balance cannot be negative (`CHECK (balance >= 0)`), transfer amount must be positive (`CHECK (amount > 0)`), transaction date cannot be in the future (`CHECK (transaction_date <= CURRENT_DATE)`), and a trigger prevents transfers between accounts owned by different customers unless explicitly authorized.
+
+## Resources
+
+- PostgreSQL CHECK constraints: https://www.postgresql.org/docs/current/ddl-constraints.html
+- PostgreSQL triggers: https://www.postgresql.org/docs/current/triggers.html
+- MySQL CHECK constraints (8.0.16+): https://dev.mysql.com/doc/refman/8.0/en/create-table-check-constraints.html
+- Data validation patterns: https://www.postgresql.org/docs/current/ddl-constraints.html#DDL-CONSTRAINTS-CHECK-CONSTRAINTS
+- NOT VALID constraint option: https://www.postgresql.org/docs/current/sql-altertable.html

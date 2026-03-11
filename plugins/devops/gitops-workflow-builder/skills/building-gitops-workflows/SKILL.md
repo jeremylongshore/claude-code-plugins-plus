@@ -8,107 +8,60 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Gitops Workflow Builder
 
-This skill provides automated assistance for gitops workflow builder tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Kubernetes cluster is accessible and kubectl is configured
-- Git repository is available for GitOps source
-- ArgoCD or Flux is installed on the cluster (or ready to install)
-- Appropriate RBAC permissions for GitOps operator
-- Network connectivity between cluster and Git repository
-
-## Instructions
-
-1. **Select GitOps Tool**: Determine whether to use ArgoCD or Flux based on requirements
-2. **Define Application Structure**: Establish repository layout with environment separation (dev/staging/prod)
-3. **Generate Manifests**: Create Application/Kustomization files pointing to Git sources
-4. **Configure Sync Policy**: Set automated or manual sync with self-heal and prune options
-5. **Implement RBAC**: Define service accounts and role bindings for GitOps operator
-6. **Set Up Monitoring**: Configure notifications and health checks for deployments
-7. **Validate Configuration**: Test sync behavior and verify reconciliation loops
-
-## Output
-
-Generates GitOps workflow configurations including:
-
-**ArgoCD Application Manifest:**
-```yaml
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: app-name
-  namespace: argocd
-spec:
-  project: default
-  source:
-    repoURL: https://github.com/org/repo
-    path: manifests/prod
-    targetRevision: main
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: production
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-```
-
-**Flux Kustomization:**
-```yaml
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: app-name
-  namespace: flux-system
-spec:
-  interval: 5m
-  path: ./manifests/prod
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: app-repo
-```
-
-## Error Handling
-
-Common issues and solutions:
-
-**Sync Failures**
-- Error: "ComparisonError: Failed to load target state"
-- Solution: Verify Git repository URL, credentials, and target path exist
-
-**RBAC Permissions**
-- Error: "User cannot create resource in API group"
-- Solution: Grant GitOps service account appropriate cluster roles
-
-**Out of Sync State**
-- Warning: "Application is OutOfSync"
-- Solution: Enable automated sync or manually sync via UI/CLI
-
-**Git Authentication**
-- Error: "Authentication failed for repository"
-- Solution: Configure SSH keys or access tokens in {baseDir}/.git/config
-
-**Resource Conflicts**
-- Error: "Resource already exists and is not managed by GitOps"
-- Solution: Import existing resources or remove conflicting manual deployments
-
-## Resources
-
-- ArgoCD documentation: https://argo-cd.readthedocs.io/
-- Flux documentation: https://fluxcd.io/docs/
-- GitOps principles and patterns guide
-- Kubernetes manifest best practices
-- Repository structure templates in {baseDir}/gitops-examples/
+# Building GitOps Workflows
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Construct GitOps workflows using ArgoCD or Flux to implement declarative, Git-driven continuous delivery for Kubernetes. Generate Application/Kustomization manifests, configure sync policies, set up multi-environment promotion, and implement RBAC and notification integrations.
+
+## Prerequisites
+
+- Kubernetes cluster accessible via `kubectl` with admin permissions
+- Git repository for storing Kubernetes manifests (separate from application code recommended)
+- ArgoCD or Flux installed on the cluster, or Helm charts ready for installation
+- Container images built and pushed to a registry accessible from the cluster
+- SSH key or access token for Git repository authentication from the cluster
+
+## Instructions
+
+1. Choose the GitOps tool based on requirements: ArgoCD for UI-driven management, Flux for lightweight Git-native approach
+2. Design the repository structure: `environments/{dev,staging,prod}/` with Kustomize overlays or Helm values per environment
+3. Generate ArgoCD Application or Flux Kustomization manifests pointing to the Git repository path for each environment
+4. Configure sync policy: enable `automated.selfHeal` and `automated.prune` for non-production; use manual sync for production
+5. Set up Git repository credentials as a Kubernetes Secret for the GitOps operator
+6. Implement environment promotion: update the image tag in staging manifests, test, then promote to production via PR
+7. Configure notifications: Slack/email alerts on sync success, failure, or health degradation via ArgoCD Notifications or Flux Alert Provider
+8. Add RBAC: restrict who can sync production applications and who can modify GitOps configurations
+9. Validate the setup: push a manifest change to Git and verify the GitOps operator detects and applies it within the sync interval
+
+## Output
+
+- ArgoCD Application or Flux Kustomization manifests per environment
+- Git repository structure with Kustomize bases and overlays
+- RBAC configuration (ArgoCD AppProject, Kubernetes RBAC)
+- Notification configuration (Slack webhooks, email)
+- CI pipeline step to update image tags in the GitOps repository after build
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `ComparisonError: Failed to load target state` | Invalid manifest path or Git ref | Verify `path:` and `targetRevision:` in the Application manifest; check repo structure |
+| `Authentication failed for repository` | SSH key or token not configured or expired | Create/update the Git credentials Secret; verify deploy key has read access |
+| `Application is OutOfSync but not syncing` | Automated sync disabled or sync window closed | Enable `automated:` in syncPolicy or trigger manual sync with `argocd app sync` |
+| `Resource already exists and is not managed` | Resource created outside of GitOps | Add the `argocd.argoproj.io/managed-by` annotation or delete the conflicting resource |
+| `Sync failed: health check timeout` | Application pods not becoming ready after sync | Check pod logs; verify resource requests fit node capacity; increase health check timeout |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Set up ArgoCD with three Application manifests for dev, staging, and production, each pointing to a different Kustomize overlay in the GitOps repo."
+- "Configure Flux with automatic image updates: scan ECR for new tags matching `v*`, update the staging manifests, and create a PR for production promotion."
+- "Create an ArgoCD AppProject that restricts the production application to specific namespaces and requires manual sync with admin-only access."
+
+## Resources
+
+- ArgoCD documentation: https://argo-cd.readthedocs.io/en/stable/
+- Flux documentation: https://fluxcd.io/flux/
+- GitOps principles: https://opengitops.dev/
+- Kustomize: https://kustomize.io/

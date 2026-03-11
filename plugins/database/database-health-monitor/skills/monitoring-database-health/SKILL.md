@@ -5,7 +5,7 @@ description: |
   This skill provides health monitoring and alerting with comprehensive guidance and automation.
   Trigger with phrases like "monitor system health", "set up alerts",
   or "track metrics".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,90 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Health Monitor
 
-This skill provides automated assistance for database health monitor tasks.
+## Overview
+
+Monitor database server health across PostgreSQL, MySQL, and MongoDB by tracking key performance indicators including connection utilization, query throughput, replication lag, disk usage, cache hit ratios, vacuum activity, and lock contention. This skill creates comprehensive health check queries, defines alerting thresholds, and produces dashboards that surface problems before they cause outages.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Database credentials with access to system statistics views (`pg_stat_*`, `performance_schema`, `serverStatus`)
+- `psql`, `mysql`, or `mongosh` CLI tools for running health check queries
+- Permissions: `pg_monitor` role (PostgreSQL), `PROCESS` privilege (MySQL)
+- Baseline metrics from a period of normal operation for threshold calibration
+- Alerting channel configured (email, Slack webhook, PagerDuty)
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Check connection utilization:
+   - PostgreSQL: `SELECT count(*) AS active_connections, (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') AS max_connections, round(count(*)::numeric / (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') * 100, 1) AS utilization_pct FROM pg_stat_activity`
+   - MySQL: `SELECT VARIABLE_VALUE AS connections FROM performance_schema.global_status WHERE VARIABLE_NAME = 'Threads_connected'`
+   - Alert threshold: utilization above 80%
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. Monitor query throughput and error rate:
+   - PostgreSQL: `SELECT datname, xact_commit AS commits_total, xact_rollback AS rollbacks_total, xact_rollback::float / GREATEST(xact_commit, 1) AS rollback_ratio FROM pg_stat_database WHERE datname = current_database()`
+   - MySQL: `SHOW GLOBAL STATUS LIKE 'Com_commit'` and `SHOW GLOBAL STATUS LIKE 'Com_rollback'`
+   - Alert threshold: rollback ratio above 5% or throughput drops more than 50% from baseline
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Check disk usage and growth:
+   - PostgreSQL: `SELECT pg_size_pretty(pg_database_size(current_database())) AS db_size` and `SELECT tablename, pg_size_pretty(pg_total_relation_size(tablename::text)) AS size FROM pg_tables WHERE schemaname = 'public' ORDER BY pg_total_relation_size(tablename::text) DESC LIMIT 10`
+   - Alert threshold: disk usage above 80% or growth rate projecting full disk within 7 days
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. Monitor cache hit ratio:
+   - PostgreSQL: `SELECT sum(heap_blks_hit)::float / GREATEST(sum(heap_blks_hit) + sum(heap_blks_read), 1) AS cache_hit_ratio FROM pg_statio_user_tables`
+   - MySQL: `SELECT (1 - (VARIABLE_VALUE / (SELECT VARIABLE_VALUE FROM performance_schema.global_status WHERE VARIABLE_NAME = 'Innodb_buffer_pool_read_requests'))) AS hit_ratio FROM performance_schema.global_status WHERE VARIABLE_NAME = 'Innodb_buffer_pool_reads'`
+   - Alert threshold: cache hit ratio below 95% indicates shared_buffers or innodb_buffer_pool_size needs increasing
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Check vacuum and autovacuum health (PostgreSQL):
+   - `SELECT relname, last_vacuum, last_autovacuum, n_dead_tup, n_live_tup, round(n_dead_tup::numeric / GREATEST(n_live_tup, 1) * 100, 1) AS dead_pct FROM pg_stat_user_tables WHERE n_dead_tup > 1000 ORDER BY n_dead_tup DESC LIMIT 10`
+   - Alert threshold: dead tuple percentage above 20% or autovacuum not running for more than 24 hours on active tables
+
+6. Monitor replication lag (if replicas exist):
+   - PostgreSQL: `SELECT client_addr, state, pg_wal_lsn_diff(sent_lsn, replay_lsn) AS lag_bytes FROM pg_stat_replication`
+   - MySQL: `SHOW REPLICA STATUS\G` - check `Seconds_Behind_Source`
+   - Alert threshold: lag above 30 seconds or replication stopped
+
+7. Check for long-running queries:
+   - PostgreSQL: `SELECT pid, now() - query_start AS duration, state, query FROM pg_stat_activity WHERE state != 'idle' AND now() - query_start > interval '5 minutes' ORDER BY duration DESC`
+   - Alert threshold: any query running longer than 10 minutes (OLTP) or 1 hour (analytics)
+
+8. Monitor lock contention:
+   - PostgreSQL: `SELECT count(*) AS waiting_queries FROM pg_stat_activity WHERE wait_event_type = 'Lock'`
+   - Alert threshold: more than 10 queries waiting for locks simultaneously
+
+9. Compile all health checks into a single monitoring script that runs via cron every 60 seconds, outputs metrics in a structured format (JSON), and triggers alerts when thresholds are breached.
+
+10. Create a health summary dashboard query that returns a single-row result with RAG (Red/Amber/Green) status for each health dimension: connections, throughput, disk, cache, vacuum, replication, queries, and locks.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Health check queries** tailored to the specific database engine
+- **Monitoring script** (shell or Python) for scheduled health checks with alerting
+- **Threshold configuration** with default values and tuning guidance
+- **Dashboard summary query** providing RAG status across all health dimensions
+- **Alert notification templates** for Slack, email, or PagerDuty integration
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/database-health-monitor/`
-
-**Documentation and Guides**: `{baseDir}/docs/database-health-monitor/`
-
-**Example Scripts and Code**: `{baseDir}/examples/database-health-monitor/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/database-health-monitor-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/database-health-monitor-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/database-health-monitor-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `pg_stat_activity` returns incomplete data | `track_activities = off` in postgresql.conf | Enable `track_activities = on` and `track_counts = on`; reload configuration |
+| Health check query itself times out | Database under heavy load or lock contention | Set `statement_timeout = '5s'` for monitoring queries; use a dedicated monitoring connection |
+| False alerts during maintenance windows | Planned maintenance triggers threshold breaches | Implement alert suppression windows; add maintenance mode flag to monitoring script |
+| Disk usage alert but no obvious growth | WAL files, temporary files, or pg_stat_tmp consuming space | Check `pg_wal` directory size; check for orphaned temporary files; verify `wal_keep_size` setting |
+| Cache hit ratio drops after restart | Buffer pool/shared_buffers cold after database restart | Implement cache warming script that runs key queries after restart; alert will self-resolve as cache warms |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**PostgreSQL health dashboard for a production SaaS application**: A single cron-based script checks 8 health dimensions every 60 seconds, writing results to a metrics table. A dashboard query shows: connections 45/200 (GREEN), cache hit 98.5% (GREEN), dead tuples 2.1% (GREEN), disk 62% (GREEN), replication lag 0.5s (GREEN), long queries 0 (GREEN), lock waiters 1 (GREEN), rollback ratio 0.3% (GREEN).
+
+**Detecting impending disk full condition**: Health monitor tracks daily disk growth rate. Current usage: 72%, daily growth: 1.2GB, remaining: 280GB. Projected full date: 233 days. Alert triggers at 80% with recommendation to archive old data or add storage. A second alert at 90% escalates to PagerDuty.
+
+**Identifying autovacuum falling behind**: Health check shows the `events` table with 15M dead tuples (45% dead ratio) and last autovacuum 3 days ago. Root cause: `autovacuum_vacuum_cost_delay` too conservative for a high-write table. Fix: set per-table `autovacuum_vacuum_cost_delay = 2` and `autovacuum_vacuum_scale_factor = 0.01`.
+
+## Resources
+
+- PostgreSQL monitoring statistics: https://www.postgresql.org/docs/current/monitoring-stats.html
+- MySQL performance_schema: https://dev.mysql.com/doc/refman/8.0/en/performance-schema.html
+- MongoDB serverStatus: https://www.mongodb.com/docs/manual/reference/command/serverStatus/
+- PostgreSQL autovacuum tuning: https://www.postgresql.org/docs/current/runtime-config-autovacuum.html
+- check_postgres monitoring tool: https://bucardo.org/check_postgres/

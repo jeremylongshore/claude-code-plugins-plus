@@ -12,61 +12,67 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Generating Api Contracts
+# Generating API Contracts
 
 ## Overview
 
-
-This skill provides automated assistance for api contract generator tasks.
-This skill provides automated assistance for the described functionality.
+Generate OpenAPI 3.0/3.1 specifications and consumer-driven contract tests from existing API implementations, design documents, or database schemas. Produce machine-readable contracts that serve as the single source of truth for code generation, documentation, testing, and gateway configuration, with Pact integration for consumer-driven contract verification.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- API implementation with route definitions and handler logic, or design requirements document
+- OpenAPI authoring tool: Swagger Editor, Stoplight Studio, or IDE with OpenAPI extension
+- Consumer-driven contract framework: Pact (polyglot), Spring Cloud Contract (Java), or Dredd (generic)
+- Schema validation tool: Spectral for OpenAPI linting
+- Version control for contract files with diff-based review process
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:contract-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Scan existing route handlers and controller files using Grep and Read to extract all endpoint paths, HTTP methods, request parameter names/types, and response body shapes.
+2. Generate OpenAPI 3.0 specification from the extracted data, including `info` (title, version, description), `servers` (environment URLs), `paths` (operations), and `components` (reusable schemas).
+3. Define request schemas with field-level constraints: `type`, `format`, `required`, `minimum/maximum`, `pattern` (regex), `enum`, and `example` values for every property.
+4. Document all response status codes per endpoint with separate schemas: 200/201 for success, 400 for validation errors (with field-level error array), 401/403 for auth failures, and 404/500.
+5. Add security scheme definitions (`bearerAuth`, `apiKey`, `oauth2`) and apply them to appropriate operations using the `security` field.
+6. Create Pact consumer contract tests that capture expected interactions from the API consumer perspective, defining expected request/response pairs per endpoint.
+7. Set up provider verification that replays Pact interactions against the actual API implementation, verifying the provider satisfies all consumer expectations.
+8. Generate contract artifacts: OpenAPI spec file, Postman collection, and consumer contract (Pact JSON), all versioned alongside the API source code.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/openapi.yaml` - Complete OpenAPI 3.0/3.1 specification
+- `{baseDir}/contracts/pact/` - Consumer-driven contract definitions (Pact JSON)
+- `{baseDir}/contracts/postman/` - Generated Postman collection for API testing
+- `{baseDir}/tests/contract/consumer/` - Consumer contract test implementations
+- `{baseDir}/tests/contract/provider/` - Provider verification test suite
+- `{baseDir}/scripts/generate-contract.sh` - Contract generation automation script
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Spec-code divergence | API implementation changed without updating the OpenAPI spec | Add CI check that generates spec from code and diffs against committed spec |
+| Pact verification failure | Provider response does not match consumer expectation | Review consumer contract for correctness; update provider if contract is valid |
+| Missing operation ID | Endpoint has no `operationId`, preventing code generation | Generate deterministic operation IDs from method + path (e.g., `getUsers`, `createUser`) |
+| Circular schema reference | Components reference each other creating infinite recursion | Break cycles with `allOf` composition or introduce intermediate types |
+| Example/schema mismatch | Example values do not validate against their own schema | Auto-validate all examples during spec generation; reject mismatched examples |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Code-first OpenAPI generation**: Scan Express route decorators and Zod validation schemas to auto-generate a complete OpenAPI 3.1 spec with accurate request/response schemas, examples, and descriptions.
+
+**Consumer-driven contract testing**: Frontend team publishes Pact contracts defining the API interactions they depend on; backend CI verifies every contract on each deployment, preventing breaking changes.
+
+**Design-first workflow**: Author OpenAPI spec in Stoplight Studio, generate server stubs and client SDKs from the spec, then implement business logic in the stubs -- spec stays as the single source of truth.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- OpenAPI Specification 3.1: https://spec.openapis.org/oas/v3.1.0
+- Pact contract testing: https://pact.io/
+- Swagger Editor: https://editor.swagger.io/
+- Dredd API contract testing: https://dredd.org/

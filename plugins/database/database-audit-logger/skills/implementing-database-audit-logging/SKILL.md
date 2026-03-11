@@ -5,7 +5,7 @@ description: |
   This skill implements audit logging using triggers, application-level logging, CDC, or native logs.
   Trigger with phrases like "implement database audit logging", "add audit trails",
   "track database changes", or "monitor database activity for compliance".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,132 +14,127 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Audit Logger
 
-This skill provides automated assistance for database audit logger tasks.
+## Overview
+
+Implement database audit logging to track all data modifications (INSERT, UPDATE, DELETE) with full before/after values, user identity, timestamps, and application context. This skill supports trigger-based auditing for PostgreSQL and MySQL, change data capture (CDC) patterns, and application-level audit logging. Audit logs support compliance requirements (GDPR, HIPAA, SOX, PCI-DSS) by providing immutable, queryable records of who changed what and when.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Database credentials with CREATE TABLE and CREATE TRIGGER permissions
-- Understanding of compliance requirements (GDPR, HIPAA, SOX, PCI-DSS)
-- Sufficient storage for audit logs (estimate 10-30% of data size)
-- Decision on audit log retention period
-- Access to database documentation for table schemas
-- Monitoring tools configured for audit log analysis
+- Database credentials with CREATE TABLE, CREATE FUNCTION, and CREATE TRIGGER permissions
+- `psql` or `mysql` CLI for executing audit setup DDL
+- Understanding of applicable compliance requirements (which tables, which operations, retention period)
+- Estimated storage for audit logs: plan for 10-30% of the audited table's data volume per year
+- Separate tablespace or storage volume for audit data to prevent audit growth from affecting application performance
 
 ## Instructions
 
-### Step 1: Define Audit Requirements
-1. Identify tables requiring audit logging based on compliance needs
-2. Determine events to audit (INSERT, UPDATE, DELETE, SELECT for sensitive data)
-3. Define which columns contain sensitive data requiring audit
-4. Document retention requirements for audit logs
-5. Identify users/roles whose actions need auditing
+1. Identify tables requiring audit logging based on compliance and business needs:
+   - Tables containing PII (users, contacts, addresses) -- GDPR/HIPAA requirement
+   - Tables containing financial data (transactions, payments, invoices) -- SOX/PCI-DSS requirement
+   - Tables containing access control data (roles, permissions, API keys) -- security requirement
+   - Determine which operations to audit per table: INSERT, UPDATE, DELETE, or all three
 
-### Step 2: Choose Audit Strategy
-1. **Trigger-Based Auditing**: Best for comprehensive row-level tracking
-   - Pros: Automatic, no application changes, captures all changes
-   - Cons: Performance overhead, complex trigger maintenance
-2. **Application-Level Auditing**: Best for selective auditing
-   - Pros: Flexible, lower database overhead, easier debugging
-   - Cons: Requires application changes, can miss direct database changes
-3. **Change Data Capture (CDC)**: Best for real-time streaming
-   - Pros: Minimal performance impact, real-time analysis, external processing
-   - Cons: Complex setup, requires CDC infrastructure
-4. **Native Database Logs**: Best for general monitoring
-   - Pros: No setup, captures everything, built-in
-   - Cons: High volume, limited retention, difficult to query
+2. Create the audit log table with comprehensive metadata:
+   ```sql
+   CREATE TABLE audit_log (
+     id BIGSERIAL PRIMARY KEY,
+     table_name VARCHAR(100) NOT NULL,
+     record_id TEXT NOT NULL,
+     action VARCHAR(10) NOT NULL CHECK (action IN ('INSERT', 'UPDATE', 'DELETE')),
+     old_values JSONB,
+     new_values JSONB,
+     changed_columns TEXT[],
+     changed_by VARCHAR(100),
+     changed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+     client_ip INET,
+     application_name VARCHAR(100),
+     transaction_id BIGINT
+   );
+   ```
 
-### Step 3: Design Audit Table Schema
-1. Create audit log table with these core columns:
-   - audit_id (primary key), table_name, action (INSERT/UPDATE/DELETE)
-   - record_id (reference to audited record), old_values (JSON), new_values (JSON)
-   - changed_by (user), changed_at (timestamp), client_ip, application_context
-2. Add indexes on table_name, changed_at, changed_by for query performance
-3. Partition audit table by date for efficient archival
-4. Configure tablespace for audit logs separate from primary data
+3. Add indexes for common audit queries:
+   - `CREATE INDEX idx_audit_table_record ON audit_log (table_name, record_id)`
+   - `CREATE INDEX idx_audit_changed_at ON audit_log (changed_at)`
+   - `CREATE INDEX idx_audit_changed_by ON audit_log (changed_by)`
+   - `CREATE INDEX idx_audit_action ON audit_log (table_name, action)`
 
-### Step 4: Implement Audit Mechanism
-1. For trigger-based: Create AFTER INSERT/UPDATE/DELETE triggers on each table
-2. Capture old and new row values as JSON in trigger body
-3. Record user context (CURRENT_USER, application user, IP address)
-4. Handle trigger failures gracefully (log but don't block operations)
-5. Test triggers with sample data modifications
+4. Create the PostgreSQL audit trigger function:
+   ```sql
+   CREATE OR REPLACE FUNCTION audit_trigger_func() RETURNS TRIGGER AS $$
+   BEGIN
+     IF TG_OP = 'INSERT' THEN
+       INSERT INTO audit_log (table_name, record_id, action, new_values, changed_by, client_ip, application_name, transaction_id)
+       VALUES (TG_TABLE_NAME, NEW.id::text, 'INSERT', to_jsonb(NEW), current_setting('app.user', true), inet_client_addr(), current_setting('application_name'), txid_current());
+     ELSIF TG_OP = 'UPDATE' THEN
+       INSERT INTO audit_log (table_name, record_id, action, old_values, new_values, changed_by, client_ip, application_name, transaction_id)
+       VALUES (TG_TABLE_NAME, NEW.id::text, 'UPDATE', to_jsonb(OLD), to_jsonb(NEW), current_setting('app.user', true), inet_client_addr(), current_setting('application_name'), txid_current());
+     ELSIF TG_OP = 'DELETE' THEN
+       INSERT INTO audit_log (table_name, record_id, action, old_values, changed_by, client_ip, application_name, transaction_id)
+       VALUES (TG_TABLE_NAME, OLD.id::text, 'DELETE', to_jsonb(OLD), current_setting('app.user', true), inet_client_addr(), current_setting('application_name'), txid_current());
+     END IF;
+     RETURN COALESCE(NEW, OLD);
+   END;
+   $$ LANGUAGE plpgsql;
+   ```
 
-### Step 5: Configure Audit Log Management
-1. Set up automated archival of old audit logs to cold storage
-2. Implement audit log analysis queries for common compliance reports
-3. Create alerts for suspicious activities (bulk deletes, off-hours changes)
-4. Document audit log query procedures for compliance auditors
-5. Schedule periodic audit log reviews with security team
+5. Attach triggers to each audited table:
+   - `CREATE TRIGGER audit_users AFTER INSERT OR UPDATE OR DELETE ON users FOR EACH ROW EXECUTE FUNCTION audit_trigger_func()`
+   - Repeat for each table requiring audit logging
 
-### Step 6: Validate Audit Implementation
-1. Perform test operations on audited tables
-2. Verify audit log entries are created with complete data
-3. Test audit log queries for performance
-4. Confirm audit logs cannot be modified by regular users
-5. Document audit implementation for compliance documentation
+6. Pass application-level user context to the database session so audit logs capture the actual application user (not just the database role):
+   - At the start of each request: `SET LOCAL app.user = 'user@example.com'`
+   - For connection pools, set in the connection checkout hook
+   - This value is captured by `current_setting('app.user', true)` in the trigger
+
+7. Partition the audit_log table by month for efficient querying and archival:
+   - `CREATE TABLE audit_log (...) PARTITION BY RANGE (changed_at)`
+   - Create monthly partitions: `CREATE TABLE audit_log_2024_01 PARTITION OF audit_log FOR VALUES FROM ('2024-01-01') TO ('2024-02-01')`
+   - Automate partition creation for future months
+
+8. Protect audit log integrity:
+   - Revoke UPDATE and DELETE permissions on audit_log from all application users
+   - Grant only INSERT permission to the trigger execution context
+   - Consider using `pg_audit` extension for additional tamper protection
+   - Ship audit logs to an external system (SIEM, S3) for independent retention
+
+9. Create compliance report queries:
+   - **Change history for a record**: `SELECT * FROM audit_log WHERE table_name = 'users' AND record_id = '12345' ORDER BY changed_at`
+   - **All changes by a user**: `SELECT * FROM audit_log WHERE changed_by = 'user@example.com' ORDER BY changed_at DESC`
+   - **Bulk operations detection**: `SELECT changed_by, table_name, action, COUNT(*) FROM audit_log WHERE changed_at > NOW() - INTERVAL '1 hour' GROUP BY 1,2,3 HAVING COUNT(*) > 100`
+   - **Off-hours activity**: `SELECT * FROM audit_log WHERE EXTRACT(HOUR FROM changed_at) NOT BETWEEN 8 AND 18`
+
+10. Set up audit log archival: move audit records older than the retention period to cold storage (S3, Azure Blob). Maintain the archive manifest for retrieval. Typical retention: 1-3 years in database, 7+ years in cold storage for financial data.
 
 ## Output
 
-This skill produces:
-
-**Audit Table Schema**: SQL DDL for audit log table with proper indexes and partitioning
-
-**Audit Triggers**: Database triggers for automatic audit log population on data changes
-
-**Audit Log Queries**: Pre-built SQL queries for compliance reports and change tracking
-
-**Implementation Documentation**: Configuration details, trigger logic, and maintenance procedures
-
-**Compliance Report Templates**: SQL queries for GDPR access logs, SOX change reports, etc.
+- **Audit table DDL** with proper columns, indexes, and partitioning
+- **Audit trigger function** capturing full before/after values with user context
+- **Trigger attachment scripts** for each audited table
+- **Compliance report queries** for common audit scenarios
+- **Archival configuration** for audit log lifecycle management
 
 ## Error Handling
 
-**Trigger Performance Issues**:
-- Audit only critical tables, not all tables
-- Use asynchronous audit logging with queue systems
-- Batch audit log inserts instead of individual inserts
-- Monitor trigger execution time and optimize trigger logic
-
-**Audit Table Growth**:
-- Implement automated archival of audit logs older than retention period
-- Partition audit table by month or quarter
-- Compress old audit log partitions
-- Move historical audit logs to cheaper storage tiers
-
-**Missing Audit Context**:
-- Set application context in database session before operations
-- Use database session variables to pass user identity
-- Implement connection pooling with session initialization
-- Log application user separately from database user
-
-**Permission Issues**:
-- Ensure audit log table is writable by trigger execution context
-- Grant INSERT on audit table to all database users
-- Protect audit table from modifications (no UPDATE/DELETE grants)
-- Use separate schema for audit tables with restricted access
-
-## Resources
-
-**Audit Table Templates**:
-- PostgreSQL audit trigger: `{baseDir}/templates/postgresql-audit-trigger.sql`
-- MySQL audit trigger: `{baseDir}/templates/mysql-audit-trigger.sql`
-- Audit table schema: `{baseDir}/templates/audit-table-schema.sql`
-
-**Compliance Report Queries**: `{baseDir}/queries/compliance-reports/`
-- GDPR data access report
-- SOX change audit report
-- User activity summary
-- Suspicious activity detection
-
-**Audit Strategy Guide**: `{baseDir}/docs/audit-strategy-selection.md`
-**Performance Tuning**: `{baseDir}/docs/audit-performance-optimization.md`
-**Archival Procedures**: `{baseDir}/scripts/audit-archival.sh`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Audit trigger slows INSERT/UPDATE operations | Trigger overhead on high-write tables | Audit only critical columns instead of full rows; use asynchronous audit with `pg_notify` and a listener process; batch audit writes |
+| Audit table consuming excessive disk space | High write volume tables generating millions of audit records | Partition by month; archive old partitions to cold storage; audit only specific columns with `WHEN` clause on trigger |
+| `current_setting('app.user')` returns NULL | Application not setting session variable before database operations | Set default in trigger: `COALESCE(current_setting('app.user', true), current_user)`; add connection pool checkout hook |
+| Audit log INSERT fails, blocking application operation | Audit table full, permission error, or constraint violation | Use `BEGIN ... EXCEPTION WHEN OTHERS THEN NULL; END` in trigger to prevent audit failures from blocking operations; alert on audit failures |
+| Cannot determine which columns changed in UPDATE | Full row stored as JSON, no column-level diff | Add `changed_columns` computation in trigger: compare OLD and NEW field by field; store only changed fields in `new_values` |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**HIPAA-compliant audit logging for a healthcare database**: Audit triggers on patient_records, prescriptions, and lab_results tables capture all modifications with practitioner identity. Audit logs are immutable (no UPDATE/DELETE grants), partitioned monthly, and archived to encrypted S3 after 1 year. Quarterly compliance reports show access patterns per practitioner and flag unusual access (patient records accessed without an appointment).
+
+**Detecting unauthorized data modifications**: Audit log query reveals 500 DELETE operations on the billing table by a service account at 3 AM, outside normal business hours. Alert triggers for bulk operations exceeding 100 rows. Investigation traces the operations to a misconfigured cleanup job. Audit log provides the complete list of deleted records for restoration.
+
+**GDPR data access request fulfillment**: When a user requests their data access log under GDPR Article 15, the audit system provides a complete history of who accessed or modified their personal data: `SELECT changed_by, action, changed_at, changed_columns FROM audit_log WHERE table_name = 'users' AND record_id = '12345' ORDER BY changed_at`. The report is generated within the 30-day compliance window.
+
+## Resources
+
+- PostgreSQL triggers: https://www.postgresql.org/docs/current/plpgsql-trigger.html
+- pgAudit extension: https://www.pgaudit.org/
+- MySQL audit log plugin: https://dev.mysql.com/doc/refman/8.0/en/audit-log.html
+- GDPR data processing records: https://gdpr-info.eu/art-30-gdpr/
+- SOX compliance for databases: https://www.postgresql.org/docs/current/pgaudit.html

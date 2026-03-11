@@ -12,61 +12,69 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Building Websocket Server
+# Building WebSocket Server
 
 ## Overview
 
-
-This skill provides automated assistance for websocket server builder tasks.
-This skill provides automated assistance for the described functionality.
+Build scalable WebSocket servers for real-time bidirectional communication using the `ws` library, Socket.IO, or native framework WebSocket support. Handle connection lifecycle management, room/channel subscriptions, message broadcasting, heartbeat keepalive, and horizontal scaling with Redis pub/sub adapters.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Node.js 18+ with `ws` or `socket.io`, or Python 3.10+ with `websockets` or FastAPI WebSocket, or Go with `gorilla/websocket`
+- Redis for horizontal scaling with pub/sub adapter (Socket.IO Redis adapter, or manual pub/sub)
+- Load balancer configured for WebSocket upgrade (sticky sessions or proper `Upgrade` header forwarding)
+- JWT or session-based authentication for connection handshake
+- Monitoring for active connection counts and message throughput
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:websocket-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Examine existing HTTP server configuration using Read and Grep to determine the framework and identify where WebSocket upgrade handling integrates.
+2. Create a WebSocket server instance attached to the existing HTTP server, configuring the upgrade path (e.g., `/ws`, `/socket.io`) and allowed origins.
+3. Implement connection authentication by validating JWT tokens or session cookies during the WebSocket handshake `upgrade` event, rejecting unauthorized connections before protocol switch.
+4. Build a connection registry that tracks active clients with metadata (user ID, subscribed channels, connection time) for targeted message delivery.
+5. Define a message protocol using JSON envelopes with `type`, `channel`, `payload`, and `correlationId` fields for structured bidirectional communication.
+6. Implement room/channel subscription logic allowing clients to join and leave named channels with server-side membership tracking.
+7. Add heartbeat ping/pong mechanism with configurable interval (default 30s) and timeout detection to clean up stale connections.
+8. Configure Redis pub/sub adapter for horizontal scaling so messages broadcast from any server instance reach all connected clients across the cluster.
+9. Write connection lifecycle tests covering connect, authenticate, subscribe, message exchange, reconnect, and graceful disconnect scenarios.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/ws/server.js` - WebSocket server setup and upgrade handling
+- `{baseDir}/src/ws/handlers/` - Per-message-type handler functions
+- `{baseDir}/src/ws/rooms.js` - Room/channel subscription management
+- `{baseDir}/src/ws/registry.js` - Active connection tracking registry
+- `{baseDir}/src/ws/heartbeat.js` - Ping/pong keepalive logic
+- `{baseDir}/src/ws/adapters/redis.js` - Redis pub/sub adapter for scaling
+- `{baseDir}/tests/ws/` - WebSocket connection and messaging tests
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 during upgrade | JWT token missing or expired in handshake query/headers | Reject upgrade with HTTP 401 before WebSocket protocol switch completes |
+| 1008 Policy Violation | Client sends malformed message or violates protocol | Send close frame with code 1008 and human-readable reason; log violation |
+| 1006 Abnormal Closure | Network interruption without close handshake | Detect via heartbeat timeout; clean up connection registry; notify room members |
+| Memory leak | Connection registry grows unbounded from stale entries | Implement heartbeat-based cleanup sweep every 60s; enforce max connections per server |
+| Message storm | Single client flooding messages beyond acceptable rate | Apply per-connection message rate limiting; disconnect abusive clients with 1008 |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Chat application**: Multi-room chat server where clients join named rooms, receive member presence updates, and see real-time message delivery with typing indicators via separate message types.
+
+**Live dashboard**: Server pushes metric updates to subscribed dashboard clients every second, with initial state snapshot on connection and incremental deltas thereafter.
+
+**Collaborative editing**: Operational transformation relay server that receives edit operations from clients, transforms against concurrent operations, and broadcasts resolved changes to all document subscribers.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- RFC 6455 The WebSocket Protocol
+- Socket.IO documentation: https://socket.io/docs/v4/
+- `ws` library: https://github.com/websockets/ws
+- Redis pub/sub for WebSocket scaling patterns

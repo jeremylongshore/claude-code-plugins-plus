@@ -5,126 +5,68 @@ description: |
   This skill provides compliance monitoring and validation with comprehensive guidance and automation.
   Trigger with phrases like "check compliance", "validate policies",
   or "audit compliance".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Compliance Checker
 
-This skill provides automated assistance for compliance checker tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/compliance-checker/`
-
-**Documentation and Guides**: `{baseDir}/docs/compliance-checker/`
-
-**Example Scripts and Code**: `{baseDir}/examples/compliance-checker/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/compliance-checker-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/compliance-checker-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/compliance-checker-dashboard.json`
+# Checking Infrastructure Compliance
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Audit infrastructure configurations against compliance frameworks (CIS Benchmarks, SOC 2, HIPAA, PCI-DSS, GDPR) using policy-as-code tools like Open Policy Agent (OPA), Checkov, and tfsec. Generate compliance reports, identify violations, and produce remediation plans for Terraform, Kubernetes, and cloud provider configurations.
+
+## Prerequisites
+
+- Policy-as-code tool installed: `checkov`, `tfsec`, `opa`, or `kube-bench`
+- Infrastructure-as-code files (Terraform, CloudFormation, Kubernetes manifests) in the project
+- Cloud provider CLI authenticated with read access to resources
+- Compliance framework requirements documented (CIS, SOC 2, HIPAA, PCI-DSS)
+- `jq` for parsing JSON policy outputs
+
+## Instructions
+
+1. Identify the applicable compliance framework(s) based on industry and data classification
+2. Scan Terraform files with `checkov -d .` or `tfsec .` to detect misconfigurations
+3. Scan Kubernetes manifests for security issues: missing resource limits, privileged containers, missing network policies
+4. Validate IAM policies for least-privilege violations using cloud-native tools (`aws iam access-analyzer`)
+5. Check encryption at rest and in transit: verify S3 bucket encryption, database TLS, and EBS volume encryption
+6. Audit logging configurations: confirm CloudTrail/Cloud Audit Logs are enabled and sent to immutable storage
+7. Generate a compliance report mapping each finding to the relevant control (e.g., CIS AWS 2.1.1)
+8. Produce remediation Terraform/YAML patches for each violation with severity ranking (Critical, High, Medium, Low)
+9. Set up CI/CD integration so compliance checks block merges on Critical/High violations
+
+## Output
+
+- Compliance scan results in JSON/SARIF format for CI integration
+- Markdown compliance report with control mappings and pass/fail status
+- Remediation code patches (Terraform diffs, Kubernetes manifest updates)
+- OPA/Rego policy files for custom organizational rules
+- CI/CD pipeline step configuration for automated compliance gating
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `checkov: no Terraform files found` | Scanner run from wrong directory | Specify path explicitly with `-d path/to/terraform/` |
+| `tfsec: failed to parse HCL` | Syntax error in Terraform files | Run `terraform validate` first to fix HCL syntax before compliance scan |
+| `False positive on compliance check` | Rule too broad for the specific use case | Add inline skip comments (`#checkov:skip=CKV_AWS_18:Reason`) or create a `.checkov.yml` skip list |
+| `OPA policy evaluation error` | Rego syntax error or missing input data | Test policies with `opa eval -d policy.rego -i input.json` and validate Rego syntax |
+| `Scan timeout on large codebase` | Too many files or complex module references | Use `--compact` mode, scan directories individually, or increase timeout limits |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Run a CIS Benchmark compliance check against all Terraform files and generate a report with remediation steps for Critical findings."
+- "Create OPA policies that enforce: all S3 buckets must have encryption, all EC2 instances must have IMDSv2, and all security groups must not allow 0.0.0.0/0 ingress."
+- "Scan Kubernetes manifests for PCI-DSS compliance: verify no privileged containers, all pods have resource limits, and network policies exist for every namespace."
+
+## Resources
+
+- Checkov: https://www.checkov.io/
+- tfsec: https://aquasecurity.github.io/tfsec/
+- Open Policy Agent: https://www.openpolicyagent.org/docs/latest/
+- CIS Benchmarks: https://www.cisecurity.org/cis-benchmarks
+- kube-bench (CIS for Kubernetes): https://github.com/aquasecurity/kube-bench

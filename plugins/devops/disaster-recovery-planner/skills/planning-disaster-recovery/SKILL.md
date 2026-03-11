@@ -5,126 +5,68 @@ description: |
   This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
   Trigger with phrases like "create backups", "automate backups",
   or "implement disaster recovery".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Disaster Recovery Planner
 
-This skill provides automated assistance for disaster recovery planner tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/disaster-recovery-planner/`
-
-**Documentation and Guides**: `{baseDir}/docs/disaster-recovery-planner/`
-
-**Example Scripts and Code**: `{baseDir}/examples/disaster-recovery-planner/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/disaster-recovery-planner-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/disaster-recovery-planner-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/disaster-recovery-planner-dashboard.json`
+# Planning Disaster Recovery
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Design disaster recovery (DR) plans for cloud infrastructure covering RTO/RPO requirements, multi-region failover, data replication, and automated recovery procedures. Generate runbooks, Terraform for standby infrastructure, and automated failover scripts for databases, compute, and networking.
+
+## Prerequisites
+
+- Complete inventory of production infrastructure components and dependencies
+- Defined RTO (Recovery Time Objective) and RPO (Recovery Point Objective) per service tier
+- Cloud provider CLI authenticated with permissions for multi-region resource management
+- Cross-region networking configured (VPC peering, Transit Gateway, or VPN)
+- Backup and replication mechanisms already in place or planned
+
+## Instructions
+
+1. Catalog all production services with their criticality tier (Tier 1: < 15 min RTO, Tier 2: < 1 hour, Tier 3: < 24 hours)
+2. Map dependencies between services to identify single points of failure and cascading failure paths
+3. Design the DR strategy per tier: active-active for Tier 1, pilot light or warm standby for Tier 2, backup-restore for Tier 3
+4. Generate Terraform for standby region infrastructure: VPC, subnets, security groups, and scaled-down compute
+5. Configure database replication: RDS cross-region read replicas, DynamoDB global tables, or Cloud SQL cross-region replicas
+6. Set up DNS failover using Route 53 health checks, Cloud DNS routing policies, or global load balancers
+7. Create automated failover scripts: promote read replica to primary, update DNS records, scale up standby compute
+8. Document the DR runbook with step-by-step procedures, responsible parties, and communication plans
+9. Schedule quarterly DR drills: simulate region failure, execute the runbook, measure actual RTO/RPO, and document gaps
+10. Set up monitoring for replication lag, backup freshness, and standby infrastructure health
+
+## Output
+
+- DR plan document with service tiers, RTO/RPO targets, and recovery procedures
+- Terraform modules for standby region infrastructure
+- Automated failover scripts (database promotion, DNS switching, compute scaling)
+- DR drill checklist and post-drill assessment template
+- Monitoring dashboards for replication lag and backup status
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Replication lag exceeds RPO` | Network throughput insufficient or write volume too high | Increase replication instance size, enable compression, or implement write throttling during peak |
+| `DNS failover not triggering` | Health check misconfigured or TTL too high | Verify health check endpoint returns proper status; reduce DNS TTL to 60 seconds before drill |
+| `Standby database promotion failed` | Replication broken or standby in inconsistent state | Check replication status; if broken, restore from latest snapshot and re-establish replication |
+| `Insufficient capacity in DR region` | Instance types unavailable in standby region | Pre-provision reserved capacity in DR region or use multiple instance type options |
+| `Application cannot connect after failover` | Connection strings hardcoded to primary region endpoints | Use DNS-based endpoints (CNAME/Route 53) instead of direct IPs; parameterize region in config |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create a disaster recovery plan for a 3-tier web application on AWS with < 15 minute RTO for the API layer and < 1 hour for batch processing."
+- "Generate Terraform for a warm standby in us-west-2 with RDS cross-region read replica, scaled-down ECS cluster, and Route 53 failover routing."
+- "Design a DR drill that simulates primary region failure, executes automated failover, and validates data integrity in the standby region."
+
+## Resources
+
+- AWS Disaster Recovery: https://docs.aws.amazon.com/whitepapers/latest/disaster-recovery-workloads-on-aws/
+- GCP DR planning: https://cloud.google.com/architecture/dr-scenarios-planning-guide
+- Azure Business Continuity: https://learn.microsoft.com/en-us/azure/reliability/
+- DR strategy patterns: https://aws.amazon.com/blogs/architecture/disaster-recovery-dr-architecture-on-aws-part-i/

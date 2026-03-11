@@ -12,61 +12,66 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Throttling Apis
+# Throttling APIs
 
 ## Overview
 
-
-This skill provides automated assistance for api throttling manager tasks.
-This skill provides automated assistance for the described functionality.
+Implement API throttling policies that protect backend services from overload by controlling request concurrency, queue depth, and processing rates. Apply backpressure mechanisms including concurrent request limits, priority queues, circuit breakers, and adaptive throttling that adjusts limits based on real-time backend health metrics.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Middleware-capable web framework (Express, FastAPI, Spring Boot, Gin)
+- Redis or in-memory store for distributed throttle state tracking
+- Monitoring system exposing backend latency and error rate metrics (Prometheus, CloudWatch)
+- Load testing tool (k6, Artillery, wrk) for validating throttle behavior under pressure
+- Queue system for request buffering during throttle events (optional: Bull, SQS)
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:throttle-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Analyze existing route handlers and middleware using Grep and Read to identify endpoints with high latency, database-heavy operations, or external service dependencies that need throttle protection.
+2. Implement a concurrency limiter middleware that tracks in-flight requests per endpoint and rejects new requests with 503 Service Unavailable when the concurrent limit is reached.
+3. Add priority queue support that classifies requests by API key tier (free, pro, enterprise) and serves higher-tier requests first when approaching throttle limits.
+4. Build a circuit breaker for downstream service calls that opens after configurable failure thresholds (e.g., 5 failures in 10 seconds), returning 503 with `Retry-After` during the open state.
+5. Configure adaptive throttling that monitors backend response latency percentiles (p95, p99) and automatically reduces concurrency limits when latency exceeds SLO thresholds.
+6. Add throttle state headers to all responses: `X-Throttle-Limit`, `X-Throttle-Remaining`, and `X-Throttle-Reset` for client-side awareness.
+7. Implement graceful degradation strategies per endpoint: serve cached responses, return partial results, or queue requests for deferred processing.
+8. Write load tests that verify throttle engagement at expected thresholds, proper 503 responses with `Retry-After`, and recovery behavior when load subsides.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/middleware/throttle.js` - Concurrency and request rate throttling middleware
+- `{baseDir}/src/middleware/circuit-breaker.js` - Circuit breaker for downstream service protection
+- `{baseDir}/src/middleware/priority-queue.js` - Tier-based request prioritization
+- `{baseDir}/src/config/throttle-config.js` - Per-endpoint throttle policy definitions
+- `{baseDir}/tests/throttle/` - Load tests validating throttle engagement and recovery
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 503 Service Unavailable | Concurrency limit reached for the endpoint | Return `Retry-After` header with estimated wait time; include throttle state headers |
+| 503 Circuit Open | Circuit breaker tripped due to downstream failures | Return cached response if available; provide circuit reset time in response body |
+| Queue overflow | Request buffer exceeded maximum depth | Reject with 503; alert operations team; consider scaling backend capacity |
+| Stale throttle state | Redis connection lost; throttle counters become inaccurate | Fall back to in-process counters; reconnect with backoff; log state inconsistency |
+| Priority starvation | Low-tier requests never served under sustained high-tier load | Reserve minimum throughput percentage for each tier to prevent complete starvation |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Database-heavy endpoint protection**: Apply concurrency limit of 10 to a report generation endpoint that runs expensive aggregation queries, queueing additional requests with estimated wait times.
+
+**Multi-tier SaaS throttling**: Enterprise tier gets 100 concurrent requests, Pro tier gets 25, Free tier gets 5, with priority queue ensuring enterprise requests are served first during contention.
+
+**Adaptive autoscaling trigger**: Throttle middleware emits metrics that trigger horizontal pod autoscaling when throttle engagement rate exceeds 20% sustained over 5 minutes.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- Circuit Breaker pattern: Martin Fowler's design patterns
+- Resilience4j (Java) and cockatiel (Node.js) circuit breaker libraries
+- Netflix Concurrency Limits library for adaptive throttling
+- Token bucket and leaky bucket algorithm implementations

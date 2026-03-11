@@ -16,48 +16,65 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Evaluate HTTP response headers for web applications against OWASP Secure Headers Project recommendations and browser security baselines. Identify missing, misconfigured, or information-leaking headers across both HTTP and HTTPS responses. Assign a letter grade (A+ through F) and produce actionable remediation directives with server-specific configuration snippets.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Target URL or domain name is accessible
-- Network connectivity for HTTP requests
-- Permission to scan the target domain
-- Optional: Save results to {baseDir}/security-reports/
+- Target URL or domain name accessible over the network
+- Authorization to perform HTTP requests against the target domain
+- Network connectivity for both HTTP and HTTPS protocols
+- Optional: write access to `{baseDir}/security-reports/` for persisting results
 
 ## Instructions
 
-1. Collect the target URL/domain and environment context (CDN/proxy, redirects).
-2. Fetch response headers (HTTP/HTTPS) and capture redirects/cookies.
-3. Compare headers to recommended baselines and score gaps.
-4. Provide concrete remediation steps and verify fixes.
+1. Accept the target domain. If only a domain name is provided, default to `https://`. For batch analysis, accept a newline-separated list.
+2. Fetch response headers using `WebFetch` for both HTTP and HTTPS endpoints. Record the full redirect chain and final destination URL.
+3. Evaluate **critical headers** -- flag any that are missing or misconfigured:
+   - `Strict-Transport-Security`: require `max-age>=31536000`, `includeSubDomains`, and preload eligibility
+   - `Content-Security-Policy`: check for `unsafe-inline`, `unsafe-eval`, overly broad `default-src`, and missing `frame-ancestors`
+   - `X-Frame-Options`: require `DENY` or `SAMEORIGIN`
+   - `X-Content-Type-Options`: require `nosniff`
+   - `Permissions-Policy`: verify camera, microphone, geolocation restrictions
+4. Evaluate **important headers** -- report status and recommendations:
+   - `Referrer-Policy`: recommend `strict-origin-when-cross-origin` or `no-referrer`
+   - `Cross-Origin-Embedder-Policy` (COEP), `Cross-Origin-Opener-Policy` (COOP), `Cross-Origin-Resource-Policy` (CORP)
+5. Check for **information disclosure** -- flag `Server`, `X-Powered-By`, `X-AspNet-Version`, and any header revealing technology stack or version numbers.
+6. Inspect cookie attributes on `Set-Cookie` headers: verify `Secure`, `HttpOnly`, `SameSite=Lax|Strict`, and `__Host-`/`__Secure-` prefix usage.
+7. Calculate a security grade: A+ (95-100), A (85-94), B (75-84), C (65-74), D (50-64), F (<50) based on weighted presence and correctness of each header.
+8. Generate per-header remediation directives with configuration examples for Nginx, Apache, and Cloudflare.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the five-phase implementation workflow.
 
 ## Output
 
-The skill produces:
-
-**Primary Output**: Security headers analysis report
-
-**Report Structure**:
-```
-# Security Headers Analysis - example.com
+- **Headers Analysis Report**: overall grade, per-header status (present/missing/misconfigured), and risk impact
+- **Remediation Checklist**: prioritized fixes with server configuration snippets
+- **Cookie Security Assessment**: attribute compliance for each `Set-Cookie` header
+- **Comparison Table**: side-by-side HTTP vs. HTTPS header differences
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Failed to connect to domain | DNS resolution failure, firewall block, or domain down | Verify domain spelling and DNS records; test alternate protocols |
+| SSL certificate verification failed | Expired, self-signed, or mismatched certificate | Note TLS issue in report; indicates HSTS not properly enforced |
+| Too many redirects | Redirect loop between HTTP and HTTPS | Report the redirect chain and analyze headers at each hop |
+| HTTP 429 Too Many Requests | Rate limiting by target server | Implement backoff; queue domain for delayed re-analysis |
+| Headers differ between HTTP and HTTPS | Inconsistent server configuration | Report both sets; highlight critical differences and flag HSTS gap |
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+- "Analyze security headers for `https://claudecodeplugins.io` and explain any CSP or HSTS issues."
+- "Check headers for `example.com` on both HTTP and HTTPS and provide an Nginx remediation config."
+- "Batch-analyze headers for five staging domains and rank them by security grade."
 
 ## Resources
 
 - OWASP Secure Headers Project: https://owasp.org/www-project-secure-headers/
 - MDN Security Headers Guide: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers#security
 - Security Headers Scanner: https://securityheaders.com/
-- CSP Reference: https://content-security-policy.com/
-- HSTS Preload: https://hstspreload.org/
+- Content Security Policy Reference: https://content-security-policy.com/
+- HSTS Preload Submission: https://hstspreload.org/
+- `{baseDir}/references/errors.md` -- full error handling reference
+- `{baseDir}/references/examples.md` -- additional usage examples
+- https://intentsolutions.io

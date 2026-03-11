@@ -12,61 +12,67 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Versioning Apis
+# Versioning APIs
 
 ## Overview
 
-
-This skill provides automated assistance for api versioning manager tasks.
-This skill provides automated assistance for the described functionality.
+Implement API versioning strategies -- URL path (`/v1/`, `/v2/`), header-based (`Accept: application/vnd.api.v2+json`), or query parameter (`?version=2`) -- with backward compatibility layers, deprecation notices, and automated migration paths. Manage concurrent version support, sunset timelines, and breaking change detection across the API surface.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Existing API codebase with route definitions and controller implementations
+- Version control history for tracking breaking changes across releases
+- OpenAPI specs for each supported API version (or ability to generate them)
+- API gateway or reverse proxy capable of version-based routing (optional: Kong, AWS API Gateway)
+- Consumer notification channel for deprecation announcements (changelog, email, response headers)
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:version-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Audit existing endpoints using Grep and Read to identify current versioning approach (if any) and catalog all public-facing endpoints with their request/response contracts.
+2. Select a versioning strategy based on API consumer patterns: URL path versioning for public APIs, header versioning for APIs needing clean URLs, or content negotiation for advanced use cases.
+3. Create a version router that directs requests to the appropriate version handler set based on the extracted version identifier from URL, header, or query parameter.
+4. Implement version-specific controller directories (`/v1/controllers/`, `/v2/controllers/`) with shared business logic extracted into version-independent service layers.
+5. Build a compatibility layer that transforms v1 requests into v2 format and v2 responses back to v1 format, enabling older versions to run on the latest business logic.
+6. Add deprecation headers to sunset versions: `Deprecation: true`, `Sunset: <date>`, and `Link: <migration-guide-url>; rel="sunset"` per the Sunset HTTP header RFC.
+7. Create a breaking change detector that compares OpenAPI specs between versions and flags removed fields, changed types, new required parameters, and altered response structures.
+8. Write version compatibility tests that send v1-formatted requests and verify correct responses, ensuring the compatibility layer preserves backward compatibility.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/routes/v1/` - Version 1 route definitions
+- `{baseDir}/src/routes/v2/` - Version 2 route definitions
+- `{baseDir}/src/middleware/version-router.js` - Version extraction and routing middleware
+- `{baseDir}/src/compatibility/` - Request/response transformation layers between versions
+- `{baseDir}/src/utils/breaking-change-detector.js` - OpenAPI diff tool for breaking changes
+- `{baseDir}/docs/migration-guide-v1-to-v2.md` - Consumer migration documentation
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 400 Unsupported Version | Client requests a version that does not exist | Return available versions list in error body; suggest closest valid version |
+| 410 Gone | Client requests a sunset version past its end-of-life date | Return migration guide URL and recommended current version in error body |
+| Compatibility layer failure | v1-to-v2 transform encounters a field with no mapping | Log unmapped fields; return partial response with warning header; alert API team |
+| Version header ignored | Client sets version header but reverse proxy strips custom headers | Document required proxy configuration; add URL path fallback for header-based versioning |
+| Breaking change undetected | Semantic change (same field name, different meaning) not caught by schema diff | Add contract tests with business-logic assertions beyond schema structure |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**URL path versioning**: Migrate from `/api/users` to `/api/v1/users` and `/api/v2/users` where v2 changes `name` (string) to `firstName`/`lastName` (object), with v1 compatibility layer that joins the fields.
+
+**Header-based versioning**: Route requests using `Accept: application/vnd.myapi.v2+json` with a default version fallback for clients omitting the header, and version discovery via `OPTIONS` responses.
+
+**Sunset lifecycle management**: Announce v1 deprecation with 6-month sunset timeline, add `Sunset` headers immediately, log v1 usage metrics to track migration progress, and auto-disable after sunset date.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- RFC 8594 The Sunset HTTP Header Field
+- API Versioning strategies comparison (Stripe, GitHub, Twilio approaches)
+- OpenAPI diff tools: oasdiff, openapi-diff
+- Semantic Versioning 2.0.0: https://semver.org/

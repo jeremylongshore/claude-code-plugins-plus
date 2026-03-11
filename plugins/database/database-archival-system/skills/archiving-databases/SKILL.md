@@ -5,7 +5,7 @@ description: |
   This skill automates moving old data to archive tables or cold storage (S3, Azure Blob, GCS).
   Trigger with phrases like "archive old database records", "implement data retention policy",
   "move historical data to cold storage", or "reduce database size with archival".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(aws:s3:*), Bash(az:storage:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,125 +14,100 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Archival System
 
-This skill provides automated assistance for database archival system tasks.
+## Overview
+
+Implement automated data archival pipelines that move historical records from primary database tables to archive storage (archive tables, S3, Azure Blob, or GCS) based on age, status, or access frequency criteria. This skill reduces primary database size, improves query performance on active data, lowers storage costs by moving cold data to cheaper tiers, and ensures compliance with data retention policies. Archival operations preserve referential integrity and provide retrieval paths for archived data when needed.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Database credentials with SELECT and DELETE permissions on source tables
-- Access to destination storage (archive table or cloud storage credentials)
-- Network connectivity to cloud storage services if using S3/Azure/GCS
-- Backup of database before first archival run
-- Understanding of data retention requirements and compliance policies
-- Monitoring tools configured to track archival job success
+- Database credentials with SELECT, INSERT, and DELETE permissions on source and archive tables
+- Cloud storage credentials (AWS S3, Azure Blob, or GCS) if archiving to cold storage
+- `psql` or `mysql` CLI for executing archival queries
+- `aws s3`, `az storage`, or `gsutil` CLI for cloud storage uploads
+- Understanding of data retention requirements and compliance policies (GDPR, HIPAA, SOX)
+- Current table sizes: `SELECT pg_size_pretty(pg_total_relation_size('table_name'))` to identify archival candidates
 
 ## Instructions
 
-### Step 1: Define Archival Criteria
-1. Identify tables containing historical data for archival
-2. Define age threshold for archival (e.g., records older than 1 year)
-3. Determine additional criteria (status flags, record size, access frequency)
-4. Calculate expected data volume to be archived
-5. Document business requirements and compliance policies
+1. Identify archival candidates by finding large tables with time-based data:
+   - `SELECT relname, n_live_tup, pg_size_pretty(pg_total_relation_size(relid)) FROM pg_stat_user_tables ORDER BY pg_total_relation_size(relid) DESC LIMIT 10`
+   - Focus on tables where historical data is rarely queried: logs, audit trails, events, old orders, expired sessions
 
-### Step 2: Choose Archival Destination
-1. Evaluate options: archive table in same database, separate archive database, or cold storage
-2. For cloud storage: select S3, Azure Blob, or GCS based on infrastructure
-3. Configure destination storage with appropriate security and access controls
-4. Set up compression settings for storage efficiency
-5. Define data format for archived records (CSV, Parquet, JSON)
+2. Define archival criteria for each table:
+   - **Age-based**: Records older than N days/months (`WHERE created_at < NOW() - INTERVAL '1 year'`)
+   - **Status-based**: Records in terminal state (`WHERE status IN ('completed', 'cancelled', 'expired')`)
+   - **Combined**: Old AND terminal (`WHERE created_at < NOW() - INTERVAL '6 months' AND status = 'completed'`)
+   - Calculate the expected volume: `SELECT COUNT(*), pg_size_pretty(pg_column_size(t.*)) FROM table_name t WHERE <criteria>`
 
-### Step 3: Create Archive Schema
-1. Design archive table schema matching source table structure
-2. Add metadata columns (archived_at, source_table, archive_reason)
-3. Create indexes on commonly queried archive columns
-4. For cloud storage: define bucket structure and naming conventions
-5. Test archive schema with sample data
+3. Handle referential integrity by archiving in dependency order:
+   - Archive child records first (order_items before orders)
+   - For tables with active foreign key references, verify no active records reference the candidates: `SELECT COUNT(*) FROM active_child WHERE parent_id IN (SELECT id FROM parent WHERE <archive_criteria>)`
+   - Option: cascade archive by archiving parent and all descendants together
 
-### Step 4: Implement Archival Logic
-1. Write SQL query to identify records meeting archival criteria
-2. Create extraction script to export records from source tables
-3. Implement transformation logic if archive format differs from source
-4. Build verification queries to confirm data integrity after archival
-5. Add transaction handling to ensure atomicity (delete only if archive succeeds)
+4. Create archive destination tables matching the source schema plus metadata columns:
+   - `CREATE TABLE orders_archive (LIKE orders INCLUDING ALL)`
+   - `ALTER TABLE orders_archive ADD COLUMN archived_at TIMESTAMPTZ DEFAULT NOW()`
+   - `ALTER TABLE orders_archive ADD COLUMN archive_batch_id UUID`
+   - Remove foreign key constraints on archive tables (archived data is self-contained)
 
-### Step 5: Execute Archival Process
-1. Run archival in staging environment first with subset of data
-2. Verify archived data integrity and completeness
-3. Execute archival in production during low-traffic window
-4. Monitor database performance during archival operation
-5. Generate archival report with record counts and storage savings
+5. Implement the archival operation as an atomic batch:
+   - Generate a batch ID: `SELECT gen_random_uuid() AS batch_id`
+   - Insert into archive: `INSERT INTO orders_archive SELECT *, NOW(), batch_id FROM orders WHERE <criteria>`
+   - Verify row counts match: `SELECT COUNT(*) FROM orders_archive WHERE archive_batch_id = batch_id`
+   - Delete from source only after verification: `DELETE FROM orders WHERE id IN (SELECT id FROM orders_archive WHERE archive_batch_id = batch_id)`
+   - Wrap in a transaction for atomicity
 
-### Step 6: Automate Retention Policy
-1. Schedule periodic archival jobs (weekly, monthly)
-2. Configure automated monitoring and alerting for job failures
-3. Implement cleanup of successfully archived records from source tables
-4. Set up expiration policies on archived data per compliance requirements
-5. Document archival schedule and retention periods
+6. For cloud storage archival, export data to files before upload:
+   - PostgreSQL: `COPY (SELECT * FROM orders WHERE <criteria>) TO '/tmp/archive_orders_2023.csv' WITH CSV HEADER`
+   - Compress: `gzip /tmp/archive_orders_2023.csv`
+   - Upload: `aws s3 cp /tmp/archive_orders_2023.csv.gz s3://archive-bucket/orders/2023/ --sse aws:kms`
+   - Store manifest: record file path, row count, checksum, and date range in an archive_manifest table
+
+7. Process archival in batches to avoid long-running transactions and excessive lock time:
+   - Archive 10,000-50,000 rows per batch
+   - Add a short delay between batches (100-500ms) to allow other transactions to proceed
+   - Log progress after each batch for monitoring and restart capability
+
+8. Run `VACUUM ANALYZE` on source tables after archival to reclaim disk space and update statistics. For large archival operations (>30% of table), consider `VACUUM FULL` during a maintenance window (requires exclusive lock).
+
+9. Implement data retrieval procedures for archived data:
+   - For archive tables: direct SQL queries with `UNION ALL` between active and archive tables
+   - For cloud storage: import script that restores specific date ranges from S3/GCS to temporary tables
+   - Document retrieval procedures for support and compliance teams
+
+10. Schedule recurring archival with a cron job or database scheduler. Run weekly or monthly. Include monitoring that alerts on: archival job failure, unexpected archive volume (too many or too few records), and source table size not decreasing after archival.
 
 ## Output
 
-This skill produces:
-
-**Archival Scripts**: SQL and shell scripts to extract, transform, and load data to archive destination
-
-**Archive Tables/Files**: Structured storage containing historical records with metadata and timestamps
-
-**Verification Reports**: Row counts, data checksums, and integrity checks confirming successful archival
-
-**Storage Metrics**: Database size reduction, archive storage utilization, and cost savings estimates
-
-**Archival Logs**: Detailed logs of each archival run with timestamps, record counts, and any errors
+- **Archive table DDL** with matching schema plus metadata columns
+- **Archival scripts** (SQL and shell) for batch extraction, verification, and deletion
+- **Cloud storage upload scripts** with compression and encryption
+- **Archive manifest table** tracking all archival batches with metadata
+- **Retrieval scripts** for restoring archived data when needed
+- **Cron job configuration** for scheduled recurring archival
 
 ## Error Handling
 
-**Insufficient Storage Space**:
-- Check available disk space on archive destination before execution
-- Implement storage monitoring and alerting
-- Use compression to reduce archive size
-- Clean up old archives per retention policy before new archival
-
-**Data Integrity Issues**:
-- Run checksums on source data before and after archival
-- Implement row count verification between source and archive
-- Keep source data until archive verification completes
-- Rollback archive transaction if verification fails
-
-**Permission Denied Errors**:
-- Verify database user has SELECT on source tables and INSERT on archive tables
-- Confirm cloud storage credentials have write permissions
-- Check network security groups allow connections to cloud storage
-- Document required permissions for archival automation
-
-**Timeout During Large Archival**:
-- Split archival into smaller batches by date ranges
-- Run archival incrementally over multiple days
-- Increase database timeout settings for archival sessions
-- Schedule archival during maintenance windows with extended timeouts
-
-## Resources
-
-**Archival Configuration Templates**:
-- PostgreSQL archival: `{baseDir}/templates/postgresql-archive-config.yaml`
-- MySQL archival: `{baseDir}/templates/mysql-archive-config.yaml`
-- S3 cold storage: `{baseDir}/templates/s3-archive-config.yaml`
-- Azure Blob storage: `{baseDir}/templates/azure-archive-config.yaml`
-
-**Retention Policy Definitions**: `{baseDir}/policies/retention-policies.yaml`
-
-**Archival Scripts Library**: `{baseDir}/scripts/archival/`
-- Extract to CSV script
-- Extract to Parquet script
-- S3 upload with compression
-- Archive verification queries
-
-**Monitoring Dashboards**: `{baseDir}/monitoring/archival-dashboard.json`
-**Cost Analysis Tools**: `{baseDir}/tools/storage-cost-calculator.py`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Foreign key violation during DELETE | Active child records still reference archived parent | Archive child records first; verify no active references exist before deleting parent records |
+| Disk space not reclaimed after archival | PostgreSQL marks deleted rows as dead tuples but does not release space | Run `VACUUM FULL table_name` during maintenance window; or use `pg_repack` for online space reclamation |
+| Archive batch interrupted mid-transaction | Network failure, timeout, or crash during archival | Transaction rollback ensures atomicity; restart from the last completed batch using batch_id tracking |
+| Cloud storage upload fails | Network timeout, credential expiration, or bucket permissions | Implement retry with exponential backoff; verify credentials before starting; use multipart upload for files >100MB |
+| Archived data needed for audit | Compliance request requires access to archived records | Query archive tables directly; or restore from cloud storage using the archive manifest to locate the correct files |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Archiving 2 years of completed orders to reduce database size by 60%**: An orders table with 50M rows (120GB) contains 30M completed orders older than 1 year. Archival moves these to `orders_archive` in batches of 50,000 rows over 3 hours during off-peak. Source table drops to 20M rows (48GB). VACUUM reclaims 72GB. Query performance on active orders improves by 40%.
+
+**Tiered archival to S3 with Parquet format**: Orders 6-12 months old move to archive tables (warm tier, queryable via SQL). Orders older than 12 months export to S3 as Parquet files (cold tier, retrievable on request). Parquet format reduces storage costs by 80% compared to CSV. Archive manifest tracks 156 Parquet files across 36 monthly partitions.
+
+**GDPR-compliant data retention with automatic purging**: Archival script moves user data older than 3 years to archive tables. A separate purge job permanently deletes archive records older than 7 years. Both jobs log actions to an immutable audit trail. Monthly compliance report shows record counts by age tier and confirms purge completion.
+
+## Resources
+
+- PostgreSQL COPY command: https://www.postgresql.org/docs/current/sql-copy.html
+- AWS S3 CLI: https://docs.aws.amazon.com/cli/latest/reference/s3/
+- pg_repack (online table rewrite): https://reorg.github.io/pg_repack/
+- Data retention best practices: https://www.postgresql.org/docs/current/routine-vacuuming.html
+- Parquet format: https://parquet.apache.org/documentation/latest/

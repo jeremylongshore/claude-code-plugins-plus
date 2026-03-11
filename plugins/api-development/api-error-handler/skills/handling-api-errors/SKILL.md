@@ -12,61 +12,68 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Handling Api Errors
+# Handling API Errors
 
 ## Overview
 
-
-This skill provides automated assistance for api error handler tasks.
-This skill provides automated assistance for the described functionality.
+Implement standardized API error handling with RFC 7807 Problem Details responses, centralized error middleware, typed error classes, and environment-aware stack trace exposure. Convert framework exceptions, validation failures, database errors, and upstream service failures into consistent, machine-readable error responses with appropriate HTTP status codes.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Web framework with middleware/error handler support (Express, FastAPI, Spring Boot, Gin)
+- Structured logging library for error event recording with correlation IDs
+- Error monitoring service: Sentry, Bugsnag, or Rollbar for production error tracking
+- RFC 7807 Problem Details specification for response format guidance
+- API documentation listing all possible error codes and their meanings
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:error-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Audit existing error handling using Grep to find `try/catch` blocks, error middleware, and exception handlers, identifying inconsistent error response formats across endpoints.
+2. Define a standardized error response envelope following RFC 7807: `type` (URI identifying error type), `title` (human-readable summary), `status` (HTTP code), `detail` (specific explanation), and `instance` (request path).
+3. Create typed error classes for each error category: `ValidationError` (400), `AuthenticationError` (401), `AuthorizationError` (403), `NotFoundError` (404), `ConflictError` (409), and `RateLimitError` (429).
+4. Implement centralized error handling middleware that catches all thrown errors, maps them to the appropriate HTTP status code and RFC 7807 body, and prevents raw stack traces from leaking to clients.
+5. Add validation error formatting that transforms framework-specific validation failures into a consistent array of field-level errors with `field`, `message`, and `code` properties.
+6. Configure environment-aware error detail: include stack traces and internal error codes in development/staging responses; omit them in production while logging the full error server-side.
+7. Integrate error monitoring (Sentry/Bugsnag) that captures 5xx errors with full context (request details, user info, stack trace) and groups them by root cause for triage.
+8. Handle unhandled rejections and uncaught exceptions at the process level, returning 500 with a generic error message while logging the full failure and triggering alerts.
+9. Write tests verifying that each error type produces the correct HTTP status code, RFC 7807 response body, and that stack traces are hidden in production mode.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/errors/` - Typed error classes (ValidationError, NotFoundError, etc.)
+- `{baseDir}/src/middleware/error-handler.js` - Centralized error handling middleware
+- `{baseDir}/src/errors/formatters.js` - Error-to-RFC-7807 response transformation
+- `{baseDir}/src/errors/codes.js` - Error code registry with human-readable descriptions
+- `{baseDir}/src/config/error-config.js` - Environment-aware error detail configuration
+- `{baseDir}/tests/errors/` - Error handling tests for each error type and scenario
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Stack trace leaked | Error handler omits production check; raw Error thrown without wrapping | Verify `NODE_ENV`/`APP_ENV` check in error formatter; wrap all thrown errors in typed classes |
+| Inconsistent error format | Some endpoints return `{error: "msg"}` while others return RFC 7807 | Ensure all errors flow through centralized middleware; remove per-handler try/catch that formats differently |
+| Unhandled promise rejection | Async handler throws without catch; Express does not catch async errors | Use `express-async-errors` wrapper or explicit async error forwarding with `next(err)` |
+| Database error exposed | Raw SQL error message returned to client containing table/column names | Map database errors to generic messages at the error handler layer; log full details server-side |
+| Error monitoring noise | High volume of expected 4xx errors flooding Sentry/Bugsnag | Configure error monitoring to capture only 5xx; track 4xx via metrics, not error monitoring |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**RFC 7807 response**: `{"type":"https://api.example.com/errors/validation","title":"Validation Error","status":400,"detail":"Request body contains 2 validation errors","errors":[{"field":"email","message":"Invalid email format","code":"INVALID_FORMAT"}]}`
+
+**Centralized Express error handler**: Single `app.use((err, req, res, next) => {...})` middleware that handles all error types, sets status codes, formats RFC 7807 bodies, logs with correlation ID, and reports to Sentry.
+
+**Graceful upstream failure**: When a downstream payment service returns 500, wrap it in a `ServiceUnavailableError` with a user-friendly message, log the upstream response for debugging, and trigger a circuit breaker.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- RFC 7807 Problem Details for HTTP APIs: https://tools.ietf.org/html/rfc7807
+- Sentry error monitoring: https://sentry.io/
+- Express error handling best practices
+- HTTP status code decision tree for API responses

@@ -8,139 +8,63 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Infrastructure As Code Generator
 
-This skill provides automated assistance for infrastructure as code generator tasks.
+# Generating Infrastructure as Code
 
 ## Overview
 
-Generates production-ready IaC (Terraform/CloudFormation/Pulumi/etc.) with modular structure, variables, outputs, and deployment guidance for common cloud stacks.
+Generate production-ready infrastructure as code for Terraform, CloudFormation, Pulumi, ARM templates, and AWS CDK. Produce modular, well-structured configurations with proper variable definitions, outputs, remote state management, and deployment guidance for AWS, GCP, and Azure cloud stacks.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Target cloud provider CLI is installed (aws-cli, gcloud, az)
-- IaC tool is installed (Terraform, Pulumi, AWS CDK)
-- Cloud credentials are configured locally
-- Understanding of target infrastructure architecture
-- Version control system for IaC storage
+- Target cloud provider CLI installed and authenticated (`aws`, `gcloud`, `az`)
+- IaC tool installed: Terraform 1.0+, Pulumi 3+, AWS CDK, or relevant SDK
+- Cloud credentials configured with permissions to create the target resources
+- Understanding of the desired infrastructure architecture (compute, networking, storage, database)
+- Version control repository for storing IaC configurations
 
 ## Instructions
 
-1. **Identify Platform**: Determine IaC tool (Terraform, CloudFormation, Pulumi, ARM, CDK)
-2. **Define Resources**: Specify cloud resources needed (compute, network, storage, database)
-3. **Establish Structure**: Create modular file structure for maintainability
-4. **Generate Code**: Write IaC configurations with proper syntax and formatting
-5. **Add Variables**: Define input variables for environment-specific values
-6. **Configure Outputs**: Specify outputs for resource references and integrations
-7. **Implement State**: Set up remote state storage for team collaboration
-8. **Document Usage**: Add README with deployment instructions and prerequisites
+1. Identify the IaC tool and cloud provider based on the project requirements and existing codebase
+2. Scan the project for existing IaC files to understand current patterns and conventions
+3. Define the modular file structure: separate files for providers, networking, compute, storage, and databases
+4. Generate the provider configuration with version pinning and remote backend for state storage
+5. Define input variables with types, descriptions, defaults, and validation rules for all configurable values
+6. Write resource definitions following cloud provider best practices: encryption enabled, logging configured, least-privilege IAM
+7. Add outputs for resource identifiers, endpoints, and connection strings needed by other modules or applications
+8. Configure remote state backend: S3 + DynamoDB for Terraform, Pulumi Cloud, or CloudFormation stack exports
+9. Create environment-specific variable files (`terraform.tfvars`, `dev.tfvars`, `prod.tfvars`) for multi-environment deployment
+10. Validate with `terraform validate`, `terraform plan`, or equivalent tool-specific linting
 
 ## Output
 
-Generates infrastructure as code files:
-
-**Terraform Example:**
-```hcl
-# {baseDir}/terraform/main.tf
-
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
-terraform {
-  required_version = ">= 1.0"
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
-}
-
-resource "aws_vpc" "main" {
-  cidr_block = var.vpc_cidr
-  enable_dns_hostnames = true
-
-  tags = {
-    Name = "${var.project}-vpc"
-    Environment = var.environment
-  }
-}
-```
-
-**CloudFormation Example:**
-```yaml
-# {baseDir}/cloudformation/template.yaml
-AWSTemplateFormatVersion: '2010-09-09'
-Description: Production VPC infrastructure
-
-Parameters:
-  VpcCidr:
-    Type: String
-    Default: 10.0.0.0/16
-
-Resources:
-  VPC:
-    Type: AWS::EC2::VPC
-    Properties:
-      CidrBlock: !Ref VpcCidr
-      EnableDnsHostnames: true
-```
-
-**Pulumi Example:**
-```typescript
-// {baseDir}/pulumi/index.ts
-import * as aws from "@pulumi/aws";
-
-const vpc = new aws.ec2.Vpc("main", {
-    cidrBlock: "10.0.0.0/16",
-    enableDnsHostnames: true,
-    tags: {
-        Name: "production-vpc"
-    }
-});
-
-export const vpcId = vpc.id;
-```
+- IaC configuration files organized by resource type or module
+- Variable definition files with documented inputs and sensible defaults
+- Output definitions for cross-module references and application configuration
+- Backend configuration for remote state storage
+- Environment-specific variable files for dev, staging, and production
+- Deployment instructions with prerequisite setup and apply commands
 
 ## Error Handling
 
-Common issues and solutions:
-
-**Syntax Errors**
-- Error: "Invalid resource syntax in configuration"
-- Solution: Validate syntax with `terraform validate` or respective tool linter
-
-**Provider Authentication**
-- Error: "Unable to authenticate with cloud provider"
-- Solution: Configure credentials via environment variables or CLI login
-
-**Resource Conflicts**
-- Error: "Resource already exists"
-- Solution: Import existing resources or use data sources instead of creating new ones
-
-**State Lock Issues**
-- Error: "Error acquiring state lock"
-- Solution: Ensure no other process is running, or force unlock if safe
-
-**Dependency Errors**
-- Error: "Resource depends on resource that does not exist"
-- Solution: Check resource references and ensure proper dependency ordering
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Invalid HCL syntax` | Malformed Terraform configuration | Run `terraform validate` to identify the error; check bracket matching and attribute syntax |
+| `Unable to authenticate with cloud provider` | Missing or expired credentials | Run `aws configure`, `gcloud auth login`, or `az login` to refresh credentials |
+| `Resource already exists` | Trying to create a resource that exists outside of IaC management | Use `terraform import` to bring the existing resource under management |
+| `Error acquiring state lock` | Another process holding the state lock | Wait for the other process to finish; use `terraform force-unlock <ID>` if the lock is stale |
+| `Dependency cycle detected` | Resources referencing each other circularly | Refactor to remove the cycle; use data sources or `depends_on` to establish explicit ordering |
 
 ## Examples
 
-- "Generate Terraform for a VPC + private subnets + NAT + EKS cluster on AWS."
-- "Create a minimal CloudFormation template for an S3 bucket with encryption and public access blocked."
+- "Generate Terraform for a production VPC on AWS with public/private subnets across 3 AZs, NAT gateways, VPC flow logs, and an EKS cluster."
+- "Create a CloudFormation template for an S3 bucket with versioning, server-side encryption (KMS), public access block, and lifecycle rules."
+- "Write Pulumi TypeScript code for a GCP Cloud Run service with a custom domain, Cloud SQL database, and Secret Manager integration."
 
 ## Resources
 
-- Terraform documentation: https://www.terraform.io/docs/
-- AWS CloudFormation guide: https://docs.aws.amazon.com/cloudformation/
-- Pulumi documentation: https://www.pulumi.com/docs/
-- Azure ARM templates: https://docs.microsoft.com/azure/azure-resource-manager/
-- IaC best practices guide in {baseDir}/docs/iac-standards.md
+- Terraform documentation: https://developer.hashicorp.com/terraform/docs
+- AWS CloudFormation: https://docs.aws.amazon.com/cloudformation/
+- Pulumi: https://www.pulumi.com/docs/
+- AWS CDK: https://docs.aws.amazon.com/cdk/v2/guide/
+- Azure ARM/Bicep: https://learn.microsoft.com/en-us/azure/azure-resource-manager/

@@ -8,77 +8,71 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Git Commit Smart
 
-This skill provides automated assistance for git commit smart tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Git repository is initialized in {baseDir}
-- Changes are staged using `git add`
-- User has permission to create commits
-- Git user name and email are configured
-
-## Instructions
-
-1. **Analyze Staged Changes**: Examine git diff output to understand modifications
-2. **Determine Commit Type**: Classify changes as feat, fix, docs, style, refactor, test, or chore
-3. **Identify Scope**: Extract affected module or component from file paths
-4. **Detect Breaking Changes**: Look for API changes, removed features, or incompatible modifications
-5. **Format Message**: Construct message following pattern: `type(scope): description`
-6. **Present for Review**: Show generated message and ask for confirmation before committing
-
-## Output
-
-Generates conventional commit messages in this format:
-
-```
-type(scope): brief description
-
-- Detailed explanation of changes
-- Why the change was necessary
-- Impact on existing functionality
-
-BREAKING CHANGE: description if applicable
-```
-
-Examples:
-- `feat(auth): implement JWT authentication middleware`
-- `fix(api): resolve null pointer exception in user endpoint`
-- `docs(readme): update installation instructions`
-
-## Error Handling
-
-Common issues and solutions:
-
-**No Staged Changes**
-- Error: "No changes staged for commit"
-- Solution: Stage files using `git add <files>` before generating commit message
-
-**Git Not Initialized**
-- Error: "Not a git repository"
-- Solution: Initialize git with `git init` or navigate to repository root
-
-**Uncommitted Changes**
-- Warning: "Unstaged changes detected"
-- Solution: Stage relevant changes or use `git stash` for unrelated modifications
-
-**Invalid Commit Format**
-- Error: "Generated message doesn't follow conventional format"
-- Solution: Review and manually adjust type, scope, or description
-
-## Resources
-
-- Conventional Commits specification: https://www.conventionalcommits.org/
-- Git commit best practices documentation
-- Repository commit history for style consistency
-- Project-specific commit guidelines in {baseDir}/000-docs/007-DR-GUID-contributing.md
+# Generating Smart Commits
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Analyze staged git changes and generate Conventional Commits messages with accurate type classification, scope detection, and breaking change identification. Supports `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`, `perf`, `ci`, and `build` types following the Conventional Commits 1.0.0 specification.
+
+## Prerequisites
+
+- Git repository initialized in the working directory
+- Changes staged via `git add` (at least one staged file)
+- Git user name and email configured (`git config user.name`, `git config user.email`)
+- Understanding of the project's commit message conventions (check recent history)
+
+## Instructions
+
+1. Run `git diff --cached --stat` to get an overview of staged files and change volume
+2. Run `git diff --cached` to examine the actual code changes in detail
+3. Classify the commit type based on the nature of changes:
+   - `feat`: new functionality visible to users
+   - `fix`: bug correction
+   - `refactor`: code restructuring without behavior change
+   - `docs`: documentation only
+   - `test`: adding or updating tests
+   - `chore`: build process, dependencies, or tooling
+   - `perf`: performance improvement
+   - `ci`: CI/CD configuration changes
+4. Determine scope from the primary directory or module affected (e.g., `auth`, `api`, `cli`, `db`)
+5. Check for breaking changes: removed public APIs, changed function signatures, renamed exports, schema migrations
+6. Check recent commit history with `git log --oneline -10` to match the project's style conventions
+7. Construct the commit message: `type(scope): imperative description under 72 characters`
+8. Add a body with bullet points explaining the "why" behind the change if the diff is non-trivial
+9. Append `BREAKING CHANGE:` footer if applicable
+
+## Output
+
+Conventional commit message following this format:
+
+```
+type(scope): imperative description
+
+- Explanation of what changed and why
+- Impact on existing functionality
+
+BREAKING CHANGE: description (if applicable)
+```
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `No changes staged for commit` | Nothing added to staging area | Run `git add <files>` to stage changes before generating the message |
+| `Not a git repository` | Working directory is not inside a git repo | Run `git init` or navigate to the repository root |
+| `Ambiguous commit type` | Changes span multiple categories (feature + fix) | Split into separate commits or use the primary intent as the type |
+| `Scope unclear from file paths` | Changes touch many unrelated directories | Use the most significant module or omit scope entirely |
+| `Commit message exceeds 72 characters` | Description too verbose | Shorten to the essential action; move details to the commit body |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Analyze my staged changes and generate a conventional commit message with the right type and scope."
+- "Create a commit message for these changes, checking if there are any breaking changes in the API."
+- "Generate a smart commit following this project's existing commit style (check the last 10 commits)."
+
+## Resources
+
+- Conventional Commits specification: https://www.conventionalcommits.org/en/v1.0.0/
+- Angular commit guidelines: https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit
+- Git commit best practices: https://cbea.ms/git-commit/

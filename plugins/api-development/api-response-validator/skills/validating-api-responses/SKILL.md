@@ -12,61 +12,67 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Validating Api Responses
+# Validating API Responses
 
 ## Overview
 
-
-This skill provides automated assistance for api response validator tasks.
-This skill provides automated assistance for the described functionality.
+Validate API responses against OpenAPI schemas, JSON Schema definitions, and contract specifications to detect data integrity violations, schema drift, and backward compatibility regressions. Run validation in middleware (development/staging) or as post-deployment contract tests to ensure every response conforms to the documented API contract.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- OpenAPI 3.0+ specification with complete response schema definitions for all endpoints
+- JSON Schema validator: Ajv (Node.js), jsonschema (Python), or everit-org/json-schema (Java)
+- Response validation middleware or test harness integrated into CI pipeline
+- API test client for exercising endpoints and capturing response bodies
+- Schema diff tool for detecting contract changes between versions
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:validate-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Read the OpenAPI specification using Read and extract all response schemas per endpoint, including success responses (200, 201), error responses (400, 404, 500), and header definitions.
+2. Compile JSON Schema validators for each endpoint-status combination, enabling strict mode (`additionalProperties: false`) to detect undocumented fields leaking into responses.
+3. Implement response validation middleware that intercepts outgoing responses and validates the body against the corresponding schema, logging violations without blocking responses in production.
+4. Configure validation strictness per environment: `strict` (fail on violation) in development/staging, `warn` (log only) in production, with violation metrics emitted for monitoring.
+5. Add header validation to verify required response headers (Content-Type, Cache-Control, rate limit headers) match the OpenAPI specification.
+6. Build a contract test suite that sends representative requests to each endpoint and validates every response field, including nested objects, arrays, enums, nullable fields, and format constraints (date-time, email, URI).
+7. Implement schema drift detection that compares the current response shape against the documented schema after each deployment, alerting when undocumented fields appear or documented fields disappear.
+8. Generate a validation coverage report showing which endpoints and response codes have schema validation, identifying gaps in the specification.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/middleware/response-validator.js` - Response schema validation middleware
+- `{baseDir}/src/validators/` - Compiled JSON Schema validators per endpoint
+- `{baseDir}/tests/contract/` - Contract test suite validating all endpoint responses
+- `{baseDir}/reports/validation-coverage.md` - Schema coverage report per endpoint and status code
+- `{baseDir}/reports/schema-drift.json` - Detected undocumented response field changes
+- `{baseDir}/src/config/validation.js` - Per-environment validation strictness configuration
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Additional property detected | Response contains field not defined in schema | Add field to schema if intentional; remove from serializer if data leak; configure `additionalProperties` |
+| Type mismatch | Field returns string instead of documented integer (or vice versa) | Fix serializer to match schema type; add type coercion test; check ORM field mapping |
+| Required field missing | Response omits a field marked required in schema | Verify database query includes the field; check conditional serialization logic |
+| Null value on non-nullable | Field returns null but schema does not include `nullable: true` | Update schema to allow null, or fix data source to guarantee non-null values |
+| Format validation failure | Date field does not match RFC 3339 format or email field format invalid | Apply format serialization at the ORM/model level before response construction |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**CI contract gate**: On every pull request, run contract tests that validate all endpoint responses against the OpenAPI spec, failing the build if any response violates the documented schema.
+
+**Production response sampling**: In production, validate 5% of responses against schemas (sampled randomly), emitting `response_validation_failure` metrics to detect schema drift caused by data changes.
+
+**Backward compatibility check**: Compare v1 and v2 response schemas to verify that v2 is a superset of v1 (no removed fields, no type changes), ensuring existing consumers are not broken.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- JSON Schema Specification: https://json-schema.org/specification
+- Ajv JSON Schema validator: https://ajv.js.org/
+- OpenAPI response validation best practices
+- Consumer-Driven Contract Testing with Pact: https://pact.io/

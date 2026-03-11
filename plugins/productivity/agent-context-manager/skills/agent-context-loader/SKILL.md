@@ -15,43 +15,57 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Automatic discovery and loading of `AGENTS.md` files across project hierarchies for AI coding agents. This skill scans the current workspace and its parent directories to locate agent instruction files, then surfaces their contents so the active agent session has full operational context. Essential for multi-project monorepos, nested workspaces, and teams that maintain per-directory agent instructions.
 
 ## Prerequisites
 
-- Access to project files in {baseDir}/
-- Required tools and dependencies installed
-- Understanding of skill functionality
-- Permissions for file operations
+- A project workspace containing one or more `AGENTS.md` files at any directory depth
+- Read and Glob permissions to traverse the directory tree
+- Grep access for searching file contents when multiple candidates exist
 
 ## Instructions
 
-1. Identify skill activation trigger and context
-2. Gather required inputs and parameters
-3. Execute skill workflow systematically
-4. Validate outputs meet requirements
-5. Handle errors and edge cases appropriately
-6. Provide clear results and next steps
+1. Scan the current working directory and all ancestor directories (up to the filesystem root or repository root) for files named `AGENTS.md` or `agents.md`.
+2. Search subdirectories of the current workspace for additional `AGENTS.md` files that may apply to sub-projects or modules.
+3. Determine load order: files closer to the repository root load first (global context), files in deeper directories load later (override or supplement).
+4. Read each discovered `AGENTS.md` file and extract its instruction blocks, workflow definitions, and constraint declarations.
+5. Merge instructions into a unified context, noting any conflicts between levels (e.g., a subdirectory agent overriding a root-level rule).
+6. Present the loaded context as a structured summary: source file path, instruction count, and any detected conflicts.
+7. Cache the discovery results for the current session to avoid redundant filesystem scans on subsequent activations.
 
 ## Output
 
-- Primary deliverables based on skill purpose
-- Status indicators and success metrics
-- Generated files or configurations
-- Reports and summaries as applicable
-- Recommendations for follow-up actions
+- Ordered list of discovered `AGENTS.md` file paths with their directory depth
+- Merged instruction set combining all discovered agent contexts
+- Conflict report highlighting any contradictory directives between levels
+- Session cache status indicating whether results are fresh or reused
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| No `AGENTS.md` found | Workspace has no agent instruction files | Confirm the correct working directory; create an `AGENTS.md` at the project root if needed |
+| Permission denied on directory traversal | Restricted parent directories above the workspace | Limit scan depth to the repository root (detected via `.git/` presence) |
+| Circular symlink detected | Symlinked directories create an infinite traversal loop | Skip symlinked directories during the scan; log a warning with the symlink path |
+| Conflicting instructions across levels | A subdirectory `AGENTS.md` contradicts the root-level file | Flag the conflict in the output; apply the more specific (deeper) instruction by default |
+| File encoding error | `AGENTS.md` uses a non-UTF-8 encoding | Attempt latin-1 fallback; report the file path and encoding issue |
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**Example 1: Monorepo with per-package agent instructions**
+- Structure: Root `AGENTS.md` sets global conventions; `packages/api/AGENTS.md` adds API-specific tooling rules.
+- Result: Both files loaded in order. The API-specific rules supplement the global context without conflict.
+
+**Example 2: Nested workspace with conflicting commit policies**
+- Structure: Root `AGENTS.md` says "always sign commits"; `services/legacy/AGENTS.md` says "skip commit signing."
+- Result: Conflict detected and reported. The deeper (legacy) directive is applied with a warning noting the override.
+
+**Example 3: First-time setup with no agent files**
+- Structure: A freshly cloned repository with no `AGENTS.md` anywhere.
+- Result: Scan completes with zero files found. Output includes a suggestion to create `AGENTS.md` at the repository root with a minimal template.
 
 ## Resources
 
-- Official documentation for related tools
-- Best practices guides
-- Example use cases and templates
-- Community forums and support channels
+- Claude Code AGENTS.md specification: https://docs.anthropic.com/en/docs/agents
+- Monorepo workspace patterns for agent configuration: https://docs.anthropic.com/en/docs/claude-code
+- File discovery best practices for hierarchical configuration loading

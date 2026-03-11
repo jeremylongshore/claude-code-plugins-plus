@@ -5,126 +5,68 @@ description: |
   This skill provides security scanning and vulnerability detection with comprehensive guidance and automation.
   Trigger with phrases like "scan for vulnerabilities", "implement security controls",
   or "audit security".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(docker:*), Bash(kubectl:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Container Security Scanner
 
-This skill provides automated assistance for container security scanner tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/container-security-scanner/`
-
-**Documentation and Guides**: `{baseDir}/docs/container-security-scanner/`
-
-**Example Scripts and Code**: `{baseDir}/examples/container-security-scanner/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/container-security-scanner-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/container-security-scanner-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/container-security-scanner-dashboard.json`
+# Scanning Container Security
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Scan container images and Dockerfiles for vulnerabilities, misconfigurations, and compliance violations using Trivy, Grype, Snyk Container, and Hadolint. Analyze base images, OS packages, application dependencies, and runtime configurations to produce actionable security reports with remediation guidance.
+
+## Prerequisites
+
+- Container scanning tool installed: `trivy`, `grype`, `snyk`, or `docker scout`
+- Dockerfile linter: `hadolint` for Dockerfile best practice validation
+- Docker daemon running for local image scanning
+- Access to the container images to scan (local, registry, or tar archive)
+- `jq` for parsing JSON scan results
+
+## Instructions
+
+1. Identify target images for scanning: production images, base images, and CI-built images
+2. Lint Dockerfiles with `hadolint Dockerfile` to catch misconfigurations before build (privileged instructions, pinned versions, shell best practices)
+3. Scan built images for OS-level vulnerabilities: `trivy image <image:tag>` or `grype <image:tag>`
+4. Scan for application dependency vulnerabilities: check language-specific packages (npm, pip, Maven, Go modules) embedded in the image
+5. Check for secrets accidentally baked into image layers: `trivy image --scanners secret <image:tag>`
+6. Evaluate image against CIS Docker Benchmark: verify non-root user, read-only filesystem capability, health checks defined
+7. Generate a security report with severity classification (Critical, High, Medium, Low) and CVE identifiers
+8. Produce remediation steps: upgrade base image, pin package versions, replace vulnerable dependencies
+9. Integrate scanning into CI/CD pipeline: fail builds on Critical/High vulnerabilities, generate SARIF output for GitHub Security tab
+
+## Output
+
+- Vulnerability scan report in JSON, table, or SARIF format
+- Hadolint report with Dockerfile improvement recommendations
+- Remediation Dockerfile patches (updated base image, pinned package versions)
+- CI/CD pipeline step configuration for automated image scanning
+- Security policy document defining acceptable risk thresholds
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `trivy: unable to pull image` | Image not found locally or registry auth failure | Pull image first with `docker pull` or configure registry credentials |
+| `CRITICAL vulnerability found but no fix available` | Upstream package has no patch yet | Document as accepted risk, use `--ignore-unfixed` flag, or switch to an alternative base image |
+| `hadolint: DL3008 pin versions in apt-get install` | Packages installed without version pinning | Add version pins (e.g., `apt-get install nginx=1.24.0-1`) or use `--no-install-recommends` |
+| `Scan timeout on large image` | Image has many layers or large filesystem | Use `--timeout 15m` flag; scan a specific layer or use `--skip-dirs` to exclude test data |
+| `False positive CVE` | Scanner database maps CVE to a package not actually exploitable | Add to `.trivyignore` or Grype ignore file with justification comment |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Scan all production Docker images for Critical and High CVEs, generate a report, and create Jira tickets for each finding."
+- "Lint the Dockerfile for best practices: ensure multi-stage build, non-root USER, no ADD for remote URLs, and pinned base image digest."
+- "Set up a GitHub Actions step that runs Trivy on every PR, fails on Critical vulnerabilities, and uploads results to the Security tab via SARIF."
+
+## Resources
+
+- Trivy: https://aquasecurity.github.io/trivy/
+- Grype: https://github.com/anchore/grype
+- Hadolint: https://github.com/hadolint/hadolint
+- Docker Scout: https://docs.docker.com/scout/
+- CIS Docker Benchmark: https://www.cisecurity.org/benchmark/docker

@@ -5,126 +5,67 @@ description: |
   This skill provides auto-scaling configuration with comprehensive guidance and automation.
   Trigger with phrases like "configure auto-scaling", "set up elastic scaling",
   or "implement scaling".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Auto Scaling Configurator
 
-This skill provides automated assistance for auto scaling configurator tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/auto-scaling-configurator/`
-
-**Documentation and Guides**: `{baseDir}/docs/auto-scaling-configurator/`
-
-**Example Scripts and Code**: `{baseDir}/examples/auto-scaling-configurator/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/auto-scaling-configurator-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/auto-scaling-configurator-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/auto-scaling-configurator-dashboard.json`
+# Configuring Auto-Scaling Policies
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Configure auto-scaling policies for cloud workloads across AWS Auto Scaling Groups, GCP Managed Instance Groups, Azure VMSS, and Kubernetes Horizontal Pod Autoscaler (HPA). Generate scaling configurations based on CPU, memory, request rate, or custom metrics with appropriate thresholds, cooldown periods, and scale-in protection.
+
+## Prerequisites
+
+- Cloud provider CLI installed and authenticated (`aws`, `gcloud`, or `az`)
+- For Kubernetes HPA: `kubectl` configured with cluster access and metrics-server deployed
+- Baseline performance data for the target workload (average CPU, memory, request rate)
+- Understanding of traffic patterns (steady, bursty, scheduled)
+- IAM permissions to create/modify scaling policies and CloudWatch/Stackdriver alarms
+
+## Instructions
+
+1. Identify the scaling target: EC2 Auto Scaling Group, GCP MIG, Azure VMSS, or Kubernetes Deployment
+2. Analyze current workload metrics to establish baseline utilization and peak patterns
+3. Define scaling boundaries: minimum instances/pods, maximum instances/pods, desired count
+4. Select scaling metric(s): CPU utilization, memory, request count, queue depth, or custom metrics
+5. Set target thresholds: scale-out trigger (e.g., CPU > 70%), scale-in trigger (e.g., CPU < 30%)
+6. Configure cooldown periods to prevent flapping (typically 300s scale-out, 600s scale-in)
+7. Add scale-in protection for stateful workloads or leader nodes if needed
+8. Generate the scaling policy configuration in the appropriate format (Terraform, YAML, or CLI commands)
+9. Validate by simulating load and confirming scaling events fire correctly
+
+## Output
+
+- Terraform HCL for AWS ASG scaling policies with CloudWatch alarms
+- Kubernetes HPA manifests (YAML) with resource or custom metric targets
+- GCP autoscaler configurations for Managed Instance Groups
+- Scaling policy JSON/YAML for Azure VMSS
+- CloudWatch or Stackdriver alarm definitions tied to scaling actions
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `No scaling activity despite high load` | Metric not reaching threshold or cooldown active | Verify metric source in CloudWatch/Stackdriver; check cooldown timer with `describe-scaling-activities` |
+| `Scaling too aggressively (flapping)` | Cooldown too short or threshold too sensitive | Increase cooldown period and widen the gap between scale-out and scale-in thresholds |
+| `Max capacity reached` | Instance/pod limit hit during traffic spike | Raise `max_size` or implement request queuing as a backpressure mechanism |
+| `HPA unable to compute replica count` | Metrics server not deployed or metric unavailable | Install metrics-server and verify `kubectl top pods` returns data |
+| `FailedScaleUp: insufficient capacity` | Cloud provider out of capacity in selected AZ/region | Add multiple AZs to the ASG or use mixed instance types with allocation strategy |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Configure an AWS ASG with target tracking at 65% CPU, min 2 / max 20 instances, and 5-minute cooldown."
+- "Create a Kubernetes HPA for a deployment that scales from 3 to 50 pods based on requests-per-second using a custom Prometheus metric."
+- "Set up scheduled scaling for a GCP MIG: scale to 10 instances at 8am UTC and back to 2 at 10pm."
+
+## Resources
+
+- AWS Auto Scaling: https://docs.aws.amazon.com/autoscaling/ec2/userguide/
+- Kubernetes HPA: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/
+- GCP Autoscaler: https://cloud.google.com/compute/docs/autoscaler
+- Azure VMSS Autoscale: https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-autoscale-overview

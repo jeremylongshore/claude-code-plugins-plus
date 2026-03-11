@@ -8,78 +8,76 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Security Agent
-
-This skill provides automated assistance for security agent tasks.
+# Performing Security Code Review
 
 ## Overview
 
-This skill empowers Claude to act as a security expert, identifying and explaining potential vulnerabilities within code. It leverages the security-agent plugin to provide detailed security analysis, helping developers improve the security posture of their applications.
-
-## How It Works
-
-1. **Receiving Request**: Claude identifies a user's request for a security review or audit of code.
-2. **Activating Security Agent**: Claude invokes the security-agent plugin to analyze the provided code.
-3. **Generating Security Report**: The security-agent produces a structured report detailing identified vulnerabilities, their severity, affected code locations, and recommended remediation steps.
-
-## When to Use This Skill
-
-This skill activates when you need to:
-- Review code for security vulnerabilities.
-- Perform a security audit of a codebase.
-- Identify potential security risks in a software application.
-
-## Examples
-
-### Example 1: Identifying SQL Injection Vulnerability
-
-User request: "Please review this database query code for SQL injection vulnerabilities."
-
-The skill will:
-1. Activate the security-agent plugin to analyze the database query code.
-2. Generate a report identifying potential SQL injection vulnerabilities, including the vulnerable code snippet, its severity, and suggested remediation, such as using parameterized queries.
-
-### Example 2: Checking for Insecure Dependencies
-
-User request: "Can you check this project's dependencies for known security vulnerabilities?"
-
-The skill will:
-1. Utilize the security-agent plugin to scan the project's dependencies against known vulnerability databases.
-2. Produce a report listing any vulnerable dependencies, their Common Vulnerabilities and Exposures (CVE) identifiers, and recommendations for updating to secure versions.
-
-## Best Practices
-
-- **Specificity**: Provide the exact code or project you want reviewed.
-- **Context**: Clearly state the security concerns you have regarding the code.
-- **Iteration**: Use the findings to address vulnerabilities and request further reviews.
-
-## Integration
-
-This skill integrates with Claude's code understanding capabilities and leverages the security-agent plugin to provide specialized security analysis. It can be used in conjunction with other code analysis tools to provide a comprehensive assessment of code quality and security.
+Conducts security-focused code reviews by scanning source files for common vulnerability patterns including SQL injection, XSS, authentication flaws, insecure dependencies, and secret exposure. Produces structured severity-rated reports with specific remediation guidance. Targets development teams integrating security analysis into their code review workflow.
 
 ## Prerequisites
 
-- Appropriate file access permissions
-- Required dependencies installed
+- Read access to all source files in the target project
+- `grep` available on PATH for pattern matching
+- Access to `package.json` or equivalent dependency manifest for dependency auditing
+- Familiarity with OWASP Top 10 vulnerability categories
 
 ## Instructions
 
-1. Invoke this skill when the trigger conditions are met
-2. Provide necessary context and parameters
-3. Review the generated output
-4. Apply modifications as needed
+1. Identify the scope of the review: specific files, directories, or the entire codebase. Confirm the primary language(s) and framework(s) in use.
+2. Scan for hardcoded secrets and credentials:
+   - Search for patterns matching API keys, tokens, passwords, AWS access keys (`AKIA...`), and private key headers (`BEGIN PRIVATE KEY`).
+   - Flag any `.env` files or configuration files containing plaintext secrets.
+3. Analyze code for injection vulnerabilities:
+   - Identify raw SQL string concatenation (SQL injection risk).
+   - Locate unsanitized user input rendered in HTML (XSS risk).
+   - Check for `eval()`, `exec()`, or `Function()` calls with dynamic input (code injection risk).
+4. Review authentication and authorization logic:
+   - Verify password hashing uses strong algorithms (bcrypt, argon2) rather than MD5/SHA1.
+   - Check for missing authentication on sensitive endpoints.
+   - Identify overly permissive CORS configurations.
+5. Audit dependencies for known vulnerabilities:
+   - Run `npm audit` or equivalent package manager audit command.
+   - Cross-reference dependency versions against known CVE databases.
+6. Check for insecure communication patterns:
+   - Flag HTTP URLs where HTTPS is expected.
+   - Identify disabled TLS certificate verification.
+7. Compile findings into a structured report sorted by severity (Critical, High, Medium, Low), including the vulnerable code location, explanation, and remediation steps.
 
 ## Output
 
-The skill produces structured output relevant to the task.
+A structured security review report containing:
+- Summary with total findings count by severity level
+- Per-finding entries with: file path, line number, vulnerability type, severity, code snippet, explanation, and recommended fix
+- Dependency audit results with CVE identifiers where applicable
+- Overall risk assessment (Critical / High / Medium / Low / Clean)
 
 ## Error Handling
 
-- Invalid input: Prompts for correction
-- Missing dependencies: Lists required components
-- Permission errors: Suggests remediation steps
+| Error | Cause | Solution |
+|---|---|---|
+| No source files found | Incorrect scope path or empty directory | Verify the target directory path and confirm it contains source files |
+| Binary files in scan | Non-text files matched by search patterns | Exclude binary extensions and `node_modules/` from scans |
+| Dependency manifest missing | No `package.json`, `requirements.txt`, or equivalent | Skip dependency audit; note in report that dependency analysis was not possible |
+| Permission denied on files | Restricted file access | Request read permissions or narrow the review scope to accessible files |
+| False positive on secret pattern | Benign string matching secret regex | Verify context before reporting; mark as potential false positive if the match appears in test fixtures or documentation |
+
+## Examples
+
+**SQL injection review:**
+Trigger: "Review this database query code for SQL injection vulnerabilities."
+Process: Scan all files containing SQL query construction. Identify string concatenation with user input (`"SELECT * FROM users WHERE id = " + userId`). Report as High severity with remediation: use parameterized queries or prepared statements.
+
+**Dependency vulnerability scan:**
+Trigger: "Check this project's dependencies for known security vulnerabilities."
+Process: Run `npm audit` on the project. Parse output for vulnerabilities. Report each finding with CVE identifier, affected package, installed version, and patched version. Recommend `npm audit fix` or manual version pinning.
+
+**Full codebase security audit:**
+Trigger: "Run a security scan on this codebase."
+Process: Execute all seven scan categories (secrets, injection, auth, dependencies, communication, dangerous commands, obfuscation). Produce a comprehensive report with findings grouped by category and sorted by severity.
 
 ## Resources
 
-- Project documentation
-- Related skills and commands
+- [OWASP Top 10](https://owasp.org/www-project-top-ten/) -- industry-standard vulnerability classification
+- [Node.js Security Checklist](https://blog.risingstack.com/node-js-security-checklist/) -- Node-specific security guidance
+- [CWE/SANS Top 25](https://cwe.mitre.org/top25/) -- most dangerous software weaknesses
+- `{baseDir}/references/README.md` -- bundled reference materials

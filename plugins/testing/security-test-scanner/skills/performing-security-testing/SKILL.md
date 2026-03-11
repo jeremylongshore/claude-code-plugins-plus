@@ -4,7 +4,7 @@ description: |
   Test automate security vulnerability testing covering OWASP Top 10, SQL injection, XSS, CSRF, and authentication issues.
   Use when performing security assessments, penetration tests, or vulnerability scans.
   Trigger with phrases like "scan for vulnerabilities", "test security", or "run penetration test".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:security-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -13,127 +13,103 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Security Test Scanner
 
-This skill provides automated assistance for security test scanner tasks.
+## Overview
+
+Automate security vulnerability detection covering OWASP Top 10 categories including SQL injection, XSS, CSRF, broken authentication, and sensitive data exposure. Combines static analysis (source code scanning with Semgrep, Bandit, ESLint security plugins) with dynamic testing patterns (input fuzzing, header validation, authentication bypass checks). Produces prioritized findings with CVSS severity scores and remediation guidance.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- Target application or API endpoint URLs accessible for testing
-- Authentication credentials if testing protected resources
-- Appropriate authorization to perform security testing on the target system
-- Test environment configured (avoid production without explicit approval)
-- Security testing tools installed (OWASP ZAP, sqlmap, or equivalent)
+- Static analysis tools installed (Semgrep, ESLint with `eslint-plugin-security`, Bandit for Python, or SpotBugs for Java)
+- Application running in a test environment (never scan production without explicit authorization)
+- Written authorization to perform security testing on the target system
+- `npm audit`, `pip-audit`, or `trivy` for dependency vulnerability scanning
+- OWASP ZAP or Burp Suite for dynamic application security testing (optional)
 
 ## Instructions
 
-### Step 1: Define Test Scope
-Identify the security testing parameters:
-- Target URLs and endpoints to scan
-- Authentication requirements and test credentials
-- Specific vulnerability types to focus on (OWASP Top 10, injection, XSS, etc.)
-- Testing depth level (passive scan vs. active exploitation)
-
-### Step 2: Execute Security Scan
-Run automated vulnerability detection:
-1. Use Read tool to analyze application structure and identify entry points
-2. Execute security testing tools via Bash(test:security-*) with proper scope
-3. Monitor scan progress and capture all findings
-4. Document identified vulnerabilities with severity ratings
-
-### Step 3: Analyze Vulnerabilities
-Process scan results to identify:
-- SQL injection vulnerabilities in database queries
-- Cross-Site Scripting (XSS) in user input fields
-- Cross-Site Request Forgery (CSRF) token weaknesses
-- Authentication and authorization bypass opportunities
-- Security misconfigurations and exposed sensitive data
-
-### Step 4: Generate Security Report
-Create comprehensive documentation in {baseDir}/security-reports/:
-- Executive summary with risk overview
-- Detailed vulnerability findings with CVSS scores
-- Proof-of-concept exploit examples where applicable
-- Prioritized remediation recommendations
-- Compliance assessment against security standards
+1. Run dependency vulnerability scanning to identify known CVEs:
+   - Execute `npm audit --json` or `pip-audit --format json` or `trivy fs .`.
+   - Parse results and flag critical/high severity vulnerabilities.
+   - Check if vulnerable dependencies have available patches.
+2. Perform static application security testing (SAST) on source code:
+   - Run Semgrep with OWASP rulesets: `semgrep --config=p/owasp-top-ten`.
+   - Execute language-specific scanners (Bandit for Python, ESLint security for JS).
+   - Scan for hardcoded secrets using `gitleaks` or `trufflehog`.
+3. Analyze code for injection vulnerabilities:
+   - Search for string concatenation in SQL queries (use Grep for patterns like `"SELECT.*" +`).
+   - Identify unsanitized user input flowing into `innerHTML`, `eval()`, or `exec()`.
+   - Check for command injection via `child_process.exec()` or `os.system()` with user input.
+4. Validate authentication and authorization:
+   - Verify password hashing uses bcrypt, scrypt, or Argon2 (not MD5/SHA1).
+   - Check JWT token validation includes expiration, issuer, and audience claims.
+   - Ensure authorization checks exist on every protected endpoint.
+5. Test for common web vulnerabilities:
+   - CSRF: Verify anti-CSRF tokens on state-changing endpoints.
+   - CORS: Check `Access-Control-Allow-Origin` is not set to `*` on authenticated endpoints.
+   - Security headers: Validate presence of `Content-Security-Policy`, `X-Frame-Options`, `Strict-Transport-Security`.
+6. Generate a prioritized findings report with:
+   - CVSS score for each vulnerability.
+   - Affected file, line number, and code snippet.
+   - Specific remediation steps with code examples.
+7. Create regression tests for each finding to prevent reintroduction.
 
 ## Output
 
-The skill generates structured security assessment reports:
-
-### Vulnerability Summary
-- Total vulnerabilities discovered by severity (Critical, High, Medium, Low)
-- OWASP Top 10 category mapping for each finding
-- Attack surface analysis showing exposed endpoints
-
-### Detailed Findings
-Each vulnerability includes:
-- Unique identifier and CVSS score
-- Affected URLs, parameters, and HTTP methods
-- Technical description of the security weakness
-- Proof-of-concept demonstration or reproduction steps
-- Potential impact on confidentiality, integrity, and availability
-
-### Remediation Guidance
-- Specific code fixes or configuration changes required
-- Secure coding best practices to prevent recurrence
-- Priority recommendations based on risk and effort
-- Verification testing procedures after remediation
-
-### Compliance Assessment
-- Alignment with OWASP Application Security Verification Standard (ASVS)
-- PCI DSS requirements if applicable to payment processing
-- General Data Protection Regulation (GDPR) security considerations
+- Security scan report in Markdown with findings sorted by severity
+- Dependency vulnerability list with CVE IDs and available patches
+- SAST findings with file paths, line numbers, and code context
+- Remediation checklist with specific code fixes for each finding
+- Security regression test file to prevent reintroduction of fixed vulnerabilities
 
 ## Error Handling
 
-Common issues and solutions:
-
-**Access Denied**
-- Error: HTTP 403 or authentication failures during scan
-- Solution: Verify credentials are valid and have sufficient permissions; use provided test accounts
-
-**Rate Limiting**
-- Error: Too many requests blocked by WAF or rate limiter
-- Solution: Configure scan throttling to reduce request rate; use authenticated sessions to increase limits
-
-**False Positives**
-- Error: Reported vulnerabilities that cannot be exploited
-- Solution: Manually verify each finding; adjust scanner sensitivity; whitelist known safe patterns
-
-**Tool Installation Missing**
-- Error: Security testing tools not found on system
-- Solution: Install required tools using Bash(test:security-install) with package manager
-
-## Resources
-
-### Security Testing Tools
-- OWASP ZAP for automated vulnerability scanning
-- Burp Suite for manual penetration testing
-- sqlmap for SQL injection detection and exploitation
-- Nikto for web server vulnerability scanning
-
-### Vulnerability Databases
-- Common Vulnerabilities and Exposures (CVE) database
-- National Vulnerability Database (NVD) for CVSS scoring
-- OWASP Top 10 documentation and remediation guides
-
-### Secure Coding Guidelines
-- OWASP Secure Coding Practices checklist
-- CWE (Common Weakness Enumeration) catalog
-- SANS Top 25 Most Dangerous Software Errors
-
-### Best Practices
-- Always test in non-production environments first
-- Obtain written authorization before security testing
-- Document all testing activities for audit trails
-- Validate remediation effectiveness with regression testing
-
-## Overview
-
-
-This skill provides automated assistance for security test scanner tasks.
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| False positive on SQL injection | ORM parameterized queries flagged as concatenation | Add Semgrep `nosemgrep` comments on verified safe patterns; tune rules to recognize the ORM |
+| Secret scanner flags test fixtures | Test files contain example API keys or tokens | Add test directories to `.gitleaksignore`; use obviously fake values like `test-key-000` |
+| Dependency audit returns hundreds of results | Transitive dependencies with low-severity issues | Filter to direct dependencies first; focus on critical/high only; use `npm audit --omit=dev` |
+| Scanner cannot reach application | Application not running or port mismatch | Start the application before dynamic scans; verify the base URL and port configuration |
+| Rate limiting blocks scan | Too many requests from the scanner | Configure scan throttling; use authenticated sessions with higher rate limits |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**Semgrep scan for OWASP Top 10:**
+```bash
+semgrep --config=p/owasp-top-ten --json --output=security-results.json .
+```
+
+**Checking for hardcoded secrets:**
+```bash
+gitleaks detect --source=. --report-format=json --report-path=secrets-report.json
+```
+
+**Security regression test (Jest):**
+```typescript
+describe('Security: XSS Prevention', () => {
+  it('escapes HTML entities in user-generated content', () => {
+    const input = '<script>alert("xss")</script>';
+    const rendered = renderUserComment(input);
+    expect(rendered).not.toContain('<script>');
+    expect(rendered).toContain('&lt;script&gt;');
+  });
+
+  it('rejects SQL injection in search parameter', async () => {
+    const response = await request(app)
+      .get('/api/search?q=\'; DROP TABLE users; --')
+      .expect(200);
+    expect(response.body.results).toBeDefined();
+    // Verify users table still exists
+    const users = await db.query('SELECT count(*) FROM users');
+    expect(users.rows[0].count).toBeGreaterThan(0);
+  });
+});
+```
+
+## Resources
+
+- OWASP Top 10: https://owasp.org/www-project-top-ten/
+- Semgrep rules registry: https://semgrep.dev/explore
+- Bandit (Python SAST): https://bandit.readthedocs.io/
+- Gitleaks secret detection: https://github.com/gitleaks/gitleaks
+- npm audit documentation: https://docs.npmjs.com/cli/commands/npm-audit
+- OWASP ASVS (Application Security Verification Standard): https://owasp.org/www-project-application-security-verification-standard/

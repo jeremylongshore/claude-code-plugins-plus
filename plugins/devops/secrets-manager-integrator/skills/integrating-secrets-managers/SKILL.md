@@ -8,81 +8,61 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Secrets Manager Integrator
 
-This skill provides automated assistance for secrets manager integrator tasks.
+# Integrating Secrets Managers
 
 ## Overview
 
-This skill empowers Claude to automate the integration of secrets managers into your infrastructure. It generates the necessary configuration files and setup code, ensuring a secure and efficient workflow for managing sensitive credentials.
-
-## How It Works
-
-1. **Identify Requirements**: Claude analyzes the user's request to determine the specific secrets manager and desired configurations.
-2. **Generate Configuration**: Based on the identified requirements, Claude generates the appropriate configuration files (e.g., Vault policies, AWS IAM roles) and setup code.
-3. **Provide Instructions**: Claude provides clear instructions on how to deploy and configure the generated code and integrate it into the existing infrastructure.
-
-## When to Use This Skill
-
-This skill activates when you need to:
-- Integrate HashiCorp Vault into your infrastructure.
-- Set up AWS Secrets Manager for secure credential storage.
-- Generate configuration files for managing secrets.
-- Implement best practices for secrets management.
-
-## Examples
-
-### Example 1: Integrating Vault with a Kubernetes Cluster
-
-User request: "Integrate Vault with my Kubernetes cluster for managing database credentials."
-
-The skill will:
-1. Generate Vault policies for accessing database credentials.
-2. Create Kubernetes service accounts with appropriate annotations for Vault integration.
-3. Provide instructions for deploying the Vault agent injector to the Kubernetes cluster.
-
-### Example 2: Setting up AWS Secrets Manager for API Keys
-
-User request: "Set up AWS Secrets Manager to securely store API keys for my application."
-
-The skill will:
-1. Generate an IAM role with permissions to access AWS Secrets Manager.
-2. Create a Secrets Manager secret containing the API keys.
-3. Provide code snippets for retrieving the API keys from Secrets Manager within the application.
-
-## Best Practices
-
-- **Least Privilege**: Generate configurations that grant only the necessary permissions for accessing secrets.
-- **Secure Storage**: Ensure that secrets are stored securely within the chosen secrets manager.
-- **Regular Rotation**: Implement a strategy for regularly rotating secrets to minimize the impact of potential breaches.
-
-## Integration
-
-This skill can be used in conjunction with other skills for deploying applications, configuring infrastructure, and automating DevOps workflows. It provides a secure foundation for managing sensitive information across your entire infrastructure.
+Integrate secrets management platforms (HashiCorp Vault, AWS Secrets Manager, GCP Secret Manager, Azure Key Vault) into applications and infrastructure. Generate authentication configurations, access policies, secret rotation schedules, and application code patterns for secure credential retrieval at runtime.
 
 ## Prerequisites
 
-- Appropriate file access permissions
-- Required dependencies installed
+- Secrets manager instance running and accessible (Vault server, AWS Secrets Manager enabled)
+- Cloud provider CLI authenticated or Vault CLI installed (`vault`, `aws`, `gcloud`, `az`)
+- IAM/policy permissions to create secrets and access policies
+- Understanding of which application components need which secrets
+- Network connectivity between application workloads and the secrets manager endpoint
 
 ## Instructions
 
-1. Invoke this skill when the trigger conditions are met
-2. Provide necessary context and parameters
-3. Review the generated output
-4. Apply modifications as needed
+1. Inventory all secrets currently in use: database credentials, API keys, TLS certificates, OAuth tokens
+2. Select the secrets manager based on infrastructure: Vault for multi-cloud, AWS Secrets Manager for AWS-native, GCP Secret Manager for GCP
+3. Create the secrets store structure: organize by application, environment, and secret type (e.g., `apps/myapp/prod/database`)
+4. Generate access policies with least-privilege: each application identity gets read access only to its own secrets
+5. Configure authentication method: Kubernetes service account (Vault K8s auth), IAM role (AWS), Workload Identity (GCP)
+6. Implement secret retrieval in the application: SDK call at startup, sidecar injection (Vault Agent), or CSI driver mount
+7. Set up automatic secret rotation: define rotation lambda/function, rotation interval, and notification on rotation events
+8. Remove hardcoded secrets from code and configuration files; replace with secret references
+9. Add monitoring: alert on secret access failures, rotation failures, and unauthorized access attempts
 
 ## Output
 
-The skill produces structured output relevant to the task.
+- Vault policies (HCL) or IAM policies (JSON) for secret access
+- Authentication configuration (Vault K8s auth, AWS IAM role, GCP Workload Identity)
+- Application code snippets for secret retrieval (SDK-based or environment variable injection)
+- Secret rotation configuration (AWS rotation Lambda, Vault dynamic secrets)
+- Kubernetes External Secrets Operator or CSI SecretProviderClass manifests
 
 ## Error Handling
 
-- Invalid input: Prompts for correction
-- Missing dependencies: Lists required components
-- Permission errors: Suggests remediation steps
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `permission denied` on secret read | Policy does not grant access to the requested path | Update Vault policy or IAM policy to include the specific secret ARN/path |
+| `Vault token expired` | Authentication token TTL exceeded | Configure token renewal or use short-lived tokens with auto-renewal via Vault Agent |
+| `Secret not found` | Secret path/name incorrect or secret deleted | Verify the secret exists with `vault kv get` or `aws secretsmanager describe-secret` |
+| `Rotation failed` | Rotation function lacks permissions or target service unreachable | Check rotation function logs; verify it has permissions to update credentials on the target service |
+| `Connection refused to Vault` | Vault server down or network policy blocking access | Verify Vault is running and healthy; check network policies/firewalls between application and Vault |
+
+## Examples
+
+- "Integrate HashiCorp Vault with a Kubernetes deployment using the Vault Agent sidecar injector to inject database credentials as environment variables."
+- "Set up AWS Secrets Manager with automatic rotation every 30 days for an RDS PostgreSQL password, with a Lambda rotation function."
+- "Replace all hardcoded API keys in the application with GCP Secret Manager references using Workload Identity for authentication."
 
 ## Resources
 
-- Project documentation
-- Related skills and commands
+- HashiCorp Vault: https://developer.hashicorp.com/vault/docs
+- AWS Secrets Manager: https://docs.aws.amazon.com/secretsmanager/
+- GCP Secret Manager: https://cloud.google.com/secret-manager/docs
+- External Secrets Operator: https://external-secrets.io/
+- Secrets management best practices: https://developer.hashicorp.com/vault/tutorials/recommended-patterns

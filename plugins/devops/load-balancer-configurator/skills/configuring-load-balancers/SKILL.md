@@ -13,47 +13,56 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Configure load balancers across AWS (ALB, NLB), GCP (HTTP(S) LB, TCP/UDP LB), Nginx, and HAProxy. Generate production-ready configurations with health checks, SSL/TLS termination, path-based and host-based routing, sticky sessions, rate limiting, and traffic distribution rules for high-availability deployments.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Backend servers are identified with IPs or DNS names
-- Load balancer type is determined (ALB, NLB, Nginx, HAProxy)
-- SSL certificates are available if using HTTPS
-- Health check endpoints are defined
-- Understanding of traffic distribution requirements (round-robin, least-connections)
-- Cloud provider CLI installed (if using cloud load balancers)
+- Backend servers identified with IPs, DNS names, and ports
+- Load balancer type determined: L4 (NLB, HAProxy TCP) or L7 (ALB, Nginx, HAProxy HTTP)
+- SSL/TLS certificates available (ACM, Let's Encrypt, or self-signed) if using HTTPS
+- Health check endpoints defined on backend services (e.g., `/health` returning 200)
+- Cloud provider CLI installed for managed load balancers (`aws`, `gcloud`)
 
 ## Instructions
 
-1. **Select Load Balancer Type**: Choose based on requirements (L4 vs L7, cloud vs on-prem)
-2. **Define Backend Pool**: List backend servers with ports and weights
-3. **Configure Health Checks**: Set check interval, timeout, and healthy threshold
-4. **Set Up SSL/TLS**: Configure certificates and cipher suites
-5. **Define Routing Rules**: Create path-based or host-based routing
-6. **Enable Session Persistence**: Configure sticky sessions if needed
-7. **Add Monitoring**: Set up logging and metrics collection
-8. **Test Configuration**: Validate syntax and test traffic distribution
+1. Select load balancer type based on requirements: ALB for HTTP/HTTPS with path routing, NLB for TCP/UDP with static IPs, Nginx for on-prem reverse proxy, HAProxy for high-performance TCP/HTTP
+2. Define the backend pool: list all backend server addresses, ports, and weights for weighted distribution
+3. Configure health checks with appropriate interval (10-30s), timeout (5s), healthy threshold (3), and unhealthy threshold (2)
+4. Set up SSL/TLS termination: configure certificates, redirect HTTP to HTTPS, set minimum TLS version to 1.2
+5. Define routing rules: path-based routing (`/api` -> API pool, `/static` -> CDN), host-based routing (`api.example.com` -> API)
+6. Enable session persistence (sticky sessions) using cookies or source IP affinity where needed for stateful applications
+7. Add connection draining to gracefully handle backend removal during deployments
+8. Configure logging and monitoring: access logs to S3/CloudWatch, request metrics, error rate dashboards
+9. Test the configuration: validate syntax (`nginx -t`, HAProxy config check), verify traffic distribution, and confirm failover behavior
 
 ## Output
 
-**Nginx Configuration:**
-```nginx
-# {baseDir}/nginx/load-balancer.conf
+- Nginx configuration files (`nginx.conf`, site configs) with upstream blocks and server directives
+- HAProxy configuration (`haproxy.cfg`) with frontend/backend sections
+- Terraform HCL for AWS ALB/NLB with target groups, listeners, and rules
+- GCP load balancer Terraform with backend services, URL maps, and health checks
+- SSL certificate configuration and renewal automation
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `502 Bad Gateway` | Backend server unreachable or not responding | Verify backend IPs, ports, and firewall rules; check backend service health |
+| `SSL certificate verify failed` | Certificate expired, wrong chain, or key mismatch | Verify certificate validity and chain with `openssl s_client`; regenerate if needed |
+| `Target is unhealthy` | Health check endpoint returning non-200 or timing out | Verify health check path returns 200; increase timeout if backend is slow to respond |
+| `nginx: configuration file test failed` | Syntax error in Nginx configuration | Run `nginx -t` to identify the specific error line; fix syntax and test again |
+| `Session persistence not working` | Cookie-based stickiness misconfigured or client not sending cookies | Verify cookie name matches; use IP-based affinity as fallback for non-browser clients |
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+- "Configure an AWS ALB with HTTPS listener, path-based routing to two target groups (/api and /web), and health checks on /health."
+- "Generate an Nginx reverse proxy config with upstream servers, sticky sessions via cookie, and rate limiting at 100 req/s per IP."
+- "Create a HAProxy configuration for TCP load balancing across 4 database read replicas with health checks and connection draining."
 
 ## Resources
 
-- Nginx documentation: https://nginx.org/en/docs/
-- HAProxy configuration guide: https://www.haproxy.org/
-- AWS ALB documentation: https://docs.aws.amazon.com/elasticloadbalancing/
+- Nginx load balancing: https://nginx.org/en/docs/http/load_balancing.html
+- HAProxy configuration: https://www.haproxy.org/download/2.8/doc/configuration.txt
+- AWS ALB: https://docs.aws.amazon.com/elasticloadbalancing/latest/application/
 - GCP Load Balancing: https://cloud.google.com/load-balancing/docs
-- Example configurations in {baseDir}/lb-examples/
+- See `{baseDir}/references/errors.md` for additional error handling patterns

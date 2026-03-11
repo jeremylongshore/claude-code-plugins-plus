@@ -5,126 +5,68 @@ description: |
   Use when you need to work with environment configuration.
   Trigger with phrases like "manage environments", "configure environments",
   or "sync configurations".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(cmd:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Environment Config Manager
 
-This skill provides automated assistance for environment config manager tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/environment-config-manager/`
-
-**Documentation and Guides**: `{baseDir}/docs/environment-config-manager/`
-
-**Example Scripts and Code**: `{baseDir}/examples/environment-config-manager/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/environment-config-manager-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/environment-config-manager-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/environment-config-manager-dashboard.json`
+# Managing Environment Configurations
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Manage application configurations across development, staging, and production environments using `.env` files, Kubernetes ConfigMaps/Secrets, SSM Parameter Store, and cloud-native configuration services. Enforce consistency, prevent configuration drift, and implement safe promotion workflows between environments.
+
+## Prerequisites
+
+- Access to all target environments (dev, staging, production)
+- Configuration management tool or pattern identified (dotenv, ConfigMaps, SSM, Consul)
+- Version control for configuration files (separate repo or encrypted in application repo)
+- Encryption tool for sensitive values (`sops`, `age`, `sealed-secrets`, or cloud KMS)
+- Understanding of which values differ between environments vs. which are shared
+
+## Instructions
+
+1. Audit existing configuration: scan for `.env` files, `config/` directories, Kubernetes ConfigMaps, and hardcoded values in source code
+2. Classify each configuration value: public (non-sensitive, varies per env), secret (credentials, API keys), and static (same across all envs)
+3. Extract hardcoded values into externalized configuration with a clear naming convention (`APP_DATABASE_HOST`, `APP_REDIS_URL`)
+4. Create environment-specific configuration files: `.env.development`, `.env.staging`, `.env.production`
+5. Encrypt sensitive values using `sops` with cloud KMS or `sealed-secrets` for Kubernetes
+6. Generate Kubernetes ConfigMaps and Secrets from environment files for cluster-based deployments
+7. Set up configuration validation: schema checks to ensure all required variables are present before deployment
+8. Implement promotion workflow: changes go to dev first, then promote to staging after testing, then to production with approval
+9. Add configuration drift detection: compare running environment against source-of-truth on a schedule
+
+## Output
+
+- Environment-specific configuration files (`.env.*`, `config/*.yaml`)
+- Kubernetes ConfigMap and Secret manifests per environment
+- Configuration schema/validation script to catch missing variables
+- SOPS-encrypted secret files with `.sops.yaml` rules
+- CI/CD pipeline steps for configuration validation and deployment
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Missing required environment variable` | Variable defined in schema but absent from `.env` file | Add the variable to the environment file; run validation script before deploy |
+| `SOPS decryption failed` | Wrong KMS key or expired credentials | Verify KMS key ARN in `.sops.yaml`; refresh cloud credentials |
+| `ConfigMap too large` | Kubernetes 1MB ConfigMap size limit exceeded | Split into multiple ConfigMaps or mount as files from a volume |
+| `Configuration drift detected` | Manual changes made directly to running environment | Re-apply configuration from source-of-truth; block direct environment edits |
+| `Secret exposed in logs` | Application logging sensitive config values at startup | Mask secrets in logging output; audit code for accidental secret printing |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create an environment configuration system using `.env` files for a Node.js app with SOPS encryption for secrets and validation that all required vars are set."
+- "Generate Kubernetes ConfigMaps and Secrets from environment files for dev, staging, and production namespaces."
+- "Set up a configuration promotion workflow: edit in dev, validate in CI, promote to staging via PR, deploy to production with approval gate."
+
+## Resources
+
+- 12-Factor App config: https://12factor.net/config
+- SOPS encryption: https://github.com/getsops/sops
+- Kubernetes ConfigMaps: https://kubernetes.io/docs/concepts/configuration/configmap/
+- Sealed Secrets: https://github.com/bitnami-labs/sealed-secrets
+- Consul KV: https://developer.hashicorp.com/consul/docs/dynamic-app-config/kv

@@ -4,7 +4,7 @@ description: |
   Test automatically generate comprehensive unit tests from source code covering happy paths, edge cases, and error conditions.
   Use when creating test coverage for functions, classes, or modules.
   Trigger with phrases like "generate unit tests", "create tests for", or "add test coverage".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(test:unit-*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -13,133 +13,110 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Unit Test Generator
 
-This skill provides automated assistance for unit test generator tasks.
+## Overview
+
+Automatically generate comprehensive unit tests from source code analysis covering happy paths, edge cases, boundary conditions, and error handling. Supports Jest, Vitest, Mocha (JavaScript/TypeScript), pytest (Python), JUnit 5 (Java), and Go testing with testify. Produces tests following the Arrange-Act-Assert pattern with proper mocking of external dependencies.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- Source code files requiring test coverage
-- Testing framework installed (Jest, Mocha, pytest, JUnit, etc.)
-- Understanding of code dependencies and external services to mock
-- Test directory structure established (e.g., `tests/`, `__tests__/`, `spec/`)
-- Package configuration updated with test scripts
+- Testing framework installed and configured (`jest`, `vitest`, `pytest`, `junit-jupiter`, or Go `testing`)
+- Source code with clear function signatures, type annotations, or JSDoc comments
+- Test directory structure established (`__tests__/`, `tests/`, `spec/`, or `*_test.go`)
+- Mocking library available (`jest.mock`, `unittest.mock`, `Mockito`, or `gomock`)
+- Package scripts configured to run tests (`npm test`, `pytest`, `go test`)
 
 ## Instructions
 
-### Step 1: Analyze Source Code
-Examine code structure and identify test requirements:
-1. Use Read tool to load source files from {baseDir}/src/
-2. Identify all functions, classes, and methods requiring tests
-3. Document function signatures, parameters, return types, and side effects
-4. Note external dependencies requiring mocking or stubbing
-
-### Step 2: Determine Testing Framework
-Select appropriate testing framework based on language:
-- JavaScript/TypeScript: Jest, Mocha, Jasmine, Vitest
-- Python: pytest, unittest, nose2
-- Java: JUnit 5, TestNG
-- Go: testing package with testify assertions
-- Ruby: RSpec, Minitest
-
-### Step 3: Generate Test Cases
-Create comprehensive test suite covering:
-1. Happy path tests with valid inputs and expected outputs
-2. Edge case tests with boundary values (empty arrays, null, zero, max values)
-3. Error condition tests with invalid inputs
-4. Mock external dependencies (databases, APIs, file systems)
-5. Setup and teardown fixtures for test isolation
-
-### Step 4: Write Test File
-Generate test file in {baseDir}/tests/ with structure:
-- Import statements for code under test and testing framework
-- Mock declarations for external dependencies
-- Describe/context blocks grouping related tests
-- Individual test cases with arrange-act-assert pattern
-- Cleanup logic in afterEach/tearDown hooks
+1. Scan the codebase with Glob to locate source files that lack corresponding test files (e.g., `src/utils/parser.ts` without `__tests__/parser.test.ts`).
+2. Read each untested source file and extract:
+   - All exported functions and class methods with their signatures.
+   - Parameter types, return types, and thrown exceptions.
+   - External dependencies (imports from other modules, third-party libraries, I/O).
+   - Pure vs. impure function classification.
+3. For each function, generate test cases in these categories:
+   - **Happy path**: Valid inputs producing expected outputs (at least 2 cases).
+   - **Edge cases**: Empty strings, empty arrays, zero, negative numbers, `null`, `undefined`, maximum values.
+   - **Error conditions**: Invalid types, missing required fields, network failures, permission errors.
+   - **Boundary values**: Off-by-one, integer overflow, string length limits.
+4. Create mock declarations for all external dependencies:
+   - Database calls return predictable fixture data.
+   - HTTP clients return canned responses with configurable status codes.
+   - File system operations use in-memory buffers or temp directories.
+5. Write the test file following project conventions:
+   - Match the existing test file naming pattern (`*.test.ts`, `*.spec.js`, `test_*.py`).
+   - Group tests in `describe`/`context` blocks by function name.
+   - Use `beforeEach`/`afterEach` for setup and teardown.
+   - Include inline comments explaining non-obvious test rationale.
+6. Run the generated tests to verify they pass, then check coverage to confirm the target function is fully exercised.
+7. Report coverage gaps and suggest additional test cases for uncovered branches.
 
 ## Output
 
-The skill generates complete test files:
+- Test files placed alongside source files or in the project's test directory
+- Mock/stub files for external dependencies
+- Coverage report showing line, branch, and function coverage for tested modules
+- List of remaining coverage gaps with suggested test cases
 
-### Test File Structure
-```javascript
-// Example Jest test file
-import { validator } from '../src/utils/validator';
+## Error Handling
 
-describe('Validator', () => {
-  describe('validateEmail', () => {
-    it('should accept valid email addresses', () => {
-      expect(validator.validateEmail('test@example.com')).toBe(true);
-    });
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Cannot find module` on import | Test file path does not match project module resolution | Check `tsconfig.json` paths and `moduleNameMapper` in Jest config |
+| Mock not intercepting calls | Mock defined after module import caches the real implementation | Move `jest.mock()` calls to the top of the file before any imports |
+| Async test timeout | Promise never resolves due to missing `await` or unhandled rejection | Add `await` before async calls; increase timeout with `jest.setTimeout()` |
+| Tests pass alone but fail together | Shared mutable state leaking between tests | Reset state in `afterEach`; avoid module-level variables; use `jest.isolateModules()` |
+| Snapshot mismatch on first run | No existing snapshot baseline | Run with `--updateSnapshot` on first execution to create the baseline |
 
-    it('should reject invalid email formats', () => {
-      expect(validator.validateEmail('invalid-email')).toBe(false);
-    });
+## Examples
 
-    it('should handle null and undefined', () => {
-      expect(validator.validateEmail(null)).toBe(false);
-      expect(validator.validateEmail(undefined)).toBe(false);
-    });
+**Jest test for a string utility:**
+```typescript
+import { slugify } from '../src/utils/slugify';
+
+describe('slugify', () => {
+  it('converts spaces to hyphens', () => {
+    expect(slugify('hello world')).toBe('hello-world');
+  });
+  it('lowercases all characters', () => {
+    expect(slugify('Hello World')).toBe('hello-world');
+  });
+  it('removes special characters', () => {
+    expect(slugify('hello@world!')).toBe('helloworld');
+  });
+  it('handles empty string', () => {
+    expect(slugify('')).toBe('');
+  });
+  it('trims leading and trailing whitespace', () => {
+    expect(slugify('  spaced  ')).toBe('spaced');
   });
 });
 ```
 
-### Coverage Metrics
-- Line coverage percentage (target: 80%+)
-- Branch coverage showing tested conditional paths
-- Function coverage ensuring all exports are tested
-- Statement coverage for comprehensive validation
+**pytest test for a data validator:**
+```python
+import pytest
+from myapp.validators import validate_email
 
-### Mock Implementations
-Generated mocks for:
-- Database connections and queries
-- HTTP requests to external APIs
-- File system operations (read/write)
-- Environment variables and configuration
-- Time-dependent functions (Date.now(), setTimeout)
+class TestValidateEmail:
+    def test_accepts_valid_email(self):
+        assert validate_email("user@example.com") is True
 
-## Error Handling
+    def test_rejects_missing_at_sign(self):
+        assert validate_email("userexample.com") is False
 
-Common issues and solutions:
+    def test_rejects_empty_string(self):
+        assert validate_email("") is False
 
-**Module Import Errors**
-- Error: Cannot find module or dependencies
-- Solution: Install missing packages; verify import paths match project structure; check TypeScript configuration
-
-**Mock Setup Failures**
-- Error: Mock not properly intercepting calls
-- Solution: Ensure mocks are defined before imports; use proper mocking syntax for framework; clear mocks between tests
-
-**Async Test Timeouts**
-- Error: Test exceeded timeout before completing
-- Solution: Increase timeout for slow operations; ensure async/await or done callbacks are used correctly; check for unresolved promises
-
-**Test Isolation Issues**
-- Error: Tests pass individually but fail when run together
-- Solution: Add proper cleanup in afterEach hooks; avoid shared mutable state; reset mocks between tests
+    def test_rejects_none(self):
+        with pytest.raises(TypeError):
+            validate_email(None)
+```
 
 ## Resources
 
-### Testing Frameworks
-- Jest documentation for JavaScript testing
-- pytest documentation for Python testing
-- JUnit 5 User Guide for Java testing
-- Go testing package and testify library
-
-### Best Practices
-- Follow AAA pattern (Arrange, Act, Assert) for test structure
-- Write tests before fixing bugs (test-driven bug fixing)
-- Use descriptive test names that explain the scenario
-- Keep tests independent and avoid test interdependencies
-- Mock external dependencies for unit test isolation
-- Aim for 80%+ code coverage on critical paths
-
-## Overview
-
-
-This skill provides automated assistance for unit test generator tasks.
-This skill provides automated assistance for the described functionality.
-
-## Examples
-
-Example usage patterns will be demonstrated in context.
+- Jest documentation: https://jestjs.io/docs/getting-started
+- Vitest documentation: https://vitest.dev/guide/
+- pytest documentation: https://docs.pytest.org/
+- JUnit 5 User Guide: https://junit.org/junit5/docs/current/user-guide/
+- Go testing package: https://pkg.go.dev/testing
+- AAA pattern (Arrange-Act-Assert): https://automationpanda.com/2020/07/07/arrange-act-assert-pattern-for-python-unit-tests/

@@ -5,126 +5,68 @@ description: |
   This skill provides backup automation and disaster recovery with comprehensive guidance and automation.
   Trigger with phrases like "create backups", "automate backups",
   or "implement disaster recovery".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(tar:*), Bash(rsync:*), Bash(aws:s3:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Fairdb Backup Manager
 
-This skill provides automated assistance for fairdb backup manager tasks.
-
-## Prerequisites
-
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
-
-## Instructions
-
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
-
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
-
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
-
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
-
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
-
-## Output
-
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
-
-## Error Handling
-
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/fairdb-backup-manager/`
-
-**Documentation and Guides**: `{baseDir}/docs/fairdb-backup-manager/`
-
-**Example Scripts and Code**: `{baseDir}/examples/fairdb-backup-manager/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/fairdb-backup-manager-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/fairdb-backup-manager-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/fairdb-backup-manager-dashboard.json`
+# FairDB Backup Manager
 
 ## Overview
 
-This skill provides automated assistance for the described functionality.
+Automate backup and recovery operations for FairDB database instances. Generate backup scripts, configure retention policies, schedule automated backups to local storage or S3, and produce tested restore procedures with integrity verification.
+
+## Prerequisites
+
+- FairDB instance running and accessible with admin credentials
+- `tar` and `rsync` installed for file-level backups
+- AWS CLI configured with `s3:PutObject` and `s3:GetObject` permissions (if using S3 as backup target)
+- Sufficient storage at backup destination (2-3x database size for rotation)
+- Cron or systemd timer access for scheduling
+- Test environment available for restore verification
+
+## Instructions
+
+1. Assess the FairDB instance: identify data directory location, database size, and write throughput
+2. Select backup method: logical dump for portability, filesystem snapshot for speed, or continuous archiving for minimal RPO
+3. Generate backup script with lock acquisition, data export, compression (`tar czf`), and checksum generation
+4. Configure S3 upload with server-side encryption (`aws s3 cp --sse aws:kms`) for off-site copies
+5. Set up retention policy: keep hourly backups for 24 hours, daily for 7 days, weekly for 4 weeks, monthly for 12 months
+6. Create cleanup script to purge expired backups according to retention schedule
+7. Schedule backups via cron with proper logging to `/var/log/fairdb-backup.log`
+8. Generate restore procedure: download from S3, verify checksum, decompress, and import with validation query
+9. Test restore procedure in a staging environment and document the time-to-recovery
+
+## Output
+
+- Backup shell script with logging, locking, compression, and S3 upload
+- Restore shell script with checksum verification and data validation
+- Cron schedule entries or systemd timer units
+- Retention cleanup script
+- S3 lifecycle policy configuration for long-term archive tiering
+
+## Error Handling
+
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `Backup lock acquisition failed` | Another backup or maintenance process is running | Check for stale lock files; implement timeout-based lock with `flock` |
+| `tar: Cannot open: No space left on device` | Local backup destination full | Run retention cleanup; check disk usage with `df -h`; increase volume size |
+| `aws s3 cp: upload failed` | Network issue or expired AWS credentials | Retry with `--retry 3`; refresh credentials; check S3 bucket permissions |
+| `Restore failed: checksum mismatch` | Backup file corrupted during transfer or storage | Re-download from S3; verify S3 object integrity; use a different backup copy |
+| `Database inconsistent after restore` | Backup taken during active write without lock | Ensure backup script acquires a consistent snapshot lock before export |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+- "Create an automated nightly backup for the FairDB production instance, compressed and uploaded to S3 with KMS encryption and 30-day retention."
+- "Generate a restore runbook that pulls the latest backup from S3, verifies integrity, and restores to a staging instance for validation."
+- "Set up backup monitoring that alerts via Slack if a backup job fails or if no successful backup exists within the last 25 hours."
+
+## Resources
+
+- AWS S3 CLI: https://docs.aws.amazon.com/cli/latest/reference/s3/
+- rsync documentation: https://rsync.samba.org/documentation.html
+- Backup automation patterns: https://www.veeam.com/blog/321-backup-rule.html
+- Linux cron scheduling: https://crontab.guru/

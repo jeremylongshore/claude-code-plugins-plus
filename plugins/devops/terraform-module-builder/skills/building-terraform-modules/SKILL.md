@@ -8,78 +8,61 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-# Terraform Module Builder
 
-This skill provides automated assistance for terraform module builder tasks.
+# Building Terraform Modules
 
 ## Overview
 
-This skill allows Claude to efficiently generate Terraform modules, streamlining infrastructure-as-code development. By utilizing the terraform-module-builder plugin, it ensures modules are production-ready, well-documented, and incorporate best practices.
-
-## How It Works
-
-1. **Receiving User Request**: Claude receives a request to create a Terraform module, including details about the module's purpose and desired features.
-2. **Generating Module Structure**: Claude invokes the terraform-module-builder plugin to create the basic file structure and configuration files for the module.
-3. **Customizing Module Content**: Claude uses the user's specifications to populate the module with variables, outputs, and resource definitions, ensuring best practices are followed.
-
-## When to Use This Skill
-
-This skill activates when you need to:
-- Create a new Terraform module from scratch.
-- Generate production-ready Terraform configuration files.
-- Implement infrastructure as code using Terraform modules.
-
-## Examples
-
-### Example 1: Creating a VPC Module
-
-User request: "Create a Terraform module for a VPC with public and private subnets, a NAT gateway, and appropriate security groups."
-
-The skill will:
-1. Invoke the terraform-module-builder plugin to generate a basic VPC module structure.
-2. Populate the module with Terraform code to define the VPC, subnets, NAT gateway, and security groups based on best practices.
-
-### Example 2: Generating an S3 Bucket Module
-
-User request: "Generate a Terraform module for an S3 bucket with versioning enabled, encryption at rest, and a lifecycle policy for deleting objects after 30 days."
-
-The skill will:
-1. Invoke the terraform-module-builder plugin to create a basic S3 bucket module structure.
-2. Populate the module with Terraform code to define the S3 bucket with the requested features (versioning, encryption, lifecycle policy).
-
-## Best Practices
-
-- **Documentation**: Ensure the generated Terraform module includes comprehensive documentation, explaining the module's purpose, inputs, and outputs.
-- **Security**: Implement security best practices, such as using least privilege principles and encrypting sensitive data.
-- **Modularity**: Design the Terraform module to be reusable and configurable, allowing it to be easily adapted to different environments.
-
-## Integration
-
-This skill integrates seamlessly with other Claude Code plugins by providing a foundation for infrastructure provisioning. The generated Terraform modules can be used by other plugins to deploy and manage resources in various cloud environments.
+Build reusable, production-ready Terraform modules with proper variable definitions, outputs, validation rules, documentation, and examples. Generate modules following HashiCorp's standard module structure for AWS, GCP, and Azure resources with security best practices, tagging conventions, and lifecycle management.
 
 ## Prerequisites
 
-- Appropriate file access permissions
-- Required dependencies installed
+- Terraform 1.0+ installed (`terraform version`)
+- Cloud provider credentials configured for the target platform
+- Understanding of the infrastructure resources the module will manage
+- Familiarity with HCL syntax and Terraform module conventions
+- `terraform-docs` installed for automated documentation generation (optional)
 
 ## Instructions
 
-1. Invoke this skill when the trigger conditions are met
-2. Provide necessary context and parameters
-3. Review the generated output
-4. Apply modifications as needed
+1. Define the module scope: determine which cloud resources the module manages and its input/output contract
+2. Create the standard module file structure: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`, `locals.tf`
+3. Write `versions.tf` with `required_version` and `required_providers` blocks pinned to stable versions
+4. Define input variables in `variables.tf` with descriptions, types, defaults, and validation rules
+5. Implement resources in `main.tf` using variables for all configurable values; use `locals` for computed values
+6. Add meaningful outputs in `outputs.tf` for resource IDs, ARNs, endpoints, and connection strings
+7. Implement security defaults: encryption enabled, public access blocked, least-privilege IAM, logging enabled
+8. Create an `examples/` directory with at least one complete usage example showing module invocation
+9. Generate documentation with `terraform-docs markdown table . > README.md`
+10. Validate the module with `terraform init && terraform validate` and test with `terraform plan` using the example
 
 ## Output
 
-The skill produces structured output relevant to the task.
+- Module files: `main.tf`, `variables.tf`, `outputs.tf`, `versions.tf`, `locals.tf`
+- Example usage in `examples/basic/main.tf` with realistic variable values
+- Auto-generated `README.md` with inputs, outputs, and usage documentation
+- `.terraform-docs.yml` configuration for documentation generation
+- Optional: test files using Terratest or `terraform test` (HCL-based)
 
 ## Error Handling
 
-- Invalid input: Prompts for correction
-- Missing dependencies: Lists required components
-- Permission errors: Suggests remediation steps
+| Error | Cause | Solution |
+|-------|-------|---------|
+| `variable validation failed` | Input value does not meet validation rule | Check the `validation` block in `variables.tf`; adjust the value or the validation regex |
+| `provider not found` | Missing or wrong provider source in `versions.tf` | Add the provider to `required_providers` with correct source and version constraint |
+| `circular dependency` | Resources referencing each other in a loop | Refactor to break the cycle; use `depends_on` or separate into sub-modules |
+| `output references undeclared resource` | Typo in resource name or resource removed | Verify resource names in `main.tf` match output references exactly |
+| `module source not found` | Incorrect module path or registry reference | Verify the `source` path is relative (e.g., `./modules/vpc`) or a valid registry address |
+
+## Examples
+
+- "Build a Terraform module for an AWS VPC with configurable CIDR, public/private subnets across 3 AZs, NAT gateway, and flow logs."
+- "Create a GCP Cloud Run module with custom domain, IAM bindings, and auto-scaling configuration as input variables."
+- "Generate a Terraform module for an S3 bucket with versioning, encryption, lifecycle rules, and access logging, with all settings as optional variables with secure defaults."
 
 ## Resources
 
-- Project documentation
-- Related skills and commands
+- Terraform module registry: https://registry.terraform.io/
+- Module structure guide: https://developer.hashicorp.com/terraform/language/modules/develop/structure
+- terraform-docs: https://terraform-docs.io/
+- Module best practices: https://developer.hashicorp.com/terraform/language/modules/develop

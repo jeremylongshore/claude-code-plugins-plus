@@ -12,61 +12,69 @@ license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Building Api Authentication
+# Building API Authentication
 
 ## Overview
 
-
-This skill provides automated assistance for api authentication builder tasks.
-This skill provides automated assistance for the described functionality.
+Build secure API authentication systems supporting JWT Bearer tokens, OAuth 2.0 authorization code and client credentials flows, API key management, and session-based authentication. Implement token issuance, validation, refresh rotation, revocation, and role-based access control (RBAC) with scoped permissions across all API endpoints.
 
 ## Prerequisites
 
-Before using this skill, ensure you have:
-- API design specifications or requirements documented
-- Development environment with necessary frameworks installed
-- Database or backend services accessible for integration
-- Authentication and authorization strategies defined
-- Testing tools and environments configured
+- Cryptographic library: `jsonwebtoken` (Node.js), `PyJWT` (Python), or `jjwt` (Java)
+- Secure secret storage: environment variables, AWS Secrets Manager, or HashiCorp Vault for JWT signing keys
+- Database table for user credentials, refresh tokens, and API key storage
+- Bcrypt or Argon2 for password hashing (never store plaintext passwords)
+- OAuth 2.0 provider credentials for third-party auth integration (Google, GitHub, Auth0)
 
 ## Instructions
 
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
-2. Define resource models, endpoints, and HTTP methods
-3. Document request/response schemas and data types
-4. Identify authentication and authorization requirements
-5. Plan error handling and validation strategies
-1. Generate boilerplate code using Bash(api:auth-*) with framework scaffolding
-2. Implement endpoint handlers with business logic
-3. Add input validation and schema enforcement
-4. Integrate authentication and authorization middleware
-5. Configure database connections and ORM models
-1. Write integration tests covering all endpoints
+1. Examine existing authentication setup using Grep and Read, identifying current auth mechanisms, middleware placement, and any endpoints bypassing authentication.
+2. Implement JWT token issuance on successful login: sign with RS256 (asymmetric) or HS256 (symmetric), including `sub` (user ID), `iat`, `exp` (15-minute access token), `roles`, and `scopes` in the payload.
+3. Create authentication middleware that extracts the Bearer token from the `Authorization` header, verifies the signature and expiration, and injects the decoded user context into the request object.
+4. Implement refresh token rotation: issue a long-lived refresh token (30 days) alongside the access token, store a hash of the refresh token in the database, and rotate on each refresh (invalidating the previous token).
+5. Build role-based access control (RBAC) middleware that checks `user.roles` against endpoint-required roles, supporting both role-level (`admin`, `user`) and scope-level (`read:users`, `write:orders`) authorization.
+6. Add API key authentication as an alternative to JWT for machine-to-machine communication: generate cryptographically random keys, store hashed values, and validate against the `X-API-Key` header.
+7. Implement OAuth 2.0 client credentials flow for service-to-service authentication, with token caching and automatic renewal before expiration.
+8. Add brute-force protection on login endpoints: rate limit to 5 attempts per minute per IP, implement progressive lockout (15 min, 1 hour) after repeated failures, and log all authentication attempts.
+9. Write security tests covering: valid/invalid/expired tokens, refresh token rotation, role enforcement, API key validation, brute-force lockout, and token revocation.
 
-
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `{baseDir}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Endpoint route definitions
-- `{baseDir}/src/controllers/` - Business logic handlers
-- `{baseDir}/src/models/` - Data models and schemas
-- `{baseDir}/src/middleware/` - Authentication, validation, logging
-- `{baseDir}/src/config/` - Configuration and environment variables
-- OpenAPI 3.0 specification with complete endpoint definitions
+- `{baseDir}/src/auth/jwt.js` - JWT token issuance, verification, and refresh logic
+- `{baseDir}/src/auth/middleware.js` - Bearer token authentication middleware
+- `{baseDir}/src/auth/rbac.js` - Role-based and scope-based access control middleware
+- `{baseDir}/src/auth/api-keys.js` - API key generation, hashing, and validation
+- `{baseDir}/src/auth/oauth.js` - OAuth 2.0 flow implementations
+- `{baseDir}/src/routes/auth.js` - Login, register, refresh, and logout endpoints
+- `{baseDir}/tests/auth/` - Authentication and authorization security tests
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+| Error | Cause | Solution |
+|-------|-------|----------|
+| 401 Token Expired | JWT `exp` claim is in the past | Client should attempt token refresh; if refresh fails, redirect to login |
+| 401 Invalid Signature | JWT signed with different key or tampered payload | Verify signing key matches between issuance and validation; check for key rotation issues |
+| 403 Insufficient Scope | Authenticated user lacks required role/scope for endpoint | Return required scope in error body; log authorization failure with user and endpoint details |
+| Refresh token reuse | Previously rotated refresh token used (possible token theft) | Invalidate all user sessions immediately; alert user of potential compromise; require re-authentication |
+| API key leaked | API key exposed in client-side code, logs, or version control | Revoke compromised key immediately; issue replacement; scan for exposure source |
+
+Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+**JWT with refresh rotation**: Login returns `{accessToken (15min), refreshToken (30d)}`; client stores refresh token securely; on 401, client calls `POST /auth/refresh` with old refresh token, receives new pair, old refresh token is invalidated.
+
+**Multi-provider OAuth**: Support "Sign in with Google" and "Sign in with GitHub" using OAuth 2.0 authorization code flow, creating local user accounts on first sign-in and linking subsequent provider connections.
+
+**API key with scoped permissions**: Generate API keys with specific scopes (`read:analytics`, `write:webhooks`), stored as SHA-256 hashes, displayed to the user only once at creation, with key rotation support.
+
+See `{baseDir}/references/examples.md` for additional examples.
 
 ## Resources
 
-- Express.js and Fastify for Node.js APIs
-- Flask and FastAPI for Python APIs
-- Spring Boot for Java APIs
-- Gin and Echo for Go APIs
-- OpenAPI Specification 3.0+ for API documentation
+- RFC 7519 JSON Web Token (JWT): https://tools.ietf.org/html/rfc7519
+- RFC 6749 OAuth 2.0 Authorization Framework
+- OWASP Authentication Cheat Sheet: https://cheatsheetseries.owasp.org/
+- Auth0 architecture patterns: https://auth0.com/docs/

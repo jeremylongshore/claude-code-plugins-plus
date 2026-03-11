@@ -5,7 +5,7 @@ description: |
   This skill provides horizontal sharding strategies with comprehensive guidance and automation.
   Trigger with phrases like "implement sharding", "shard database",
   or "distribute data".
-  
+
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(psql:*), Bash(mysql:*), Bash(mongosh:*)
 version: 1.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -14,117 +14,76 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Database Sharding Manager
 
-This skill provides automated assistance for database sharding manager tasks.
+## Overview
+
+Implement and manage horizontal database sharding strategies across PostgreSQL, MySQL, and MongoDB. This skill covers shard key selection, data distribution analysis, cross-shard query routing, and rebalancing operations for databases that have outgrown single-node capacity. Sharding decisions are permanent and costly to reverse, so thorough analysis before implementation is critical.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-- Required credentials and permissions for the operations
-- Understanding of the system architecture and dependencies
-- Backup of critical data before making structural changes
-- Access to relevant documentation and configuration files
-- Monitoring tools configured for observability
-- Development or staging environment available for testing
+- Database admin credentials with CREATE DATABASE, CREATE TABLE, and replication permissions
+- `psql`, `mysql`, or `mongosh` CLI tools installed and configured
+- Network connectivity between all shard nodes
+- Current table sizes and growth rate data (query `pg_total_relation_size` or `information_schema.TABLES`)
+- Application query patterns documented or access to slow query logs
+- Enough disk and memory on target shard nodes to handle redistributed data
 
 ## Instructions
 
-### Step 1: Assess Current State
-1. Review current configuration, setup, and baseline metrics
-2. Identify specific requirements, goals, and constraints
-3. Document existing patterns, issues, and pain points
-4. Analyze dependencies and integration points
-5. Validate all prerequisites are met before proceeding
+1. Analyze the current database size and identify tables exceeding single-node capacity thresholds (typically >500GB or >1B rows). Run `SELECT pg_size_pretty(pg_total_relation_size('table_name'))` for PostgreSQL or `SELECT data_length + index_length FROM information_schema.TABLES` for MySQL.
 
-### Step 2: Design Solution
-1. Define optimal approach based on best practices
-2. Create detailed implementation plan with clear steps
-3. Identify potential risks and mitigation strategies
-4. Document expected outcomes and success criteria
-5. Review plan with team or stakeholders if needed
+2. Evaluate candidate shard keys by examining query WHERE clauses, JOIN patterns, and data distribution. A good shard key has high cardinality, even distribution, and appears in most queries. Run `SELECT shard_key_column, COUNT(*) FROM table GROUP BY shard_key_column ORDER BY COUNT(*) DESC LIMIT 20` to check distribution.
 
-### Step 3: Implement Changes
-1. Execute implementation in non-production environment first
-2. Verify changes work as expected with thorough testing
-3. Monitor for any issues, errors, or performance impacts
-4. Document all changes, decisions, and configurations
-5. Prepare rollback plan and recovery procedures
+3. Choose a sharding strategy based on workload patterns:
+   - **Hash-based**: Even distribution, best for key-value lookups. Use `hash(shard_key) % num_shards`.
+   - **Range-based**: Good for time-series or sequential data. Partition by date ranges or ID ranges.
+   - **Directory-based**: Maximum flexibility with a lookup table mapping keys to shards.
+   - **Geographic**: Route by region for data residency or latency requirements.
 
-### Step 4: Validate Implementation
-1. Run comprehensive tests to verify all functionality
-2. Compare performance metrics against baseline
-3. Confirm no unintended side effects or regressions
-4. Update all relevant documentation
-5. Obtain approval before production deployment
+4. Design the shard topology by determining the number of shards, replication factor, and placement. For PostgreSQL, use Citus extension or manual foreign data wrappers. For MySQL, configure vitess or ProxySQL routing. For MongoDB, enable sharding on the cluster with `sh.enableSharding()` and `sh.shardCollection()`.
 
-### Step 5: Deploy to Production
-1. Schedule deployment during appropriate maintenance window
-2. Execute implementation with real-time monitoring
-3. Watch closely for any issues or anomalies
-4. Verify successful deployment and functionality
-5. Document completion, metrics, and lessons learned
+5. Create the shard schema on all target nodes, ensuring identical table definitions, indexes, and constraints across every shard. Generate DDL scripts and verify with checksums.
+
+6. Implement the routing layer that directs queries to the correct shard. This can be application-level (connection selection based on shard key), middleware (ProxySQL, PgBouncer with routing), or database-native (Citus, MongoDB mongos).
+
+7. Migrate existing data to shards using batch operations. Extract data in chunks of 10,000-50,000 rows, transform shard key assignments, and load into target shards. Verify row counts match after migration.
+
+8. Validate cross-shard queries work correctly, especially aggregations and JOINs that span multiple shards. Test scatter-gather query performance and implement application-level aggregation where needed.
+
+9. Set up monitoring for shard balance (data size per shard, query load per shard) and configure alerts for skew exceeding 20% deviation from the average.
+
+10. Document the shard map, routing logic, and rebalancing procedures for operational runbooks.
 
 ## Output
 
-This skill produces:
-
-**Implementation Artifacts**: Scripts, configuration files, code, and automation tools
-
-**Documentation**: Comprehensive documentation of changes, procedures, and architecture
-
-**Test Results**: Validation reports, test coverage, and quality metrics
-
-**Monitoring Configuration**: Dashboards, alerts, metrics, and observability setup
-
-**Runbooks**: Operational procedures for maintenance, troubleshooting, and incident response
+- **Shard key analysis report** with cardinality, distribution histograms, and recommended key selection
+- **Shard topology diagram** mapping databases, tables, and key ranges to physical nodes
+- **DDL migration scripts** for creating shard schemas with matching indexes and constraints
+- **Routing configuration** files for ProxySQL, Citus, vitess, or application-level routing
+- **Data migration scripts** with batch extraction, transformation, and verification queries
+- **Monitoring queries** for shard balance, cross-shard query latency, and hotspot detection
 
 ## Error Handling
 
-**Permission and Access Issues**:
-- Verify credentials and permissions for all operations
-- Request elevated access if required for specific tasks
-- Document all permission requirements for automation
-- Use separate service accounts for privileged operations
-- Implement least-privilege access principles
-
-**Connection and Network Failures**:
-- Check network connectivity, firewalls, and security groups
-- Verify service endpoints, DNS resolution, and routing
-- Test connections using diagnostic and troubleshooting tools
-- Review network policies, ACLs, and security configurations
-- Implement retry logic with exponential backoff
-
-**Resource Constraints**:
-- Monitor resource usage (CPU, memory, disk, network)
-- Implement throttling, rate limiting, or queue mechanisms
-- Schedule resource-intensive tasks during low-traffic periods
-- Scale infrastructure resources if consistently hitting limits
-- Optimize queries, code, or configurations for efficiency
-
-**Configuration and Syntax Errors**:
-- Validate all configuration syntax before applying changes
-- Test configurations thoroughly in non-production first
-- Implement automated configuration validation checks
-- Maintain version control for all configuration files
-- Keep previous working configuration for quick rollback
-
-## Resources
-
-**Configuration Templates**: `{baseDir}/templates/database-sharding-manager/`
-
-**Documentation and Guides**: `{baseDir}/docs/database-sharding-manager/`
-
-**Example Scripts and Code**: `{baseDir}/examples/database-sharding-manager/`
-
-**Troubleshooting Guide**: `{baseDir}/docs/database-sharding-manager-troubleshooting.md`
-
-**Best Practices**: `{baseDir}/docs/database-sharding-manager-best-practices.md`
-
-**Monitoring Setup**: `{baseDir}/monitoring/database-sharding-manager-dashboard.json`
-
-## Overview
-
-This skill provides automated assistance for the described functionality.
+| Error | Cause | Solution |
+|-------|-------|---------|
+| Hotspot shard receiving disproportionate traffic | Poor shard key choice with low cardinality or skewed distribution | Re-analyze shard key distribution; consider compound shard keys or hash-based sharding |
+| Cross-shard JOIN timeout | Scatter-gather query across too many shards | Denormalize frequently joined data onto the same shard; use application-level aggregation |
+| Shard rebalancing data loss | Migration interrupted mid-batch without transaction wrapping | Wrap batch migrations in transactions; verify source and destination row counts before deleting source data |
+| Connection pool exhaustion | Each shard requires its own connection pool, multiplying total connections | Reduce per-shard pool size; use connection multiplexing with PgBouncer or ProxySQL |
+| Schema drift between shards | DDL changes applied to some shards but not others | Use centralized DDL deployment scripts; verify schema checksums across all shards after changes |
 
 ## Examples
 
-Example usage patterns will be demonstrated in context.
+**E-commerce order table sharding by customer_id**: A 2TB orders table with 800M rows is sharded across 8 nodes using hash-based distribution on `customer_id`. All queries for a single customer hit one shard. Cross-customer analytics queries use a separate read replica with full data.
+
+**Time-series IoT data with range sharding**: Sensor readings partitioned by month into separate shards. Each shard holds one month of data. Queries for recent data hit the active shard; historical analysis queries span multiple shards with parallel execution. Old shards are archived to cold storage quarterly.
+
+**Multi-tenant SaaS with directory-based sharding**: A tenant-to-shard lookup table routes each tenant to a dedicated shard. Large tenants get dedicated shards; small tenants share shards. Rebalancing moves tenants between shards by updating the directory and migrating data.
+
+## Resources
+
+- PostgreSQL Citus documentation: https://docs.citusdata.com/
+- MySQL Vitess documentation: https://vitess.io/docs/
+- MongoDB Sharding guide: https://www.mongodb.com/docs/manual/sharding/
+- ProxySQL query routing: https://proxysql.com/documentation/
+- Shard key design patterns: https://www.mongodb.com/docs/manual/core/sharding-choose-a-shard-key/
