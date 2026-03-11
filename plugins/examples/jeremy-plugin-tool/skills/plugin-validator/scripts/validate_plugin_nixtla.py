@@ -69,9 +69,9 @@ REQUIRED_SECTIONS = [
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 RE_DESCRIPTION_USE_WHEN = re.compile(r"\bUse when\b", re.IGNORECASE)
 RE_DESCRIPTION_TRIGGER_WITH = re.compile(r"\bTrigger with\b", re.IGNORECASE)
-RE_BASEDIR_SCRIPTS = re.compile(r"${CLAUDE_SKILL_DIR}/scripts/([\w\-./]+)")
-RE_BASEDIR_REFERENCES = re.compile(r"${CLAUDE_SKILL_DIR}/references/([\w\-./]+)")
-RE_BASEDIR_ASSETS = re.compile(r"${CLAUDE_SKILL_DIR}/assets/([\w\-./]+)")
+RE_BASEDIR_SCRIPTS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/scripts/([\w\-./]+)")
+RE_BASEDIR_REFERENCES = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/references/([\w\-./]+)")
+RE_BASEDIR_ASSETS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/assets/([\w\-./]+)")
 RE_FIRST_PERSON = re.compile(r"\b(I can|I will|I'm going to|I help)\b", re.IGNORECASE)
 RE_SECOND_PERSON = re.compile(r"\b(You can|You should|You will)\b", re.IGNORECASE)
 FORBIDDEN_WORDS = ("anthropic", "claude")
@@ -453,7 +453,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
     for i, line in enumerate(body_no_code.splitlines(), start=1):
         for pattern, desc in ABSOLUTE_PATH_PATTERNS:
             if pattern.search(line):
-                errors.append(f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '{${CLAUDE_SKILL_DIR}}/...'")
+                errors.append(f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '${{CLAUDE_SKILL_DIR}}/...'")
                 break
 
         if "\\scripts\\" in line:
@@ -484,7 +484,7 @@ def validate_scripts_exist(path: Path, body: str) -> List[str]:
             continue
 
         if not script_path.exists():
-            errors.append(f"[scripts] Referenced script not found: '{${CLAUDE_SKILL_DIR}}/scripts/{rel}'")
+            errors.append(f"[scripts] Referenced script not found: '${{CLAUDE_SKILL_DIR}}/scripts/{rel}'")
 
     return errors
 
@@ -502,7 +502,7 @@ def validate_resource_files_exist(path: Path, body: str) -> List[str]:
             errors.append(f"[resources] Reference escapes skill directory: references/{rel}")
             continue
         if not target.exists():
-            errors.append(f"[resources] Referenced file not found: '{${CLAUDE_SKILL_DIR}}/references/{rel}'")
+            errors.append(f"[resources] Referenced file not found: '${{CLAUDE_SKILL_DIR}}/references/{rel}'")
 
     for rel in sorted(set(m.group(1) for m in RE_BASEDIR_ASSETS.finditer(body))):
         target = (skill_dir / "assets" / rel).resolve()
@@ -512,7 +512,7 @@ def validate_resource_files_exist(path: Path, body: str) -> List[str]:
             errors.append(f"[resources] Reference escapes skill directory: assets/{rel}")
             continue
         if not target.exists():
-            errors.append(f"[resources] Referenced file not found: '{${CLAUDE_SKILL_DIR}}/assets/{rel}'")
+            errors.append(f"[resources] Referenced file not found: '${{CLAUDE_SKILL_DIR}}/assets/{rel}'")
 
     return errors
 

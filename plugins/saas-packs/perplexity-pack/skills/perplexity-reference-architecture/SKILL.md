@@ -15,207 +15,72 @@ compatible-with: claude-code, codex, openclaw
 
 # Perplexity Reference Architecture
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Production architecture for AI-powered research and search with Perplexity Sonar API. Covers search pipeline design, citation management, model routing for cost/quality tradeoffs, and integration into RAG-based applications.
+Production architecture for AI-powered research and search with Perplexity Sonar API. Covers model routing for cost/quality tradeoffs, citation extraction, multi-query research pipelines, and conversational search.
 
 ## Prerequisites
 - Perplexity API key (Sonar access)
 - OpenAI-compatible client library
-- Understanding of search models (sonar, sonar-pro)
-- Citation storage and display layer
+- Understanding of search models (sonar, sonar-pro, sonar-reasoning)
 
-## Architecture Diagram
+## Architecture
 
 ```
-┌──────────────────────────────────────────────────────┐
-│              Application Layer                        │
-│  Research Agent │ Fact Checker │ Content Writer       │
-└──────────┬───────────────────────────────────────────┘
-           │
-           ▼
-┌──────────────────────────────────────────────────────┐
-│              Search Router                            │
-│  ┌──────────┐  ┌──────────────┐  ┌────────────────┐  │
-│  │ sonar    │  │ sonar-pro    │  │ sonar-         │  │
-│  │ (fast)   │  │ (deep)       │  │ reasoning      │  │
-│  └──────────┘  └──────────────┘  └────────────────┘  │
-├──────────────────────────────────────────────────────┤
-│              Citation Pipeline                        │
-│  Extract URLs │ Validate │ Store │ Render            │
-├──────────────────────────────────────────────────────┤
-│              Cache Layer                              │
-│  Query Hash → Result │ TTL by Freshness Need         │
-└──────────────────────────────────────────────────────┘
+Application Layer (Research Agent, Fact Checker, Content Writer)
+        |
+Search Router (sonar/sonar-pro/sonar-reasoning)
+        |
+Citation Pipeline (Extract URLs, Validate, Store, Render)
+        |
+Cache Layer (Query Hash -> Result, TTL by freshness need)
 ```
 
 ## Instructions
 
-### Step 1: Search Service with Model Routing
-```typescript
-import OpenAI from 'openai';
+### Step 1: Set Up Search Service with Model Routing
+Use OpenAI-compatible client pointed at `api.perplexity.ai`. Route queries by depth: quick/standard (sonar), deep (sonar-pro), reasoning (sonar-reasoning).
 
-const perplexity = new OpenAI({
-  apiKey: process.env.PERPLEXITY_API_KEY,
-  baseURL: 'https://api.perplexity.ai',
-});
+### Step 2: Build Citation Extraction Pipeline
+Parse response text for `[N] URL` patterns and inline URLs. Deduplicate and store citations with metadata.
 
-type SearchDepth = 'quick' | 'standard' | 'deep' | 'reasoning';
+### Step 3: Create Research Pipeline
+Multi-phase: broad overview (fast model) -> identify subtopics -> deep dive each (sonar-pro) -> deduplicate citations.
 
-const MODEL_FOR_DEPTH: Record<SearchDepth, string> = {
-  quick: 'sonar',
-  standard: 'sonar',
-  deep: 'sonar-pro',
-  reasoning: 'sonar-reasoning',
-};
+### Step 4: Implement Conversational Search
+Maintain message history for follow-up questions that build on previous context.
 
-async function search(query: string, depth: SearchDepth = 'standard') {
-  return perplexity.chat.completions.create({
-    model: MODEL_FOR_DEPTH[depth],
-    messages: [
-      {
-        role: 'system',
-        content: 'Provide accurate, well-sourced answers. Include citations.',
-      },
-      { role: 'user', content: query },
-    ],
-    max_tokens: depth === 'quick' ? 512 : 2048,
-  });
-}
-```
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for search service, citation extraction, multi-query research pipeline, conversational session, and fact-check service code.
 
-### Step 2: Citation Extraction Pipeline
-```typescript
-interface Citation {
-  url: string;
-  title?: string;
-  snippet?: string;
-  index: number;
-}
-
-function extractCitations(responseText: string): Citation[] {
-  const citations: Citation[] = [];
-  const urlRegex = /\[(\d+)\]\s*(https?:\/\/[^\s\]]+)/g;
-  let match;
-
-  while ((match = urlRegex.exec(responseText)) !== null) {
-    citations.push({
-      index: parseInt(match[1]),
-      url: match[2],
-      title: undefined,
-      snippet: undefined,
-    });
-  }
-
-  // Also extract inline URLs
-  const inlineUrls = responseText.match(/https?:\/\/[^\s\])+/g) || [];
-  for (const url of inlineUrls) {
-    if (!citations.some(c => c.url === url)) {
-      citations.push({ url, index: citations.length + 1 });
-    }
-  }
-
-  return citations;
-}
-
-async function searchWithCitations(query: string, depth: SearchDepth = 'standard') {
-  const result = await search(query, depth);
-  const text = result.choices[0].message.content || '';
-
-  return {
-    answer: text,
-    citations: extractCitations(text),
-    model: MODEL_FOR_DEPTH[depth],
-    usage: result.usage,
-  };
-}
-```
-
-### Step 3: Research Pipeline for Multi-Query Workflows
-```typescript
-async function deepResearch(topic: string) {
-  // Phase 1: Broad overview with fast model
-  const overview = await searchWithCitations(
-    `What are the key aspects of ${topic}?`, 'quick'
-  );
-
-  // Phase 2: Deep dive into each subtopic
-  const subtopics = await search(
-    `List 3-5 specific subtopics worth researching about: ${topic}`,
-    'quick'
-  );
-
-  // Phase 3: Detailed research per subtopic
-  const details = await Promise.all(
-    parseSubtopics(subtopics.choices[0].message.content || '').map(
-      sub => searchWithCitations(sub, 'deep')
-    )
-  );
-
-  return {
-    overview,
-    details,
-    allCitations: deduplicateCitations([
-      ...overview.citations,
-      ...details.flatMap(d => d.citations),
-    ]),
-  };
-}
-
-function deduplicateCitations(citations: Citation[]): Citation[] {
-  const seen = new Set<string>();
-  return citations.filter(c => {
-    if (seen.has(c.url)) return false;
-    seen.add(c.url);
-    return true;
-  });
-}
-```
-
-### Step 4: Conversational Search with Context
-```typescript
-class ResearchSession {
-  private history: any[] = [];
-
-  async ask(query: string, depth: SearchDepth = 'standard') {
-    this.history.push({ role: 'user', content: query });
-
-    const result = await perplexity.chat.completions.create({
-      model: MODEL_FOR_DEPTH[depth],
-      messages: [
-        { role: 'system', content: 'You are a research assistant. Build on previous context.' },
-        ...this.history,
-      ],
-    });
-
-    const answer = result.choices[0].message.content || '';
-    this.history.push({ role: 'assistant', content: answer });
-
-    return { answer, citations: extractCitations(answer) };
-  }
-
-  reset() { this.history = []; }
-}
-```
+## Output
+- Search service with model routing by query depth
+- Citation extraction from responses
+- Multi-query research pipeline
+- Conversational search with context
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| No citations | Using basic sonar for complex query | Upgrade to sonar-pro |
-| Stale information | Outdated sources | Add recency preference in prompt |
+| No citations returned | Using basic sonar for complex query | Upgrade to sonar-pro |
+| Stale information | Outdated sources | Add recency preference in system prompt |
 | High cost | Using sonar-pro for simple queries | Route simple queries to sonar |
 | Rate limit | Too many concurrent searches | Add request queue with delays |
 
 ## Examples
 
-### Fact-Check Service
+### Quick Fact Check
 ```typescript
-async function factCheck(claim: string) {
-  const result = await searchWithCitations(
-    `Is this claim accurate? Provide evidence: "${claim}"`,
-    'deep'
-  );
-  return { claim, verdict: result.answer, sources: result.citations };
-}
+const result = await factCheck("The Earth is approximately 4.5 billion years old");
+console.log(result.verdict);  // Accurate, with sources
+console.log(result.sources);  // Citation URLs
 ```
 
 ## Resources
