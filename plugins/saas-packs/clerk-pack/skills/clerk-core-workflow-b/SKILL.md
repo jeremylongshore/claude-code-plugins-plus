@@ -15,6 +15,15 @@ compatible-with: claude-code, codex, openclaw
 
 # Clerk Core Workflow B: Session & Middleware
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
 Implement session management and route protection with Clerk middleware. Covers Next.js middleware configuration, API route protection, role-based access control, and organization-scoped sessions.
 
@@ -27,188 +36,40 @@ Implement session management and route protection with Clerk middleware. Covers 
 ## Instructions
 
 ### Step 1: Configure Clerk Middleware
-```typescript
-// middleware.ts (project root)
-import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
+Create `middleware.ts` at project root. Define public routes (landing, sign-in, webhooks) and admin routes. Use `clerkMiddleware` with `auth.protect()` for private routes and role-based protection for admin routes.
 
-const isPublicRoute = createRouteMatcher([
-  '/',
-  '/sign-in(.*)',
-  '/sign-up(.*)',
-  '/api/webhooks(.*)',
-  '/pricing',
-  '/about',
-]);
+### Step 2: Protect API Routes
+Use `auth()` in route handlers to get `userId`, `orgId`, and `has()` for permission checks. Return 401/403 for unauthorized/insufficient permissions.
 
-const isAdminRoute = createRouteMatcher([
-  '/admin(.*)',
-  '/api/admin(.*)',
-]);
+### Step 3: Handle Session Claims
+Access session data, user profile, and generate JWT tokens for external APIs (Supabase, etc.) using `getToken({ template: 'name' })`.
 
-export default clerkMiddleware(async (auth, req) => {
-  // Protect non-public routes
-  if (!isPublicRoute(req)) {
-    await auth.protect();
-  }
+### Step 4: Add Server Component Auth
+Use `auth()` in server components with `redirect('/sign-in')` for unauthenticated users. Check roles/permissions with `has()` for conditional UI rendering.
 
-  // Admin routes require admin role
-  if (isAdminRoute(req)) {
-    await auth.protect({
-      role: 'org:admin',
-    });
-  }
-});
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete middleware config, API route examples, session claims, server component patterns, and role-based navigation.
 
-export const config = {
-  matcher: [
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    '/(api|trpc)(.*)',
-  ],
-};
-```
-
-### Step 2: API Route Protection
-```typescript
-// app/api/protected/route.ts
-import { auth } from '@clerk/nextjs/server';
-import { NextResponse } from 'next/server';
-
-export async function GET() {
-  const { userId, orgId, sessionClaims } = await auth();
-
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  return NextResponse.json({
-    userId,
-    orgId,
-    role: sessionClaims?.metadata?.role,
-    sessionExpiry: sessionClaims?.exp,
-  });
-}
-
-// Organization-scoped API route
-export async function POST(req: Request) {
-  const { userId, orgId, has } = await auth();
-
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-
-  if (!orgId) {
-    return NextResponse.json({ error: 'Organization required' }, { status: 403 });
-  }
-
-  // Check organization permission
-  if (!has({ permission: 'org:data:write' })) {
-    return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 });
-  }
-
-  const body = await req.json();
-  // Process request...
-  return NextResponse.json({ success: true });
-}
-```
-
-### Step 3: Session Claims and Custom Data
-```typescript
-// app/api/session/route.ts
-import { auth, currentUser } from '@clerk/nextjs/server';
-
-export async function GET() {
-  const { userId, sessionId, getToken } = await auth();
-  const user = await currentUser();
-
-  if (!userId || !user) {
-    return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-  }
-
-  // Get JWT token for external API calls
-  const token = await getToken({ template: 'supabase' });
-
-  return NextResponse.json({
-    userId,
-    sessionId,
-    email: user.emailAddresses[0]?.emailAddress,
-    fullName: `${user.firstName} ${user.lastName}`,
-    imageUrl: user.imageUrl,
-    publicMetadata: user.publicMetadata,
-    externalToken: token ? 'present' : 'not configured',
-  });
-}
-```
-
-### Step 4: Server Component Auth Checks
-```typescript
-// app/dashboard/page.tsx
-import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
-
-export default async function DashboardPage() {
-  const { userId, orgId, has } = await auth();
-
-  if (!userId) {
-    redirect('/sign-in');
-  }
-
-  const isAdmin = has({ role: 'org:admin' });
-  const canManageBilling = has({ permission: 'org:billing:manage' });
-
-  return (
-    <div>
-      <h1>Dashboard</h1>
-      <p>User: {userId}</p>
-      {orgId && <p>Organization: {orgId}</p>}
-      {isAdmin && <AdminPanel />}
-      {canManageBilling && <BillingSection />}
-    </div>
-  );
-}
-
-// Reusable auth guard component
-async function AuthGuard({
-  children,
-  permission,
-}: {
-  children: React.ReactNode;
-  permission?: string;
-}) {
-  const { userId, has } = await auth();
-
-  if (!userId) return null;
-  if (permission && !has({ permission })) return null;
-
-  return <>{children}</>;
-}
-```
+## Output
+- Middleware protecting all non-public routes
+- API routes with auth and permission checks
+- Server components with role-based rendering
+- JWT tokens configured for external services
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Middleware redirect loop | Public route not in matcher | Add route to `isPublicRoute` |
 | 401 on API route | Token not forwarded | Ensure fetch includes credentials |
-| Missing org context | User not in organization | Check `orgId` before org-scoped operations |
-| Session expired | Token TTL exceeded | Configure session lifetime in Clerk dashboard |
+| Missing org context | User not in organization | Check `orgId` before org-scoped ops |
+| Session expired | Token TTL exceeded | Configure session lifetime in dashboard |
 
 ## Examples
 
-### Role-Based Navigation
+### Quick Permission Check
 ```typescript
-// components/NavBar.tsx
-import { auth } from '@clerk/nextjs/server';
-
-export async function NavBar() {
-  const { userId, has } = await auth();
-
-  return (
-    <nav>
-      <a href="/">Home</a>
-      {userId && <a href="/dashboard">Dashboard</a>}
-      {has({ role: 'org:admin' }) && <a href="/admin">Admin</a>}
-      {!userId && <a href="/sign-in">Sign In</a>}
-    </nav>
-  );
+const { has } = await auth();
+if (has({ permission: 'org:data:write' })) {
+  // User can write data in this organization
 }
 ```
 
