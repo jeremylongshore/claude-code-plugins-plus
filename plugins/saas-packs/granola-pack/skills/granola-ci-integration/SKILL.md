@@ -15,8 +15,17 @@ compatible-with: claude-code, codex, openclaw
 
 # Granola CI Integration
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Build automated workflows that process Granola meeting notes as part of your development pipeline.
+Build automated workflows that process Granola meeting notes into GitHub issues, Linear tasks, Slack notifications, and documentation updates.
 
 ## Prerequisites
 - Granola Pro or Business plan
@@ -24,249 +33,50 @@ Build automated workflows that process Granola meeting notes as part of your dev
 - GitHub repository (for Actions)
 - Development workflow understanding
 
-## Architecture
+## Instructions
 
-### Meeting-to-Action Pipeline
-```
-Meeting Ends
-     ↓
-Granola Processes Notes
-     ↓
-Zapier Webhook Triggered
-     ↓
-Processing Pipeline
-     ├── Create Issues/Tasks
-     ├── Update Documentation
-     ├── Notify Team
-     └── Update CRM
-```
+### Step 1: Set Up Zapier Trigger
+Create Zap with Granola "New Note Created" trigger. Add filter for meeting type (sprint, planning, etc.).
 
-## Zapier Webhook Setup
-
-### Step 1: Create Webhook Endpoint
-```yaml
-# Create a Zapier Zap
-Trigger: Granola - New Note Created
-Filter: Meeting title contains "sprint" OR "planning"
-```
-
-### Step 2: Parse Meeting Content
-```javascript
-// Zapier Code Step - Parse Action Items
-const noteContent = inputData.note_content;
-
-// Extract action items
-const actionPattern = /- \[ \] (.+?)(?:\(@(\w+)\))?/g;
-const actions = [];
-let match;
-
-while ((match = actionPattern.exec(noteContent)) !== null) {
-  actions.push({
-    task: match[1].trim(),
-    assignee: match[2] || 'unassigned'
-  });
-}
-
-return { actions: JSON.stringify(actions) };
-```
+### Step 2: Parse Action Items
+Use Zapier Code step to extract action items with assignees from note content using regex patterns.
 
 ### Step 3: Create GitHub Issues
-```yaml
-Action: GitHub - Create Issue
-Repository: your-org/your-repo
-Title: "Meeting Action: {{task}}"
-Body: |
-  From meeting: {{meeting_title}}
-  Date: {{meeting_date}}
+Route parsed action items to GitHub as labeled issues with meeting context.
 
-  Task: {{task}}
-  Assignee: {{assignee}}
+### Step 4: Configure GitHub Actions Workflow
+Create `repository_dispatch` workflow triggered by Zapier to update meeting logs and create issues programmatically.
 
-  ---
-  Auto-created by Granola integration
-Labels: ["from-meeting", "action-item"]
-Assignee: {{assignee}}
-```
+### Step 5: Add Linear Integration
+Auto-create Linear tasks from action items with team assignment and meeting context.
 
-## GitHub Actions Integration
+### Step 6: Set Up Slack Notifications
+Post meeting summaries with action items and "View Full Notes" button to team channels.
 
-### Workflow: Process Meeting Notes
-```yaml
-# .github/workflows/process-meeting-notes.yml
-name: Process Meeting Notes
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for Zapier code steps, GitHub Actions workflow YAML, Linear pipeline config, and Slack bot message format.
 
-on:
-  repository_dispatch:
-    types: [granola-meeting-completed]
-
-jobs:
-  process-notes:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Parse Meeting Notes
-        id: parse
-        run: |
-          echo "Processing meeting: ${{ github.event.client_payload.title }}"
-          echo "Date: ${{ github.event.client_payload.date }}"
-
-      - name: Update Meeting Log
-        run: |
-          # Append to meetings log
-          echo "| ${{ github.event.client_payload.date }} | ${{ github.event.client_payload.title }} | [Link](${{ github.event.client_payload.url }}) |" >> docs/meetings.md
-
-      - name: Create Issue for Action Items
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const actions = JSON.parse('${{ github.event.client_payload.action_items }}');
-
-            for (const action of actions) {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title: `Meeting Action: ${action.task}`,
-                body: `From: ${{ github.event.client_payload.title }}\n\n${action.task}`,
-                labels: ['meeting-action']
-              });
-            }
-
-      - name: Commit Changes
-        run: |
-          git config user.name "Granola Bot"
-          git config user.email "bot@granola.ai"
-          git add docs/meetings.md
-          git commit -m "docs: add meeting notes from ${{ github.event.client_payload.date }}"
-          git push
-```
-
-### Trigger Workflow from Zapier
-```yaml
-# Zapier Webhook Action
-Method: POST
-URL: https://api.github.com/repos/your-org/your-repo/dispatches
-Headers:
-  Authorization: Bearer {{github_token}}
-  Accept: application/vnd.github.v3+json
-Body:
-  {
-    "event_type": "granola-meeting-completed",
-    "client_payload": {
-      "title": "{{meeting_title}}",
-      "date": "{{meeting_date}}",
-      "url": "{{granola_link}}",
-      "summary": "{{summary}}",
-      "action_items": {{action_items_json}}
-    }
-  }
-```
-
-## Linear Integration Pipeline
-
-### Auto-Create Tasks from Meetings
-```yaml
-# Zapier Multi-Step Workflow
-Step 1 - Trigger:
-  App: Granola
-  Event: New Note Created
-
-Step 2 - Filter:
-  Condition: Summary contains "TODO" or "action item"
-
-Step 3 - Parse:
-  App: Code by Zapier
-  Script: Extract action items with assignees
-
-Step 4 - Loop:
-  For each action item:
-    App: Linear
-    Action: Create Issue
-    Team: Engineering
-    Title: {{action.task}}
-    Description: |
-      From meeting: {{meeting_title}}
-      Date: {{meeting_date}}
-
-      Context: {{surrounding_text}}
-    Assignee: {{action.assignee}}
-    State: Todo
-```
-
-## Slack Bot Integration
-
-### Meeting Summary Bot
-```yaml
-# Automated Slack Post
-Trigger: New Granola Note
-
-Slack Message:
-  Channel: #dev-meetings
-  Blocks:
-    - type: header
-      text: "Meeting Notes: {{meeting_title}}"
-    - type: section
-      text: "{{summary}}"
-    - type: divider
-    - type: section
-      text: "*Action Items:*\n{{action_items}}"
-    - type: actions
-      elements:
-        - type: button
-          text: "View Full Notes"
-          url: "{{granola_link}}"
-        - type: button
-          text: "Create Tasks"
-          action_id: "create_tasks"
-```
-
-## Testing & Validation
-
-### Test Webhook Endpoint
-```bash
-# Test Zapier webhook with sample data
-curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID \
-  -H "Content-Type: application/json" \
-  -d '{
-    "meeting_title": "Test Sprint Planning",
-    "meeting_date": "2025-01-06",
-    "summary": "Discussed Q1 priorities",
-    "action_items": [
-      {"task": "Review PRs", "assignee": "mike"},
-      {"task": "Update docs", "assignee": "sarah"}
-    ]
-  }'
-```
-
-### Validate Integration
-```markdown
-## Integration Test Checklist
-- [ ] Schedule test meeting
-- [ ] Complete meeting with sample action items
-- [ ] Verify Zapier trigger fires
-- [ ] Check GitHub issues created
-- [ ] Confirm Slack notification sent
-- [ ] Validate Linear tasks appear
-```
+## Output
+- Zapier pipeline processing meeting notes automatically
+- GitHub issues created from action items
+- Meeting log updated in repository
+- Slack notifications sent to team channels
 
 ## Error Handling
-
-### Retry Configuration
-```yaml
-# Zapier Error Handling
-On Error:
-  Retry: 3 times
-  Delay: 5 minutes between retries
-  Fallback: Send error to Slack #ops-alerts
-```
-
-### Common Errors
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Webhook timeout | Large payload | Add processing delay |
-| Auth expired | Token invalid | Refresh OAuth tokens |
+| Webhook timeout | Large payload | Add processing delay step |
+| Auth expired | Token invalid | Refresh OAuth tokens in Zapier |
 | Rate limited | Too many requests | Add delays between actions |
-| Parse failed | Note format changed | Update parsing logic |
+| Parse failed | Note format changed | Update parsing regex logic |
+
+## Examples
+
+### Integration Test Checklist
+- [ ] Schedule test meeting with sample action items
+- [ ] Verify Zapier trigger fires
+- [ ] Check GitHub issues created with correct labels
+- [ ] Confirm Slack notification sent to channel
+- [ ] Validate Linear tasks appear in correct team
 
 ## Resources
 - [Zapier Webhooks](https://zapier.com/help/create/code-webhooks)
