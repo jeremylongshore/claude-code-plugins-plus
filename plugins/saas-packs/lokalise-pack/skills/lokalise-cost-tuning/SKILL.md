@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Cost Tuning
 
 ## Overview
@@ -94,13 +93,20 @@ curl "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?filter_archived=inc
 | Budget overrun | New languages added without planning | Budget per-language before adding to projects |
 
 ## Examples
-```bash
-# Quick cost projection: words * languages * per-word rate
-curl -s "https://api.lokalise.com/api2/projects/PROJECT_ID/statistics" \
-  -H "X-Api-Token: $LOKALISE_API_TOKEN" | \
-  jq '{
-    untranslated_words: .statistics.words_total - .statistics.words_translated,
-    languages: .statistics.languages_total,
-    estimated_cost_at_0_10_per_word: ((.statistics.words_total - .statistics.words_translated) * .statistics.languages_total * 0.10)
-  }'
-```
+
+
+**Basic usage**: Apply lokalise cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lokalise cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

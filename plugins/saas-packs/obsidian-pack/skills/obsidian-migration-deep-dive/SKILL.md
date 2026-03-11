@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Migration Deep Dive
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 ## Next Steps
 1. Review migrated content
 2. Check orphaned links report
+
+## Examples
+
+**Basic usage**: Apply obsidian migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian migration deep dive for production environments with multiple constraints and team-specific requirements.

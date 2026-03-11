@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Local Dev Loop
 
 ## Overview
@@ -91,3 +90,9 @@ For detailed Gradle config, Gosu examples, PCF development, and keyboard shortcu
 ## Next Steps
 
 For SDK and API patterns, see `guidewire-sdk-patterns`.
+
+## Examples
+
+**Basic usage**: Apply guidewire local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire local dev loop for production environments with multiple constraints and team-specific requirements.

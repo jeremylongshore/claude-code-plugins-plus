@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # CodeRabbit Enterprise RBAC
 
 ## Overview
@@ -88,14 +87,20 @@ Check the CodeRabbit dashboard for review metrics per repository and team member
 | Bot reviewing bot PRs | Dependabot/Renovate triggers | Add bot usernames to ignore list |
 
 ## Examples
-```yaml
-# Minimal .coderabbit.yaml for a security-critical repo
-reviews:
-  auto_review:
-    enabled: true
-    base_branches: [main, release/*]
-  profile: "nitpicky"
-  path_instructions:
-    - path: "**"
-      instructions: "This is a PCI-compliant service. Flag any logging of PII."
-```
+
+
+**Basic usage**: Apply coderabbit enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize coderabbit enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Coderabbit Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

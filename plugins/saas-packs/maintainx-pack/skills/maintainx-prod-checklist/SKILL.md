@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Production Checklist
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For API version migrations, see `maintainx-upgrade-migration`.
+
+## Examples
+
+**Basic usage**: Apply maintainx prod checklist to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx prod checklist for production environments with multiple constraints and team-specific requirements.

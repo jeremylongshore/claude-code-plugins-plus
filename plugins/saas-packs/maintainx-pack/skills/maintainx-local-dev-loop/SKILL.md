@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Local Dev Loop
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For SDK patterns and best practices, see `maintainx-sdk-patterns`.
+
+## Examples
+
+**Basic usage**: Apply maintainx local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx local dev loop for production environments with multiple constraints and team-specific requirements.

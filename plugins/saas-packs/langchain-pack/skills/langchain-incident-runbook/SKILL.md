@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Incident Runbook
 
 ## Overview
@@ -305,3 +304,31 @@ def check_budget(cost: float):
 
 ## Next Steps
 Use `langchain-debug-bundle` for detailed evidence collection.
+
+## Instructions
+
+1. Assess the current state of the Langchain Incident Runbook configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Langchain Incident Runbook |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply langchain incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain incident runbook for production environments with multiple constraints and team-specific requirements.

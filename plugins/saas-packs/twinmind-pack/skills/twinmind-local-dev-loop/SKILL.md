@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Local Dev Loop
 
 ## Overview
@@ -313,3 +312,9 @@ twinmind-integration/
 
 ## Next Steps
 Apply patterns in `twinmind-sdk-patterns` for production-ready code.
+
+## Examples
+
+**Basic usage**: Apply twinmind local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind local dev loop for production environments with multiple constraints and team-specific requirements.

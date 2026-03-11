@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Migration Deep Dive
 
 ## Contents
@@ -73,22 +72,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Parent not found | Import order wrong | Sort by hierarchy first |
 
 ## Examples
-```typescript
-// Export from Jira
-const jiraIssues = await exportJiraProject('PROJ');
 
-// Transform and import
-const context = await buildTransformContext(linearClient, teamId);
-const stats = await importToLinear(jiraIssues, context);
-console.log(`Imported ${stats.created}/${stats.total}, ${stats.errors.length} errors`);
 
-// Validate
-const validation = await validateMigration(jiraIssues, context);
-if (!validation.valid) console.log('Issues:', validation.issues);
+**Basic usage**: Apply linear migration deep dive to a standard project setup with default configuration options.
 
-// Generate report
-await createMigrationReport(stats, context);
-```
+**Advanced scenario**: Customize linear migration deep dive for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Linear Import Documentation](https://linear.app/docs/import-issues)

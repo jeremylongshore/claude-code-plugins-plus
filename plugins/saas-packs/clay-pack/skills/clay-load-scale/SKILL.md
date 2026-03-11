@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Load & Scale
 
 ## Overview
@@ -86,3 +85,9 @@ For complete k6 scripts, HPA YAML, connection pool code, and capacity estimator,
 ## Next Steps
 
 For reliability patterns, see `clay-reliability-patterns`.
+
+## Examples
+
+**Basic usage**: Apply clay load scale to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay load scale for production environments with multiple constraints and team-specific requirements.

@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Refactoring UI Design System
 
 A practical, opinionated approach to UI design. Apply these principles when generating frontend code, reviewing designs, or advising on visual improvements.
@@ -303,3 +302,49 @@ This skill is based on Adam Wathan and Steve Schoger's practical design guide. F
 ## About the Authors
 
 **Adam Wathan** is a full-stack developer and the creator of Tailwind CSS, one of the most popular utility-first CSS frameworks. **Steve Schoger** is a visual designer known for his practical design tips and illustrations. Together they created *Refactoring UI* to teach developers how to design better interfaces using systematic, repeatable techniques rather than relying on innate artistic talent. Their approach emphasizes constrained design systems -- fixed scales for spacing, typography, color, and shadows -- that produce professional results without requiring a design background.
+
+## Overview
+
+Audit and fix visual hierarchy, spacing, color, and depth in web UIs.
+
+## Prerequisites
+
+- Access to the audit environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with audit concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the audit configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [audit implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with audit |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply refactoring ui to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize refactoring ui for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official audit documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

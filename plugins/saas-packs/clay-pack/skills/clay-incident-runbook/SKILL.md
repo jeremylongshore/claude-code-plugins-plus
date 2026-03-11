@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Incident Runbook
 
 ## Overview
@@ -82,3 +81,9 @@ For complete triage scripts, remediation commands, communication templates, and 
 ## Next Steps
 
 For data handling, see `clay-data-handling`.
+
+## Examples
+
+**Basic usage**: Apply clay incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay incident runbook for production environments with multiple constraints and team-specific requirements.

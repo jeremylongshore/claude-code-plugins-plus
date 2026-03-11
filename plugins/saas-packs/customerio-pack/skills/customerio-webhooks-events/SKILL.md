@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Webhooks & Events
 
 ## Overview
@@ -68,3 +67,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After webhook setup, proceed to `customerio-performance-tuning` for optimization.
+
+## Examples
+
+**Basic usage**: Apply customerio webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio webhooks events for production environments with multiple constraints and team-specific requirements.

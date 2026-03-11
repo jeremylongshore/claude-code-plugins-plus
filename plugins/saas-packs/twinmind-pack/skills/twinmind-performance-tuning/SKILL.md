@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Performance Tuning
 
 ## Contents
@@ -68,21 +67,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Missing speakers | Low audio separation | Improve microphone setup |
 
 ## Examples
-```typescript
-// Preprocess audio for optimal quality
-await preprocessAudio('input.wav', 'output.mp3', {
-  targetSampleRate: 16000,
-  noiseReduction: true,
-  normalization: true,
-});
 
-// Use scenario-specific config
-const config = getOptimalConfig('technical');
-const transcript = await client.transcribe(audioUrl, config);
 
-// Transcribe with deduplication
-const transcriptId = await transcriptCache.transcribeWithCache(audioUrl);
-```
+**Basic usage**: Apply twinmind performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind performance tuning for production environments with multiple constraints and team-specific requirements.
 
 ## Performance Benchmarks
 

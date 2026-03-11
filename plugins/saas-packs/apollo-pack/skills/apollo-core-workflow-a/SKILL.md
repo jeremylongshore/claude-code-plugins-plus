@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Core Workflow A: Lead Search & Enrichment
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-core-workflow-b` for email sequences and outreach.
+
+## Examples
+
+**Basic usage**: Apply apollo core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo core workflow a for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Enterprise RBAC
 
 ## Overview
@@ -96,13 +95,20 @@ vastai show instances --raw | \
 | SSH connection refused | Instance still initializing | Wait 2-3 minutes after creation |
 
 ## Examples
-```bash
-# Find cheapest available A100 instance
-vastai search offers 'gpu_name=A100 num_gpus=1 reliability>0.95' \
-  --order 'dph_total' --limit 5
-```
 
-```bash
-# Quick cost estimate for a training job
-echo "8x A100 for 24 hours at ~\$1.50/hr/gpu = \$$(echo '8 * 1.50 * 24' | bc)"
-```
+
+**Basic usage**: Apply vastai enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize vastai enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Vastai Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

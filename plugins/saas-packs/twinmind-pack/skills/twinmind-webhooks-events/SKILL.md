@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Webhooks & Events
 
 ## Contents
@@ -72,18 +71,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Duplicate events | Retries from TwinMind | Implement idempotency by event ID |
 
 ## Examples
-```typescript
-// Register handler for transcription completed
-registerHandler(TwinMindEventType.TRANSCRIPTION_COMPLETED, async (event) => {
-  const { transcript_id } = event.data;
-  await client.post('/summarize', { transcript_id });
-});
 
-// Register handler for action items
-registerHandler(TwinMindEventType.ACTION_ITEMS_EXTRACTED, async (event) => {
-  await createTasksInLinear(event.data.action_items);
-});
-```
+
+**Basic usage**: Apply twinmind webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind webhooks events for production environments with multiple constraints and team-specific requirements.
 
 ## Webhook Events Reference
 

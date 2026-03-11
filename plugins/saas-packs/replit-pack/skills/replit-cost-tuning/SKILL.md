@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Cost Tuning
 
 ## Overview
@@ -98,12 +97,20 @@ audit:
 | Seat costs growing | Team expanding without audit | Quarterly seat utilization review |
 
 ## Examples
-```bash
-# Quick cost check: which Repls cost the most?
-curl -s "https://replit.com/api/v1/teams/TEAM_ID/usage?period=last_30d" \
-  -H "Authorization: Bearer $REPLIT_API_KEY" | \
-  jq '{
-    total_cost: ([.usage[].cost_usd] | add),
-    top_3: [.usage | sort_by(-.cost_usd) | .[0:3] | .[] | {repl: .repl_name, cost: .cost_usd}]
-  }'
-```
+
+
+**Basic usage**: Apply replit cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize replit cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

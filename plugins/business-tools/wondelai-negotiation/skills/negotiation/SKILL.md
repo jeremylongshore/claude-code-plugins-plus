@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Negotiation
 
 Tactical empathy-based negotiation framework from FBI hostage negotiator Chris Voss. Transform any negotiation by understanding the emotional drivers behind decisions and using proven techniques to build rapport, uncover hidden information, and reach better outcomes.
@@ -373,3 +372,49 @@ This skill is based on Chris Voss's research and experience as an FBI hostage ne
 ## About the Author
 
 **Chris Voss** is a former FBI lead international kidnapping negotiator and the founder of the Black Swan Group, a consulting firm that trains businesses in tactical negotiation. During his 24-year career at the FBI, Voss was the Bureau's lead negotiator for international kidnapping cases and worked more than 150 hostage situations worldwide. He has taught negotiation at Harvard Law School, Georgetown University's McDonough School of Business, and MIT's Sloan School of Management. *Never Split the Difference* has become one of the most widely recommended business books in the world and has been translated into dozens of languages. Voss's methods are now used by Fortune 500 companies, law enforcement agencies, and professionals across every industry.
+
+## Overview
+
+Prepare and execute negotiations using tactical empathy, calibrated questions, and the Ackerman method.
+
+## Prerequisites
+
+- Access to the logging environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with logging concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the logging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [logging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with logging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply negotiation to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize negotiation for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official logging documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

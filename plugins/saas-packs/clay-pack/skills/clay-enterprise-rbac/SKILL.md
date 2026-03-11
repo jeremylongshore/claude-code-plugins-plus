@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Enterprise RBAC
 
 ## Overview
@@ -95,16 +94,20 @@ curl "https://api.clay.com/v1/workspace/usage?group_by=user&period=last_30d" \
 | Member cannot see table | Table in another workspace | Share table or move to shared workspace |
 
 ## Examples
-```bash
-# Offboard a team member: revoke access and transfer table ownership
-curl -X DELETE "https://api.clay.com/v1/workspace/members/usr_xyz" \
-  -H "Authorization: Bearer $CLAY_API_KEY"
-# Reassign their tables to another member via the Clay UI
-```
 
-```bash
-# Monthly credit audit: find tables consuming the most credits
-curl "https://api.clay.com/v1/workspace/usage?group_by=table&period=last_30d" \
-  -H "Authorization: Bearer $CLAY_API_KEY" | \
-  jq '.usage | sort_by(-.total_credits) | .[0:5]'
-```
+
+**Basic usage**: Apply clay enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Clay Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

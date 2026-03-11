@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Multi-Environment Setup
 
 ## Overview
@@ -185,3 +184,9 @@ vastai search offers 'gpu_name=RTX_3090 num_gpus=1 dph_total<0.40' --order dph_t
 
 ## Next Steps
 For enterprise access control, see `vastai-enterprise-rbac`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

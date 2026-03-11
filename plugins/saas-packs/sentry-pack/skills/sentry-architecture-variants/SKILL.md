@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Architecture Variants
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Architecture Guide](https://docs.sentry.io/product/sentry-basics/integrate-backend/)
 - [Distributed Tracing](https://docs.sentry.io/product/performance/distributed-tracing/)
+
+## Overview
+
+Execute sentry architecture patterns for different application types.

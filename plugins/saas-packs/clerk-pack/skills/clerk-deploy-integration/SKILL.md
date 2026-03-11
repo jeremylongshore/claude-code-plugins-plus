@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Deploy Integration
 
 ## Overview
@@ -56,3 +55,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-webhooks-events` for webhook configuration.
+
+## Examples
+
+**Basic usage**: Apply clerk deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk deploy integration for production environments with multiple constraints and team-specific requirements.

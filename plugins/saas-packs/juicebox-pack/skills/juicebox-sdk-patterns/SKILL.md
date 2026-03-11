@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox SDK Patterns
 
 ## Overview
@@ -51,3 +50,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Apply these patterns then explore `juicebox-core-workflow-a` for search workflows.
+
+## Examples
+
+**Basic usage**: Apply juicebox sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox sdk patterns for production environments with multiple constraints and team-specific requirements.

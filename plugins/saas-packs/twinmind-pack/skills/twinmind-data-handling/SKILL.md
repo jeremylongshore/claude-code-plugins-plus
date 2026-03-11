@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Data Handling
 
 ## Contents
@@ -69,17 +68,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Data not deleted | Cascade failure | Verify deletion recursively |
 
 ## Examples
-```typescript
-// Redact PII from transcript
-const { redactedText, redactions } = redactPII("Contact john@example.com");
-// redactedText: "Contact [EMAIL REDACTED]"
-// redactions: [{ type: 'Email', count: 1 }]
 
-// Handle GDPR erasure request
-const gdpr = new GDPRHandler();
-const result = await gdpr.handleErasureRequest('user@example.com');
-console.log(`Deleted ${result.transcriptsDeleted} transcripts`);
-```
+
+**Basic usage**: Apply twinmind data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind data handling for production environments with multiple constraints and team-specific requirements.
 
 ## TwinMind Privacy Features
 - **No audio storage**: Audio processed in real-time and immediately deleted

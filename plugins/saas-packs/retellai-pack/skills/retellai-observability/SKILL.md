@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Observability
 
 ## Overview
@@ -105,9 +104,20 @@ Track: call volume by agent, call completion rate (pie chart), duration distribu
 | No webhook events | Endpoint unreachable | Verify webhook URL and SSL certificate |
 
 ## Examples
-```bash
-# Quick cost summary for today
-curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
-  -H "Authorization: Bearer $RETELL_API_KEY" | \
-  jq '{calls_today: length, total_cost: ([.[].cost] | add), avg_duration_sec: ([.[].duration] | add / length)}'
-```
+
+
+**Basic usage**: Apply retellai observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize retellai observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

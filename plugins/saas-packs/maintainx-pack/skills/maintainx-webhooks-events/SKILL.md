@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Webhooks & Events
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For performance optimization, see `maintainx-performance-tuning`.
+
+## Examples
+
+**Basic usage**: Apply maintainx webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx webhooks events for production environments with multiple constraints and team-specific requirements.

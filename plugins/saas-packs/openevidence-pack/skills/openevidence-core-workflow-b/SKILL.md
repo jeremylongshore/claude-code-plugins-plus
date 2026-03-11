@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Core Workflow B: DeepConsult Research
 
 ## Overview
@@ -179,3 +178,9 @@ console.log(generateReport(summary));
 - [OpenEvidence API](https://docs.openevidence.com)
 - [GRADE Evidence Framework](https://www.gradeworkinggroup.org/)
 - [PICO Framework Guide](https://guides.lib.uw.edu/research/pico)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

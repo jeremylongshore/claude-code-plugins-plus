@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Observability
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For incident response, see `maintainx-incident-runbook`.
+
+## Examples
+
+**Basic usage**: Apply maintainx observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx observability for production environments with multiple constraints and team-specific requirements.

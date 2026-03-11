@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Cost Tuning
 
 ## Overview
@@ -106,17 +105,20 @@ If using Obsidian Publish ($8/mo per site), minimize what you publish:
 | Publish site slow | Large uncompressed images | Compress images, lazy-load media |
 
 ## Examples
-```bash
-# Quick vault cost audit
-echo "=== Vault Size ==="
-du -sh /path/to/vault/
-echo "=== Top 10 largest files ==="
-find /path/to/vault/ -type f -exec du -h {} + | sort -rh | head -10
-echo "=== Estimated sync usage ==="
-find /path/to/vault/ -not -path '*/.git/*' -not -path '*/.trash/*' -type f -exec du -ch {} + | tail -1
-```
 
-```bash
-# Compress all PNG images in vault to reduce storage
-find /path/to/vault/ -name "*.png" -exec pngquant --quality=65-80 --skip-if-larger --ext .png --force {} \;
-```
+
+**Basic usage**: Apply obsidian cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official API documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

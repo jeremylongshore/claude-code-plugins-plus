@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Webhooks Events
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Webhooks Guide](https://vercel.com/docs/webhooks)
 - [Webhook Security Best Practices](https://vercel.com/docs/webhooks/security)
+
+## Overview
+
+Implement Vercel webhook signature validation and event handling.

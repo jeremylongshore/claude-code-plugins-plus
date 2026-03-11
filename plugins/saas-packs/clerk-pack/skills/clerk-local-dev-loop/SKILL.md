@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Local Dev Loop
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-sdk-patterns` for common SDK usage patterns.
+
+## Examples
+
+**Basic usage**: Apply clerk local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk local dev loop for production environments with multiple constraints and team-specific requirements.

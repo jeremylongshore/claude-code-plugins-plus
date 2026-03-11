@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Core Workflow A: Note Creation & Management
 
 ## Overview
@@ -61,3 +60,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For search and retrieval workflows, see `evernote-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply evernote core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote core workflow a for production environments with multiple constraints and team-specific requirements.

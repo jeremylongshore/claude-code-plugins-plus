@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Data Handling
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Sentry Data Privacy](https://docs.sentry.io/product/data-management-settings/data-privacy/)
 - [GDPR Compliance](https://sentry.io/legal/gdpr/)
 - [Data Scrubbing](https://docs.sentry.io/product/data-management-settings/scrubbing/)
+
+## Overview
+
+Manage sensitive data properly in Sentry.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Deploy Integration
 
 ## Overview
@@ -145,3 +144,9 @@ vastai create instance $BEST_OFFER --image myregistry/trainer:latest --disk 200
 
 ## Next Steps
 For multi-environment setup, see `vastai-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

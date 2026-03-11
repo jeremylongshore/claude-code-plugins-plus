@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Observability
 
 ## Overview
@@ -90,7 +89,20 @@ Track: deployment uptime by app, response latency (cold start detection), CPU/me
 | AI features not working | Ghostwriter disabled for team | Enable in Team Settings > AI Features |
 
 ## Examples
-```bash
-# Quick deployment health check
-curl -s -o /dev/null -w "%{http_code} %{time_total}s" https://your-app.repl.co/health
-```
+
+
+**Basic usage**: Apply replit observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize replit observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

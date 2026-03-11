@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Deploy Integration
 
 ## Overview
@@ -121,11 +120,10 @@ export async function GET() {
 
 ## Examples
 
-### Deploy Script
-```bash
-#!/bin/bash
-npm run build && npm test && vercel --prod
-```
+
+**Basic usage**: Apply instantly deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize instantly deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Instantly API Documentation](https://developer.instantly.ai)
@@ -133,3 +131,9 @@ npm run build && npm test && vercel --prod
 
 ## Next Steps
 For webhook handling, see `instantly-webhooks-events`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

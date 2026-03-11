@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Performance Tuning
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-cost-tuning` for cost optimization strategies.
+
+## Examples
+
+**Basic usage**: Apply clerk performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk performance tuning for production environments with multiple constraints and team-specific requirements.

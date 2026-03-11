@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Deploy Integration
 
 ## Overview
@@ -126,10 +125,10 @@ export async function GET() {
 
 ## Examples
 
-### Quick Deploy
-```bash
-vercel env add FIRECRAWL_API_KEY production && vercel --prod
-```
+
+**Basic usage**: Apply firecrawl deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize firecrawl deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Firecrawl Documentation](https://docs.firecrawl.dev)
@@ -137,3 +136,9 @@ vercel env add FIRECRAWL_API_KEY production && vercel --prod
 
 ## Next Steps
 For webhook handling, see `firecrawl-webhooks-events`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

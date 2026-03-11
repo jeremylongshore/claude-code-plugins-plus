@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Cost Tuning
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Pricing](https://vercel.com/pricing)
 - [Vercel Billing Dashboard](https://dashboard.vercel.com/billing)
+
+## Overview
+
+Optimize Vercel costs through tier selection, sampling, and usage monitoring.

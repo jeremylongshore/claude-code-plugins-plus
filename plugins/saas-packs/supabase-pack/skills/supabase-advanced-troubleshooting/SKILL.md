@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Advanced Troubleshooting
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Support Portal](https://support.supabase.com)
 - [Supabase Status Page](https://status.supabase.com)
+
+## Overview
+
+Execute apply Supabase advanced debugging techniques for hard-to-diagnose issues.

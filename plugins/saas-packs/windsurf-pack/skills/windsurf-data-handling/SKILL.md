@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Data Handling
 
 ## Overview
@@ -149,3 +148,9 @@ find . -type f \
 ## Resources
 - [Codeium Privacy Policy](https://codeium.com/privacy-policy)
 - [Windsurf Configuration](https://docs.windsurf.com/configuration)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Enterprise RBAC
 
 ## Overview
@@ -91,15 +90,20 @@ ORDER BY event_time DESC;
 | Cannot see SQL warehouse | Missing `CAN_USE` grant | Add warehouse permission for the group |
 
 ## Examples
-```sql
--- Check effective permissions for a specific principal
-SELECT * FROM system.information_schema.object_privileges
-WHERE grantee = 'data-engineers'
-ORDER BY object_type, object_name;
-```
 
-```bash
-# Quickly grant a new team read access to gold tables
-databricks unity-catalog permissions update schema analytics.gold \
-  --json '[{"principal": "new-team", "privileges": ["USAGE", "SELECT"]}]'
-```
+
+**Basic usage**: Apply databricks enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official logging documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

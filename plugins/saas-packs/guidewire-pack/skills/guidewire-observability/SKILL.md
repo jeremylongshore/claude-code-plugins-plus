@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Observability
 
 ## Overview
@@ -50,3 +49,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For incident response procedures, see `guidewire-incident-runbook`.
+
+## Examples
+
+**Basic usage**: Apply guidewire observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire observability for production environments with multiple constraints and team-specific requirements.

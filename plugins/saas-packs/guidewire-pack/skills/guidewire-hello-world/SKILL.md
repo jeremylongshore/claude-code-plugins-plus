@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Hello World
 
 ## Overview
@@ -60,3 +59,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For local development workflow, see `guidewire-local-dev-loop`.
+
+## Examples
+
+**Basic usage**: Apply guidewire hello world to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire hello world for production environments with multiple constraints and team-specific requirements.

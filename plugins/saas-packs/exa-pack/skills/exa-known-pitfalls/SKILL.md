@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Known Pitfalls
 
 ## Overview
@@ -144,3 +143,9 @@ results = exa.find_similar(
 ## Resources
 - [Exa API Docs](https://docs.exa.ai)
 - [Search Types Guide](https://docs.exa.ai/reference/search)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

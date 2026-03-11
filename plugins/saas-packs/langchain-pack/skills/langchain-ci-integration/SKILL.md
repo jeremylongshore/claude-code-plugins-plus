@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain CI Integration
 
 ## Overview
@@ -195,3 +194,9 @@ def test_chain_builds():
 - [LangChain Testing Guide](https://python.langchain.com/docs/contributing/testing)
 - [LangSmith Tracing](https://docs.smith.langchain.com/)
 - [LangChain CI Examples](https://github.com/langchain-ai/langchain/tree/master/.github)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

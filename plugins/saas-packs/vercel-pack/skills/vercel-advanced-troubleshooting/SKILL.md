@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Advanced Troubleshooting
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Support Portal](https://support.vercel.com)
 - [Vercel Status Page](https://www.vercel-status.com)
+
+## Overview
+
+Execute apply Vercel advanced debugging techniques for hard-to-diagnose issues.

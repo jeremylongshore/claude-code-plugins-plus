@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Performance Tuning
 
 ## Overview
@@ -116,24 +115,20 @@ async function searchThenFetch(exa: Exa, query: string) {
 | Rate limit (429) | Too many concurrent searches | Add request queue with concurrency limit |
 
 ## Examples
-```bash
-# Benchmark: keyword vs neural latency on same query
-echo "Keyword:"
-time curl -s -X POST https://api.exa.ai/search \
-  -H "x-api-key: $EXA_API_KEY" \
-  -d '{"query": "GraphQL best practices 2024", "type": "keyword", "numResults": 3}' -o /dev/null
 
-echo "Neural:"
-time curl -s -X POST https://api.exa.ai/search \
-  -H "x-api-key: $EXA_API_KEY" \
-  -d '{"query": "GraphQL best practices 2024", "type": "neural", "numResults": 3}' -o /dev/null
-```
 
-```typescript
-// Optimized RAG pipeline search
-const context = await parallelContextSearch(exa, [
-  `${topic} technical overview`,
-  `${topic} implementation examples`,
-]);
-// Total latency: max(search1, search2) + cache overhead ~= 600ms
-```
+**Basic usage**: Apply exa performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize exa performance tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

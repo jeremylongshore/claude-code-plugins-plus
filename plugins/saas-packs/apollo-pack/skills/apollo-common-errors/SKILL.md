@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Common Errors
 
 ## Overview
@@ -35,6 +34,12 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 ## Output
 
 
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [debugging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
 ## Error Handling
 | Issue | Solution |
 |-------|----------|
@@ -49,3 +54,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-debug-bundle` for collecting debug evidence.
+
+## Examples
+
+**Basic usage**: Apply apollo common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo common errors for production environments with multiple constraints and team-specific requirements.

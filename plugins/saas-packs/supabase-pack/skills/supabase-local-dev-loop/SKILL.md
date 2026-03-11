@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Local Dev Loop
 
 ## Prerequisites
@@ -42,3 +41,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Supabase SDK Reference](https://supabase.com/docs/sdk)
 - [Vitest Documentation](https://vitest.dev/)
 - [tsx Documentation](https://github.com/esbuild-kit/tsx)
+
+## Overview
+
+Configure Supabase local development with hot reload and testing.
+
+## Instructions
+
+1. Assess the current state of the testing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

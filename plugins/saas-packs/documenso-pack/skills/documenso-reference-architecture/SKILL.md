@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Reference Architecture
 
 ## Overview
@@ -65,3 +64,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For multi-environment setup, see `documenso-multi-env-setup`.
+
+## Examples
+
+**Basic usage**: Apply documenso reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso reference architecture for production environments with multiple constraints and team-specific requirements.

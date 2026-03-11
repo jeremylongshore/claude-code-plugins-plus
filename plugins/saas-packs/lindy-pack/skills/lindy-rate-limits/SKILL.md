@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Rate Limits
 
 ## Overview
@@ -58,3 +57,11 @@ For detailed implementation code and configurations, load the reference guide:
 ### Status Dashboard
 ## Resources
 - [Lindy API Docs](https://docs.lindy.ai)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [API implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.

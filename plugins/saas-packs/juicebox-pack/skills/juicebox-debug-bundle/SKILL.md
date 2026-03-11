@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Debug Bundle
 
 ## Overview
@@ -44,3 +43,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After collecting debug info, check `juicebox-rate-limits` for quota issues.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with debugging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply juicebox debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox debug bundle for production environments with multiple constraints and team-specific requirements.

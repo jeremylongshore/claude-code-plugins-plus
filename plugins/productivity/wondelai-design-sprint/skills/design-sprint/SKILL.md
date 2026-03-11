@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Design Sprint Framework
 
 A five-day process for answering critical business questions through design, prototyping, and testing ideas with customers. Developed at Google Ventures and used by Google, Slack, Airbnb, and hundreds of startups.
@@ -471,3 +470,49 @@ This skill is based on the Design Sprint process developed at Google Ventures. F
 ## About the Author
 
 **Jake Knapp** created the Design Sprint process while at Google, where he ran sprints on products like Gmail, Chrome, and Google X. As a design partner at Google Ventures (now GV), he refined the process by running over 100 sprints with startups in the GV portfolio. The Design Sprint is now used by teams at Google, Slack, Airbnb, LEGO, and thousands of companies worldwide. Jake is also the author of *Make Time*, a framework for focus and energy.
+
+## Overview
+
+Run a structured 5-day process to prototype, test, and validate product ideas with real users.
+
+## Prerequisites
+
+- Access to the testing environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with testing concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the testing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply design sprint to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize design sprint for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official testing documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

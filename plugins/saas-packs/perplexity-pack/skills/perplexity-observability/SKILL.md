@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Observability
 
 ## Overview
@@ -102,12 +101,20 @@ Track: query latency by model (sonar vs sonar-pro), citations per response distr
 | Budget exhausted | Monthly cap reached | Increase budget or reduce query volume |
 
 ## Examples
-```bash
-# Compare model latency
-for model in sonar sonar-pro; do
-  echo -n "$model: "
-  time curl -s -X POST https://api.perplexity.ai/chat/completions \
-    -H "Authorization: Bearer $PPLX_API_KEY" \
-    -d "{\"model\": \"$model\", \"messages\": [{\"role\": \"user\", \"content\": \"What is GraphQL?\"}]}" -o /dev/null
-done
-```
+
+
+**Basic usage**: Apply perplexity observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize perplexity observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

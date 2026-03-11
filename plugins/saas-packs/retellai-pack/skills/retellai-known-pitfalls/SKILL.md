@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Known Pitfalls
 
 ## Overview
@@ -163,3 +162,9 @@ app.post('/retell-webhook', async (req, res) => {
 ## Resources
 - [Retell AI Docs](https://docs.retellai.com)
 - [Voice Agent Best Practices](https://docs.retellai.com/guide/best-practices)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

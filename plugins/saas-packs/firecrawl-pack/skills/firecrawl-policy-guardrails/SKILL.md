@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Policy Guardrails
 
 ## Overview
@@ -134,3 +133,9 @@ budget.record(valid.length);
 ## Resources
 - [Firecrawl Docs](https://docs.firecrawl.dev)
 - [Web Scraping Legal Guide](https://www.eff.org/issues/web-scraping)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

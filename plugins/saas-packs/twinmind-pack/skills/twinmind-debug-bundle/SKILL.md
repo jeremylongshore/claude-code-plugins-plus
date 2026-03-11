@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Debug Bundle
 
 ## Overview
@@ -403,3 +402,9 @@ Always review the bundle before sharing with support.
 
 ## Next Steps
 For rate limiting strategies, see `twinmind-rate-limits`.
+
+## Examples
+
+**Basic usage**: Apply twinmind debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind debug bundle for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Reference Architecture
 
 ## Overview
@@ -190,3 +189,9 @@ async function analyzeDocument(doc: string) {
 - [Groq API Documentation](https://console.groq.com/docs)
 - [Groq Model Cards](https://console.groq.com/docs/models)
 - [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

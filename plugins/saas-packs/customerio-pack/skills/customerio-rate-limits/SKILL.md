@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Rate Limits
 
 ## Overview
@@ -66,3 +65,23 @@ For detailed implementation code, load the reference guide:
 
 ## Next Steps
 After implementing rate limits, proceed to `customerio-security-basics` for security best practices.
+
+## Prerequisites
+
+- Access to the API environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with API concepts and terminology
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [API implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply customerio rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio rate limits for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Incident Runbook
 
 ## Overview
@@ -295,3 +294,11 @@ kubectl rollout status deployment/mistral-service
 
 ## Next Steps
 For data handling, see `mistral-data-handling`.
+
+## Instructions
+
+1. Assess the current state of the Mistral configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

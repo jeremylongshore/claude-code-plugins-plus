@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks CI Integration
 
 ## Overview
@@ -207,3 +206,9 @@ databricks bundle deploy --target staging --dry-run
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/)
 - [Databricks CLI Reference](https://docs.databricks.com/dev-tools/cli/)
 - [Databricks GitHub Actions](https://github.com/databricks/setup-cli)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

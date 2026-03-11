@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire SDK Patterns
 
 ## Overview
@@ -74,3 +73,9 @@ For detailed code implementations (Digital SDK components, Gosu classes, Gradle 
 ## Next Steps
 
 For core insurance workflows, see `guidewire-core-workflow-a` and `guidewire-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply guidewire sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire sdk patterns for production environments with multiple constraints and team-specific requirements.

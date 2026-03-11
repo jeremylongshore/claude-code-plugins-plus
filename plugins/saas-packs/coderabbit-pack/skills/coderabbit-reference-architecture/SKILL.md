@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # CodeRabbit Reference Architecture
 
 ## Overview
@@ -216,3 +215,9 @@ reviews:
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
 - [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
 - [CodeRabbit Tools](https://docs.coderabbit.ai/tools)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

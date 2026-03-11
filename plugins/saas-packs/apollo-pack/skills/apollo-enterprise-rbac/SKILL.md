@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Enterprise RBAC
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-migration-deep-dive` for migration strategies.
+
+## Examples
+
+**Basic usage**: Apply apollo enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo enterprise rbac for production environments with multiple constraints and team-specific requirements.

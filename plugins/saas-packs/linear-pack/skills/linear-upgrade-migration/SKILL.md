@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Upgrade Migration
 
 ## Contents
@@ -91,12 +90,10 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Examples
 
-### Quick Rollback
-```bash
-git checkout main
-npm install @linear/sdk@PREVIOUS_VERSION
-npm test
-```
+
+**Basic usage**: Apply linear upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize linear upgrade migration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Linear SDK Changelog](https://github.com/linear/linear/blob/master/packages/sdk/CHANGELOG.md)

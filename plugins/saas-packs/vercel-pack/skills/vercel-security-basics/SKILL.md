@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Security Basics
 
 ## Prerequisites
@@ -39,3 +38,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Security Guide](https://vercel.com/docs/security)
 - [Vercel API Scopes](https://vercel.com/docs/scopes)
+
+## Overview
+
+Execute apply Vercel security best practices for secrets and access control.
+
+## Instructions
+
+1. Assess the current state of the security configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

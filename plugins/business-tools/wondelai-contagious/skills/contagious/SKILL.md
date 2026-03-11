@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Word-of-Mouth & Virality Framework
 
 A framework for engineering word-of-mouth and making products, ideas, and content contagious. Based on Jonah Berger's research into why certain things catch on while others languish in obscurity — and how to systematically tip the odds in your favor.
@@ -337,3 +336,49 @@ Run this diagnostic on any product, campaign, or content piece:
 ## About the Author
 
 **Jonah Berger** is a marketing professor at the Wharton School at the University of Pennsylvania. His research focuses on social influence, word-of-mouth, and why products, ideas, and behaviors catch on. He has published dozens of articles in top-tier academic journals and his work has been featured in the New York Times, Wall Street Journal, and Harvard Business Review. "Contagious" distills his years of research into a practical framework for understanding and engineering virality. He has also authored "Invisible Influence" (on how hidden forces shape behavior) and "The Catalyst" (on how to change minds), and consults with companies ranging from startups to Fortune 500 firms on how to make their products and ideas spread.
+
+## Overview
+
+Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories).
+
+## Prerequisites
+
+- Access to the Go environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with Go concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the Go configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Go implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Go |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply contagious to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize contagious for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official Go documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

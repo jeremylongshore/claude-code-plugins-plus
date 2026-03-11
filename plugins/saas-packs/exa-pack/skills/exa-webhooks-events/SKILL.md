@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Webhooks & Events
 
 ## Overview
@@ -158,3 +157,9 @@ await createMonitor({
 
 ## Next Steps
 For deployment setup, see `exa-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

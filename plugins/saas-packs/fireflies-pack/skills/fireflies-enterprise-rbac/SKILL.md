@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies Enterprise RBAC
 
 ## Overview
@@ -83,11 +82,20 @@ curl -X POST https://api.fireflies.ai/graphql \
 | SSO login fails | SAML assertion clock skew | Sync server clocks, allow 5-min skew tolerance |
 
 ## Examples
-```bash
-# Bulk remove inactive members (no activity in 90 days)
-curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ teamMembers { id email last_active } }"}' | \
-  jq -r '.data.teamMembers[] | select(.last_active < "2025-12-01") | .id' | \
-  xargs -I{} echo "Remove member {}"
-```
+
+
+**Basic usage**: Apply fireflies enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize fireflies enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Fireflies Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

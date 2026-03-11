@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Rate Limits
 
 ## Overview
@@ -58,3 +57,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For security configuration, see `databricks-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply databricks rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks rate limits for production environments with multiple constraints and team-specific requirements.

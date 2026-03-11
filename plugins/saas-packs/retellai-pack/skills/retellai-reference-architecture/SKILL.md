@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Reference Architecture
 
 ## Overview
@@ -194,3 +193,9 @@ console.log(`Test call URL: ${webCall.call_id}`);
 - [Retell AI Documentation](https://docs.retellai.com)
 - [Retell Agent Setup](https://docs.retellai.com/build-agent)
 - [Retell API Reference](https://docs.retellai.com/api-references)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

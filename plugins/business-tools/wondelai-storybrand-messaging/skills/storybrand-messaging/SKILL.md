@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # StoryBrand Messaging Framework
 
 Framework for clarifying your message so customers will listen. Based on a fundamental truth: customers don't buy the best products—they buy the ones they can understand the fastest.
@@ -338,3 +337,49 @@ Donald Miller is the CEO of StoryBrand, a company that has helped over 10,000 bu
 This skill is based on the StoryBrand framework developed by Donald Miller. For the complete methodology, worksheets, and deeper insights, read the original book:
 
 - [*"Building a StoryBrand: Clarify Your Message So Customers Will Listen"*](https://www.amazon.com/Building-StoryBrand-Clarify-Message-Customers/dp/0718033329?tag=wondelai00-20) by Donald Miller
+
+## Overview
+
+Clarify brand messaging using narrative structure that positions the customer as hero.
+
+## Prerequisites
+
+- Access to the branding environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with branding concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the branding configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [branding implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with branding |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply storybrand messaging to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize storybrand messaging for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official branding documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

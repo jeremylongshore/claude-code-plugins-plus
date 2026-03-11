@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Deploy Integration
 
 ## Overview
@@ -144,3 +143,9 @@ npm run build && vsce package && code --install-extension *.vsix
 
 ## Next Steps
 For multi-environment setup, see `windsurf-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

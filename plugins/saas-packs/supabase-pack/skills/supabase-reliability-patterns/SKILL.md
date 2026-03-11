@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Reliability Patterns
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
 - [Opossum Documentation](https://nodeshift.dev/opossum/)
 - [Supabase Reliability Guide](https://supabase.com/docs/reliability)
+
+## Overview
+
+Implement Supabase reliability patterns including circuit breakers, idempotency, and graceful degradation.

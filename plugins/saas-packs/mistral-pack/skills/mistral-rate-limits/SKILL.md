@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral Rate Limits
 
 ## Overview
@@ -163,3 +162,9 @@ status = {
 ## Resources
 - [Mistral Rate Limits](https://docs.mistral.ai/capabilities/rate-limiting/)
 - [Mistral API Reference](https://docs.mistral.ai/api/)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

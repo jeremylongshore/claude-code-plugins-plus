@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Hello World
 
 ## Overview
@@ -61,3 +60,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `evernote-local-dev-loop` for development workflow setup.
+
+## Examples
+
+**Basic usage**: Apply evernote hello world to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote hello world for production environments with multiple constraints and team-specific requirements.

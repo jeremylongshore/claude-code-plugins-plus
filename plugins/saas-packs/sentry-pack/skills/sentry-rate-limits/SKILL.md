@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Rate Limits
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Quota Management](https://docs.sentry.io/product/accounts/quotas/)
 - [Sampling Strategies](https://docs.sentry.io/platforms/javascript/configuration/sampling/)
+
+## Overview
+
+Manage Sentry rate limits and quota optimization.

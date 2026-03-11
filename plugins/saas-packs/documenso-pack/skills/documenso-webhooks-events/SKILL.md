@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Webhooks & Events
 
 ## Overview
@@ -58,3 +57,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For performance optimization, see `documenso-performance-tuning`.
+
+## Examples
+
+**Basic usage**: Apply documenso webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso webhooks events for production environments with multiple constraints and team-specific requirements.

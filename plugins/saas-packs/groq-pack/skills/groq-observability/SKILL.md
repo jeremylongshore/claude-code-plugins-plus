@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Observability
 
 ## Overview
@@ -98,10 +97,20 @@ Key panels: time-to-first-token distribution (Groq's USP), tokens/second by mode
 | Tokens/sec drop | Streaming disabled | Enable streaming for better perceived performance |
 
 ## Examples
-```bash
-# Benchmark Groq speed with a quick test
-time curl -s -X POST https://api.groq.com/openai/v1/chat/completions \
-  -H "Authorization: Bearer $GROQ_API_KEY" \
-  -d '{"model": "llama-3.1-8b-instant", "messages": [{"role": "user", "content": "Say hello"}], "max_tokens": 10}' | \
-  jq '{model: .model, tokens: .usage.total_tokens, latency: "see shell timing"}'
-```
+
+
+**Basic usage**: Apply groq observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize groq observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

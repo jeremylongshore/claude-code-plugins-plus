@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Known Pitfalls
 
 ## Overview
@@ -146,3 +145,9 @@ deploymentTarget = "cloudrun"
 - [Replit Docs](https://docs.replit.com)
 - [Replit DB Guide](https://docs.replit.com/hosting/databases/replit-database)
 - [Nix on Replit](https://docs.replit.com/programming-ide/nix-on-replit)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

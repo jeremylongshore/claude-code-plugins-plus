@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo CI Integration
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-deploy-integration` for deployment configuration.
+
+## Examples
+
+**Basic usage**: Apply apollo ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo ci integration for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Multi-Environment Setup
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For monitoring and logging, see `obsidian-observability`.
+
+## Examples
+
+**Basic usage**: Apply obsidian multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian multi env setup for production environments with multiple constraints and team-specific requirements.

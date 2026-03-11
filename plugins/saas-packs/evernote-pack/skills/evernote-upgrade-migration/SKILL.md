@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Upgrade & Migration
 
 ## Overview
@@ -66,3 +65,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For CI/CD integration, see `evernote-ci-integration`.
+
+## Examples
+
+**Basic usage**: Apply evernote upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote upgrade migration for production environments with multiple constraints and team-specific requirements.

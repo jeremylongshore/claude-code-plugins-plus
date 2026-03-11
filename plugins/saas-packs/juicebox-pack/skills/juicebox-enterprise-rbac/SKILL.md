@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Enterprise RBAC
 
 ## Overview
@@ -46,3 +45,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After RBAC setup, see `juicebox-migration-deep-dive` for advanced migrations.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with security |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply juicebox enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox enterprise rbac for production environments with multiple constraints and team-specific requirements.

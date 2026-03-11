@@ -11,7 +11,6 @@ author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # YouTube Brief
 
 You are creating a structured production brief for a YouTube video. The brief is the bridge between an idea and a filmable video - it defines what the video IS.
@@ -100,3 +99,47 @@ Save the approved brief as `video-brief-{slug}.md` in the working directory.
 - **CTA integration.** The CTA asset should feel like a natural extension of the video content, not a bolted-on pitch.
 - **Honest about scope.** If a topic is too big for one video, say so and suggest splitting it. Don't try to cram a Full Tutorial into a Feature Tutorial.
 - **Team-ready.** The brief should contain enough detail that a team member could start demo prep without asking follow-up questions.
+
+## Overview
+
+Refine a YouTube video idea into a structured production brief with angle, key points, value proposition, CTA asset, and audience segment.
+
+## Prerequisites
+
+- Access to the Yt Brief environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with Yt Brief concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the Yt Brief configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Yt Brief |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply yt brief to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize yt brief for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official Yt Brief documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

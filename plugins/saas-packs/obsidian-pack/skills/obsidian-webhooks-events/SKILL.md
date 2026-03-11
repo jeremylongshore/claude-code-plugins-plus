@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Webhooks & Events
 
 ## Overview
@@ -63,3 +62,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For performance optimization, see `obsidian-performance-tuning`.
+
+## Examples
+
+**Basic usage**: Apply obsidian webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian webhooks events for production environments with multiple constraints and team-specific requirements.

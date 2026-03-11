@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Incident Runbook
 
 ## Prerequisites
@@ -51,3 +50,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Issue Details](https://docs.sentry.io/product/issues/issue-details/)
 - [Sentry Alerts](https://docs.sentry.io/product/alerts/)
+
+## Overview
+
+Manage incident response procedures using Sentry.

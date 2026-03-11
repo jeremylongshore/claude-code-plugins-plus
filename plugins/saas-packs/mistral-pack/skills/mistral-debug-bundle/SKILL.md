@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Debug Bundle
 
 ## Overview
@@ -271,3 +270,9 @@ try {
 
 ## Next Steps
 For rate limit issues, see `mistral-rate-limits`.
+
+## Examples
+
+**Basic usage**: Apply mistral debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize mistral debug bundle for production environments with multiple constraints and team-specific requirements.

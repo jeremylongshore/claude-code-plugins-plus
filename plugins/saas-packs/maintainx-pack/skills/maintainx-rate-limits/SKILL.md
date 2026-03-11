@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Rate Limits
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For security configuration, see `maintainx-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply maintainx rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx rate limits for production environments with multiple constraints and team-specific requirements.

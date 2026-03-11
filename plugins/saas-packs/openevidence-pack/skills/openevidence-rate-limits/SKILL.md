@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Rate Limits
 
 ## Overview
@@ -136,13 +135,16 @@ async function queryWithBackoff(query: any, maxRetries = 3): Promise<any> {
 
 ## Examples
 
-### Usage Dashboard
-```typescript
-const status = {
-  query: { active: limiter.active.get('query'), rpm_used: limiter.requests.get('query')?.length },
-  deepconsult: { active: limiter.active.get('deepconsult'), rpm_used: limiter.requests.get('deepconsult')?.length }
-};
-```
+
+**Basic usage**: Apply openevidence rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize openevidence rate limits for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [OpenEvidence API](https://www.openevidence.com)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

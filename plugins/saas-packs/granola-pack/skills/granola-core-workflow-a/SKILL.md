@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Core Workflow A: Meeting Preparation
 
 ## Overview
@@ -164,3 +163,9 @@ Configure Granola preferences for automatic behavior:
 
 ## Next Steps
 Proceed to `granola-core-workflow-b` for post-meeting processing workflows.
+
+## Examples
+
+**Basic usage**: Apply granola core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola core workflow a for production environments with multiple constraints and team-specific requirements.

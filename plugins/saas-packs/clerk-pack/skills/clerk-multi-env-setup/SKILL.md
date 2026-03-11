@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Multi-Environment Setup
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-observability` for monitoring and logging.
+
+## Examples
+
+**Basic usage**: Apply clerk multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk multi env setup for production environments with multiple constraints and team-specific requirements.

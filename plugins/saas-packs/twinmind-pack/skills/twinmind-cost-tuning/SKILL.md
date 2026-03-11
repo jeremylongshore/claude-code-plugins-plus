@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Cost Tuning
 
 ## Contents
@@ -67,20 +66,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Wrong tier | Poor planning | Analyze usage patterns quarterly |
 
 ## Examples
-```typescript
-// Analyze usage and get recommendation
-const analysis = await analyzeUsage();
-console.log(`Current: $${analysis.currentCost}/mo on ${analysis.currentTier}`);
-console.log(`Recommended: ${analysis.recommendedTier} (save $${analysis.potentialSavings})`);
 
-// Set up budget monitoring
-startCostMonitoring({
-  monthlyBudget: 50,
-  warningThreshold: 0.8,
-  criticalThreshold: 0.95,
-  notifications: { slack: '#billing-alerts' },
-});
-```
+
+**Basic usage**: Apply twinmind cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind cost tuning for production environments with multiple constraints and team-specific requirements.
 
 ## Pricing Comparison
 

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote SDK Patterns
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 See `evernote-core-workflow-a` for note creation and management workflows.
+
+## Examples
+
+**Basic usage**: Apply evernote sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote sdk patterns for production environments with multiple constraints and team-specific requirements.

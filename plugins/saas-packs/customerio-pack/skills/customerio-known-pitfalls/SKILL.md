@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Known Pitfalls
 
 ## Overview
@@ -75,3 +74,17 @@ For detailed code examples of each pitfall and the anti-pattern audit script, lo
 
 ## Next Steps
 After reviewing pitfalls, proceed to `customerio-reliability-patterns` for fault tolerance.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [optimization implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply customerio known pitfalls to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio known pitfalls for production environments with multiple constraints and team-specific requirements.

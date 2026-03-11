@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Multi-Environment Setup
 
 ## Overview
@@ -200,3 +199,9 @@ curl -s "https://api.firecrawl.dev/v1/team/credits" \
 
 ## Next Steps
 For deployment configuration, see `firecrawl-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Reliability Patterns
 
 ## Overview
@@ -142,3 +141,9 @@ health = {
 ## Resources
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Object Storage](https://docs.replit.com/hosting/databases/object-storage)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

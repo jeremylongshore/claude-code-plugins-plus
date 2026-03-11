@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Performance Tuning
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For cost optimization, see `maintainx-cost-tuning`.
+
+## Examples
+
+**Basic usage**: Apply maintainx performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx performance tuning for production environments with multiple constraints and team-specific requirements.

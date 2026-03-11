@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Deploy Integration
 
 ## Overview
@@ -102,12 +101,10 @@ export async function GET() {
 
 ## Examples
 
-### Deploy Script
-```bash
-#!/bin/bash
-set -e
-npm run build && npm test && vercel --prod
-```
+
+**Basic usage**: Apply clay deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Clay API Documentation](https://docs.clay.com/api)
@@ -115,3 +112,9 @@ npm run build && npm test && vercel --prod
 
 ## Next Steps
 For webhook handling, see `clay-webhooks-events`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

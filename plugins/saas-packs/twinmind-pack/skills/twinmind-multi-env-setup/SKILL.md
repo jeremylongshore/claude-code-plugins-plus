@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Multi-Environment Setup
 
 ## Contents
@@ -72,22 +71,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Promotion failed | Schema mismatch | Validate configs first |
 
 ## Examples
-```typescript
-// Get environment config
-const config = getEnvironmentConfig();
-console.log(`Environment: ${config.name}, Model: ${config.twinmind.model}`);
 
-// Check feature flag
-if (isFeatureEnabled('enableDiarization')) {
-  options.diarization = true;
-}
 
-// Validate all environments
-// $ ts-node scripts/validate-env.ts
-// DEVELOPMENT: VALID
-// STAGING: VALID
-// PRODUCTION: VALID
-```
+**Basic usage**: Apply twinmind multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind multi env setup for production environments with multiple constraints and team-specific requirements.
 
 ## Environment Matrix
 

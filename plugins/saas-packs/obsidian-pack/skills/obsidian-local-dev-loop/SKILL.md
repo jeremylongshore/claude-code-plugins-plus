@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Local Dev Loop
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 See `obsidian-sdk-patterns` for production-ready code patterns.
+
+## Examples
+
+**Basic usage**: Apply obsidian local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian local dev loop for production environments with multiple constraints and team-specific requirements.

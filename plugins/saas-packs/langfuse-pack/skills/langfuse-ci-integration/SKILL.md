@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse CI Integration
 
 ## Overview
@@ -227,3 +226,9 @@ checkScoreRegression();
 - [Langfuse Documentation](https://langfuse.com/docs)
 - [Langfuse Prompt Management](https://langfuse.com/docs/prompts)
 - [Langfuse Evaluation](https://langfuse.com/docs/scores)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

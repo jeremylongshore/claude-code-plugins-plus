@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Migration Deep Dive
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Migration Guide](https://docs.sentry.io/product/accounts/migration/)
 - [SDK Documentation](https://docs.sentry.io/platforms/)
+
+## Overview
+
+Execute migrate to Sentry from other error tracking tools.

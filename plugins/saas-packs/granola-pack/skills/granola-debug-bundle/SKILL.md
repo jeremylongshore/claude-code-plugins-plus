@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Debug Bundle
 
 ## Overview
@@ -195,3 +194,17 @@ Before contacting support, check:
 
 ## Next Steps
 Proceed to `granola-rate-limits` to understand usage limits.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with debugging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply granola debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola debug bundle for production environments with multiple constraints and team-specific requirements.

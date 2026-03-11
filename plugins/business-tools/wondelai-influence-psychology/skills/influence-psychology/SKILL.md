@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Influence Psychology Framework
 
 Framework for applying the science of persuasion ethically and effectively. Based on six decades of research into why people say "yes" and what makes them comply with requests.
@@ -405,3 +404,49 @@ This skill is based on Robert Cialdini's research and books. For the complete sc
 ## About the Author
 
 **Robert B. Cialdini, PhD** is Regents' Professor Emeritus of Psychology and Marketing at Arizona State University. His research on the psychology of influence has been published extensively and is widely cited. *Influence* has sold over 5 million copies worldwide and is considered the foundational text on persuasion science. Cialdini has consulted for Fortune 500 companies, government agencies, and nonprofits on ethical influence strategies.
+
+## Overview
+
+Apply the six principles of ethical persuasion (reciprocity, commitment, social proof, authority, liking, scarcity) to product design, copy, and sales.
+
+## Prerequisites
+
+- Access to the authentication environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with authentication concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the authentication configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [authentication implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with authentication |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply influence psychology to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize influence psychology for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official authentication documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

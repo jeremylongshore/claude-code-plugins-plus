@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Core Workflow A: Policy Lifecycle
 
 ## Overview
@@ -90,3 +89,9 @@ For complete TypeScript API calls and Gosu server-side implementations, load the
 ## Next Steps
 
 For claims processing workflow, see `guidewire-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply guidewire core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire core workflow a for production environments with multiple constraints and team-specific requirements.

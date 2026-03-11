@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Incident Runbook
 
 ## Overview
@@ -47,3 +46,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 - **Date:** YYYY-MM-DD
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with security |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply clerk incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk incident runbook for production environments with multiple constraints and team-specific requirements.

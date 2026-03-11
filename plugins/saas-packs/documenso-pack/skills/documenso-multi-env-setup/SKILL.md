@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Multi-Environment Setup
 
 ## Overview
@@ -68,3 +67,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For monitoring setup, see `documenso-observability`.
+
+## Examples
+
+**Basic usage**: Apply documenso multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso multi env setup for production environments with multiple constraints and team-specific requirements.

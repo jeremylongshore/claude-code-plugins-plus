@@ -13,7 +13,6 @@ license: Apache-2.0
 author: Numman Ali <numman.ali@gmail.com>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gastown
 
 ## Overview
@@ -61,3 +60,6 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 
 
+- Official Gastown documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

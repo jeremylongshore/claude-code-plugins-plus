@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Cost Tuning
 
 ## Overview
@@ -114,9 +113,20 @@ curl -s https://api.perplexity.ai/v1/usage \
 | Stale cached results | TTL too long | Reduce cache TTL for time-sensitive queries |
 
 ## Examples
-```bash
-# Cost comparison: sonar vs sonar-pro
-echo "1000 simple queries on sonar: ~\$X"
-echo "1000 simple queries on sonar-pro: ~\$3-5X"
-echo "Savings by routing correctly: 60-80%"
-```
+
+
+**Basic usage**: Apply perplexity cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize perplexity cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

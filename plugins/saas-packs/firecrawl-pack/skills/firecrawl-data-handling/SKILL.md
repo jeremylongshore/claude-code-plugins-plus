@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # FireCrawl Data Handling
 
 ## Overview
@@ -193,3 +192,9 @@ console.log(`Scraped ${docs.length} pages`);
 ## Resources
 - [FireCrawl Documentation](https://docs.firecrawl.dev)
 - [FireCrawl Scrape Options](https://docs.firecrawl.dev/features/scrape)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

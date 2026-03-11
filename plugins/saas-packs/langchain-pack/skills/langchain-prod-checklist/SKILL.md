@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Production Checklist
 
 ## Contents
@@ -84,12 +83,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Cache miss storm | Redis down | Graceful degradation |
 
 ## Examples
-```python
-# Fallback LLM setup
-primary = ChatOpenAI(model="gpt-4o-mini", max_retries=3)
-fallback = ChatAnthropic(model="claude-3-5-sonnet-20241022")
-robust_llm = primary.with_fallbacks([fallback])
-```
+
+
+**Basic usage**: Apply langchain prod checklist to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain prod checklist for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [LangChain Production Guide](https://python.langchain.com/docs/guides/productionization/)

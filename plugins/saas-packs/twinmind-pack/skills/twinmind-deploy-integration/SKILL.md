@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Deploy Integration
 
 ## Contents
@@ -69,29 +68,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Secrets not found | IAM permissions | Update service account |
 
 ## Examples
-```dockerfile
-# Multi-stage build
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-RUN npm run build
 
-FROM node:20-alpine AS runner
-RUN adduser -S twinmind -u 1001
-COPY --from=builder /app/dist ./dist
-USER twinmind
-CMD ["node", "dist/index.js"]
-```
 
-```bash
-# Deploy to ECS
-aws ecs update-service --cluster twinmind-production \
-  --service twinmind-service --force-new-deployment
-aws ecs wait services-stable --cluster twinmind-production \
-  --services twinmind-service
-```
+**Basic usage**: Apply twinmind deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [AWS ECS Documentation](https://docs.aws.amazon.com/ecs/)

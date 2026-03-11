@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # CodeRabbit Cost Tuning
 
 ## Overview
@@ -96,13 +95,20 @@ gh api repos/ORG/REPO/pulls?state=closed\&per_page=100 --jq '.[].number' | \
 | Cannot reduce seats | Active committers in all repos | Disable CodeRabbit on low-value repos |
 
 ## Examples
-```yaml
-# Minimal .coderabbit.yaml for cost-conscious setup
-reviews:
-  auto_review:
-    enabled: true
-    drafts: false
-    base_branches: [main]  # Only review PRs to main (skip feature-to-feature)
-    ignore_paths: ["**/*.md", "**/*.lock", "vendor/**"]
-  profile: "assertive"    # Balanced signal-to-noise
-```
+
+
+**Basic usage**: Apply coderabbit cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize coderabbit cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

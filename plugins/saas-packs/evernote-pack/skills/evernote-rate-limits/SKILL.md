@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Rate Limits
 
 ## Overview
@@ -62,3 +61,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For security considerations, see `evernote-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply evernote rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote rate limits for production environments with multiple constraints and team-specific requirements.

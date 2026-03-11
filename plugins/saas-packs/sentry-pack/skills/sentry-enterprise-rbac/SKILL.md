@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Enterprise Rbac
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Sentry Team Management](https://docs.sentry.io/product/accounts/membership/)
 - [SSO & SAML](https://docs.sentry.io/product/accounts/sso/)
 - [SCIM Provisioning](https://docs.sentry.io/product/accounts/sso/scim-provisioning/)
+
+## Overview
+
+Configure enterprise role-based access control in Sentry.

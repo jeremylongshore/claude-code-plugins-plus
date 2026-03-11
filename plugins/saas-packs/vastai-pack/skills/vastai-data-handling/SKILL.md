@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Data Handling
 
 ## Overview
@@ -197,3 +196,9 @@ secure_destroy_instance(instance_id)
 ## Resources
 - [Vast.ai Security](https://vast.ai/docs/security)
 - [Vast.ai CLI](https://vast.ai/docs/cli/commands)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

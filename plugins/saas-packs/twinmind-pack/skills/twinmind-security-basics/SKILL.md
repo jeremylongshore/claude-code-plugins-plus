@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Security Basics
 
 ## Contents
@@ -72,16 +71,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Unauthorized access | No RBAC | Implement permission middleware |
 
 ## Examples
-```typescript
-// Verify webhook signature
-const isValid = verifyWebhookSignature(payload, signature, secret);
 
-// Encrypt transcript
-const encrypted = encrypt(transcript, key); // "iv:tag:ciphertext"
 
-// Check permission
-app.get('/api/transcripts', requirePermission(Permission.READ_TRANSCRIPTS), handler);
-```
+**Basic usage**: Apply twinmind security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind security basics for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [TwinMind Security Whitepaper](https://twinmind.com/security)

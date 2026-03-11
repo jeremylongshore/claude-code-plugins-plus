@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Data Handling
 
 ## Overview
@@ -186,3 +185,9 @@ async function exportAllForAudit(ids: string[]) {
 ## Resources
 - [Fireflies GraphQL API](https://docs.fireflies.ai/graphql)
 - [Fireflies Data Retention](https://fireflies.ai/privacy)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

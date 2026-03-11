@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Migration Deep Dive
 
 ## Overview
@@ -73,3 +72,17 @@ For detailed implementation code and migration scripts, load the reference guide
 
 ## Next Steps
 This completes the Flagship tier skills. Consider reviewing Standard and Pro skills for comprehensive coverage.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [migration implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply lindy migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy migration deep dive for production environments with multiple constraints and team-specific requirements.

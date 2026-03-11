@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Enterprise RBAC
 
 ## Overview
@@ -95,15 +94,20 @@ curl -X DELETE "https://api.groq.com/openai/v1/api-keys/OLD_KEY_ID" \
 | Spending cap paused API | Monthly budget reached | Increase cap or wait for billing cycle |
 
 ## Examples
-```bash
-# Quick health check: list available models for your key
-curl -s https://api.groq.com/openai/v1/models \
-  -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data[].id'
-```
 
-```bash
-# Estimate monthly cost from current daily usage
-DAILY=$(curl -s https://api.groq.com/openai/v1/usage \
-  -H "Authorization: Bearer $GROQ_ADMIN_KEY" | jq '.total_cost_today')
-echo "Projected monthly cost: \$$(echo "$DAILY * 30" | bc)"
-```
+
+**Basic usage**: Apply groq enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize groq enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Groq documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

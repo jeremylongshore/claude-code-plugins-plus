@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Reference Architecture
 
 ## Overview
@@ -89,3 +88,17 @@ For full architecture diagrams, data flow specifications, and configuration deta
 ## Next Steps
 
 For multi-environment setup, see `guidewire-multi-env-setup`.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with deployment |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply guidewire reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire reference architecture for production environments with multiple constraints and team-specific requirements.

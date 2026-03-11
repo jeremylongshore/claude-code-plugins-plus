@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Performance Tuning
 
 ## Overview
@@ -124,12 +123,20 @@ async function queuedCompletion(model: string, messages: any[]) {
 | Cache ineffective | High temperature (non-deterministic) | Only cache temperature=0 requests |
 
 ## Examples
-```bash
-# Benchmark: compare model latency
-for model in mistral-small-latest mistral-large-latest; do
-  echo -n "$model: "
-  time curl -s -X POST https://api.mistral.ai/v1/chat/completions \
-    -H "Authorization: Bearer $MISTRAL_API_KEY" \
-    -d "{\"model\": \"$model\", \"messages\": [{\"role\": \"user\", \"content\": \"Say hello\"}], \"max_tokens\": 10}" -o /dev/null
-done
-```
+
+
+**Basic usage**: Apply mistral performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize mistral performance tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

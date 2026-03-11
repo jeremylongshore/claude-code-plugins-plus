@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Migration Deep Dive
 
 ## Overview
@@ -65,3 +64,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Review related skills for comprehensive coverage.
+
+## Examples
+
+**Basic usage**: Apply documenso migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso migration deep dive for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Events & Async Patterns
 
 ## Overview
@@ -178,3 +177,9 @@ curl -X POST https://api.ideogram.ai/generate \
 
 ## Next Steps
 For deployment setup, see `ideogram-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

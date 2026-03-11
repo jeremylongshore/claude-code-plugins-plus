@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Prod Checklist
 
 ## Prerequisites
@@ -41,3 +40,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Status](https://www.vercel-status.com)
 - [Vercel Support](https://vercel.com/docs/support)
+
+## Overview
+
+Execute Vercel production deployment checklist and rollback procedures.
+
+## Instructions
+
+1. Assess the current state of the deployment configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

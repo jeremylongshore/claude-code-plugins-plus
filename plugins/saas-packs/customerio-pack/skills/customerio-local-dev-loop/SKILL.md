@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Local Dev Loop
 
 ## Overview
@@ -52,3 +51,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After setting up local dev, proceed to `customerio-sdk-patterns` for production-ready patterns.
+
+## Examples
+
+**Basic usage**: Apply customerio local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio local dev loop for production environments with multiple constraints and team-specific requirements.

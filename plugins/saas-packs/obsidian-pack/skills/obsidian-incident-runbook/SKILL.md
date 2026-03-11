@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Incident Runbook
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For data handling patterns, see `obsidian-data-handling`.
+
+## Examples
+
+**Basic usage**: Apply obsidian incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian incident runbook for production environments with multiple constraints and team-specific requirements.

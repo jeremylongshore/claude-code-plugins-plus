@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Deploy Integration
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For webhook integration, see `maintainx-webhooks-events`.
+
+## Examples
+
+**Basic usage**: Apply maintainx deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx deploy integration for production environments with multiple constraints and team-specific requirements.

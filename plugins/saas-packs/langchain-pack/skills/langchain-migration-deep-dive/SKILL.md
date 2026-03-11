@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Migration Deep Dive
 
 ## Contents
@@ -71,15 +70,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Tool schema differences | Update tool definitions |
 
 ## Examples
-```python
-# Quick migration: raw OpenAI -> LangChain
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0.7)
-chain = ChatPromptTemplate.from_messages([("system", "You are helpful."), ("user", "{message}")]) | llm
-result = chain.invoke({"message": "Hello"})
-```
+
+**Basic usage**: Apply langchain migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain migration deep dive for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [LangChain Migration Guide](https://python.langchain.com/docs/versions/migrating_chains/)

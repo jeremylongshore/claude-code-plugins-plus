@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Product Positioning Framework
 
 This skill implements the product positioning methodology from April Dunford's "Obviously Awesome." It provides a structured, repeatable process for defining how your product is the best in the world at delivering something a well-defined set of customers cares a lot about. Positioning is the foundational strategic exercise that determines how customers perceive your product, what they compare it to, and ultimately whether they buy it.
@@ -303,3 +302,49 @@ See: [Team Exercise Facilitator Guide](references/team-exercise.md)
 ## About the Author
 
 April Dunford is a positioning consultant and author who has worked with over 200 companies on their product positioning, including Google, IBM, Postman, and Epic Games. With 25 years of experience as a VP of Marketing at a series of successful startups, she developed a repeatable methodology for product positioning that has become the industry standard. Her book "Obviously Awesome" (2019) codified this methodology and became the go-to resource for startups and growth-stage companies seeking to define or redefine their market position. Her follow-up, "Sales Pitch" (2023), extends the methodology into sales conversations. She is widely regarded as the world's foremost expert on product positioning.
+
+## Overview
+
+Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category.
+
+## Prerequisites
+
+- Access to the marketing environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with marketing concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the marketing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [marketing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with marketing |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply obviously awesome to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obviously awesome for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official marketing documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

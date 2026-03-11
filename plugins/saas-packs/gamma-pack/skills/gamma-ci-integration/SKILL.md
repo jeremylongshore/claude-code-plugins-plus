@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma CI Integration
 
 ## Overview
@@ -188,3 +187,9 @@ gh secret list
 
 ## Next Steps
 Proceed to `gamma-deploy-integration` for deployment workflows.
+
+## Examples
+
+**Basic usage**: Apply gamma ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma ci integration for production environments with multiple constraints and team-specific requirements.

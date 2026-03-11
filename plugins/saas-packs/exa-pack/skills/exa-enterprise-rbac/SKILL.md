@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Enterprise RBAC
 
 ## Overview
@@ -99,8 +98,20 @@ echo "Update services with new key, then delete old key"
 | Empty results | Domain filter too restrictive | Widen `includeDomains` or remove filter |
 
 ## Examples
-```bash
-# Quick test: verify API key works and check remaining quota
-curl -s https://api.exa.ai/v1/usage \
-  -H "x-api-key: $EXA_API_KEY" | jq '{searches_remaining, plan, rate_limit}'
-```
+
+
+**Basic usage**: Apply exa enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize exa enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Exa Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

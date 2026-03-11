@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Enterprise RBAC
 
 ## Overview
@@ -59,3 +58,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For major migrations, see `obsidian-migration-deep-dive`.
+
+## Examples
+
+**Basic usage**: Apply obsidian enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian enterprise rbac for production environments with multiple constraints and team-specific requirements.

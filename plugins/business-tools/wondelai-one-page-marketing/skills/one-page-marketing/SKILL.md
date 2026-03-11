@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # The 1-Page Marketing Plan Framework
 
 A complete marketing system captured on a single page. Instead of a 50-page marketing plan that never gets executed, the 1-Page Marketing Plan distills everything into a 3x3 grid of nine squares — each representing a critical stage in turning a stranger into a raving fan. Fill in all nine squares and you have a living, breathing marketing engine that drives predictable growth.
@@ -425,3 +424,49 @@ These cross-cutting principles apply across all nine squares:
 ## About the Author
 
 Allan Dib is a serial entrepreneur, rebellious marketer, and technology expert. He has started, grown, and successfully exited multiple businesses in various industries. Allan is the founder of Successwise, a business coaching and consulting firm that helps businesses implement marketing systems for rapid growth. His book "The 1-Page Marketing Plan" has become an international bestseller, translated into numerous languages, and is widely regarded as one of the most practical marketing books ever written. His follow-up book "Lean Marketing" extends the framework with modern, resource-efficient strategies for businesses of all sizes. Allan is known for making complex marketing concepts accessible and actionable, with a relentless focus on implementation over theory.
+
+## Overview
+
+Build a complete marketing plan covering the full customer journey from stranger to raving fan.
+
+## Prerequisites
+
+- Access to the optimization environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with optimization concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the optimization configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [optimization implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with optimization |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply one page marketing to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize one page marketing for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official optimization documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

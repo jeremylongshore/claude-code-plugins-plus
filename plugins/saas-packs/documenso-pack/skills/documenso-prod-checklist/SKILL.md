@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Production Checklist
 
 ## Overview
@@ -59,3 +58,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For version upgrades, see `documenso-upgrade-migration`.
+
+## Examples
+
+**Basic usage**: Apply documenso prod checklist to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso prod checklist for production environments with multiple constraints and team-specific requirements.

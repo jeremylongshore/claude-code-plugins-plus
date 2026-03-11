@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Enterprise RBAC
 
 ## Overview
@@ -85,11 +84,20 @@ curl https://api.instantly.ai/api/v1/account/status \
 | Duplicate leads across SDRs | No lead deduplication | Enable workspace-level lead dedup in settings |
 
 ## Examples
-```bash
-# Bulk assign sending accounts from a CSV (account_email,member_email)
-while IFS=, read -r acct member; do
-  curl -s -X POST https://api.instantly.ai/api/v1/account/assign \
-    -H "Authorization: Bearer $INSTANTLY_API_KEY" \
-    -d "{\"account_email\": \"$acct\", \"assigned_to\": \"$member\"}"
-done < account-assignments.csv
-```
+
+
+**Basic usage**: Apply instantly enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize instantly enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Instantly Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

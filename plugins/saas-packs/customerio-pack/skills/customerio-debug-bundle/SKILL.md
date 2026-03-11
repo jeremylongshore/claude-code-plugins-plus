@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Debug Bundle
 
 ## Overview
@@ -54,3 +53,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After creating debug bundle, proceed to `customerio-rate-limits` to understand API limits.
+
+## Examples
+
+**Basic usage**: Apply customerio debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio debug bundle for production environments with multiple constraints and team-specific requirements.

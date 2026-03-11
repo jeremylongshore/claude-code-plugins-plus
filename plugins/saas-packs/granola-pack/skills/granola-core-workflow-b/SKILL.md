@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Core Workflow B: Post-Meeting Processing
 
 ## Overview
@@ -161,3 +160,9 @@ Tags:
 
 ## Next Steps
 Proceed to `granola-common-errors` for troubleshooting common issues.
+
+## Examples
+
+**Basic usage**: Apply granola core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola core workflow b for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Incident Runbook
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For data handling patterns, see `maintainx-data-handling`.
+
+## Examples
+
+**Basic usage**: Apply maintainx incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx incident runbook for production environments with multiple constraints and team-specific requirements.

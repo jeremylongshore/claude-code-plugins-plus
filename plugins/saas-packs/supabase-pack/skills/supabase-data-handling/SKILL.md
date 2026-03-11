@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Data Handling
 
 ## Overview
@@ -53,3 +52,39 @@ function detectPII(text: string): { type: string; match: string }[] {
 ## Detailed Reference
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete data handling guide.
+
+## Instructions
+
+1. Assess the current state of the compliance configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [compliance implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with compliance |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply supabase data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize supabase data handling for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official compliance documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

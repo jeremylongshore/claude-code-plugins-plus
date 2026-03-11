@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Load Scale
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [k6 Documentation](https://k6.io/docs/)
 - [Kubernetes HPA](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
 - [Vercel Rate Limits](https://vercel.com/docs/rate-limits)
+
+## Overview
+
+Implement Vercel load testing, auto-scaling, and capacity planning strategies.

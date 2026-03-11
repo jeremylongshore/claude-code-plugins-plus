@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Cost Tuning
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For architecture patterns, see `maintainx-reference-architecture`.
+
+## Examples
+
+**Basic usage**: Apply maintainx cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx cost tuning for production environments with multiple constraints and team-specific requirements.

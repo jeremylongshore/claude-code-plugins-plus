@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Performance Tuning
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Performance](https://docs.sentry.io/product/performance/)
 - [Sampling Strategies](https://docs.sentry.io/platforms/javascript/configuration/sampling/)
+
+## Overview
+
+Optimize Sentry performance monitoring configuration.

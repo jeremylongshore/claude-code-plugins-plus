@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Upgrade Migration
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-ci-integration` for CI/CD setup.
+
+## Examples
+
+**Basic usage**: Apply apollo upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo upgrade migration for production environments with multiple constraints and team-specific requirements.

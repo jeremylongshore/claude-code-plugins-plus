@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy AI Observability
 
 ## Overview
@@ -50,3 +49,22 @@ For detailed implementation code and configurations, load the reference guide:
 | Metrics exporter missing data | API rate limit on `/runs` | Reduce polling frequency, use webhooks instead |
 
 ## Examples
+
+
+**Basic usage**: Apply lindy observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [monitoring implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

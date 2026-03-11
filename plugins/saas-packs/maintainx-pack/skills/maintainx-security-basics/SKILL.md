@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Security Basics
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For production deployment, see `maintainx-prod-checklist`.
+
+## Examples
+
+**Basic usage**: Apply maintainx security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx security basics for production environments with multiple constraints and team-specific requirements.

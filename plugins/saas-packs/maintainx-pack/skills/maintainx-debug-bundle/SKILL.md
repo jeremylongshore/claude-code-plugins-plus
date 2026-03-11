@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Debug Bundle
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For rate limit handling, see `maintainx-rate-limits`.
+
+## Examples
+
+**Basic usage**: Apply maintainx debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx debug bundle for production environments with multiple constraints and team-specific requirements.

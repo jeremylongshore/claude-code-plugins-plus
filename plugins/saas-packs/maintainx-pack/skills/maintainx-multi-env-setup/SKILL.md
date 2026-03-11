@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Multi-Environment Setup
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For observability setup, see `maintainx-observability`.
+
+## Examples
+
+**Basic usage**: Apply maintainx multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx multi env setup for production environments with multiple constraints and team-specific requirements.

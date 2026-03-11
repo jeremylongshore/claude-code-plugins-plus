@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Policy Guardrails
 
 ## Overview
@@ -144,3 +143,9 @@ policy.check_table_budget(table_id, len(valid_rows), credits_per_row=2)
 ## Resources
 - [Clay Security](https://docs.clay.com/security)
 - [GDPR Compliance](https://gdpr.eu)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Reference Architecture
 
 ## Overview
@@ -204,3 +203,9 @@ console.log(`Generated ${assets.length} brand assets`);
 ## Resources
 - [Ideogram API Reference](https://docs.ideogram.ai/api)
 - [Ideogram Prompt Guide](https://docs.ideogram.ai/prompting)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

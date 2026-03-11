@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # FireCrawl Reference Architecture
 
 ## Overview
@@ -194,3 +193,9 @@ async function scrapeDocumentation(docsUrl: string) {
 - [FireCrawl Documentation](https://docs.firecrawl.dev)
 - [FireCrawl Scraping Guide](https://docs.firecrawl.dev/features/scrape)
 - [FireCrawl Extraction](https://docs.firecrawl.dev/features/extract)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

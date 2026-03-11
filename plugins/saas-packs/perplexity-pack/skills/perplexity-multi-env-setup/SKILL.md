@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Multi-Environment Setup
 
 ## Overview
@@ -179,3 +178,9 @@ echo "Estimated daily cost: $15"
 
 ## Next Steps
 For deployment configuration, see `perplexity-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

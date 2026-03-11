@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Reference Architecture
 
 ## Overview
@@ -196,3 +195,9 @@ async function discoverCompetitors(companyUrl: string) {
 - [Exa API Documentation](https://docs.exa.ai)
 - [Exa Search Types](https://docs.exa.ai/reference/search)
 - [Exa Content Extraction](https://docs.exa.ai/reference/contents)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

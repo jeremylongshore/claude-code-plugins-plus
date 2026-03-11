@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Load Scale
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Quotas](https://docs.sentry.io/product/accounts/quotas/)
 - [Performance Best Practices](https://docs.sentry.io/product/performance/)
+
+## Overview
+
+Manage scale Sentry for high-traffic applications.

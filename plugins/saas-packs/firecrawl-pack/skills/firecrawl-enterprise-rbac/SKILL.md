@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # FireCrawl Enterprise RBAC
 
 ## Overview
@@ -96,9 +95,20 @@ Rotate keys quarterly. Create new key, update consumers, delete old key after 48
 | Unexpected credit burn | No `limit` set on crawl | Always set `limit` and `maxDepth` |
 
 ## Examples
-```bash
-# Verify key permissions before deploying
-curl -s https://api.firecrawl.dev/v1/api-keys/current \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
-  jq '{name, allowed_endpoints, credits_remaining}'
-```
+
+
+**Basic usage**: Apply firecrawl enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize firecrawl enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Firecrawl Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Rate Limits
 
 ## Overview
@@ -391,3 +390,9 @@ export class TranscriptionBatcher {
 
 ## Next Steps
 For security configuration, see `twinmind-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply twinmind rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind rate limits for production environments with multiple constraints and team-specific requirements.

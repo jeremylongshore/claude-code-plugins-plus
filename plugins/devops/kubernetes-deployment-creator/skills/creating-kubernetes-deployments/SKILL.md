@@ -10,7 +10,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Creating Kubernetes Deployments
 
 Generate production-ready Kubernetes manifests with health checks, resource limits, and security best practices.
@@ -365,3 +364,21 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed walkthroughs.
 - kubectl reference: https://kubernetes.io/docs/reference/kubectl/
 - Templates in `${CLAUDE_SKILL_DIR}/assets/`
 - Scripts in `${CLAUDE_SKILL_DIR}/scripts/`
+
+## Overview
+
+Deploy applications to Kubernetes with production-ready manifests.
+
+## Prerequisites
+
+- Access to the Kubernetes environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with Kubernetes concepts and terminology
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Kubernetes implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.

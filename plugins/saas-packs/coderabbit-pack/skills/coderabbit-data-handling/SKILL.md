@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # CodeRabbit Data Handling
 
 ## Overview
@@ -167,3 +166,9 @@ reviews:
 ## Resources
 - [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
 - [CodeRabbit Path Filters](https://docs.coderabbit.ai/guides/review-instructions)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

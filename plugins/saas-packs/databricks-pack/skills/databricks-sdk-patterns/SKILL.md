@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks SDK Patterns
 
 ## Overview
@@ -59,3 +58,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Apply patterns in `databricks-core-workflow-a` for Delta Lake ETL.
+
+## Examples
+
+**Basic usage**: Apply databricks sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks sdk patterns for production environments with multiple constraints and team-specific requirements.

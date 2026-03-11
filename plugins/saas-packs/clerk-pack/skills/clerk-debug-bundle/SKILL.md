@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Debug Bundle
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-rate-limits` for understanding Clerk rate limits.
+
+## Examples
+
+**Basic usage**: Apply clerk debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk debug bundle for production environments with multiple constraints and team-specific requirements.

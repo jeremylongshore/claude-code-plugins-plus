@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Data Handling
 
 ## Contents
@@ -67,11 +66,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Consent check failed | User not registered | Create consent record first |
 
 ## Examples
-```python
-detector = PIIDetector()
-text = "Contact john@example.com or call 555-123-4567"
-print(detector.mask(text))  # "Contact [EMAIL] or call [PHONE]"
-```
+
+
+**Basic usage**: Apply langchain data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain data handling for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [GDPR Overview](https://gdpr.eu/)

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies Observability
 
 ## Overview
@@ -93,10 +92,20 @@ Track: bot join success rate (pie chart), transcript processing latency distribu
 | High seat cost per transcript | Too many inactive seats | Remove members with <2 transcripts/month |
 
 ## Examples
-```bash
-# Quick health check: recent transcript success rate
-curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ transcripts(limit: 20) { processing_status } }"}' | \
-  jq '.data.transcripts | group_by(.processing_status) | map({status: .[0].processing_status, count: length})'
-```
+
+
+**Basic usage**: Apply fireflies observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize fireflies observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Cost Tuning
 
 ## Overview
@@ -68,3 +67,17 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After cost optimization, proceed to `customerio-reference-architecture` for architecture patterns.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [optimization implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply customerio cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio cost tuning for production environments with multiple constraints and team-specific requirements.

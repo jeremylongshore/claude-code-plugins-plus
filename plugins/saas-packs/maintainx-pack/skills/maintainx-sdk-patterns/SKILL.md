@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX SDK Patterns
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For core workflows, see `maintainx-core-workflow-a` (Work Orders) and `maintainx-core-workflow-b` (Assets).
+
+## Examples
+
+**Basic usage**: Apply maintainx sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx sdk patterns for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Cost Tuning
 
 ## Overview
@@ -112,10 +111,20 @@ curl -s https://api.firecrawl.dev/v1/usage \
 | Budget overrun | Automated crawls without caps | Set per-job credit limits and daily caps |
 
 ## Examples
-```bash
-# Compare crawl vs scrape costs for same content
-echo "Scrape 5 known pages: 5 credits"
-echo "Crawl entire site: $(curl -s -X POST https://api.firecrawl.dev/v1/map \
-  -H 'Authorization: Bearer $FIRECRAWL_API_KEY' \
-  -d '{"url": "https://docs.example.com"}' | jq '.links | length') pages = same number of credits"
-```
+
+
+**Basic usage**: Apply firecrawl cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize firecrawl cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

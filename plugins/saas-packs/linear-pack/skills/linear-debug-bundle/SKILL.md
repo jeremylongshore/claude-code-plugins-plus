@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Debug Bundle
 
 ## Contents
@@ -67,27 +66,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Missing env | Validation failed | Check environment setup |
 
 ## Examples
-```typescript
-// Create debug client
-const client = createDebugClient(process.env.LINEAR_API_KEY!, {
-  logRequests: true,
-  onResponse: (data, duration) => metrics.record('linear_api', duration),
-});
 
-// Use tracer
-const traceId = tracer.startTrace('fetchIssues');
-const issues = await client.issues({ first: 10 });
-tracer.endTrace(traceId, true);
-console.log(tracer.getSummary());
 
-// Health check
-const health = await checkLinearHealth(client);
-console.log(`Healthy: ${health.healthy}, Latency: ${health.latencyMs}ms`);
+**Basic usage**: Apply linear debug bundle to a standard project setup with default configuration options.
 
-// Validate environment
-const result = validateLinearEnv();
-if (!result.valid) console.error('Errors:', result.errors);
-```
+**Advanced scenario**: Customize linear debug bundle for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Linear SDK Source](https://github.com/linear/linear)

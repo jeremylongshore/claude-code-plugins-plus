@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Top-Design: Award-Winning Digital Experiences
 
 Create websites and applications at the level of world-class digital agencies. This skill embodies the craft of studios that consistently win FWA, Awwwards, CSS Design Awards, and Webby Awards.
@@ -445,3 +444,49 @@ This skill synthesizes techniques and principles from the world's most awarded d
 **Hello Monday** (Copenhagen/New York, now part of DEPT) -- known for playful, innovative interactions and page transitions that feel like magic. Their work for brands like Spotify, Adidas, and Google consistently wins top awards.
 
 Additional inspiration drawn from Dogstudio (Belgium), Tonik (Poland), Instrument (Portland), Resn (New Zealand), and the broader community of Awwwards, FWA, CSS Design Awards, and Webby Award winners whose collective work establishes the evolving standard for world-class digital craft.
+
+## Overview
+
+Create award-winning, immersive web experiences at the level of Awwwards-featured agencies.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply top design to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize top design for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Debug Bundle
 
 ## Overview
@@ -62,3 +61,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For rate limit handling, see `evernote-rate-limits`.
+
+## Examples
+
+**Basic usage**: Apply evernote debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote debug bundle for production environments with multiple constraints and team-specific requirements.

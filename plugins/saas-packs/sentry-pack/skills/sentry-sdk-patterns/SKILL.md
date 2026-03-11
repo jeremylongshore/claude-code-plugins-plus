@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Sdk Patterns
 
 ## Prerequisites
@@ -50,3 +49,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry SDK Docs](https://docs.sentry.io/platforms/)
 - [Sentry Best Practices](https://docs.sentry.io/product/issues/best-practices/)
+
+## Overview
+
+Execute best practices for using Sentry SDK in TypeScript and Python.

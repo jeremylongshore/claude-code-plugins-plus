@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Migration Deep Dive
 
 ## Overview
@@ -51,3 +50,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After migration, review `clerk-prod-checklist` for production readiness.
+
+## Examples
+
+**Basic usage**: Apply clerk migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk migration deep dive for production environments with multiple constraints and team-specific requirements.

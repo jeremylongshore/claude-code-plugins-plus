@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Observability
 
 ## Overview
@@ -99,10 +98,20 @@ Ship structured logs to your SIEM for correlation with business metrics.
 | High cardinality metrics | Too many label combinations | Avoid per-request-id labels |
 
 ## Examples
-```bash
-# Quick PromQL: hourly cost by model
-increase(mistral_cost_usd_total[1h])
 
-# Token efficiency ratio (output/input) -- low ratio may indicate prompt bloat
-rate(mistral_tokens_total{direction="output"}[5m]) / rate(mistral_tokens_total{direction="input"}[5m])
-```
+
+**Basic usage**: Apply mistral observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize mistral observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

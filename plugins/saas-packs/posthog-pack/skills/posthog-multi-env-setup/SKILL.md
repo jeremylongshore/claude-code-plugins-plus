@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # PostHog Multi-Environment Setup
 
 ## Overview
@@ -190,3 +189,9 @@ const flagValue = await posthogServer.getFeatureFlag("new-checkout", userId);
 
 ## Next Steps
 For webhook setup, see `posthog-webhooks-events`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

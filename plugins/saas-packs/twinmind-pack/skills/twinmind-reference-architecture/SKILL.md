@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Reference Architecture
 
 ## Contents
@@ -73,25 +72,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Test isolation | Shared state | Use dependency injection |
 
 ## Examples
-```typescript
-// Singleton client
-const service = getTwinMindService();
 
-// Process meeting with orchestration
-const result = await meetingService.processMeeting(audioUrl, {
-  calendarEventId: 'cal_123',
-  notifySlack: true,
-});
 
-// Error handling
-try {
-  await service.transcribe(audioUrl);
-} catch (error) {
-  if (error instanceof TwinMindError && error.retryable) {
-    await retry(() => service.transcribe(audioUrl));
-  }
-}
-```
+**Basic usage**: Apply twinmind reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind reference architecture for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [TwinMind API Reference](https://twinmind.com/docs/api)

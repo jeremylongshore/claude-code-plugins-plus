@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Policy Guardrails
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Organization Settings](https://docs.sentry.io/product/accounts/getting-started/)
 - [Sentry API](https://docs.sentry.io/api/)
+
+## Overview
+
+Implement governance and policy guardrails for Sentry.

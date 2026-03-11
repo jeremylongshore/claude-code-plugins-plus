@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Reference Architecture
 
 ## Overview
@@ -56,3 +55,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-multi-env-setup` for environment configuration.
+
+## Examples
+
+**Basic usage**: Apply apollo reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo reference architecture for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Cost Tuning
 
 ## Overview
@@ -110,11 +109,20 @@ curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
 | Budget exceeded | No daily spending cap | Implement daily cost monitoring with alerts |
 
 ## Examples
-```bash
-# ROI calculator: cost per successful outcome
-TOTAL_COST=$(curl -s "https://api.retellai.com/v1/calls?created_after=$(date -d '30 days ago' -I)" \
-  -H "Authorization: Bearer $RETELL_API_KEY" | jq '[.[].cost] | add')
-SUCCESSFUL=$(curl -s "https://api.retellai.com/v1/calls?created_after=$(date -d '30 days ago' -I)&status=completed" \
-  -H "Authorization: Bearer $RETELL_API_KEY" | jq 'length')
-echo "Cost per successful call: \$$(echo "$TOTAL_COST / $SUCCESSFUL" | bc -l | head -c 5)"
-```
+
+
+**Basic usage**: Apply retellai cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize retellai cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

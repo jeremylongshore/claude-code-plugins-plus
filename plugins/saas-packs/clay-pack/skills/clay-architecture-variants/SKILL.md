@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Architecture Variants
 
 ## Overview
@@ -133,16 +132,17 @@ async def clay_webhook(request):
 
 ## Examples
 
-### Migration Path
-```
-Direct (MVP) -> Queue-Based (growth) -> Event-Driven (scale)
 
-Step 1: Extract Clay calls into a service module
-Step 2: Add Redis queue between API and Clay service
-Step 3: Add Clay webhook receiver
-Step 4: Replace polling with webhook-driven updates
-```
+**Basic usage**: Apply clay architecture variants to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay architecture variants for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Clay API Docs](https://docs.clay.com/api)
 - [Clay Webhooks](https://docs.clay.com/webhooks)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

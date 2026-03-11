@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Reliability Patterns
 
 ## Overview
@@ -110,3 +109,9 @@ npm test && git add -A && git commit -m "cascade: refactored auth"
 ## Resources
 - [Windsurf Docs](https://docs.windsurf.com)
 - [Cascade Best Practices](https://docs.windsurf.com/cascade)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

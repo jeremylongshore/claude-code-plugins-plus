@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Common Errors
 
 ## Overview
@@ -58,3 +57,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For comprehensive debugging, see `documenso-debug-bundle`.
+
+## Examples
+
+**Basic usage**: Apply documenso common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso common errors for production environments with multiple constraints and team-specific requirements.

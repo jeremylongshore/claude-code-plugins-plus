@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk CI Integration
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-deploy-integration` for deployment platform setup.
+
+## Examples
+
+**Basic usage**: Apply clerk ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk ci integration for production environments with multiple constraints and team-specific requirements.

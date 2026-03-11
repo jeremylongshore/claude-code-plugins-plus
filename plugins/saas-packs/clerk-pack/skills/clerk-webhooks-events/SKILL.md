@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Webhooks & Events
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-performance-tuning` for optimization strategies.
+
+## Examples
+
+**Basic usage**: Apply clerk webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk webhooks events for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Hello World
 
 ## Overview
@@ -77,3 +76,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Proceed to `documenso-local-dev-loop` for development workflow setup.
+
+## Examples
+
+**Basic usage**: Apply documenso hello world to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso hello world for production environments with multiple constraints and team-specific requirements.

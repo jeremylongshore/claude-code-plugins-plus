@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Rate Limits
 
 ## Prerequisites
@@ -39,3 +38,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Rate Limits](https://supabase.com/docs/rate-limits)
 - [p-queue Documentation](https://github.com/sindresorhus/p-queue)
+
+## Overview
+
+Implement Supabase rate limiting, backoff, and idempotency patterns.
+
+## Instructions
+
+1. Assess the current state of the API configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

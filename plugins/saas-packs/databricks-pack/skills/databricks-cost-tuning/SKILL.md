@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Cost Tuning
 
 ## Overview
@@ -102,19 +101,20 @@ databricks clusters list --output JSON | \
 | Billing data not available | System tables not enabled | Enable system table access in account settings |
 
 ## Examples
-```sql
--- Monthly cost forecast based on current week's usage
-SELECT sku_name,
-       SUM(usage_quantity * list_price) * 4.3 AS projected_monthly_cost
-FROM system.billing.usage
-WHERE usage_date >= current_date() - INTERVAL 7 DAYS
-GROUP BY sku_name
-ORDER BY projected_monthly_cost DESC;
-```
 
-```bash
-# Kill all running interactive clusters older than 4 hours
-databricks clusters list --output JSON | \
-  jq -r '.[] | select(.state=="RUNNING" and .cluster_source=="UI" and (now - (.start_time/1000)) > 14400) | .cluster_id' | \
-  xargs -I{} databricks clusters delete {}
-```
+
+**Basic usage**: Apply databricks cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Upgrade & Migration
 
 ## Overview
@@ -421,3 +420,9 @@ export function updateQueueForTier(tier: 'free' | 'pro' | 'enterprise') {
 
 ## Next Steps
 For CI/CD integration, see `twinmind-ci-integration`.
+
+## Examples
+
+**Basic usage**: Apply twinmind upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind upgrade migration for production environments with multiple constraints and team-specific requirements.

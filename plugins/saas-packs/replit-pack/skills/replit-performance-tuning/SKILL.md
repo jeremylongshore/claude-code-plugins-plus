@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Performance Tuning
 
 ## Overview
@@ -153,3 +152,9 @@ app.get('/health', (req, res) => {
 - [Replit Deployments Guide](https://docs.replit.com/hosting/deployments)
 - [Replit Nix Configuration](https://docs.replit.com/programming-ide/nix-on-replit)
 - [Replit Secrets](https://docs.replit.com/programming-ide/workspace-features/secrets)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

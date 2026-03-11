@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Observability
 
 ## Contents
@@ -71,13 +70,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Alert storms | Thresholds too sensitive | Tune `for` duration and thresholds |
 
 ## Examples
-```python
-# Quick setup with all callbacks
-tracker = PrometheusCallback()
-llm = ChatOpenAI(model="gpt-4o-mini", callbacks=[tracker])
-response = llm.invoke("Hello!")
-print(tracker.report())
-```
+
+
+**Basic usage**: Apply langchain observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain observability for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [LangSmith Documentation](https://docs.smith.langchain.com/)

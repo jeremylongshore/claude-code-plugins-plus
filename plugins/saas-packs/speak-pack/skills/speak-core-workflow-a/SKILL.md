@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Core Workflow A
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 
 ## Next Steps
 For pronunciation-focused training, see `speak-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply speak core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize speak core workflow a for production environments with multiple constraints and team-specific requirements.

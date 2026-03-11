@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Design of Everyday Things Framework
 
 Foundational design principles for creating products that are intuitive, discoverable, and understandable. The "bible of UX" — applicable to physical products, software, and any human-designed system.
@@ -453,3 +452,49 @@ This skill is based on Don Norman's foundational design principles. For the comp
 ## About the Author
 
 **Don Norman, PhD** is co-founder of the Nielsen Norman Group and director of The Design Lab at UC San Diego. He coined the term "user experience" while at Apple in the 1990s. *The Design of Everyday Things* (originally published in 1988 as "The Psychology of Everyday Things") is considered the most influential design book ever written and is required reading in virtually every design program worldwide. Norman has served as VP of Advanced Technology at Apple and has been a professor at Northwestern, UC San Diego, and KAIST (Korea).
+
+## Overview
+
+Apply foundational design principles: affordances, signifiers, constraints, feedback, and conceptual models.
+
+## Prerequisites
+
+- Access to the design environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with design concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the design configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [design implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with design |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply design everyday things to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize design everyday things for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official design documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

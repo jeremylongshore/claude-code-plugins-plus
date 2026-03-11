@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # PostHog Performance Tuning
 
 ## Overview
@@ -175,3 +174,9 @@ async function trackExperiment(userId: string, experimentKey: string) {
 - [PostHog Node SDK](https://posthog.com/docs/libraries/node)
 - [PostHog Feature Flags](https://posthog.com/docs/feature-flags)
 - [HogQL Documentation](https://posthog.com/docs/hogql)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

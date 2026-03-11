@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Enterprise RBAC
 
 ## Overview
@@ -99,11 +98,20 @@ for (const proj of projects.items) {
 | Cannot remove Owner | Last owner protection | Transfer ownership before removal |
 
 ## Examples
-```bash
-# Bulk add translators from CSV (email,lang)
-while IFS=, read -r email lang; do
-  curl -s -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/contributors" \
-    -H "X-Api-Token: $LOKALISE_API_TOKEN" \
-    -d "[{\"email\":\"$email\",\"languages\":[{\"lang_iso\":\"$lang\",\"is_writable\":true}]}]"
-done < translators.csv
-```
+
+
+**Basic usage**: Apply lokalise enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lokalise enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Lokalise Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

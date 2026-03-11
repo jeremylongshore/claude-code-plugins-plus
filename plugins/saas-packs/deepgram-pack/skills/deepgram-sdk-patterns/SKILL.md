@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram SDK Patterns
 
 ## Overview
@@ -142,3 +141,9 @@ for word in result["words"]:
 ## Resources
 - [Deepgram SDK Python](https://github.com/deepgram/deepgram-python-sdk)
 - [Deepgram API Docs](https://developers.deepgram.com/docs)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

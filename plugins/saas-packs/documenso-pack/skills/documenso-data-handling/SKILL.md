@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Data Handling
 
 ## Overview
@@ -64,3 +63,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For enterprise RBAC, see `documenso-enterprise-rbac`.
+
+## Examples
+
+**Basic usage**: Apply documenso data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso data handling for production environments with multiple constraints and team-specific requirements.

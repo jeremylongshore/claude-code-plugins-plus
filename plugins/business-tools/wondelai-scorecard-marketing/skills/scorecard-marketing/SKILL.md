@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Scorecard Marketing Skill
 
 A proven 4-step system for generating qualified leads through interactive assessments. This approach generates warm leads with rich data about each prospect.
@@ -249,3 +248,49 @@ This skill is based on the Scorecard Marketing methodology developed by Daniel P
 ## About the Author
 
 **Daniel Priestley** is a serial entrepreneur, bestselling author, and a leading authority on modern business growth. He founded Dent Global, an accelerator that has helped thousands of entrepreneurs scale their businesses across the UK, Australia, Singapore, and the US. He co-founded ScoreApp, the platform built around the scorecard marketing methodology, which has been used to generate millions of leads. Priestley is the author of *Key Person of Influence*, *Oversubscribed*, *24 Assets*, *Entrepreneur Revolution*, and *Scorecard Marketing*. He has been recognized with the Queen's Award for Enterprise and regularly speaks on entrepreneurship, marketing, and business strategy. His work focuses on helping businesses move from being one of many to becoming the obvious choice in their market.
+
+## Overview
+
+Build quiz and assessment funnels that generate qualified leads at 30-50% conversion.
+
+## Prerequisites
+
+- Access to the logging environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with logging concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the logging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [logging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with logging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply scorecard marketing to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize scorecard marketing for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official logging documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

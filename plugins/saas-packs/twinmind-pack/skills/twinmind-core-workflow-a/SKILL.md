@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Core Workflow A: Meeting Transcription & Summary
 
 ## Contents
@@ -68,20 +67,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Rate limit exceeded | Too many requests | Implement queue-based processing |
 
 ## Examples
-```typescript
-const result = await processMeeting(
-  'https://storage.example.com/meetings/standup.mp3',
-  {
-    title: 'Daily Standup',
-    attendees: ['alice@example.com', 'bob@example.com'],
-    generateEmail: true,
-    generateNotes: true,
-  }
-);
-console.log(`Summary: ${result.summary.summary}`);
-console.log(`Action Items: ${result.summary.action_items.length}`);
-console.log(`Speakers: ${result.speakers.map(s => s.name).join(', ')}`);
-```
+
+
+**Basic usage**: Apply twinmind core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind core workflow a for production environments with multiple constraints and team-specific requirements.
 
 ## Audio Format Support
 

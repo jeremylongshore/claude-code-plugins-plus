@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Security Basics
 
 ## Overview
@@ -128,3 +127,9 @@ langfuse = Langfuse(
 ## Resources
 - [Langfuse Security Docs](https://langfuse.com/docs/data-security-privacy)
 - [Self-Hosting Guide](https://langfuse.com/docs/deployment/self-host)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Install & Auth
 
 ## Overview
@@ -205,3 +204,9 @@ const noteStore = client.getNoteStore();
 ## Next Steps
 
 After successful auth, proceed to `evernote-hello-world` for your first note creation.
+
+## Examples
+
+**Basic usage**: Apply evernote install auth to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote install auth for production environments with multiple constraints and team-specific requirements.

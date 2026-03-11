@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind CI Integration
 
 ## Contents
@@ -72,23 +71,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | API unavailable | TwinMind outage | Add retry logic to tests |
 
 ## Examples
-```yaml
-# GitHub Actions - run integration tests
-- name: Run integration tests
-  run: npm run test:integration
-  env:
-    TWINMIND_API_KEY: ${{ secrets.TWINMIND_API_KEY_TEST }}
-  timeout-minutes: 10
-```
 
-```typescript
-// Unit test - verify transcription request
-const result = await client.transcribe('https://example.com/audio.mp3');
-expect(mockFetch).toHaveBeenCalledWith(
-  expect.stringContaining('/transcribe'),
-  expect.objectContaining({ method: 'POST' })
-);
-```
+
+**Basic usage**: Apply twinmind ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind ci integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [GitHub Actions Documentation](https://docs.github.com/actions)

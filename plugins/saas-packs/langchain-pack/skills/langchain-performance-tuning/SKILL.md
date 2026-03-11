@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Performance Tuning
 
 ## Overview
@@ -220,3 +219,17 @@ router = RunnableBranch(
 
 ## Next Steps
 Use `langchain-cost-tuning` to optimize API costs alongside performance.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with CI/CD |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply langchain performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain performance tuning for production environments with multiple constraints and team-specific requirements.

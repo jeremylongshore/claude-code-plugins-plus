@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Enterprise RBAC
 
 ## Overview
@@ -56,3 +55,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-migration-deep-dive` for auth provider migration.
+
+## Examples
+
+**Basic usage**: Apply clerk enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk enterprise rbac for production environments with multiple constraints and team-specific requirements.

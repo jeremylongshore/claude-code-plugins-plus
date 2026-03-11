@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Observability
 
 ## Overview
@@ -96,9 +95,20 @@ Track: crawl job success/failure rate, pages scraped per hour, credit consumptio
 | Webhook not firing | Endpoint unreachable | Verify endpoint URL and SSL certificate |
 
 ## Examples
-```bash
-# Quick check: crawl job status
-curl -s "https://api.firecrawl.dev/v1/crawl/JOB_ID" \
-  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
-  jq '{status, pages_crawled, credits_used, failed_urls: (.failed | length)}'
-```
+
+
+**Basic usage**: Apply firecrawl observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize firecrawl observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Reliability Patterns
 
 ## Overview
@@ -69,3 +68,17 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After reliability patterns, proceed to `customerio-load-scale` for scaling.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Customerio Reliability Patterns implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply customerio reliability patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio reliability patterns for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Data Handling
 
 ## Overview
@@ -56,3 +55,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Proceed to `lindy-enterprise-rbac` for access control.
+
+## Examples
+
+**Basic usage**: Apply lindy data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy data handling for production environments with multiple constraints and team-specific requirements.

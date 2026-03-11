@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Security Basics
 
 ## Overview
@@ -54,3 +53,11 @@ Log all agent actions for security review and debugging.
 ## Resources
 - [Lindy API Docs](https://docs.lindy.ai)
 - [Lindy Security](https://www.lindy.ai/security)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [security implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.

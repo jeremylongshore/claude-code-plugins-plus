@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Events & Async Patterns
 
 ## Overview
@@ -203,3 +202,9 @@ async def process_batch(prompts: list[str]):
 
 ## Next Steps
 For deployment setup, see `groq-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

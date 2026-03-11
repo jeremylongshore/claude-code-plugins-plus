@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Core Workflow B
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 
 ## Next Steps
 For common errors, see `speak-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply speak core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize speak core workflow b for production environments with multiple constraints and team-specific requirements.

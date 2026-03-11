@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Deploy Integration
 
 ## Overview
@@ -128,12 +127,10 @@ curl -X PATCH https://api.retellai.com/v2/agent/$AGENT_ID \
 
 ## Examples
 
-### Health Check
-```typescript
-app.get("/health", (req, res) => {
-  res.json({ status: "healthy", wsConnections: wss.clients.size });
-});
-```
+
+**Basic usage**: Apply retellai deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize retellai deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Retell AI Documentation](https://docs.retellai.com)
@@ -142,3 +139,9 @@ app.get("/health", (req, res) => {
 
 ## Next Steps
 For multi-environment setup, see `retellai-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

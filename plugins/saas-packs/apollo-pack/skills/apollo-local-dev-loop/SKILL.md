@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Local Dev Loop
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-sdk-patterns` for production-ready code patterns.
+
+## Examples
+
+**Basic usage**: Apply apollo local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo local dev loop for production environments with multiple constraints and team-specific requirements.

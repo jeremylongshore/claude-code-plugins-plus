@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Multi-Environment Setup
 
 ## Overview
@@ -192,3 +191,9 @@ curl -s "https://api.groq.com/openai/v1/models" \
 
 ## Next Steps
 For deployment configuration, see `groq-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Observability
 
 ## Overview
@@ -93,9 +92,20 @@ Key panels: search volume by type (neural/keyword/auto), latency p50/p95, result
 | Monthly budget exhausted | Uncapped search volume | Add application-level search budget tracking |
 
 ## Examples
-```bash
-# Quick latency benchmark for Exa search
-time curl -s -X POST https://api.exa.ai/search \
-  -H "x-api-key: $EXA_API_KEY" \
-  -d '{"query": "test search", "numResults": 5, "type": "auto"}' -o /dev/null
-```
+
+
+**Basic usage**: Apply exa observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize exa observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

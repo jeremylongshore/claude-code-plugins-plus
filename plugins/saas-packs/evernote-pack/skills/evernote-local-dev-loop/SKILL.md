@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Local Dev Loop
 
 ## Overview
@@ -63,3 +62,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `evernote-sdk-patterns` for advanced SDK usage patterns.
+
+## Examples
+
+**Basic usage**: Apply evernote local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote local dev loop for production environments with multiple constraints and team-specific requirements.

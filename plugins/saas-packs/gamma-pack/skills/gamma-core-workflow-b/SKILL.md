@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Core Workflow B: Editing and Export
 
 ## Overview
@@ -147,3 +146,9 @@ async function listAssets(presentationId: string) {
 
 ## Next Steps
 Proceed to `gamma-common-errors` for error handling patterns.
+
+## Examples
+
+**Basic usage**: Apply gamma core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma core workflow b for production environments with multiple constraints and team-specific requirements.

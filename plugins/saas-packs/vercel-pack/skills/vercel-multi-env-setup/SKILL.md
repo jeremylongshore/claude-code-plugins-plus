@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Multi Env Setup
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Environments Guide](https://vercel.com/docs/environments)
 - [12-Factor App Config](https://12factor.net/config)
+
+## Overview
+
+Configure Vercel across development, staging, and production environments.

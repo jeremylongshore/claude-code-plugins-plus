@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Reference Architecture
 
 ## Overview
@@ -65,3 +64,9 @@ For detailed implementation code and architecture diagrams, load the reference g
 
 ## Next Steps
 Proceed to Flagship tier skills for enterprise features.
+
+## Examples
+
+**Basic usage**: Apply lindy reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy reference architecture for production environments with multiple constraints and team-specific requirements.

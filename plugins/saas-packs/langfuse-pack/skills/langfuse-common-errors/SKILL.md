@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Common Errors
 
 ## Overview
@@ -327,3 +326,9 @@ curl -X GET "https://cloud.langfuse.com/api/public/traces" \
 
 ## Next Steps
 For comprehensive debugging, see `langfuse-debug-bundle`.
+
+## Examples
+
+**Basic usage**: Apply langfuse common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langfuse common errors for production environments with multiple constraints and team-specific requirements.

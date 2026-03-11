@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral Data Handling
 
 ## Overview
@@ -182,3 +181,9 @@ async function safeEmbed(texts: string[]) {
 ## Resources
 - [Mistral AI Data Policy](https://docs.mistral.ai/capabilities/data-policy/)
 - [Mistral Fine-Tuning Guide](https://docs.mistral.ai/capabilities/finetuning/)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

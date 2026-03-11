@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Cost Tuning
 
 ## Overview
@@ -101,9 +100,20 @@ curl -X PATCH "https://api.clay.com/v1/tables/tbl_abc123" \
 | Unexpected charge | New enrichment column added without cap | Always set credit limits per table |
 
 ## Examples
-```bash
-# Quick optimization check: find tables with worst credit efficiency
-curl -s "https://api.clay.com/v1/workspace/usage?group_by=table&period=last_30d" \
-  -H "Authorization: Bearer $CLAY_API_KEY" | \
-  jq '[.usage[] | {table: .table_name, credits: .total_credits, hits: .rows_with_data, efficiency: (.rows_with_data / (.total_credits + 0.01))}] | sort_by(.efficiency) | .[0:5]'
-```
+
+
+**Basic usage**: Apply clay cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

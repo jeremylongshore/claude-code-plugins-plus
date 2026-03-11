@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Cost Tuning
 
 ## Overview
@@ -55,3 +54,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For architecture patterns, see `documenso-reference-architecture`.
+
+## Examples
+
+**Basic usage**: Apply documenso cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso cost tuning for production environments with multiple constraints and team-specific requirements.

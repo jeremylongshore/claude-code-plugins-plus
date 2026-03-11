@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse SDK Patterns
 
 ## Contents
@@ -71,14 +70,10 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ## Examples
 
-### Trace Hierarchy
-```
-Trace (top-level operation)
-  |- Span (processing step)
-  |    |- Span (nested step)
-  |    |- Generation (LLM call)
-  |- Event (point-in-time)
-```
+
+**Basic usage**: Apply langfuse sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langfuse sdk patterns for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Langfuse Tracing Guide](https://langfuse.com/docs/tracing)

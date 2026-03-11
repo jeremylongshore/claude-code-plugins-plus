@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Upgrade Migration
 
 ## Prerequisites
@@ -41,3 +40,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Changelog](https://github.com/supabase/sdk/releases)
 - [Supabase Migration Guide](https://supabase.com/docs/migration)
+
+## Overview
+
+Execute analyze, plan, and execute Supabase SDK upgrades with breaking change detection.
+
+## Instructions
+
+1. Assess the current state of the migration configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

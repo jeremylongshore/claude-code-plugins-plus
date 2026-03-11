@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Reference Architecture
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Best Practices](https://docs.sentry.io/product/issues/best-practices/)
 - [Distributed Tracing](https://docs.sentry.io/product/performance/distributed-tracing/)
+
+## Overview
+
+Manage best-practice Sentry architecture patterns.

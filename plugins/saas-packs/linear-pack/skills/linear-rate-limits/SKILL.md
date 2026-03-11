@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Rate Limits
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Learn security best practices with `linear-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply linear rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize linear rate limits for production environments with multiple constraints and team-specific requirements.

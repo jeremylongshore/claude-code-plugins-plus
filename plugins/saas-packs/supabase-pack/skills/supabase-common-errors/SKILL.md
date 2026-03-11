@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Common Errors
 
 ## Prerequisites
@@ -48,3 +47,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Supabase Status Page](https://status.supabase.com)
 - [Supabase Support](https://supabase.com/docs/support)
 - [Supabase Error Codes](https://supabase.com/docs/errors)
+
+## Overview
+
+Execute diagnose and fix Supabase common errors and exceptions.

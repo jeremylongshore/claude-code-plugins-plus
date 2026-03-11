@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Security Basics
 
 ## Overview
@@ -52,3 +51,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For production deployment, see `documenso-prod-checklist`.
+
+## Examples
+
+**Basic usage**: Apply documenso security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso security basics for production environments with multiple constraints and team-specific requirements.

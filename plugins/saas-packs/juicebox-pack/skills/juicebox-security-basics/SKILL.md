@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Security Basics
 
 ## Overview
@@ -210,3 +209,15 @@ export class DataPrivacyHandler {
 
 ## Next Steps
 After security setup, see `juicebox-prod-checklist` for deployment readiness.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Examples
+
+**Basic usage**: Apply juicebox security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox security basics for production environments with multiple constraints and team-specific requirements.

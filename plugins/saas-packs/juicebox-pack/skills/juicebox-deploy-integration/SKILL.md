@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Deploy Integration
 
 ## Overview
@@ -51,3 +50,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After deployment, see `juicebox-webhooks-events` for event handling.
+
+## Examples
+
+**Basic usage**: Apply juicebox deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox deploy integration for production environments with multiple constraints and team-specific requirements.

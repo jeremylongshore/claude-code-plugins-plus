@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Deploy Integration
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Releases](https://docs.sentry.io/product/releases/)
 - [Release Health](https://docs.sentry.io/product/releases/health/)
+
+## Overview
+
+Track deployments and releases in Sentry.

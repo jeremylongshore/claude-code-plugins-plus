@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Reference Architecture
 
 ## Overview
@@ -191,3 +190,9 @@ async function searchMeetings(keyword: string) {
 - [Fireflies GraphQL API](https://docs.fireflies.ai/graphql)
 - [Fireflies Webhooks](https://docs.fireflies.ai/webhooks)
 - [Fireflies Integrations](https://fireflies.ai/integrations)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

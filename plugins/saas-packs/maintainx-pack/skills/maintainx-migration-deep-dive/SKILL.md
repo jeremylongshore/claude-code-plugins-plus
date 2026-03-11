@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Migration Deep Dive
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 Congratulations! You have completed the MaintainX skill pack. For additional support, contact MaintainX at support@getmaintainx.com.
+
+## Examples
+
+**Basic usage**: Apply maintainx migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx migration deep dive for production environments with multiple constraints and team-specific requirements.

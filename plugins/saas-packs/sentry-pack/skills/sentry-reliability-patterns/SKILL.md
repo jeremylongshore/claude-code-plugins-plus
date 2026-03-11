@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Reliability Patterns
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Configuration](https://docs.sentry.io/platforms/javascript/configuration/)
 - [Transport Options](https://docs.sentry.io/platforms/javascript/configuration/transports/)
+
+## Overview
+
+Build reliable Sentry integrations.

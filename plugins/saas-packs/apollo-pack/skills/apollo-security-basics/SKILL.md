@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Security Basics
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-prod-checklist` for production deployment.
+
+## Examples
+
+**Basic usage**: Apply apollo security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo security basics for production environments with multiple constraints and team-specific requirements.

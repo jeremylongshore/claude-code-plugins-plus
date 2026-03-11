@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Observability
 
 ## Contents
@@ -73,17 +72,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | High cardinality | Too many labels | Reduce label values |
 
 ## Examples
-```typescript
-// Instrumented transcription
-const result = await instrumentedClient.transcribe(audioUrl, { model: 'ear-3' });
-// Automatically records: transcription counter, duration histogram, audio hours
 
-// Traced operation
-const transcript = await tracedOperation('transcribe',
-  () => client.transcribe(audioUrl),
-  { 'twinmind.model': 'ear-3' }
-);
-```
+
+**Basic usage**: Apply twinmind observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind observability for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)

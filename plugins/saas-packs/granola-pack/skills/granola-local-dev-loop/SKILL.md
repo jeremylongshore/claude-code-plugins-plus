@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Local Dev Loop
 
 ## Overview
@@ -137,3 +136,9 @@ if __name__ == "__main__":
 
 ## Next Steps
 Proceed to `granola-sdk-patterns` for advanced Zapier automation patterns.
+
+## Examples
+
+**Basic usage**: Apply granola local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola local dev loop for production environments with multiple constraints and team-specific requirements.

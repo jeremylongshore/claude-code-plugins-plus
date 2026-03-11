@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Multi-Environment Setup
 
 ## Overview
@@ -97,3 +96,9 @@ For detailed code implementations (properties files, Gradle config, TypeScript m
 ## Next Steps
 
 For monitoring and observability, see `guidewire-observability`.
+
+## Examples
+
+**Basic usage**: Apply guidewire multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire multi env setup for production environments with multiple constraints and team-specific requirements.

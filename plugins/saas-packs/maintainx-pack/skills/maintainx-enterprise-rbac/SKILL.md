@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Enterprise RBAC
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For complete platform migration, see `maintainx-migration-deep-dive`.
+
+## Examples
+
+**Basic usage**: Apply maintainx enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx enterprise rbac for production environments with multiple constraints and team-specific requirements.

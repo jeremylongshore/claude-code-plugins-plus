@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Load & Scale
 
 ## Overview
@@ -77,3 +76,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After load testing, proceed to `customerio-known-pitfalls` for anti-patterns.
+
+## Examples
+
+**Basic usage**: Apply customerio load scale to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio load scale for production environments with multiple constraints and team-specific requirements.

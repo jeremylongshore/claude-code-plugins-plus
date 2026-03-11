@@ -10,7 +10,6 @@ license: MIT
 author: Bayram Annakov <bayram.annakov@gmail.com>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Claude Reflect - Self-Learning System
 
 A two-stage system that helps Claude Code learn from user corrections.
@@ -68,3 +67,47 @@ Claude: Found 1 learning queued. "Use gpt-5.1 for reasoning tasks"
         Scope: global
         Apply to ~/.claude/CLAUDE.md? [y/n]
 ```
+
+## Overview
+
+Execute self-learning system that captures corrections during sessions and syncs them to CLAUDE.
+
+## Prerequisites
+
+- Access to the Claude Reflect environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with Claude Reflect concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the Claude Reflect configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Claude Reflect |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply claude reflect to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize claude reflect for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official Claude Reflect documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

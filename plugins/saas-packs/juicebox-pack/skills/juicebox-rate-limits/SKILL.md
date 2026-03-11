@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Rate Limits
 
 ## Overview
@@ -47,3 +46,15 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After rate limit handling, see `juicebox-security-basics` for security best practices.
+
+## Prerequisites
+
+- Access to the API environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with API concepts and terminology
+
+## Examples
+
+**Basic usage**: Apply juicebox rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox rate limits for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Known Pitfalls
 
 ## Overview
@@ -64,3 +63,17 @@ For detailed code examples (Python and TypeScript) of each pitfall and fix, load
 
 - [Clay API Docs](https://docs.clay.com/api)
 - [Clay Waterfall Guide](https://docs.clay.com/enrichment/waterfall)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [audit implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply clay known pitfalls to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay known pitfalls for production environments with multiple constraints and team-specific requirements.

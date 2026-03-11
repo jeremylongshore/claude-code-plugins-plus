@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Deploy Integration
 
 ## Overview
@@ -304,3 +303,23 @@ Phase 3 (Week 3):
 
 ## Next Steps
 Proceed to `granola-webhooks-events` for event-driven automation.
+
+## Instructions
+
+1. Assess the current state of the deployment configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Examples
+
+**Basic usage**: Apply granola deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola deploy integration for production environments with multiple constraints and team-specific requirements.

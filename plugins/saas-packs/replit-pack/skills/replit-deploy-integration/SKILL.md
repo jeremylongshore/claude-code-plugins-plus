@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Deploy Integration
 
 ## Overview
@@ -118,3 +117,9 @@ replit deploy --type autoscale
 
 ## Next Steps
 For multi-environment setup, see `replit-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Incident Runbook
 
 ## Overview
@@ -62,3 +61,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For data handling procedures, see `guidewire-data-handling`.
+
+## Examples
+
+**Basic usage**: Apply guidewire incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire incident runbook for production environments with multiple constraints and team-specific requirements.

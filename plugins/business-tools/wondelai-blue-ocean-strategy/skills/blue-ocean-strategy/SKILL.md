@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Blue Ocean Strategy Framework
 
 Strategic framework for creating uncontested market space that makes the competition irrelevant, based on simultaneous pursuit of differentiation and low cost.
@@ -461,3 +460,49 @@ This skill is based on Blue Ocean Strategy developed by W. Chan Kim and Renée M
 ## About the Authors
 
 **W. Chan Kim** and **Renée Mauborgne** are professors of strategy at INSEAD and co-directors of the INSEAD Blue Ocean Strategy Institute. Their research on value innovation and blue ocean strategy has been published in top academic journals. *Blue Ocean Strategy* has sold over 4 million copies, been translated into 46 languages, and is one of the best-selling business books of all time. They work with companies and governments worldwide on strategic renewal and growth.
+
+## Overview
+
+Create uncontested market space using value innovation instead of competing head-to-head.
+
+## Prerequisites
+
+- Access to the testing environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with testing concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the testing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply blue ocean strategy to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize blue ocean strategy for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official testing documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

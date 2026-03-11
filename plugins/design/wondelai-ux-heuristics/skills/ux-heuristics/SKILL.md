@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # UX Heuristics Framework
 
 Practical usability principles for evaluating and improving user interfaces. Based on a fundamental truth: users don't read, they scan. They don't make optimal choices, they satisfice. They don't figure out how things work, they muddle through.
@@ -300,3 +299,49 @@ This skill is based on usability principles developed by Steve Krug and Jakob Ni
 **Steve Krug** is a usability consultant who has been helping companies make their products more intuitive since the 1990s. His book *"Don't Make Me Think"* (first published in 2000, revised 2014) is the most widely read book on web usability and is considered essential reading for anyone involved in designing interfaces. Known for his accessible, humorous writing style and his advocacy for low-cost usability testing, Krug demonstrated that usability doesn't require a lab or a large budget -- just watching a few real users try to accomplish tasks.
 
 **Jakob Nielsen, PhD** is co-founder of the Nielsen Norman Group (NN/g) and is widely regarded as the "king of usability." His 10 Usability Heuristics for User Interface Design, published in 1994, remain the most-used framework for heuristic evaluation worldwide. Nielsen has been called "the guru of Web page usability" by *The New York Times* and has authored numerous influential books on usability engineering. His research-driven approach to interface design helped establish usability as a recognized discipline in software development.
+
+## Overview
+
+Evaluate and improve interface usability using heuristic analysis.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply ux heuristics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize ux heuristics for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

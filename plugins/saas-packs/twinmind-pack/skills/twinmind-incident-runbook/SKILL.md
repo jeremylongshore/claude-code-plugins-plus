@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Incident Runbook
 
 ## Contents
@@ -70,19 +69,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Auth failures (401) | Key expired/revoked | Regenerate key, update secrets |
 
 ## Examples
-```bash
-# Quick health check
-curl -s -o /dev/null -w "%{http_code}" \
-  -H "Authorization: Bearer $TWINMIND_API_KEY" \
-  https://api.twinmind.com/v1/health
 
-# Check recent errors
-kubectl logs -l app=twinmind-service --tail=100 | grep -i error
 
-# Check rate limit status
-curl -I -H "Authorization: Bearer $TWINMIND_API_KEY" \
-  https://api.twinmind.com/v1/health 2>/dev/null | grep -i ratelimit
-```
+**Basic usage**: Apply twinmind incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind incident runbook for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [TwinMind Status Page](https://status.twinmind.com)

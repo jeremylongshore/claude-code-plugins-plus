@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Webhooks Events
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-performance-tuning` for optimization.
+
+## Examples
+
+**Basic usage**: Apply apollo webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo webhooks events for production environments with multiple constraints and team-specific requirements.

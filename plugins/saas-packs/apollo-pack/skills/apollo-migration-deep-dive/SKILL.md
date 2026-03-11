@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Migration Deep Dive
 
 ## Overview
@@ -55,3 +54,8 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 
+## Examples
+
+**Basic usage**: Apply apollo migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo migration deep dive for production environments with multiple constraints and team-specific requirements.

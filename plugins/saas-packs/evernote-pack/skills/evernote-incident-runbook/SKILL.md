@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Incident Runbook
 
 ## Overview
@@ -46,3 +45,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For data handling best practices, see `evernote-data-handling`.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Evernote Incident Runbook |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply evernote incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote incident runbook for production environments with multiple constraints and team-specific requirements.

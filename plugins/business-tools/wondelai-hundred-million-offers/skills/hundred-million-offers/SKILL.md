@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Grand Slam Offer Creation Framework
 
 Framework for creating offers so good that people feel stupid saying no. Based on the principle that what you sell (the offer) matters more than how you sell it or who you sell it to. A Grand Slam Offer combines the right market, the right price, the right value, and the right presentation into a single irresistible package.
@@ -371,3 +370,49 @@ This skill is based on Alex Hormozi's offer creation framework. For the complete
 ## About the Author
 
 **Alex Hormozi** is an entrepreneur, investor, and author who has built and scaled multiple businesses generating over $200 million in revenue. He is the founder of Acquisition.com, a portfolio of companies that does over $200 million per year. Hormozi is known for his practical, no-nonsense approach to business growth, focusing on offer creation, lead generation, and enterprise value. *$100M Offers* has become one of the most widely recommended business books among entrepreneurs and marketers for its actionable framework on creating irresistible offers.
+
+## Overview
+
+Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply hundred million offers to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize hundred million offers for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

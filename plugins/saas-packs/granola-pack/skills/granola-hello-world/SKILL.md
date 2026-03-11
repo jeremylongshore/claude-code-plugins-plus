@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Hello World
 
 ## Overview
@@ -100,3 +99,9 @@ Sarah Chen, Mike Johnson, Alex Kim
 
 ## Next Steps
 Proceed to `granola-local-dev-loop` for development workflow integration.
+
+## Examples
+
+**Basic usage**: Apply granola hello world to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola hello world for production environments with multiple constraints and team-specific requirements.

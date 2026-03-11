@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Performance Tuning
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Vercel Performance Guide](https://vercel.com/docs/performance)
 - [DataLoader Documentation](https://github.com/graphql/dataloader)
 - [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Overview
+
+Optimize Vercel API performance with caching, batching, and connection pooling.

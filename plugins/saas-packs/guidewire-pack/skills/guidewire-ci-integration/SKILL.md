@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire CI Integration
 
 ## Overview
@@ -76,3 +75,9 @@ For complete workflow files, Jenkinsfile, Gradle config, and deployment scripts,
 ## Next Steps
 
 For deployment strategies, see `guidewire-deploy-integration`.
+
+## Examples
+
+**Basic usage**: Apply guidewire ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire ci integration for production environments with multiple constraints and team-specific requirements.

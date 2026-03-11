@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Performance Tuning
 
 ## Overview
@@ -113,9 +112,20 @@ curl "https://api.clay.com/v1/tables/tbl_abc123/status" \
 | Duplicate results | Same domain enriched multiple times | Deduplicate input data before enrichment |
 
 ## Examples
-```bash
-# Estimate processing time for a new table
-ROWS=5000
-echo "Estimated time at 3s/row average: $(echo "$ROWS * 3 / 60" | bc) minutes"
-echo "With pre-validation (remove ~30%): $(echo "$ROWS * 0.7 * 3 / 60" | bc) minutes"
-```
+
+
+**Basic usage**: Apply clay performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay performance tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

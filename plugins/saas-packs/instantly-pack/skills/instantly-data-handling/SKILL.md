@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Data Handling
 
 ## Overview
@@ -201,3 +200,9 @@ async function safeImport(campaignId: string, rawLeads: any[]) {
 ## Resources
 - [Instantly API Docs](https://developer.instantly.ai/)
 - [CAN-SPAM Compliance](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

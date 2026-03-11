@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Local Dev Loop
 
 ## Overview
@@ -72,3 +71,9 @@ For testing against a local Documenso instance:
 
 ## Next Steps
 Apply patterns in `documenso-sdk-patterns` for production-ready code.
+
+## Examples
+
+**Basic usage**: Apply documenso local dev loop to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso local dev loop for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Architecture Variants
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
 - [Microservices Guide](https://martinfowler.com/microservices/)
 - [Supabase Architecture Guide](https://supabase.com/docs/architecture)
+
+## Overview
+
+Execute choose and implement Supabase validated architecture blueprints for different scales.

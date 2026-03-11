@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Deploy Integration
 
 ## Overview
@@ -200,3 +199,9 @@ jobs:
 
 ## Next Steps
 Proceed to `gamma-webhooks-events` for event handling.
+
+## Examples
+
+**Basic usage**: Apply gamma deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma deploy integration for production environments with multiple constraints and team-specific requirements.

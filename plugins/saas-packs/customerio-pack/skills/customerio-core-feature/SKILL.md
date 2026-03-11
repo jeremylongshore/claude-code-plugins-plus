@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Core Feature Integration
 
 ## Overview
@@ -55,3 +54,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After implementing core features, proceed to `customerio-common-errors` to learn troubleshooting.
+
+## Examples
+
+**Basic usage**: Apply customerio core feature to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio core feature for production environments with multiple constraints and team-specific requirements.

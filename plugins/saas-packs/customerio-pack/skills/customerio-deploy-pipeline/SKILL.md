@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Deploy Pipeline
 
 ## Overview
@@ -68,3 +67,9 @@ For detailed deployment manifests and scripts, load the reference guide:
 
 ## Next Steps
 After deployment, proceed to `customerio-webhooks-events` for webhook handling.
+
+## Examples
+
+**Basic usage**: Apply customerio deploy pipeline to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio deploy pipeline for production environments with multiple constraints and team-specific requirements.

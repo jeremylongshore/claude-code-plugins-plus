@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Data Handling
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-enterprise-rbac` for enterprise SSO and RBAC.
+
+## Examples
+
+**Basic usage**: Apply clerk data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk data handling for production environments with multiple constraints and team-specific requirements.

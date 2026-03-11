@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Cost Tuning
 
 ## Overview
@@ -118,9 +117,20 @@ curl -s https://api.ideogram.ai/v1/usage \
 | Unexpected credit drain | High-res generations for small uses | Match resolution to actual display size needed |
 
 ## Examples
-```bash
-# Cost comparison: draft vs production workflow
-echo "5 iterations all on V_2: ~15 credits"
-echo "4 drafts on V_2_TURBO + 1 final V_2: ~7 credits"
-echo "Savings: 53%"
-```
+
+
+**Basic usage**: Apply ideogram cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize ideogram cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -11,7 +11,6 @@ author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # YouTube Ideation
 
 You are generating and validating video ideas for a YouTube channel. Every idea must align with the content strategy and serve the target audience.
@@ -122,3 +121,47 @@ Options:
 - **Practical over theoretical** - Favor ideas where the viewer walks away with something they can DO.
 - **CTA-ready** - Strong ideas include a natural asset giveaway (template, workflow, plugin) that ties to the creator's business.
 - **Data-informed** - When research data is available, use it. Gut-feel ideation is a fallback, not the default.
+
+## Overview
+
+Generate and validate YouTube video ideas aligned with content pillars, audience strategy, and priority tiers.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply yt ideation to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize yt ideation for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

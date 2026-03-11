@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Reference Architecture
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For multi-environment setup, see `maintainx-multi-env-setup`.
+
+## Examples
+
+**Basic usage**: Apply maintainx reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx reference architecture for production environments with multiple constraints and team-specific requirements.

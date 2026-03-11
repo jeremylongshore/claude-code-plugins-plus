@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Webhooks & Events
 
 ## Overview
@@ -51,3 +50,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After webhooks, see `juicebox-performance-tuning` for optimization.
+
+## Examples
+
+**Basic usage**: Apply juicebox webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox webhooks events for production environments with multiple constraints and team-specific requirements.

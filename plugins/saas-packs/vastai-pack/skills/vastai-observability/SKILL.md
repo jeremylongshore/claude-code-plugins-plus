@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Observability
 
 ## Overview
@@ -96,12 +95,20 @@ Track: active instance count, GPU utilization heatmap, cost burn rate ($/hour), 
 | Unexpected high cost | Instance left running after job | Implement auto-destroy on job completion |
 
 ## Examples
-```bash
-# Quick cost summary: today's spend
-vastai show instances --raw | jq '[.[] | .dph_total * ((.cur_state_time - .start_time) / 3600)] | add | "Today: $\(. | tostring | .[0:6])"'
-```
 
-```bash
-# Auto-destroy idle instances (cron every 15 minutes)
-vastai show instances --raw | jq -r '.[] | select(.gpu_utilization < 5 and ((.cur_state_time - .start_time) > 7200)) | .id' | xargs -I{} vastai destroy instance {}
-```
+
+**Basic usage**: Apply vastai observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize vastai observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

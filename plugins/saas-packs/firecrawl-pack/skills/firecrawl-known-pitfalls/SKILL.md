@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Known Pitfalls
 
 ## Overview
@@ -143,3 +142,9 @@ const results = await firecrawl.batchScrapeUrls(urls, {
 ## Resources
 - [Firecrawl Docs](https://docs.firecrawl.dev)
 - [Crawl vs Scrape](https://docs.firecrawl.dev/features/crawl)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

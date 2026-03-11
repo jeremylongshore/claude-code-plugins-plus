@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Core Workflow A: Work Order Lifecycle
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For asset and location management, see `maintainx-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply maintainx core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx core workflow a for production environments with multiple constraints and team-specific requirements.

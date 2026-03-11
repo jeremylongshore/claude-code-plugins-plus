@@ -53,3 +53,31 @@ client = OpenAI(
 ## Detailed Reference
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete implementation guide.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Openrouter Sdk Patterns implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Openrouter Sdk Patterns |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply openrouter sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize openrouter sdk patterns for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official Openrouter Sdk Patterns documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Performance Tuning
 
 ## Overview
@@ -172,3 +171,9 @@ retell.on('call_analyzed', (event) => {
 - [Retell AI API Reference](https://docs.retellai.com/api-references)
 - [Retell Agent Configuration](https://docs.retellai.com/build-agent)
 - [Voice Latency Optimization](https://docs.retellai.com/optimize-latency)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

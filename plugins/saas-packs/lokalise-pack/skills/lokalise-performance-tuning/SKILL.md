@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Performance Tuning
 
 ## Overview
@@ -119,17 +118,20 @@ curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
 | Bulk create fails partially | Network timeout on large batch | Reduce batch size to 200, add retry logic |
 
 ## Examples
-```bash
-# Benchmark: time a full key export
-time curl -s "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?limit=500" \
-  -H "X-Api-Token: $LOKALISE_API_TOKEN" | jq '.keys | length'
-# Compare with limit=100 to see pagination impact
-```
 
-```typescript
-// Parallel download of all locales (respecting rate limit)
-const locales = ['en', 'fr', 'de', 'ja', 'ko'];
-const translations = await Promise.all(
-  locales.map(lang => throttledRequest(() => cachedDownload(projectId, 'json', lang)))
-);
-```
+
+**Basic usage**: Apply lokalise performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lokalise performance tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Core Workflow B: Action Items & Follow-ups
 
 ## Contents
@@ -64,17 +63,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Assignee not found | Name mismatch | Map speakers to user accounts |
 
 ## Examples
-```typescript
-const result = await runFollowUpWorkflow({
-  transcriptId: 'tr_abc123',
-  attendees: ['alice@example.com', 'bob@example.com'],
-  taskIntegration: 'linear',
-  sendEmail: true,
-  emailDelay: 30, // minutes
-});
-console.log(`Action Items: ${result.actionItems.length}`);
-console.log(`Tasks Created: ${result.createdTasks.length}`);
-```
+
+
+**Basic usage**: Apply twinmind core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind core workflow b for production environments with multiple constraints and team-specific requirements.
 
 ## Supported Integrations
 

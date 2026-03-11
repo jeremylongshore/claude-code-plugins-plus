@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral CI Integration
 
 ## Overview
@@ -206,3 +205,9 @@ jobs:
 ## Resources
 - [Mistral AI API Reference](https://docs.mistral.ai/api/)
 - [Mistral Models](https://docs.mistral.ai/getting-started/models/)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

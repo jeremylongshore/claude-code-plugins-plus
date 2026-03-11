@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Policy Guardrails
 
 ## Overview
@@ -135,3 +134,9 @@ citation_quality = score_citation_quality(result.citations)
 ## Resources
 - [Perplexity API Docs](https://docs.perplexity.ai)
 - [Responsible AI Practices](https://docs.perplexity.ai/guides/responsible-use)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

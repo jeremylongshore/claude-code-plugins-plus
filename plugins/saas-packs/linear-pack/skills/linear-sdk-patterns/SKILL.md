@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear SDK Patterns
 
 ## Overview
@@ -50,3 +49,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Apply these patterns in `linear-core-workflow-a` for issue management.
+
+## Examples
+
+**Basic usage**: Apply linear sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize linear sdk patterns for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Core Workflow B: Candidate Enrichment
 
 ## Overview
@@ -206,3 +205,9 @@ console.log(`Enriched ${enriched.length} candidates, ${errors.length} errors`);
 ## Resources
 - [Juicebox API Documentation](https://docs.juicebox.ai)
 - [Juicebox People Search](https://docs.juicebox.ai/people-search)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

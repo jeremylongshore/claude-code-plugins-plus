@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Reference Architecture
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel SDK Documentation](https://vercel.com/docs/sdk)
 - [Vercel Best Practices](https://vercel.com/docs/best-practices)
+
+## Overview
+
+Implement Vercel reference architecture with best-practice project layout.

@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Crossing the Chasm Framework
 
 Strategic framework for marketing and selling disruptive technology products, particularly for transitioning from early adopters to mainstream customers.
@@ -334,3 +333,49 @@ This skill is based on Geoffrey Moore's Crossing the Chasm framework. For the co
 ## About the Author
 
 **Geoffrey A. Moore** is a consultant, venture partner, and author focused on disruptive innovation and market development. His work at The Chasm Group and Chasm Institute has influenced go-to-market strategy for enterprise technology companies for over 30 years. *Crossing the Chasm* has sold over 1 million copies and is required reading at many business schools and tech companies. Moore serves on the boards of several technology companies and advises Fortune 500 firms on technology adoption.
+
+## Overview
+
+Navigate the technology adoption lifecycle from early adopters to mainstream market.
+
+## Prerequisites
+
+- Access to the logging environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with logging concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the logging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [logging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with logging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply crossing the chasm to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize crossing the chasm for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official logging documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

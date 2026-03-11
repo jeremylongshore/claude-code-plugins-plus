@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # iOS Human Interface Guidelines Design Skill
 
 Framework for designing native iOS app interfaces that feel intuitive, consistent, and aligned with Apple's design philosophy. Based on Apple's Human Interface Guidelines, the definitive resource for building apps that integrate seamlessly with iPhone, iPad, and the broader Apple ecosystem.
@@ -353,3 +352,49 @@ This skill is based on Apple's Human Interface Guidelines, the official design d
 ## About the Author
 
 The **Apple Human Interface Guidelines** are authored and maintained by Apple's Human Interface Design team, one of the most influential design organizations in technology. The HIG traces its origins to 1984, when Apple published the original *Macintosh Human Interface Guidelines* alongside the launch of the first Macintosh computer. That document established principles---direct manipulation, see-and-point, consistency, WYSIWYG, user control---that defined graphical user interface design for decades. Under the leadership of designers including Jef Raskin, Bruce Tognazzini, and later Jony Ive and Alan Dye, Apple's design philosophy evolved through Mac OS, iPhone (2007), iPad (2010), Apple Watch (2015), and Apple Vision Pro (2024). The HIG has been continuously updated to reflect new interaction paradigms---from mouse to multi-touch to spatial computing---while maintaining the core belief that technology should be intuitive, accessible, and delightful. Today the HIG is freely available at developer.apple.com and remains the essential reference for anyone building apps on Apple platforms.
+
+## Overview
+
+Design native iOS interfaces following Apple Human Interface Guidelines.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply ios hig design to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize ios hig design for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

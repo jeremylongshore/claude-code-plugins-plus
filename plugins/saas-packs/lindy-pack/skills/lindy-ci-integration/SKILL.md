@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy CI Integration
 
 ## Overview
@@ -48,7 +47,11 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Examples
 
-### Matrix Testing
+
+**Basic usage**: Apply lindy ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy ci integration for production environments with multiple constraints and team-specific requirements.
+
 ## Resources
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [Lindy CI Guide](https://docs.lindy.ai/ci)

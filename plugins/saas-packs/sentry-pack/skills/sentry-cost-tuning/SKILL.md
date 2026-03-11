@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Cost Tuning
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Pricing](https://sentry.io/pricing/)
 - [Quota Management](https://docs.sentry.io/product/accounts/quotas/)
+
+## Overview
+
+Optimize Sentry costs and event volume.

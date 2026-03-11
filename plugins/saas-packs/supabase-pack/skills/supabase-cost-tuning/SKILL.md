@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Cost Tuning
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Pricing](https://supabase.com/pricing)
 - [Supabase Billing Dashboard](https://dashboard.supabase.com/billing)
+
+## Overview
+
+Optimize Supabase costs through tier selection, sampling, and usage monitoring.

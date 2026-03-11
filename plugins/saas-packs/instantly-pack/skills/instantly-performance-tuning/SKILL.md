@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Performance Tuning
 
 ## Overview
@@ -189,3 +188,9 @@ async function monitorCampaigns() {
 ## Resources
 - [Instantly API Docs](https://developer.instantly.ai/)
 - [Instantly Rate Limits](https://developer.instantly.ai/rate-limits)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

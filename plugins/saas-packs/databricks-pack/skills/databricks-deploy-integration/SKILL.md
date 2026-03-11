@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Deploy Integration
 
 ## Overview
@@ -150,10 +149,10 @@ databricks runs get-output --run-id $RUN_ID
 
 ## Examples
 
-### Quick Deploy
-```bash
-databricks bundle validate && databricks bundle deploy -e production
-```
+
+**Basic usage**: Apply databricks deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks deploy integration for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles)
@@ -162,3 +161,9 @@ databricks bundle validate && databricks bundle deploy -e production
 
 ## Next Steps
 For multi-environment setup, see `databricks-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

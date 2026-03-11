@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Cost Tuning
 
 ## Overview
@@ -118,12 +117,20 @@ optimization_priority:
 | High bounce rate | Unverified lead lists | Use email verification before import |
 
 ## Examples
-```bash
-# Quick ROI calculator
-echo "Monthly cost: \$97 (Hypergrowth)"
-echo "Leads contacted: 5000"
-echo "Reply rate: 3%"
-echo "Replies: 150"
-echo "Cost per reply: \$0.65"
-echo "If you improve reply rate to 5%: replies=250, cost/reply=\$0.39 (40% better ROI)"
-```
+
+
+**Basic usage**: Apply instantly cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize instantly cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

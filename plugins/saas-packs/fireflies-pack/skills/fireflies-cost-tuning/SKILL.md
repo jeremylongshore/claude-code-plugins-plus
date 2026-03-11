@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies Cost Tuning
 
 ## Overview
@@ -103,13 +102,20 @@ business_29_per_seat:
 | Invoice higher than expected | New members auto-added | Set member invitation to admin-only |
 
 ## Examples
-```bash
-# Quick cost audit: cost per transcript
-SEATS=$(curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ teamMembers { email } }"}' | jq '.data.teamMembers | length')
-TRANSCRIPTS=$(curl -s -X POST https://api.fireflies.ai/graphql \
-  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
-  -d '{"query": "{ transcripts(limit: 1000) { id } }"}' | jq '.data.transcripts | length')
-echo "Seats: $SEATS, Transcripts/month: $TRANSCRIPTS, Cost/transcript: \$$(echo "$SEATS * 29 / $TRANSCRIPTS" | bc -l | head -c 5)"
-```
+
+
+**Basic usage**: Apply fireflies cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize fireflies cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

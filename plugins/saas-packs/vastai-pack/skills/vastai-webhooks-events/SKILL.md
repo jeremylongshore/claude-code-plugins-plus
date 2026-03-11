@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Webhooks & Events
 
 ## Overview
@@ -192,3 +191,9 @@ vastai create instance $OFFER_ID --image pytorch/pytorch:latest --disk 50
 
 ## Next Steps
 For multi-environment setup, see `vastai-multi-env-setup`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

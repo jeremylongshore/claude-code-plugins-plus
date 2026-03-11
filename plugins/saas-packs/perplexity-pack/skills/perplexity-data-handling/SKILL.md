@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Data Handling
 
 ## Overview
@@ -197,3 +196,9 @@ console.log(`Citations: ${result.citations.length} sources`);
 ## Resources
 - [Perplexity API Docs](https://docs.perplexity.ai/)
 - [Perplexity Data Policy](https://perplexity.ai/privacy)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Core Workflow B: Templates & Direct Signing
 
 ## Overview
@@ -53,3 +52,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For error handling patterns, see `documenso-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply documenso core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso core workflow b for production environments with multiple constraints and team-specific requirements.

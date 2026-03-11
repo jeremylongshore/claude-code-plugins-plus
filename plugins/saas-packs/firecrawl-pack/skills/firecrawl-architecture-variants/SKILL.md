@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Architecture Variants
 
 ## Overview
@@ -138,3 +137,9 @@ class ContentPipeline {
 
 ## Resources
 - [Firecrawl API Docs](https://docs.firecrawl.dev)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

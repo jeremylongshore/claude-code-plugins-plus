@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lean Startup Methodology
 
 A systematic approach to building startups and launching new products that shortens development cycles and rapidly discovers if a business model is viable.
@@ -465,3 +464,49 @@ This skill is based on Eric Ries' Lean Startup methodology. For the complete fra
 ## About the Author
 
 **Eric Ries** is an entrepreneur and author best known for developing the Lean Startup methodology. He was co-founder and CTO of IMVU, where he pioneered continuous deployment and customer development practices that became the foundation of Lean Startup. *The Lean Startup* has been translated into over 30 languages and has influenced startup culture worldwide. Ries is also the creator of the Long-Term Stock Exchange (LTSE), a new stock exchange designed for companies focused on long-term value creation.
+
+## Overview
+
+Design MVPs, validated learning experiments, and pivot-or-persevere decisions using Build-Measure-Learn.
+
+## Prerequisites
+
+- Access to the testing environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with testing concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the testing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [testing implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with testing |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply lean startup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lean startup for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official testing documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

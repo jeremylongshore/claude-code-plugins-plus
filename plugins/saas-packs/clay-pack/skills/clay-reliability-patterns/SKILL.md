@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Reliability Patterns
 
 ## Overview
@@ -59,3 +58,17 @@ For complete Python implementations with Redis-backed tracking, load the referen
 
 - [Clay API Reference](https://docs.clay.com/api)
 - [Enrichment Best Practices](https://docs.clay.com/best-practices)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Clay Reliability Patterns implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply clay reliability patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay reliability patterns for production environments with multiple constraints and team-specific requirements.

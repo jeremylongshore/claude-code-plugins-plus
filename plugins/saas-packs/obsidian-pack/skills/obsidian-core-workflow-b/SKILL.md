@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Core Workflow B: UI Components
 
 ## Overview
@@ -59,3 +58,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For common errors, see `obsidian-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply obsidian core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian core workflow b for production environments with multiple constraints and team-specific requirements.

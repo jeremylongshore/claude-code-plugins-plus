@@ -10,7 +10,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Kling AI Webhook Configuration
 
 ## Overview
@@ -53,3 +52,31 @@ Payload Structure:
 ## Detailed Reference
 
 See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete webhook setup guide.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [CI/CD implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with CI/CD |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply klingai webhook config to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize klingai webhook config for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official CI/CD documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

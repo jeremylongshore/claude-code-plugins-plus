@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Core Workflow A: Document Creation & Recipients
 
 ## Overview
@@ -56,3 +55,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For template-based workflows, see `documenso-core-workflow-b`.
+
+## Examples
+
+**Basic usage**: Apply documenso core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso core workflow a for production environments with multiple constraints and team-specific requirements.

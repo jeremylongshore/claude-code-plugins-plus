@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Core Workflow B: Claims Processing
 
 ## Overview
@@ -91,3 +90,9 @@ For complete TypeScript API calls and Gosu server-side implementations, load the
 ## Next Steps
 
 For error handling patterns, see `guidewire-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply guidewire core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire core workflow b for production environments with multiple constraints and team-specific requirements.

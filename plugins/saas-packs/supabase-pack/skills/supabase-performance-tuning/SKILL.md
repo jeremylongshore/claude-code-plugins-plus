@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Performance Tuning
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Supabase Performance Guide](https://supabase.com/docs/performance)
 - [DataLoader Documentation](https://github.com/graphql/dataloader)
 - [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
+
+## Overview
+
+Optimize Supabase API performance with caching, batching, and connection pooling.

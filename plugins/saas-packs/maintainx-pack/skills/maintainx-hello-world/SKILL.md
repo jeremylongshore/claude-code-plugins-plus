@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Hello World
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 Proceed to `maintainx-local-dev-loop` for development workflow setup.
+
+## Examples
+
+**Basic usage**: Apply maintainx hello world to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx hello world for production environments with multiple constraints and team-specific requirements.

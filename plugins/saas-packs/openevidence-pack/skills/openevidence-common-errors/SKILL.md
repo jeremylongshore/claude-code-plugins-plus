@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Common Errors
 
 ## Overview
@@ -346,3 +345,11 @@ async function safeClinicalQuery(question: string) {
 
 ## Next Steps
 For comprehensive debugging, see `openevidence-debug-bundle`.
+
+## Instructions
+
+1. Assess the current state of the debugging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

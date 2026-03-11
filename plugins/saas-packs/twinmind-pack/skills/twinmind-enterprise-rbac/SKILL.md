@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Enterprise RBAC
 
 ## Contents
@@ -69,17 +68,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Audit gaps | Middleware not applied | Add to all routes |
 
 ## Examples
-```typescript
-// Check permission
-const authService = new AuthorizationService();
-const canRead = authService.hasPermission(user, Permission.TRANSCRIPT_READ_ALL);
 
-// Express middleware
-app.get('/transcripts', requirePermission(Permission.TRANSCRIPT_READ), handler);
 
-// Role hierarchy: Owner > Admin > Manager > Member > Viewer
-const permissions = resolvePermissions('manager'); // includes member + viewer permissions
-```
+**Basic usage**: Apply twinmind enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind enterprise rbac for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [TwinMind Enterprise](https://twinmind.com/enterprise)

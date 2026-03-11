@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # CodeRabbit Observability
 
 ## Overview
@@ -93,8 +92,20 @@ Key panels: review latency distribution, comment acceptance rate over time, PRs 
 | Missing repos in metrics | Repos not added to App | Add repos in GitHub App installation settings |
 
 ## Examples
-```bash
-# Quick check: is CodeRabbit active on this repo?
-gh api repos/ORG/REPO/pulls/1/reviews --jq '[.[] | select(.user.login=="coderabbitai")] | length'
-# Returns 0 if CodeRabbit hasn't reviewed, >0 if it has
-```
+
+
+**Basic usage**: Apply coderabbit observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize coderabbit observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

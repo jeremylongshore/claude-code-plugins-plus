@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Observability
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
 - [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
 - [Vercel Observability Guide](https://vercel.com/docs/observability)
+
+## Overview
+
+Execute set up comprehensive observability for Vercel integrations with metrics, traces, and alerts.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma SDK Patterns
 
 ## Overview
@@ -143,3 +142,9 @@ export function fromTemplate(type: TemplateType, title: string) {
 
 ## Next Steps
 Proceed to `gamma-core-workflow-a` for presentation generation workflows.
+
+## Examples
+
+**Basic usage**: Apply gamma sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma sdk patterns for production environments with multiple constraints and team-specific requirements.

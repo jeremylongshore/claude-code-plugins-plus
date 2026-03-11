@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Observability
 
 ## Overview
@@ -98,9 +97,20 @@ Track: daily active users vs total seats, acceptance rate trend (higher is bette
 | Analytics data missing | Enterprise API not enabled | Contact Windsurf support to enable admin API |
 
 ## Examples
-```bash
-# Quick adoption check: how many team members used Windsurf today?
-curl -s "https://api.windsurf.com/v1/admin/analytics?period=today" \
-  -H "Authorization: Bearer $WINDSURF_ADMIN_KEY" | \
-  jq '{active_users, total_seats, utilization_pct: (.active_users / .total_seats * 100)}'
-```
+
+
+**Basic usage**: Apply windsurf observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize windsurf observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Install Auth
 
 ## Prerequisites
@@ -41,3 +40,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Sentry Documentation](https://docs.sentry.io)
 - [Sentry Dashboard](https://sentry.io)
 - [Sentry Status](https://status.sentry.io)
+
+## Overview
+
+Install and configure Sentry SDK authentication.
+
+## Instructions
+
+1. Assess the current state of the authentication configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Debug Bundle
 
 ## Overview
@@ -58,3 +57,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For rate limit handling, see `documenso-rate-limits`.
+
+## Examples
+
+**Basic usage**: Apply documenso debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso debug bundle for production environments with multiple constraints and team-specific requirements.

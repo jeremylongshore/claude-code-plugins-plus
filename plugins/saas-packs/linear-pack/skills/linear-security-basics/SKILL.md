@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Security Basics
 
 ## Overview
@@ -259,3 +258,15 @@ async function getWorkingClient(): Promise<LinearClient> {
 
 ## Next Steps
 Prepare for production with `linear-prod-checklist`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Examples
+
+**Basic usage**: Apply linear security basics to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize linear security basics for production environments with multiple constraints and team-specific requirements.

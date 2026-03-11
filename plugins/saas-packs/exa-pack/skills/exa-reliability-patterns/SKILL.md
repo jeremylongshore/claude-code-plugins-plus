@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Reliability Patterns
 
 ## Overview
@@ -136,19 +135,16 @@ class SearchQualityMonitor:
 
 ## Examples
 
-### Timeout Wrapper
-```python
-import asyncio
 
-async def search_with_timeout(exa, query, timeout=10):
-    try:
-        return await asyncio.wait_for(
-            asyncio.to_thread(exa.search, query),
-            timeout=timeout
-        )
-    except asyncio.TimeoutError:
-        return cached_fallback(query)
-```
+**Basic usage**: Apply exa reliability patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize exa reliability patterns for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Exa API Reference](https://docs.exa.ai/reference)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Incident Runbook
 
 ## Overview
@@ -102,3 +101,25 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Proceed to `lindy-data-handling` for data management.
+
+## Instructions
+
+1. Assess the current state of the Lindy Incident Runbook configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with Lindy Incident Runbook |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply lindy incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy incident runbook for production environments with multiple constraints and team-specific requirements.

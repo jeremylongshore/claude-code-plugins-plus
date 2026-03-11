@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Core Workflow A: AI Presentation Generation
 
 ## Overview
@@ -127,3 +126,9 @@ async function batchGenerate(topics: string[]) {
 
 ## Next Steps
 Proceed to `gamma-core-workflow-b` for presentation editing and export workflows.
+
+## Examples
+
+**Basic usage**: Apply gamma core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma core workflow a for production environments with multiple constraints and team-specific requirements.

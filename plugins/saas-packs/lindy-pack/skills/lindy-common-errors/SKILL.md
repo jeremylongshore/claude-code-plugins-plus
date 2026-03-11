@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Common Errors
 
 ## Overview
@@ -75,3 +74,25 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Proceed to `lindy-debug-bundle` for comprehensive debugging.
+
+## Instructions
+
+1. Assess the current state of the debugging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [debugging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply lindy common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy common errors for production environments with multiple constraints and team-specific requirements.

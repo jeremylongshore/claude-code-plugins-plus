@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # TwinMind Migration Deep Dive
 
 ## Contents
@@ -68,17 +67,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Missing speakers | Source didn't export | Set as "unknown" |
 
 ## Examples
-```typescript
-// Assess migration from Otter
-const assessment = await assessMigration('otter', './exports/otter');
-console.log(`${assessment.totalTranscripts} transcripts, ${assessment.totalDurationHours}h`);
-console.log(`Estimated time: ${assessment.estimatedMigrationTime}`);
 
-// Transform and import
-const otterData = JSON.parse(fs.readFileSync('otter-export.json', 'utf-8'));
-const transformed = otterData.map(transformOtterToTwinMind);
-const result = await importToTwinMind(transformed, { batchSize: 10, delayMs: 1000 });
-```
+
+**Basic usage**: Apply twinmind migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize twinmind migration deep dive for production environments with multiple constraints and team-specific requirements.
 
 ## Platform Comparison
 

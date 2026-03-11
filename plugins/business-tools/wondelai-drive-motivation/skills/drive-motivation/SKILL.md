@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Drive Motivation Framework
 
 Framework for designing motivation systems in products, teams, and organizations based on the science of what actually motivates humans. Replaces outdated carrot-and-stick thinking with intrinsic motivation.
@@ -331,3 +330,49 @@ This skill is based on Daniel Pink's research on motivation science. For the com
 ## About the Author
 
 **Daniel H. Pink** is the author of seven books including four New York Times bestsellers. *Drive* has been translated into over 40 languages and fundamentally changed how organizations think about motivation. Pink's TED Talk on the science of motivation is one of the most-viewed of all time (45M+ views). He has advised companies, governments, and nonprofits worldwide on motivation, creativity, and human performance. Pink was previously a speechwriter for Vice President Al Gore and has written for The New York Times, Harvard Business Review, and Wired.
+
+## Overview
+
+Design motivation systems using Autonomy, Mastery, and Purpose (AMP) for products and teams.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply drive motivation to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize drive motivation for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

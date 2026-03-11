@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Data Handling
 
 ## Overview
@@ -59,3 +58,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For team access patterns, see `obsidian-enterprise-rbac`.
+
+## Examples
+
+**Basic usage**: Apply obsidian data handling to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian data handling for production environments with multiple constraints and team-specific requirements.

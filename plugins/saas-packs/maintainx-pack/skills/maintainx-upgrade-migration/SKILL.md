@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Upgrade & Migration
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For CI/CD integration, see `maintainx-ci-integration`.
+
+## Examples
+
+**Basic usage**: Apply maintainx upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx upgrade migration for production environments with multiple constraints and team-specific requirements.

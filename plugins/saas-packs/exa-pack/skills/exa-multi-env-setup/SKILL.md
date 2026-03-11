@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Multi-Environment Setup
 
 ## Overview
@@ -197,3 +196,9 @@ console.log(`Cache enabled: ${cfg.cacheEnabled}, TTL: ${cfg.cacheTtlSeconds}s`);
 
 ## Next Steps
 For deployment configuration, see `exa-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

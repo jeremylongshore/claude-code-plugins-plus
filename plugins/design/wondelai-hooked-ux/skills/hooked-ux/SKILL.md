@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Hook Model Framework
 
 Framework for building habit-forming products. Based on a fundamental truth: habits are not created—they are built through successive cycles through the Hook.
@@ -304,3 +303,49 @@ This skill is based on the Hook Model developed by Nir Eyal. For the complete me
 ## About the Author
 
 **Nir Eyal** is an author, lecturer, and investor who has taught at Stanford Graduate School of Business and the Hasso Plattner Institute of Design at Stanford. He previously worked in the gaming and advertising industries, where he gained firsthand experience with the psychology of habit-forming products. *Hooked* distills years of research and consulting into a practical framework used by product teams at startups and Fortune 500 companies worldwide. His follow-up book, *Indistractable*, addresses the other side of the equation — helping individuals manage the same behavioral triggers that make products habit-forming. Eyal writes extensively about the intersection of psychology, technology, and business at NirAndFar.com.
+
+## Overview
+
+Design habit-forming product loops using the Hook Model (Trigger, Action, Variable Reward, Investment).
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply hooked ux to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize hooked ux for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

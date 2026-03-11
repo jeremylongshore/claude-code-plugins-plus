@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Web Typography
 
 A practical guide to choosing, pairing, and implementing typefaces for the web. Typography serves communication — the best typography is invisible, immersing readers in content rather than calling attention to itself.
@@ -395,3 +394,49 @@ ISBN: 978-1937557065
 ## About the Author
 
 **Jason Santa Maria** is a graphic designer, creative director, and educator whose work has shaped how the industry thinks about typography on the web. He served as Creative Director at Typekit (now Adobe Fonts), where he helped bring high-quality type to web designers at scale. He co-founded A Book Apart, the publisher of brief books for people who make websites, and has been a leading voice in web standards and design education. Santa Maria teaches at the School of Visual Arts (SVA) in New York City and has art-directed publications including A List Apart. His work bridges the gap between traditional typographic craft and the practical realities of designing for screens, and "On Web Typography" distills his deep expertise into an accessible, opinionated guide for working web designers.
+
+## Overview
+
+Select, pair, and implement typefaces for web projects.
+
+## Prerequisites
+
+- Access to the ORM environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with ORM concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the ORM configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply web typography to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize web typography for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

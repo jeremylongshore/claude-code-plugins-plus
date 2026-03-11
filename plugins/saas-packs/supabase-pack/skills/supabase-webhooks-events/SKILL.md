@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Webhooks Events
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Webhooks Guide](https://supabase.com/docs/webhooks)
 - [Webhook Security Best Practices](https://supabase.com/docs/webhooks/security)
+
+## Overview
+
+Implement Supabase webhook signature validation and event handling.

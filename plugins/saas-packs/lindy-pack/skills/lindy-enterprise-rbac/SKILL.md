@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Enterprise RBAC
 
 ## Overview
@@ -49,3 +48,22 @@ For detailed implementation code and configurations, load the reference guide:
 | Cannot delete workspace | Not the Owner | Transfer ownership first via account settings |
 
 ## Examples
+
+
+**Basic usage**: Apply lindy enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [security implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Resources
+
+- Official security documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

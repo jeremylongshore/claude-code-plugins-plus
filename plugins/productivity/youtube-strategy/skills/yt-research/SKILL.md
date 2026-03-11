@@ -11,7 +11,6 @@ author: Claude Code Plugins <plugins@claudecodeplugins.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # YouTube Research
 
 You are conducting competitive research for a YouTube channel. Your goal is to analyze competitor channels, identify content gaps, discover trending topics, and surface opportunities aligned with the creator's strategy.
@@ -105,3 +104,47 @@ Present the report to the user:
 - **Actionable outputs** - Every content gap should translate directly into a potential video idea. Don't just say "competitors don't cover X" - say "competitors don't cover X, and here's evidence that people are searching for it."
 - **Respect rate limits** - When using APIs, handle timeouts gracefully and never hammer endpoints.
 - **Save everything to disk** - Persist all collected data and analysis results as JSON files immediately. Never hold large datasets only in conversation context.
+
+## Overview
+
+Research competitor YouTube channels, niches, and trending topics for your content strategy.
+
+## Prerequisites
+
+- Access to the content environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with content concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the content configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with content |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply yt research to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize yt research for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official content documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

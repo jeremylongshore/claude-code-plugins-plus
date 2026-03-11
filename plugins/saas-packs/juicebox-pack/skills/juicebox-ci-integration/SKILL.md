@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox CI Integration
 
 ## Overview
@@ -52,3 +51,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After CI setup, see `juicebox-deploy-integration` for deployment configuration.
+
+## Examples
+
+**Basic usage**: Apply juicebox ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox ci integration for production environments with multiple constraints and team-specific requirements.

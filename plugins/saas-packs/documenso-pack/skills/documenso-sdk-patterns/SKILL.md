@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso SDK Patterns
 
 ## Overview
@@ -32,7 +31,13 @@ For detailed implementation code and configurations, load the reference guide:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
-- Instructions
+
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Python implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
 
 ## Error Handling
 | Issue | Solution |
@@ -46,3 +51,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Apply patterns in `documenso-core-workflow-a` for document creation workflows.
+
+## Examples
+
+**Basic usage**: Apply documenso sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso sdk patterns for production environments with multiple constraints and team-specific requirements.

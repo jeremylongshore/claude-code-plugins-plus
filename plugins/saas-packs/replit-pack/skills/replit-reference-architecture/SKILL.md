@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Replit Reference Architecture
 
 ## Overview
@@ -185,3 +184,9 @@ curl http://localhost:3000/health
 - [Replit Deployments](https://docs.replit.com/hosting/deployments)
 - [Replit Database](https://docs.replit.com/hosting/databases)
 - [Replit Nix Guide](https://docs.replit.com/programming-ide/nix-on-replit)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Observability
 
 ## Overview
@@ -85,9 +84,20 @@ Key panels: credit consumption by table (bar chart), enrichment hit rate by prov
 | Usage API returning stale data | Caching lag | Wait 5 minutes for usage data to update |
 
 ## Examples
-```bash
-# Quick credit health check
-curl -s "https://api.clay.com/v1/workspace/usage?period=last_30d" \
-  -H "Authorization: Bearer $CLAY_API_KEY" | \
-  jq '{credits_used: .total_credits, credits_remaining: .credits_balance, daily_avg: (.total_credits / 30), projected_days_remaining: (.credits_balance / (.total_credits / 30))}'
-```
+
+
+**Basic usage**: Apply clay observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

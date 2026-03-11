@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Webhooks & Events
 
 ## Overview
@@ -59,3 +58,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For performance tuning, see `databricks-performance-tuning`.
+
+## Examples
+
+**Basic usage**: Apply databricks webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks webhooks events for production environments with multiple constraints and team-specific requirements.

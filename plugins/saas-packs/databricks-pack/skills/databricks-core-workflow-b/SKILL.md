@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Core Workflow B: MLflow Training
 
 ## Overview
@@ -58,3 +57,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For common errors, see `databricks-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply databricks core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks core workflow b for production environments with multiple constraints and team-specific requirements.

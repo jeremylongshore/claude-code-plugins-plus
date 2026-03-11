@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Policy Guardrails
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
 - [Pre-commit Framework](https://pre-commit.com/)
 - [Open Policy Agent](https://www.openpolicyagent.org/)
+
+## Overview
+
+Implement Vercel lint rules, policy enforcement, and automated guardrails.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Webhooks Events
 
 ## Overview
@@ -58,3 +57,9 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 
 ## Next Steps
 For performance optimization, see `speak-performance-tuning`.
+
+## Examples
+
+**Basic usage**: Apply speak webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize speak webhooks events for production environments with multiple constraints and team-specific requirements.

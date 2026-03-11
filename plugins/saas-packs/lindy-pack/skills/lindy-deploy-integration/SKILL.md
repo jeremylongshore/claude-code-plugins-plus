@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy AI Deploy Integration
 
 ## Overview
@@ -45,10 +44,22 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Examples
 
-### Deploy Script
+
+**Basic usage**: Apply lindy deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy deploy integration for production environments with multiple constraints and team-specific requirements.
+
 ## Resources
 - [Lindy AI Documentation](https://docs.lindy.ai)
 - [Lindy API Reference](https://docs.lindy.ai/api)
 
 ## Next Steps
 For webhook handling, see `lindy-webhooks-events`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [CI/CD implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.

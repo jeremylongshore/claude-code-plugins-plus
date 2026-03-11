@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Observability
 
 ## Overview
@@ -65,3 +64,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For incident response, see `documenso-incident-runbook`.
+
+## Examples
+
+**Basic usage**: Apply documenso observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso observability for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Reference Architecture
 
 ## Overview
@@ -61,3 +60,17 @@ For architecture diagrams, TypeScript implementations, and ICP scoring code, loa
 - [Clay API Documentation](https://docs.clay.com/api)
 - [Clay Enrichment Providers](https://docs.clay.com/enrichments)
 - [Clay Formulas Guide](https://docs.clay.com/formulas)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [design implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply clay reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay reference architecture for production environments with multiple constraints and team-specific requirements.

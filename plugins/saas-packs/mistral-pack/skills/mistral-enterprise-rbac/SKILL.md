@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Enterprise RBAC
 
 ## Overview
@@ -89,17 +88,20 @@ Automate 90-day key rotation. Create the new key, update consuming services, the
 | Spending alert triggered | Monthly budget near cap | Review usage by key; restrict heavy consumers |
 
 ## Examples
-```bash
-# Quick check: which models can this key access?
-curl https://api.mistral.ai/v1/models \
-  -H "Authorization: Bearer $MISTRAL_API_KEY" | \
-  jq '.data[].id'
-```
 
-```bash
-# Rotate a key with zero-downtime overlap
-NEW_KEY=$(curl -s -X POST https://api.mistral.ai/v1/api-keys \
-  -H "Authorization: Bearer $MISTRAL_ADMIN_KEY" \
-  -d '{"name": "service-v2", "allowed_models": ["mistral-small-latest"]}' | jq -r '.key')
-echo "Deploy NEW_KEY=$NEW_KEY to services, then delete old key after 24h"
-```
+
+**Basic usage**: Apply mistral enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize mistral enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Mistral documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

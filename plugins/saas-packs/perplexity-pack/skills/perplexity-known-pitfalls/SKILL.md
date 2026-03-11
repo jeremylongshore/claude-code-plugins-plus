@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Known Pitfalls
 
 ## Overview
@@ -142,3 +141,9 @@ for line in response.iter_lines():
 ## Resources
 - [Perplexity API Docs](https://docs.perplexity.ai)
 - [Sonar Model Guide](https://docs.perplexity.ai/guides/model-cards)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

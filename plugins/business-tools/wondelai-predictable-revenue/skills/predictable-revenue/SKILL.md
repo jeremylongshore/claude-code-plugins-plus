@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Predictable Revenue Framework
 
 A systematic approach to building a scalable, predictable B2B sales machine. Pioneered the outbound prospecting system that helped Salesforce add $100M in recurring revenue.
@@ -406,3 +405,49 @@ This skill is based on Aaron Ross's Predictable Revenue methodology. For the com
 ## About the Author
 
 **Aaron Ross** built the outbound sales process at Salesforce.com that added $100M+ in recurring revenue. His Cold Calling 2.0 methodology became the standard for B2B outbound prospecting and is used by thousands of companies worldwide. *Predictable Revenue* is known as "The Bible of Outbound Sales" and has influenced an entire generation of SaaS sales organizations. Ross is also co-founder of Predictable Revenue Inc., which helps companies build outbound sales machines.
+
+## Overview
+
+Build a scalable outbound B2B sales process with specialized roles (SDR, AE, CSM).
+
+## Prerequisites
+
+- Access to the CI/CD environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with CI/CD concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the CI/CD configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [CI/CD implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with CI/CD |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply predictable revenue to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize predictable revenue for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official CI/CD documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

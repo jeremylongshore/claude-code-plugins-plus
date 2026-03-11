@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Local Dev Loop
 
 ## Prerequisites
@@ -39,3 +38,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Environment Config](https://docs.sentry.io/platforms/javascript/configuration/environments/)
 - [Sentry Debug Mode](https://docs.sentry.io/platforms/javascript/configuration/options/#debug)
+
+## Overview
+
+Execute set up local development workflow with Sentry.
+
+## Instructions
+
+1. Assess the current state of the testing configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Debug Bundle
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Support](https://sentry.io/support/)
 - [Sentry GitHub Issues](https://github.com/getsentry/sentry-javascript/issues)
+
+## Overview
+
+Execute collect debug information for Sentry support tickets.

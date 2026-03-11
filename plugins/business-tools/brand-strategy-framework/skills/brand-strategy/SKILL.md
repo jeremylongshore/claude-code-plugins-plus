@@ -10,7 +10,6 @@ license: MIT
 allowed-tools: Read, Write, Edit, Glob, Grep
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Brand Strategy Framework
 
 A systematic 7-part methodology for building brand foundations — the same process top agencies use with Fortune 500 clients.
@@ -189,3 +188,37 @@ Format as a professional strategy document suitable for stakeholder presentation
 
 **User:** "Review my brand strategy"
 → Evaluate against the 7-part framework, identify gaps, suggest improvements
+
+## Prerequisites
+
+- Access to the branding environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with branding concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the branding configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with branding |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Resources
+
+- Official branding documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

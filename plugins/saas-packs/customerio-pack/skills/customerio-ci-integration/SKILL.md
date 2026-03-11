@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io CI Integration
 
 ## Overview
@@ -66,3 +65,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After CI setup, proceed to `customerio-deploy-pipeline` for production deployment.
+
+## Examples
+
+**Basic usage**: Apply customerio ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio ci integration for production environments with multiple constraints and team-specific requirements.

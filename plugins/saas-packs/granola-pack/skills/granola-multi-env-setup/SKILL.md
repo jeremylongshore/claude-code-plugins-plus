@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Multi-Environment Setup
 
 ## Overview
@@ -342,3 +341,31 @@ Destination: Splunk/Datadog
 
 ## Next Steps
 Proceed to `granola-observability` for monitoring and analytics.
+
+## Instructions
+
+1. Assess the current state of the deployment configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with deployment |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply granola multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola multi env setup for production environments with multiple constraints and team-specific requirements.

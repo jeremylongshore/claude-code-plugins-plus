@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Rate Limits
 
 ## Overview
@@ -87,3 +86,9 @@ For detailed implementation code (TypeScript and Gosu), load the reference guide
 ## Next Steps
 
 For security implementation, see `guidewire-security-basics`.
+
+## Examples
+
+**Basic usage**: Apply guidewire rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire rate limits for production environments with multiple constraints and team-specific requirements.

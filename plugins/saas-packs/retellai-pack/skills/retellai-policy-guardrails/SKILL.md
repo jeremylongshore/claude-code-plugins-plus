@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Policy Guardrails
 
 ## Overview
@@ -157,3 +156,9 @@ const dashboard = {
 ## Resources
 - [Retell AI Docs](https://docs.retellai.com)
 - [TCPA Compliance](https://www.fcc.gov/general/telemarketing-and-robocalls)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

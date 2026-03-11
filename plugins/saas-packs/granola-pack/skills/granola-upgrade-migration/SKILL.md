@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Upgrade & Migration
 
 ## Overview
@@ -272,3 +271,37 @@ Phase 4: Cutover (Week 5)
 
 ## Next Steps
 Proceed to `granola-ci-integration` for CI/CD workflow integration.
+
+## Prerequisites
+
+- Access to the migration environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with migration concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the migration configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with migration |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply granola upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola upgrade migration for production environments with multiple constraints and team-specific requirements.

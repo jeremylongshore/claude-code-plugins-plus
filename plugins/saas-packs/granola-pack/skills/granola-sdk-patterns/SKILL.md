@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola SDK Patterns
 
 ## Overview
@@ -149,3 +148,17 @@ Step 5 - Action:
 
 ## Next Steps
 Proceed to `granola-core-workflow-a` for meeting preparation workflows.
+
+## Instructions
+
+1. Assess the current state of the API configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Examples
+
+**Basic usage**: Apply granola sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize granola sdk patterns for production environments with multiple constraints and team-specific requirements.

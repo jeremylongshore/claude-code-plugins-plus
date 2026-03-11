@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Common Errors
 
 ## Overview
@@ -98,3 +97,9 @@ For detailed code implementations (TypeScript, Gosu, error wrappers), load the r
 ## Next Steps
 
 For debugging techniques, see `guidewire-debug-bundle`.
+
+## Examples
+
+**Basic usage**: Apply guidewire common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire common errors for production environments with multiple constraints and team-specific requirements.

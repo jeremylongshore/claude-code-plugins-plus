@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Cost Tuning
 
 ## Contents
@@ -66,13 +65,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Wrong model selected | Routing logic error | Review task classification |
 
 ## Examples
-```python
-# Cost tracking in 3 lines
-tracker = CostTrackingCallback(model="gpt-4o-mini")
-llm = ChatOpenAI(model="gpt-4o-mini", callbacks=[tracker])
-# After operations:
-print(tracker.report())  # {"estimated_cost": "$0.0042", ...}
-```
+
+
+**Basic usage**: Apply langchain cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain cost tuning for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [OpenAI Pricing](https://openai.com/pricing)

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Data Handling
 
 ## Contents
@@ -72,21 +71,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Export failed | API rate limit | Add delays between requests |
 
 ## Examples
-```typescript
-// Full sync
-const stats = await fullSync(client);
-console.log(`Synced: ${stats.created} new, ${stats.updated} updated`);
 
-// Process webhook event
-await processWebhookSync({ action: 'update', type: 'Issue', data: issueData, createdAt: new Date().toISOString() });
 
-// Create backup
-await createBackup(client, 'backup.json', { includeComments: true });
+**Basic usage**: Apply linear data handling to a standard project setup with default configuration options.
 
-// Check consistency
-const report = await checkConsistency(client);
-if (report.issues.missing.length > 0) await fullSync(client);
-```
+**Advanced scenario**: Customize linear data handling for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Linear GraphQL API](https://developers.linear.app/docs/graphql/working-with-the-graphql-api)

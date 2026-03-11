@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Performance Tuning
 
 ## Overview
@@ -66,3 +65,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For cost optimization, see `documenso-cost-tuning`.
+
+## Examples
+
+**Basic usage**: Apply documenso performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso performance tuning for production environments with multiple constraints and team-specific requirements.

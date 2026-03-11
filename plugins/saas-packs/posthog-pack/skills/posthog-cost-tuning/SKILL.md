@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # PostHog Cost Tuning
 
 ## Overview
@@ -103,12 +102,20 @@ curl "https://app.posthog.com/api/organizations/ORG_ID/billing/" \
 | Free tier exceeded early | New feature launched without volume estimate | Forecast events before launch |
 
 ## Examples
-```typescript
-// Cost projection calculator
-const monthlyEvents = 5_000_000;
-const freeEvents = 1_000_000;
-const costPerEvent = 0.00031;
-const monthlyCost = (monthlyEvents - freeEvents) * costPerEvent;
-console.log(`Projected cost: $${monthlyCost.toFixed(2)}/month`);
-// $1,240/month -> with 50% sampling on non-critical: $620/month
-```
+
+
+**Basic usage**: Apply posthog cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize posthog cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

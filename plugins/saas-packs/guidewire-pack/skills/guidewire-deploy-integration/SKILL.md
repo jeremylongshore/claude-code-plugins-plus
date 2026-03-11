@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Deploy Integration
 
 ## Overview
@@ -52,3 +51,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For webhook and event handling, see `guidewire-webhooks-events`.
+
+## Examples
+
+**Basic usage**: Apply guidewire deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire deploy integration for production environments with multiple constraints and team-specific requirements.

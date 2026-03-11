@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Primary Workflow
 
 ## Overview
@@ -61,3 +60,9 @@ In Customer.io Dashboard:
 
 ## Next Steps
 After implementing primary workflow, proceed to `customerio-core-feature` for advanced features.
+
+## Examples
+
+**Basic usage**: Apply customerio primary workflow to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio primary workflow for production environments with multiple constraints and team-specific requirements.

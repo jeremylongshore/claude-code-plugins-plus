@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Entrepreneurial Operating System (EOS)
 
 A complete system for running a business with six key components. Designed for entrepreneurial companies ($2M-$50M revenue, 10-250 employees) that want to align vision and execution.
@@ -394,3 +393,49 @@ This skill is based on the Entrepreneurial Operating System developed by Gino Wi
 ## About the Author
 
 **Gino Wickman** is the creator of EOS (Entrepreneurial Operating System) and founder of EOS Worldwide, a community of certified EOS Implementers who help companies implement the system. Wickman has worked with thousands of entrepreneurial leadership teams and has helped them get real traction. *Traction* has sold over 2 million copies and EOS is used by over 250,000 companies worldwide. His work focuses on the practical tools needed to run an entrepreneurial company.
+
+## Overview
+
+Implement the Entrepreneurial Operating System (EOS) to align vision and execution across a company.
+
+## Prerequisites
+
+- Access to the design environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with design concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the design configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [design implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with design |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply traction eos to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize traction eos for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official design documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

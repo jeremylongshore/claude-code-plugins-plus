@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Migration Deep Dive
 
 ## Overview
@@ -48,3 +47,17 @@ For full implementation details and code examples, load:
 - [Evernote Export Format (ENEX)](https://dev.evernote.com/doc/articles/enex.php)
 - [ENML Reference](https://dev.evernote.com/doc/articles/enml.php)
 - [API Reference](https://dev.evernote.com/doc/reference/)
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with migration |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply evernote migration deep dive to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote migration deep dive for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # PostHog Observability
 
 ## Overview
@@ -98,9 +97,20 @@ Track: event ingestion rate over time, event volume by type ($pageview, $autocap
 | API `429` rate limited | Too many insight queries | Cache insight results, reduce poll frequency |
 
 ## Examples
-```bash
-# Quick check: event ingestion working?
-curl -s "https://app.posthog.com/api/projects/PROJECT_ID/events/?limit=5" \
-  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
-  jq '.results[] | {event: .event, timestamp, distinct_id}'
-```
+
+
+**Basic usage**: Apply posthog observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize posthog observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

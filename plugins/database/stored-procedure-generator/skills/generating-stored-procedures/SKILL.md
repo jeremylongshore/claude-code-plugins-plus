@@ -12,7 +12,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Stored Procedure Generator
 
 Generate production-ready stored procedures for PostgreSQL, MySQL, and SQL Server with proper error handling, transaction management, and security best practices.
@@ -264,3 +263,7 @@ Claude: I'll create an audit trigger that:
 - `${CLAUDE_SKILL_DIR}/references/sqlserver_stored_procedure_best_practices.md`
 - `${CLAUDE_SKILL_DIR}/references/database_security_guidelines.md`
 - `${CLAUDE_SKILL_DIR}/references/stored_procedure_optimization_techniques.md`
+
+## Overview
+
+Use when you need to generate, validate, or deploy stored procedures for PostgreSQL, MySQL, or SQL Server.

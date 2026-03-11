@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Observability
 
 ## Overview
@@ -91,9 +90,20 @@ Track: generation volume by model version, latency distribution, credit consumpt
 | `429` rate limited | Too many concurrent generations | Queue requests with concurrency limit |
 
 ## Examples
-```bash
-# Quick latency test
-time curl -s -X POST https://api.ideogram.ai/generate \
-  -H "Api-Key: $IDEOGRAM_API_KEY" \
-  -d '{"image_request": {"prompt": "simple test image", "model": "V_2_TURBO"}}' -o /dev/null
-```
+
+
+**Basic usage**: Apply ideogram observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize ideogram observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

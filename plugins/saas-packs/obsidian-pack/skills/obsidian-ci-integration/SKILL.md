@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian CI Integration
 
 ## Overview
@@ -61,3 +60,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For publishing to community plugins, see `obsidian-deploy-integration`.
+
+## Examples
+
+**Basic usage**: Apply obsidian ci integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize obsidian ci integration for production environments with multiple constraints and team-specific requirements.

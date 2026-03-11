@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Architecture Variants
 
 ## Overview
@@ -135,3 +134,15 @@ class VoicePipeline {
 ## Resources
 - [Retell AI Architecture](https://docs.retellai.com/guide/architecture)
 - [Retell AI Docs](https://docs.retellai.com)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Examples
+
+**Basic usage**: Apply retellai architecture variants to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize retellai architecture variants for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Install & Auth
 
 ## Overview
@@ -255,3 +254,9 @@ if __name__ == "__main__":
 ## Next Steps
 
 After successful auth, proceed to `maintainx-hello-world` for your first API call.
+
+## Examples
+
+**Basic usage**: Apply maintainx install auth to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx install auth for production environments with multiple constraints and team-specific requirements.

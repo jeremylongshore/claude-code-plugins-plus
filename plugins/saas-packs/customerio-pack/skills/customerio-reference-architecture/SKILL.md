@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Reference Architecture
 
 ## Overview
@@ -65,3 +64,15 @@ For detailed implementation code and Terraform configurations, load the referenc
 
 ## Next Steps
 After implementing architecture, proceed to `customerio-multi-env-setup` for multi-environment configuration.
+
+## Prerequisites
+
+- Access to the design environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with design concepts and terminology
+
+## Examples
+
+**Basic usage**: Apply customerio reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio reference architecture for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Core Workflow B: Streaming Transcription
 
 ## Overview
@@ -212,3 +211,9 @@ app.get('/api/transcribe-stream', (req, res) => {
 - [Deepgram Streaming API](https://developers.deepgram.com/docs/streaming)
 - [Deepgram Node SDK](https://github.com/deepgram/deepgram-node-sdk)
 - [Deepgram Models](https://developers.deepgram.com/docs/models-overview)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

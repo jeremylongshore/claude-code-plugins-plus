@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Cost Tuning
 
 ## Overview
@@ -114,10 +113,20 @@ echo "Cheapest offer: \$(vastai search offers 'gpu_name=A100 num_gpus=4' --order
 | Insufficient VRAM | Wrong GPU selected | Check model VRAM requirements before provisioning |
 
 ## Examples
-```bash
-# Quick cost comparison for a training job
-for gpu in RTX_3090 RTX_4090 A100; do
-  PRICE=$(vastai search offers "gpu_name=$gpu num_gpus=1" --order 'dph_total' --limit 1 2>/dev/null | awk 'NR==2{print $6}')
-  echo "$gpu: \$${PRICE}/hr, 24h job = \$$(echo "$PRICE * 24" | bc)"
-done
-```
+
+
+**Basic usage**: Apply vastai cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize vastai cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

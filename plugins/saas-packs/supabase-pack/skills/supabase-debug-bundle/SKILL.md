@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Debug Bundle
 
 ## Prerequisites
@@ -40,3 +39,15 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Supabase Support](https://supabase.com/docs/support)
 - [Supabase Status](https://status.supabase.com)
+
+## Overview
+
+Execute collect Supabase debug evidence for support tickets and troubleshooting.
+
+## Instructions
+
+1. Assess the current state of the debugging configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

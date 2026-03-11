@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Database Backup Automation
 
 Generate production-ready backup scripts for PostgreSQL, MySQL, MongoDB, and SQLite with compression, encryption, scheduling, and retention policies.
@@ -152,3 +151,19 @@ find /var/backups/monthly -mtime +365 -delete     # Monthly cleanup
 - `${CLAUDE_SKILL_DIR}/references/sqlite_backup_restore.md` - SQLite backup guide
 - `${CLAUDE_SKILL_DIR}/references/backup_best_practices.md` - Security and storage best practices
 - `${CLAUDE_SKILL_DIR}/references/cron_syntax.md` - Cron scheduling reference
+
+## Overview
+
+Automate database backup processes with scheduling, compression, and encryption.
+
+## Prerequisites
+
+- Access to the PostgreSQL environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with PostgreSQL concepts and terminology
+
+## Examples
+
+**Basic usage**: Apply automating database backups to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize automating database backups for production environments with multiple constraints and team-specific requirements.

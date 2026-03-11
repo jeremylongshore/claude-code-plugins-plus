@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Known Pitfalls
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Vercel Security Guide](https://vercel.com/docs/security)
 - [Vercel Best Practices](https://vercel.com/docs/best-practices)
+
+## Overview
+
+Execute identify and avoid Vercel anti-patterns and common integration mistakes.

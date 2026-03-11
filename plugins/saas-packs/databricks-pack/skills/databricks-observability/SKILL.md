@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Observability
 
 ## Overview
@@ -99,13 +98,20 @@ for cluster in w.clusters.list():
 | Cluster metrics gaps | Cluster was terminated | Check terminated cluster events in audit log |
 
 ## Examples
-```sql
--- Quick health dashboard: top 5 most expensive jobs this week
-SELECT job_id, run_name, SUM(usage_quantity) AS dbus,
-       SUM(usage_quantity * list_price) AS cost_usd
-FROM system.billing.usage u
-JOIN system.lakeflow.job_run_timeline j ON u.usage_metadata.job_id = j.job_id
-WHERE usage_date >= current_date() - INTERVAL 7 DAYS
-GROUP BY job_id, run_name
-ORDER BY cost_usd DESC LIMIT 5;
-```
+
+
+**Basic usage**: Apply databricks observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize databricks observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official CI/CD documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Performance Tuning
 
 ## Overview
@@ -385,3 +384,9 @@ class ManagedLangfuse {
 
 ## Next Steps
 For cost optimization, see `langfuse-cost-tuning`.
+
+## Examples
+
+**Basic usage**: Apply langfuse performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langfuse performance tuning for production environments with multiple constraints and team-specific requirements.

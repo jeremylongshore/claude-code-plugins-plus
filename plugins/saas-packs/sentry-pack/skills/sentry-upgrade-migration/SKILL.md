@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Upgrade Migration
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Sentry JavaScript Changelog](https://github.com/getsentry/sentry-javascript/blob/master/CHANGELOG.md)
 - [Sentry Python Changelog](https://github.com/getsentry/sentry-python/blob/master/CHANGELOG.md)
 - [Migration Guides](https://docs.sentry.io/platforms/javascript/migration/)
+
+## Overview
+
+Execute upgrade Sentry SDK and migrate between versions.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Common Errors
 
 ## Overview
@@ -326,3 +325,9 @@ curl https://api.mistral.ai/v1/chat/completions \
 
 ## Next Steps
 For comprehensive debugging, see `mistral-debug-bundle`.
+
+## Examples
+
+**Basic usage**: Apply mistral common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize mistral common errors for production environments with multiple constraints and team-specific requirements.

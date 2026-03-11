@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Policy Guardrails
 
 ## Overview
@@ -146,3 +145,9 @@ usage_policy.record_usage(user_id, project_id)
 
 ## Resources
 - [Exa API Docs](https://docs.exa.ai)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

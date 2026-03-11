@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Rate Limits
 
 ## Overview
@@ -166,3 +165,9 @@ console.log(`Resets in ${status.resetIn} seconds`);
 
 ## Next Steps
 Proceed to `gamma-security-basics` for security best practices.
+
+## Examples
+
+**Basic usage**: Apply gamma rate limits to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize gamma rate limits for production environments with multiple constraints and team-specific requirements.

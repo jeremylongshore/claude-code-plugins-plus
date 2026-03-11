@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # MaintainX Core Workflow B: Asset & Location Management
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/maintainx-pack/s
 
 ## Next Steps
 For troubleshooting common issues, see `maintainx-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply maintainx core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize maintainx core workflow b for production environments with multiple constraints and team-specific requirements.

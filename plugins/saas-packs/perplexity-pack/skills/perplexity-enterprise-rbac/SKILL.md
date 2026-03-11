@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Enterprise RBAC
 
 ## Overview
@@ -95,9 +94,20 @@ Rotate API keys every 90 days. Label keys with creation date (`research-team-202
 | Budget cap reached | Monthly spend exhausted | Increase budget or wait for cycle reset |
 
 ## Examples
-```bash
-# Quick cost check: estimate monthly spend from today's usage
-curl -s https://api.perplexity.ai/v1/usage \
-  -H "Authorization: Bearer $PPLX_ADMIN_KEY" | \
-  jq '{daily_cost: .total_cost_today, projected_monthly: (.total_cost_today * 30)}'
-```
+
+
+**Basic usage**: Apply perplexity enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize perplexity enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Perplexity Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

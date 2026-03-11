@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Reference Architecture
 
 ## Overview
@@ -201,3 +200,9 @@ for layer in ["bronze", "silver", "gold"]:
 - [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/)
 - [Unity Catalog Best Practices](https://docs.databricks.com/data-governance/unity-catalog/)
 - [Medallion Architecture](https://www.databricks.com/glossary/medallion-architecture)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

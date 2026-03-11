@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Observability
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-incident-runbook` for incident response procedures.
+
+## Examples
+
+**Basic usage**: Apply clerk observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk observability for production environments with multiple constraints and team-specific requirements.

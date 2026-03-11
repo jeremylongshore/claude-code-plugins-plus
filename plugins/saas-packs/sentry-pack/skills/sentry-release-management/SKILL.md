@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Release Management
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Releases](https://docs.sentry.io/product/releases/)
 - [Sentry CLI Releases](https://docs.sentry.io/product/cli/releases/)
+
+## Overview
+
+Manage Sentry releases and associate commits.

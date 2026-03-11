@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Data Handling
 
 ## Overview
@@ -198,3 +197,9 @@ function dailyCostReport(logs: AuditLog[]) {
 ## Resources
 - [Groq Privacy Policy](https://groq.com/privacy-policy/)
 - [Groq Pricing](https://console.groq.com/docs/pricing)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

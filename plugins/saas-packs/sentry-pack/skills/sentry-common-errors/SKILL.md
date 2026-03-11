@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Common Errors
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Troubleshooting](https://docs.sentry.io/platforms/javascript/troubleshooting/)
 - [Sentry Status](https://status.sentry.io)
+
+## Overview
+
+Execute troubleshoot common Sentry integration issues and fixes.

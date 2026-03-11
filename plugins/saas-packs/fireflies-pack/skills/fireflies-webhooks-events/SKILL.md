@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Webhooks & Events
 
 ## Overview
@@ -208,3 +207,9 @@ curl -X POST https://api.fireflies.ai/graphql \
 
 ## Next Steps
 For deployment setup, see `fireflies-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

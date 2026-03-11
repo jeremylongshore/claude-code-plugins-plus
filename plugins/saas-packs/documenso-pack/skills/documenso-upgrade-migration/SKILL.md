@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Upgrade & Migration
 
 ## Overview
@@ -65,3 +64,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For CI/CD integration, see `documenso-ci-integration`.
+
+## Examples
+
+**Basic usage**: Apply documenso upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso upgrade migration for production environments with multiple constraints and team-specific requirements.

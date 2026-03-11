@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Multi-Environment Setup
 
 ## Overview
@@ -181,3 +180,9 @@ ls -la .windsurfrules .windsurfignore .windsurf/settings.json
 
 ## Next Steps
 For architecture best practices, see `windsurf-reference-architecture`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Multi-Environment Setup
 
 ## Overview
@@ -71,3 +70,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 After multi-env setup, proceed to `customerio-observability` for monitoring.
+
+## Examples
+
+**Basic usage**: Apply customerio multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio multi env setup for production environments with multiple constraints and team-specific requirements.

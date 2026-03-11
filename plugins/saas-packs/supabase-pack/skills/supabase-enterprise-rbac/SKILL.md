@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Supabase Enterprise Rbac
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 - [Supabase Enterprise Guide](https://supabase.com/docs/enterprise)
 - [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
 - [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
+
+## Overview
+
+Configure Supabase enterprise SSO, role-based access control, and organization management.

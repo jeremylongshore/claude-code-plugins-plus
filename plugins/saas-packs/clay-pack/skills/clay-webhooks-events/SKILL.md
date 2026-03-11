@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Webhooks & Events
 
 ## Overview
@@ -75,3 +74,17 @@ For complete TypeScript implementations and curl examples, load the reference gu
 ## Next Steps
 
 For performance optimization, see `clay-performance-tuning`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Clay Webhooks Events implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply clay webhooks events to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay webhooks events for production environments with multiple constraints and team-specific requirements.

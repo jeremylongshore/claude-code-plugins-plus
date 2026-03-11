@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Incident Runbook
 
 ## Overview
@@ -54,3 +53,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-data-handling` for data management.
+
+## Examples
+
+**Basic usage**: Apply apollo incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo incident runbook for production environments with multiple constraints and team-specific requirements.

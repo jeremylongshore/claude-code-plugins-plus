@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vercel Migration Deep Dive
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 - [Vercel Migration Guide](https://vercel.com/docs/migration)
+
+## Overview
+
+Execute Vercel major re-architecture and migration strategies with strangler fig pattern.

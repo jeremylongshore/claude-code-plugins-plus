@@ -12,7 +12,6 @@ author: Jack Reis <hello@jack.digital>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 ## Mode System (v3.1.1)
 
 This skill supports four modes to adapt to different cognitive styles and accessibility needs:
@@ -726,3 +725,47 @@ If angle brackets appear as literal text in the rendered diagram, the URL encodi
 ❌ Bright clashing colors
 ❌ Skip encouragement and validation
 ❌ Provide unencoded playground links with `<br/>` tags
+
+## Overview
+
+Creates ADHD-friendly visual organizational tools using Mermaid diagrams optimized for neurodivergent thinking patterns.
+
+## Prerequisites
+
+- Access to the optimization environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with optimization concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the optimization configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with optimization |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply neurodivergent visual org to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize neurodivergent visual org for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official optimization documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

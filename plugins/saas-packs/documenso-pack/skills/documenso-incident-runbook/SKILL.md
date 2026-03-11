@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Documenso Incident Runbook
 
 ## Overview
@@ -64,3 +63,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For data handling procedures, see `documenso-data-handling`.
+
+## Examples
+
+**Basic usage**: Apply documenso incident runbook to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize documenso incident runbook for production environments with multiple constraints and team-specific requirements.

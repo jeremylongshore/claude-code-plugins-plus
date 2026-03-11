@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Deploy Integration
 
 ## Overview
@@ -55,3 +54,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-webhooks-events` for webhook implementation.
+
+## Examples
+
+**Basic usage**: Apply apollo deploy integration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo deploy integration for production environments with multiple constraints and team-specific requirements.

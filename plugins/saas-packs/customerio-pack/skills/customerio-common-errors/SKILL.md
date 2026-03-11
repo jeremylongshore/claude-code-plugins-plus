@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io Common Errors
 
 ## Overview
@@ -81,3 +80,17 @@ curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
 
 ## Next Steps
 After resolving errors, proceed to `customerio-debug-bundle` for comprehensive debug reports.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [debugging implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply customerio common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio common errors for production environments with multiple constraints and team-specific requirements.

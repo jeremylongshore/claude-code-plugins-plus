@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Advanced Troubleshooting
 
 ## Overview
@@ -75,3 +74,9 @@ For complete debug scripts, TypeScript utilities, and escalation template, load 
 ## Next Steps
 
 For load testing, see `clay-load-scale`.
+
+## Examples
+
+**Basic usage**: Apply clay advanced troubleshooting to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay advanced troubleshooting for production environments with multiple constraints and team-specific requirements.

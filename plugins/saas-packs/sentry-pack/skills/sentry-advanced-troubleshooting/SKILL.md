@@ -13,7 +13,6 @@ license: MIT
 author: "Jeremy Longshore <jeremy@intentsolutions.io>"
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Advanced Troubleshooting
 
 ## Prerequisites
@@ -53,3 +52,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Troubleshooting](https://docs.sentry.io/platforms/javascript/troubleshooting/)
 - [Source Maps Troubleshooting](https://docs.sentry.io/platforms/javascript/sourcemaps/troubleshooting/)
+
+## Overview
+
+Execute advanced Sentry troubleshooting techniques.

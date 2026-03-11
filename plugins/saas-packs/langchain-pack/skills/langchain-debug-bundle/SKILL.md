@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Debug Bundle
 
 ## Contents
@@ -63,12 +62,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | API key in logs | Missing redaction | Always redact before sharing |
 
 ## Examples
-```python
-debug_callback = DebugCallback()
-llm = ChatOpenAI(model="gpt-4o-mini", callbacks=[debug_callback])
-# Run your failing code...
-create_debug_bundle("Chain fails with OutputParserException", debug_callback.logs)
-```
+
+
+**Basic usage**: Apply langchain debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain debug bundle for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [LangChain GitHub Issues](https://github.com/langchain-ai/langchain/issues)

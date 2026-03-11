@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Perplexity Reliability Patterns
 
 ## Overview
@@ -126,16 +125,16 @@ async def validate_citations(citations: list[str]) -> list[dict]:
 
 ## Examples
 
-### Health Check
-```python
-def pplx_health(client, cache):
-    start = time.time()
-    r = client.chat.completions.create(model="sonar", messages=[
-        {"role": "user", "content": "What day is it today?"}
-    ])
-    latency = time.time() - start
-    return {"status": "ok", "latency_ms": int(latency * 1000), "cache_size": cache.r.dbsize()}
-```
+
+**Basic usage**: Apply perplexity reliability patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize perplexity reliability patterns for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Perplexity API Docs](https://docs.perplexity.ai)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -11,7 +11,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Guidewire Enterprise RBAC
 
 ## Overview
@@ -54,3 +53,9 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 For migration strategies, see `guidewire-migration-deep-dive`.
+
+## Examples
+
+**Basic usage**: Apply guidewire enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize guidewire enterprise rbac for production environments with multiple constraints and team-specific requirements.

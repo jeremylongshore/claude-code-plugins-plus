@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Core Workflow B: Search & Retrieval
 
 ## Overview
@@ -61,3 +60,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For error handling patterns, see `evernote-common-errors`.
+
+## Examples
+
+**Basic usage**: Apply evernote core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote core workflow b for production environments with multiple constraints and team-specific requirements.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Performance Tuning
 
 ## Overview
@@ -57,3 +56,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For cost optimization, see `evernote-cost-tuning`.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with ORM |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply evernote performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote performance tuning for production environments with multiple constraints and team-specific requirements.

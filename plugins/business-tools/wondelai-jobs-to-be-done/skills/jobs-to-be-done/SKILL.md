@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Jobs to Be Done Framework
 
 Framework for discovering innovation based on a fundamental truth: customers don't buy products - they "hire" them to do a specific job in their lives.
@@ -265,3 +264,49 @@ Clayton M. Christensen (1952-2020) was the Kim B. Clark Professor of Business Ad
 This skill is based on the Jobs to Be Done framework developed by Clayton M. Christensen. For the complete methodology, case studies, and deeper insights, read the original book:
 
 - [*"Competing Against Luck: The Story of Innovation and Customer Choice"*](https://www.amazon.com/Competing-Against-Luck-Innovation-Customer/dp/0062435612?tag=wondelai00-20) by Clayton M. Christensen, Taddy Hall, Karen Dillon, and David S. Duncan
+
+## Overview
+
+Discover what customers truly need by analyzing the "job" they hire your product to do.
+
+## Prerequisites
+
+- Access to the API environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with API concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the API configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [API implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with API |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply jobs to be done to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize jobs to be done for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official API documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

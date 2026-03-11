@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Production Checklist
 
 ## Overview
@@ -43,3 +42,17 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-upgrade-migration` for SDK version upgrades.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with deployment |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply clerk prod checklist to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk prod checklist for production environments with multiple constraints and team-specific requirements.

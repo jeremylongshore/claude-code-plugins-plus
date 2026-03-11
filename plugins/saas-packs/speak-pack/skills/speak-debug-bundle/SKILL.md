@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Debug Bundle
 
 ## Overview
@@ -44,3 +43,17 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 
 ## Next Steps
 For rate limit issues, see `speak-rate-limits`.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with debugging |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply speak debug bundle to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize speak debug bundle for production environments with multiple constraints and team-specific requirements.

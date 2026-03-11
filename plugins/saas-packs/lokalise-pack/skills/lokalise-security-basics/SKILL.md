@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Security Basics
 
 ## Overview
@@ -130,3 +129,9 @@ grep -rn "LOKALISE" --include="*.py" --include="*.ts" src/ | grep -v "os.environ
 ## Resources
 - [Lokalise API Auth](https://developers.lokalise.com/reference/api-authentication)
 - [Lokalise Security](https://lokalise.com/security)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Upgrade Migration
 
 ## Overview
@@ -207,3 +206,15 @@ mypy src/
 
 ## Next Steps
 After upgrade, use `langchain-common-errors` to troubleshoot any issues.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Examples
+
+**Basic usage**: Apply langchain upgrade migration to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain upgrade migration for production environments with multiple constraints and team-specific requirements.

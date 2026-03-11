@@ -8,7 +8,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vertex Infra Expert
 
 ## Overview
@@ -39,6 +38,11 @@ Before using this skill, ensure:
 ## Output
 
 
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [Terraform implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
 
 ## Error Handling
 

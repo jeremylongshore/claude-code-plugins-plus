@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Cost Tuning
 
 ## Overview
@@ -108,13 +107,20 @@ quarterly_review:
 | Cost growing with team | No seat approval process | Require manager approval for new Pro seats |
 
 ## Examples
-```yaml
-# Cost optimization example
-before:
-  pro_seats: 20
-  monthly_cost: "$500" # 20 * $25
-after_optimization:
-  pro_seats: 13  # Removed 3 inactive, downgraded 4 low-usage
-  monthly_cost: "$325"
-  annual_savings: "$2,100"
-```
+
+
+**Basic usage**: Apply windsurf cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize windsurf cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Architecture Variants
 
 ## Overview
@@ -134,15 +133,17 @@ class ExaRAGPipeline:
 
 ## Examples
 
-### Health Check
-```python
-health = {
-    "cache_hit_rate": cache.hit_rate(),
-    "avg_search_latency_ms": metrics.avg("exa_latency"),
-    "queries_today": metrics.count("exa_queries")
-}
-```
+
+**Basic usage**: Apply exa architecture variants to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize exa architecture variants for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Exa API Docs](https://docs.exa.ai)
 - [Exa RAG Guide](https://docs.exa.ai/reference/rag)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

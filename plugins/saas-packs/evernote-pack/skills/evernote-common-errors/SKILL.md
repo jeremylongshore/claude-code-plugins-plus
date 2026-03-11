@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Evernote Common Errors
 
 ## Overview
@@ -49,3 +48,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 For debugging tools and techniques, see `evernote-debug-bundle`.
+
+## Examples
+
+**Basic usage**: Apply evernote common errors to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize evernote common errors for production environments with multiple constraints and team-specific requirements.

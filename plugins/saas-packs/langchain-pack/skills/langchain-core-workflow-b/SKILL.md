@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Core Workflow B: Agents & Tools
 
 ## Overview
@@ -180,3 +179,9 @@ result = agent_with_memory.invoke(
 
 ## Next Steps
 Proceed to `langchain-common-errors` for debugging guidance.
+
+## Examples
+
+**Basic usage**: Apply langchain core workflow b to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain core workflow b for production environments with multiple constraints and team-specific requirements.

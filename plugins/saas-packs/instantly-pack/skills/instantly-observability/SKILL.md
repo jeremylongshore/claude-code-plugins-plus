@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Observability
 
 ## Overview
@@ -95,9 +94,20 @@ Track: deliverability rate by campaign, bounce rate trend (alert if rising), sen
 | Opens not tracking | Tracking pixel blocked | Expected for privacy-focused recipients; use reply rate instead |
 
 ## Examples
-```bash
-# Quick health check: overall workspace deliverability
-curl -s "https://api.instantly.ai/api/v1/campaign/analytics?period=last_7d" \
-  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
-  jq '{total_sent, delivered_pct: (.delivered / .sent * 100), bounce_pct: (.bounced / .sent * 100), reply_pct: (.replied / .sent * 100)}'
-```
+
+
+**Basic usage**: Apply instantly observability to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize instantly observability for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

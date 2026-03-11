@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Enterprise RBAC
 
 ## Contents
@@ -70,12 +69,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Quota exceeded | High usage | Upgrade tenant token limit |
 
 ## Examples
-```python
-# Quick permission check
-user = User(id="1", email="dev@co.com", tenant_id="t1", roles=["user"])
-assert user.has_permission(Permission.CHAIN_EXECUTE)  # True
-assert not user.has_permission(Permission.ADMIN_USERS)  # False
-```
+
+
+**Basic usage**: Apply langchain enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain enterprise rbac for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [RBAC Best Practices](https://auth0.com/docs/manage-users/access-control/rbac)

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Security Basics
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Security](https://docs.sentry.io/product/security/)
 - [Data Privacy](https://docs.sentry.io/platforms/javascript/data-management/)
+
+## Overview
+
+Configure Sentry security settings and data protection.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Reference Architecture
 
 ## Contents
@@ -69,15 +68,11 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 | Chain not found | Unregistered chain | Register chains at startup |
 
 ## Examples
-```python
-# Quick provider abstraction usage
-from infrastructure.llm.provider import LLMFactory
-llm = LLMFactory.create("openai", model="gpt-4o-mini")
 
-# Quick chain registry usage
-chain = ChainRegistry.get("rag")
-result = await chain.ainvoke({"question": "What is LangChain?"})
-```
+
+**Basic usage**: Apply langchain reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize langchain reference architecture for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [LangChain Architecture Guide](https://python.langchain.com/docs/concepts/architecture/)

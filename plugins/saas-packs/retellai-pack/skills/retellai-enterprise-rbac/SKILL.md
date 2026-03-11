@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Enterprise RBAC
 
 ## Overview
@@ -100,9 +99,20 @@ curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
 | Agent prompt regression | Unauthorized edit | Store configs in git, require PR reviews |
 
 ## Examples
-```bash
-# Estimate monthly voice costs from recent usage
-curl -s "https://api.retellai.com/v1/calls?created_after=2026-03-01" \
-  -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \
-  jq '[.[].cost_usd] | add as $total | {total_cost: $total, projected_monthly: ($total * 30 / 10)}'
-```
+
+
+**Basic usage**: Apply retellai enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize retellai enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Retellai Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

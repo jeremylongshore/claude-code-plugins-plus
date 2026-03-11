@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Customer.io SDK Patterns
 
 ## Overview
@@ -59,3 +58,9 @@ For detailed implementation code and patterns, load the reference guide:
 
 ## Next Steps
 After implementing patterns, proceed to `customerio-primary-workflow` for messaging workflows.
+
+## Examples
+
+**Basic usage**: Apply customerio sdk patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize customerio sdk patterns for production environments with multiple constraints and team-specific requirements.

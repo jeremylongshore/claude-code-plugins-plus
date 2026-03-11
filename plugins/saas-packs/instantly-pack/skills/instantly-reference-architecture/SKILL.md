@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Reference Architecture
 
 ## Overview
@@ -207,3 +206,9 @@ async function getCampaignMetrics() {
 ## Resources
 - [Instantly API Documentation](https://developer.instantly.ai/)
 - [Instantly Campaign Guide](https://instantly.ai/resources)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

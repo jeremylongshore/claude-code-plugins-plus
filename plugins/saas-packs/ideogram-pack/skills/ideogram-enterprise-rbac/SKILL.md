@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Enterprise RBAC
 
 ## Overview
@@ -92,12 +91,20 @@ Create replacement keys with identical permissions, update consuming application
 | Content policy violation | Prompt triggers safety filter | Rephrase prompt, avoid trademarked terms |
 
 ## Examples
-```bash
-# Generate with explicit credit tracking
-BEFORE=$(curl -s https://api.ideogram.ai/v1/usage -H "Authorization: Bearer $IDEOGRAM_API_KEY" | jq '.credits_remaining')
-curl -X POST https://api.ideogram.ai/generate \
-  -H "Api-Key: $IDEOGRAM_API_KEY" \
-  -d '{"image_request": {"prompt": "modern office workspace", "model": "V_2", "magic_prompt_option": "AUTO"}}'
-AFTER=$(curl -s https://api.ideogram.ai/v1/usage -H "Authorization: Bearer $IDEOGRAM_API_KEY" | jq '.credits_remaining')
-echo "Credits consumed: $((BEFORE - AFTER))"
-```
+
+
+**Basic usage**: Apply ideogram enterprise rbac to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize ideogram enterprise rbac for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official Ideogram Enterprise Rbac documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

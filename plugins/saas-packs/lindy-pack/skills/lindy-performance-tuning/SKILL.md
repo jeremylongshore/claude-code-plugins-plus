@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy AI Performance Tuning
 
 ## Overview
@@ -43,3 +42,22 @@ For detailed implementation code and configurations, load the reference guide:
 | High run frequency | Trigger firing too often | Add filters to trigger configuration |
 
 ## Examples
+
+
+**Basic usage**: Apply lindy performance tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize lindy performance tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [ORM implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Resources
+
+- Official ORM documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

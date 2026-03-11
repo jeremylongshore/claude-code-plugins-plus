@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Sentry Multi Env Setup
 
 ## Prerequisites
@@ -52,3 +51,7 @@ See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 ## Resources
 - [Sentry Environments](https://docs.sentry.io/product/sentry-basics/environments/)
 - [Filtering Events](https://docs.sentry.io/platforms/javascript/configuration/filtering/)
+
+## Overview
+
+Configure Sentry across multiple environments.

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Groq Cost Tuning
 
 ## Overview
@@ -113,10 +112,20 @@ In Groq Console > Organization > Billing:
 | Cache hit rate low | Unique prompts every time | Normalize prompts before caching |
 
 ## Examples
-```bash
-# Cost comparison: same task on different models
-echo "100K requests with 500 tokens each:"
-echo "  8B model: \$$(echo '100000 * 500 / 1000000 * 0.05' | bc) USD"
-echo "  70B model: \$$(echo '100000 * 500 / 1000000 * 0.59' | bc) USD"
-echo "  Savings: 12x by using 8B for simple tasks"
-```
+
+
+**Basic usage**: Apply groq cost tuning to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize groq cost tuning for production environments with multiple constraints and team-specific requirements.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+## Resources
+
+- Official monitoring documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

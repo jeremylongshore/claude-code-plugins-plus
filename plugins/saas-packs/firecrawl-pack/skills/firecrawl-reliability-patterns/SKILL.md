@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Firecrawl Reliability Patterns
 
 ## Overview
@@ -130,14 +129,16 @@ async function resilientScrape(urls: string[]) {
 
 ## Examples
 
-### Health Check
-```typescript
-const health = {
-  creditsUsedToday: tracker.getUsage(),
-  activeJobs: await getActiveCrawlCount(),
-  failureRate: monitor.getHourlyFailureRate()
-};
-```
+
+**Basic usage**: Apply firecrawl reliability patterns to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize firecrawl reliability patterns for production environments with multiple constraints and team-specific requirements.
 
 ## Resources
 - [Firecrawl API Docs](https://docs.firecrawl.dev)
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale

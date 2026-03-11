@@ -7,7 +7,6 @@ author: Wondel.ai <https://github.com/wondelai>
 version: 1.0.1
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Made to Stick Framework
 
 A framework for crafting ideas and messages that are understood, remembered, and have lasting impact. Based on decades of research into why some ideas survive and others die.
@@ -370,3 +369,49 @@ This skill is based on Chip and Dan Heath's research on sticky ideas. For the co
 ## About the Authors
 
 **Chip Heath** is a professor at Stanford Graduate School of Business, and **Dan Heath** is a senior fellow at Duke University's CASE center. Together they have written four New York Times bestsellers. *Made to Stick* spent over 2 years on the bestseller list. Their research spans organizational behavior, decision-making, and how to make ideas have lasting impact. The SUCCESs framework is used by educators, marketers, nonprofits, and product teams worldwide.
+
+## Overview
+
+Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories).
+
+## Prerequisites
+
+- Access to the branding environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with branding concepts and terminology
+
+## Instructions
+
+1. Assess the current state of the branding configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [branding implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with branding |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply made to stick to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize made to stick for production environments with multiple constraints and team-specific requirements.
+
+## Resources
+
+- Official branding documentation
+- Community best practices and patterns
+- Related skills in this plugin pack

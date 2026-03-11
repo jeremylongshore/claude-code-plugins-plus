@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lindy Prod Checklist
 
 ## Overview
@@ -62,3 +61,11 @@ For detailed implementation code and configurations, load the reference guide:
 
 ## Next Steps
 Proceed to `lindy-upgrade-migration` for version upgrades.
+
+## Instructions
+
+1. Assess the current state of the Go configuration
+2. Identify the specific requirements and constraints
+3. Apply the recommended patterns from this skill
+4. Validate the changes against expected behavior
+5. Document the configuration for team reference

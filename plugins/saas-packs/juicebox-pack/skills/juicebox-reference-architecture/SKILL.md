@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Reference Architecture
 
 ## Overview
@@ -38,3 +37,23 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 After architecture setup, see `juicebox-multi-env-setup` for environment configuration.
+
+## Prerequisites
+
+- Access to the design environment or API
+- Required CLI tools installed and authenticated
+- Familiarity with design concepts and terminology
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| Authentication failure | Invalid or expired credentials | Refresh tokens or re-authenticate with design |
+| Configuration conflict | Incompatible settings detected | Review and resolve conflicting parameters |
+| Resource not found | Referenced resource missing | Verify resource exists and permissions are correct |
+
+## Examples
+
+**Basic usage**: Apply juicebox reference architecture to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize juicebox reference architecture for production environments with multiple constraints and team-specific requirements.

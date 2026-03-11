@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Multi-Environment Setup
 
 ## Overview
@@ -76,3 +75,17 @@ For detailed TypeScript implementations and CI workflow configs, load the refere
 ## Next Steps
 
 For deployment, see `clay-deploy-integration`.
+
+## Output
+
+- Configuration files or code changes applied to the project
+- Validation report confirming correct implementation
+- Summary of changes made and their rationale
+
+See [deployment implementation details](${CLAUDE_SKILL_DIR}/references/implementation.md) for output format specifications.
+
+## Examples
+
+**Basic usage**: Apply clay multi env setup to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clay multi env setup for production environments with multiple constraints and team-specific requirements.

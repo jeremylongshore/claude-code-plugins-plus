@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Core Workflow A: Sign-Up & Sign-In
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details and code examples, load:
 
 ## Next Steps
 Proceed to `clerk-core-workflow-b` for session management and middleware.
+
+## Examples
+
+**Basic usage**: Apply clerk core workflow a to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize clerk core workflow a for production environments with multiple constraints and team-specific requirements.

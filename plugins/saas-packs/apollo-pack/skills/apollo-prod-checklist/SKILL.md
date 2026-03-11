@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Apollo Production Checklist
 
 ## Overview
@@ -53,3 +52,9 @@ For full implementation details, load: `Read(plugins/saas-packs/apollo-pack/skil
 
 ## Next Steps
 Proceed to `apollo-upgrade-migration` for SDK upgrade procedures.
+
+## Examples
+
+**Basic usage**: Apply apollo prod checklist to a standard project setup with default configuration options.
+
+**Advanced scenario**: Customize apollo prod checklist for production environments with multiple constraints and team-specific requirements.
