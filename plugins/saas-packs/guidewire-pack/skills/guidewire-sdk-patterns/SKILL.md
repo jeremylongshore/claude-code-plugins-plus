@@ -47,7 +47,7 @@ Always use `GWTransaction.runWithNewBundle()`. Add external entities to the bund
 Implement `IRatingPlugin` or similar interfaces. Compose calculations from base premium, discounts, and taxes. Log entry points for debugging.
 
 For detailed code implementations (Digital SDK components, Gosu classes, Gradle config), load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

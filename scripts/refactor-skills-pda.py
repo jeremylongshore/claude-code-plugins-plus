@@ -76,7 +76,7 @@ def create_concise_skill(sections: dict, skill_name: str) -> str:
             lines.append(prereq + '\n')
         else:
             lines.append('## Prerequisites\n')
-            lines.append('See `{baseDir}/references/prerequisites.md` for detailed requirements.\n')
+            lines.append('See `${CLAUDE_SKILL_DIR}/references/prerequisites.md` for detailed requirements.\n')
 
     # Instructions - keep concise
     if 'instructions' in sections:
@@ -92,7 +92,7 @@ def create_concise_skill(sections: dict, skill_name: str) -> str:
                     condensed.append(line)
             if len(condensed) > 1:
                 lines.append('\n'.join(condensed[:12]) + '\n')
-            lines.append('\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n')
+            lines.append('\nSee `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.\n')
 
     # Output - brief
     if 'output' in sections:
@@ -109,12 +109,12 @@ def create_concise_skill(sections: dict, skill_name: str) -> str:
     # Error Handling - always reference
     if 'error_handling' in sections:
         lines.append('## Error Handling\n')
-        lines.append('See `{baseDir}/references/errors.md` for comprehensive error handling.\n')
+        lines.append('See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.\n')
 
     # Examples - always reference
     if 'examples' in sections:
         lines.append('## Examples\n')
-        lines.append('See `{baseDir}/references/examples.md` for detailed examples.\n')
+        lines.append('See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.\n')
 
     # Resources - keep brief
     if 'resources' in sections:

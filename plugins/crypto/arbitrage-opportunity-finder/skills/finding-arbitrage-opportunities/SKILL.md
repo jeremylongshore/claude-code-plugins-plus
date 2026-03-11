@@ -30,7 +30,7 @@ Before using this skill, ensure you have:
 
 ### Step 1: Configure Data Sources
 
-Configure your price sources in `{baseDir}/config/settings.yaml`:
+Configure your price sources in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 # Primary data sources
@@ -58,7 +58,7 @@ export COINBASE_API_KEY="your-key"
 
 Scan for arbitrage opportunities on a specific pair:
 ```bash
-python {baseDir}/scripts/arb_finder.py scan ETH USDC
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC
 ```
 
 This shows:
@@ -71,7 +71,7 @@ This shows:
 
 Compare prices across specific exchanges:
 ```bash
-python {baseDir}/scripts/arb_finder.py scan ETH USDC \
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC \
   --exchanges binance,coinbase,kraken,kucoin,okx
 ```
 
@@ -85,7 +85,7 @@ Output includes:
 
 Scan decentralized exchanges for arbitrage:
 ```bash
-python {baseDir}/scripts/arb_finder.py scan ETH USDC --dex-only
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC --dex-only
 ```
 
 Compares:
@@ -100,7 +100,7 @@ Includes gas cost estimates for on-chain execution.
 
 Find profitable circular paths within an exchange:
 ```bash
-python {baseDir}/scripts/arb_finder.py triangular binance --min-profit 0.5
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5
 ```
 
 Example output:
@@ -116,7 +116,7 @@ Net:   +0.52%
 
 Compare prices across different blockchains:
 ```bash
-python {baseDir}/scripts/arb_finder.py cross-chain USDC \
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py cross-chain USDC \
   --chains ethereum,polygon,arbitrum
 ```
 
@@ -129,7 +129,7 @@ Shows:
 
 Continuously monitor for opportunities:
 ```bash
-python {baseDir}/scripts/arb_finder.py monitor ETH USDC \
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py monitor ETH USDC \
   --threshold 0.5 \
   --interval 5
 ```
@@ -145,7 +145,7 @@ Alerts when spread exceeds threshold:
 
 Calculate exact profit for a trade:
 ```bash
-python {baseDir}/scripts/arb_finder.py calc \
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py calc \
   --buy-exchange binance \
   --sell-exchange coinbase \
   --pair ETH/USDC \
@@ -163,7 +163,7 @@ Shows detailed breakdown:
 
 Export opportunities for bot integration:
 ```bash
-python {baseDir}/scripts/arb_finder.py scan ETH USDC --output json > opportunities.json
+python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC --output json > opportunities.json
 ```
 
 ## Output
@@ -207,7 +207,7 @@ The scanner provides:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **Rate Limited**: Reduce polling frequency or use API key
@@ -217,7 +217,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including:
 - ETH/USDC CEX arbitrage scan
 - DEX triangular arbitrage discovery
 - Cross-chain USDC opportunity

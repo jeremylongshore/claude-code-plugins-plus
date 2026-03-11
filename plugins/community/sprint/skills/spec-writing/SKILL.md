@@ -26,7 +26,7 @@ Spec Writing provides guidance on authoring effective `specs.md` files that driv
 
 1. Open the generated `specs.md` file at `.claude/sprint/[N]/specs.md` and define a concise goal statement at the top. State what the sprint delivers in one sentence (e.g., "Add user authentication with email/password login").
 2. Define explicit scope boundaries using **In Scope** and **Out of Scope** sections. List specific features, endpoints, or components in each. Agents only implement what appears in scope; ambiguity leads to drift.
-3. Add the **Testing** section to control which testing agents run and how. Configure three settings as documented in `{baseDir}/references/testing-configuration.md`:
+3. Add the **Testing** section to control which testing agents run and how. Configure three settings as documented in `${CLAUDE_SKILL_DIR}/references/testing-configuration.md`:
    - `QA`: `required` | `optional` | `skip` -- Controls API and unit test execution
    - `UI Testing`: `required` | `optional` | `skip` -- Controls browser-based E2E tests
    - `UI Testing Mode`: `automated` | `manual` -- Auto-run or user-driven testing
@@ -105,6 +105,6 @@ Redesign the admin dashboard with responsive layout
 
 ## Resources
 
-- `{baseDir}/references/testing-configuration.md` -- Testing section options with guidance on when to use each setting
+- `${CLAUDE_SKILL_DIR}/references/testing-configuration.md` -- Testing section options with guidance on when to use each setting
 - Sprint workflow skill for understanding how specs feed into the phase lifecycle
 - API contract skill for designing endpoint contracts referenced by specs

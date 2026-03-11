@@ -29,7 +29,7 @@ Guide for upgrading Speak SDK versions and handling breaking changes in language
 2. **Rollback Procedure**
 3. **Testing Upgrade in Staging**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Updated SDK version

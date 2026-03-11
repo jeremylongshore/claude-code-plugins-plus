@@ -30,7 +30,7 @@ Before using this skill, ensure you have:
 ### Step 1: Navigate to Scripts Directory
 
 ```bash
-cd {baseDir}/scripts
+cd ${CLAUDE_SKILL_DIR}/scripts
 ```
 
 ### Step 2: Choose Your Command
@@ -94,7 +94,7 @@ python mempool_analyzer.py watch 0x7a250d...
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 - RPC connection issues
 - Mempool access limitations
 - Transaction decoding errors
@@ -124,7 +124,7 @@ python mempool_analyzer.py --chain polygon gas
 python mempool_analyzer.py --chain arbitrum pending
 ```
 
-See `{baseDir}/references/examples.md` for more usage patterns.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for more usage patterns.
 
 ## Resources
 

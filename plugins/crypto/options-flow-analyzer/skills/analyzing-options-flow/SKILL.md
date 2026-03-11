@@ -28,7 +28,7 @@ Track and analyze crypto options flow on centralized derivatives exchanges (Deri
 
 ## Instructions
 
-1. Load exchange API credentials from `{baseDir}/config/crypto-apis.env` using the Read tool to authenticate against derivatives exchange endpoints.
+1. Load exchange API credentials from `${CLAUDE_SKILL_DIR}/config/crypto-apis.env` using the Read tool to authenticate against derivatives exchange endpoints.
 2. Run `Bash(crypto:options-*)` to connect to the Deribit options data feed and pull the current options chain for BTC or ETH, including all active strikes and expiries.
 3. Retrieve open interest data across all strike prices and expiration dates to build an open interest heatmap showing where positions are concentrated.
 4. Calculate the aggregate put/call ratio by volume and by open interest to assess overall market sentiment (ratio above 1.0 indicates bearish bias; below 1.0 indicates bullish).
@@ -39,7 +39,7 @@ Track and analyze crypto options flow on centralized derivatives exchanges (Deri
 9. Generate a flow summary report with actionable signals: bullish large-block calls, bearish put sweeps, IV skew shifts, and OI buildup at key strikes.
 10. Export results using `--format json` or `--format csv` for integration with trading dashboards or alerting systems.
 
-See `{baseDir}/references/implementation.md` for the full implementation workflow.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation workflow.
 
 ## Output
 

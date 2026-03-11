@@ -30,7 +30,7 @@ Implement comprehensive user authentication flows including email, OAuth, and cu
 - Step 4: Email Verification Flow
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working sign-in/sign-up pages

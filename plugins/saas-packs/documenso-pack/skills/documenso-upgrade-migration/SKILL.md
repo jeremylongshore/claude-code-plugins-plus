@@ -40,7 +40,7 @@ If you store document IDs in your database:
 featureFlags.disable("documenso_v2")
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - API Version Differences

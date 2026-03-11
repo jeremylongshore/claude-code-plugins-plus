@@ -54,7 +54,7 @@ Create panels for API latency percentiles (p50/p95/p99), request rate by operati
 Set up Prometheus alerts for high error rate (>5%), high p99 latency (>5s), high bounce rate (>5%), and webhook processing failures.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Solution |

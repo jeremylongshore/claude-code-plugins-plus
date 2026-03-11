@@ -675,11 +675,11 @@ FROM python:3.11-slim
 RUN useradd -m -u 1000 agent
 
 WORKDIR /app
-COPY --from=builder /root/.local {baseDir}
+COPY --from=builder /root/.local ${CLAUDE_SKILL_DIR}
 COPY --chown=agent:agent . .
 
 USER agent
-ENV PATH={baseDir}
+ENV PATH=${CLAUDE_SKILL_DIR}
 
 EXPOSE 8080
 HEALTHCHECK --interval=30s --timeout=3s \

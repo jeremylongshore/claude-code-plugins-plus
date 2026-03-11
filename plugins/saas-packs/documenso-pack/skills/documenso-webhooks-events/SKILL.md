@@ -35,7 +35,7 @@ ngrok http 3000
 curl -X POST http://localhost:3000/webhooks/documenso \
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Supported Events

@@ -3,7 +3,7 @@
 **Common Issues and Resolutions**:
 
 1. **Incomplete Log Data**
-   - Error: "Critical logs missing from {baseDir}/logs/"
+   - Error: "Critical logs missing from ${CLAUDE_SKILL_DIR}/logs/"
    - Resolution: Work with available data, note gaps in report
    - Action: Improve logging for future incidents
 

@@ -51,7 +51,7 @@ Run DNS resolution, TCP connectivity, TLS certificate, API latency, and rate lim
 Apply the appropriate runbook for the priority level: P1 (complete outage), P2 (high error rate), P3 (delivery issues), P4 (webhook failures).
 
 For detailed implementation code and diagnostic scripts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Diagnostic Commands
 ```bash

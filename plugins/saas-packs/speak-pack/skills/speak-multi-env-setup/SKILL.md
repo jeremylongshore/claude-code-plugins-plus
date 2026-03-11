@@ -34,7 +34,7 @@ Configure Speak across development, staging, and production environments for lan
 7. **Environment-Specific Audio Storage**
 8. **Environment Health Checks**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Multi-environment config structure

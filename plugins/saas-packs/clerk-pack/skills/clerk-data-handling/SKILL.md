@@ -32,7 +32,7 @@ Manage user data, implement privacy features, and ensure compliance with regulat
 - Step 6: Audit Logging
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Data export functionality

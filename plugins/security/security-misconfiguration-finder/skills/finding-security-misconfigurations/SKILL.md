@@ -20,16 +20,16 @@ Scan infrastructure-as-code templates, application configuration files, and syst
 
 ## Prerequisites
 
-- Infrastructure-as-code files accessible in `{baseDir}/` (Terraform `.tf`, CloudFormation `.yaml/.json`, Ansible playbooks, Kubernetes manifests)
+- Infrastructure-as-code files accessible in `${CLAUDE_SKILL_DIR}/` (Terraform `.tf`, CloudFormation `.yaml/.json`, Ansible playbooks, Kubernetes manifests)
 - Application configuration files available (`application.yml`, `config.json`, `.env.example`, `web.config`)
 - Container definitions (`Dockerfile`, `docker-compose.yml`, Helm charts)
 - Web server configs (`nginx.conf`, `httpd.conf`, `.htaccess`) if applicable
-- Write permissions for findings output in `{baseDir}/security-findings/`
+- Write permissions for findings output in `${CLAUDE_SKILL_DIR}/security-findings/`
 - Optional: `tfsec`, `checkov`, or `trivy config` installed for automated pre-scanning
 
 ## Instructions
 
-1. Discover all configuration files by scanning `{baseDir}/` for IaC templates (`.tf`, `.yaml`, `.json`, `.template`), application configs, container definitions, and web server configs.
+1. Discover all configuration files by scanning `${CLAUDE_SKILL_DIR}/` for IaC templates (`.tf`, `.yaml`, `.json`, `.template`), application configs, container definitions, and web server configs.
 2. **Cloud storage**: check for publicly accessible S3 buckets, unencrypted storage accounts, missing versioning, and overly permissive bucket policies (CIS AWS 2.1.1, 2.1.2).
 3. **Network security**: flag security groups allowing `0.0.0.0/0` ingress on sensitive ports (22, 3389, 3306, 5432, 27017), missing VPC flow logs, and absent network segmentation.
 4. **IAM and access**: detect wildcard (`*`) permissions in IAM policies, service accounts with admin privileges, missing MFA enforcement, and hardcoded credentials in source (CWE-798).
@@ -38,13 +38,13 @@ Scan infrastructure-as-code templates, application configuration files, and syst
 7. **Application config**: detect debug mode enabled in production, default credentials, CORS wildcard (`*`), missing CSRF protection, disabled authentication endpoints, and API keys in config files.
 8. **Container security**: check for containers running as root, missing resource limits, `privileged: true`, writable root filesystems, and images without pinned digests.
 9. Classify each finding: **Critical** (immediate exploitation risk), **High** (significant security impact), **Medium** (configuration weakness), **Low** (best practice violation).
-10. Generate findings report at `{baseDir}/security-findings/misconfig-YYYYMMDD.md` with per-finding severity, CIS/CWE mapping, affected file and line, remediation code, and verification command.
+10. Generate findings report at `${CLAUDE_SKILL_DIR}/security-findings/misconfig-YYYYMMDD.md` with per-finding severity, CIS/CWE mapping, affected file and line, remediation code, and verification command.
 
-See `{baseDir}/references/implementation.md` for the full six-section implementation guide covering IaC, application, and system checks.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full six-section implementation guide covering IaC, application, and system checks.
 
 ## Output
 
-- **Findings Report**: `{baseDir}/security-findings/misconfig-YYYYMMDD.md` with all misconfigurations categorized by severity
+- **Findings Report**: `${CLAUDE_SKILL_DIR}/security-findings/misconfig-YYYYMMDD.md` with all misconfigurations categorized by severity
 - **Remediation Plan**: minimal-change fixes with before/after config snippets and verification commands
 - **Compliance Mapping**: each finding linked to CIS Benchmark, OWASP, or CWE reference
 - **Summary Dashboard**: finding counts by severity and category
@@ -53,7 +53,7 @@ See `{baseDir}/references/implementation.md` for the full six-section implementa
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| Syntax error in `{baseDir}/terraform/main.tf` | Malformed HCL, YAML, or JSON | Validate file syntax first; skip malformed files and note parse errors in report |
+| Syntax error in `${CLAUDE_SKILL_DIR}/terraform/main.tf` | Malformed HCL, YAML, or JSON | Validate file syntax first; skip malformed files and note parse errors in report |
 | Cannot determine cloud provider from configuration | Missing provider blocks or ambiguous file structure | Look for provider blocks and file naming conventions; fall back to generic security checks |
 | Cannot read encrypted configuration | SOPS-encrypted or binary config files | Request decrypted version or exported config; document inability to audit |
 | Too many config files (500+) | Large monorepo or multi-service project | Prioritize by file type: IaC first, then app configs, then system configs |
@@ -61,7 +61,7 @@ See `{baseDir}/references/implementation.md` for the full six-section implementa
 
 ## Examples
 
-- "Scan Terraform files in `{baseDir}/` for overly permissive security groups and IAM wildcard policies."
+- "Scan Terraform files in `${CLAUDE_SKILL_DIR}/` for overly permissive security groups and IAM wildcard policies."
 - "Review Kubernetes manifests for insecure defaults: privileged containers, missing resource limits, and root execution."
 - "Audit the Nginx and application configs for debug mode, information disclosure, and missing security headers."
 
@@ -73,6 +73,6 @@ See `{baseDir}/references/implementation.md` for the full six-section implementa
 - tfsec (Terraform scanner): https://github.com/aquasecurity/tfsec
 - Checkov (multi-cloud IaC scanner): https://www.checkov.io/
 - CWE-16 Configuration: https://cwe.mitre.org/data/definitions/16.html
-- `{baseDir}/references/errors.md` -- full error handling reference
-- `{baseDir}/references/examples.md` -- additional usage examples
+- `${CLAUDE_SKILL_DIR}/references/errors.md` -- full error handling reference
+- `${CLAUDE_SKILL_DIR}/references/examples.md` -- additional usage examples
 - https://intentsolutions.io

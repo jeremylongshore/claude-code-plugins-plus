@@ -27,7 +27,7 @@ Handle Lokalise rate limits gracefully with request queuing, exponential backoff
 1. **Rate Limit Specifications**
 2. **Instructions**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Request queue respecting 6 req/sec limit

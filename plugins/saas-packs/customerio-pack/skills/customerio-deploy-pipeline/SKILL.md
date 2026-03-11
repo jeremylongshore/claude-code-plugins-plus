@@ -44,7 +44,7 @@ Build a health endpoint that tests Customer.io connectivity, reports status and 
 Create a deployment script that deploys with no traffic, runs health checks, then gradually shifts 10% -> 50% -> 100%.
 
 For detailed deployment manifests and scripts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Cloud Run deployment workflow

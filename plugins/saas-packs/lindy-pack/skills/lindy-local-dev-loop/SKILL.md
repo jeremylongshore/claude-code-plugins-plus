@@ -30,7 +30,7 @@ Configure efficient local development workflow for Lindy AI agent development.
 ### Step 4: Create Agent Test Harness
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Configured development environment

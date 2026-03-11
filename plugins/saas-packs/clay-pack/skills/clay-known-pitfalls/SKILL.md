@@ -48,7 +48,7 @@ Batch rows (50 per request) with 2-second delays between batches. Handle 429 res
 Enrichments run asynchronously. Poll with exponential backoff (up to 30s) or use webhooks instead of reading immediately after row creation.
 
 For detailed code examples (Python and TypeScript) of each pitfall and fix, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

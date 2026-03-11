@@ -73,7 +73,7 @@ Ask the user for:
 ### Step 2: Generate Backup Script
 Use `scripts/backup_script_generator.py` to create a customized backup script:
 ```bash
-python3 {baseDir}/scripts/backup_script_generator.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/backup_script_generator.py \
   --db-type postgresql \
   --database mydb \
   --output /opt/backup-scripts/mydb-backup.sh \
@@ -84,7 +84,7 @@ python3 {baseDir}/scripts/backup_script_generator.py \
 ### Step 3: Schedule with Cron
 Use `scripts/backup_scheduler.py` to create cron entries:
 ```bash
-python3 {baseDir}/scripts/backup_scheduler.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/backup_scheduler.py \
   --script /opt/backup-scripts/mydb-backup.sh \
   --schedule "0 2 * * *" \
   --user postgres
@@ -93,7 +93,7 @@ python3 {baseDir}/scripts/backup_scheduler.py \
 ### Step 4: Validate Backup
 After backup completes, validate integrity:
 ```bash
-python3 {baseDir}/scripts/backup_validator.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/backup_validator.py \
   --backup-file /var/backups/postgresql/mydb_20250115.sql.gz \
   --db-type postgresql
 ```
@@ -101,7 +101,7 @@ python3 {baseDir}/scripts/backup_validator.py \
 ### Step 5: Generate Restore Procedure
 Create matching restore script:
 ```bash
-python3 {baseDir}/scripts/restore_script_generator.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/restore_script_generator.py \
   --db-type postgresql \
   --database mydb \
   --output /opt/backup-scripts/mydb-restore.sh
@@ -146,9 +146,9 @@ find /var/backups/monthly -mtime +365 -delete     # Monthly cleanup
 
 ## Resources
 
-- `{baseDir}/references/postgresql_backup_restore.md` - PostgreSQL backup guide
-- `{baseDir}/references/mysql_backup_restore.md` - MySQL backup guide
-- `{baseDir}/references/mongodb_backup_restore.md` - MongoDB backup guide
-- `{baseDir}/references/sqlite_backup_restore.md` - SQLite backup guide
-- `{baseDir}/references/backup_best_practices.md` - Security and storage best practices
-- `{baseDir}/references/cron_syntax.md` - Cron scheduling reference
+- `${CLAUDE_SKILL_DIR}/references/postgresql_backup_restore.md` - PostgreSQL backup guide
+- `${CLAUDE_SKILL_DIR}/references/mysql_backup_restore.md` - MySQL backup guide
+- `${CLAUDE_SKILL_DIR}/references/mongodb_backup_restore.md` - MongoDB backup guide
+- `${CLAUDE_SKILL_DIR}/references/sqlite_backup_restore.md` - SQLite backup guide
+- `${CLAUDE_SKILL_DIR}/references/backup_best_practices.md` - Security and storage best practices
+- `${CLAUDE_SKILL_DIR}/references/cron_syntax.md` - Cron scheduling reference

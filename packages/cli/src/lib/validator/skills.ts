@@ -101,7 +101,7 @@ function validateToolPermission(tool: string): { valid: boolean; message: string
 }
 
 /**
- * Check for hardcoded paths that should use {baseDir}
+ * Check for hardcoded paths that should use ${CLAUDE_SKILL_DIR}
  */
 function checkHardcodedPaths(content: string): string[] {
   const issues: string[] = [];
@@ -118,7 +118,7 @@ function checkHardcodedPaths(content: string): string[] {
 
   for (const [pattern, desc] of pathPatterns) {
     if (pattern.test(contentNoCode)) {
-      issues.push(`Hardcoded path detected (use {baseDir}): ${desc}`);
+      issues.push(`Hardcoded path detected (use ${CLAUDE_SKILL_DIR}): ${desc}`);
     }
   }
 

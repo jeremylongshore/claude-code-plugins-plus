@@ -20,10 +20,10 @@ anonymization or pseudonymization of sensitive fields.
 
 ## Prerequisites
 
-- Access to the target codebase and configuration files in `{baseDir}/`
+- Access to the target codebase and configuration files in `${CLAUDE_SKILL_DIR}/`
 - Knowledge of the data types processed by the application (PII categories, PHI, financial data)
 - Standard shell utilities and Grep/Glob available for pattern matching
-- Reference: `{baseDir}/references/README.md` for scanner API documentation, GDPR compliance guide, and sensitive data pattern definitions
+- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for scanner API documentation, GDPR compliance guide, and sensitive data pattern definitions
 
 ## Instructions
 
@@ -60,14 +60,14 @@ anonymization or pseudonymization of sensitive fields.
 
 ### PII in Application Logs
 
-Grep `{baseDir}/src/` for logging statements that reference user fields:
+Grep `${CLAUDE_SKILL_DIR}/src/` for logging statements that reference user fields:
 `logger.info.*email`, `console.log.*password`, `Log.d.*phone`. Flag each match
 as CWE-532, severity high. Recommend implementing a log sanitizer middleware
 that redacts PII fields before writing to log output.
 
 ### GDPR Data Subject Rights
 
-Scan `{baseDir}/src/api/` for endpoints supporting data subject rights: user
+Scan `${CLAUDE_SKILL_DIR}/src/api/` for endpoints supporting data subject rights: user
 data export (`GET /api/users/:id/export`), data deletion (`DELETE /api/users/:id`),
 and consent withdrawal. Flag missing endpoints as GDPR Article 15/17/21 gaps,
 severity high. Recommend implementing a data subject request handler.

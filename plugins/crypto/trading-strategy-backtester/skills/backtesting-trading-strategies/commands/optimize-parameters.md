@@ -16,14 +16,14 @@ Find optimal strategy parameters via grid search over historical data.
 
 ## How It Works
 
-The optimizer in `{baseDir}/scripts/optimize.py` runs a full backtest for every combination of parameters in your grid, ranks results by a target metric (default: Sharpe ratio), and reports the top performers.
+The optimizer in `${CLAUDE_SKILL_DIR}/scripts/optimize.py` runs a full backtest for every combination of parameters in your grid, ranks results by a target metric (default: Sharpe ratio), and reports the top performers.
 
 ## Examples
 
 Optimize SMA crossover periods:
 
 ```bash
-python {baseDir}/scripts/optimize.py \
+python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
   --strategy sma_crossover --symbol BTC-USD --period 2y \
   --param-grid '{"fast_period": [10, 15, 20, 30], "slow_period": [50, 100, 150, 200]}'
 ```
@@ -31,7 +31,7 @@ python {baseDir}/scripts/optimize.py \
 Optimize RSI thresholds targeting win rate:
 
 ```bash
-python {baseDir}/scripts/optimize.py \
+python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
   --strategy rsi_reversal --symbol ETH-USD --period 1y \
   --param-grid '{"period": [7, 14, 21], "overbought": [65, 70, 75], "oversold": [25, 30, 35]}' \
   --metric win_rate
@@ -40,7 +40,7 @@ python {baseDir}/scripts/optimize.py \
 Optimize with custom capital and output:
 
 ```bash
-python {baseDir}/scripts/optimize.py \
+python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
   --strategy macd --symbol SOL-USD --period 1y \
   --param-grid '{"fast": [8, 12, 16], "slow": [20, 26, 32], "signal": [7, 9, 11]}' \
   --capital 50000 --output ./my-reports
@@ -57,7 +57,7 @@ python {baseDir}/scripts/optimize.py \
 | `--start/--end` | Explicit date range | -- |
 | `--capital` | Starting capital | `10000` |
 | `--metric` | Sort/rank metric | `sharpe_ratio` |
-| `--output` | Output directory | `{baseDir}/reports` |
+| `--output` | Output directory | `${CLAUDE_SKILL_DIR}/reports` |
 
 ## Available Metrics
 

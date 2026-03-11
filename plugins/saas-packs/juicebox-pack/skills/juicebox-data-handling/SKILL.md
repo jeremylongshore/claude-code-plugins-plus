@@ -31,7 +31,7 @@ Implement compliant data handling practices for personal and candidate data from
 - Step 5: Access Logging
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Data classification system

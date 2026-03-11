@@ -26,7 +26,7 @@ Guide for upgrading Lokalise SDK versions and handling breaking changes.
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Updated SDK version

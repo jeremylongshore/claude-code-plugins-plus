@@ -44,7 +44,7 @@ Track profile growth, event volume by type, email delivery metrics, and estimate
 Follow the checklist: clean profiles, optimize events, manage email lists, and review plan vs actual usage.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Cost Savings Estimates
 | Optimization | Typical Savings |

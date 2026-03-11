@@ -32,7 +32,7 @@ Implement enterprise-grade role-based access control for Linear integrations.
 - Step 6: API Middleware
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Error | Cause | Solution |

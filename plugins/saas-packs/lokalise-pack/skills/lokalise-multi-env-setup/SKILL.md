@@ -28,7 +28,7 @@ Configure Lokalise across development, staging, and production environments with
 1. **Environment Strategy**
 2. **Instructions**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

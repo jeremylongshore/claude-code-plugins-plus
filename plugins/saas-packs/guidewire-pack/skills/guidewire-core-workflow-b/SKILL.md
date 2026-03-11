@@ -62,7 +62,7 @@ POST to each exposure's `/close` endpoint with the closed outcome (`completed`, 
 POST to `/claim/v1/claims/{id}/close` with outcome. All exposures must be closed first.
 
 For complete TypeScript API calls and Gosu server-side implementations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

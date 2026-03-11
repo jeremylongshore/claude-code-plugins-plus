@@ -32,7 +32,7 @@ Procedures for responding to Clerk-related incidents in production.
 - Lessons Learned
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Incident response procedures

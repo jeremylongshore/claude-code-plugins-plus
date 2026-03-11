@@ -45,7 +45,7 @@ On enrichment completion, check ICP score. Push high-value leads (score >= 80 wi
 Weight company size (up to 50 pts), target industry match (30 pts), and technology stack matches (10 pts each, max 100 total).
 
 For architecture diagrams, TypeScript implementations, and ICP scoring code, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

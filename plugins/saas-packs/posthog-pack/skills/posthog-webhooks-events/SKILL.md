@@ -55,7 +55,7 @@ Implement a switch on event name to dispatch to specific handlers: `onUserSignup
 Use the PostHog events API to query recent events by name and time range for reporting and analysis.
 
 For complete TypeScript implementations, event handlers, and API query code, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

@@ -25,7 +25,7 @@ Understand and implement proper rate limiting handling for Juicebox API.
 - Step 4: Implement Quota Tracking
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Rate limiter with queue

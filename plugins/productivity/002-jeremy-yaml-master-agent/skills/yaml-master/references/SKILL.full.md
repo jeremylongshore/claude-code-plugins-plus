@@ -728,7 +728,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ## Prerequisites
 
-- Access to project files in {baseDir}/
+- Access to project files in ${CLAUDE_SKILL_DIR}/
 - Required tools and dependencies installed
 - Understanding of skill functionality
 - Permissions for file operations

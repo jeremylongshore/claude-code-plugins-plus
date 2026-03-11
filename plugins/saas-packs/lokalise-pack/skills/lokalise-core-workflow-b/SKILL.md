@@ -25,7 +25,7 @@ Secondary workflow for downloading translations from Lokalise and integrating th
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Downloaded translation files in target format

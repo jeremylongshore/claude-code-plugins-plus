@@ -3,7 +3,7 @@
 **Common Issues and Resolutions**:
 
 1. **Unable to Parse Configuration File**
-   - Error: "Syntax error in {baseDir}/terraform/main.tf"
+   - Error: "Syntax error in ${CLAUDE_SKILL_DIR}/terraform/main.tf"
    - Resolution: Validate file syntax first, report parse errors separately
    - Fallback: Skip malformed files, note in report
 
@@ -18,7 +18,7 @@
    - Note: Document inability to audit in report
 
 4. **Large Configuration Sets**
-   - Error: "Too many files to analyze ({baseDir}/ has 500+ configs)"
+   - Error: "Too many files to analyze (${CLAUDE_SKILL_DIR}/ has 500+ configs)"
    - Resolution: Prioritize by file type and location
    - Strategy: Start with IaC, then app configs, then system configs
 

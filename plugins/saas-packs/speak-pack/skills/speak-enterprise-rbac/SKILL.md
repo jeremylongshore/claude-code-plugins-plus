@@ -33,7 +33,7 @@ Configure enterprise-grade access control for Speak language learning integratio
 6. **Access Control Middleware**
 7. **Audit Trail**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Role definitions for education/enterprise

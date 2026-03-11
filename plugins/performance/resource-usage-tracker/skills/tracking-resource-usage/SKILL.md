@@ -65,7 +65,7 @@ This skill can be integrated with other monitoring and alerting tools to provide
 
 - Access to system monitoring tools (top, ps, vmstat, iostat)
 - Resource metrics collection infrastructure
-- Historical usage data in {baseDir}/metrics/resources/
+- Historical usage data in ${CLAUDE_SKILL_DIR}/metrics/resources/
 - Performance baseline definitions
 
 ## Instructions

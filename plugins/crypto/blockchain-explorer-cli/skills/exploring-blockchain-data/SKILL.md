@@ -40,7 +40,7 @@ Query and analyze blockchain data across multiple EVM-compatible networks includ
 10. Export any query result in JSON or CSV format using `--format json` or `--format csv` and redirect to a file for downstream processing.
 11. Enable verbose mode with `--verbose` to display API request URLs, response times, cache hit/miss status, and rate limit counters for debugging.
 
-See `{baseDir}/references/implementation.md` for the full four-step implementation workflow.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full four-step implementation workflow.
 
 ## Output
 

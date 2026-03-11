@@ -31,7 +31,7 @@ Configure CI/CD pipelines for Juicebox integration testing and deployment.
 - Step 5: Add Deployment Pipeline
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - GitHub Actions workflow files

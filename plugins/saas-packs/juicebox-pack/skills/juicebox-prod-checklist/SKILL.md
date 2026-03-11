@@ -30,7 +30,7 @@ Complete production readiness checklist for Juicebox integration deployment.
 - Day-of-Launch Checklist
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Resources
 - [Production Best Practices](https://juicebox.ai/docs/production)

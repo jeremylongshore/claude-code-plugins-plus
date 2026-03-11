@@ -31,7 +31,7 @@ Implement Customer.io's primary messaging workflow: identify users, track events
 ### Step 4: Create Dashboard Campaign
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 In Customer.io Dashboard:
 1. Go to Campaigns > Create Campaign
 2. Select trigger: Event "signed_up"

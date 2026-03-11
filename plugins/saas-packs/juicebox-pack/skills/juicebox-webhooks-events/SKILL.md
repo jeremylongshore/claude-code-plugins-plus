@@ -30,7 +30,7 @@ Implement webhook handlers for real-time Juicebox events and notifications.
 - Step 4: Implement Retry Logic
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Webhook endpoint handler

@@ -26,7 +26,7 @@ Set up a fast, reproducible local development workflow for Lokalise with automat
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working development environment with translation sync

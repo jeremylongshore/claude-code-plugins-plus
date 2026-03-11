@@ -13,7 +13,7 @@
    - Fallback: Note limitation in report with partial assessment
 
 3. **Access Denied to Configuration Files**
-   - Error: "Permission denied reading {baseDir}/config/"
+   - Error: "Permission denied reading ${CLAUDE_SKILL_DIR}/config/"
    - Resolution: Request elevated permissions or provide configuration exports
    - Fallback: Generate report with available data, note gaps
 

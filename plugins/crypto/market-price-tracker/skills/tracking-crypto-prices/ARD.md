@@ -247,14 +247,14 @@ plugins/crypto/market-price-tracker/skills/tracking-crypto-prices/
 
 ### 4.3 Path Referencing Standard
 
-**Always Use**: `{baseDir}` for all file paths in SKILL.md
+**Always Use**: `${CLAUDE_SKILL_DIR}` for all file paths in SKILL.md
 
 ```bash
 # Correct
-python {baseDir}/scripts/price_tracker.py --symbol BTC
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 
 # Incorrect
-python scripts/price_tracker.py --symbol BTC  # Missing {baseDir}
+python scripts/price_tracker.py --symbol BTC  # Missing ${CLAUDE_SKILL_DIR}
 ```
 
 ---
@@ -564,13 +564,13 @@ This skill can run independently for direct user queries:
 
 ```bash
 # Single price
-python {baseDir}/scripts/price_tracker.py --symbol BTC
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 
 # Multiple prices
-python {baseDir}/scripts/price_tracker.py --symbols BTC,ETH,SOL
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL
 
 # Historical data
-python {baseDir}/scripts/price_tracker.py --symbol BTC --period 30d --output csv
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d --output csv
 ```
 
 ### 8.2 Skill Stacking Patterns
@@ -582,7 +582,7 @@ Other skills import price_tracker functions directly:
 ```python
 # In crypto-portfolio-tracker/scripts/portfolio.py
 import sys
-sys.path.insert(0, "{baseDir}/../market-price-tracker/skills/tracking-crypto-prices/scripts")
+sys.path.insert(0, "${CLAUDE_SKILL_DIR}/../market-price-tracker/skills/tracking-crypto-prices/scripts")
 from price_tracker import get_current_prices
 
 def calculate_portfolio_value(holdings: dict) -> float:
@@ -596,7 +596,7 @@ def calculate_portfolio_value(holdings: dict) -> float:
 
 ```bash
 # In another skill's script
-PRICES=$(python {baseDir}/../market-price-tracker/scripts/price_tracker.py \
+PRICES=$(python ${CLAUDE_SKILL_DIR}/../market-price-tracker/scripts/price_tracker.py \
   --symbols BTC,ETH \
   --format json)
 ```
@@ -718,7 +718,7 @@ def test_cache_miss():
 
 ```bash
 # Test full workflow
-python {baseDir}/scripts/price_tracker.py --symbol BTC --test
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --test
 
 # Expected: Fetches real data, validates response format
 ```

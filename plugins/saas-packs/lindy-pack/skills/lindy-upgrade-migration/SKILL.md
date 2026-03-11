@@ -33,7 +33,7 @@ Guide for safely upgrading Lindy SDK versions and migrating configurations.
 ### Step 5: Run Migration Tests
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Migration Checklist
 ## Output

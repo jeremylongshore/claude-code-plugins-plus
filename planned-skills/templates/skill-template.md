@@ -106,4 +106,4 @@ tags:
 
 - {{RESOURCE_LINK_1}}
 - {{RESOURCE_LINK_2}}
-- See `{baseDir}/reference/` for additional documentation
+- See `${CLAUDE_SKILL_DIR}/reference/` for additional documentation

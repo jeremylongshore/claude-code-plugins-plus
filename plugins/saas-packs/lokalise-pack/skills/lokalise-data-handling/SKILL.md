@@ -28,7 +28,7 @@ Handle translation data correctly with privacy, compliance, and data governance 
 1. **Data Classification**
 2. **Instructions**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - PII scanning for translations

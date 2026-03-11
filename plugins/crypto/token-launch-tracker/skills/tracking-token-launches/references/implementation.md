@@ -2,7 +2,7 @@
 
 ### Step 1: Configure Data Sources
 Set up connections to crypto data providers:
-1. Use Read tool to load API credentials from {baseDir}/config/crypto-apis.env
+1. Use Read tool to load API credentials from ${CLAUDE_SKILL_DIR}/config/crypto-apis.env
 2. Configure blockchain RPC endpoints for target networks
 3. Set up exchange API connections if required
 4. Verify rate limits and subscription tiers
@@ -25,7 +25,7 @@ Process crypto data to generate insights:
 - Generate actionable insights and alerts
 
 ### Step 4: Generate Reports
-Document findings in {baseDir}/crypto-reports/:
+Document findings in ${CLAUDE_SKILL_DIR}/crypto-reports/:
 - Market summary with key price movements
 - Detailed analysis with charts and metrics
 - Trading signals or opportunity recommendations

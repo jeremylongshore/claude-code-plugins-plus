@@ -60,7 +60,7 @@ Handle bounces by suppressing users. Alert on spam complaints immediately. Alway
 Reuse the TrackClient singleton. Implement rate limiting with Bottleneck. Never block request paths waiting for analytics calls.
 
 For detailed code examples of each pitfall and the anti-pattern audit script, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Solution |

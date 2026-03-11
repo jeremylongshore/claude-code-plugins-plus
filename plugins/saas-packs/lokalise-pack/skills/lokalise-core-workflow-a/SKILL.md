@@ -25,7 +25,7 @@ Primary workflow for uploading source translation files and managing keys in Lok
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Source file uploaded to Lokalise

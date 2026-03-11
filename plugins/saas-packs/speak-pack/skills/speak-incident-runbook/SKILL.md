@@ -33,7 +33,7 @@ Rapid incident response procedures for Speak language learning-related outages.
 6. **Fallback Modes**
 7. **Post-Incident**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Issue identified and categorized

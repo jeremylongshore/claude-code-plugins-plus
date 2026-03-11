@@ -63,7 +63,7 @@ Enable hot swap in `config/dev-config.xml`, then attach IntelliJ debugger to por
 ```
 
 For detailed Gradle config, Gosu examples, PCF development, and keyboard shortcuts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

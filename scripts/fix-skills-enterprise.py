@@ -9,7 +9,7 @@ Adds missing fields:
 
 Also fixes common errors:
 - Bash(*) -> Bash (remove invalid wildcard)
-- Hardcoded paths -> {baseDir}
+- Hardcoded paths -> ${CLAUDE_SKILL_DIR}
 - YAML quote issues
 """
 
@@ -73,14 +73,14 @@ def fix_skill_file(file_path: Path, dry_run: bool = True) -> dict:
 
     # Fix 6: Hardcoded paths in body
     if '/home/' in body or '/Users/' in body:
-        body = re.sub(r'/home/\w+/[^\s"\']+', '{baseDir}', body)
-        body = re.sub(r'/Users/\w+/[^\s"\']+', '{baseDir}', body)
-        fixes.append('Replaced hardcoded paths with {baseDir}')
+        body = re.sub(r'/home/\w+/[^\s"\']+', '${CLAUDE_SKILL_DIR}', body)
+        body = re.sub(r'/Users/\w+/[^\s"\']+', '${CLAUDE_SKILL_DIR}', body)
+        fixes.append('Replaced hardcoded paths with ${CLAUDE_SKILL_DIR}')
 
     # Fix 7: /tmp/ paths
     if '/tmp/' in body:
-        body = body.replace('/tmp/', '{baseDir}/tmp/')
-        fixes.append('Replaced /tmp/ with {baseDir}/tmp/')
+        body = body.replace('/tmp/', '${CLAUDE_SKILL_DIR}/tmp/')
+        fixes.append('Replaced /tmp/ with ${CLAUDE_SKILL_DIR}/tmp/')
 
     # Reconstruct
     new_content = f'---{frontmatter}---{body}'

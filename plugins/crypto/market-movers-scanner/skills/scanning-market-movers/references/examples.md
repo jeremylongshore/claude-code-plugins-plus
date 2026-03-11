@@ -9,7 +9,7 @@ Comprehensive examples for the scanning-market-movers skill.
 The simplest use case - scan for significant movers:
 
 ```bash
-python {baseDir}/scripts/scanner.py
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
 ```
 
 **Output:**
@@ -46,7 +46,7 @@ python {baseDir}/scripts/scanner.py
 Find assets with extreme volume spikes:
 
 ```bash
-python {baseDir}/scripts/scanner.py --volume-spike 5 --min-volume 1000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000
 ```
 
 This finds assets with:
@@ -60,7 +60,7 @@ This finds assets with:
 Focus on established assets only:
 
 ```bash
-python {baseDir}/scripts/scanner.py --min-cap 1000000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000
 ```
 
 Only shows assets with > $1B market cap.
@@ -74,7 +74,7 @@ Only shows assets with > $1B market cap.
 Find even small moves:
 
 ```bash
-python {baseDir}/scripts/scanner.py --min-change 3 --volume-spike 1.5 --top 50
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 3 --volume-spike 1.5 --top 50
 ```
 
 Lower thresholds = more results.
@@ -84,7 +84,7 @@ Lower thresholds = more results.
 Only significant moves:
 
 ```bash
-python {baseDir}/scripts/scanner.py --min-change 15 --volume-spike 4 --min-cap 500000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 15 --volume-spike 4 --min-cap 500000000
 ```
 
 Higher thresholds = fewer, higher-quality results.
@@ -94,7 +94,7 @@ Higher thresholds = fewer, higher-quality results.
 Find mid-cap opportunities:
 
 ```bash
-python {baseDir}/scripts/scanner.py --min-cap 50000000 --max-cap 500000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 50000000 --max-cap 500000000
 ```
 
 Market cap between $50M and $500M.
@@ -106,7 +106,7 @@ Market cap between $50M and $500M.
 ### Example 7: DeFi Movers
 
 ```bash
-python {baseDir}/scripts/scanner.py --category defi
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
 ```
 
 Only DeFi protocol tokens.
@@ -114,7 +114,7 @@ Only DeFi protocol tokens.
 ### Example 8: Layer 2 Movers
 
 ```bash
-python {baseDir}/scripts/scanner.py --category layer2
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category layer2
 ```
 
 Arbitrum, Optimism, Polygon ecosystem tokens.
@@ -122,7 +122,7 @@ Arbitrum, Optimism, Polygon ecosystem tokens.
 ### Example 9: Meme Coins
 
 ```bash
-python {baseDir}/scripts/scanner.py --category meme --min-change 20
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category meme --min-change 20
 ```
 
 Meme tokens with significant moves (warning: high risk).
@@ -134,7 +134,7 @@ Meme tokens with significant moves (warning: high risk).
 ### Example 10: Hourly Movers
 
 ```bash
-python {baseDir}/scripts/scanner.py --timeframe 1h
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
 ```
 
 Changes in the last hour.
@@ -142,7 +142,7 @@ Changes in the last hour.
 ### Example 11: Weekly Movers
 
 ```bash
-python {baseDir}/scripts/scanner.py --timeframe 7d
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 7d
 ```
 
 Weekly change perspective.
@@ -156,7 +156,7 @@ Weekly change perspective.
 For programmatic processing:
 
 ```bash
-python {baseDir}/scripts/scanner.py --format json --output movers.json
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
 ```
 
 **Output (movers.json):**
@@ -193,7 +193,7 @@ python {baseDir}/scripts/scanner.py --format json --output movers.json
 For spreadsheet analysis:
 
 ```bash
-python {baseDir}/scripts/scanner.py --format csv --output movers.csv
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
 ```
 
 **Output (movers.csv):**
@@ -220,7 +220,7 @@ top_n: 30
 
 Use it:
 ```bash
-python {baseDir}/scripts/scanner.py --preset momentum
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset momentum
 ```
 
 ### Example 15: Aggressive Day Trading
@@ -236,7 +236,7 @@ top_n: 50
 
 Use it:
 ```bash
-python {baseDir}/scripts/scanner.py --preset daytrader --timeframe 1h
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset daytrader --timeframe 1h
 ```
 
 ---
@@ -246,7 +246,7 @@ python {baseDir}/scripts/scanner.py --preset daytrader --timeframe 1h
 ### Example 16: Gainers Only
 
 ```bash
-python {baseDir}/scripts/scanner.py --gainers-only
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --gainers-only
 ```
 
 Only shows positive movers.
@@ -254,7 +254,7 @@ Only shows positive movers.
 ### Example 17: Losers Only
 
 ```bash
-python {baseDir}/scripts/scanner.py --losers-only
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --losers-only
 ```
 
 For dip buying or short opportunities.
@@ -266,7 +266,7 @@ For dip buying or short opportunities.
 ### Example 18: Sort by Change
 
 ```bash
-python {baseDir}/scripts/scanner.py --sort-by change
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --sort-by change
 ```
 
 Highest % changes first.
@@ -274,7 +274,7 @@ Highest % changes first.
 ### Example 19: Sort by Volume
 
 ```bash
-python {baseDir}/scripts/scanner.py --sort-by volume
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --sort-by volume
 ```
 
 Highest volume ratios first.
@@ -282,7 +282,7 @@ Highest volume ratios first.
 ### Example 20: Sort by Market Cap
 
 ```bash
-python {baseDir}/scripts/scanner.py --sort-by market_cap
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --sort-by market_cap
 ```
 
 Largest caps first.
@@ -294,7 +294,7 @@ Largest caps first.
 ### Example 21: Morning Momentum Scan
 
 ```bash
-python {baseDir}/scripts/scanner.py \
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
   --timeframe 1h \
   --min-change 5 \
   --volume-spike 3 \
@@ -308,7 +308,7 @@ Find fresh morning momentum plays.
 ### Example 22: Distressed Asset Hunt
 
 ```bash
-python {baseDir}/scripts/scanner.py \
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
   --timeframe 24h \
   --min-change 20 \
   --losers-only \
@@ -322,7 +322,7 @@ Find oversold large-cap assets.
 ### Example 23: DeFi Blue Chips
 
 ```bash
-python {baseDir}/scripts/scanner.py \
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
   --category defi \
   --min-cap 500000000 \
   --min-change 3 \
@@ -342,7 +342,7 @@ python {baseDir}/scripts/scanner.py \
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 OUTPUT_DIR=~/crypto_scans
 
-python {baseDir}/scripts/scanner.py \
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py \
   --format json \
   --output "$OUTPUT_DIR/movers_$TIMESTAMP.json"
 
@@ -355,7 +355,7 @@ echo "Scan complete: $OUTPUT_DIR/movers_$TIMESTAMP.json"
 #!/bin/bash
 # Check for exceptional movers
 
-RESULT=$(python {baseDir}/scripts/scanner.py --format json)
+RESULT=$(python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json)
 HIGH_SCORE=$(echo "$RESULT" | jq '.gainers[0].significance_score')
 
 if (( $(echo "$HIGH_SCORE > 90" | bc -l) )); then

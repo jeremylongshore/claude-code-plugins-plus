@@ -62,7 +62,7 @@ POST to `/job/v1/submissions/{id}/bind`. Verify status is `Bound` and capture th
 POST to `/job/v1/submissions/{id}/issue`. The policy is now in-force.
 
 For complete TypeScript API calls and Gosu server-side implementations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

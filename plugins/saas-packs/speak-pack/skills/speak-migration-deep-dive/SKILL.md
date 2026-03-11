@@ -35,7 +35,7 @@ Comprehensive guide for migrating to or from Speak, or major version upgrades fo
 7. **Post-Migration Validation**
 8. **Post-Migration**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Migration assessment complete

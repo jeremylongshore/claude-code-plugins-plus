@@ -30,7 +30,7 @@ Reference architectures for implementing Clerk in various application types.
 - Architecture 4: Mobile + Web with Shared Backend
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Architecture pattern selected

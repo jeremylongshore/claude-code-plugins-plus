@@ -62,7 +62,7 @@ Run validation checks: data count match, API functionality, performance baseline
 Disable Clay via environment variable and restart pods. For data rollback, restore from backup. Verify via health endpoint.
 
 For complete TypeScript implementations, assessment scripts, and validation code, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

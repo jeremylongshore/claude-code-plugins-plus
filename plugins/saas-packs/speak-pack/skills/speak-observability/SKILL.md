@@ -33,7 +33,7 @@ Set up comprehensive observability for Speak language learning integrations.
 6. **Alert Configuration**
 7. **Grafana Dashboard**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Business and technical metrics

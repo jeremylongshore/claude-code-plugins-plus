@@ -63,7 +63,7 @@ This skill integrates well with other plugins that provide code analysis, infras
 
 ## Prerequisites
 
-- Access to application codebase in {baseDir}/
+- Access to application codebase in ${CLAUDE_SKILL_DIR}/
 - Infrastructure configuration files
 - Performance profiling tools
 - Current performance metrics and baselines

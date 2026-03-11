@@ -45,7 +45,7 @@ Create checkpoint snapshots of agents and automations before each phase. Impleme
 Execute the phased migration: assess, export, transform, validate, checkpoint, import, test.
 
 For detailed implementation code and migration scripts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Migration Checklist
 - [ ] Source system documented

@@ -20,10 +20,10 @@ and NIST standards.
 
 ## Prerequisites
 
-- Access to the target codebase and configuration files in `{baseDir}/`
+- Access to the target codebase and configuration files in `${CLAUDE_SKILL_DIR}/`
 - Familiarity with the authentication framework in use (Passport.js, Spring Security, Django Auth, NextAuth, etc.)
 - Standard shell utilities and Grep/Glob available for codebase scanning
-- Reference: `{baseDir}/references/README.md` for OWASP authentication cheat sheet, NIST password guidelines, and JWT RFC specifications
+- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for OWASP authentication cheat sheet, NIST password guidelines, and JWT RFC specifications
 
 ## Instructions
 
@@ -60,7 +60,7 @@ and NIST standards.
 
 ### JWT Implementation Review
 
-Scan `{baseDir}/src/auth/` and `{baseDir}/src/middleware/` for JWT signing and
+Scan `${CLAUDE_SKILL_DIR}/src/auth/` and `${CLAUDE_SKILL_DIR}/src/middleware/` for JWT signing and
 verification logic. Flag any use of `jwt.sign()` with `algorithm: 'none'` or
 `HS256` paired with a secret shorter than 256 bits as CWE-327 (Use of Broken
 Crypto Algorithm), severity critical. Verify that `jwt.verify()` validates
@@ -75,7 +75,7 @@ Verify salt generation uses `crypto.randomBytes()` or equivalent CSPRNG.
 
 ### Session Cookie Hardening
 
-Locate session configuration in `{baseDir}/config/` or middleware setup files.
+Locate session configuration in `${CLAUDE_SKILL_DIR}/config/` or middleware setup files.
 Verify cookie attributes include `httpOnly: true`, `secure: true`,
 `sameSite: 'strict'`, and `maxAge` under 24 hours. Flag missing `httpOnly` as
 CWE-1004 (Sensitive Cookie Without HttpOnly), severity high.

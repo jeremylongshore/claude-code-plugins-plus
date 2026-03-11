@@ -61,7 +61,7 @@ This skill can be used in conjunction with other monitoring and performance anal
 
 ## Prerequisites
 
-- Access to throughput metrics in {baseDir}/metrics/throughput/
+- Access to throughput metrics in ${CLAUDE_SKILL_DIR}/metrics/throughput/
 - System performance monitoring tools
 - Historical throughput baselines
 - Current capacity and scaling limits

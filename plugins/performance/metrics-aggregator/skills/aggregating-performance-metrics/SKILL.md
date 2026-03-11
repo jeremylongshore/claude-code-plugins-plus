@@ -63,7 +63,7 @@ This skill integrates with other plugins that manage infrastructure, deploy appl
 
 - Access to metrics collection tools (Prometheus, StatsD, CloudWatch)
 - Network connectivity to metric sources
-- Metrics storage configuration in {baseDir}/metrics/
+- Metrics storage configuration in ${CLAUDE_SKILL_DIR}/metrics/
 - Understanding of metrics taxonomy
 
 ## Instructions

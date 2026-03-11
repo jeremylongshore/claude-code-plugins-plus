@@ -73,8 +73,8 @@ Cross-platform content consistency auditing for organizations maintaining messag
 
 ## Resources
 
-- Content source discovery logic: `{baseDir}/references/how-it-works.md`
-- Trust priority and validation timing guidance: `{baseDir}/references/best-practices.md`
-- Concrete use-case walkthroughs: `{baseDir}/references/example-use-cases.md`
+- Content source discovery logic: `${CLAUDE_SKILL_DIR}/references/how-it-works.md`
+- Trust priority and validation timing guidance: `${CLAUDE_SKILL_DIR}/references/best-practices.md`
+- Concrete use-case walkthroughs: `${CLAUDE_SKILL_DIR}/references/example-use-cases.md`
 - YAML 1.2 specification (for config file validation): https://yaml.org/spec/
 - GitHub REST API documentation: https://docs.github.com/en/rest

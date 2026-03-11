@@ -3,7 +3,7 @@
 ## Critical Findings
 
 ### 1. Authentication Bypass via SQL Injection
-**File**: {baseDir}/src/auth/login.py
+**File**: ${CLAUDE_SKILL_DIR}/src/auth/login.py
 **Line**: 45
 **Severity**: CRITICAL (CVSS 9.8)
 
@@ -44,7 +44,7 @@ def authenticate_user(username, password):
 - Add MFA for admin accounts
 
 ### 2. Data Exfiltration via UNION-based SQLi
-**File**: {baseDir}/src/api/products.py
+**File**: ${CLAUDE_SKILL_DIR}/src/api/products.py
 **Line**: 78
 **Severity**: CRITICAL (CVSS 8.6)
 

@@ -50,7 +50,7 @@ Stack WAF/DDoS, API Gateway (OAuth2/JWT), Guidewire Hub (MFA, RBAC), AES-256 enc
 Set auto-scaling (2-10 instances, 70% CPU target), L1/L2 caching (in-memory + Redis), connection pooling (10-50), and multi-region deployment for DR.
 
 For full architecture diagrams, data flow specifications, and configuration details, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Environment Strategy
 

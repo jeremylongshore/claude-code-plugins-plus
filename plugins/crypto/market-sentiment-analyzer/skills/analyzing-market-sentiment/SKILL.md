@@ -52,19 +52,19 @@ Run the sentiment analyzer with appropriate options:
 
 ```bash
 # Quick sentiment check (default)
-python {baseDir}/scripts/sentiment_analyzer.py
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
 
 # Coin-specific sentiment
-python {baseDir}/scripts/sentiment_analyzer.py --coin BTC
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
 
 # Detailed analysis with component breakdown
-python {baseDir}/scripts/sentiment_analyzer.py --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
 
 # Export to JSON
-python {baseDir}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
 
 # Custom time period
-python {baseDir}/scripts/sentiment_analyzer.py --period 7d --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
 ```
 
 ### Step 3: Present Results
@@ -157,7 +157,7 @@ Format and present the sentiment analysis:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -167,28 +167,28 @@ See `{baseDir}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ### Quick Examples
 
 ```bash
 # Quick market sentiment check
-python {baseDir}/scripts/sentiment_analyzer.py
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
 
 # Bitcoin-specific sentiment
-python {baseDir}/scripts/sentiment_analyzer.py --coin BTC
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
 
 # Detailed analysis
-python {baseDir}/scripts/sentiment_analyzer.py --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
 
 # Export for trading model
-python {baseDir}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
 
 # Custom weights (emphasize news)
-python {baseDir}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
 
 # Weekly sentiment comparison
-python {baseDir}/scripts/sentiment_analyzer.py --period 7d --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
 ```
 
 ## Resources
@@ -196,4 +196,4 @@ python {baseDir}/scripts/sentiment_analyzer.py --period 7d --detailed
 - **Alternative.me Fear & Greed Index**: https://alternative.me/crypto/fear-and-greed-index/
 - **CoinGecko API**: https://www.coingecko.com/en/api
 - **Sentiment Analysis Theory**: Contrarian indicator - extreme readings often precede reversals
-- See `{baseDir}/config/settings.yaml` for configuration options
+- See `${CLAUDE_SKILL_DIR}/config/settings.yaml` for configuration options

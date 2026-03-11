@@ -39,7 +39,7 @@ interface DSARResponse {
 import crypto from "crypto";
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Document Lifecycle

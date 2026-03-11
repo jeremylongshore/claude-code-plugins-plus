@@ -52,4 +52,4 @@ function detectPII(text: string): { type: string; match: string }[] {
 
 ## Detailed Reference
 
-See `{baseDir}/references/implementation.md` for complete data handling guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete data handling guide.

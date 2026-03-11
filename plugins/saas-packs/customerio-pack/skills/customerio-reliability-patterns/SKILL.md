@@ -44,7 +44,7 @@ Create a health check endpoint that tests API connectivity, reports circuit stat
 Use SHA-256 content hashing with LRU cache to prevent duplicate operations within a configurable window.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Pattern | When to Use |

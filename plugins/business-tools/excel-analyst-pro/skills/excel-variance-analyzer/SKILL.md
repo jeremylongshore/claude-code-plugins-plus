@@ -60,4 +60,4 @@ Result: Ranked list by variance magnitude with drill-down to line items
 ## Resources
 
 - [FP&A Best Practices](https://www.fpanda.org/)
-- `{baseDir}/references/variance-formulas.md` for calculation templates
+- `${CLAUDE_SKILL_DIR}/references/variance-formulas.md` for calculation templates

@@ -37,16 +37,16 @@ Validate API responses against OpenAPI schemas, JSON Schema definitions, and con
 7. Implement schema drift detection that compares the current response shape against the documented schema after each deployment, alerting when undocumented fields appear or documented fields disappear.
 8. Generate a validation coverage report showing which endpoints and response codes have schema validation, identifying gaps in the specification.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/middleware/response-validator.js` - Response schema validation middleware
-- `{baseDir}/src/validators/` - Compiled JSON Schema validators per endpoint
-- `{baseDir}/tests/contract/` - Contract test suite validating all endpoint responses
-- `{baseDir}/reports/validation-coverage.md` - Schema coverage report per endpoint and status code
-- `{baseDir}/reports/schema-drift.json` - Detected undocumented response field changes
-- `{baseDir}/src/config/validation.js` - Per-environment validation strictness configuration
+- `${CLAUDE_SKILL_DIR}/src/middleware/response-validator.js` - Response schema validation middleware
+- `${CLAUDE_SKILL_DIR}/src/validators/` - Compiled JSON Schema validators per endpoint
+- `${CLAUDE_SKILL_DIR}/tests/contract/` - Contract test suite validating all endpoint responses
+- `${CLAUDE_SKILL_DIR}/reports/validation-coverage.md` - Schema coverage report per endpoint and status code
+- `${CLAUDE_SKILL_DIR}/reports/schema-drift.json` - Detected undocumented response field changes
+- `${CLAUDE_SKILL_DIR}/src/config/validation.js` - Per-environment validation strictness configuration
 
 ## Error Handling
 
@@ -58,7 +58,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Null value on non-nullable | Field returns null but schema does not include `nullable: true` | Update schema to allow null, or fix data source to guarantee non-null values |
 | Format validation failure | Date field does not match RFC 3339 format or email field format invalid | Apply format serialization at the ORM/model level before response construction |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Backward compatibility check**: Compare v1 and v2 response schemas to verify that v2 is a superset of v1 (no removed fields, no type changes), ensuring existing consumers are not broken.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

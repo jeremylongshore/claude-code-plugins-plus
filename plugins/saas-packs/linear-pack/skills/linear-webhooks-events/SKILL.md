@@ -32,7 +32,7 @@ Set up and handle Linear webhooks for real-time event notifications.
 - Step 6: Idempotent Event Processing
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Error | Cause | Solution |

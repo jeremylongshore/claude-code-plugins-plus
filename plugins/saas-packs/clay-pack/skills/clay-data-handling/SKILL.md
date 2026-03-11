@@ -45,7 +45,7 @@ Tag each enriched record with `enriched_at`, `retention_expires` (default 365 da
 Strip PII for analytics exports (hash company names, remove emails). Add `consent_basis: legitimate_interest` for CRM exports. Include enrichment timestamp for audit trails.
 
 For complete TypeScript implementations of validation, dedup, retention, and export, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

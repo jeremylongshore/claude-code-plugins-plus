@@ -38,7 +38,7 @@ Create separate API keys per integration rather than sharing a single workspace 
 
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

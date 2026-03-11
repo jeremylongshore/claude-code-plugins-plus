@@ -385,7 +385,7 @@ More complex scenario.
 ## Resources
 
 - [Official Docs](https://example.com)
-- See `{baseDir}/reference.md` for details
+- See `${CLAUDE_SKILL_DIR}/reference.md` for details
 ```
 
 ### Body Length Guidelines
@@ -454,7 +454,7 @@ For simple edits, modify the XML directly.
 
 1. **Keep references one level deep** - All reference files link from SKILL.md
 2. **Add table of contents** - For files > 100 lines
-3. **Use `{baseDir}`** - For portable file references
+3. **Use `${CLAUDE_SKILL_DIR}`** - For portable file references
 
 ---
 
@@ -477,7 +477,7 @@ For simple edits, modify the XML directly.
 |-------|------|
 | Hardcoded paths | No `/tmp/`, `/home/user/`, absolute paths |
 | Description quality | Must include action verbs |
-| File references | Use `{baseDir}` for bundled files |
+| File references | Use `${CLAUDE_SKILL_DIR}` for bundled files |
 | Tool references | Must be in `allowed-tools` |
 
 ### Validator Script
@@ -622,7 +622,7 @@ Comprehensive description of purpose.
 
 1. Run analysis script:
 ```bash
-python {baseDir}/scripts/analyze.py input.file
+python ${CLAUDE_SKILL_DIR}/scripts/analyze.py input.file
 ```
 
 2. Review output in `analysis.json`
@@ -631,14 +631,14 @@ python {baseDir}/scripts/analyze.py input.file
 
 1. Apply transformations:
 ```bash
-python {baseDir}/scripts/transform.py analysis.json
+python ${CLAUDE_SKILL_DIR}/scripts/transform.py analysis.json
 ```
 
 ### Phase 3: Validation
 
 1. Validate results:
 ```bash
-python {baseDir}/scripts/validate.py output.file
+python ${CLAUDE_SKILL_DIR}/scripts/validate.py output.file
 ```
 
 ## Scripts Reference
@@ -745,7 +745,7 @@ Produce summary with findings.
 | Deep nesting | References 3+ levels deep | Keep 1 level deep |
 | No ToC | Long files hard to navigate | Add table of contents |
 | Windows paths | `scripts\helper.py` | Use forward slashes |
-| Absolute paths | `/home/user/file.txt` | Use `{baseDir}` |
+| Absolute paths | `/home/user/file.txt` | Use `${CLAUDE_SKILL_DIR}` |
 | Magic numbers | `TIMEOUT = 47` | Document why this value |
 
 ### Tool Anti-Patterns
@@ -816,7 +816,7 @@ Example.
 - [ ] author is `Name <email>` format
 - [ ] license is valid SPDX identifier
 - [ ] No hardcoded paths
-- [ ] File references use `{baseDir}`
+- [ ] File references use `${CLAUDE_SKILL_DIR}`
 - [ ] Body under 500 lines
 - [ ] Complex content in separate files
 

@@ -32,7 +32,7 @@ Comprehensive debugging toolkit for collecting diagnostics and resolving issues.
 ### Step 5: Generate Support Bundle
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Environment diagnostic information

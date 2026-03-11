@@ -28,7 +28,7 @@ Collect all necessary diagnostic information for Speak support tickets.
 2. **Sensitive Data Handling**
 3. **Submit to Support**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - `speak-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:

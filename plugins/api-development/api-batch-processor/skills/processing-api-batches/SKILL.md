@@ -38,17 +38,17 @@ Optimize bulk API operations with batch request endpoints, parallel execution wi
 8. Implement batch size limits and validation: maximum 1000 items per batch, reject oversized batches with 413, validate all items before processing any, and return all validation errors upfront.
 9. Write tests covering: small sync batches, large async batches, partial failure handling, progress tracking, concurrency limits, and batch size validation.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/batch.js` - Batch request endpoint with sync/async routing
-- `{baseDir}/src/batch/processor.js` - Batch execution engine with concurrency control
-- `{baseDir}/src/batch/validator.js` - Batch request validation and size limit enforcement
-- `{baseDir}/src/batch/progress.js` - Redis-backed progress tracking for async batches
-- `{baseDir}/src/batch/workers/` - Background worker for async batch processing
-- `{baseDir}/src/batch/results.js` - Per-item result aggregation with summary statistics
-- `{baseDir}/tests/batch/` - Batch processing integration tests
+- `${CLAUDE_SKILL_DIR}/src/routes/batch.js` - Batch request endpoint with sync/async routing
+- `${CLAUDE_SKILL_DIR}/src/batch/processor.js` - Batch execution engine with concurrency control
+- `${CLAUDE_SKILL_DIR}/src/batch/validator.js` - Batch request validation and size limit enforcement
+- `${CLAUDE_SKILL_DIR}/src/batch/progress.js` - Redis-backed progress tracking for async batches
+- `${CLAUDE_SKILL_DIR}/src/batch/workers/` - Background worker for async batch processing
+- `${CLAUDE_SKILL_DIR}/src/batch/results.js` - Per-item result aggregation with summary statistics
+- `${CLAUDE_SKILL_DIR}/tests/batch/` - Batch processing integration tests
 
 ## Error Handling
 
@@ -60,7 +60,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Partial transaction failure | Database transaction rolls back all items due to one failure | Use savepoints for per-item isolation; or process items individually outside a wrapping transaction |
 | Progress tracking stale | Worker crashed mid-batch; progress stops updating | Implement heartbeat monitoring; mark batch as failed after heartbeat timeout; enable retry from last checkpoint |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -70,7 +70,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Idempotent batch retry**: Client includes `idempotencyKey` per batch item; on retry, already-completed items return their cached result without re-execution, while failed items are re-attempted.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

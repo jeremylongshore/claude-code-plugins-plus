@@ -61,7 +61,7 @@ Use a queue (e.g., `p-queue`) to throttle requests to 80% of the per-second limi
 Open the circuit after 5 consecutive 429 errors. Wait 60s before half-open probe. Close after 3 successful requests.
 
 For detailed implementation code (TypeScript and Gosu), load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

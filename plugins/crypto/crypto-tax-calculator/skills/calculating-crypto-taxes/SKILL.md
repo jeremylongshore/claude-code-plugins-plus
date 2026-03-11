@@ -39,14 +39,14 @@ Export your transaction history from each exchange as CSV. Supported formats:
 | Coinbase | Reports → Tax documents → Transaction history CSV |
 | Binance | Orders → Trade History → Export |
 | Kraken | History → Export |
-| Generic | See `{baseDir}/references/exchange_formats.md` for column mapping |
+| Generic | See `${CLAUDE_SKILL_DIR}/references/exchange_formats.md` for column mapping |
 
 ### Step 2: Run Basic Tax Calculation
 
 Execute the tax calculator with your transaction file:
 
 ```bash
-python {baseDir}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions your_trades.csv --year 2025
 ```
 
 This uses FIFO (IRS default) and outputs:
@@ -59,7 +59,7 @@ This uses FIFO (IRS default) and outputs:
 Compare different methods to understand tax implications:
 
 ```bash
-python {baseDir}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --compare-methods
 ```
 
 Or specify a method:
@@ -75,7 +75,7 @@ Or specify a method:
 Create Form 8949 compatible CSV:
 
 ```bash
-python {baseDir}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions trades.csv --method fifo --year 2025 --output form_8949.csv --format csv
 ```
 
 Output includes:
@@ -91,7 +91,7 @@ Output includes:
 For staking, airdrops, or mining income:
 
 ```bash
-python {baseDir}/scripts/tax_calculator.py --transactions all_events.csv --income-report
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions all_events.csv --income-report
 ```
 
 This identifies:
@@ -105,7 +105,7 @@ This identifies:
 Combine multiple exchange exports:
 
 ```bash
-python {baseDir}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025
+python ${CLAUDE_SKILL_DIR}/scripts/tax_calculator.py --transactions coinbase.csv binance.csv kraken.csv --year 2025
 ```
 
 The tool:
@@ -163,7 +163,7 @@ Total Income:                                     $485.00
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **Missing columns**: Verify CSV format matches exchange template
@@ -172,7 +172,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed usage examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 
 ### Quick Examples
 
@@ -198,7 +198,7 @@ python tax_calculator.py --transactions trades.csv --verbose --show-lots
 
 ## Configuration
 
-Settings in `{baseDir}/config/settings.yaml`:
+Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 - **Default method**: Cost basis method (fifo, lifo, hifo)
 - **Tax year start**: January 1 (US) or fiscal year

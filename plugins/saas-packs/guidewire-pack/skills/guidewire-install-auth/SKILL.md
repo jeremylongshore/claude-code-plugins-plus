@@ -36,7 +36,7 @@ Set up Guidewire InsuranceSuite development environment and configure Cloud API 
 ### Step 3: Register Application with Guidewire Hub
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 1. Log into Guidewire Cloud Console (GCC) at `https://gcc.guidewire.com`
 2. Navigate to **Identity & Access > Applications**

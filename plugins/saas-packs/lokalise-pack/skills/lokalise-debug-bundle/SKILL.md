@@ -25,7 +25,7 @@ Collect all necessary diagnostic information for Lokalise support tickets.
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - `lokalise-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:

@@ -61,7 +61,7 @@ This skill can be integrated with other security tools, such as vulnerability sc
 
 ## Prerequisites
 
-- Access to codebase and configuration files in {baseDir}/
+- Access to codebase and configuration files in ${CLAUDE_SKILL_DIR}/
 - Security scanning tools installed as needed
 - Understanding of security standards and best practices
 - Permissions for security analysis operations

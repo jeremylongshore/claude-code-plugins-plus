@@ -80,7 +80,7 @@ Compare current state against SOC 2 requirements:
 
 Organize evidence by Trust Service Criteria:
 ```
-{baseDir}/soc2-audit/
+${CLAUDE_SKILL_DIR}/soc2-audit/
 ├── CC1-control-environment/
 │   ├── org-chart.pdf
 │   ├── security-policy.md

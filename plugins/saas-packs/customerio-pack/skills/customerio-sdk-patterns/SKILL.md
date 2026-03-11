@@ -38,7 +38,7 @@ Build an event queue that buffers track calls, auto-flushes on size threshold or
 Create a singleton factory that validates credentials and reuses a single TrackClient instance across the application.
 
 For detailed implementation code and patterns, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Type-safe Customer.io client with TypeScript interfaces

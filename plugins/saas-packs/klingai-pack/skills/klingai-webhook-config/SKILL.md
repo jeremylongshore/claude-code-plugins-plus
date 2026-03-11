@@ -52,4 +52,4 @@ Payload Structure:
 
 ## Detailed Reference
 
-See `{baseDir}/references/implementation.md` for complete webhook setup guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete webhook setup guide.

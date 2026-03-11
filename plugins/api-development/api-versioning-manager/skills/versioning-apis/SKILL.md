@@ -37,16 +37,16 @@ Implement API versioning strategies -- URL path (`/v1/`, `/v2/`), header-based (
 7. Create a breaking change detector that compares OpenAPI specs between versions and flags removed fields, changed types, new required parameters, and altered response structures.
 8. Write version compatibility tests that send v1-formatted requests and verify correct responses, ensuring the compatibility layer preserves backward compatibility.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/v1/` - Version 1 route definitions
-- `{baseDir}/src/routes/v2/` - Version 2 route definitions
-- `{baseDir}/src/middleware/version-router.js` - Version extraction and routing middleware
-- `{baseDir}/src/compatibility/` - Request/response transformation layers between versions
-- `{baseDir}/src/utils/breaking-change-detector.js` - OpenAPI diff tool for breaking changes
-- `{baseDir}/docs/migration-guide-v1-to-v2.md` - Consumer migration documentation
+- `${CLAUDE_SKILL_DIR}/src/routes/v1/` - Version 1 route definitions
+- `${CLAUDE_SKILL_DIR}/src/routes/v2/` - Version 2 route definitions
+- `${CLAUDE_SKILL_DIR}/src/middleware/version-router.js` - Version extraction and routing middleware
+- `${CLAUDE_SKILL_DIR}/src/compatibility/` - Request/response transformation layers between versions
+- `${CLAUDE_SKILL_DIR}/src/utils/breaking-change-detector.js` - OpenAPI diff tool for breaking changes
+- `${CLAUDE_SKILL_DIR}/docs/migration-guide-v1-to-v2.md` - Consumer migration documentation
 
 ## Error Handling
 
@@ -58,7 +58,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Version header ignored | Client sets version header but reverse proxy strips custom headers | Document required proxy configuration; add URL path fallback for header-based versioning |
 | Breaking change undetected | Semantic change (same field name, different meaning) not caught by schema diff | Add contract tests with business-logic assertions beyond schema structure |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Sunset lifecycle management**: Announce v1 deprecation with 6-month sunset timeline, add `Sunset` headers immediately, log v1 usage metrics to track migration progress, and auto-disable after sunset date.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

@@ -31,7 +31,7 @@ Implement security best practices for Clerk authentication in your application.
 - Step 5: Session Security
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Secure environment configuration

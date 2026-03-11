@@ -31,7 +31,7 @@ Learn common patterns and best practices for using the Clerk SDK effectively.
 - Pattern 5: Custom JWT Templates
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Server and client authentication patterns

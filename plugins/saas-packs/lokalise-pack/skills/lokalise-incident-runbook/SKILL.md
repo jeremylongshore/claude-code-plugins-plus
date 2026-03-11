@@ -33,7 +33,7 @@ Rapid incident response procedures for Lokalise-related outages and issues.
 6. **Post-Incident**
 7. **Rollback Procedures**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Issue identified and categorized

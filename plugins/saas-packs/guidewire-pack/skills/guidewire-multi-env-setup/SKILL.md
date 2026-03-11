@@ -59,7 +59,7 @@ Use cloud secret managers (GCP Secret Manager, AWS Secrets Manager) to store per
 Enforce promotion paths: DEV -> QA -> UAT -> PROD. Require change tickets for production. Run pre-promotion health checks and post-promotion smoke tests.
 
 For detailed code implementations (properties files, Gradle config, TypeScript managers, promotion workflow), load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Environment Matrix
 

@@ -174,7 +174,7 @@ When a skill is invoked, it injects **two user messages** into the conversation:
   content: [
     {
       type: "text",
-      text: "[Full SKILL.md content with {baseDir} substitutions]"
+      text: "[Full SKILL.md content with ${CLAUDE_SKILL_DIR} substitutions]"
     }
   ]
 }
@@ -413,7 +413,7 @@ Concrete usage examples with input/output.
 
 ## Resources
 
-Links to bundled files using {baseDir} variable.
+Links to bundled files using ${CLAUDE_SKILL_DIR} variable.
 ```
 
 ---
@@ -692,9 +692,9 @@ This skill produces:
 
 ## Resources
 
-- Advanced patterns: `{baseDir}/references/ADVANCED.md`
-- API reference: `{baseDir}/references/API_DOCS.md`
-- Utility script: `{baseDir}/scripts/validate.py`
+- Advanced patterns: `${CLAUDE_SKILL_DIR}/references/ADVANCED.md`
+- API reference: `${CLAUDE_SKILL_DIR}/references/API_DOCS.md`
+- Utility script: `${CLAUDE_SKILL_DIR}/scripts/validate.py`
 ```
 
 ### Content Guidelines
@@ -705,7 +705,7 @@ This skill produces:
 | **Word Count** | Target ~1,500-2,500 words, **max 5,000 words** to avoid context saturation |
 | **Token Budget** | Target ~2,500 tokens, max 5,000 tokens |
 | **Language** | Use **imperative voice** ("Analyze data", not "You should analyze") |
-| **Paths** | Always use `{baseDir}` variable, NEVER hardcode absolute paths |
+| **Paths** | Always use `${CLAUDE_SKILL_DIR}` variable, NEVER hardcode absolute paths |
 | **Examples** | Include at least **2-3 concrete examples** with input/output |
 | **Error Handling** | Document **4+ common failures** with solutions |
 | **Voice** | Third person in descriptions, imperative in instructions |
@@ -980,7 +980,7 @@ What works for Opus may need more detail for Haiku.
 
 - [ ] SKILL.md at root of skill folder
 - [ ] Body under 500 lines
-- [ ] Uses `{baseDir}` for all paths
+- [ ] Uses `${CLAUDE_SKILL_DIR}` for all paths
 - [ ] No hardcoded absolute paths
 - [ ] `allowed-tools` includes only necessary tools
 - [ ] Forward slashes in all paths (not backslashes)
@@ -1094,7 +1094,7 @@ version: "1.0.0"
 
 ```bash
 # Example command if applicable
-python {baseDir}/scripts/step1.py --input data.json
+python ${CLAUDE_SKILL_DIR}/scripts/step1.py --input data.json
 ```
 
 **Expected result**: [What should happen]
@@ -1168,15 +1168,15 @@ This skill produces:
 ## Resources
 
 **Reference Documentation**:
-- API reference: `{baseDir}/references/API_REFERENCE.md`
-- Advanced patterns: `{baseDir}/references/ADVANCED.md`
+- API reference: `${CLAUDE_SKILL_DIR}/references/API_REFERENCE.md`
+- Advanced patterns: `${CLAUDE_SKILL_DIR}/references/ADVANCED.md`
 
 **Utility Scripts**:
-- Data processor: `{baseDir}/scripts/process.py`
-- Validator: `{baseDir}/scripts/validate.py`
+- Data processor: `${CLAUDE_SKILL_DIR}/scripts/process.py`
+- Validator: `${CLAUDE_SKILL_DIR}/scripts/validate.py`
 
 **Templates**:
-- Report template: `{baseDir}/assets/report_template.md`
+- Report template: `${CLAUDE_SKILL_DIR}/assets/report_template.md`
 
 ## Version History
 
@@ -1365,7 +1365,7 @@ Run through this checklist every time you create or update a skill:
 - [ ] Body under 500 lines
 - [ ] All required sections present
 - [ ] Imperative voice throughout instructions
-- [ ] `{baseDir}` used for all paths
+- [ ] `${CLAUDE_SKILL_DIR}` used for all paths
 - [ ] 2-3 concrete examples with input/output
 - [ ] 4+ errors documented with solutions
 - [ ] One-level-deep references only
@@ -1496,7 +1496,7 @@ python -c "import yaml; yaml.safe_load(open('.claude/skills/nixtla-*/SKILL.md').
 **Validates**: Security scoping, temporary escalation
 
 #### Step 4: Execute Full Workflow with Bundled Resources
-- Test `{baseDir}` path substitutions
+- Test `${CLAUDE_SKILL_DIR}` path substitutions
 - Execute bundled `scripts/` via Bash tool
 - Load `references/` docs via Read tool
 - Verify `assets/` templates accessible
@@ -1526,8 +1526,8 @@ See: `/Users/max/projects/nixtla/docs/API_REFERENCE.md`
 
 ✅ **GOOD**:
 ```markdown
-Run: `python {baseDir}/scripts/analyze.py`
-See: `{baseDir}/references/API_REFERENCE.md`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/analyze.py`
+See: `${CLAUDE_SKILL_DIR}/references/API_REFERENCE.md`
 ```
 
 **Why this fails**: Breaks portability across different installations, team members, CI/CD environments.
@@ -1548,12 +1548,12 @@ See: `{baseDir}/references/API_REFERENCE.md`
 ```markdown
 ## TimeGPT API Reference
 
-See: `{baseDir}/references/TIMEGPT_API.md` for complete API documentation.
+See: `${CLAUDE_SKILL_DIR}/references/TIMEGPT_API.md` for complete API documentation.
 
 Quick examples:
 - [2-3 minimal examples, 200 words total]
 
-For troubleshooting: `{baseDir}/references/000-docs/157-DR-FAQS-troubleshooting.md`
+For troubleshooting: `${CLAUDE_SKILL_DIR}/references/000-docs/157-DR-FAQS-troubleshooting.md`
 ```
 
 **Why this fails**: Context saturation, partial instruction execution, increased costs.
@@ -1678,7 +1678,7 @@ When skills fail unexpectedly, check in this order:
 
 1. **Description budget**: `find .claude/skills/nixtla-*/SKILL.md -exec grep -A 5 '^description:' {} \; | wc -c`
 2. **Frontmatter validity**: YAML parses correctly, required fields present
-3. **Path references**: All `{baseDir}` substitutions resolve
+3. **Path references**: All `${CLAUDE_SKILL_DIR}` substitutions resolve
 4. **SKILL.md size**: Under 500 lines / 5,000 words
 5. **Tool permissions**: `allowed-tools` includes necessary tools only
 6. **Error code**: Check which of 5 validation errors is occurring
@@ -2326,8 +2326,8 @@ version: "1.0.0"
 
 ## Resources
 
-- Reference: `{baseDir}/references/API_REFERENCE.md`
-- Script: `{baseDir}/scripts/validate.py`
+- Reference: `${CLAUDE_SKILL_DIR}/references/API_REFERENCE.md`
+- Script: `${CLAUDE_SKILL_DIR}/scripts/validate.py`
 ```
 
 ---
@@ -2468,14 +2468,14 @@ SKILL.md → examples.md
 
 ## Path References
 
-### Always Use `{baseDir}`
+### Always Use `${CLAUDE_SKILL_DIR}`
 
 **NEVER hardcode absolute paths** - breaks portability:
 
 ```markdown
 # ✅ CORRECT
-Run: `python {baseDir}/scripts/validate.py`
-See: `{baseDir}/references/API_DOCS.md`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/validate.py`
+See: `${CLAUDE_SKILL_DIR}/references/API_DOCS.md`
 
 # ❌ WRONG
 Run: `python /home/user/skills/my-skill/scripts/validate.py`
@@ -2485,10 +2485,10 @@ Run: `python /home/user/skills/my-skill/scripts/validate.py`
 
 ```markdown
 # ✅ CORRECT (works everywhere)
-{baseDir}/scripts/helper.py
+${CLAUDE_SKILL_DIR}/scripts/helper.py
 
 # ❌ WRONG (breaks on Unix)
-{baseDir}\scripts\helper.py
+${CLAUDE_SKILL_DIR}\scripts\helper.py
 ```
 
 ---
@@ -2568,13 +2568,13 @@ What works for Opus may need more detail for Haiku.
 
 ```markdown
 ### Step 1: Fetch Data
-Run: `python {baseDir}/scripts/fetch_data.py --output data.json`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --output data.json`
 
 ### Step 2: Transform
-Run: `python {baseDir}/scripts/transform.py --input data.json`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/transform.py --input data.json`
 
 ### Step 3: Report
-Run: `python {baseDir}/scripts/generate_report.py`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/generate_report.py`
 ```
 
 ### Pattern 2: Validation Loop
@@ -2584,7 +2584,7 @@ Run: `python {baseDir}/scripts/generate_report.py`
 Edit the configuration file.
 
 ### Step 2: Validate
-Run: `python {baseDir}/scripts/validate.py`
+Run: `python ${CLAUDE_SKILL_DIR}/scripts/validate.py`
 
 ### Step 3: Fix and repeat
 If validation fails, fix issues and run validation again.
@@ -2623,7 +2623,7 @@ Copy this checklist and track progress:
 
 - [ ] SKILL.md at root of skill folder
 - [ ] Body under **500 lines**
-- [ ] Uses `{baseDir}` for all paths
+- [ ] Uses `${CLAUDE_SKILL_DIR}` for all paths
 - [ ] No hardcoded absolute paths
 - [ ] `allowed-tools` includes only necessary tools
 - [ ] Forward slashes in all paths
@@ -2694,7 +2694,7 @@ MAJOR.MINOR.PATCH
 
 3. **`when_to_use` is undocumented** - Use detailed `description` instead
 
-4. **Hardcoded paths break portability** - Always use `{baseDir}`
+4. **Hardcoded paths break portability** - Always use `${CLAUDE_SKILL_DIR}`
 
 5. **Token budget filtering** - 15,000 chars total for all skill descriptions; verbose skills may be silently filtered
 

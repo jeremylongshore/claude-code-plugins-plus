@@ -44,7 +44,7 @@ Route API calls to the nearest Customer.io region (US/EU) based on user preferen
 Wrap all Customer.io operations with timing metrics to track latency, success rates, and error rates.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Performance Benchmarks
 | Operation | Target Latency | Notes |

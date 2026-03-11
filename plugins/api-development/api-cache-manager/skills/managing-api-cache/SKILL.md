@@ -38,16 +38,16 @@ Implement intelligent API response caching using Redis, Memcached, or in-memory 
 8. Add cache warming for critical endpoints: pre-populate cache entries on application startup or schedule for frequently accessed resources.
 9. Write tests verifying cache hits, misses, invalidation correctness, TTL expiration, and stale-while-revalidate behavior.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/middleware/cache.js` - Cache-aside middleware with hit/miss tracking
-- `{baseDir}/src/cache/key-generator.js` - Deterministic cache key generation
-- `{baseDir}/src/cache/invalidator.js` - Tag-based cache invalidation on mutations
-- `{baseDir}/src/cache/store.js` - Redis/Memcached cache store abstraction
-- `{baseDir}/src/config/cache-policies.js` - Per-endpoint TTL and caching policy configuration
-- `{baseDir}/tests/cache/` - Cache behavior verification tests
+- `${CLAUDE_SKILL_DIR}/src/middleware/cache.js` - Cache-aside middleware with hit/miss tracking
+- `${CLAUDE_SKILL_DIR}/src/cache/key-generator.js` - Deterministic cache key generation
+- `${CLAUDE_SKILL_DIR}/src/cache/invalidator.js` - Tag-based cache invalidation on mutations
+- `${CLAUDE_SKILL_DIR}/src/cache/store.js` - Redis/Memcached cache store abstraction
+- `${CLAUDE_SKILL_DIR}/src/config/cache-policies.js` - Per-endpoint TTL and caching policy configuration
+- `${CLAUDE_SKILL_DIR}/tests/cache/` - Cache behavior verification tests
 
 ## Error Handling
 
@@ -59,7 +59,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Cache key collision | Different requests generating identical cache keys | Include all varying parameters in key; hash the full normalized request for uniqueness |
 | Memory pressure | Cache grows unbounded consuming all available Redis memory | Configure Redis `maxmemory-policy` to `allkeys-lru`; set per-key size limits; monitor memory usage |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -69,7 +69,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **CDN edge caching**: Set `Cache-Control: public, max-age=300, stale-while-revalidate=60` on public endpoints, enabling CloudFront to serve cached responses at the edge while revalidating asynchronously.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

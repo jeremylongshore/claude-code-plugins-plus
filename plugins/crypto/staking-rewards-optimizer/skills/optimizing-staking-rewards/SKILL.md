@@ -43,7 +43,7 @@ Optional:
 To compare staking options for a specific asset:
 
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --asset ETH
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH
 ```
 
 This fetches current rates from DeFiLlama and displays:
@@ -58,7 +58,7 @@ This fetches current rates from DeFiLlama and displays:
 For gas-adjusted yields based on your stake amount:
 
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --asset ETH --amount 10
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --amount 10
 ```
 
 Adding `--amount` calculates:
@@ -71,7 +71,7 @@ Adding `--amount` calculates:
 Input current positions for optimization recommendations:
 
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --optimize \
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --optimize \
   --positions "10 ETH @ lido 4.0%, 100 ATOM @ native 18%, 50 DOT @ native 14%"
 ```
 
@@ -86,7 +86,7 @@ The optimizer will:
 For head-to-head protocol comparison:
 
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --compare --protocols lido,rocket-pool,frax-ether
 ```
 
 Compare metrics:
@@ -100,7 +100,7 @@ Compare metrics:
 For in-depth protocol analysis:
 
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --asset ETH --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --detailed
 ```
 
 Shows for each protocol:
@@ -116,10 +116,10 @@ Save analysis for further use:
 
 ```bash
 # JSON output
-python {baseDir}/scripts/staking_optimizer.py --asset ETH --format json --output staking.json
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format json --output staking.json
 
 # CSV for spreadsheets
-python {baseDir}/scripts/staking_optimizer.py --asset ETH --format csv --output staking.csv
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --format csv --output staking.csv
 ```
 
 ## Output
@@ -206,7 +206,7 @@ python {baseDir}/scripts/staking_optimizer.py --asset ETH --format csv --output 
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **API timeout**: Cached data used, shown with warning
@@ -218,32 +218,32 @@ Common issues:
 
 ### Example 1: Quick Comparison
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --asset ETH
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH
 # Shows all ETH staking options ranked by risk-adjusted return
 ```
 
 ### Example 2: Large Position Analysis
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --asset ETH --amount 100 --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --asset ETH --amount 100 --detailed
 # Shows gas-adjusted yields for 100 ETH with full risk analysis
 ```
 
 ### Example 3: Multi-Asset Research
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --assets ETH,SOL,ATOM --format csv
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --assets ETH,SOL,ATOM --format csv
 # Compares staking across multiple assets, exports to CSV
 ```
 
 ### Example 4: Portfolio Optimization
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --optimize \
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --optimize \
   --positions "50 ETH @ lido 3.6%, 500 SOL @ marinade 7.5%"
 # Analyzes current positions and suggests improvements
 ```
 
 ### Example 5: Protocol Deep Dive
 ```bash
-python {baseDir}/scripts/staking_optimizer.py --protocol rocket-pool --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/staking_optimizer.py --protocol rocket-pool --detailed
 # Full analysis of Rocket Pool including validator metrics
 ```
 

@@ -34,7 +34,7 @@ Implement enterprise-grade SSO, role-based access control, and organization mana
 - Step 7: API Route Protection
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - SAML SSO configured

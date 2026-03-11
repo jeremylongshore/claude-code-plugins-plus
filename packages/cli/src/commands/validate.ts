@@ -34,7 +34,7 @@ export async function validateCommand(
   if (targetPath) {
     baseDir = path.isAbsolute(targetPath) ? targetPath : path.resolve(process.cwd(), targetPath);
     if (!existsSync(baseDir)) {
-      console.error(chalk.red(`Error: Path not found: ${baseDir}`));
+      console.error(chalk.red(`Error: Path not found: $${CLAUDE_SKILL_DIR}`));
       process.exit(1);
     }
   } else {

@@ -43,7 +43,7 @@ Create an EventEmitter-based webhook handler with signature verification, per-ev
 Write Terraform for GCP Secret Manager secrets, Cloud Run service, Pub/Sub topics, and BigQuery tables for event analytics.
 
 For detailed implementation code and Terraform configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Core Customer.io service layer with EventEmitter

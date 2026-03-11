@@ -31,7 +31,7 @@ Collect all necessary debug information for Clerk troubleshooting and support.
 - Step 5: Generate Support Bundle
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Environment debug information

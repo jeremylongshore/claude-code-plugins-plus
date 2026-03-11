@@ -24,7 +24,7 @@ Sprint Workflow describes the convergent diffusion execution model used by the S
 
 ## Instructions
 
-1. **Phase 0 -- Load Specifications.** The orchestrator locates the sprint directory at `.claude/sprint/[N]/`, reads `specs.md` for requirements, reads `status.md` if resuming a prior iteration, and detects the project type for framework-specific agent selection. See `{baseDir}/references/sprint-phases.md` for the full phase reference.
+1. **Phase 0 -- Load Specifications.** The orchestrator locates the sprint directory at `.claude/sprint/[N]/`, reads `specs.md` for requirements, reads `status.md` if resuming a prior iteration, and detects the project type for framework-specific agent selection. See `${CLAUDE_SKILL_DIR}/references/sprint-phases.md` for the full phase reference.
 2. **Phase 1 -- Architectural Planning.** The project-architect agent reads `project-map.md` for architecture context and `project-goals.md` for business objectives. It produces specification files (`api-contract.md`, `backend-specs.md`, `frontend-specs.md`) and returns SPAWN REQUEST blocks for implementation agents.
 3. **Phase 2 -- Implementation.** The orchestrator spawns implementation agents in parallel based on the architect's SPAWN REQUEST blocks. Agents include `python-dev`, `nextjs-dev`, `cicd-agent`, and `allpurpose-agent`. Each agent reads its assigned spec files and the shared `api-contract.md`, then returns a structured report.
 4. **Phase 3 -- Testing.** Testing agents execute sequentially: `qa-test-agent` runs first (API and unit tests), then `ui-test-agent` runs browser-based E2E tests. Framework-specific diagnostics agents (e.g., `nextjs-diagnostics-agent`) run in parallel with UI tests. All agents produce test reports.
@@ -75,7 +75,7 @@ Iteration 3: All specs satisfied → FINALIZE
 
 ## Resources
 
-- `{baseDir}/references/sprint-phases.md` -- Detailed reference for all six phases with agent assignments and handoff rules
+- `${CLAUDE_SKILL_DIR}/references/sprint-phases.md` -- Detailed reference for all six phases with agent assignments and handoff rules
 - Agent patterns skill for SPAWN REQUEST format and report structure
 - Spec writing skill for authoring effective `specs.md` files
 - API contract skill for designing the shared interface between agents

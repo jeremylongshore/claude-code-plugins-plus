@@ -32,7 +32,7 @@ Deploy Speak-powered language learning applications to popular platforms with pr
 4. **Environment Configuration Pattern**
 5. **Health Check Endpoint**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Application deployed to production

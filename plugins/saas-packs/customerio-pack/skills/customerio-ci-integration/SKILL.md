@@ -44,7 +44,7 @@ Add linting and type-checking hooks that run on Customer.io integration files be
 Create environment validation scripts that verify credentials are available before tests run.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - GitHub Actions workflow for testing

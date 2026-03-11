@@ -32,7 +32,7 @@ Set up CI/CD pipelines with Clerk authentication testing.
 - Step 6: Sample E2E Tests
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - GitHub Actions workflows configured

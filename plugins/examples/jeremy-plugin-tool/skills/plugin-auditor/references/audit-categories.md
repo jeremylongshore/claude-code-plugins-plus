@@ -27,7 +27,7 @@ grep -r "AKIA[0-9A-Z]{16}" --exclude=README.md
 grep -r "BEGIN.*PRIVATE KEY" --exclude=README.md
 
 # Check for dangerous patterns
-grep -r "rm -rf /" | grep -v "/var/" | grep -v "{baseDir}/tmp/"
+grep -r "rm -rf /" | grep -v "/var/" | grep -v "${CLAUDE_SKILL_DIR}/tmp/"
 grep -r "eval\s*\(" --exclude=README.md
 ```
 

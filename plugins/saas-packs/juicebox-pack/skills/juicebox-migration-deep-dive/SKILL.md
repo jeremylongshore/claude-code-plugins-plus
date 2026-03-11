@@ -33,7 +33,7 @@ Advanced strategies for migrating data to Juicebox from other recruiting and peo
 - Step 6: Rollback Strategy
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Data assessment tools

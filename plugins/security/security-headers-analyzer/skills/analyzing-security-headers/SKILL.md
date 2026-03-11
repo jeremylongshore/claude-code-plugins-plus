@@ -23,7 +23,7 @@ Evaluate HTTP response headers for web applications against OWASP Secure Headers
 - Target URL or domain name accessible over the network
 - Authorization to perform HTTP requests against the target domain
 - Network connectivity for both HTTP and HTTPS protocols
-- Optional: write access to `{baseDir}/security-reports/` for persisting results
+- Optional: write access to `${CLAUDE_SKILL_DIR}/security-reports/` for persisting results
 
 ## Instructions
 
@@ -43,7 +43,7 @@ Evaluate HTTP response headers for web applications against OWASP Secure Headers
 7. Calculate a security grade: A+ (95-100), A (85-94), B (75-84), C (65-74), D (50-64), F (<50) based on weighted presence and correctness of each header.
 8. Generate per-header remediation directives with configuration examples for Nginx, Apache, and Cloudflare.
 
-See `{baseDir}/references/implementation.md` for the five-phase implementation workflow.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the five-phase implementation workflow.
 
 ## Output
 
@@ -75,6 +75,6 @@ See `{baseDir}/references/implementation.md` for the five-phase implementation w
 - Security Headers Scanner: https://securityheaders.com/
 - Content Security Policy Reference: https://content-security-policy.com/
 - HSTS Preload Submission: https://hstspreload.org/
-- `{baseDir}/references/errors.md` -- full error handling reference
-- `{baseDir}/references/examples.md` -- additional usage examples
+- `${CLAUDE_SKILL_DIR}/references/errors.md` -- full error handling reference
+- `${CLAUDE_SKILL_DIR}/references/examples.md` -- additional usage examples
 - https://intentsolutions.io

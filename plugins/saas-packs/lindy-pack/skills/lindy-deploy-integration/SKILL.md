@@ -33,7 +33,7 @@ Deploy Lindy AI agent integrations to production environments. Lindy agents run 
 ### Step 5: Health Check
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

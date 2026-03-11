@@ -50,7 +50,7 @@ Use feature flags with hash-based percentage rollout to gradually shift traffic 
 Verify new SDK is installed, all tests pass, error rates are stable, and delivery metrics are normal.
 
 For detailed code examples and migration scripts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Migration Checklist
 - [ ] Current version documented

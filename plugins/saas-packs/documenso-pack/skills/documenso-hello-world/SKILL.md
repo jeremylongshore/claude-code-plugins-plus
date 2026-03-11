@@ -35,7 +35,7 @@ Create a new file `documenso-hello.ts` (or `.py` for Python).
 ### Step 3: Upload PDF and Add Recipient
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 **TypeScript (Complete Example):**
 ### Python Example

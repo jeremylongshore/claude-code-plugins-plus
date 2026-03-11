@@ -31,7 +31,7 @@ Complete checklist for deploying Speak language learning integrations to product
 3. **Alert Configuration**
 4. **Production Monitoring Dashboard**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Deployed Speak integration

@@ -126,10 +126,23 @@ description: |
 allowed-tools: Read, Write, Edit, Bash(npm:*), Glob
 version: 1.0.0
 author: Name <email>
+license: MIT
+# Optional fields:
+# model: sonnet                    # LLM model override
+# context: fork                    # Run in subagent
+# agent: Explore                   # Subagent type
+# user-invocable: false            # Hide from / menu
+# argument-hint: "<file-path>"     # Autocomplete hint
+# hooks: { pre-tool-call: ... }    # Lifecycle hooks
+# compatibility: "Node.js >= 18"   # Environment requirements (AgentSkills.io)
+# compatible-with: claude-code, cursor  # Platform compatibility
+# tags: [devops, ci]               # Discovery tags
 ---
 ```
 
 Valid tools: `Read`, `Write`, `Edit`, `Bash`, `Glob`, `Grep`, `WebFetch`, `WebSearch`, `Task`, `TodoWrite`, `NotebookEdit`, `AskUserQuestion`, `Skill`
+
+Path variable: Use `${CLAUDE_SKILL_DIR}` for portable file references within skills.
 
 ## Adding a New Plugin
 

@@ -67,7 +67,7 @@ Use this skill to design, implement, and deploy Firebase applications that call 
 
 ## Resources
 
-- Full detailed guide (kept for reference): `{baseDir}/references/SKILL.full.md`
+- Full detailed guide (kept for reference): `${CLAUDE_SKILL_DIR}/references/SKILL.full.md`
 - Firebase docs: https://firebase.google.com/docs
 - Cloud Functions for Firebase: https://firebase.google.com/docs/functions
 - Vertex AI docs: https://cloud.google.com/vertex-ai/docs

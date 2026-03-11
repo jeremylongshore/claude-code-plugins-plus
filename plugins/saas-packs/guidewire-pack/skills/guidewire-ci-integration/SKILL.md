@@ -48,7 +48,7 @@ Create a `CITestBase` class with database health checks, test data cleanup for `
 Write `deploy-to-cloud.sh` that authenticates via OAuth2, uploads the configuration package ZIP, and polls deployment status until complete or failed.
 
 For complete workflow files, Jenkinsfile, Gradle config, and deployment scripts, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

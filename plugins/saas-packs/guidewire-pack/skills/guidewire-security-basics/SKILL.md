@@ -32,7 +32,7 @@ Implement comprehensive security for Guidewire InsuranceSuite including OAuth2 a
 Implement security checklist.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Authentication Architecture

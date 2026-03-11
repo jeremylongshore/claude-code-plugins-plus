@@ -30,7 +30,7 @@ Before using this skill, ensure you have:
 ### Step 1: Navigate to Scripts Directory
 
 ```bash
-cd {baseDir}/scripts
+cd ${CLAUDE_SKILL_DIR}/scripts
 ```
 
 ### Step 2: Choose Your Command
@@ -87,7 +87,7 @@ python whale_monitor.py labels --type exchange    # List by type
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 - API rate limit handling
 - Network timeout recovery
 - Invalid address formats
@@ -116,7 +116,7 @@ python whale_monitor.py track 0x28c6c...
 python whale_monitor.py recent --format json > whales.json
 ```
 
-See `{baseDir}/references/examples.md` for more usage patterns.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for more usage patterns.
 
 ## Resources
 

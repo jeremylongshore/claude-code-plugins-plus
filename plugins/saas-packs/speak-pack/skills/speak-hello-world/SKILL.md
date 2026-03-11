@@ -26,7 +26,7 @@ Minimal working example demonstrating core Speak functionality for AI-powered la
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working code file with Speak client initialization

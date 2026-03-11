@@ -31,7 +31,7 @@ Set up Customer.io SDK and configure authentication credentials for email, push,
 ### Step 3: Verify Connection
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Installed SDK package in node_modules or site-packages

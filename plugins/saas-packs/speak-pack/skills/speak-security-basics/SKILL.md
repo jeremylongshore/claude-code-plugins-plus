@@ -27,7 +27,7 @@ Security best practices for Speak API keys, user data, and audio content in lang
 ## Instructions
 1. **Security Checklist**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Secure API key storage

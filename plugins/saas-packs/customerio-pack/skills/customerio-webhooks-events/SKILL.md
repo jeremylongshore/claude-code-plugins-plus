@@ -44,7 +44,7 @@ Query Customer.io's Reporting API for delivery metrics and campaign performance 
 Forward webhook events to BigQuery (or your data warehouse) for analytics and reporting.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Webhook event type definitions

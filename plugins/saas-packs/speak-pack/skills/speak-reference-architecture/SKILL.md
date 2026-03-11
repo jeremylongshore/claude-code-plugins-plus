@@ -32,7 +32,7 @@ Production-ready architecture patterns for Speak language learning integrations.
 5. **Configuration Management**
 6. **Flagship Skills**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Structured project layout

@@ -42,14 +42,14 @@ Before using this skill, ensure:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
 - Genkit Deployment: https://genkit.dev/docs/deployment
 - Firebase Terraform: https://registry.terraform.io/providers/hashicorp/google/latest
-- Genkit examples in {baseDir}/genkit-examples/
+- Genkit examples in ${CLAUDE_SKILL_DIR}/genkit-examples/

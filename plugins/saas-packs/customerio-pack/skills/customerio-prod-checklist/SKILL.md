@@ -67,7 +67,7 @@ Execute production smoke tests verifying API connectivity and event tracking.
 Document rollback triggers, steps, and contacts. Set up feature flags for quick disable.
 
 For detailed audit scripts, smoke test commands, and monitoring configuration, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Solution |

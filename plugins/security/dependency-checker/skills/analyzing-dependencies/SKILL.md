@@ -20,20 +20,20 @@ actionable remediation guidance with upgrade paths.
 
 ## Prerequisites
 
-- Access to the target project directory and manifest files in `{baseDir}/`
+- Access to the target project directory and manifest files in `${CLAUDE_SKILL_DIR}/`
 - At least one package manager CLI available: `npm`, `pip`/`pip-audit`, `composer`, `gem`, `go`, or `cargo`
 - Network access for querying vulnerability databases (NVD, GitHub Advisory Database, OSV)
-- Reference: `{baseDir}/references/README.md` for npm/pip audit report formats, license compatibility matrix, and dependency management best practices
+- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for npm/pip audit report formats, license compatibility matrix, and dependency management best practices
 
 ## Instructions
 
-1. Detect the project ecosystem by scanning `{baseDir}/` for manifest files: `package.json` and `package-lock.json` (npm/Node.js), `requirements.txt`/`pyproject.toml`/`Pipfile.lock` (Python), `composer.json`/`composer.lock` (PHP), `Gemfile`/`Gemfile.lock` (Ruby), `go.mod`/`go.sum` (Go), `Cargo.toml`/`Cargo.lock` (Rust).
+1. Detect the project ecosystem by scanning `${CLAUDE_SKILL_DIR}/` for manifest files: `package.json` and `package-lock.json` (npm/Node.js), `requirements.txt`/`pyproject.toml`/`Pipfile.lock` (Python), `composer.json`/`composer.lock` (PHP), `Gemfile`/`Gemfile.lock` (Ruby), `go.mod`/`go.sum` (Go), `Cargo.toml`/`Cargo.lock` (Rust).
 2. For npm projects, run `npm audit --json` and parse the structured output. Map each advisory to its CVE identifier, CVSS score, severity level, vulnerable version range, and patched version.
 3. For Python projects, run `pip-audit --format=json` or parse `safety check --json` output. Cross-reference each vulnerability against the OSV database for additional context.
 4. For other ecosystems, run the equivalent audit command (`composer audit`, `bundle audit`, `cargo audit`, `govulncheck`) and normalize the output to a common finding format.
 5. Analyze the dependency tree for transitive vulnerabilities -- identify which direct dependency pulls in the vulnerable transitive dependency, and whether upgrading the direct dependency resolves the issue.
 6. Check for outdated packages by comparing installed versions against the latest available versions. Categorize updates as patch (safe), minor (likely safe), or major (breaking changes possible).
-7. Audit license compliance by extracting license declarations from each dependency. Flag packages using copyleft licenses (GPL, AGPL) in proprietary projects, packages with no declared license, and packages with license conflicts per the compatibility matrix in `{baseDir}/references/README.md`.
+7. Audit license compliance by extracting license declarations from each dependency. Flag packages using copyleft licenses (GPL, AGPL) in proprietary projects, packages with no declared license, and packages with license conflicts per the compatibility matrix in `${CLAUDE_SKILL_DIR}/references/README.md`.
 8. Identify abandoned or unmaintained packages: flag dependencies with no releases in over 2 years, archived repositories, or known deprecation notices.
 9. Classify each finding by severity (critical, high, medium, low) using CVSS scores: critical >= 9.0, high >= 7.0, medium >= 4.0, low < 4.0.
 10. Generate a remediation plan with specific upgrade commands, alternative packages for abandoned dependencies, and a priority order based on severity and exploitability.
@@ -62,7 +62,7 @@ actionable remediation guidance with upgrade paths.
 
 ### npm Pre-Deployment Audit
 
-Run `npm audit --json` in `{baseDir}/`. Parse the output to identify critical
+Run `npm audit --json` in `${CLAUDE_SKILL_DIR}/`. Parse the output to identify critical
 and high severity advisories. For each, trace the dependency chain from direct
 dependency to vulnerable package. Produce upgrade commands:
 `npm install express@4.19.2` to resolve CVE-2024-XXXXX in `path-to-regexp`.
@@ -70,7 +70,7 @@ Flag any advisory without a fix available as requiring a workaround or alternati
 
 ### Python Dependency Security Check
 
-Run `pip-audit --format=json -r {baseDir}/requirements.txt`. Map each
+Run `pip-audit --format=json -r ${CLAUDE_SKILL_DIR}/requirements.txt`. Map each
 vulnerability to its CVE, CVSS score, and fixed version. For transitive
 dependencies, identify the direct dependency pulling in the vulnerable package.
 Recommend pinning to safe versions in `requirements.txt` and adding
@@ -78,7 +78,7 @@ Recommend pinning to safe versions in `requirements.txt` and adding
 
 ### License Compliance Scan
 
-Extract licenses from `{baseDir}/node_modules/` using `license-checker --json`
+Extract licenses from `${CLAUDE_SKILL_DIR}/node_modules/` using `license-checker --json`
 or equivalent. Flag any GPL-3.0 or AGPL-3.0 licensed package used in a
 proprietary application as a license conflict. Flag packages with `UNLICENSED`
 or missing license fields as requiring legal review before production use.

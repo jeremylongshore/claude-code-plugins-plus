@@ -58,7 +58,7 @@ This skill can be integrated with monitoring tools to automatically collect SLI 
 
 ## Prerequisites
 
-- SLI definitions stored in {baseDir}/slos/sli-definitions.yaml
+- SLI definitions stored in ${CLAUDE_SKILL_DIR}/slos/sli-definitions.yaml
 - Access to monitoring and metrics systems
 - Historical performance data for baseline
 - Business requirements for service reliability

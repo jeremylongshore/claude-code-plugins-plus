@@ -61,8 +61,11 @@ ENTERPRISE_REQUIRED = {'allowed-tools', 'version', 'author', 'license'}
 # All required fields (Anthropic + Enterprise)
 REQUIRED_FIELDS = ANTHROPIC_REQUIRED | ENTERPRISE_REQUIRED
 
-# Optional fields per Anthropic spec
-OPTIONAL_FIELDS = {'model', 'disable-model-invocation', 'mode', 'tags', 'metadata', 'compatible-with'}
+# Optional fields per Anthropic spec + AgentSkills.io
+OPTIONAL_FIELDS = {
+    'model', 'disable-model-invocation', 'mode', 'tags', 'metadata', 'compatible-with',
+    'argument-hint', 'context', 'agent', 'user-invocable', 'hooks', 'compatibility',
+}
 
 # Deprecated fields (warn but don't error)
 DEPRECATED_FIELDS = {'when_to_use'}
@@ -83,9 +86,9 @@ REQUIRED_SECTIONS = [
 RE_FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n(.*)$", re.DOTALL)
 RE_DESCRIPTION_USE_WHEN = re.compile(r"\bUse when\b", re.IGNORECASE)
 RE_DESCRIPTION_TRIGGER_WITH = re.compile(r"\bTrigger with\b", re.IGNORECASE)
-RE_BASEDIR_SCRIPTS = re.compile(r"{baseDir}/scripts/([\w\-./]+)")
-RE_BASEDIR_REFERENCES = re.compile(r"{baseDir}/references/([\w\-./]+)")
-RE_BASEDIR_ASSETS = re.compile(r"{baseDir}/assets/([\w\-./]+)")
+RE_SKILLDIR_SCRIPTS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/scripts/([\w\-./]+)")
+RE_SKILLDIR_REFERENCES = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/references/([\w\-./]+)")
+RE_SKILLDIR_ASSETS = re.compile(r"\$\{CLAUDE_SKILL_DIR\}/assets/([\w\-./]+)")
 RE_FIRST_PERSON = re.compile(r"\b(I can|I will|I'm going to|I help)\b", re.IGNORECASE)
 RE_SECOND_PERSON = re.compile(r"\b(You can|You should|You will)\b", re.IGNORECASE)
 FORBIDDEN_WORDS = ("anthropic", "claude")
@@ -150,11 +153,13 @@ def score_progressive_disclosure(path: Path, body: str, fm: dict) -> dict:
     skill_dir = path.parent
 
     # Token Economy (10 pts) - Per Anthropic: SKILL.md should be concise
-    # 80-150 lines = full points, 150-300 = half, >300 = 0
+    # ≤150=10, 151-300=7, 301-500=4, >500=0
     if lines <= 150:
         breakdown['token_economy'] = (10, "Excellent: ≤150 lines")
     elif lines <= 300:
-        breakdown['token_economy'] = (5, f"Acceptable: {lines} lines (target ≤150)")
+        breakdown['token_economy'] = (7, f"Good: {lines} lines (target ≤150)")
+    elif lines <= 500:
+        breakdown['token_economy'] = (4, f"Acceptable: {lines} lines (target ≤150)")
     else:
         breakdown['token_economy'] = (0, f"Too long: {lines} lines (target ≤150)")
 
@@ -1067,6 +1072,44 @@ def validate_frontmatter(path: Path, fm: dict) -> Tuple[List[str], List[str]]:
             if p and p not in VALID_PLATFORMS:
                 warnings.append(f"[frontmatter] 'compatible-with' unknown platform: '{p}' (known: {', '.join(sorted(VALID_PLATFORMS))})")
 
+    # === NEW CLAUDE CODE SPEC FIELDS ===
+
+    # context field (fork for subagent execution)
+    if 'context' in fm:
+        ctx = fm['context']
+        if ctx not in ('fork',):
+            warnings.append(f"[frontmatter] 'context' value '{ctx}' not standard (use: fork)")
+
+    # agent field (subagent type)
+    if 'agent' in fm:
+        agent_val = str(fm['agent']).strip()
+        if not agent_val:
+            errors.append("[frontmatter] 'agent' must be non-empty if specified")
+
+    # user-invocable field (boolean)
+    if 'user-invocable' in fm:
+        ui = fm['user-invocable']
+        if not isinstance(ui, bool):
+            errors.append(f"[frontmatter] 'user-invocable' must be boolean, got: {type(ui).__name__}")
+
+    # argument-hint field (string autocomplete hint)
+    if 'argument-hint' in fm:
+        hint = str(fm['argument-hint']).strip()
+        if len(hint) > 200:
+            warnings.append("[frontmatter] 'argument-hint' exceeds 200 chars - keep hints concise")
+
+    # hooks field (skill-scoped lifecycle hooks)
+    if 'hooks' in fm:
+        hooks_val = fm['hooks']
+        if not isinstance(hooks_val, dict):
+            errors.append(f"[frontmatter] 'hooks' must be a mapping, got: {type(hooks_val).__name__}")
+
+    # compatibility field (AgentSkills.io environment requirements)
+    if 'compatibility' in fm:
+        compat_str = str(fm['compatibility']).strip()
+        if len(compat_str) > 500:
+            warnings.append("[frontmatter] 'compatibility' exceeds 500 chars")
+
     # === DEPRECATED FIELDS ===
 
     for field in DEPRECATED_FIELDS:
@@ -1309,7 +1352,7 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
         for pattern, desc in ABSOLUTE_PATH_PATTERNS:
             if pattern.search(line):
                 errors.append(
-                    f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '{{baseDir}}/...'"
+                    f"[body] Line {i}: contains absolute/OS-specific path ({desc}) - use '${{CLAUDE_SKILL_DIR}}/...'"
                 )
                 break
 
@@ -1357,14 +1400,14 @@ def validate_body(path: Path, body: str) -> Tuple[List[str], List[str]]:
 
 def validate_scripts_exist(path: Path, body: str) -> Tuple[List[str], List[str]]:
     """
-    Validate that all {baseDir}/scripts/... references point to real files.
+    Validate that all ${CLAUDE_SKILL_DIR}/scripts/... references point to real files.
     Returns (errors, warnings).
     """
     errors: List[str] = []
     warnings: List[str] = []
     skill_dir = path.parent.resolve()
 
-    referenced = set(m.group(1) for m in RE_BASEDIR_SCRIPTS.finditer(body))
+    referenced = set(m.group(1) for m in RE_SKILLDIR_SCRIPTS.finditer(body))
 
     for rel in sorted(referenced):
         script_path = (skill_dir / "scripts" / rel).resolve()
@@ -1378,7 +1421,7 @@ def validate_scripts_exist(path: Path, body: str) -> Tuple[List[str], List[str]]
 
         if not script_path.exists():
             warnings.append(
-                f"[scripts] Referenced script not found: '{{baseDir}}/scripts/{rel}' "
+                f"[scripts] Referenced script not found: '${{CLAUDE_SKILL_DIR}}/scripts/{rel}' "
                 f"(expected at {skill_dir.name}/scripts/{rel})"
             )
 
@@ -1387,14 +1430,14 @@ def validate_scripts_exist(path: Path, body: str) -> Tuple[List[str], List[str]]
 
 def validate_resource_files_exist(path: Path, body: str) -> Tuple[List[str], List[str]]:
     """
-    Validate that all {baseDir}/references/... and {baseDir}/assets/... references point to real files.
+    Validate that all ${CLAUDE_SKILL_DIR}/references/... and ${CLAUDE_SKILL_DIR}/assets/... references point to real files.
     Returns (errors, warnings).
     """
     errors: List[str] = []
     warnings: List[str] = []
     skill_dir = path.parent.resolve()
 
-    for rel in sorted(set(m.group(1) for m in RE_BASEDIR_REFERENCES.finditer(body))):
+    for rel in sorted(set(m.group(1) for m in RE_SKILLDIR_REFERENCES.finditer(body))):
         target = (skill_dir / "references" / rel).resolve()
         try:
             target.relative_to(skill_dir)
@@ -1403,11 +1446,11 @@ def validate_resource_files_exist(path: Path, body: str) -> Tuple[List[str], Lis
             continue
         if not target.exists():
             warnings.append(
-                f"[resources] Referenced file not found: '{{baseDir}}/references/{rel}' "
+                f"[resources] Referenced file not found: '${{CLAUDE_SKILL_DIR}}/references/{rel}' "
                 f"(expected at {skill_dir.name}/references/{rel})"
             )
 
-    for rel in sorted(set(m.group(1) for m in RE_BASEDIR_ASSETS.finditer(body))):
+    for rel in sorted(set(m.group(1) for m in RE_SKILLDIR_ASSETS.finditer(body))):
         target = (skill_dir / "assets" / rel).resolve()
         try:
             target.relative_to(skill_dir)
@@ -1416,7 +1459,7 @@ def validate_resource_files_exist(path: Path, body: str) -> Tuple[List[str], Lis
             continue
         if not target.exists():
             warnings.append(
-                f"[resources] Referenced file not found: '{{baseDir}}/assets/{rel}' "
+                f"[resources] Referenced file not found: '${{CLAUDE_SKILL_DIR}}/assets/{rel}' "
                 f"(expected at {skill_dir.name}/assets/{rel})"
             )
 

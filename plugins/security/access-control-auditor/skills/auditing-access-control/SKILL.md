@@ -20,11 +20,11 @@ grants, and violations of the principle of least privilege.
 
 ## Prerequisites
 
-- Access to the target codebase and configuration files in `{baseDir}/`
+- Access to the target codebase and configuration files in `${CLAUDE_SKILL_DIR}/`
 - Familiarity with the authorization model in use (RBAC, ABAC, ACL, or IAM)
 - `grep`, `find`, and standard shell utilities available via Bash
 - For cloud audits: CLI tools such as `aws iam`, `gcloud`, or `az role` installed and authenticated
-- Reference: `{baseDir}/references/README.md` for IAM best practices, ACL vulnerability patterns, and NIST/GDPR access control standards
+- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for IAM best practices, ACL vulnerability patterns, and NIST/GDPR access control standards
 
 ## Instructions
 
@@ -61,7 +61,7 @@ grants, and violations of the principle of least privilege.
 
 ### Auditing a Node.js Express API
 
-Scan route definitions in `{baseDir}/src/routes/` for missing authorization
+Scan route definitions in `${CLAUDE_SKILL_DIR}/src/routes/` for missing authorization
 middleware. Grep for `router.post`, `router.put`, `router.delete` and verify
 each has a corresponding `authMiddleware` or `requireRole()` call. Flag any
 state-changing endpoint lacking authorization as CWE-862 (Missing Authorization),
@@ -69,14 +69,14 @@ severity high.
 
 ### Reviewing AWS IAM Policies
 
-Parse all JSON policy files in `{baseDir}/infra/iam/`. Flag policies containing
+Parse all JSON policy files in `${CLAUDE_SKILL_DIR}/infra/iam/`. Flag policies containing
 `"Effect": "Allow"` with `"Resource": "*"` or `"Action": "*"` as CWE-269
 (Improper Privilege Management), severity critical. Recommend scoping to specific
 ARNs and actions per the principle of least privilege.
 
 ### RBAC Configuration Audit
 
-Analyze role definitions in `{baseDir}/config/roles.yaml`. Build a permission
+Analyze role definitions in `${CLAUDE_SKILL_DIR}/config/roles.yaml`. Build a permission
 matrix, identify roles with overlapping admin-level privileges, and flag any role
 that can both create and approve its own resources as a separation-of-duties
 violation (NIST AC-5), severity medium.

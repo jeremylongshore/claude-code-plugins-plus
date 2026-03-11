@@ -41,7 +41,7 @@ Build an orchestrator that plans work, delegates to specialized agents (research
 Create an HA client with primary/fallback Lindy instances and Redis caching for automatic failover.
 
 For detailed implementation code and architecture diagrams, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Architecture pattern selection guide

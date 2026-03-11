@@ -31,7 +31,7 @@ Documenso implements fair use rate limiting. While specific limits are not publi
 interface BackoffConfig {
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Documenso Fair Use Policy

@@ -45,24 +45,24 @@ pip install ta-lib scipy scikit-learn
 ### Step 1: Fetch Historical Data
 
 ```bash
-python {baseDir}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
+python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
 ```
 
-Data is cached to `{baseDir}/data/{symbol}_{interval}.csv` for reuse.
+Data is cached to `${CLAUDE_SKILL_DIR}/data/{symbol}_{interval}.csv` for reuse.
 
 ### Step 2: Run Backtest
 
 Basic backtest with default parameters:
 
 ```bash
-python {baseDir}/scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
 ```
 
 Advanced backtest with custom parameters:
 
 ```bash
 # Example: backtest with specific date range
-python {baseDir}/scripts/backtest.py \
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy rsi_reversal \
   --symbol ETH-USD \
   --period 1y \
@@ -72,7 +72,7 @@ python {baseDir}/scripts/backtest.py \
 
 ### Step 3: Analyze Results
 
-Results are saved to `{baseDir}/reports/` including:
+Results are saved to `${CLAUDE_SKILL_DIR}/reports/` including:
 - `*_summary.txt` - Performance metrics
 - `*_trades.csv` - Trade log
 - `*_equity.csv` - Equity curve data
@@ -83,7 +83,7 @@ Results are saved to `{baseDir}/reports/` including:
 Find optimal parameters via grid search:
 
 ```bash
-python {baseDir}/scripts/optimize.py \
+python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
   --strategy sma_crossover \
   --symbol BTC-USD \
   --period 1y \
@@ -155,7 +155,7 @@ python {baseDir}/scripts/optimize.py \
 
 ## Configuration
 
-Create `{baseDir}/config/settings.yaml`:
+Create `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 data:
@@ -175,11 +175,11 @@ risk:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for common issues and solutions.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for common issues and solutions.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed usage examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples including:
 - Multi-asset comparison
 - Walk-forward analysis
 - Parameter optimization workflows

@@ -37,7 +37,7 @@ Build production-grade Firebase Genkit applications including RAG systems, multi
 9. Enable OpenTelemetry tracing with custom span attributes for cost and latency tracking
 10. Test locally using the Genkit Developer UI, then deploy to Firebase Functions or Cloud Run with auto-scaling configuration
 
-See `{baseDir}/references/how-it-works.md` for the phased workflow and `{baseDir}/references/production-best-practices-applied.md` for the production checklist.
+See `${CLAUDE_SKILL_DIR}/references/how-it-works.md` for the phased workflow and `${CLAUDE_SKILL_DIR}/references/production-best-practices-applied.md` for the production checklist.
 
 ## Output
 
@@ -58,7 +58,7 @@ See `{baseDir}/references/how-it-works.md` for the phased workflow and `{baseDir
 | Retriever returns empty results | Vector database query found no matches above similarity threshold | Lower similarity threshold; verify embeddings are indexed; check embedding model version match |
 | Deployment timeout | Cold start exceeds Firebase Functions 60s limit | Increase memory allocation; use Cloud Run for long-running flows; enable min instances > 0 |
 
-See `{baseDir}/references/errors.md` for additional error scenarios.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for additional error scenarios.
 
 ## Examples
 
@@ -68,7 +68,7 @@ See `{baseDir}/references/errors.md` for additional error scenarios.
 
 **Scenario 3: Multi-Tool Agent** -- Define weather and calendar tools with typed schemas. Create an agent flow that routes user queries to appropriate tools, handles multi-turn conversations, and traces each tool execution for debugging. Deploy to Cloud Run with auto-scaling (2-10 instances).
 
-See `{baseDir}/references/workflow-examples.md` for complete code examples.
+See `${CLAUDE_SKILL_DIR}/references/workflow-examples.md` for complete code examples.
 
 ## Resources
 

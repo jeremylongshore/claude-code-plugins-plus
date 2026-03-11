@@ -44,7 +44,7 @@ Define role-based permissions (admin, editor, viewer) and enable audit logging f
 Implement user suppression and deletion for GDPR/CCPA compliance. Create anonymization functions for historical analytics data.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Security Checklist
 - [ ] API keys stored in secrets manager

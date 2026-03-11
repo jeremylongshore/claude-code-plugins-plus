@@ -28,7 +28,7 @@ Secondary workflow for Speak: Detailed pronunciation training with phoneme-level
 1. **Complete Workflow Example**
 2. **Workflow Comparison**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Detailed phoneme-level scores

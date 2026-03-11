@@ -32,7 +32,7 @@ Optimize Speak API performance with caching, audio preprocessing, and connection
 5. **Request Batching**
 6. **Performance Monitoring**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Reduced API latency

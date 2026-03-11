@@ -32,7 +32,7 @@ Implement Customer.io core features: segments, transactional messaging, data pip
 ### Feature 5: Data Pipeline Integration
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Transactional email sending capability

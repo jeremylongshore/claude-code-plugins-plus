@@ -36,7 +36,7 @@ kubectl rollout undo deployment/signing-service
 npm run test:smoke
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Pre-Deployment Checklist

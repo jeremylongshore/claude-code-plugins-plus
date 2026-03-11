@@ -16,7 +16,7 @@ This skill automates software development overnight by leveraging Git hooks to e
 
 ## Prerequisites
 
-- Access to project files in {baseDir}/
+- Access to project files in ${CLAUDE_SKILL_DIR}/
 - Required tools and dependencies installed
 - Understanding of skill functionality
 - Permissions for file operations
@@ -40,11 +40,11 @@ This skill automates software development overnight by leveraging Git hooks to e
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 

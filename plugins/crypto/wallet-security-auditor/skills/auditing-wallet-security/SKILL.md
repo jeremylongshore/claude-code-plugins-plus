@@ -35,7 +35,7 @@ Before using this skill, ensure you have:
 Scan wallet for all active ERC20 token approvals:
 
 ```bash
-cd {baseDir}/scripts
+cd ${CLAUDE_SKILL_DIR}/scripts
 python wallet_auditor.py approvals <address> --chain <chain>
 ```
 
@@ -158,7 +158,7 @@ python wallet_auditor.py chains
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling:
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -169,7 +169,7 @@ See `{baseDir}/references/errors.md` for comprehensive error handling:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ### Quick Security Check
 ```bash

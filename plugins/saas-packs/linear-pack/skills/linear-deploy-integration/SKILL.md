@@ -32,7 +32,7 @@ Deploy Linear-integrated applications and track deployments in Linear.
 - Step 6: Rollback Tracking
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Error | Cause | Solution |

@@ -2,7 +2,7 @@
 
 ### Step 1: Design API Structure
 Plan the API architecture and endpoints:
-1. Use Read tool to examine existing API specifications from {baseDir}/api-specs/
+1. Use Read tool to examine existing API specifications from ${CLAUDE_SKILL_DIR}/api-specs/
 2. Define resource models, endpoints, and HTTP methods
 3. Document request/response schemas and data types
 4. Identify authentication and authorization requirements

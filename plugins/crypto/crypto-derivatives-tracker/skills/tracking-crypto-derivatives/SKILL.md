@@ -152,7 +152,7 @@ python derivatives_tracker.py dashboard BTC ETH SOL
 python derivatives_tracker.py dashboard BTC --output json
 ```
 
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 
 ## Output
 
@@ -210,7 +210,7 @@ SHORT LIQUIDATIONS (above):
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **ERR_RATE_LIMIT**: Reduce request frequency or add API key
@@ -219,7 +219,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 Quick examples:
 

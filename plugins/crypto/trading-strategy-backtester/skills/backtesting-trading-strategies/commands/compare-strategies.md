@@ -27,7 +27,7 @@ Run multiple strategies on the same data and compare performance side by side.
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path("{baseDir}/scripts")))
+sys.path.insert(0, str(Path("${CLAUDE_SKILL_DIR}/scripts")))
 
 from backtest import load_data, run_backtest
 from fetch_data import parse_period
@@ -41,7 +41,7 @@ end = datetime.now()
 start = end - parse_period("1y")
 
 # Load data once
-data_dir = Path("{baseDir}/data")
+data_dir = Path("${CLAUDE_SKILL_DIR}/data")
 data = load_data(symbol, start, end, data_dir)
 data.attrs["symbol"] = symbol
 
@@ -69,7 +69,7 @@ Run individual backtests and compare the summary files:
 
 ```bash
 for strategy in sma_crossover ema_crossover rsi_reversal macd bollinger_bands; do
-  python {baseDir}/scripts/backtest.py \
+  python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
     --strategy $strategy --symbol BTC-USD --period 1y --quiet
 done
 ```

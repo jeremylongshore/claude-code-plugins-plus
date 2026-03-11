@@ -32,7 +32,7 @@ Optimize Clerk authentication for best performance and user experience.
 - Step 6: Edge Runtime Optimization
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Optimized middleware configuration

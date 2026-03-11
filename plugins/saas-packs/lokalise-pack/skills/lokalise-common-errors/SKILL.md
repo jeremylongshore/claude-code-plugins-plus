@@ -27,7 +27,7 @@ Quick reference for the most common Lokalise API errors and their solutions.
 1. **Quick Diagnostic Commands**
 2. **Escalation Path**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Error | Solution |

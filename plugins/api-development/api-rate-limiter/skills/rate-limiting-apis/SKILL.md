@@ -38,16 +38,16 @@ Implement sophisticated rate limiting using sliding window, token bucket, and fi
 8. Implement rate limit bypass for internal service-to-service calls using shared secret or mutual TLS identification to prevent internal traffic from consuming consumer quotas.
 9. Write tests that verify rate limits engage at exact thresholds, headers reflect correct remaining counts, and limits reset at the configured window boundary.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/middleware/rate-limiter.js` - Rate limiting middleware with algorithm selection
-- `{baseDir}/src/config/rate-limits.js` - Per-endpoint and per-tier rate limit configuration
-- `{baseDir}/src/utils/rate-limit-store.js` - Redis-backed distributed counter implementation
-- `{baseDir}/src/middleware/rate-limit-headers.js` - Standard rate limit response header injection
-- `{baseDir}/tests/rate-limiting/` - Rate limit threshold verification tests
-- `{baseDir}/docs/rate-limits.md` - Consumer-facing rate limit documentation
+- `${CLAUDE_SKILL_DIR}/src/middleware/rate-limiter.js` - Rate limiting middleware with algorithm selection
+- `${CLAUDE_SKILL_DIR}/src/config/rate-limits.js` - Per-endpoint and per-tier rate limit configuration
+- `${CLAUDE_SKILL_DIR}/src/utils/rate-limit-store.js` - Redis-backed distributed counter implementation
+- `${CLAUDE_SKILL_DIR}/src/middleware/rate-limit-headers.js` - Standard rate limit response header injection
+- `${CLAUDE_SKILL_DIR}/tests/rate-limiting/` - Rate limit threshold verification tests
+- `${CLAUDE_SKILL_DIR}/docs/rate-limits.md` - Consumer-facing rate limit documentation
 
 ## Error Handling
 
@@ -59,7 +59,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Inconsistent counts | Race condition in read-check-increment cycle | Use Redis `MULTI/EXEC` transaction or Lua script for atomic increment-and-check operations |
 | Bypass abuse | Internal bypass mechanism exploited by external client | Validate bypass credentials per-request; restrict bypass to specific IP ranges or mTLS certificates |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -69,7 +69,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Login endpoint protection**: Apply strict rate limit of 5 attempts per minute per IP on `/auth/login` to prevent brute force attacks, with progressive lockout (15 min, 1 hour, 24 hours) after repeated violations.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

@@ -24,11 +24,11 @@ API Contract guides the creation of `api-contract.md` files that serve as the sh
 
 ## Instructions
 
-1. Create `api-contract.md` in the sprint directory (`.claude/sprint/[N]/api-contract.md`). Define each endpoint using the standard format: HTTP method, route path, description, request body, response body with status code, and error codes. See `{baseDir}/references/writing-endpoints.md` for the full template.
-2. Define TypeScript interfaces for all request and response types. Use explicit types instead of `any`, mark optional fields with `?`, and use `string | null` for nullable values. Reference `{baseDir}/references/typescript-interfaces.md` for canonical type patterns.
-3. For list endpoints, include pagination parameters and the `PaginatedResponse<T>` wrapper. Standardize on `page`, `limit`, `sort`, and `order` query parameters as documented in `{baseDir}/references/pagination.md`.
+1. Create `api-contract.md` in the sprint directory (`.claude/sprint/[N]/api-contract.md`). Define each endpoint using the standard format: HTTP method, route path, description, request body, response body with status code, and error codes. See `${CLAUDE_SKILL_DIR}/references/writing-endpoints.md` for the full template.
+2. Define TypeScript interfaces for all request and response types. Use explicit types instead of `any`, mark optional fields with `?`, and use `string | null` for nullable values. Reference `${CLAUDE_SKILL_DIR}/references/typescript-interfaces.md` for canonical type patterns.
+3. For list endpoints, include pagination parameters and the `PaginatedResponse<T>` wrapper. Standardize on `page`, `limit`, `sort`, and `order` query parameters as documented in `${CLAUDE_SKILL_DIR}/references/pagination.md`.
 4. Document all response states: success (200, 201, 204), client errors (400, 401, 403, 404, 422), and empty states. Use a consistent error response format with `code`, `message`, and optional `details` fields.
-5. Follow best practices from `{baseDir}/references/best-practices.md`: be specific about field constraints (e.g., "string, required, valid email format"), include request/response examples, reference shared types instead of duplicating, and omit implementation details (no database columns, framework names, or file paths).
+5. Follow best practices from `${CLAUDE_SKILL_DIR}/references/best-practices.md`: be specific about field constraints (e.g., "string, required, valid email format"), include request/response examples, reference shared types instead of duplicating, and omit implementation details (no database columns, framework names, or file paths).
 6. Share the contract file path in SPAWN REQUEST blocks so both backend and frontend agents read the same interface definition.
 
 ## Output
@@ -109,7 +109,7 @@ interface ApiError {
 
 ## Resources
 
-- `{baseDir}/references/writing-endpoints.md` -- Endpoint definition template and key elements
-- `{baseDir}/references/typescript-interfaces.md` -- Canonical type definitions and guidelines
-- `{baseDir}/references/pagination.md` -- Pagination parameters and PaginatedResponse interface
-- `{baseDir}/references/best-practices.md` -- Contract authoring rules (specificity, DRY, no implementation details)
+- `${CLAUDE_SKILL_DIR}/references/writing-endpoints.md` -- Endpoint definition template and key elements
+- `${CLAUDE_SKILL_DIR}/references/typescript-interfaces.md` -- Canonical type definitions and guidelines
+- `${CLAUDE_SKILL_DIR}/references/pagination.md` -- Pagination parameters and PaginatedResponse interface
+- `${CLAUDE_SKILL_DIR}/references/best-practices.md` -- Contract authoring rules (specificity, DRY, no implementation details)

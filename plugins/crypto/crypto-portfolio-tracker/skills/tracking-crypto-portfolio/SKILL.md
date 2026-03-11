@@ -76,19 +76,19 @@ Run the tracker with appropriate options:
 
 ```bash
 # Quick portfolio summary
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json
 
 # Full holdings breakdown
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings
 
 # Detailed analysis with P&L and allocations
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed
 
 # Export to JSON
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
 
 # Export to CSV
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
 ```
 
 ### Step 3: Present Results
@@ -176,7 +176,7 @@ By default, positions > 25% allocation are flagged:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -187,30 +187,30 @@ See `{baseDir}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ### Quick Examples
 
 ```bash
 # Basic portfolio check
-python {baseDir}/scripts/portfolio_tracker.py --portfolio ~/crypto/holdings.json
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio ~/crypto/holdings.json
 
 # Show all holdings sorted by allocation
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
 
 # Detailed analysis with 15% threshold
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
 
 # Export for tax software
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
 
 # JSON export for trading bot
-python {baseDir}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_data.json
+python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_data.json
 ```
 
 ## Resources
 
 - **CoinGecko API**: https://www.coingecko.com/en/api - Free crypto market data
 - **Portfolio Schema**: See PRD.md for complete portfolio file format
-- **Configuration**: See `{baseDir}/config/settings.yaml` for options
-- See `{baseDir}/references/examples.md` for integration examples
+- **Configuration**: See `${CLAUDE_SKILL_DIR}/config/settings.yaml` for options
+- See `${CLAUDE_SKILL_DIR}/references/examples.md` for integration examples

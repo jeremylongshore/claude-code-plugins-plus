@@ -56,7 +56,7 @@ On `enrichment.completed`, push enriched data (company info, LinkedIn data) to y
 POST to `https://api.clay.com/v1/webhooks` with your endpoint URL, desired event types, and table ID.
 
 For complete TypeScript implementations and curl examples, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

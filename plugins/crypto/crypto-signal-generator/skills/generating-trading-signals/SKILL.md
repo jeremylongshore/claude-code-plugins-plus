@@ -48,7 +48,7 @@ pip install matplotlib
 Scan multiple assets for trading opportunities:
 
 ```bash
-python {baseDir}/scripts/scanner.py --watchlist crypto_top10 --period 6m
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_top10 --period 6m
 ```
 
 Output shows signal type (STRONG_BUY/BUY/NEUTRAL/SELL/STRONG_SELL) and confidence for each asset.
@@ -58,7 +58,7 @@ Output shows signal type (STRONG_BUY/BUY/NEUTRAL/SELL/STRONG_SELL) and confidenc
 Get full indicator breakdown for a specific symbol:
 
 ```bash
-python {baseDir}/scripts/scanner.py --symbols BTC-USD --detail
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
 ```
 
 Shows each indicator's contribution:
@@ -72,13 +72,13 @@ Find the best opportunities:
 
 ```bash
 # Only buy signals with 70%+ confidence
-python {baseDir}/scripts/scanner.py --filter buy --min-confidence 70 --rank confidence
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --filter buy --min-confidence 70 --rank confidence
 
 # Rank by most bullish
-python {baseDir}/scripts/scanner.py --rank bullish
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --rank bullish
 
 # Save results to JSON
-python {baseDir}/scripts/scanner.py --output signals.json
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --output signals.json
 ```
 
 ### Step 4: Use Custom Watchlists
@@ -86,8 +86,8 @@ python {baseDir}/scripts/scanner.py --output signals.json
 Available predefined watchlists:
 
 ```bash
-python {baseDir}/scripts/scanner.py --list-watchlists
-python {baseDir}/scripts/scanner.py --watchlist crypto_defi
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --list-watchlists
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --watchlist crypto_defi
 ```
 
 Watchlists: `crypto_top10`, `crypto_defi`, `crypto_layer2`, `stocks_tech`, `etfs_major`
@@ -159,7 +159,7 @@ Watchlists: `crypto_top10`, `crypto_defi`, `crypto_layer2`, `stocks_tech`, `etfs
 
 ## Configuration
 
-Edit `{baseDir}/config/settings.yaml`:
+Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 indicators:
@@ -179,14 +179,14 @@ signals:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for common issues:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for common issues:
 - API rate limits
 - Insufficient data handling
 - Network errors
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples:
 - Multi-timeframe analysis
 - Custom indicator parameters
 - Combining with backtester
@@ -198,10 +198,10 @@ Test signals historically:
 
 ```bash
 # Generate signal
-python {baseDir}/scripts/scanner.py --symbols BTC-USD --detail
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --symbols BTC-USD --detail
 
 # Backtest the strategy that generated the signal
-python {baseDir}/../trading-strategy-backtester/skills/backtesting-trading-strategies/scripts/backtest.py \
+python ${CLAUDE_SKILL_DIR}/../trading-strategy-backtester/skills/backtesting-trading-strategies/scripts/backtest.py \
   --strategy rsi_reversal --symbol BTC-USD --period 1y
 ```
 

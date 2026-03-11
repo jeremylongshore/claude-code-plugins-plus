@@ -31,7 +31,7 @@ Handle sensitive user data and audio recordings correctly when integrating with 
 3. **Learning Data Handling**
 4. **GDPR/CCPA Compliance**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Audio consent management

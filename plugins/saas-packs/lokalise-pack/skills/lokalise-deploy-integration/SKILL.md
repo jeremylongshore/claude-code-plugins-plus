@@ -32,7 +32,7 @@ Deploy applications with Lokalise translations to popular platforms with proper 
 5. **Health Check Endpoint**
 6. **Instructions**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Application deployed to production

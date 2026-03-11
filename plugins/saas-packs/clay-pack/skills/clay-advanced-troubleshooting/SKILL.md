@@ -49,7 +49,7 @@ Use `TimingAnalyzer` to measure each operation and detect latency anomalies. Mon
 Fill out the support escalation template with severity, request ID, reproduction steps, expected vs actual behavior, and attach all collected evidence.
 
 For complete debug scripts, TypeScript utilities, and escalation template, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

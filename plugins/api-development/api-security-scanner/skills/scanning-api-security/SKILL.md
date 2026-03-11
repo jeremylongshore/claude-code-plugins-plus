@@ -38,14 +38,14 @@ Detect API security vulnerabilities by scanning endpoint implementations, authen
 8. Check security headers (CORS, CSP, HSTS, X-Content-Type-Options) and verify CORS `Access-Control-Allow-Origin` is not set to wildcard `*` on authenticated endpoints.
 9. Scan dependencies for known CVEs and generate a prioritized remediation report with severity ratings and fix recommendations.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/reports/security-scan.json` - Machine-readable vulnerability report with severity ratings
-- `{baseDir}/reports/security-scan.md` - Human-readable report with remediation guidance
-- `{baseDir}/reports/endpoint-auth-matrix.md` - Endpoint-to-auth-middleware mapping table
-- `{baseDir}/reports/data-exposure-audit.md` - Fields returned vs. fields documented per endpoint
+- `${CLAUDE_SKILL_DIR}/reports/security-scan.json` - Machine-readable vulnerability report with severity ratings
+- `${CLAUDE_SKILL_DIR}/reports/security-scan.md` - Human-readable report with remediation guidance
+- `${CLAUDE_SKILL_DIR}/reports/endpoint-auth-matrix.md` - Endpoint-to-auth-middleware mapping table
+- `${CLAUDE_SKILL_DIR}/reports/data-exposure-audit.md` - Fields returned vs. fields documented per endpoint
 - Inline code comments marking identified vulnerabilities with `// SECURITY:` annotations
 
 ## Error Handling
@@ -58,7 +58,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | CORS misconfiguration missed | CORS configured at reverse proxy level, not in application code | Extend scan to include nginx/Apache config files and cloud provider CORS settings |
 | Dependency scan timeout | Large dependency tree with many transitive dependencies | Run dependency scan in parallel; cache vulnerability database locally |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Authentication flow review**: Trace the complete auth flow from login through token issuance, refresh, and revocation, identifying token lifetime issues, missing refresh rotation, and insecure token storage patterns.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

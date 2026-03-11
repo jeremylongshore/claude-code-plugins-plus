@@ -36,7 +36,7 @@ Lindy agents can connect to external services. Limit what each agent can access.
 ### Step 4: Audit Agent Actions
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 Log all agent actions for security review and debugging.
 

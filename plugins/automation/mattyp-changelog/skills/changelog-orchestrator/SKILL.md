@@ -23,39 +23,39 @@ This skill turns raw repo activity (merged PRs, issues, commits, optional Slack 
 ## Instructions
 
 1. Read `.changelog-config.json` from the repo root.
-2. Validate it with `{baseDir}/scripts/validate_config.py`.
+2. Validate it with `${CLAUDE_SKILL_DIR}/scripts/validate_config.py`.
 3. Decide date range:
-1. Load the configured markdown template (or fall back to `{baseDir}/assets/weekly-template.md`).
-2. Render the final markdown using `{baseDir}/scripts/render_template.py`.
+1. Load the configured markdown template (or fall back to `${CLAUDE_SKILL_DIR}/assets/weekly-template.md`).
+2. Render the final markdown using `${CLAUDE_SKILL_DIR}/scripts/render_template.py`.
 3. Ensure frontmatter contains at least `date` (ISO) and `version` (SemVer if known; otherwise `0.0.0`).
-1. Run deterministic checks using `{baseDir}/scripts/quality_score.py`.
+1. Run deterministic checks using `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`.
 2. If score is below threshold:
 1. Write the changelog file to the configured `output_path`.
 2. Create a branch `changelog-YYYY-MM-DD`, commit with `docs: add changelog for YYYY-MM-DD`.
 3. If `gh` is configured, open a PR; otherwise, print the exact commands the user should run.
 
 
-See `{baseDir}/references/implementation.md` for detailed implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for detailed implementation guide.
 
 ## Output
 
 - A markdown changelog draft (usually `CHANGELOG.md`), plus an optional PR URL.
-- A quality report (score + findings) from `{baseDir}/scripts/quality_score.py`.
+- A quality report (score + findings) from `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`.
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
-- Validate config: `{baseDir}/scripts/validate_config.py`
-- Render template: `{baseDir}/scripts/render_template.py`
-- Quality scoring: `{baseDir}/scripts/quality_score.py`
+- Validate config: `${CLAUDE_SKILL_DIR}/scripts/validate_config.py`
+- Render template: `${CLAUDE_SKILL_DIR}/scripts/render_template.py`
+- Quality scoring: `${CLAUDE_SKILL_DIR}/scripts/quality_score.py`
 - Default templates:
-  - `{baseDir}/assets/default-changelog.md`
-  - `{baseDir}/assets/weekly-template.md`
-  - `{baseDir}/assets/release-template.md`
+  - `${CLAUDE_SKILL_DIR}/assets/default-changelog.md`
+  - `${CLAUDE_SKILL_DIR}/assets/weekly-template.md`
+  - `${CLAUDE_SKILL_DIR}/assets/release-template.md`

@@ -72,7 +72,7 @@ Key patterns: use null-safe operators (`?.`, `?:`), add entities to bundles befo
 Use circuit breakers for external services, retry message queue deliveries with exponential backoff (max 3 retries), and implement deadlock detection for database operations.
 
 For detailed code implementations (TypeScript, Gosu, error wrappers), load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

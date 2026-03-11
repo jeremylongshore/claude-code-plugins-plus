@@ -25,7 +25,7 @@ Validates Claude Code plugin structure, JSON schemas, frontmatter format, securi
 ## Instructions
 
 1. Identify the target plugin path from context or user request. Default to the current working directory if the path contains a `.claude-plugin/` subdirectory.
-2. Validate required files exist (see `{baseDir}/references/validation-checks.md`):
+2. Validate required files exist (see `${CLAUDE_SKILL_DIR}/references/validation-checks.md`):
    - `.claude-plugin/plugin.json` present and valid JSON.
    - `README.md` present and non-empty.
    - `LICENSE` file present.
@@ -37,7 +37,7 @@ Validates Claude Code plugin structure, JSON schemas, frontmatter format, securi
    - **Commands** (`commands/*.md`): require `name`, `description`, `model` (one of `sonnet`, `opus`, `haiku`).
    - **Agents** (`agents/*.md`): require `name`, `description`, `model`.
    - **Skills** (`skills/*/SKILL.md`): require `name`, `description`; `allowed-tools` optional but validated against the allowed tools list if present.
-5. Validate directory structure matches the expected hierarchy (see `{baseDir}/references/validation-checks.md` for the complete structure diagram).
+5. Validate directory structure matches the expected hierarchy (see `${CLAUDE_SKILL_DIR}/references/validation-checks.md` for the complete structure diagram).
 6. Check script permissions: find all `.sh` files and verify they have execute permission. Report any that lack it with a fix command.
 7. Run security scans: search for hardcoded secrets, AWS keys, private keys, dangerous commands, and suspicious URLs.
 8. Validate marketplace compliance:
@@ -46,7 +46,7 @@ Validates Claude Code plugin structure, JSON schemas, frontmatter format, securi
    - Check for duplicate plugin names.
 9. Validate README content: confirm it contains installation, usage, and description sections.
 10. Check hook path variables: verify hooks use `${CLAUDE_PLUGIN_ROOT}` instead of hardcoded absolute paths (`/home/`, `/Users/`).
-11. Compile results into a validation report following the format in `{baseDir}/references/validation-report-format.md`.
+11. Compile results into a validation report following the format in `${CLAUDE_SKILL_DIR}/references/validation-report-format.md`.
 
 ## Output
 
@@ -72,7 +72,7 @@ A structured validation report containing:
 
 **Validate a specific plugin:**
 Trigger: "Validate the skills-powerkit plugin."
-Process: Run all 10 validation checks against `plugins/community/skills-powerkit/`. Identify 2 failures (script permissions, version mismatch). Provide fix commands: `chmod +x scripts/*.sh` and version update instruction. Report overall: FAILED (see `{baseDir}/references/examples.md`).
+Process: Run all 10 validation checks against `plugins/community/skills-powerkit/`. Identify 2 failures (script permissions, version mismatch). Provide fix commands: `chmod +x scripts/*.sh` and version update instruction. Report overall: FAILED (see `${CLAUDE_SKILL_DIR}/references/examples.md`).
 
 **Pre-commit readiness check:**
 Trigger: "Check if my plugin is ready to commit."
@@ -84,7 +84,7 @@ Process: Run the same validation checks that CI executes (`validate-all-plugins.
 
 ## Resources
 
-- `{baseDir}/references/validation-checks.md` -- complete list of all 10 validation categories with specific checks
-- `{baseDir}/references/validation-report-format.md` -- report template with pass/fail formatting
-- `{baseDir}/references/examples.md` -- validation scenario walkthroughs
-- `{baseDir}/references/errors.md` -- error handling patterns
+- `${CLAUDE_SKILL_DIR}/references/validation-checks.md` -- complete list of all 10 validation categories with specific checks
+- `${CLAUDE_SKILL_DIR}/references/validation-report-format.md` -- report template with pass/fail formatting
+- `${CLAUDE_SKILL_DIR}/references/examples.md` -- validation scenario walkthroughs
+- `${CLAUDE_SKILL_DIR}/references/errors.md` -- error handling patterns

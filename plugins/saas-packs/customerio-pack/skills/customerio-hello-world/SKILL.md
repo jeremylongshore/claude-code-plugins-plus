@@ -30,7 +30,7 @@ Create a minimal working Customer.io example that identifies a user and triggers
 ### Step 3: Verify in Dashboard
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 1. Go to Customer.io dashboard
 2. Navigate to People section
 3. Search for "user-123" or "hello@example.com"

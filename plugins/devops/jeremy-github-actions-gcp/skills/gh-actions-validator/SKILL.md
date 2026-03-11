@@ -47,11 +47,11 @@ Before using this skill, ensure:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
@@ -59,4 +59,4 @@ See `{baseDir}/references/examples.md` for detailed examples.
 - GitHub OIDC: https://docs.github.com/en/actions/deployment/security-hardening-your-deployments
 - Vertex AI Agent Engine: https://cloud.google.com/vertex-ai/docs/agent-engine
 - google-github-actions/auth: https://github.com/google-github-actions/auth
-- WIF setup guide in {baseDir}/docs/wif-setup.md
+- WIF setup guide in ${CLAUDE_SKILL_DIR}/docs/wif-setup.md

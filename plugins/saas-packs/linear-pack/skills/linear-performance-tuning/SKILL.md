@@ -32,7 +32,7 @@ Optimize Linear API usage for maximum performance and minimal latency.
 - Step 6: Query Complexity Monitoring
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Resources
 - [Linear GraphQL Best Practices](https://developers.linear.app/docs/graphql/best-practices)

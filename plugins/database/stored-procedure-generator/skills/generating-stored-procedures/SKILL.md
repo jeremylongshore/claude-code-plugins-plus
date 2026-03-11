@@ -187,12 +187,12 @@ Use the validation script to check procedure syntax:
 
 ```bash
 # Validate PostgreSQL procedure
-python3 {baseDir}/scripts/stored_procedure_syntax_validator.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/stored_procedure_syntax_validator.py \
     --db-type postgresql \
     --file procedure.sql
 
 # Validate MySQL procedure
-python3 {baseDir}/scripts/stored_procedure_syntax_validator.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/stored_procedure_syntax_validator.py \
     --db-type mysql \
     --file procedure.sql
 ```
@@ -201,14 +201,14 @@ python3 {baseDir}/scripts/stored_procedure_syntax_validator.py \
 
 ```bash
 # Deploy to PostgreSQL
-python3 {baseDir}/scripts/stored_procedure_deployer.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/stored_procedure_deployer.py \
     --db-type postgresql \
     --host localhost \
     --database mydb \
     --file procedure.sql
 
 # Deploy to MySQL
-python3 {baseDir}/scripts/stored_procedure_deployer.py \
+python3 ${CLAUDE_SKILL_DIR}/scripts/stored_procedure_deployer.py \
     --db-type mysql \
     --host localhost \
     --database mydb \
@@ -259,8 +259,8 @@ Claude: I'll create an audit trigger that:
 
 ## Resources
 
-- `{baseDir}/references/postgresql_stored_procedure_best_practices.md`
-- `{baseDir}/references/mysql_stored_procedure_best_practices.md`
-- `{baseDir}/references/sqlserver_stored_procedure_best_practices.md`
-- `{baseDir}/references/database_security_guidelines.md`
-- `{baseDir}/references/stored_procedure_optimization_techniques.md`
+- `${CLAUDE_SKILL_DIR}/references/postgresql_stored_procedure_best_practices.md`
+- `${CLAUDE_SKILL_DIR}/references/mysql_stored_procedure_best_practices.md`
+- `${CLAUDE_SKILL_DIR}/references/sqlserver_stored_procedure_best_practices.md`
+- `${CLAUDE_SKILL_DIR}/references/database_security_guidelines.md`
+- `${CLAUDE_SKILL_DIR}/references/stored_procedure_optimization_techniques.md`

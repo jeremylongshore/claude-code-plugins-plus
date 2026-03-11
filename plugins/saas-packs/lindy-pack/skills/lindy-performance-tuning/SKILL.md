@@ -32,7 +32,7 @@ Optimize Lindy AI agent execution speed and reliability. Lindy agents run as mul
 ### Step 5: Optimize Trigger Configuration
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

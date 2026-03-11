@@ -33,13 +33,13 @@ Before using this skill, ensure you have:
 Analyze pool by address:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool 0x88e6a0c2ddd26feeb64f039a2c41296fcb3f5640
 ```
 
 Analyze by token pair:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
 ```
 
 ### Step 2: Calculate Impermanent Loss
@@ -47,13 +47,13 @@ python {baseDir}/scripts/pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3
 Calculate IL for a price change:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000
 ```
 
 Project IL for various scenarios:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
 ```
 
 ### Step 3: Estimate LP Returns
@@ -61,13 +61,13 @@ python {baseDir}/scripts/pool_analyzer.py --il-scenarios --token-pair ETH/USDC
 Calculate fee APR:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --pool [address] --detailed
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
 ```
 
 Project returns for position size:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --pool [address] --position 10000
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000
 ```
 
 ### Step 4: Compare Pools
@@ -75,13 +75,13 @@ python {baseDir}/scripts/pool_analyzer.py --pool [address] --position 10000
 Compare same pair across protocols:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --protocols uniswap-v3,curve,balancer
 ```
 
 Compare fee tiers:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 0.05,0.30,1.00
 ```
 
 ### Step 5: Export Results
@@ -89,13 +89,13 @@ python {baseDir}/scripts/pool_analyzer.py --compare --pair ETH/USDC --fee-tiers 
 Export to JSON:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --pool [address] --format json --output pool_analysis.json
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --format json --output pool_analysis.json
 ```
 
 Export comparison to CSV:
 
 ```bash
-python {baseDir}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv --output pools.csv
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv --output pools.csv
 ```
 
 ## Output
@@ -151,7 +151,7 @@ python {baseDir}/scripts/pool_analyzer.py --compare --pair ETH/USDC --format csv
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **Pool not found**: Verify address and chain
@@ -160,7 +160,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed usage examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 
 ### Quick Examples
 
@@ -186,7 +186,7 @@ python pool_analyzer.py --token ETH --format json --output eth_pools.json
 
 ## Configuration
 
-Settings in `{baseDir}/config/settings.yaml`:
+Settings in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 - **Default chain**: Primary chain to query
 - **Cache TTL**: How long to cache subgraph data

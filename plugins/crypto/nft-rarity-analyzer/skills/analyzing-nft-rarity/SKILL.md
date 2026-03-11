@@ -33,7 +33,7 @@ NFT rarity analysis skill that:
 ### 1. Analyze a Collection
 
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py collection boredapeyachtclub
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py collection boredapeyachtclub
 ```
 
 Options:
@@ -46,38 +46,38 @@ Options:
 ### 2. Check Specific Token
 
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py token pudgypenguins 1234
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py token pudgypenguins 1234
 ```
 
 ### 3. Compare Multiple Tokens
 
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py compare azuki 1234,5678,9012
 ```
 
 ### 4. View Trait Distribution
 
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py traits doodles
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py traits doodles
 ```
 
 ### 5. Export Rankings
 
 JSON:
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py export coolcats > rankings.json
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats > rankings.json
 ```
 
 CSV:
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py export coolcats --format csv > rankings.csv
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py export coolcats --format csv > rankings.csv
 ```
 
 ### 6. Manage Cache
 
 ```bash
-cd {baseDir}/scripts && python3 rarity_analyzer.py cache --list
-cd {baseDir}/scripts && python3 rarity_analyzer.py cache --clear
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py cache --list
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 rarity_analyzer.py cache --clear
 ```
 
 ## Rarity Algorithms
@@ -105,7 +105,7 @@ Works with any ERC-721/ERC-1155 collection that has:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 - API rate limiting
 - IPFS gateway issues
 - Collection not found
@@ -113,7 +113,7 @@ See `{baseDir}/references/errors.md` for:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
 - Collection analysis workflows
 - Token comparison
 - Export and caching

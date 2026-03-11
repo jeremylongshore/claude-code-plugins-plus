@@ -44,7 +44,7 @@ Use Bottleneck or similar library to stay within Customer.io's 100 req/sec limit
 Implement a batch sender that groups operations and processes them with controlled concurrency.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - k6 load test scripts with identify/track scenarios

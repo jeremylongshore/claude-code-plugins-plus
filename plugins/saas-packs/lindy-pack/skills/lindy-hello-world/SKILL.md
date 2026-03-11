@@ -32,7 +32,7 @@ Create a new file for your hello world example.
 ### Step 3: Create Your First Agent
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working code file with Lindy client initialization

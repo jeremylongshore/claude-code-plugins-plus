@@ -30,7 +30,7 @@ Before using this skill, ensure you have:
 
 ### Step 1: Configure RPC Endpoint
 
-Configure your RPC in `{baseDir}/config/settings.yaml`:
+Configure your RPC in `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 # Free public RPCs (no signup required)
@@ -49,7 +49,7 @@ export ETH_RPC_URL="https://rpc.ankr.com/eth"
 
 Simulate a basic two-DEX arbitrage:
 ```bash
-python {baseDir}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
   --dex-buy uniswap --dex-sell sushiswap
 ```
 
@@ -63,7 +63,7 @@ This calculates:
 
 Find the cheapest provider for your strategy:
 ```bash
-python {baseDir}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
 ```
 
 Output shows:
@@ -77,7 +77,7 @@ Output shows:
 
 Analyze liquidation opportunities:
 ```bash
-python {baseDir}/scripts/flash_simulator.py liquidation \
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py liquidation \
   --protocol aave --health-factor 0.95
 ```
 
@@ -91,7 +91,7 @@ Shows positions below health factor threshold with:
 
 Simulate multi-hop circular arbitrage:
 ```bash
-python {baseDir}/scripts/flash_simulator.py triangular \
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py triangular \
   ETH USDC WBTC ETH --amount 50
 ```
 
@@ -110,7 +110,7 @@ Net:   +0.04 ETH ($101.73)
 
 Add risk analysis to any simulation:
 ```bash
-python {baseDir}/scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
 ```
 
 Risk factors scored:
@@ -123,7 +123,7 @@ Risk factors scored:
 
 Run complete analysis with all features:
 ```bash
-python {baseDir}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
   --full --output json > simulation.json
 ```
 
@@ -172,7 +172,7 @@ The simulator provides:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **RPC Rate Limit**: Switch to backup endpoint or wait
@@ -182,7 +182,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including:
 - ETH/USDC arbitrage simulation
 - Aave liquidation analysis
 - Multi-provider comparison

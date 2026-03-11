@@ -60,7 +60,7 @@ This skill can be integrated with other plugins that provide performance metrics
 
 ## Prerequisites
 
-- Performance budget definitions in {baseDir}/performance-budgets.json
+- Performance budget definitions in ${CLAUDE_SKILL_DIR}/performance-budgets.json
 - Access to performance testing tools (Lighthouse, WebPageTest)
 - Build output directory for bundle analysis
 - Historical performance metrics for comparison

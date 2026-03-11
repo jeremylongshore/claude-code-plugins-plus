@@ -37,16 +37,16 @@ Implement API migrations between versions, frameworks, or platforms with minimal
 7. Execute phased cutover: shadow (compare only) -> canary (1% traffic to target) -> gradual ramp (10%, 25%, 50%, 100%) -> legacy decommission, with automatic rollback triggers.
 8. Validate migration completeness by running the full integration test suite against the target implementation and comparing response bodies with legacy for a representative request sample.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/migration/endpoint-mapping.json` - Legacy-to-target endpoint mapping with change annotations
-- `{baseDir}/migration/adapters/` - Request/response transformation functions per endpoint
-- `{baseDir}/migration/router.js` - Traffic routing middleware with phase-based switching
-- `{baseDir}/migration/shadow-compare.js` - Traffic shadow comparison and diff reporting
-- `{baseDir}/migration/dashboard.md` - Migration progress tracking per endpoint
-- `{baseDir}/tests/migration/` - Parity tests comparing legacy and target responses
+- `${CLAUDE_SKILL_DIR}/migration/endpoint-mapping.json` - Legacy-to-target endpoint mapping with change annotations
+- `${CLAUDE_SKILL_DIR}/migration/adapters/` - Request/response transformation functions per endpoint
+- `${CLAUDE_SKILL_DIR}/migration/router.js` - Traffic routing middleware with phase-based switching
+- `${CLAUDE_SKILL_DIR}/migration/shadow-compare.js` - Traffic shadow comparison and diff reporting
+- `${CLAUDE_SKILL_DIR}/migration/dashboard.md` - Migration progress tracking per endpoint
+- `${CLAUDE_SKILL_DIR}/tests/migration/` - Parity tests comparing legacy and target responses
 
 ## Error Handling
 
@@ -58,7 +58,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Consumer authentication break | Target uses different auth scheme than legacy | Run auth adapter translating legacy tokens to target format during transition |
 | Data inconsistency | Database schema migration introduced transformation errors | Run data validation queries comparing legacy and target data stores; fix transformation logic |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Monolith to microservices**: Extract a user management module from a monolithic API into a standalone service, using the strangler fig pattern with API gateway routing to direct `/users/*` traffic to the new service while other endpoints remain on the monolith.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

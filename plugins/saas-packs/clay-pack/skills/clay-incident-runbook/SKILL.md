@@ -56,7 +56,7 @@ If Clay API returns errors and status.clay.com shows an incident, wait and enabl
 Post to internal Slack with severity, impact, current action, and next update time. Update external status page with user-facing impact description.
 
 For complete triage scripts, remediation commands, communication templates, and postmortem template, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

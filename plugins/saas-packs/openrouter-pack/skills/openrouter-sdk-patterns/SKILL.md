@@ -52,4 +52,4 @@ client = OpenAI(
 
 ## Detailed Reference
 
-See `{baseDir}/references/implementation.md` for complete implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for complete implementation guide.

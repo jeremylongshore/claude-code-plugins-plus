@@ -50,19 +50,19 @@ Run the news aggregator with appropriate filters:
 
 ```bash
 # Default scan (top 20, past 24h, relevance sorted)
-python {baseDir}/scripts/news_aggregator.py
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py
 
 # Coin-specific scan
-python {baseDir}/scripts/news_aggregator.py --coin BTC --period 4h
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coin BTC --period 4h
 
 # Category filter
-python {baseDir}/scripts/news_aggregator.py --category defi --top 30
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --category defi --top 30
 
 # Export to JSON
-python {baseDir}/scripts/news_aggregator.py --format json --output news.json
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format json --output news.json
 
 # Multiple filters
-python {baseDir}/scripts/news_aggregator.py --coin ETH --category defi --period 24h --top 15
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coin ETH --category defi --period 24h --top 15
 ```
 
 ### Step 3: Present Results
@@ -147,7 +147,7 @@ Format and present the news to the user:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -158,28 +158,28 @@ See `{baseDir}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ### Quick Examples
 
 ```bash
 # Get latest crypto news (default)
-python {baseDir}/scripts/news_aggregator.py
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py
 
 # Bitcoin news from past 4 hours
-python {baseDir}/scripts/news_aggregator.py --coin BTC --period 4h
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coin BTC --period 4h
 
 # DeFi category news
-python {baseDir}/scripts/news_aggregator.py --category defi
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --category defi
 
 # Export to JSON file
-python {baseDir}/scripts/news_aggregator.py --format json --output crypto_news.json
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --format json --output crypto_news.json
 
 # High-relevance news only
-python {baseDir}/scripts/news_aggregator.py --min-score 70 --top 10
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --min-score 70 --top 10
 
 # Multiple coins
-python {baseDir}/scripts/news_aggregator.py --coins BTC,ETH,SOL
+python ${CLAUDE_SKILL_DIR}/scripts/news_aggregator.py --coins BTC,ETH,SOL
 ```
 
 ## Resources
@@ -189,4 +189,4 @@ python {baseDir}/scripts/news_aggregator.py --coins BTC,ETH,SOL
 - **The Block**: https://www.theblock.co/rss.xml
 - **Decrypt**: https://decrypt.co/feed
 - **feedparser docs**: https://feedparser.readthedocs.io/
-- See `{baseDir}/config/sources.yaml` for full source registry
+- See `${CLAUDE_SKILL_DIR}/config/sources.yaml` for full source registry

@@ -28,7 +28,7 @@ Primary workflow for Speak: AI-powered conversation practice with real-time pron
 1. **Complete Workflow Example**
 2. **Topic Categories**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Completed conversation practice session

@@ -51,7 +51,7 @@ Parse `X-RateLimit-Remaining`, `X-RateLimit-Reset`, and `Retry-After` headers to
 Use p-queue with interval-based rate limiting for cleaner high-volume processing.
 
 For detailed implementation code, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Scenario | Action |

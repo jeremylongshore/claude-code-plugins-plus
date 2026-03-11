@@ -38,17 +38,17 @@ Build secure API authentication systems supporting JWT Bearer tokens, OAuth 2.0 
 8. Add brute-force protection on login endpoints: rate limit to 5 attempts per minute per IP, implement progressive lockout (15 min, 1 hour) after repeated failures, and log all authentication attempts.
 9. Write security tests covering: valid/invalid/expired tokens, refresh token rotation, role enforcement, API key validation, brute-force lockout, and token revocation.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/auth/jwt.js` - JWT token issuance, verification, and refresh logic
-- `{baseDir}/src/auth/middleware.js` - Bearer token authentication middleware
-- `{baseDir}/src/auth/rbac.js` - Role-based and scope-based access control middleware
-- `{baseDir}/src/auth/api-keys.js` - API key generation, hashing, and validation
-- `{baseDir}/src/auth/oauth.js` - OAuth 2.0 flow implementations
-- `{baseDir}/src/routes/auth.js` - Login, register, refresh, and logout endpoints
-- `{baseDir}/tests/auth/` - Authentication and authorization security tests
+- `${CLAUDE_SKILL_DIR}/src/auth/jwt.js` - JWT token issuance, verification, and refresh logic
+- `${CLAUDE_SKILL_DIR}/src/auth/middleware.js` - Bearer token authentication middleware
+- `${CLAUDE_SKILL_DIR}/src/auth/rbac.js` - Role-based and scope-based access control middleware
+- `${CLAUDE_SKILL_DIR}/src/auth/api-keys.js` - API key generation, hashing, and validation
+- `${CLAUDE_SKILL_DIR}/src/auth/oauth.js` - OAuth 2.0 flow implementations
+- `${CLAUDE_SKILL_DIR}/src/routes/auth.js` - Login, register, refresh, and logout endpoints
+- `${CLAUDE_SKILL_DIR}/tests/auth/` - Authentication and authorization security tests
 
 ## Error Handling
 
@@ -60,7 +60,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Refresh token reuse | Previously rotated refresh token used (possible token theft) | Invalidate all user sessions immediately; alert user of potential compromise; require re-authentication |
 | API key leaked | API key exposed in client-side code, logs, or version control | Revoke compromised key immediately; issue replacement; scan for exposure source |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -70,7 +70,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **API key with scoped permissions**: Generate API keys with specific scopes (`read:analytics`, `write:webhooks`), stored as SHA-256 hashes, displayed to the user only once at creation, with key rotation support.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

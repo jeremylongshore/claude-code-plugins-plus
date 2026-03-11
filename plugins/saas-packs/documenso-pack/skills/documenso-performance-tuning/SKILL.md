@@ -41,7 +41,7 @@ class PerformanceMonitor {
 Implement performance checklist.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Caching Strategies

@@ -55,7 +55,7 @@ Check user activity in dashboard, verify campaign is active and user matches seg
 For Node.js, check env vars exist before creating client. For Python, catch both `CustomerIOError` and `ConnectionError`.
 
 For detailed code examples and diagnostic commands, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Diagnostic Commands
 ```bash

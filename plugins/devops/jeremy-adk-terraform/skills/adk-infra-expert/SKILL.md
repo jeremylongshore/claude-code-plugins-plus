@@ -42,15 +42,15 @@ Before using this skill, ensure:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
 
 ## Resources
 
 - Agent Engine: https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/overview
 - VPC-SC: https://cloud.google.com/vpc-service-controls/docs
 - Terraform Google Provider: https://registry.terraform.io/providers/hashicorp/google/latest
-- ADK Terraform examples in {baseDir}/examples/
+- ADK Terraform examples in ${CLAUDE_SKILL_DIR}/examples/

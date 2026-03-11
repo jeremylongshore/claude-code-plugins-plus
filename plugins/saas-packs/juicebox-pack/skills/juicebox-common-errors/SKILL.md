@@ -24,7 +24,7 @@ Quick reference for diagnosing and resolving common Juicebox API errors.
 - Error Handling Pattern
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Resources
 - [Error Codes Reference](https://juicebox.ai/docs/errors)

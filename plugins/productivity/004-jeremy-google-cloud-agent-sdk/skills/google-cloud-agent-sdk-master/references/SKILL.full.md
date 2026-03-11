@@ -511,7 +511,7 @@ This skill automatically activates when you mention:
 
 ## Prerequisites
 
-- Access to project files in {baseDir}/
+- Access to project files in ${CLAUDE_SKILL_DIR}/
 - Required tools and dependencies installed
 - Understanding of skill functionality
 - Permissions for file operations

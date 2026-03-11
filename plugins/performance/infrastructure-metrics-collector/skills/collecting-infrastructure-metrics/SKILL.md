@@ -62,7 +62,7 @@ This skill can be integrated with other plugins for deployment, configuration ma
 - Access to infrastructure monitoring systems (Prometheus, Datadog, CloudWatch)
 - System permissions for metrics agent installation
 - Network access to monitored infrastructure components
-- Storage for metrics data in {baseDir}/metrics/
+- Storage for metrics data in ${CLAUDE_SKILL_DIR}/metrics/
 
 ## Instructions
 

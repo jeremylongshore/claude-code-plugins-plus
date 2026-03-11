@@ -26,12 +26,12 @@ Automates semantic version bumps across all version-bearing files in a Claude Co
 
 1. Identify the target plugin directory and read the current version from `.claude-plugin/plugin.json` using `jq -r '.version'`.
 2. Determine the bump type (major, minor, or patch) from the user request. If unspecified, infer from the nature of changes: breaking changes warrant major, new features warrant minor, and fixes warrant patch.
-3. Parse the current version into its `major.minor.patch` components and compute the new version according to semver rules (see `{baseDir}/references/version-bump-process.md`).
+3. Parse the current version into its `major.minor.patch` components and compute the new version according to semver rules (see `${CLAUDE_SKILL_DIR}/references/version-bump-process.md`).
 4. Update the `"version"` field in `.claude-plugin/plugin.json` with the new version string.
-5. Locate the plugin entry in `.claude-plugin/marketplace.extended.json` and update its `"version"` field to match (see `{baseDir}/references/update-locations.md`).
+5. Locate the plugin entry in `.claude-plugin/marketplace.extended.json` and update its `"version"` field to match (see `${CLAUDE_SKILL_DIR}/references/update-locations.md`).
 6. Run `pnpm run sync-marketplace` at the repository root to regenerate `marketplace.json`.
 7. Verify version consistency across all three files by reading each and confirming the version strings match.
-8. Optionally create a git tag (`git tag -a "v<new_version>" -m "Release v<new_version>"`) and prepare a commit message following the `chore: Release v<version>` convention (see `{baseDir}/references/release-workflow.md`).
+8. Optionally create a git tag (`git tag -a "v<new_version>" -m "Release v<new_version>"`) and prepare a commit message following the `chore: Release v<version>` convention (see `${CLAUDE_SKILL_DIR}/references/release-workflow.md`).
 
 ## Output
 
@@ -67,8 +67,8 @@ Process: Detect minor bump, compute 1.2.3 to 1.3.0, update all version locations
 
 ## Resources
 
-- `{baseDir}/references/version-bump-process.md` -- step-by-step bump algorithm
-- `{baseDir}/references/update-locations.md` -- all files requiring version updates
-- `{baseDir}/references/release-workflow.md` -- full release process including git tags
-- `{baseDir}/references/examples.md` -- additional usage scenarios
+- `${CLAUDE_SKILL_DIR}/references/version-bump-process.md` -- step-by-step bump algorithm
+- `${CLAUDE_SKILL_DIR}/references/update-locations.md` -- all files requiring version updates
+- `${CLAUDE_SKILL_DIR}/references/release-workflow.md` -- full release process including git tags
+- `${CLAUDE_SKILL_DIR}/references/examples.md` -- additional usage scenarios
 - [Semantic Versioning specification](https://semver.org/)

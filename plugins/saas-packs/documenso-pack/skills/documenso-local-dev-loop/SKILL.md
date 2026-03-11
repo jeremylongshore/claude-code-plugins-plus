@@ -44,7 +44,7 @@ Configure a productive local development environment for Documenso integrations 
 ### Step 7: Integration Test Example
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Self-Hosted Local Development
 

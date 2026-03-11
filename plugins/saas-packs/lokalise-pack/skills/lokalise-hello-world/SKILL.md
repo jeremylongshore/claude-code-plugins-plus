@@ -25,7 +25,7 @@ Minimal working example demonstrating core Lokalise functionality: projects, key
 
 ## Instructions
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working TypeScript/JavaScript file with Lokalise client

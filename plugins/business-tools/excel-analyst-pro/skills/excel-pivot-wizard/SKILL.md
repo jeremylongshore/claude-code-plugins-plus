@@ -60,4 +60,4 @@ Result: Time-series pivot with calculated YoY growth fields
 ## Resources
 
 - [Microsoft Pivot Table Guide](https://support.microsoft.com/)
-- `{baseDir}/references/pivot-formulas.md` for calculated field syntax
+- `${CLAUDE_SKILL_DIR}/references/pivot-formulas.md` for calculated field syntax

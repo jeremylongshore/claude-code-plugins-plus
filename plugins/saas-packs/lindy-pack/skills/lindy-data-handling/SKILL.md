@@ -32,7 +32,7 @@ Best practices for secure and compliant data handling with Lindy AI.
 ### Step 5: GDPR Compliance
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Data Handling Checklist
 ## Output

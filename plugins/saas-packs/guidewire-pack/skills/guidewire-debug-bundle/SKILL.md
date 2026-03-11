@@ -62,7 +62,7 @@ Profile queries with `QueryPlanExplainer` to detect full table scans and slow qu
 Monitor JVM memory usage and dump thread state when investigating performance issues or deadlocks.
 
 For detailed code implementations (Log4j2 config, Gosu helpers, TypeScript tracing, query analysis), load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

@@ -24,14 +24,14 @@ Before using this skill, ensure you have:
 - Python 3.9+ with `httpx`, `pydantic`, and `rich` packages
 - Network access to aggregator APIs (1inch, Paraswap, 0x)
 - Optional: API keys for 1inch and 0x (higher rate limits)
-- Environment variables configured in `{baseDir}/config/settings.yaml`
+- Environment variables configured in `${CLAUDE_SKILL_DIR}/config/settings.yaml`
 - Understanding of DeFi trading concepts (slippage, price impact, MEV)
 
 ## Instructions
 
 ### Step 1: Configure API Access
 
-1. Copy settings template: `cp {baseDir}/config/settings.yaml.example {baseDir}/config/settings.yaml`
+1. Copy settings template: `cp ${CLAUDE_SKILL_DIR}/config/settings.yaml.example ${CLAUDE_SKILL_DIR}/config/settings.yaml`
 2. Add optional API keys:
    ```yaml
    api_keys:
@@ -44,7 +44,7 @@ Before using this skill, ensure you have:
 
 Use Bash(crypto:dex-router) to get the best price across aggregators:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 1.0
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 1.0
 ```
 
 This returns the single best route with price, gas cost, and effective rate.
@@ -53,7 +53,7 @@ This returns the single best route with price, gas cost, and effective rate.
 
 For detailed comparison across all sources:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 5.0 --compare
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
 ```
 
 Output includes quotes from each aggregator with:
@@ -66,7 +66,7 @@ Output includes quotes from each aggregator with:
 
 For trades where multi-hop might be cheaper:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 10.0 --routes
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 10.0 --routes
 ```
 
 Discovers and compares:
@@ -78,7 +78,7 @@ Discovers and compares:
 
 For whale-sized trades ($10K+), optimize across multiple DEXs:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 100.0 --split
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
 ```
 
 Calculates optimal allocation:
@@ -95,7 +95,7 @@ Split Recommendation:
 
 Check sandwich attack risk before executing:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 50.0 --mev-check
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
 ```
 
 Returns risk score and recommendations:
@@ -107,10 +107,10 @@ Returns risk score and recommendations:
 
 Combine all features for comprehensive analysis:
 ```bash
-python {baseDir}/scripts/dex_router.py ETH USDC 25.0 --full --output json
+python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 25.0 --full --output json
 ```
 
-See `{baseDir}/references/examples.md` for detailed output examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed output examples.
 
 ## Output
 
@@ -157,7 +157,7 @@ The router provides:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 Common issues:
 - **API Rate Limited**: Wait 60s or use API key for higher limits
@@ -167,7 +167,7 @@ Common issues:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including:
 - Basic ETH→USDC swap comparison
 - Multi-hop route discovery
 - Large order splitting

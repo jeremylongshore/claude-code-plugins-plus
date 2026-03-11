@@ -76,7 +76,7 @@ Shows supported bridge protocols with their chains.
 
 1. **Check bridge TVL rankings**:
    ```bash
-   cd {baseDir}/scripts
+   cd ${CLAUDE_SKILL_DIR}/scripts
    python bridge_monitor.py tvl
    ```
 
@@ -124,14 +124,14 @@ Shows supported bridge protocols with their chains.
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling including:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling including:
 - API unavailability and fallback behavior
 - Transaction tracking edge cases
 - Rate limiting mitigation
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including:
 - Finding best route for large transfers
 - Monitoring transactions after bridging
 - Research workflows for bridge safety

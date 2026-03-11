@@ -37,15 +37,15 @@ Implement API throttling policies that protect backend services from overload by
 7. Implement graceful degradation strategies per endpoint: serve cached responses, return partial results, or queue requests for deferred processing.
 8. Write load tests that verify throttle engagement at expected thresholds, proper 503 responses with `Retry-After`, and recovery behavior when load subsides.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/src/middleware/throttle.js` - Concurrency and request rate throttling middleware
-- `{baseDir}/src/middleware/circuit-breaker.js` - Circuit breaker for downstream service protection
-- `{baseDir}/src/middleware/priority-queue.js` - Tier-based request prioritization
-- `{baseDir}/src/config/throttle-config.js` - Per-endpoint throttle policy definitions
-- `{baseDir}/tests/throttle/` - Load tests validating throttle engagement and recovery
+- `${CLAUDE_SKILL_DIR}/src/middleware/throttle.js` - Concurrency and request rate throttling middleware
+- `${CLAUDE_SKILL_DIR}/src/middleware/circuit-breaker.js` - Circuit breaker for downstream service protection
+- `${CLAUDE_SKILL_DIR}/src/middleware/priority-queue.js` - Tier-based request prioritization
+- `${CLAUDE_SKILL_DIR}/src/config/throttle-config.js` - Per-endpoint throttle policy definitions
+- `${CLAUDE_SKILL_DIR}/tests/throttle/` - Load tests validating throttle engagement and recovery
 
 ## Error Handling
 
@@ -57,7 +57,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Stale throttle state | Redis connection lost; throttle counters become inaccurate | Fall back to in-process counters; reconnect with backoff; log state inconsistency |
 | Priority starvation | Low-tier requests never served under sustained high-tier load | Reserve minimum throughput percentage for each tier to prevent complete starvation |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -67,7 +67,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Adaptive autoscaling trigger**: Throttle middleware emits metrics that trigger horizontal pod autoscaling when throttle engagement rate exceeds 20% sustained over 5 minutes.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

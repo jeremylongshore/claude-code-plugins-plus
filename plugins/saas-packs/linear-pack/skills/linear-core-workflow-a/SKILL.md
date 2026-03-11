@@ -31,7 +31,7 @@ Master issue lifecycle management: creating, updating, transitioning, and organi
 - Step 5: Comments and Activity
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Issue creation with all metadata

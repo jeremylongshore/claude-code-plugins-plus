@@ -28,7 +28,7 @@ Handle Lokalise webhooks for real-time translation updates and automation.
 1. **Webhook Event Types**
 2. **Instructions**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Webhook endpoint receiving events

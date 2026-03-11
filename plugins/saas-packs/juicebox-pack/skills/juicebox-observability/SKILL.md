@@ -31,7 +31,7 @@ Implement comprehensive observability for Juicebox integrations including loggin
 - Step 5: Alerting Rules
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Structured logging

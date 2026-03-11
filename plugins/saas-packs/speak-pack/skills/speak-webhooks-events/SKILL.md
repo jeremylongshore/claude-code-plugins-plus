@@ -33,7 +33,7 @@ Securely handle Speak webhooks with signature validation for language learning e
 6. **Webhook Testing**
 7. **Local Development with ngrok**
 
-For full implementation details, load: `Read({baseDir}/references/implementation-guide.md)`
+For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Secure webhook endpoint

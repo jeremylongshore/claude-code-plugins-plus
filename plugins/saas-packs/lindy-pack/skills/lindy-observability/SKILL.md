@@ -39,7 +39,7 @@ Key panels: agent run success/failure rate (stacked bar), run duration p50/p95 b
 
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

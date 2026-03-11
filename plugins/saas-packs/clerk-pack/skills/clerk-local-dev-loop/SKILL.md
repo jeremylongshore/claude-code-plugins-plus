@@ -31,7 +31,7 @@ Configure an efficient local development workflow with Clerk authentication.
 - Step 5: Mock Authentication for Tests
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Development environment configured

@@ -59,7 +59,7 @@ k6 run --env CLAY_API_KEY=${CLAY_API_KEY} clay-load-test.js
 Record results in the benchmark template: total requests, success rate, P50/P95/P99 latency, max RPS.
 
 For complete k6 scripts, HPA YAML, connection pool code, and capacity estimator, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 

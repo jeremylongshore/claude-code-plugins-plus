@@ -26,7 +26,7 @@ Memory provides persistent context across Claude Code sessions by storing and re
 
 ## Instructions
 
-1. **Access stored memories.** On session start, locate and read the memory file at `.claude/memories/project_memory.json` using the Read tool. Parse the JSON structure containing timestamped memory entries. See `{baseDir}/references/implementation.md` for the full retrieval workflow.
+1. **Access stored memories.** On session start, locate and read the memory file at `.claude/memories/project_memory.json` using the Read tool. Parse the JSON structure containing timestamped memory entries. See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full retrieval workflow.
 2. **Match memories to current context.** Scan memory entries for keywords and topics relevant to the current task. Extract applicable decisions (e.g., "use pnpm instead of npm"), architectural patterns, library choices, and coding style preferences.
 3. **Apply memories silently.** Incorporate remembered preferences into responses and tool usage without announcing them. When a memory dictates a package manager, testing framework, or naming convention, follow it automatically.
 4. **Store new memories.** When significant decisions occur -- library selections, architectural choices, user-stated preferences, or tool rejections -- write them to the memory file with a timestamp. Add entries via the `/remember` command or through automatic capture of conversation signals.
@@ -81,8 +81,8 @@ User declines a suggested `npm install` action
 
 ## Resources
 
-- `{baseDir}/references/implementation.md` -- Step-by-step guide for accessing, applying, updating, and resolving memory conflicts
-- `{baseDir}/references/errors.md` -- Detailed error scenarios with recovery procedures
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` -- Step-by-step guide for accessing, applying, updating, and resolving memory conflicts
+- `${CLAUDE_SKILL_DIR}/references/errors.md` -- Detailed error scenarios with recovery procedures
 - `/remember [text]` -- Add a new memory entry manually
 - `/forget [text]` -- Remove a matching memory from storage
 - `/memories` -- Display all currently stored memories with timestamps

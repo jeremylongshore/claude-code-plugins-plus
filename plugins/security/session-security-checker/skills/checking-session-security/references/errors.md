@@ -3,7 +3,7 @@
 **Common Issues and Resolutions**:
 
 1. **Cannot Locate Session Management Code**
-   - Error: "No session handling code found in {baseDir}/"
+   - Error: "No session handling code found in ${CLAUDE_SKILL_DIR}/"
    - Resolution: Search for framework-specific patterns
    - Fallback: Request explicit file paths from user
 

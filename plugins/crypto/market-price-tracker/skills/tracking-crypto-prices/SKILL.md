@@ -45,7 +45,7 @@ pip install python-dotenv  # For API key management
 
 **API Setup** (optional, for higher rate limits):
 1. Get free API key from https://www.coingecko.com/en/api
-2. Add to `{baseDir}/config/settings.yaml` or set environment variable `COINGECKO_API_KEY`
+2. Add to `${CLAUDE_SKILL_DIR}/config/settings.yaml` or set environment variable `COINGECKO_API_KEY`
 
 ## Instructions
 
@@ -54,13 +54,13 @@ pip install python-dotenv  # For API key management
 Get current price for any cryptocurrency:
 
 ```bash
-python {baseDir}/scripts/price_tracker.py --symbol BTC
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 ```
 
 Check multiple assets:
 
 ```bash
-python {baseDir}/scripts/price_tracker.py --symbols BTC,ETH,SOL
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL
 ```
 
 ### Step 2: Use Watchlists
@@ -69,13 +69,13 @@ Scan predefined watchlists:
 
 ```bash
 # Top 10 by market cap
-python {baseDir}/scripts/price_tracker.py --watchlist top10
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10
 
 # DeFi tokens
-python {baseDir}/scripts/price_tracker.py --watchlist defi
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist defi
 
 # Layer 2 tokens
-python {baseDir}/scripts/price_tracker.py --watchlist layer2
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist layer2
 ```
 
 Available watchlists: `top10`, `defi`, `layer2`, `stablecoins`, `memecoins`
@@ -86,18 +86,18 @@ Get OHLCV (Open, High, Low, Close, Volume) history:
 
 ```bash
 # Last 30 days
-python {baseDir}/scripts/price_tracker.py --symbol BTC --period 30d
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
 
 # Last 90 days with CSV export
-python {baseDir}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
 
 # Custom date range
-python {baseDir}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31
 ```
 
 ### Step 4: Configure Settings
 
-Edit `{baseDir}/config/settings.yaml` to customize:
+Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml` to customize:
 
 ```yaml
 cache:
@@ -170,7 +170,7 @@ date,open,high,low,close,volume
 
 ## Configuration
 
-Edit `{baseDir}/config/settings.yaml`:
+Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 # API Configuration
@@ -231,7 +231,7 @@ watchlists:
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ### Common Errors
 
@@ -252,7 +252,7 @@ The skill automatically:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed examples including:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples including:
 - Multi-timeframe analysis
 - Portfolio value calculation
 - Price alert setup
@@ -261,7 +261,7 @@ See `{baseDir}/references/examples.md` for detailed examples including:
 ### Example 1: Quick Price Check
 
 ```bash
-python {baseDir}/scripts/price_tracker.py --symbol BTC
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
 ```
 
 Output:
@@ -274,16 +274,16 @@ $97,234.56 USD
 ### Example 2: Watchlist Scan
 
 ```bash
-python {baseDir}/scripts/price_tracker.py --watchlist top10
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10
 ```
 
 ### Example 3: Historical Export
 
 ```bash
-python {baseDir}/scripts/price_tracker.py --symbol ETH --period 90d --output csv
+python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --period 90d --output csv
 ```
 
-Creates: `{baseDir}/data/ETH_90d_[date].csv`
+Creates: `${CLAUDE_SKILL_DIR}/data/ETH_90d_[date].csv`
 
 ## Integration with Other Skills
 
@@ -299,11 +299,11 @@ prices = get_current_prices(["BTC", "ETH", "SOL"])
 
 **CLI Subprocess** (for non-Python or isolation):
 ```bash
-PRICES=$(python {baseDir}/scripts/price_tracker.py --symbols BTC,ETH --format json)
+PRICES=$(python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH --format json)
 ```
 
 **Shared Cache** (efficient for batch):
-Multiple skills can read from `{baseDir}/data/cache.json` to avoid redundant API calls.
+Multiple skills can read from `${CLAUDE_SKILL_DIR}/data/cache.json` to avoid redundant API calls.
 
 ## Files
 

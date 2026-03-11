@@ -38,16 +38,16 @@ Execute comprehensive load, stress, and soak tests to validate API performance, 
 8. Analyze results: correlate latency spikes with server metrics (CPU, memory, DB connections, event loop lag), identify the bottleneck (database, network, compute), and document findings.
 9. Generate a performance report comparing results against SLO thresholds with recommendations for optimization.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/load-tests/scenarios/` - k6/Artillery test scripts per traffic scenario
-- `{baseDir}/load-tests/data/` - Test data fixtures (users, payloads, tokens)
-- `{baseDir}/load-tests/thresholds.json` - Pass/fail threshold configuration
-- `{baseDir}/reports/load-test-results.json` - Raw test results with timing data
-- `{baseDir}/reports/load-test-summary.md` - Human-readable performance analysis report
-- `{baseDir}/reports/bottleneck-analysis.md` - Identified bottlenecks with remediation recommendations
+- `${CLAUDE_SKILL_DIR}/load-tests/scenarios/` - k6/Artillery test scripts per traffic scenario
+- `${CLAUDE_SKILL_DIR}/load-tests/data/` - Test data fixtures (users, payloads, tokens)
+- `${CLAUDE_SKILL_DIR}/load-tests/thresholds.json` - Pass/fail threshold configuration
+- `${CLAUDE_SKILL_DIR}/reports/load-test-results.json` - Raw test results with timing data
+- `${CLAUDE_SKILL_DIR}/reports/load-test-summary.md` - Human-readable performance analysis report
+- `${CLAUDE_SKILL_DIR}/reports/bottleneck-analysis.md` - Identified bottlenecks with remediation recommendations
 
 ## Error Handling
 
@@ -59,7 +59,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Inconsistent baseline results | Shared staging environment with other traffic | Isolate test environment; run tests during off-hours; use dedicated performance environment |
 | Memory leak detected | Soak test shows steadily increasing memory over hours | Flag for development team; identify leaking endpoint by isolating test scenarios |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -69,7 +69,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Soak test for memory leaks**: Sustain 200 concurrent users for 4 hours, monitoring server memory, connection counts, and response times for degradation patterns indicating resource leaks.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

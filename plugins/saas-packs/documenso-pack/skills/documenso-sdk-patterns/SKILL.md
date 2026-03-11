@@ -29,7 +29,7 @@ Production-ready patterns for Documenso SDK usage in TypeScript and Python.
 // src/documenso/client.ts
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Instructions

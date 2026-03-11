@@ -34,24 +34,24 @@ Gas fee optimization skill that:
 ### 1. Check Current Gas Prices
 
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py current
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current
 ```
 
 For specific chain:
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py current --chain polygon
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current --chain polygon
 ```
 
 ### 2. Estimate Transaction Cost
 
 For known operations:
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
 ```
 
 For custom gas limit:
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast
 ```
 
 Available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswap_v2_swap`, `uniswap_v3_swap`, `sushiswap_swap`, `curve_swap`, `nft_mint`, `nft_transfer`, `opensea_listing`, `aave_deposit`, `aave_withdraw`, `compound_supply`, `compound_borrow`, `bridge_deposit`
@@ -59,37 +59,37 @@ Available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswa
 ### 3. Find Optimal Transaction Window
 
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py optimal
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py optimal
 ```
 
 ### 4. View Gas Patterns
 
 Hourly patterns:
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py patterns
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns
 ```
 
 Daily patterns:
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py patterns --daily
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns --daily
 ```
 
 ### 5. Predict Future Gas
 
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py predict --time 14
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py predict --time 14
 ```
 
 ### 6. Compare Chains
 
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py compare
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py compare
 ```
 
 ### 7. View Base Fee History
 
 ```bash
-cd {baseDir}/scripts && python3 gas_optimizer.py history --blocks 50
+cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py history --blocks 50
 ```
 
 ## Output
@@ -122,7 +122,7 @@ cd {baseDir}/scripts && python3 gas_optimizer.py history --blocks 50
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for:
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for:
 - RPC connection issues
 - API rate limiting
 - Price feed errors
@@ -130,7 +130,7 @@ See `{baseDir}/references/errors.md` for:
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for:
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for:
 - Quick start commands
 - Cost estimation scenarios
 - Multi-chain comparison

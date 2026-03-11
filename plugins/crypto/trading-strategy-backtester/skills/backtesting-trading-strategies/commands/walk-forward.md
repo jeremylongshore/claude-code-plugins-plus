@@ -28,7 +28,7 @@ import sys
 from pathlib import Path
 from datetime import datetime, timedelta
 
-sys.path.insert(0, str(Path("{baseDir}/scripts")))
+sys.path.insert(0, str(Path("${CLAUDE_SKILL_DIR}/scripts")))
 
 from backtest import load_data, run_backtest
 from optimize import grid_search
@@ -45,7 +45,7 @@ total_years = 3
 # Load full dataset
 end = datetime.now()
 start = end - parse_period(f"{total_years}y")
-data_dir = Path("{baseDir}/data")
+data_dir = Path("${CLAUDE_SKILL_DIR}/data")
 full_data = load_data(symbol, start, end, data_dir)
 full_data.attrs["symbol"] = symbol
 

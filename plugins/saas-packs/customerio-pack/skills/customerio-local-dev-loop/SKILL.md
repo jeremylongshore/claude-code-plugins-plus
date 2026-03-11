@@ -31,7 +31,7 @@ Set up an efficient local development workflow for Customer.io integrations with
 ### Step 4: Create Dev Scripts
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Environment-aware Customer.io client

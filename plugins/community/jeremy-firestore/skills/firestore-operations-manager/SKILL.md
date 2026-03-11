@@ -61,6 +61,6 @@ Use this skill to design Firestore data access patterns and implement changes wi
 
 ## Resources
 
-- Full detailed guide (kept for reference): `{baseDir}/references/SKILL.full.md`
+- Full detailed guide (kept for reference): `${CLAUDE_SKILL_DIR}/references/SKILL.full.md`
 - Firestore docs: https://firebase.google.com/docs/firestore
 - Firestore indexes: https://firebase.google.com/docs/firestore/query-data/indexing

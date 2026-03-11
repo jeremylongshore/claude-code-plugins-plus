@@ -57,14 +57,14 @@ def run_backtest(
 Basic SMA crossover backtest:
 
 ```bash
-python {baseDir}/scripts/backtest.py \
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy sma_crossover --symbol BTC-USD --period 1y
 ```
 
 RSI reversal with custom parameters and $50k capital:
 
 ```bash
-python {baseDir}/scripts/backtest.py \
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy rsi_reversal --symbol ETH-USD --period 6m \
   --capital 50000 \
   --params '{"period": 14, "overbought": 75, "oversold": 25}'
@@ -73,7 +73,7 @@ python {baseDir}/scripts/backtest.py \
 Specific date range with low commission:
 
 ```bash
-python {baseDir}/scripts/backtest.py \
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy macd --symbol SOL-USD \
   --start 2024-01-01 --end 2025-01-01 \
   --commission 0.0005 --slippage 0.0002
@@ -82,7 +82,7 @@ python {baseDir}/scripts/backtest.py \
 List all available strategies:
 
 ```bash
-python {baseDir}/scripts/backtest.py --list
+python ${CLAUDE_SKILL_DIR}/scripts/backtest.py --list
 ```
 
 ## Available Strategies
@@ -100,7 +100,7 @@ python {baseDir}/scripts/backtest.py --list
 
 ## Configuration
 
-Settings are loaded from `{baseDir}/config/settings.yaml` with this priority:
+Settings are loaded from `${CLAUDE_SKILL_DIR}/config/settings.yaml` with this priority:
 
 1. CLI arguments (highest)
 2. `settings.yaml` values
@@ -117,7 +117,7 @@ risk:
 
 ## Output
 
-Results are saved to `{baseDir}/reports/`:
+Results are saved to `${CLAUDE_SKILL_DIR}/reports/`:
 - `*_summary.txt` -- Performance metrics table
 - `*_trades.csv` -- Trade log with entry/exit times, PnL
 - `*_equity.csv` -- Equity curve data

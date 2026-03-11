@@ -73,7 +73,7 @@ Result: Analyzed job details, identified prompt complexity issue, simplified sce
 
 ## Detailed Error Reference
 
-See `{baseDir}/references/error-codes.md` for comprehensive error handling code patterns including:
+See `${CLAUDE_SKILL_DIR}/references/error-codes.md` for comprehensive error handling code patterns including:
 - HTTP 401 authentication fixes with proper Bearer token format
 - HTTP 400 parameter validation with pre-flight checks
 - HTTP 429 rate limiting with exponential backoff retry decorator

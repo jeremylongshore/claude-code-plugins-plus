@@ -31,7 +31,7 @@ Complete workflow for creating, configuring, and deploying Lindy AI agents.
 ### Step 4: Test the Agent
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Fully configured AI agent

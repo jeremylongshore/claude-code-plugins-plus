@@ -37,7 +37,7 @@ When creating a support ticket, include:
 [Describe what you expected vs what happened]
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Debug Scripts

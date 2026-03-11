@@ -20,10 +20,10 @@ documentation with evidence references and gap analysis.
 
 ## Prerequisites
 
-- Access to the target codebase, infrastructure configs, and policy documents in `{baseDir}/`
+- Access to the target codebase, infrastructure configs, and policy documents in `${CLAUDE_SKILL_DIR}/`
 - Knowledge of the target compliance framework and its applicable scope
 - Standard shell utilities and Grep/Glob available for evidence gathering
-- Reference: `{baseDir}/references/README.md` for PCI DSS guidelines, HIPAA compliance checklist, SOC 2 framework overview, config schema, and API documentation
+- Reference: `${CLAUDE_SKILL_DIR}/references/README.md` for PCI DSS guidelines, HIPAA compliance checklist, SOC 2 framework overview, config schema, and API documentation
 
 ## Instructions
 
@@ -34,8 +34,8 @@ documentation with evidence references and gap analysis.
 5. For Partially Compliant and Non-Compliant controls, describe the specific gap: what is missing, what risk it introduces, and what remediation is required.
 6. Calculate an overall compliance score as percentage of applicable controls that are fully compliant.
 7. Generate the report with these sections: Executive Summary, Scope and Methodology, Control-by-Control Assessment, Gap Analysis, Risk Rating, Remediation Roadmap with priority and effort estimates, and Evidence Appendix.
-8. Write the report to `{baseDir}/compliance-report-[framework]-[date].md` using the Write tool.
-9. Validate the report against the config schema in `{baseDir}/references/README.md` if applicable.
+8. Write the report to `${CLAUDE_SKILL_DIR}/compliance-report-[framework]-[date].md` using the Write tool.
+9. Validate the report against the config schema in `${CLAUDE_SKILL_DIR}/references/README.md` if applicable.
 
 ## Output
 
@@ -59,7 +59,7 @@ documentation with evidence references and gap analysis.
 
 ### PCI DSS Compliance Report
 
-Scan an e-commerce application in `{baseDir}/` for PCI DSS v4.0 compliance.
+Scan an e-commerce application in `${CLAUDE_SKILL_DIR}/` for PCI DSS v4.0 compliance.
 Assess Requirement 2 (Apply Secure Configurations) by checking for default
 credentials in config files, Requirement 3 (Protect Stored Account Data) by
 verifying encryption of cardholder data fields, and Requirement 6 (Develop and

@@ -57,7 +57,7 @@ Store keys in `.env.local` (dev), GitHub Environment Secrets (staging/prod), or 
 Use Zod to validate config at startup, ensuring API key is set, environment is valid, and timeout is positive.
 
 For detailed TypeScript implementations and CI workflow configs, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

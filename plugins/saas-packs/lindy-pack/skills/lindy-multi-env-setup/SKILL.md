@@ -41,7 +41,7 @@ Configure Lindy AI across development, staging, and production environments with
 ### Step 5: Secret Management
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

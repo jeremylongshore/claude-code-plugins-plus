@@ -20,11 +20,11 @@ Audit session management implementations in web applications to identify vulnera
 
 ## Prerequisites
 
-- Application source code accessible in `{baseDir}/`
+- Application source code accessible in `${CLAUDE_SKILL_DIR}/`
 - Session management code locations identified (auth modules, middleware, session stores)
 - Framework and language identified (Express.js, Django, Spring Boot, Rails, ASP.NET, etc.)
 - Session configuration files available (`session.config.*`, `settings.py`, `application.yml`)
-- Write permissions for reports in `{baseDir}/security-reports/`
+- Write permissions for reports in `${CLAUDE_SKILL_DIR}/security-reports/`
 
 ## Instructions
 
@@ -36,13 +36,13 @@ Audit session management implementations in web applications to identify vulnera
 6. **Audit session invalidation**: verify logout handlers destroy server-side session state and clear client cookies. Confirm password reset and privilege escalation flows invalidate existing sessions.
 7. **Inspect session storage**: flag in-memory stores in production (no persistence across restarts), unencrypted session data at rest, and missing integrity checks on session payloads (e.g., unsigned JWT session tokens).
 8. **Identify attack vectors**: assess exposure to session fixation, CSRF via session riding, replay attacks from stolen tokens, and session prediction from weak ID generation.
-9. Produce the session security report at `{baseDir}/security-reports/session-security-YYYYMMDD.md` with per-finding severity, CWE mapping, vulnerable code snippet, and remediated code example.
+9. Produce the session security report at `${CLAUDE_SKILL_DIR}/security-reports/session-security-YYYYMMDD.md` with per-finding severity, CWE mapping, vulnerable code snippet, and remediated code example.
 
-See `{baseDir}/references/implementation.md` for the detailed implementation guide. See `{baseDir}/references/critical-findings.md` for example vulnerability patterns with before/after code.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the detailed implementation guide. See `${CLAUDE_SKILL_DIR}/references/critical-findings.md` for example vulnerability patterns with before/after code.
 
 ## Output
 
-- **Session Security Report**: `{baseDir}/security-reports/session-security-YYYYMMDD.md` with findings by severity
+- **Session Security Report**: `${CLAUDE_SKILL_DIR}/security-reports/session-security-YYYYMMDD.md` with findings by severity
 - **Cookie Attribute Matrix**: per-cookie compliance table (HttpOnly, Secure, SameSite, prefix)
 - **Vulnerable Code Listings**: each finding with file path, line number, vulnerable snippet, and fix
 - **Framework-Specific Remediation**: configuration changes tailored to the detected framework
@@ -51,7 +51,7 @@ See `{baseDir}/references/implementation.md` for the detailed implementation gui
 
 | Error | Cause | Solution |
 |-------|-------|----------|
-| No session handling code found in `{baseDir}/` | Unusual file structure or framework | Search for framework-specific patterns; request explicit file paths |
+| No session handling code found in `${CLAUDE_SKILL_DIR}/` | Unusual file structure or framework | Search for framework-specific patterns; request explicit file paths |
 | Unknown session framework | Custom or uncommon session library | Apply fundamental session security principles; note limited framework-specific guidance |
 | Cannot analyze minified/compiled code | Production bundles instead of source | Request unminified source code; document limitation |
 | Non-standard session implementation | Custom session management bypassing framework | Apply extra scrutiny; custom implementations are higher risk (CWE-384, CWE-613) |
@@ -70,6 +70,6 @@ See `{baseDir}/references/implementation.md` for the detailed implementation gui
 - CWE-613 Insufficient Session Expiration: https://cwe.mitre.org/data/definitions/613.html
 - CWE-319 Cleartext Transmission: https://cwe.mitre.org/data/definitions/319.html
 - NIST 800-63B Digital Authentication: https://pages.nist.gov/800-63-3/sp800-63b.html
-- `{baseDir}/references/critical-findings.md` -- example vulnerability patterns
-- `{baseDir}/references/errors.md` -- full error handling reference
+- `${CLAUDE_SKILL_DIR}/references/critical-findings.md` -- example vulnerability patterns
+- `${CLAUDE_SKILL_DIR}/references/errors.md` -- full error handling reference
 - https://intentsolutions.io

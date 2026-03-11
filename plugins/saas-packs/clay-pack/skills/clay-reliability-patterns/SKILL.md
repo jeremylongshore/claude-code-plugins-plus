@@ -44,7 +44,7 @@ Track success/failure rates per enrichment provider over a sliding window of 100
 Process rows in batches of 50 with 2-second delays. On failure, push the batch to a DLQ for manual review instead of blocking the pipeline.
 
 For complete Python implementations with Redis-backed tracking, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 

@@ -37,16 +37,16 @@ Create comprehensive, interactive API documentation from OpenAPI specifications 
 7. Configure documentation versioning so consumers can switch between API versions (v1, v2) with visual diff highlighting showing changes between versions.
 8. Set up automated documentation deployment: on OpenAPI spec changes, regenerate the documentation site and deploy to hosting with cache invalidation.
 
-See `{baseDir}/references/implementation.md` for the full implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full implementation guide.
 
 ## Output
 
-- `{baseDir}/docs/site/` - Generated documentation website (HTML/CSS/JS)
-- `{baseDir}/docs/guides/authentication.md` - Authentication flow guide with code examples
-- `{baseDir}/docs/guides/getting-started.md` - Quick-start tutorial for first API call
-- `{baseDir}/docs/reference/errors.md` - Complete error code reference with resolution steps
-- `{baseDir}/docs/examples/` - Per-endpoint code examples in multiple languages
-- `{baseDir}/docs/config/redoc.yaml` - Documentation generator configuration with branding
+- `${CLAUDE_SKILL_DIR}/docs/site/` - Generated documentation website (HTML/CSS/JS)
+- `${CLAUDE_SKILL_DIR}/docs/guides/authentication.md` - Authentication flow guide with code examples
+- `${CLAUDE_SKILL_DIR}/docs/guides/getting-started.md` - Quick-start tutorial for first API call
+- `${CLAUDE_SKILL_DIR}/docs/reference/errors.md` - Complete error code reference with resolution steps
+- `${CLAUDE_SKILL_DIR}/docs/examples/` - Per-endpoint code examples in multiple languages
+- `${CLAUDE_SKILL_DIR}/docs/config/redoc.yaml` - Documentation generator configuration with branding
 
 ## Error Handling
 
@@ -58,7 +58,7 @@ See `{baseDir}/references/implementation.md` for the full implementation guide.
 | Code example errors | Generated code example uses deprecated SDK method or wrong import path | Auto-test code examples against a staging API; version examples alongside SDK releases |
 | Search not working | Full-text search index not rebuilt after content update | Include search index regeneration in documentation build pipeline; verify Algolia/Lunr config |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -68,7 +68,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Developer portal**: Combine API reference docs with getting-started tutorials, use-case guides, webhooks documentation, and SDK installation instructions in a single searchable portal.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

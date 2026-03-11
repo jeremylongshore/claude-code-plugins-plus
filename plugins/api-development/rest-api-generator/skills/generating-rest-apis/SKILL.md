@@ -38,17 +38,17 @@ Generate complete, production-ready REST API implementations from OpenAPI specif
 8. Create integration tests covering happy paths, validation failures, 404s, and auth rejection for every endpoint.
 9. Produce or update the OpenAPI 3.0 specification to match the generated implementation.
 
-See `{baseDir}/references/implementation.md` for the full step-by-step implementation guide.
+See `${CLAUDE_SKILL_DIR}/references/implementation.md` for the full step-by-step implementation guide.
 
 ## Output
 
-- `{baseDir}/src/routes/` - Express/Fastify route definitions with HTTP method handlers
-- `{baseDir}/src/controllers/` - Business logic separated from routing
-- `{baseDir}/src/models/` - ORM models with validation rules and relationships
-- `{baseDir}/src/middleware/auth.js` - JWT/API key authentication middleware
-- `{baseDir}/src/middleware/validate.js` - Request schema validation middleware
-- `{baseDir}/openapi.yaml` - Generated OpenAPI 3.0 specification
-- `{baseDir}/tests/` - Integration test suite per resource endpoint
+- `${CLAUDE_SKILL_DIR}/src/routes/` - Express/Fastify route definitions with HTTP method handlers
+- `${CLAUDE_SKILL_DIR}/src/controllers/` - Business logic separated from routing
+- `${CLAUDE_SKILL_DIR}/src/models/` - ORM models with validation rules and relationships
+- `${CLAUDE_SKILL_DIR}/src/middleware/auth.js` - JWT/API key authentication middleware
+- `${CLAUDE_SKILL_DIR}/src/middleware/validate.js` - Request schema validation middleware
+- `${CLAUDE_SKILL_DIR}/openapi.yaml` - Generated OpenAPI 3.0 specification
+- `${CLAUDE_SKILL_DIR}/tests/` - Integration test suite per resource endpoint
 
 ## Error Handling
 
@@ -60,7 +60,7 @@ See `{baseDir}/references/implementation.md` for the full step-by-step implement
 | 409 Conflict | Unique constraint violation on create/update | Include conflicting field name and existing value hint in error response |
 | 429 Too Many Requests | Client exceeds rate limit | Return `Retry-After` header with seconds until next allowed request window |
 
-Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
+Refer to `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error patterns.
 
 ## Examples
 
@@ -70,7 +70,7 @@ Refer to `{baseDir}/references/errors.md` for comprehensive error patterns.
 
 **Public read API with admin writes**: Create a dual-access API where `GET` endpoints are publicly cacheable (Cache-Control headers) while `POST/PUT/DELETE` require admin-role JWT tokens.
 
-See `{baseDir}/references/examples.md` for additional examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for additional examples.
 
 ## Resources
 

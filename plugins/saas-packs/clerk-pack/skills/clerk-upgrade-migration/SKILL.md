@@ -33,7 +33,7 @@ Safely upgrade Clerk SDK versions and handle breaking changes.
 - Step 7: Rollback Plan
 
 For full implementation details and code examples, load:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Updated Clerk SDK

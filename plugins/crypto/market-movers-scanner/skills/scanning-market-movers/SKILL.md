@@ -47,7 +47,7 @@ Ensure `market-price-tracker` plugin is installed with `tracking-crypto-prices` 
 Run a default scan for top gainers and losers:
 
 ```bash
-python {baseDir}/scripts/scanner.py
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
 ```
 
 This returns the top 20 gainers and top 20 losers by 24h change with volume confirmation.
@@ -58,10 +58,10 @@ Scan with specific criteria:
 
 ```bash
 # Only show moves > 10% with volume spike > 3x
-python {baseDir}/scripts/scanner.py --min-change 10 --volume-spike 3
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
 
 # Filter by market cap
-python {baseDir}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000
 ```
 
 ### Step 3: Category Filtering
@@ -70,10 +70,10 @@ Focus on specific sectors:
 
 ```bash
 # DeFi tokens only
-python {baseDir}/scripts/scanner.py --category defi
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
 
 # Layer 2 tokens
-python {baseDir}/scripts/scanner.py --category layer2
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category layer2
 
 # Available: defi, layer2, nft, gaming, meme
 ```
@@ -84,10 +84,10 @@ Scan across timeframes:
 
 ```bash
 # 1-hour movers
-python {baseDir}/scripts/scanner.py --timeframe 1h
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
 
 # 7-day movers
-python {baseDir}/scripts/scanner.py --timeframe 7d
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 7d
 ```
 
 ### Step 5: Export Results
@@ -96,10 +96,10 @@ Save results for analysis:
 
 ```bash
 # JSON export
-python {baseDir}/scripts/scanner.py --format json --output movers.json
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
 
 # CSV export
-python {baseDir}/scripts/scanner.py --format csv --output movers.csv
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
 ```
 
 ## Output
@@ -174,7 +174,7 @@ Higher scores indicate more significant, higher-conviction moves.
 
 ## Configuration
 
-Edit `{baseDir}/config/settings.yaml`:
+Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
 
 ```yaml
 # Default Thresholds
@@ -214,7 +214,7 @@ categories:
 
 ### Named Presets
 
-Create presets in `{baseDir}/config/presets/`:
+Create presets in `${CLAUDE_SKILL_DIR}/config/presets/`:
 
 **aggressive.yaml:**
 ```yaml
@@ -234,12 +234,12 @@ top_n: 10
 
 Use with:
 ```bash
-python {baseDir}/scripts/scanner.py --preset aggressive
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
 ```
 
 ## Error Handling
 
-See `{baseDir}/references/errors.md` for comprehensive error handling.
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 ### Common Errors
 
@@ -252,30 +252,30 @@ See `{baseDir}/references/errors.md` for comprehensive error handling.
 
 ## Examples
 
-See `{baseDir}/references/examples.md` for detailed usage examples.
+See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
 
 ### Example 1: Daily Scan
 
 ```bash
-python {baseDir}/scripts/scanner.py --timeframe 24h --top 20
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 24h --top 20
 ```
 
 ### Example 2: Volume Spike Hunt
 
 ```bash
-python {baseDir}/scripts/scanner.py --volume-spike 5 --min-volume 1000000
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000
 ```
 
 ### Example 3: DeFi Movers Export
 
 ```bash
-python {baseDir}/scripts/scanner.py --category defi --format csv --output defi_movers.csv
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi --format csv --output defi_movers.csv
 ```
 
 ### Example 4: High-Cap Gainers
 
 ```bash
-python {baseDir}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10
 ```
 
 ## Integration with Other Skills
@@ -285,7 +285,7 @@ This skill can be combined with other crypto skills:
 **With crypto-signal-generator:**
 ```bash
 # Get movers, then generate signals for top gainers
-python {baseDir}/scripts/scanner.py --format json | \
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json | \
   python ../crypto-signal-generator/.../scanner.py --from-stdin
 ```
 

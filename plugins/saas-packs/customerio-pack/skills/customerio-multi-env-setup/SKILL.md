@@ -47,7 +47,7 @@ Create workflow dispatch for promoting between environments with credential veri
 Run isolation verification scripts that create test users in each workspace and confirm no cross-environment data leakage.
 
 For detailed implementation code and configurations, load the reference guide:
-`Read({baseDir}/references/implementation-guide.md)`
+`Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Per-environment workspace configuration
