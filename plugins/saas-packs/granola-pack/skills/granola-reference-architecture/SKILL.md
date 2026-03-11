@@ -15,258 +15,66 @@ compatible-with: claude-code, codex, openclaw
 
 # Granola Reference Architecture
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Enterprise reference architecture for meeting management using Granola as the core capture platform.
+Enterprise reference architecture for meeting management using Granola as the core capture platform with Zapier middleware routing to Slack, Notion, CRM, and task management.
 
-## Architecture Diagram
+## Prerequisites
+- Granola Business or Enterprise plan
+- Zapier account for middleware automation
+- Destination systems configured (Slack, Notion, CRM, Linear)
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                      MEETING ECOSYSTEM                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐         │
-│  │   Google    │    │   Zoom      │    │   Teams     │         │
-│  │  Calendar   │    │             │    │             │         │
-│  └──────┬──────┘    └──────┬──────┘    └──────┬──────┘         │
-│         │                  │                  │                 │
-│         └─────────────────┬┴─────────────────┘                 │
-│                           │                                     │
-│                    ┌──────▼──────┐                              │
-│                    │   GRANOLA   │                              │
-│                    │   (Core)    │                              │
-│                    │             │                              │
-│                    │ • Capture   │                              │
-│                    │ • Transcribe│                              │
-│                    │ • Summarize │                              │
-│                    └──────┬──────┘                              │
-│                           │                                     │
-│                    ┌──────▼──────┐                              │
-│                    │   ZAPIER    │                              │
-│                    │ (Middleware)│                              │
-│                    └──────┬──────┘                              │
-│                           │                                     │
-│    ┌──────────┬───────────┼───────────┬──────────┐             │
-│    │          │           │           │          │             │
-│    ▼          ▼           ▼           ▼          ▼             │
-│ ┌──────┐ ┌───────┐ ┌─────────┐ ┌────────┐ ┌──────────┐        │
-│ │Slack │ │Notion │ │HubSpot  │ │ Linear │ │Analytics │        │
-│ │      │ │       │ │(CRM)    │ │(Tasks) │ │  (BI)    │        │
-│ └──────┘ └───────┘ └─────────┘ └────────┘ └──────────┘        │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
-```
+## Instructions
 
-## Component Responsibilities
+### Step 1: Set Up Core Pipeline
+Meeting Platforms (Google/Zoom/Teams) -> Granola (capture/transcribe/summarize) -> Zapier (route/transform) -> Destinations (Slack, Notion, CRM, Linear)
 
-### Tier 1: Meeting Platforms
-| Platform | Role | Integration |
-|----------|------|-------------|
-| Google Meet | Video conferencing | Calendar sync |
-| Zoom | Video conferencing | Calendar sync |
-| Microsoft Teams | Video conferencing | Outlook sync |
+### Step 2: Configure Data Flow Patterns
+- **Standard**: Parallel notify (Slack) + archive (Notion) + create tasks (Linear)
+- **Client Meeting**: Add CRM path (HubSpot note, contact update, follow-up)
+- **Executive**: Private Notion, EA notification, no public Slack
 
-### Tier 2: Granola (Core)
-| Function | Description |
-|----------|-------------|
-| Audio Capture | Local device recording |
-| Transcription | Real-time speech-to-text |
-| Summarization | AI-generated meeting notes |
-| Template Engine | Structured note formats |
+### Step 3: Design Multi-Workspace Structure
+Separate workspaces per department with appropriate access controls and per-workspace integrations.
 
-### Tier 3: Middleware (Zapier)
-| Function | Description |
-|----------|-------------|
-| Event Routing | Direct notes to appropriate systems |
-| Data Transform | Format notes for target systems |
-| Filtering | Route based on meeting type |
-| Orchestration | Multi-step workflows |
+### Step 4: Implement Security
+Data classification (Confidential/Internal/PII), encryption (AES-256/TLS 1.3), RBAC + SSO, audit logging.
 
-### Tier 4: Destination Systems
-| System | Purpose | Data Flow |
-|--------|---------|-----------|
-| Slack | Notifications | Summary + actions |
-| Notion | Documentation | Full notes |
-| HubSpot | CRM | Contact updates |
-| Linear | Tasks | Action items |
-| Analytics | Insights | Metrics |
+### Step 5: Plan for Scale and DR
+Size workspace by team (Pro/Business/Enterprise), set performance budgets, configure nightly exports for disaster recovery.
 
-## Data Flow Patterns
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for full architecture diagram, data flow patterns, workspace configurations, access control matrices, and disaster recovery procedures.
 
-### Pattern 1: Standard Meeting
-```
-Meeting Ends
-     ↓
-Granola Processes (2 min)
-     ↓
-Zapier Trigger
-     ↓
-┌────────────────────┐
-│ Parallel Actions   │
-├────────────────────┤
-│ → Slack notify     │
-│ → Notion archive   │
-│ → Linear tasks     │
-└────────────────────┘
-```
+## Output
+- Meeting ecosystem architecture documented
+- Zapier routing configured per meeting type
+- Multi-workspace structure deployed
+- Security and DR measures in place
 
-### Pattern 2: Client Meeting
-```
-Meeting Ends (external attendee detected)
-     ↓
-Granola Processes
-     ↓
-Zapier Trigger + Filter
-     ↓
-┌────────────────────┐
-│ CRM Path           │
-├────────────────────┤
-│ → HubSpot note     │
-│ → Contact update   │
-│ → Deal activity    │
-│ → Follow-up task   │
-└────────────────────┘
-     +
-┌────────────────────┐
-│ Standard Path      │
-├────────────────────┤
-│ → Notion archive   │
-│ → Slack notify     │
-└────────────────────┘
-```
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Notes not routing | Zapier trigger misconfigured | Verify Granola-Zapier connection |
+| Wrong destination | Filter logic error | Review Zapier filter conditions |
+| Slow note delivery | Processing queue | Check Granola status page |
+| Missing CRM update | External attendee not detected | Verify calendar attendee emails |
 
-### Pattern 3: Executive Meeting
-```
-Meeting Ends (VP+ attendee)
-     ↓
-Granola Processes
-     ↓
-Special Handling:
-     ↓
-┌────────────────────┐
-│ High-Touch Path    │
-├────────────────────┤
-│ → Private Notion   │
-│ → EA notification  │
-│ → Action tracking  │
-│ → No public Slack  │
-└────────────────────┘
-```
+## Examples
 
-## Enterprise Deployment
-
-### Multi-Workspace Architecture
-```
-Enterprise Granola Deployment
-├── Corporate Workspace
-│   ├── Executive Team
-│   ├── Leadership
-│   └── Board Meetings
-├── Engineering Workspace
-│   ├── Sprint Planning
-│   ├── Tech Reviews
-│   └── Team Syncs
-├── Sales Workspace
-│   ├── Client Calls
-│   ├── Demos
-│   └── QBRs
-└── HR Workspace
-    ├── Interviews
-    ├── Reviews
-    └── Training
-```
-
-### Access Control Matrix
-| Workspace | Visibility | Sharing | SSO Group |
-|-----------|------------|---------|-----------|
-| Corporate | Private | Executive only | exec-team |
-| Engineering | Team | Engineering + PM | engineering |
-| Sales | Team + CRM | Sales + Success | sales |
-| HR | Confidential | HR only | hr-team |
-
-### Integration Per Workspace
-```yaml
-Corporate:
-  - Notion (private database)
-  - Slack (#exec-team private)
-  - No CRM
-
-Engineering:
-  - Notion (engineering wiki)
-  - Slack (#dev-meetings)
-  - Linear (auto-tasks)
-  - GitHub (PR references)
-
-Sales:
-  - Notion (sales playbook)
-  - Slack (#sales-updates)
-  - HubSpot (full sync)
-  - Gong (call coaching)
-
-HR:
-  - Notion (confidential)
-  - Slack (HR DMs only)
-  - Greenhouse (if recruiting)
-```
-
-## Security Architecture
-
-### Data Classification
-| Data Type | Classification | Handling |
-|-----------|---------------|----------|
-| Transcripts | Confidential | Encrypted, access-controlled |
-| Summaries | Internal | Team-shared |
-| Action Items | Internal | Public within org |
-| Attendee Names | PII | GDPR compliant |
-
-### Encryption & Access
-```
-Data at Rest: AES-256
-Data in Transit: TLS 1.3
-Access Control: RBAC + SSO
-Audit: Full logging enabled
-Retention: Configurable per workspace
-```
-
-## Scalability Considerations
-
-### Volume Planning
-| Team Size | Meetings/Month | Storage/Year | Plan |
-|-----------|---------------|--------------|------|
-| 1-10 | 100-500 | 5-25 GB | Pro |
-| 10-50 | 500-2500 | 25-125 GB | Business |
-| 50-200 | 2500-10000 | 125-500 GB | Enterprise |
-| 200+ | 10000+ | 500+ GB | Enterprise+ |
-
-### Performance Budgets
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Note availability | < 3 min | Post-meeting |
-| Integration latency | < 1 min | Zapier to destination |
-| Search response | < 500 ms | Within Granola |
-| Export time | < 30 sec | For any meeting |
-
-## Disaster Recovery
-
-### Backup Strategy
-```markdown
-Primary: Granola cloud storage
-Secondary: Nightly export to company storage
-Tertiary: Weekly archive to cold storage
-
-Recovery Points:
-- RPO: 24 hours (daily export)
-- RTO: 4 hours (restore from export)
-```
-
-### Failover Procedures
-```markdown
-If Granola unavailable:
-1. Manual notes during meeting
-2. Record with backup tool
-3. Transcribe post-meeting
-4. Manual upload when restored
-```
+### Performance Targets
+| Metric | Target |
+|--------|--------|
+| Note availability | < 3 min post-meeting |
+| Integration latency | < 1 min |
+| Search response | < 500 ms |
 
 ## Resources
 - [Granola Enterprise](https://granola.ai/enterprise)
