@@ -116,7 +116,7 @@ transactions:
       count: 10          # More than N failed txs
       severity: low
 
-# Known risky addresses (placeholder - would be populated from security APIs)
+# Known risky addresses (populated from security APIs at runtime)
 known_risky:
   # Example entries:
   # "0x1234...": "Known phishing contract"

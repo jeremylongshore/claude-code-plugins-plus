@@ -13,19 +13,19 @@ apis:
     base_url: https://bridges.llama.fi
     endpoints:
       bridges: /bridges
-      bridge: /bridge/{id}
-      volume: /bridgevolume/{chain}
-      stats: /bridgedaystats/{timestamp}/{chain}
+      bridge: /bridge/<bridge-id>
+      volume: /bridgevolume/<chain-name>
+      stats: /bridgedaystats/<unix-timestamp>/<chain-name>
 
   wormhole:
     base_url: https://api.wormholescan.io/api/v1
     endpoints:
-      vaa: /vaas/{txHash}
+      vaa: /vaas/<tx-hash>
 
   layerzero:
     base_url: https://scan.layerzero.network/api
     endpoints:
-      message: /message/tx/{txHash}
+      message: /message/tx/<tx-hash>
 
   across:
     base_url: https://across.to/api

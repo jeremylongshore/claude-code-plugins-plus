@@ -49,7 +49,7 @@ pip install ta-lib scipy scikit-learn
 python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
 ```
 
-Data is cached to `${CLAUDE_SKILL_DIR}/data/{symbol}_{interval}.csv` for reuse.
+Data is cached to `${CLAUDE_SKILL_DIR}/data/BTC-USD_1d.csv` (named by symbol and interval) for reuse.
 
 ### Step 2: Run Backtest
 

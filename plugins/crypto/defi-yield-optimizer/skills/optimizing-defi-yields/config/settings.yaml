@@ -7,7 +7,7 @@ api:
   defillama:
     yields_url: "https://yields.llama.fi/pools"
     protocols_url: "https://api.llama.fi/protocols"
-    protocol_url: "https://api.llama.fi/protocol/{protocol}"
+    protocol_url: "https://api.llama.fi/protocol/<protocol-slug>"
     timeout: 30  # seconds
     rate_limit: null  # DeFiLlama has generous limits
 

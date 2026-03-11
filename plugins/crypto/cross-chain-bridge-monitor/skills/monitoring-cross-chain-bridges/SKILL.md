@@ -81,7 +81,7 @@ Shows supported bridge protocols with their chains.
 
 2. **Compare bridge routes** before transferring:
    ```bash
-   python bridge_monitor.py compare -s ethereum -d base -a 5000 -t USDC
+   python bridge_monitor.py compare -s ethereum -d base -a 5000 -t USDC  # 5000: bridge transfer amount in USD
    ```
 
 3. **Get bridge details** for research:
