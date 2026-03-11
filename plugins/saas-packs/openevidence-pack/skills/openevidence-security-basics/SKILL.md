@@ -15,8 +15,17 @@ compatible-with: claude-code, codex, openclaw
 
 # OpenEvidence Security Basics
 
+## Table of Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Security best practices for OpenEvidence integrations handling Protected Health Information (PHI) in compliance with HIPAA regulations.
+Security best practices for OpenEvidence integrations handling Protected Health Information (PHI). Covers credential management, PHI sanitization, HIPAA audit logging, webhook verification, and data retention compliance.
 
 ## Prerequisites
 - OpenEvidence SDK installed
@@ -26,304 +35,47 @@ Security best practices for OpenEvidence integrations handling Protected Health 
 
 ## OpenEvidence Security Certifications
 - SOC 2 Type II certified
-- HIPAA compliant
+- HIPAA compliant with BAA
 - AES-256 encryption at rest
 - TLS 1.2+ encryption in transit
-- Google Cloud Platform hosted
-
-## Instructions
-
-### Step 1: Secure Credential Management
-```bash
-# .env (NEVER commit to git)
-OPENEVIDENCE_API_KEY=oe_live_***
-OPENEVIDENCE_ORG_ID=org_***
-OPENEVIDENCE_WEBHOOK_SECRET=whsec_***
-
-# .gitignore (REQUIRED)
-.env
-.env.local
-.env.*.local
-*.pem
-*.key
-credentials*.json
-```
-
-```typescript
-// src/config/secrets.ts
-// Use secret manager in production (AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault)
-import { SecretManagerServiceClient } from '@google-cloud/secret-manager';
-
-const client = new SecretManagerServiceClient();
-
-export async function getOpenEvidenceCredentials(): Promise<{
-  apiKey: string;
-  orgId: string;
-}> {
-  const [apiKeyVersion] = await client.accessSecretVersion({
-    name: 'projects/my-project/secrets/openevidence-api-key/versions/latest',
-  });
-  const [orgIdVersion] = await client.accessSecretVersion({
-    name: 'projects/my-project/secrets/openevidence-org-id/versions/latest',
-  });
-
-  return {
-    apiKey: apiKeyVersion.payload!.data!.toString(),
-    orgId: orgIdVersion.payload!.data!.toString(),
-  };
-}
-```
-
-### Step 2: PHI Handling - Input Sanitization
-```typescript
-// src/openevidence/phi-handler.ts
-// IMPORTANT: OpenEvidence should NOT receive direct PHI in queries
-
-interface SanitizedQuery {
-  question: string;
-  context: {
-    ageRange?: string; // "65-74" not exact age
-    sex?: string;
-    conditionCategories?: string[]; // "cardiovascular" not specific diagnosis
-  };
-}
-
-export function sanitizeQueryForOpenEvidence(
-  question: string,
-  patientContext?: PatientContext
-): SanitizedQuery {
-  // Remove any PHI that might have leaked into the question
-  let sanitized = question;
-
-  // Remove potential names
-  sanitized = sanitized.replace(/\b(Mr\.|Mrs\.|Ms\.|Dr\.)\s+[A-Z][a-z]+\b/g, '[PATIENT]');
-
-  // Remove dates of birth
-  sanitized = sanitized.replace(/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/g, '[DATE]');
-
-  // Remove MRNs
-  sanitized = sanitized.replace(/\bMRN[:\s]*\d+\b/gi, '[MRN]');
-
-  // Remove SSNs
-  sanitized = sanitized.replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[SSN]');
-
-  return {
-    question: sanitized,
-    context: patientContext ? {
-      ageRange: getAgeRange(patientContext.age),
-      sex: patientContext.sex,
-      conditionCategories: categorizeConditions(patientContext.conditions),
-    } : undefined,
-  };
-}
-
-function getAgeRange(age?: number): string | undefined {
-  if (!age) return undefined;
-  if (age < 18) return 'pediatric';
-  if (age < 40) return '18-39';
-  if (age < 65) return '40-64';
-  if (age < 75) return '65-74';
-  return '75+';
-}
-
-function categorizeConditions(conditions?: string[]): string[] | undefined {
-  // Map specific conditions to categories
-  const categoryMap: Record<string, string> = {
-    'hypertension': 'cardiovascular',
-    'diabetes': 'endocrine',
-    'asthma': 'pulmonary',
-    // ... more mappings
-  };
-
-  return conditions?.map(c => categoryMap[c.toLowerCase()] || 'other');
-}
-```
-
-### Step 3: Audit Logging (HIPAA Required)
-```typescript
-// src/openevidence/audit-log.ts
-interface AuditEntry {
-  timestamp: Date;
-  eventType: 'query' | 'deepconsult' | 'access' | 'export';
-  userId: string;
-  userRole: string;
-  action: string;
-  resourceType: 'clinical_answer' | 'research_report';
-  resourceId?: string;
-  ipAddress: string;
-  userAgent: string;
-  success: boolean;
-  errorCode?: string;
-  // Never log the actual query content or response - may contain PHI
-}
-
-export class HIPAAAuditLogger {
-  private logStore: AuditLogStore;
-
-  constructor(store: AuditLogStore) {
-    this.logStore = store;
-  }
-
-  async logClinicalQuery(
-    userId: string,
-    userRole: string,
-    queryId: string,
-    success: boolean,
-    request: Request
-  ): Promise<void> {
-    await this.logStore.insert({
-      timestamp: new Date(),
-      eventType: 'query',
-      userId,
-      userRole,
-      action: 'clinical_query',
-      resourceType: 'clinical_answer',
-      resourceId: queryId,
-      ipAddress: this.getClientIP(request),
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      success,
-    });
-  }
-
-  async logDeepConsult(
-    userId: string,
-    userRole: string,
-    consultId: string,
-    success: boolean,
-    request: Request
-  ): Promise<void> {
-    await this.logStore.insert({
-      timestamp: new Date(),
-      eventType: 'deepconsult',
-      userId,
-      userRole,
-      action: 'research_synthesis',
-      resourceType: 'research_report',
-      resourceId: consultId,
-      ipAddress: this.getClientIP(request),
-      userAgent: request.headers.get('user-agent') || 'unknown',
-      success,
-    });
-  }
-
-  private getClientIP(request: Request): string {
-    // Handle proxies
-    const forwarded = request.headers.get('x-forwarded-for');
-    if (forwarded) return forwarded.split(',')[0].trim();
-    return 'unknown';
-  }
-}
-```
-
-### Step 4: Webhook Signature Verification
-```typescript
-// src/openevidence/webhook-security.ts
-import crypto from 'crypto';
-
-export function verifyWebhookSignature(
-  payload: string | Buffer,
-  signature: string,
-  secret: string,
-  tolerance: number = 300 // 5 minute tolerance
-): boolean {
-  // Parse signature header: t=timestamp,v1=signature
-  const parts = signature.split(',').reduce((acc, part) => {
-    const [key, value] = part.split('=');
-    acc[key] = value;
-    return acc;
-  }, {} as Record<string, string>);
-
-  const timestamp = parseInt(parts['t']);
-  const providedSignature = parts['v1'];
-
-  // Check timestamp to prevent replay attacks
-  const now = Math.floor(Date.now() / 1000);
-  if (Math.abs(now - timestamp) > tolerance) {
-    console.error('Webhook timestamp too old or in future');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  try {
-    return crypto.timingSafeEqual(
-      Buffer.from(providedSignature),
-      Buffer.from(expectedSignature)
-    );
-  } catch {
-    return false;
-  }
-}
-```
-
-### Step 5: Data Retention Compliance
-```typescript
-// src/openevidence/data-retention.ts
-// HIPAA requires minimum 6-year retention of access logs
-
-interface RetentionPolicy {
-  auditLogs: number;      // days
-  queryResults: number;   // days
-  deepConsultReports: number; // days
-}
-
-const HIPAA_RETENTION: RetentionPolicy = {
-  auditLogs: 2190,        // 6 years
-  queryResults: 0,        // Do not store (re-query as needed)
-  deepConsultReports: 365, // 1 year (user can re-run)
-};
-
-export class DataRetentionManager {
-  constructor(private policy: RetentionPolicy = HIPAA_RETENTION) {}
-
-  async cleanupExpiredData(): Promise<CleanupReport> {
-    const cutoffs = {
-      auditLogs: new Date(Date.now() - this.policy.auditLogs * 24 * 60 * 60 * 1000),
-      deepConsultReports: new Date(Date.now() - this.policy.deepConsultReports * 24 * 60 * 60 * 1000),
-    };
-
-    // Note: Audit logs should be archived, not deleted
-    const archivedLogs = await db.auditLogs.archive({
-      where: { timestamp: { lt: cutoffs.auditLogs } },
-    });
-
-    const deletedReports = await db.deepConsultReports.deleteMany({
-      where: { createdAt: { lt: cutoffs.deepConsultReports } },
-    });
-
-    return {
-      auditLogsArchived: archivedLogs.count,
-      reportsDeleted: deletedReports.count,
-      executedAt: new Date(),
-    };
-  }
-}
-```
 
 ## Security Checklist
-- [ ] API keys stored in secret manager (not env vars in production)
+- [ ] API keys in secret manager (not env vars in production)
 - [ ] BAA signed with OpenEvidence
-- [ ] PHI sanitization before sending queries
-- [ ] Audit logging enabled for all access
+- [ ] PHI sanitization before all queries
+- [ ] HIPAA audit logging on all access
 - [ ] Webhook signatures verified
 - [ ] TLS 1.2+ enforced
-- [ ] IP allowlist configured (if available)
 - [ ] Different keys for dev/staging/prod
 - [ ] Key rotation schedule established
 - [ ] Data retention policy implemented
 
+## Instructions
+
+### Step 1: Secure Credential Management
+Use `.env` locally (gitignored), GCP Secret Manager or AWS Secrets Manager in production. Never hardcode credentials.
+
+### Step 2: Implement PHI Sanitization
+Remove names, dates, MRNs, SSNs from queries before sending to OpenEvidence. Map patient demographics to age ranges and condition categories instead of specific identifiers.
+
+### Step 3: Enable HIPAA Audit Logging
+Log all clinical queries and DeepConsult requests with userId, userRole, resourceId, ipAddress, success status. Never log actual query content or responses (may contain PHI).
+
+### Step 4: Verify Webhook Signatures
+Parse `t=timestamp,v1=signature` header format. Compute HMAC-SHA256 with timing-safe comparison. Reject timestamps older than 5 minutes for replay protection.
+
+### Step 5: Configure Data Retention
+- Audit logs: 6 years (2190 days) -- HIPAA minimum
+- Query results: Do not store (re-query as needed)
+- DeepConsult reports: 1 year
+- Run daily cleanup job to enforce policies
+
 ## Output
-- Secure credential management
-- PHI sanitization layer
+- Secure credential management (GCP/AWS Secret Manager)
+- PHI sanitization layer with pattern detection
 - HIPAA-compliant audit logging
-- Webhook signature verification
-- Data retention compliance
+- Webhook signature verification with replay protection
+- Data retention compliance with automated cleanup
 
 ## Error Handling
 | Security Issue | Detection | Mitigation |
@@ -335,46 +87,16 @@ export class DataRetentionManager {
 
 ## Examples
 
-### Secure Query Service
+### Secure Query Flow
 ```typescript
-const auditLogger = new HIPAAAuditLogger(auditStore);
-
-export async function secureClinicaQuery(
-  question: string,
-  patientContext: PatientContext | undefined,
-  user: AuthenticatedUser,
-  request: Request
-): Promise<ClinicalResponse> {
-  // 1. Sanitize input
-  const sanitized = sanitizeQueryForOpenEvidence(question, patientContext);
-
-  // 2. Make query
-  const response = await client.query({
-    question: sanitized.question,
-    context: {
-      specialty: 'internal-medicine',
-      urgency: 'routine',
-      ...sanitized.context,
-    },
-  });
-
-  // 3. Audit log
-  await auditLogger.logClinicalQuery(
-    user.id,
-    user.role,
-    response.id,
-    true,
-    request
-  );
-
-  return response;
-}
+const sanitized = sanitizeQueryForOpenEvidence(question, patientContext);
+const response = await client.query({ question: sanitized.question, context: sanitized.context });
+await auditLogger.logClinicalQuery(user.id, user.role, response.id, true, request);
 ```
+
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
 
 ## Resources
 - [OpenEvidence Security](https://www.openevidence.com/security)
 - [HIPAA Security Rule](https://www.hhs.gov/hipaa/for-professionals/security/index.html)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-
-## Next Steps
-For production deployment, see `openevidence-prod-checklist`.

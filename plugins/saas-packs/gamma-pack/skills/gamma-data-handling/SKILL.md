@@ -15,266 +15,76 @@ compatible-with: claude-code, codex, openclaw
 
 # Gamma Data Handling
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Implement proper data handling, privacy controls, and compliance for Gamma integrations.
+Implement proper data handling, privacy controls, and GDPR/CCPA compliance for Gamma integrations.
 
 ## Prerequisites
 - Understanding of data privacy regulations (GDPR, CCPA)
-- Data classification policies
+- Data classification policies defined
 - Legal/compliance team consultation
 
 ## Data Classification
 
-### Gamma Data Types
 | Type | Classification | Retention | Handling |
 |------|----------------|-----------|----------|
 | Presentation content | User data | User-controlled | Encrypted at rest |
 | AI-generated text | Derived data | With source | Standard |
 | User prompts | PII potential | 30 days | Anonymize logs |
 | Export files | User data | 24 hours cache | Auto-delete |
-| Analytics | Operational | 90 days | Aggregate only |
 
 ## Instructions
 
-### Step 1: Data Consent Management
-```typescript
-// models/consent.ts
-interface UserConsent {
-  userId: string;
-  gammaDataProcessing: boolean;
-  aiAnalysis: boolean;
-  analytics: boolean;
-  consentDate: Date;
-  consentVersion: string;
-}
+### Step 1: Implement Consent Management
+Check user consent before Gamma operations. Require explicit consent for data processing and AI analysis separately.
 
-async function checkConsent(userId: string, purpose: string): Promise<boolean> {
-  const consent = await db.consents.findUnique({
-    where: { userId },
-  });
+### Step 2: Configure PII Handling
+Mask emails, hash names, and remove sensitive fields before logging. Never log raw PII in production.
 
-  if (!consent) {
-    throw new ConsentRequiredError('User consent not obtained');
-  }
+### Step 3: Enforce Retention Policies
+Auto-delete exports (1 day), anonymize prompts (30 days), archive logs (90 days), delete presentations (365 days). Schedule daily enforcement.
 
-  switch (purpose) {
-    case 'presentation_creation':
-      return consent.gammaDataProcessing;
-    case 'ai_generation':
-      return consent.gammaDataProcessing && consent.aiAnalysis;
-    case 'analytics':
-      return consent.analytics;
-    default:
-      return false;
-  }
-}
+### Step 4: Handle GDPR Requests
+- **Access**: Gather all user data including Gamma-stored presentations
+- **Erasure**: Delete from local DB and Gamma API, anonymize user record
 
-// Usage before Gamma operations
-async function createPresentation(userId: string, data: object) {
-  if (!await checkConsent(userId, 'presentation_creation')) {
-    throw new Error('Consent required for presentation creation');
-  }
+### Step 5: Enable Audit Trail
+Log all significant actions (create, update, delete, share, export) with user ID, IP, timestamp, and resource details.
 
-  return gamma.presentations.create(data);
-}
-```
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for consent management, PII sanitization, retention enforcement, GDPR request handlers, and audit trail code.
 
-### Step 2: PII Handling
-```typescript
-// lib/pii-handler.ts
-interface PIIField {
-  field: string;
-  type: 'email' | 'name' | 'phone' | 'address' | 'custom';
-  action: 'mask' | 'hash' | 'encrypt' | 'remove';
-}
+## Output
+- Consent management enforced before operations
+- PII sanitized in all logs
+- Retention policies running daily
+- GDPR access/erasure requests handled
+- Audit trail recording all actions
 
-const piiFields: PIIField[] = [
-  { field: 'email', type: 'email', action: 'mask' },
-  { field: 'name', type: 'name', action: 'hash' },
-  { field: 'phone', type: 'phone', action: 'mask' },
-];
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Consent not obtained | New user flow | Add consent gate before first operation |
+| Deletion incomplete | Gamma API timeout | Retry with exponential backoff |
+| Audit gap | Missing log entry | Add audit middleware to all routes |
+| Retention not running | Scheduler stopped | Monitor cron job health |
 
-function sanitizeForLogging(data: object): object {
-  const sanitized = { ...data };
+## Examples
 
-  for (const pii of piiFields) {
-    if (sanitized[pii.field]) {
-      switch (pii.action) {
-        case 'mask':
-          sanitized[pii.field] = maskValue(sanitized[pii.field]);
-          break;
-        case 'hash':
-          sanitized[pii.field] = hashValue(sanitized[pii.field]);
-          break;
-        case 'remove':
-          delete sanitized[pii.field];
-          break;
-      }
-    }
-  }
-
-  return sanitized;
-}
-
-function maskValue(value: string): string {
-  if (value.includes('@')) {
-    // Email masking
-    const [local, domain] = value.split('@');
-    return `${local[0]}***@${domain}`;
-  }
-  // Generic masking
-  return value.substring(0, 2) + '***' + value.substring(value.length - 2);
-}
-```
-
-### Step 3: Data Retention Policies
-```typescript
-// services/data-retention.ts
-interface RetentionPolicy {
-  dataType: string;
-  retentionDays: number;
-  action: 'delete' | 'archive' | 'anonymize';
-}
-
-const policies: RetentionPolicy[] = [
-  { dataType: 'presentation_exports', retentionDays: 1, action: 'delete' },
-  { dataType: 'user_prompts', retentionDays: 30, action: 'anonymize' },
-  { dataType: 'api_logs', retentionDays: 90, action: 'archive' },
-  { dataType: 'presentations', retentionDays: 365, action: 'delete' },
-];
-
-async function enforceRetentionPolicies() {
-  for (const policy of policies) {
-    const cutoffDate = new Date();
-    cutoffDate.setDate(cutoffDate.getDate() - policy.retentionDays);
-
-    switch (policy.action) {
-      case 'delete':
-        await deleteExpiredData(policy.dataType, cutoffDate);
-        break;
-      case 'archive':
-        await archiveExpiredData(policy.dataType, cutoffDate);
-        break;
-      case 'anonymize':
-        await anonymizeExpiredData(policy.dataType, cutoffDate);
-        break;
-    }
-
-    console.log(`Retention enforced for ${policy.dataType}`);
-  }
-}
-
-// Run daily
-scheduleJob('0 2 * * *', enforceRetentionPolicies);
-```
-
-### Step 4: GDPR Data Subject Requests
-```typescript
-// services/gdpr.ts
-interface DataSubjectRequest {
-  userId: string;
-  type: 'access' | 'erasure' | 'portability' | 'rectification';
-  requestDate: Date;
-  status: 'pending' | 'processing' | 'completed';
-}
-
-async function handleAccessRequest(userId: string) {
-  // Gather all user data
-  const userData = {
-    account: await db.users.findUnique({ where: { id: userId } }),
-    presentations: await db.presentations.findMany({ where: { userId } }),
-    exports: await db.exports.findMany({ where: { userId } }),
-    consents: await db.consents.findMany({ where: { userId } }),
-    activityLogs: await db.activityLogs.findMany({
-      where: { userId },
-      take: 1000,
-    }),
-  };
-
-  // Include Gamma-stored data
-  const gammaPresentations = await gamma.presentations.list({
-    filter: { externalUserId: userId },
-  });
-
-  return {
-    ...userData,
-    gammaData: gammaPresentations,
-    exportedAt: new Date().toISOString(),
-  };
-}
-
-async function handleErasureRequest(userId: string) {
-  // Delete from our database
-  await db.presentations.deleteMany({ where: { userId } });
-  await db.exports.deleteMany({ where: { userId } });
-  await db.activityLogs.deleteMany({ where: { userId } });
-
-  // Request deletion from Gamma
-  const gammaPresentations = await gamma.presentations.list({
-    filter: { externalUserId: userId },
-  });
-
-  for (const p of gammaPresentations) {
-    await gamma.presentations.delete(p.id);
-  }
-
-  // Anonymize remaining data
-  await db.users.update({
-    where: { id: userId },
-    data: {
-      email: `deleted_${Date.now()}@anonymized.local`,
-      name: 'Deleted User',
-      deletedAt: new Date(),
-    },
-  });
-
-  return { success: true, deletedCount: gammaPresentations.length + 1 };
-}
-```
-
-### Step 5: Audit Trail
-```typescript
-// lib/audit.ts
-interface AuditEntry {
-  timestamp: Date;
-  userId: string;
-  action: string;
-  resource: string;
-  resourceId: string;
-  details: object;
-  ipAddress: string;
-}
-
-async function logAuditEvent(entry: Omit<AuditEntry, 'timestamp'>) {
-  await db.auditLog.create({
-    data: {
-      ...entry,
-      timestamp: new Date(),
-    },
-  });
-}
-
-// Usage
-await logAuditEvent({
-  userId: user.id,
-  action: 'PRESENTATION_CREATED',
-  resource: 'presentation',
-  resourceId: presentation.id,
-  details: { title: presentation.title },
-  ipAddress: req.ip,
-});
-```
-
-## Compliance Checklist
-
-- [ ] Data processing agreement with Gamma
+### Compliance Checklist
+- [ ] Data processing agreement with Gamma signed
 - [ ] User consent mechanism implemented
 - [ ] PII handling procedures documented
 - [ ] Data retention policies enforced
 - [ ] GDPR rights request process ready
 - [ ] Audit logging enabled
-- [ ] Data encryption at rest and in transit
-- [ ] Third-party data sharing documented
 
 ## Resources
 - [Gamma Privacy Policy](https://gamma.app/privacy)
