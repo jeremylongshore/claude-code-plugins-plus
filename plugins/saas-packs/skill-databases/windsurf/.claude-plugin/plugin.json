@@ -1,0 +1,11 @@
+{
+  "name": "windsurf",
+  "version": "1.0.0",
+  "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
+  "author": {
+    "name": "Jeremy Longshore",
+    "email": "jeremy@intentsolutions.io"
+  },
+  "keywords": ["windsurf", "ai-ide", "code-editor", "cascade", "ai-coding"],
+  "license": "MIT"
+}

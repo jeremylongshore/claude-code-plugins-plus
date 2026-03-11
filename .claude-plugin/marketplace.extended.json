@@ -7179,6 +7179,27 @@
         "source_repo": "wondelai/skills",
         "source_path": "web-typography"
       }
+    },
+    {
+      "name": "windsurf",
+      "source": "./plugins/saas-packs/skill-databases/windsurf",
+      "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
+      "version": "1.0.0",
+      "category": "saas-packs",
+      "keywords": [
+        "windsurf",
+        "ai-ide",
+        "code-editor",
+        "cascade",
+        "ai-coding"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "components": {
+        "skills": 30
+      }
     }
   ]
 }

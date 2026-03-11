@@ -870,6 +870,852 @@
       "filePath": "plugins/saas-packs/sentry-pack/skills/sentry-advanced-troubleshooting/SKILL.md"
     },
     {
+      "slug": "windsurf-api-development",
+      "name": "\"windsurf-api-development\"",
+      "description": "Generate API clients and documentation with Cascade. Activate when users mention \"generate api client\", \"api documentation\", \"openapi generation\", \"sdk generation\", or \"api integration\". Handles API development workflows. Use when working with APIs or building integrations. Trigger with phrases like \"windsurf api development\", \"windsurf development\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Api Development\n\n## Overview\n\nThis skill enables AI-assisted API development workflows within Windsurf. Cascade can generate type-safe API clients from OpenAPI/Swagger specs, create comprehensive API documentation, design REST and GraphQL schemas, and produce SDKs for multiple languages. It accelerates API development from design through implementation to documentation.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- OpenAPI/Swagger specification or API endpoints\n- Target language runtime (Node.js, Python, etc.)\n- Understanding of API design patterns\n- Documentation requirements defined\n\n## Instructions\n\n1. **Define API Specification**\n2. **Generate Clients**\n3. **Implement Endpoints**\n4. **Create Documentation**\n5. **Test and Validate**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Generated API clients (TypeScript, Python, etc.)\n- Type definitions and schemas\n- API reference documentation\n- Quick start guides and examples\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf API Development](https://docs.windsurf.ai/features/api-development)\n- [OpenAPI Specification](https://swagger.io/specification/)\n- [API Design Best Practices](https://docs.windsurf.ai/guides/api-design)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-api-development/SKILL.md"
+    },
+    {
+      "slug": "windsurf-audit-logging",
+      "name": "\"windsurf-audit-logging\"",
+      "description": "Configure AI interaction audit logging for compliance. Activate when users mention \"audit logging\", \"compliance logging\", \"ai interaction logs\", \"security audit\", or \"activity tracking\". Handles compliance and audit configuration. Use when analyzing or auditing windsurf audit logging. Trigger with phrases like \"windsurf audit logging\", \"windsurf logging\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Audit Logging\n\n## Overview\n\nThis skill enables comprehensive audit logging for Windsurf Enterprise deployments. It covers AI interaction logging, file access tracking, authentication events, and configuration changes. Proper audit logging ensures compliance with SOC 2, ISO 27001, HIPAA, and other security frameworks while providing forensic capabilities for security investigations.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription\n- Organization administrator access\n- Compliance requirements documented\n- Log storage infrastructure\n- SIEM integration (optional but recommended)\n\n## Instructions\n\n1. **Enable Audit Logging**\n2. **Configure Event Types**\n3. **Set Up Integrations**\n4. **Create Reports**\n5. **Monitor and Alert**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured audit log streams\n- SIEM integration\n- Automated reports\n- Alert configurations\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Audit Logging Guide](https://docs.windsurf.ai/admin/audit)\n- [SOC 2 Compliance Documentation](https://docs.windsurf.ai/compliance/soc2)\n- [SIEM Integration Guide](https://docs.windsurf.ai/admin/siem)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-audit-logging/SKILL.md"
+    },
+    {
+      "slug": "windsurf-cascade-agents",
+      "name": "\"windsurf-cascade-agents\"",
+      "description": "Create custom Cascade agent configurations for specialized tasks. Activate when users mention \"custom cascade agent\", \"specialized ai agent\", \"domain-specific cascade\", \"agent configuration\", or \"custom ai behavior\". Handles custom agent creation and configuration. Use when working with windsurf cascade agents functionality. Trigger with phrases like \"windsurf cascade agents\", \"windsurf agents\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Cascade Agents\n\n## Overview\n\nThis skill enables creation of specialized Cascade agents tailored for specific domains or tasks. Custom agents can be configured with domain knowledge, specialized prompts, and focused capabilities. Use cases include security review agents, API design agents, performance optimization agents, and documentation writers that understand your project's specific conventions and requirements.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade Pro or Enterprise\n- Understanding of prompt engineering principles\n- Domain knowledge to encode in agent context\n- Project documentation and conventions documented\n- Test scenarios for agent validation\n\n## Instructions\n\n1. **Define Agent Purpose**\n2. **Create System Prompt**\n3. **Configure Context Sources**\n4. **Set Activation Triggers**\n5. **Test and Refine**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Custom agent configurations in registry\n- Domain-specific system prompts\n- Context files with specialized knowledge\n- Activation trigger mappings\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Custom Agents Guide](https://docs.windsurf.ai/features/custom-agents)\n- [Prompt Engineering Best Practices](https://docs.windsurf.ai/guides/prompt-engineering)\n- [Agent Context Management](https://docs.windsurf.ai/features/context-management)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-cascade-agents/SKILL.md"
+    },
+    {
+      "slug": "windsurf-cascade-context",
+      "name": "\"windsurf-cascade-context\"",
+      "description": "Manage Cascade context window and memory for complex projects. Activate when users mention \"cascade context\", \"ai memory\", \"context management\", \"large codebase navigation\", or \"multi-session development\". Handles context optimization and persistence. Use when working with windsurf cascade context functionality. Trigger with phrases like \"windsurf cascade context\", \"windsurf context\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Cascade Context\n\n## Overview\n\nThis skill enables advanced context management for Cascade AI in large-scale projects. It covers context prioritization, memory persistence across sessions, and optimization strategies for codebases with hundreds or thousands of files. Proper context management ensures Cascade maintains accurate understanding of your project architecture and conventions during extended development sessions.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Large codebase (50+ files)\n- Project documentation available\n- Understanding of project architecture\n- Clear identification of critical code paths\n\n## Instructions\n\n1. **Map Project Structure**\n2. **Configure Context Priorities**\n3. **Create Context Documentation**\n4. **Optimize for Workflow**\n5. **Monitor and Refine**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Optimized context configuration\n- Project context documentation\n- Module index for navigation\n- Session state persistence\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Context Management](https://docs.windsurf.ai/features/context)\n- [Large Codebase Best Practices](https://docs.windsurf.ai/guides/large-codebases)\n- [Memory Persistence Configuration](https://docs.windsurf.ai/features/memory)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-cascade-context/SKILL.md"
+    },
+    {
+      "slug": "windsurf-cascade-onboarding",
+      "name": "\"windsurf-cascade-onboarding\"",
+      "description": "Configure Cascade AI agent for new team projects. Activate when users mention \"setup cascade\", \"configure windsurf ai\", \"initialize cascade agent\", \"new windsurf project\", or \"onboard team to windsurf\". Handles agent configuration, context settings, and team defaults. Use when working with windsurf cascade onboarding functionality. Trigger with phrases like \"windsurf cascade onboarding\", \"windsurf onboarding\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Cascade Onboarding\n\n## Overview\n\nThis skill enables rapid onboarding of projects to Windsurf with optimized Cascade AI configuration. It covers creating .windsurfrules, setting up project context, configuring team defaults, and establishing best practices for AI-assisted development. Teams can achieve maximum Cascade productivity within the first week of adoption.\n\n## Prerequisites\n\n- Windsurf IDE installed for all team members\n- Active Cascade AI subscription\n- Project documentation (architecture, conventions)\n- Team lead or admin access for configuration\n- Understanding of project structure and patterns\n\n## Instructions\n\n1. **Initialize Windsurf Rules**\n2. **Configure Cascade Context**\n3. **Set Up Team Defaults**\n4. **Train Team Members**\n5. **Iterate Based on Feedback**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured .windsurfrules file\n- Project context documentation\n- Team snippet library\n- Onboarding guide for new members\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Onboarding Guide](https://docs.windsurf.ai/getting-started/onboarding)\n- [Writing Effective .windsurfrules](https://docs.windsurf.ai/features/windsurfrules)\n- [Team Best Practices](https://docs.windsurf.ai/guides/team-best-practices)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-cascade-onboarding/SKILL.md"
+    },
+    {
+      "slug": "windsurf-cicd-github-actions",
+      "name": "\"windsurf-cicd-github-actions\"",
+      "description": "Generate and maintain GitHub Actions with Cascade assistance. Activate when users mention \"github actions\", \"ci/cd pipeline\", \"workflow automation\", \"continuous integration\", or \"deployment pipeline\". Handles CI/CD configuration with AI assistance. Use when working with windsurf cicd github actions functionality. Trigger with phrases like \"windsurf cicd github actions\", \"windsurf actions\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Cicd Github Actions\n\n## Overview\n\nThis skill enables AI-assisted CI/CD workflow creation within Windsurf. Cascade can generate GitHub Actions workflows from project requirements, optimize existing pipelines, debug workflow failures, and implement security best practices. It understands common CI/CD patterns and can create workflows for testing, building, and deploying applications.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- GitHub repository with write access\n- Understanding of CI/CD concepts\n- GitHub Actions enabled on repository\n- Deployment targets configured (if applicable)\n\n## Instructions\n\n1. **Analyze Requirements**\n2. **Generate Workflows**\n3. **Configure Secrets**\n4. **Test Workflows**\n5. **Deploy and Monitor**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- GitHub Actions workflow files\n- Reusable action definitions\n- Secrets documentation\n- CODEOWNERS configuration\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf CI/CD Guide](https://docs.windsurf.ai/features/cicd)\n- [GitHub Actions Documentation](https://docs.github.com/en/actions)\n- [Workflow Syntax Reference](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-cicd-github-actions/SKILL.md"
+    },
+    {
+      "slug": "windsurf-code-completion",
+      "name": "\"windsurf-code-completion\"",
+      "description": "Configure and optimize Supercomplete code suggestions. Activate when users mention \"code completion\", \"autocomplete\", \"supercomplete\", \"inline suggestions\", or \"ai completions\". Handles completion configuration and optimization. Use when working with windsurf code completion functionality. Trigger with phrases like \"windsurf code completion\", \"windsurf completion\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Code Completion\n\n## Overview\n\nThis skill enables configuration and optimization of Windsurf's Supercomplete AI-powered code completion. Supercomplete provides intelligent, context-aware suggestions that go beyond traditional autocomplete. It understands your codebase patterns, follows your conventions, and can complete multi-line blocks of code. Proper configuration ensures relevant, fast suggestions that match your coding style.\n\n## Prerequisites\n\n- Windsurf IDE installed and running\n- Active Cascade AI subscription\n- Project with code to analyze\n- Understanding of coding patterns in project\n- Language server enabled for target languages\n\n## Instructions\n\n1. **Configure Trigger Behavior**\n2. **Set Up Language-Specific Options**\n3. **Create Custom Snippets**\n4. **Optimize Performance**\n5. **Personalize Experience**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured completion preferences\n- Language-specific settings\n- Custom snippet library\n- Optimized completion experience\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Supercomplete Guide](https://docs.windsurf.ai/features/supercomplete)\n- [Language Server Configuration](https://docs.windsurf.ai/features/language-servers)\n- [Custom Snippets Reference](https://docs.windsurf.ai/reference/snippets)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-code-completion/SKILL.md"
+    },
+    {
+      "slug": "windsurf-code-privacy",
+      "name": "\"windsurf-code-privacy\"",
+      "description": "Configure code privacy and data retention policies. Activate when users mention \"code privacy\", \"data retention\", \"privacy settings\", \"data governance\", or \"gdpr compliance\". Handles privacy and data protection configuration. Use when working with windsurf code privacy functionality. Trigger with phrases like \"windsurf code privacy\", \"windsurf privacy\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Code Privacy\n\n## Overview\n\nThis skill enables comprehensive privacy configuration for Windsurf deployments. It covers data transmission controls, retention policies, regional compliance settings, and code exclusion patterns. Proper privacy configuration ensures your organization meets GDPR, CCPA, and other regulatory requirements while using AI-assisted development tools.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription\n- Organization administrator access\n- Compliance requirements documented\n- Legal/security team approval\n- Understanding of data residency needs\n\n## Instructions\n\n1. **Assess Requirements**\n2. **Configure Data Handling**\n3. **Set Up Exclusions**\n4. **Enable Regional Compliance**\n5. **Document and Monitor**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Privacy configuration files\n- Data exclusion patterns\n- Retention policy documentation\n- Compliance reports\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Privacy Guide](https://docs.windsurf.ai/admin/privacy)\n- [GDPR Compliance Documentation](https://docs.windsurf.ai/compliance/gdpr)\n- [Data Retention Best Practices](https://docs.windsurf.ai/guides/retention)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-code-privacy/SKILL.md"
+    },
+    {
+      "slug": "windsurf-custom-prompts",
+      "name": "\"windsurf-custom-prompts\"",
+      "description": "Create and manage custom prompt libraries for Cascade. Activate when users mention \"custom prompts\", \"prompt library\", \"prompt templates\", \"cascade prompts\", or \"prompt management\". Handles prompt library creation and organization. Use when working with windsurf custom prompts functionality. Trigger with phrases like \"windsurf custom prompts\", \"windsurf prompts\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Custom Prompts\n\n## Overview\n\nThis skill enables creation and management of custom prompt libraries for Cascade. Teams can build reusable prompt templates for common tasks like code generation, code review, documentation, and debugging. Prompts can include project-specific context and be shared across the organization for consistent AI interactions.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Understanding of effective prompting techniques\n- Project conventions documented\n- Team agreement on prompt standards\n- Use cases identified for automation\n\n## Instructions\n\n1. **Plan Prompt Library**\n2. **Create Prompt Templates**\n3. **Configure Variables**\n4. **Organize and Index**\n5. **Enable Team Sharing**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Organized prompt library\n- Reusable prompt templates\n- Variable configuration files\n- Usage statistics and favorites\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Prompt Library](https://docs.windsurf.ai/features/prompts)\n- [Effective Prompting Guide](https://docs.windsurf.ai/guides/prompting)\n- [Team Prompt Sharing](https://docs.windsurf.ai/admin/prompt-sharing)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-custom-prompts/SKILL.md"
+    },
+    {
+      "slug": "windsurf-debugging-ai",
+      "name": "\"windsurf-debugging-ai\"",
+      "description": "Execute use Cascade for intelligent debugging and error analysis. Activate when users mention \"debug with ai\", \"error analysis\", \"cascade debug\", \"find bug\", or \"troubleshoot code\". Handles AI-assisted debugging workflows. Use when debugging issues or troubleshooting. Trigger with phrases like \"windsurf debugging ai\", \"windsurf ai\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Grep",
+        "Glob",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Debugging Ai\n\n## Overview\n\nThis skill enables AI-assisted debugging within Windsurf. Cascade analyzes error messages, stack traces, and code context to identify root causes and suggest fixes. It learns from your codebase patterns to provide contextually relevant debugging assistance, reducing time spent on common errors and helping identify subtle bugs that might otherwise be missed.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Application with reproducible issues\n- Debug configuration set up\n- Error logs accessible\n- Understanding of application architecture\n\n## Instructions\n\n1. **Capture Error Context**\n2. **Analyze with Cascade**\n3. **Investigate Root Cause**\n4. **Apply Fix**\n5. **Document for Prevention**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Root cause analysis\n- Fix recommendations\n- Debug session logs\n- Prevention strategies\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Debugging Guide](https://docs.windsurf.ai/features/debugging)\n- [AI-Assisted Debugging](https://docs.windsurf.ai/cascade/debugging)\n- [Debug Configuration Reference](https://docs.windsurf.ai/reference/debug-config)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-debugging-ai/SKILL.md"
+    },
+    {
+      "slug": "windsurf-dependency-management",
+      "name": "\"windsurf-dependency-management\"",
+      "description": "Analyze and update dependencies with vulnerability scanning. Activate when users mention \"update dependencies\", \"security audit\", \"npm audit\", \"vulnerability scan\", or \"dependency updates\". Handles dependency analysis and updates. Use when working with windsurf dependency management functionality. Trigger with phrases like \"windsurf dependency management\", \"windsurf management\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Dependency Management\n\n## Overview\n\nThis skill enables comprehensive dependency management within Windsurf projects. Cascade analyzes your dependency tree, identifies security vulnerabilities, suggests safe updates, and helps plan migration paths for major version upgrades. It integrates with npm, yarn, pnpm, pip, and other package managers to provide actionable security insights and update recommendations.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Package manager installed (npm, yarn, pnpm, pip)\n- Project with package.json, requirements.txt, or equivalent\n- Understanding of semantic versioning\n- CI/CD pipeline for testing updates (recommended)\n\n## Instructions\n\n1. **Run Initial Audit**\n2. **Analyze Update Paths**\n3. **Plan Updates**\n4. **Apply and Verify**\n5. **Establish Monitoring**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Security audit report with findings\n- Update plan with prioritized changes\n- Compatibility matrix for version combinations\n- Migration guides for breaking changes\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Dependency Management](https://docs.windsurf.ai/features/dependencies)\n- [npm Audit Documentation](https://docs.npmjs.com/cli/audit)\n- [Semantic Versioning Spec](https://semver.org/)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-dependency-management/SKILL.md"
+    },
+    {
+      "slug": "windsurf-dockerfile-generation",
+      "name": "\"windsurf-dockerfile-generation\"",
+      "description": "Create optimized Dockerfiles with AI-driven best practices. Activate when users mention \"create dockerfile\", \"container image\", \"docker optimization\", \"containerize application\", or \"docker best practices\". Handles Docker configuration generation. Use when working with windsurf dockerfile generation functionality. Trigger with phrases like \"windsurf dockerfile generation\", \"windsurf generation\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Dockerfile Generation\n\n## Overview\n\nThis skill enables AI-assisted Docker configuration within Windsurf. Cascade analyzes your application to generate optimized Dockerfiles with multi-stage builds, minimal base images, proper layer caching, and security best practices. It supports Node.js, Python, Go, Java, and other common runtimes with framework-specific optimizations.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Docker installed locally\n- Application with defined dependencies\n- Understanding of containerization concepts\n- Target deployment environment defined\n\n## Instructions\n\n1. **Analyze Application**\n2. **Select Base Image**\n3. **Generate Dockerfile**\n4. **Configure Security**\n5. **Test and Validate**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Optimized production Dockerfile\n- Development Dockerfile with dev tools\n- docker-compose.yml for orchestration\n- .dockerignore for build optimization\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Docker Guide](https://docs.windsurf.ai/features/docker)\n- [Docker Best Practices](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)\n- [Container Security Guide](https://docs.windsurf.ai/guides/container-security)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-dockerfile-generation/SKILL.md"
+    },
+    {
+      "slug": "windsurf-enterprise-sso",
+      "name": "\"windsurf-enterprise-sso\"",
+      "description": "Configure enterprise SSO integration for Windsurf. Activate when users mention \"sso configuration\", \"single sign-on\", \"enterprise authentication\", \"saml setup\", or \"identity provider\". Handles enterprise identity integration. Use when working with windsurf enterprise sso functionality. Trigger with phrases like \"windsurf enterprise sso\", \"windsurf sso\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Enterprise Sso\n\n## Overview\n\nThis skill enables enterprise Single Sign-On (SSO) integration for Windsurf deployments. It supports SAML 2.0, OIDC/OAuth 2.0, and integration with major identity providers including Okta, Azure AD, and Google Workspace. Proper SSO configuration ensures secure authentication, simplified user management, and compliance with enterprise security requirements.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription\n- Organization administrator access\n- Identity provider admin access\n- Understanding of SAML/OIDC protocols\n- Compliance requirements documented\n- Certificate management capabilities\n\n## Instructions\n\n1. **Prepare Identity Provider**\n2. **Configure Windsurf SSO**\n3. **Set Up Certificates**\n4. **Configure Policies**\n5. **Test and Enable**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured SSO integration\n- User attribute mappings\n- Group sync configuration\n- Audit logging setup\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf SSO Guide](https://docs.windsurf.ai/admin/sso)\n- [SAML 2.0 Configuration](https://docs.windsurf.ai/admin/saml)\n- [OIDC Configuration](https://docs.windsurf.ai/admin/oidc)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-enterprise-sso/SKILL.md"
+    },
+    {
+      "slug": "windsurf-extension-pack",
+      "name": "\"windsurf-extension-pack\"",
+      "description": "Install and configure essential Windsurf extensions for productivity. Activate when users mention \"install extensions\", \"setup windsurf plugins\", \"configure extensions\", \"extension recommendations\", or \"productivity extensions\". Handles extension installation and configuration. Use when working with windsurf extension pack functionality. Trigger with phrases like \"windsurf extension pack\", \"windsurf pack\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Extension Pack\n\n## Overview\n\nThis skill enables rapid setup of Windsurf with essential extensions for productive development. It covers language support, linting, formatting, Git integration, and productivity tools. Create team-standard extension configurations that can be shared and automatically installed for consistent development environments across your organization.\n\n## Prerequisites\n\n- Windsurf IDE installed\n- Internet connection for extension downloads\n- Admin rights for system-wide extensions (optional)\n- Understanding of team development requirements\n- List of required language support needs\n\n## Instructions\n\n1. **Assess Requirements**\n2. **Install Core Extensions**\n3. **Configure Extension Settings**\n4. **Create Team Configuration**\n5. **Document and Share**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Fully configured Windsurf environment\n- extensions.json with team recommendations\n- settings.json with extension configurations\n- Documentation for extension usage\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Extension Marketplace](https://marketplace.windsurf.ai)\n- [Extension Development Guide](https://docs.windsurf.ai/extensions/development)\n- [Team Extension Management](https://docs.windsurf.ai/admin/extensions)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-extension-pack/SKILL.md"
+    },
+    {
+      "slug": "windsurf-flows-automation",
+      "name": "\"windsurf-flows-automation\"",
+      "description": "Create and manage Windsurf Flows for repetitive tasks. Activate when users mention \"windsurf flows\", \"task automation\", \"workflow automation\", \"repetitive tasks\", or \"process automation\". Handles Flow creation and management. Use when working with windsurf flows automation functionality. Trigger with phrases like \"windsurf flows automation\", \"windsurf automation\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Flows Automation\n\n## Overview\n\nThis skill enables creation and management of Windsurf Flows - automated workflows that handle repetitive development tasks. Flows can scaffold components, generate boilerplate, run test sequences, and execute multi-step operations with a single command. They combine Cascade AI intelligence with deterministic automation for reliable, repeatable results.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Understanding of repetitive tasks to automate\n- Project templates and patterns documented\n- Test scenarios for flow validation\n- Team agreement on automation standards\n\n## Instructions\n\n1. **Identify Repetitive Tasks**\n2. **Design Flow Structure**\n3. **Create Flow Definitions**\n4. **Test and Validate**\n5. **Deploy and Monitor**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Flow definition files\n- Reusable template library\n- Execution logs for audit\n- Rollback capabilities\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Flows Guide](https://docs.windsurf.ai/features/flows)\n- [Flow Definition Reference](https://docs.windsurf.ai/reference/flows)\n- [Template Authoring](https://docs.windsurf.ai/guides/templates)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-flows-automation/SKILL.md"
+    },
+    {
+      "slug": "windsurf-git-integration",
+      "name": "\"windsurf-git-integration\"",
+      "description": "Configure Git integration with Cascade AI assistance. Activate when users mention \"git setup\", \"version control\", \"commit messages\", \"branch management\", or \"source control\". Handles Git configuration and AI-assisted workflows. Use when working with windsurf git integration functionality. Trigger with phrases like \"windsurf git integration\", \"windsurf integration\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Git Integration\n\n## Overview\n\nThis skill enables AI-assisted Git workflows within Windsurf. Cascade can generate commit messages from staged changes, suggest branch names, assist with merge conflict resolution, and automate common Git operations. It integrates with hooks for validation and provides intelligent suggestions that follow your team's conventions.\n\n## Prerequisites\n\n- Git installed and configured\n- Windsurf IDE with Cascade enabled\n- Git repository initialized\n- SSH keys or HTTPS credentials configured\n- Understanding of team Git workflow (GitFlow, trunk-based, etc.)\n\n## Instructions\n\n1. **Configure Git Credentials**\n2. **Set Up AI Assistance**\n3. **Install Git Hooks**\n4. **Configure Team Standards**\n5. **Train on Workflow**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured Git hooks\n- AI-assisted commit messages\n- Branch naming suggestions\n- PR descriptions with context\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Git Integration](https://docs.windsurf.ai/features/git)\n- [Conventional Commits](https://www.conventionalcommits.org/)\n- [Git Hooks Documentation](https://git-scm.com/docs/githooks)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-git-integration/SKILL.md"
+    },
+    {
+      "slug": "windsurf-keyboard-shortcuts",
+      "name": "\"windsurf-keyboard-shortcuts\"",
+      "description": "Configure custom keyboard shortcuts for Cascade and AI features. Activate when users mention \"keyboard shortcuts\", \"keybindings\", \"hotkeys\", \"shortcut configuration\", or \"customize shortcuts\". Handles keybinding setup and optimization. Use when working with windsurf keyboard shortcuts functionality. Trigger with phrases like \"windsurf keyboard shortcuts\", \"windsurf shortcuts\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Keyboard Shortcuts\n\n## Overview\n\nThis skill enables customization of Windsurf keyboard shortcuts for optimal productivity. It covers Cascade AI shortcuts, multi-file editing commands, navigation keys, and custom workflow bindings. Proper shortcut configuration can significantly reduce context switching and accelerate common development tasks.\n\n## Prerequisites\n\n- Windsurf IDE installed\n- Understanding of current shortcut usage\n- Keyboard layout knowledge (QWERTY, etc.)\n- Access to settings file\n- List of frequently used operations\n\n## Instructions\n\n1. **Review Default Shortcuts**\n2. **Plan Customizations**\n3. **Configure AI Shortcuts**\n4. **Create Custom Bindings**\n5. **Document and Share**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Customized keybindings.json\n- Shortcut reference documentation\n- Conflict-free keyboard mappings\n- Team-standard shortcut configuration\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Keyboard Shortcuts](https://docs.windsurf.ai/features/shortcuts)\n- [Key Binding Reference](https://docs.windsurf.ai/reference/keybindings)\n- [Ergonomic Shortcut Design](https://docs.windsurf.ai/guides/ergonomics)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-keyboard-shortcuts/SKILL.md"
+    },
+    {
+      "slug": "windsurf-license-management",
+      "name": "\"windsurf-license-management\"",
+      "description": "Manage Windsurf licenses and seat allocation. Activate when users mention \"license management\", \"seat allocation\", \"billing optimization\", \"user licenses\", or \"subscription management\". Handles license administration. Use when working with windsurf license management functionality. Trigger with phrases like \"windsurf license management\", \"windsurf management\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf License Management\n\n## Overview\n\nThis skill enables enterprise license management for Windsurf deployments. It covers seat allocation, usage tracking, cost optimization, and compliance reporting. Administrators can provision new users, reclaim inactive seats, analyze utilization patterns, and optimize subscription tiers based on actual usage data.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription with admin access\n- Organization administrator role\n- Access to billing portal\n- User directory integration (optional: SCIM, Azure AD, Okta)\n- Understanding of organization structure and teams\n\n## Instructions\n\n1. **Inventory Current Licenses**\n2. **Set Allocation Policies**\n3. **Configure Usage Tracking**\n4. **Optimize Subscription**\n5. **Monitor and Report**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- License inventory with current allocations\n- Utilization reports with recommendations\n- Cost analysis with optimization opportunities\n- Compliance reports for audits\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf License Administration](https://docs.windsurf.ai/admin/licensing)\n- [SCIM Integration Guide](https://docs.windsurf.ai/admin/scim)\n- [Cost Optimization Best Practices](https://docs.windsurf.ai/admin/cost-optimization)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-license-management/SKILL.md"
+    },
+    {
+      "slug": "windsurf-linting-config",
+      "name": "\"windsurf-linting-config\"",
+      "description": "Configure and enforce code quality with AI-assisted linting. Activate when users mention \"configure linting\", \"eslint setup\", \"code quality rules\", \"linting configuration\", or \"code standards\". Handles linting tool configuration. Use when configuring systems or services. Trigger with phrases like \"windsurf linting config\", \"windsurf config\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Linting Config\n\n## Overview\n\nThis skill enables comprehensive linting configuration within Windsurf. Cascade assists with ESLint, Prettier, Stylelint, and other linting tool setup, helping resolve configuration conflicts, suggesting rules based on project patterns, and automating code quality enforcement. Proper linting configuration catches errors early and maintains consistent code style.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Node.js for JavaScript/TypeScript projects\n- Package manager (npm, yarn, pnpm)\n- Understanding of code style preferences\n- Team agreement on quality standards\n\n## Instructions\n\n1. **Choose Base Configuration**\n2. **Configure Rules**\n3. **Set Up Prettier Integration**\n4. **Add Pre-Commit Hooks**\n5. **Integrate with CI**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured .eslintrc.js\n- Prettier configuration\n- Pre-commit hooks\n- CI integration\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Linting Guide](https://docs.windsurf.ai/features/linting)\n- [ESLint Documentation](https://eslint.org/docs/latest/)\n- [Prettier Integration](https://prettier.io/docs/en/integrating-with-linters.html)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-linting-config/SKILL.md"
+    },
+    {
+      "slug": "windsurf-mcp-integration",
+      "name": "\"windsurf-mcp-integration\"",
+      "description": "Manage integrate MCP servers with Windsurf for extended capabilities. Activate when users mention \"mcp integration\", \"model context protocol\", \"external tools\", \"mcp server\", or \"cascade tools\". Handles MCP server configuration and integration. Use when working with windsurf mcp integration functionality. Trigger with phrases like \"windsurf mcp integration\", \"windsurf integration\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Mcp Integration\n\n## Overview\n\nThis skill enables integration of MCP (Model Context Protocol) servers with Windsurf, extending Cascade's capabilities with external tools and services. MCP allows Cascade to interact with databases, filesystems, APIs, and custom tools through a standardized protocol. Configure servers, manage permissions, and enable seamless tool access within your AI-assisted development workflow.\n\n## Prerequisites\n\n- Windsurf IDE with MCP support enabled\n- Node.js 18+ or Python 3.10+ for MCP servers\n- MCP server packages installed (npm or pip)\n- Network access for remote MCP servers\n- Understanding of MCP protocol basics\n- Admin permissions for server configuration\n\n## Instructions\n\n1. **Enable MCP Servers**\n2. **Configure Tools**\n3. **Set Up Authentication**\n4. **Test Integration**\n5. **Deploy to Team**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured MCP servers accessible via Cascade\n- Tool registry with all available operations\n- Permission matrix for access control\n- Audit logs for tool invocations\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [MCP Protocol Specification](https://modelcontextprotocol.io/docs)\n- [Windsurf MCP Guide](https://docs.windsurf.ai/features/mcp)\n- [MCP Server Development](https://modelcontextprotocol.io/docs/servers)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-mcp-integration/SKILL.md"
+    },
+    {
+      "slug": "windsurf-multi-file-editing",
+      "name": "\"windsurf-multi-file-editing\"",
+      "description": "Manage multi-file edits with Cascade coordination. Activate when users mention \"multi-file edit\", \"edit multiple files\", \"cross-file changes\", \"refactor across files\", or \"batch modifications\". Handles coordinated multi-file operations. Use when working with windsurf multi file editing functionality. Trigger with phrases like \"windsurf multi file editing\", \"windsurf editing\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Multi File Editing\n\n## Overview\n\nThis skill enables coordinated multi-file editing operations within Windsurf using Cascade AI. It provides atomic changes across multiple files, ensuring consistency when renaming symbols, moving code, or making cross-file refactoring changes. The skill handles dependency tracking, preview generation, and rollback capabilities for safe multi-file operations.\n\n## Prerequisites\n\n- Windsurf IDE installed and configured\n- Active Cascade AI subscription\n- Project workspace initialized with `.windsurf/` directory\n- Git or version control for rollback safety\n- Understanding of project file structure and dependencies\n\n## Instructions\n\n1. **Scope the Operation**\n2. **Configure Operation Template**\n3. **Generate Preview**\n4. **Execute with Preview**\n5. **Verify Results**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Modified files with consistent changes applied\n- `edit-history.json` log with operation details\n- Rollback snapshot for recovery if needed\n- Validation report with syntax check results\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Multi-File Editing Documentation](https://docs.windsurf.ai/features/multi-file-editing)\n- [Cascade AI Coordination Guide](https://docs.windsurf.ai/cascade/coordination)\n- [Atomic Operations Best Practices](https://docs.windsurf.ai/best-practices/atomic-ops)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-multi-file-editing/SKILL.md"
+    },
+    {
+      "slug": "windsurf-performance-profiling",
+      "name": "\"windsurf-performance-profiling\"",
+      "description": "Profile and optimize code with AI-assisted analysis. Activate when users mention \"performance profiling\", \"optimize performance\", \"bottleneck analysis\", \"profiling\", or \"performance tuning\". Handles performance analysis and optimization. Use when working with windsurf performance profiling functionality. Trigger with phrases like \"windsurf performance profiling\", \"windsurf profiling\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Performance Profiling\n\n## Overview\n\nThis skill enables AI-assisted performance profiling within Windsurf. Cascade analyzes profiling data to identify bottlenecks, suggest optimizations, and predict impact of changes. It integrates with language-specific profilers and helps prioritize optimization efforts based on actual performance data rather than assumptions.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Profiling tools installed (Chrome DevTools, node --prof, py-spy, etc.)\n- Application with performance concerns\n- Baseline metrics established\n- Understanding of performance targets\n\n## Instructions\n\n1. **Establish Baseline**\n2. **Collect Profile Data**\n3. **Analyze with Cascade**\n4. **Implement Optimizations**\n5. **Document and Monitor**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Profiling data and analysis\n- Bottleneck identification reports\n- Optimization recommendations\n- Before/after comparison metrics\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Performance Guide](https://docs.windsurf.ai/features/performance)\n- [Profiling Best Practices](https://docs.windsurf.ai/guides/profiling)\n- [Optimization Patterns](https://docs.windsurf.ai/guides/optimization)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-performance-profiling/SKILL.md"
+    },
+    {
+      "slug": "windsurf-refactoring-large",
+      "name": "\"windsurf-refactoring-large\"",
+      "description": "Manage large-scale refactoring with Cascade coordination. Activate when users mention \"large refactoring\", \"codebase migration\", \"architecture refactor\", \"major refactoring\", or \"system-wide changes\". Handles complex refactoring operations. Use when working with windsurf refactoring large functionality. Trigger with phrases like \"windsurf refactoring large\", \"windsurf large\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Refactoring Large\n\n## Overview\n\nThis skill enables large-scale refactoring operations that span hundreds or thousands of files. It provides phased execution with checkpoints, comprehensive rollback capabilities, and AI-assisted planning. Ideal for architecture migrations, API version upgrades, dependency replacements, and codebase modernization efforts that would traditionally take weeks to complete manually.\n\n## Prerequisites\n\n- Windsurf IDE with Enterprise or Pro subscription\n- Active Cascade AI connection\n- Git repository with clean working state\n- Comprehensive test suite for validation\n- Backup strategy for critical code paths\n- Team coordination for multi-developer codebases\n\n## Instructions\n\n1. **Analyze Scope**\n2. **Create Plan**\n3. **Prepare Environment**\n4. **Execute with Cascade**\n5. **Verify Completion**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Refactored codebase with all patterns migrated\n- Phase completion reports with metrics\n- Before/after performance comparison\n- Updated documentation and API references\n- Archived rollback artifacts (kept 30 days)\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Large Refactoring Guide](https://docs.windsurf.ai/features/large-refactoring)\n- [Phased Execution Best Practices](https://docs.windsurf.ai/best-practices/phased-execution)\n- [Rollback and Recovery](https://docs.windsurf.ai/features/rollback)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-refactoring-large/SKILL.md"
+    },
+    {
+      "slug": "windsurf-release-automation",
+      "name": "\"windsurf-release-automation\"",
+      "description": "Execute automate release processes with semantic versioning. Activate when users mention \"release automation\", \"version bump\", \"changelog generation\", \"semantic release\", or \"publish release\". Handles release engineering automation. Use when working with windsurf release automation functionality. Trigger with phrases like \"windsurf release automation\", \"windsurf automation\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Release Automation\n\n## Overview\n\nThis skill enables automated release workflows within Windsurf using Cascade AI. It analyzes commits to determine semantic version bumps, generates comprehensive changelogs, manages Git tags, and publishes releases. Cascade understands conventional commits to automatically categorize changes and highlight breaking changes for proper version increments.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Git repository with commit history\n- Conventional commits or consistent commit format\n- npm/yarn/pnpm for JavaScript projects (or equivalent)\n- CI/CD pipeline for automated publishing (optional)\n\n## Instructions\n\n1. **Configure Version Strategy**\n2. **Set Up Automation**\n3. **Prepare Release**\n4. **Execute Release**\n5. **Post-Release Tasks**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Updated version in package.json\n- Generated CHANGELOG.md entry\n- Git tag for release version\n- Published package to registry\n- Release notes for distribution\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Release Automation](https://docs.windsurf.ai/features/release)\n- [Semantic Release Documentation](https://semantic-release.gitbook.io/)\n- [Conventional Commits](https://www.conventionalcommits.org/)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-release-automation/SKILL.md"
+    },
+    {
+      "slug": "windsurf-team-settings",
+      "name": "\"windsurf-team-settings\"",
+      "description": "Manage team-wide Windsurf settings and AI policies. Activate when users mention \"team settings\", \"organization config\", \"team policies\", \"shared settings\", or \"team standardization\". Handles team configuration management. Use when working with windsurf team settings functionality. Trigger with phrases like \"windsurf team settings\", \"windsurf settings\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Team Settings\n\n## Overview\n\nThis skill enables centralized management of Windsurf settings across teams and organizations. It covers editor preferences, AI behavior policies, tool approvals, and compliance requirements. Administrators can define organization-wide defaults with team-specific overrides, ensuring consistency while accommodating specialized team needs.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription\n- Organization administrator role\n- Understanding of team structure and needs\n- Compliance requirements documentation\n- Team feedback on desired settings\n\n## Instructions\n\n1. **Define Organization Defaults**\n2. **Create Team Overrides**\n3. **Set Up Policies**\n4. **Deploy Settings**\n5. **Monitor and Iterate**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Organization-wide settings configuration\n- Team-specific override files\n- Policy documentation\n- Compliance reports\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Team Administration](https://docs.windsurf.ai/admin/team-settings)\n- [Policy Configuration Guide](https://docs.windsurf.ai/admin/policies)\n- [Settings Sync Documentation](https://docs.windsurf.ai/features/settings-sync)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-team-settings/SKILL.md"
+    },
+    {
+      "slug": "windsurf-terminal-ai",
+      "name": "\"windsurf-terminal-ai\"",
+      "description": "Execute leverage AI-assisted terminal commands and debugging. Activate when users mention \"terminal help\", \"command suggestion\", \"debug terminal\", \"shell assistance\", or \"cli help\". Handles AI-enhanced terminal operations. Use when working with windsurf terminal ai functionality. Trigger with phrases like \"windsurf terminal ai\", \"windsurf ai\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Terminal Ai\n\n## Overview\n\nThis skill enables AI-assisted terminal operations within Windsurf. Cascade can suggest commands, explain error messages, generate complex shell scripts, and help debug terminal output. It understands common CLI tools, build systems, and DevOps commands to provide contextually relevant assistance for command-line workflows.\n\n## Prerequisites\n\n- Windsurf IDE with integrated terminal\n- Shell environment configured (bash, zsh, etc.)\n- Understanding of command-line basics\n- Project-specific CLI tools installed\n- PATH configured for required tools\n\n## Instructions\n\n1. **Enable AI Assistance**\n2. **Configure Command Library**\n3. **Set Up Error Handling**\n4. **Optimize Workflows**\n5. **Build Team Knowledge**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Command suggestions and completions\n- Error analysis and fixes\n- Optimized command aliases\n- Reusable shell scripts\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Terminal Guide](https://docs.windsurf.ai/features/terminal)\n- [AI Command Assistance](https://docs.windsurf.ai/cascade/terminal)\n- [Shell Scripting Best Practices](https://docs.windsurf.ai/guides/shell-scripts)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-terminal-ai/SKILL.md"
+    },
+    {
+      "slug": "windsurf-test-generation",
+      "name": "\"windsurf-test-generation\"",
+      "description": "Generate comprehensive test suites using Cascade. Activate when users mention \"generate tests\", \"test coverage\", \"write unit tests\", \"create test suite\", or \"tdd assistance\". Handles AI-powered test generation. Use when writing or running tests. Trigger with phrases like \"windsurf test generation\", \"windsurf generation\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Test Generation\n\n## Overview\n\nThis skill enables AI-powered test generation for any codebase using Windsurf's Cascade. It analyzes function signatures, identifies edge cases, creates meaningful assertions, and generates mock data. Supports unit tests, integration tests, and component tests across multiple frameworks including Jest, Vitest, Mocha, pytest, and testing-library.\n\n## Prerequisites\n\n- Windsurf IDE with Cascade enabled\n- Testing framework installed (Jest, Vitest, pytest, etc.)\n- Project with testable code (functions, classes, components)\n- Code coverage tool configured (optional but recommended)\n- Understanding of testing patterns and best practices\n\n## Instructions\n\n1. **Configure Testing Framework**\n2. **Select Target Code**\n3. **Generate Tests with Cascade**\n4. **Add Custom Scenarios**\n5. **Integrate into Workflow**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Test files with comprehensive coverage\n- Mock data and fixture files\n- Coverage report with metrics\n- Test pattern documentation for team\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Test Generation Guide](https://docs.windsurf.ai/features/test-generation)\n- [Jest Documentation](https://jestjs.io/docs/getting-started)\n- [Testing Library Best Practices](https://testing-library.com/docs/guiding-principles)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-test-generation/SKILL.md"
+    },
+    {
+      "slug": "windsurf-theme-customization",
+      "name": "\"windsurf-theme-customization\"",
+      "description": "Configure Windsurf themes and visual settings for accessibility. Activate when users mention \"change theme\", \"customize colors\", \"accessibility settings\", \"visual preferences\", or \"dark mode\". Handles theme configuration and accessibility compliance. Use when working with windsurf theme customization functionality. Trigger with phrases like \"windsurf theme customization\", \"windsurf customization\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Theme Customization\n\n## Overview\n\nThis skill enables comprehensive theme customization within Windsurf. It covers color schemes, font configurations, UI scaling, and accessibility settings. Proper theme configuration reduces eye strain, improves code readability, and ensures compliance with accessibility standards like WCAG 2.1 for team members with visual impairments.\n\n## Prerequisites\n\n- Windsurf IDE installed\n- Understanding of accessibility requirements\n- Color vision considerations for team\n- Preferred font selections\n- Display resolution and scaling needs\n\n## Instructions\n\n1. **Select Base Theme**\n2. **Configure Colors**\n3. **Set Up Fonts**\n4. **Enable Accessibility Features**\n5. **Verify Compliance**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Customized theme configuration\n- Font settings optimized for readability\n- Accessibility-compliant color scheme\n- Cross-panel consistent styling\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Theme Guide](https://docs.windsurf.ai/features/themes)\n- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)\n- [Accessible Color Palettes](https://docs.windsurf.ai/guides/accessibility)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-theme-customization/SKILL.md"
+    },
+    {
+      "slug": "windsurf-usage-analytics",
+      "name": "\"windsurf-usage-analytics\"",
+      "description": "Analyze team AI usage patterns and productivity metrics. Activate when users mention \"usage analytics\", \"ai metrics\", \"productivity tracking\", \"usage reports\", or \"roi analysis\". Handles analytics and reporting configuration. Use when working with windsurf usage analytics functionality. Trigger with phrases like \"windsurf usage analytics\", \"windsurf analytics\", \"windsurf\".",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Usage Analytics\n\n## Overview\n\nThis skill enables comprehensive usage analytics for Windsurf deployments. It tracks AI feature adoption, measures productivity improvements, calculates ROI, and identifies optimization opportunities. Analytics data helps justify AI investment, identify training needs, and optimize license allocation based on actual usage patterns.\n\n## Prerequisites\n\n- Windsurf Enterprise subscription\n- Organization administrator access\n- Analytics collection enabled\n- Dashboard access configured\n- Understanding of key metrics\n\n## Instructions\n\n1. **Enable Analytics**\n2. **Configure Dashboards**\n3. **Set Up Reporting**\n4. **Define Baselines**\n5. **Monitor and Optimize**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Analytics dashboards\n- Productivity reports\n- ROI calculations\n- Adoption trend analysis\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Analytics Guide](https://docs.windsurf.ai/admin/analytics)\n- [ROI Measurement Framework](https://docs.windsurf.ai/guides/roi)\n- [Dashboard Configuration](https://docs.windsurf.ai/admin/dashboards)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-usage-analytics/SKILL.md"
+    },
+    {
+      "slug": "windsurf-workspace-setup",
+      "name": "\"windsurf-workspace-setup\"",
+      "description": "Initialize Windsurf workspace with project-specific AI rules. Activate when users mention \"create windsurfrules\", \"setup workspace\", \"configure project ai\", \"initialize windsurf workspace\", or \"migrate to windsurf\". Handles workspace configuration and team standardization. Use when working with windsurf workspace setup functionality. Trigger with phrases like \"windsurf workspace setup\", \"windsurf setup\", \"windsurf\".",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "author": "\"Jeremy Longshore <jeremy@intentsolutions.io>\"",
+      "license": "MIT",
+      "content": "# Windsurf Workspace Setup\n\n## Overview\n\nThis skill enables rapid workspace setup for Windsurf projects. It covers creating .windsurfrules for AI behavior, configuring editor settings, establishing team conventions, and setting up multi-root workspaces. Proper workspace setup ensures consistent AI assistance across all team members and projects.\n\n## Prerequisites\n\n- Windsurf IDE installed\n- Project repository cloned\n- Understanding of project architecture\n- Team conventions documented\n- Admin access for team-wide settings (optional)\n\n## Instructions\n\n1. **Create .windsurfrules**\n2. **Configure Editor Settings**\n3. **Set Up Extensions**\n4. **Configure Cross-Editor Consistency**\n5. **Establish Team Standards**\n\n\nSee `{baseDir}/references/implementation.md` for detailed implementation guide.\n\n## Output\n\n- Configured .windsurfrules file\n- Editor settings.json\n- Extension recommendations\n- Cross-editor configuration files\n- Workspace configuration for monorepos\n\n## Error Handling\n\nSee `{baseDir}/references/errors.md` for comprehensive error handling.\n\n## Examples\n\nSee `{baseDir}/references/examples.md` for detailed examples.\n\n## Resources\n\n- [Windsurf Workspace Guide](https://docs.windsurf.ai/features/workspace)\n- [.windsurfrules Reference](https://docs.windsurf.ai/reference/windsurfrules)\n- [Multi-Root Workspaces](https://docs.windsurf.ai/features/multi-root)",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs",
+        "path": "plugins/saas-packs/skill-databases/windsurf",
+        "version": "1.0.0",
+        "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features."
+      },
+      "filePath": "plugins/saas-packs/skill-databases/windsurf/skills/windsurf-workspace-setup/SKILL.md"
+    },
+    {
       "slug": "000-jeremy-content-consistency-validator",
       "name": "000-jeremy-content-consistency-validator",
       "description": "Validate messaging consistency across website, GitHub repos, and local documentation generating read-only discrepancy reports. Use when checking content alignment or finding mixed messaging. Trigger with phrases like \"check consistency\", \"validate documentation\", or \"audit messaging\".",
@@ -894,7 +1740,7 @@
         "name": "000-jeremy-content-consistency-validator",
         "category": "productivity",
         "path": "plugins/productivity/000-jeremy-content-consistency-validator",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Read-only validator that generates comprehensive discrepancy reports comparing messaging consistency across ANY HTML-based website (WordPress, Hugo, Next.js, React, Vue, static HTML, etc.), GitHub repositories, and local documentation. Detects mixed messaging without making changes."
       },
       "filePath": "plugins/productivity/000-jeremy-content-consistency-validator/skills/000-jeremy-content-consistency-validator/SKILL.md"
@@ -953,7 +1799,7 @@
         "name": "jeremy-google-adk",
         "category": "jeremy-google-adk",
         "path": "plugins/jeremy-google-adk",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Google Agent Development Kit (ADK) SDK starter kit for building Claude-powered AI agents with React patterns, multi-agent orchestration, and tool integration"
       },
       "filePath": "plugins/jeremy-google-adk/skills/adk-agent-builder/SKILL.md"
@@ -983,7 +1829,7 @@
         "name": "jeremy-adk-orchestrator",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-adk-orchestrator",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Production ADK orchestrator for A2A protocol and multi-agent coordination on Vertex AI"
       },
       "filePath": "plugins/ai-ml/jeremy-adk-orchestrator/skills/adk-deployment-specialist/SKILL.md"
@@ -1013,7 +1859,7 @@
         "name": "jeremy-adk-software-engineer",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-adk-software-engineer",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "ADK software engineer for creating production-ready agents (placeholder - to be implemented)"
       },
       "filePath": "plugins/ai-ml/jeremy-adk-software-engineer/skills/adk-engineer/SKILL.md"
@@ -1044,7 +1890,7 @@
         "name": "jeremy-adk-terraform",
         "category": "devops",
         "path": "plugins/devops/jeremy-adk-terraform",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Terraform infrastructure as code for ADK and Vertex AI Agent Engine deployments"
       },
       "filePath": "plugins/devops/jeremy-adk-terraform/skills/adk-infra-expert/SKILL.md"
@@ -10952,7 +11798,7 @@
         "name": "jeremy-firebase",
         "category": "community",
         "path": "plugins/community/jeremy-firebase",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Firebase platform expert for Firestore, Auth, Functions, and Vertex AI integration"
       },
       "filePath": "plugins/community/jeremy-firebase/skills/firebase-vertex-ai/SKILL.md"
@@ -12493,7 +13339,7 @@
         "name": "jeremy-firestore",
         "category": "community",
         "path": "plugins/community/jeremy-firestore",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Firestore database specialist for schema design, queries, and real-time sync"
       },
       "filePath": "plugins/community/jeremy-firestore/skills/firestore-operations-manager/SKILL.md"
@@ -13285,7 +14131,7 @@
         "name": "jeremy-gcp-starter-examples",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-gcp-starter-examples",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Google Cloud starter kits and example code aggregator with ADK samples"
       },
       "filePath": "plugins/ai-ml/jeremy-gcp-starter-examples/skills/gcp-examples-expert/SKILL.md"
@@ -13929,7 +14775,7 @@
         "name": "jeremy-genkit-terraform",
         "category": "devops",
         "path": "plugins/devops/jeremy-genkit-terraform",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Terraform modules for Firebase Genkit infrastructure and deployments"
       },
       "filePath": "plugins/devops/jeremy-genkit-terraform/skills/genkit-infra-expert/SKILL.md"
@@ -13959,7 +14805,7 @@
         "name": "jeremy-genkit-pro",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-genkit-pro",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Firebase Genkit expert for production-ready AI workflows with RAG and tool calling"
       },
       "filePath": "plugins/ai-ml/jeremy-genkit-pro/skills/genkit-production-expert/SKILL.md"
@@ -13990,7 +14836,7 @@
         "name": "jeremy-github-actions-gcp",
         "category": "devops",
         "path": "plugins/devops/jeremy-github-actions-gcp",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "GitHub Actions CI/CD workflows for Google Cloud and Vertex AI deployments"
       },
       "filePath": "plugins/devops/jeremy-github-actions-gcp/skills/gh-actions-validator/SKILL.md"
@@ -14018,7 +14864,7 @@
         "name": "004-jeremy-google-cloud-agent-sdk",
         "category": "productivity",
         "path": "plugins/productivity/004-jeremy-google-cloud-agent-sdk",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Google Cloud Agent Development Kit (ADK) and Agent Starter Pack mastery - build containerized multi-agent systems with production-ready templates, deploy to Cloud Run/GKE/Agent Engine, RAG agents, ReAct agents, and multi-agent orchestration."
       },
       "filePath": "plugins/productivity/004-jeremy-google-cloud-agent-sdk/skills/google-cloud-agent-sdk-master/SKILL.md"
@@ -36162,7 +37008,7 @@
         "name": "jeremy-vertex-validator",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-vertex-validator",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Production readiness validator for Vertex AI deployments and configurations"
       },
       "filePath": "plugins/ai-ml/jeremy-vertex-validator/skills/validator-expert/SKILL.md"
@@ -37761,7 +38607,7 @@
         "name": "jeremy-vertex-ai",
         "category": "jeremy-vertex-ai",
         "path": "plugins/jeremy-vertex-ai",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Comprehensive Vertex AI integration plugin for building generative AI agents with Gemini, Vertex AI Studio, and production deployment on Google Cloud"
       },
       "filePath": "plugins/jeremy-vertex-ai/skills/vertex-agent-builder/SKILL.md"
@@ -37792,7 +38638,7 @@
         "name": "003-jeremy-vertex-ai-media-master",
         "category": "productivity",
         "path": "plugins/productivity/003-jeremy-vertex-ai-media-master",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Comprehensive Google Vertex AI multimodal mastery for Jeremy - video processing (6+ hours), audio generation, image creation with Gemini 2.0/2.5 and Imagen 4. Marketing campaign automation, content generation, and media asset production."
       },
       "filePath": "plugins/productivity/003-jeremy-vertex-ai-media-master/skills/vertex-ai-media-master/SKILL.md"
@@ -37820,7 +38666,7 @@
         "name": "jeremy-vertex-engine",
         "category": "ai-ml",
         "path": "plugins/ai-ml/jeremy-vertex-engine",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Vertex AI Agent Engine deployment inspector and runtime validator"
       },
       "filePath": "plugins/ai-ml/jeremy-vertex-engine/skills/vertex-engine-inspector/SKILL.md"
@@ -37851,7 +38697,7 @@
         "name": "jeremy-vertex-terraform",
         "category": "devops",
         "path": "plugins/devops/jeremy-vertex-terraform",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Terraform configurations for Vertex AI platform and Agent Engine"
       },
       "filePath": "plugins/devops/jeremy-vertex-terraform/skills/vertex-infra-expert/SKILL.md"
@@ -38772,7 +39618,7 @@
         "name": "002-jeremy-yaml-master-agent",
         "category": "productivity",
         "path": "plugins/productivity/002-jeremy-yaml-master-agent",
-        "version": "1.0.0",
+        "version": "2.0.0",
         "description": "Intelligent YAML validation, generation, and transformation agent with schema inference, linting, and format conversion capabilities"
       },
       "filePath": "plugins/productivity/002-jeremy-yaml-master-agent/skills/yaml-master/SKILL.md"
@@ -38944,8 +39790,8 @@
       "filePath": "plugins/community/zai-cli/skills/zai-cli/SKILL.md"
     }
   ],
-  "count": 1367,
-  "generatedAt": "2026-03-11T00:16:56.212Z",
+  "count": 1397,
+  "generatedAt": "2026-03-11T00:48:43.022Z",
   "categories": [
     "ai-ml",
     "api-development",

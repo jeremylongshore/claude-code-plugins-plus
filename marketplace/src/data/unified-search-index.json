@@ -1,13 +1,13 @@
 {
   "meta": {
     "version": "1.0.0",
-    "generated": "2026-03-11T00:17:04.467Z",
+    "generated": "2026-03-11T00:48:54.973Z",
     "generator": "scripts/generate-unified-search.mjs"
   },
   "stats": {
-    "totalPlugins": 340,
-    "totalSkills": 1367,
-    "totalItems": 1707,
+    "totalPlugins": 341,
+    "totalSkills": 1397,
+    "totalItems": 1738,
     "categories": [
       "ai-agency",
       "ai-ml",
@@ -284,6 +284,7 @@
       "ai-flows",
       "ai-gateway",
       "ai-generation",
+      "ai-ide",
       "ai-integration",
       "ai-notes",
       "ai-powered",
@@ -1585,7 +1586,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "access control auditor audit access control implementations security security compliance auditing"
     },
     {
@@ -1615,7 +1616,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "accessibility test scanner a11y compliance testing with wcag 2.1/2.2 validation, screen reader compatibility, and automated accessibility audits testing testing accessibility a11y wcag aria screen-reader compliance"
     },
     {
@@ -1699,7 +1700,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ai ethics validator ai ethics and fairness validation ai-ml ethics fairness bias responsible-ai ml"
     },
     {
@@ -1756,7 +1757,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ai ml engineering pack professional ai/ml engineering toolkit: prompt engineering, llm integration, rag systems, ai safety with 12 expert plugins ai-ml ai ml llm prompt-engineering rag vector-database ai-safety openai anthropic package"
     },
     {
@@ -1792,7 +1793,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ai sdk agents multi-agent orchestration with ai sdk v5 - handoffs, routing, and coordination for any ai provider (openai, anthropic, google) ai-ml ai-sdk agents multi-agent orchestration handoff routing llm openai anthropic google claude ai coordination"
     },
     {
@@ -1819,7 +1820,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "alerting rule creator create intelligent alerting rules for performance monitoring performance alerting monitoring sre observability"
     },
     {
@@ -1847,7 +1848,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "anomaly detection system detect anomalies and outliers in data ai-ml anomaly outliers detection isolation ml"
     },
     {
@@ -1875,7 +1876,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ansible playbook creator create ansible playbooks for configuration management devops ansible automation configuration playbooks devops"
     },
     {
@@ -1902,7 +1903,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api authentication builder build authentication systems with jwt, oauth2, and api keys api-development authentication jwt oauth security"
     },
     {
@@ -1929,7 +1930,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api batch processor implement batch api operations with bulk processing and job queues api-development batch bulk queue job-processing"
     },
     {
@@ -1956,7 +1957,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api cache manager implement caching strategies with redis, cdn, and http headers api-development caching redis cdn performance"
     },
     {
@@ -1983,7 +1984,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api contract generator generate api contracts for consumer-driven contract testing api-development contract pact testing microservices"
     },
     {
@@ -2011,7 +2012,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api documentation generator generate comprehensive api documentation from openapi/swagger specs api-development api documentation openapi swagger docs"
     },
     {
@@ -2038,7 +2039,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api error handler implement standardized error handling with proper http status codes api-development error-handling api http-status exceptions"
     },
     {
@@ -2066,7 +2067,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api event emitter implement event-driven apis with message queues and event streaming api-development events messaging kafka rabbitmq event-driven"
     },
     {
@@ -2095,7 +2096,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api fuzzer fuzz testing for apis with malformed inputs, edge cases, and security vulnerability detection testing testing fuzzing api security edge-cases input-validation"
     },
     {
@@ -2122,7 +2123,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api gateway builder build api gateway with routing, authentication, and rate limiting api-development api-gateway routing proxy microservices"
     },
     {
@@ -2149,7 +2150,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api load tester load test apis with k6, gatling, or artillery api-development load-testing performance k6 stress-testing"
     },
     {
@@ -2176,7 +2177,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api migration tool migrate apis between versions with backward compatibility api-development migration versioning api backward-compatibility"
     },
     {
@@ -2203,7 +2204,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api mock server create mock api servers from openapi specs for testing api-development mock testing openapi stub"
     },
     {
@@ -2230,7 +2231,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api monitoring dashboard create monitoring dashboards for api health, metrics, and alerts api-development monitoring metrics observability dashboard"
     },
     {
@@ -2257,7 +2258,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api rate limiter implement rate limiting with token bucket, sliding window, and redis api-development rate-limiting throttling api redis"
     },
     {
@@ -2284,7 +2285,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api request logger log api requests with structured logging and correlation ids api-development logging observability audit correlation"
     },
     {
@@ -2311,7 +2312,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api response validator validate api responses against schemas and contracts api-development validation schema testing api"
     },
     {
@@ -2339,7 +2340,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api schema validator validate api schemas with json schema, joi, yup, or zod api-development schema validation json-schema joi zod"
     },
     {
@@ -2366,7 +2367,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api sdk generator generate client sdks from openapi specs for multiple languages api-development sdk client openapi codegen"
     },
     {
@@ -2393,7 +2394,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api security scanner scan apis for security vulnerabilities and owasp api top 10 api-development security api owasp vulnerability"
     },
     {
@@ -2422,7 +2423,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api test automation automated api endpoint testing with request generation, validation, and comprehensive test coverage testing testing api rest graphql automation endpoints"
     },
     {
@@ -2449,7 +2450,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api throttling manager manage api throttling with dynamic rate limits and quota management api-development throttling rate-limiting quota traffic-management"
     },
     {
@@ -2476,7 +2477,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "api versioning manager manage api versions with migration strategies and backward compatibility api-development api versioning migration backward-compatibility"
     },
     {
@@ -2504,7 +2505,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "apm dashboard creator create application performance monitoring dashboards performance apm monitoring dashboard grafana datadog"
     },
     {
@@ -2531,7 +2532,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "application profiler profile application performance with cpu, memory, and execution time analysis performance performance profiling monitoring optimization"
     },
     {
@@ -2559,7 +2560,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "arbitrage opportunity finder find and analyze arbitrage opportunities across exchanges and defi protocols crypto arbitrage trading defi mev profit"
     },
     {
@@ -2585,7 +2586,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "authentication validator validate authentication implementations security security compliance auditing"
     },
     {
@@ -2613,7 +2614,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "auto scaling configurator configure auto-scaling policies for applications and infrastructure devops autoscaling scaling hpa kubernetes devops"
     },
     {
@@ -2641,7 +2642,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "automl pipeline builder build automl pipelines ai-ml automl automated pipeline h2o ml"
     },
     {
@@ -2668,7 +2669,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "backup strategy implementor implement backup strategies for databases and applications devops backup disaster-recovery restoration devops"
     },
     {
@@ -2697,7 +2698,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "blockchain explorer cli command-line blockchain explorer for transactions, addresses, and contracts crypto blockchain explorer etherscan transactions addresses contracts"
     },
     {
@@ -2724,7 +2725,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "bottleneck detector detect and resolve performance bottlenecks performance bottleneck performance optimization profiling"
     },
     {
@@ -2753,7 +2754,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "browser compatibility tester cross-browser testing with browserstack, selenium grid, and playwright - test across chrome, firefox, safari, edge testing testing cross-browser browserstack selenium playwright compatibility"
     },
     {
@@ -2780,7 +2781,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "cache performance optimizer optimize caching strategies for improved performance performance cache performance optimization redis"
     },
     {
@@ -2831,7 +2832,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "capacity planning analyzer analyze and plan for capacity requirements performance capacity-planning scaling forecasting infrastructure"
     },
     {
@@ -2860,7 +2861,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "chaos engineering toolkit chaos testing for resilience with failure injection, latency simulation, and system resilience validation testing testing chaos-engineering resilience failure-injection fault-tolerance reliability"
     },
     {
@@ -2889,7 +2890,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ci cd pipeline builder build ci/cd pipelines for github actions, gitlab ci, jenkins, and more devops ci-cd github-actions gitlab-ci jenkins devops automation"
     },
     {
@@ -2917,7 +2918,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "classification model builder build classification models ai-ml classification supervised predictor labels ml"
     },
     {
@@ -2946,7 +2947,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "cloud cost optimizer optimize cloud costs and generate cost reports devops cost optimization finops cloud aws devops"
     },
     {
@@ -2974,7 +2975,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "clustering algorithm runner run clustering algorithms on datasets ai-ml clustering kmeans dbscan hierarchical ml"
     },
     {
@@ -3003,7 +3004,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "compliance checker check infrastructure compliance (soc2, hipaa, pci-dss) devops compliance security audit soc2 hipaa devops"
     },
     {
@@ -3029,7 +3030,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "compliance report generator generate compliance reports security security compliance auditing"
     },
     {
@@ -3057,7 +3058,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "computer vision processor computer vision image processing and analysis ai-ml cv vision images detection ml"
     },
     {
@@ -3086,7 +3087,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "container registry manager manage container registries (ecr, gcr, harbor) devops registry containers docker ecr gcr devops"
     },
     {
@@ -3115,7 +3116,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "container security scanner scan containers for vulnerabilities using trivy, snyk, and other security tools devops security containers scanning vulnerabilities trivy devops"
     },
     {
@@ -3145,7 +3146,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "contract test validator api contract testing with pact, openapi validation, and consumer-driven contract verification testing testing contract-testing pact openapi api microservices consumer-driven"
     },
     {
@@ -3202,7 +3203,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "cors policy validator validate cors policies security security compliance auditing"
     },
     {
@@ -3229,7 +3230,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "cpu usage monitor monitor and analyze cpu usage patterns in applications performance cpu monitoring performance optimization"
     },
     {
@@ -3299,7 +3300,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "cross chain bridge monitor monitor cross-chain bridge activity, track transfers, analyze security, and detect bridge exploits crypto crypto cross-chain bridge security monitoring layer2 multichain defi"
     },
     {
@@ -3330,7 +3331,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "crypto derivatives tracker track crypto futures, options, perpetual swaps with funding rates, open interest, and derivatives market analysis crypto crypto derivatives futures options perpetuals funding-rate open-interest trading"
     },
     {
@@ -3358,7 +3359,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "crypto news aggregator aggregate and analyze crypto news from multiple sources with sentiment analysis crypto news aggregator sentiment crypto media"
     },
     {
@@ -3388,7 +3389,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "crypto portfolio tracker professional crypto portfolio tracking with real-time prices, pnl analysis, and risk metrics crypto crypto portfolio trading investment bitcoin ethereum defi"
     },
     {
@@ -3416,7 +3417,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "crypto signal generator generate trading signals from technical indicators and market analysis crypto trading signals technical-analysis indicators crypto"
     },
     {
@@ -3445,7 +3446,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "crypto tax calculator calculate crypto taxes with fifo/lifo methods and generate tax reports crypto crypto tax calculator fifo lifo capital gains"
     },
     {
@@ -3471,7 +3472,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "csrf protection validator validate csrf protection security security compliance auditing"
     },
     {
@@ -3499,7 +3500,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "data preprocessing pipeline automated data preprocessing and cleaning pipelines ai-ml preprocessing cleaning etl pipeline data"
     },
     {
@@ -3525,7 +3526,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "data privacy scanner scan for data privacy issues security security compliance auditing"
     },
     {
@@ -3553,7 +3554,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "data seeder generator generate realistic test data and database seed scripts for development and testing environments database seeding test-data fixtures database testing"
     },
     {
@@ -3579,7 +3580,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "data validation engine database plugin for data-validation-engine database database backend validation"
     },
     {
@@ -3607,7 +3608,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "data visualization creator create data visualizations and plots ai-ml visualization plots charts graphs analytics"
     },
     {
@@ -3633,7 +3634,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database archival system database plugin for database-archival-system database database backend archival"
     },
     {
@@ -3659,7 +3660,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database audit logger database plugin for database-audit-logger database database backend audit"
     },
     {
@@ -3687,7 +3688,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database backup automator automate database backups with scheduling, compression, encryption, and restore procedures database database backup automation disaster-recovery devops"
     },
     {
@@ -3713,7 +3714,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database cache layer database plugin for database-cache-layer database database backend cache"
     },
     {
@@ -3741,7 +3742,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database connection pooler implement and optimize database connection pooling for improved performance and resource management database connection-pool database performance backend optimization"
     },
     {
@@ -3767,7 +3768,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database deadlock detector database plugin for database-deadlock-detector database database backend deadlock"
     },
     {
@@ -3793,7 +3794,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database diff tool database plugin for database-diff-tool database database backend diff"
     },
     {
@@ -3819,7 +3820,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database documentation gen database plugin for database-documentation-gen database database backend documentation"
     },
     {
@@ -3845,7 +3846,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database health monitor database plugin for database-health-monitor database database backend health"
     },
     {
@@ -3872,7 +3873,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database index advisor analyze query patterns and recommend optimal database indexes with impact analysis database database indexes optimization performance"
     },
     {
@@ -3900,7 +3901,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database migration manager manage database migrations with version control, rollback capabilities, and automated schema evolution tracking database database migration schema version-control backend"
     },
     {
@@ -3926,7 +3927,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database partition manager database plugin for database-partition-manager database database backend partition"
     },
     {
@@ -3978,7 +3979,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database recovery manager database plugin for database-recovery-manager database database backend recovery"
     },
     {
@@ -4006,7 +4007,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database replication manager manage database replication, failover, and high availability configurations database replication high-availability failover database devops"
     },
     {
@@ -4034,7 +4035,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database schema designer design and visualize database schemas with normalization guidance, relationship mapping, and erd generation database database schema design erd normalization"
     },
     {
@@ -4060,7 +4061,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database security scanner database plugin for database-security-scanner database database backend security"
     },
     {
@@ -4086,7 +4087,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database sharding manager database plugin for database-sharding-manager database database backend sharding"
     },
     {
@@ -4116,7 +4117,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database test manager database testing utilities with test data setup, transaction rollback, and schema validation testing testing database sql test-data fixtures migrations transactions"
     },
     {
@@ -4142,7 +4143,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "database transaction monitor database plugin for database-transaction-monitor database database backend transaction"
     },
     {
@@ -4170,7 +4171,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "dataset splitter split datasets for training, validation, and testing ai-ml split train-test validation stratify ml"
     },
     {
@@ -4198,7 +4199,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "deep learning optimizer deep learning optimization techniques ai-ml optimization adam sgd learning-rate deep-learning"
     },
     {
@@ -4228,7 +4229,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "defi yield optimizer optimize defi yield farming strategies across protocols with apy tracking and risk assessment crypto defi yield farming liquidity apy optimization crypto"
     },
     {
@@ -4257,7 +4258,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "dependency checker check dependencies for known vulnerabilities, outdated packages, and license compliance security security dependencies npm pip composer vulnerabilities"
     },
     {
@@ -4285,7 +4286,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "deployment pipeline orchestrator orchestrate complex multi-stage deployment pipelines devops pipeline orchestration deployment cicd devops"
     },
     {
@@ -4313,7 +4314,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "deployment rollback manager manage and execute deployment rollbacks with safety checks devops rollback deployment kubernetes recovery devops"
     },
     {
@@ -4377,7 +4378,7 @@
         "featured",
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "devops automation pack complete devops automation suite with 25 plugins covering git workflows, ci/cd pipelines, docker optimization, kubernetes management, terraform iac, and deployment strategies devops devops ci-cd docker kubernetes terraform deployment infrastructure automation package"
     },
     {
@@ -4406,7 +4407,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "dex aggregator router find optimal dex routes for token swaps across multiple exchanges crypto dex swap trading defi aggregator routing"
     },
     {
@@ -4433,7 +4434,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "disaster recovery planner plan and implement disaster recovery procedures devops disaster-recovery dr business-continuity devops"
     },
     {
@@ -4486,7 +4487,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "distributed tracing setup set up distributed tracing for microservices performance tracing observability microservices opentelemetry"
     },
     {
@@ -4514,7 +4515,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "docker compose generator generate docker compose configurations for multi-container applications with best practices devops docker docker-compose containers orchestration devops"
     },
     {
@@ -4573,7 +4574,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "e2e test framework end-to-end test automation with playwright, cypress, and selenium for browser-based testing testing testing e2e playwright cypress selenium browser-testing"
     },
     {
@@ -4599,7 +4600,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "encryption tool encrypt and decrypt data with various algorithms security security compliance auditing"
     },
     {
@@ -4627,7 +4628,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "environment config manager manage environment configurations and secrets across deployments devops config environment secrets configuration devops"
     },
     {
@@ -4654,7 +4655,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "error rate monitor monitor and analyze application error rates performance errors monitoring reliability sre"
     },
     {
@@ -4717,7 +4718,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "experiment tracking setup set up ml experiment tracking ai-ml experiments mlflow wandb tracking mlops"
     },
     {
@@ -4754,7 +4755,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "fairdb operations kit complete operations kit for fairdb postgresql as a service - vps setup, postgresql management, customer provisioning, monitoring, and backup automation devops fairdb postgresql database saas operations devops backup monitoring vps contabo wasabi pgbackrest automation incident-response"
     },
     {
@@ -4805,7 +4806,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "feature engineering toolkit feature creation, selection, and transformation tools ai-ml features engineering selection transformation ml"
     },
     {
@@ -4859,7 +4860,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "flash loan simulator simulate and analyze flash loan strategies including arbitrage, liquidations, and collateral swaps crypto crypto flash-loans defi aave arbitrage liquidation ethereum simulation"
     },
     {
@@ -4881,7 +4882,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "formatter code formatting plugin using hooks to auto-format on save productivity formatting hooks automation"
     },
     {
@@ -4940,7 +4941,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "gas fee optimizer optimize transaction gas fees with timing and routing recommendations crypto gas fees ethereum optimization transaction l2"
     },
     {
@@ -4966,7 +4967,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "gdpr compliance scanner scan for gdpr compliance issues security security compliance auditing"
     },
     {
@@ -4995,7 +4996,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "git commit smart ai-powered conventional commit message generator with smart analysis devops git commits conventional-commits automation devops productivity"
     },
     {
@@ -5024,7 +5025,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "gitops workflow builder build gitops workflows with argocd and flux devops gitops argocd flux cd kubernetes devops"
     },
     {
@@ -5053,7 +5054,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "graphql server builder build graphql servers with schema-first design, resolvers, and subscriptions api-development graphql api server apollo schema resolvers"
     },
     {
@@ -5080,7 +5081,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "grpc service generator generate grpc services with protocol buffers and streaming support api-development grpc protobuf microservices streaming"
     },
     {
@@ -5131,7 +5132,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "helm chart generator generate helm charts for kubernetes applications devops helm kubernetes packaging charts devops"
     },
     {
@@ -5157,7 +5158,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "hipaa compliance checker check hipaa compliance security security compliance auditing"
     },
     {
@@ -5185,7 +5186,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "hyperparameter tuner optimize hyperparameters using grid/random/bayesian search ai-ml hyperparameters optimization tuning search ml"
     },
     {
@@ -5214,7 +5215,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "infrastructure as code generator generate infrastructure as code for terraform, cloudformation, pulumi, and more devops iac terraform cloudformation pulumi infrastructure devops"
     },
     {
@@ -5242,7 +5243,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "infrastructure drift detector detect infrastructure drift from desired state devops drift terraform infrastructure monitoring devops"
     },
     {
@@ -5269,7 +5270,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "infrastructure metrics collector collect comprehensive infrastructure performance metrics performance infrastructure metrics monitoring observability"
     },
     {
@@ -5295,7 +5296,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "input validation scanner scan input validation practices security security compliance auditing"
     },
     {
@@ -5323,7 +5324,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "integration test runner run and manage integration test suites with environment setup, database seeding, and cleanup testing testing integration-tests test-runner e2e api-testing"
     },
     {
@@ -5351,7 +5352,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "kubernetes deployment creator create kubernetes deployments, services, and configurations with best practices devops kubernetes k8s deployment orchestration containers"
     },
     {
@@ -5380,7 +5381,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "liquidity pool analyzer analyze defi liquidity pools for impermanent loss, apy, and optimization opportunities crypto liquidity pool defi impermanent loss apy"
     },
     {
@@ -5409,7 +5410,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "load balancer configurator configure load balancers (alb, nlb, nginx, haproxy) devops load-balancer alb nginx haproxy networking devops"
     },
     {
@@ -5437,7 +5438,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "load balancer tester test load balancing strategies with traffic distribution validation and failover testing testing testing load-balancer traffic-distribution failover high-availability"
     },
     {
@@ -5464,7 +5465,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "load test runner create and execute load tests for performance validation performance load-testing performance stress-test k6"
     },
     {
@@ -5493,7 +5494,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "log aggregation setup set up log aggregation (elk, loki, splunk) devops logging elk loki splunk observability devops"
     },
     {
@@ -5520,7 +5521,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "log analysis tool analyze logs for performance insights and issues performance logs analysis performance debugging"
     },
     {
@@ -5576,7 +5577,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "market movers scanner scan for top market movers - gainers, losers, volume spikes, and unusual activity crypto market scanner movers gainers losers volume trading"
     },
     {
@@ -5606,7 +5607,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "market price tracker real-time market price tracking with multi-exchange feeds and advanced alerts crypto market price tracking trading crypto stocks forex"
     },
     {
@@ -5635,7 +5636,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "market sentiment analyzer analyze market sentiment from social media, news, and on-chain data crypto sentiment analysis social news market crypto"
     },
     {
@@ -5662,7 +5663,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "memory leak detector detect memory leaks and analyze memory usage patterns performance memory leak detection performance"
     },
     {
@@ -5693,7 +5694,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "mempool analyzer advanced mempool analysis for mev opportunities, pending transaction monitoring, and gas price optimization crypto crypto mempool mev ethereum blockchain gas pending-transactions arbitrage"
     },
     {
@@ -5720,7 +5721,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "metrics aggregator aggregate and centralize performance metrics performance metrics aggregation prometheus monitoring"
     },
     {
@@ -5748,7 +5749,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ml model trainer train and optimize machine learning models with automated workflows ai-ml ml machine-learning training models ai"
     },
     {
@@ -5779,7 +5780,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "mobile app tester mobile app test automation with appium, detox, xcuitest - test ios and android apps testing testing mobile appium detox xcuitest espresso ios android"
     },
     {
@@ -5807,7 +5808,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "model deployment helper deploy ml models to production ai-ml deployment serving production api mlops"
     },
     {
@@ -5835,7 +5836,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "model evaluation suite comprehensive model evaluation with multiple metrics ai-ml evaluation metrics testing validation ml"
     },
     {
@@ -5863,7 +5864,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "model explainability tool model interpretability and explainability ai-ml explainability shap lime interpretability ml"
     },
     {
@@ -5891,7 +5892,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "model versioning tracker track and manage model versions ai-ml versioning mlflow tracking registry mlops"
     },
     {
@@ -5919,7 +5920,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "monitoring stack deployer deploy monitoring stacks (prometheus, grafana, datadog) devops monitoring prometheus grafana observability devops"
     },
     {
@@ -5947,7 +5948,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "mutation test runner mutation testing to validate test quality by introducing code changes and verifying tests catch them testing testing mutation-testing test-quality stryker pitest"
     },
     {
@@ -6001,7 +6002,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "network latency analyzer analyze network latency and optimize request patterns performance network latency performance api"
     },
     {
@@ -6029,7 +6030,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "network policy manager manage kubernetes network policies and firewall rules devops network-policy security kubernetes firewall devops"
     },
     {
@@ -6057,7 +6058,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "neural network builder build and configure neural network architectures ai-ml neural-networks deep-learning architecture pytorch ml"
     },
     {
@@ -6086,7 +6087,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "nft rarity analyzer analyze nft rarity scores and valuations across collections crypto nft rarity valuation traits opensea crypto"
     },
     {
@@ -6114,7 +6115,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "nlp text analyzer natural language processing and text analysis ai-ml nlp text analysis tokenization ml"
     },
     {
@@ -6140,7 +6141,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "nosql data modeler database plugin for nosql-data-modeler database database backend data"
     },
     {
@@ -6168,7 +6169,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "on chain analytics analyze on-chain metrics including whale movements, network activity, and holder distribution crypto on-chain analytics whale metrics blockchain"
     },
     {
@@ -6233,7 +6234,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "options flow analyzer track institutional options flow, unusual activity, and smart money movements crypto options flow institutional trading derivatives smart money"
     },
     {
@@ -6261,7 +6262,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "orm code generator generate orm models from database schemas or create database schemas from models for typeorm, prisma, sequelize, sqlalchemy, and more database orm models code-generation database backend"
     },
     {
@@ -6294,7 +6295,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "overnight dev run claude autonomously for 6-8 hours overnight using git hooks that enforce tdd - wake up to fully tested features productivity overnight autonomous tdd testing git-hooks automation continuous-integration test-driven-development productivity"
     },
     {
@@ -6320,7 +6321,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "owasp compliance checker check owasp top 10 compliance security security compliance auditing"
     },
     {
@@ -6346,7 +6347,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "pci dss validator validate pci dss compliance security security compliance auditing"
     },
     {
@@ -6374,7 +6375,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "penetration tester automated penetration testing for web applications with owasp top 10 coverage security security penetration-testing pentesting owasp exploitation"
     },
     {
@@ -6401,7 +6402,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "performance budget validator validate application against performance budgets performance performance-budget validation ci-cd testing"
     },
     {
@@ -6428,7 +6429,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "performance optimization advisor get comprehensive performance optimization recommendations performance optimization performance best-practices advisor"
     },
     {
@@ -6455,7 +6456,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "performance regression detector detect performance regressions in ci/cd pipeline performance regression performance ci-cd testing"
     },
     {
@@ -6483,7 +6484,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "performance test suite load testing and performance benchmarking with metrics analysis and bottleneck identification testing testing performance load-testing benchmarking stress-testing"
     },
     {
@@ -6574,7 +6575,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "query performance analyzer analyze query performance with explain plan interpretation, bottleneck identification, and optimization recommendations database performance query optimization explain database"
     },
     {
@@ -6601,7 +6602,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "real user monitoring implement real user monitoring for actual performance data performance rum monitoring performance user-experience"
     },
     {
@@ -6629,7 +6630,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "recommendation engine build recommendation systems and engines ai-ml recommendations collaborative content-based ranking ml"
     },
     {
@@ -6657,7 +6658,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "regression analysis tool regression analysis and modeling ai-ml regression prediction linear polynomial ml"
     },
     {
@@ -6685,7 +6686,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "regression test tracker track and run regression tests to ensure new changes don't break existing functionality testing testing regression-testing test-tracking ci-cd quality-assurance"
     },
     {
@@ -6735,7 +6736,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "resource usage tracker track and optimize resource usage across the stack performance resources monitoring optimization metrics"
     },
     {
@@ -6762,7 +6763,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "response time tracker track and optimize application response times performance response-time latency performance monitoring"
     },
     {
@@ -6791,7 +6792,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "rest api generator generate restful apis from schemas with proper routing, validation, and documentation api-development api rest generator openapi swagger backend"
     },
     {
@@ -6869,7 +6870,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "secret scanner scan codebase for exposed secrets, api keys, passwords, and sensitive credentials security security secrets api-keys credentials passwords"
     },
     {
@@ -6898,7 +6899,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "secrets manager integrator integrate with secrets managers (vault, aws secrets manager, etc) devops secrets vault aws security credentials devops"
     },
     {
@@ -6920,7 +6921,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security agent security review subagent for code analysis security security agent code-review"
     },
     {
@@ -6946,7 +6947,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security audit reporter generate comprehensive security audit reports security security compliance auditing"
     },
     {
@@ -6972,7 +6973,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security headers analyzer analyze http security headers security security compliance auditing"
     },
     {
@@ -6998,7 +6999,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security incident responder assist with security incident response security security compliance auditing"
     },
     {
@@ -7024,7 +7025,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security misconfiguration finder find security misconfigurations security security compliance auditing"
     },
     {
@@ -7057,7 +7058,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security pro pack professional security tools for claude code: vulnerability scanning, compliance, cryptography audit, container & api security security security vulnerability-scanning compliance hipaa pci-dss gdpr soc2 cryptography devsecops package"
     },
     {
@@ -7085,7 +7086,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "security test scanner automated security vulnerability testing covering owasp top 10, sql injection, xss, csrf, and authentication issues testing testing security vulnerabilities owasp penetration-testing"
     },
     {
@@ -7113,7 +7114,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "sentiment analysis tool sentiment analysis on text data ai-ml sentiment opinion emotion polarity nlp"
     },
     {
@@ -7141,7 +7142,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "service mesh configurator configure service mesh (istio, linkerd) for microservices devops service-mesh istio linkerd microservices devops"
     },
     {
@@ -7167,7 +7168,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "session security checker check session security implementation security security compliance auditing"
     },
     {
@@ -7195,7 +7196,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "sla sli tracker track slas, slis, and slos for service reliability performance sla sli slo sre reliability"
     },
     {
@@ -7223,7 +7224,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "smoke test runner quick smoke test suites to verify critical functionality after deployments testing testing smoke-tests deployment sanity-check critical-path"
     },
     {
@@ -7252,7 +7253,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "snapshot test manager manage and update snapshot tests with intelligent diff analysis and selective updates testing testing snapshot jest vitest diff-analysis test-management"
     },
     {
@@ -7278,7 +7279,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "soc2 audit helper assist with soc2 audit preparation security security compliance auditing"
     },
     {
@@ -7330,7 +7331,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "sql injection detector detect sql injection vulnerabilities security security compliance auditing"
     },
     {
@@ -7358,7 +7359,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "sql query optimizer analyze and optimize sql queries for better performance, suggesting indexes, query rewrites, and execution plan improvements database sql optimization performance database query"
     },
     {
@@ -7384,7 +7385,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "ssl certificate manager manage and monitor ssl/tls certificates security security compliance auditing"
     },
     {
@@ -7413,7 +7414,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "staking rewards optimizer optimize staking rewards across multiple protocols and chains crypto crypto staking defi yield optimization rewards"
     },
     {
@@ -7439,7 +7440,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "stored procedure generator database plugin for stored-procedure-generator database database backend procedure"
     },
     {
@@ -7480,7 +7481,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "jeremy firestore firestore database specialist for schema design, queries, and real-time sync database firebase firestore database crud security-rules cloud-functions batch-operations data-migration performance cost-optimization nosql google-cloud a2a agent-to-agent mcp cloud-run vertex-ai"
     },
     {
@@ -7513,7 +7514,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "sugar transform claude code into an autonomous ai development powerhouse with rich task context, specialized agents, and intelligent workflow automation devops autonomous development ai task-management automation agents enterprise workflow productivity mcp"
     },
     {
@@ -7540,7 +7541,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "synthetic monitoring setup set up synthetic monitoring for proactive performance tracking performance synthetic-monitoring uptime performance testing"
     },
     {
@@ -7568,7 +7569,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "terraform module builder build reusable terraform modules devops terraform iac modules infrastructure devops"
     },
     {
@@ -7596,7 +7597,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test coverage analyzer analyze code coverage metrics, identify untested code, and generate comprehensive coverage reports testing testing coverage code-coverage metrics analysis"
     },
     {
@@ -7624,7 +7625,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test data generator generate realistic test data including users, products, orders, and custom schemas for comprehensive testing testing testing test-data fake-data fixtures factory"
     },
     {
@@ -7655,7 +7656,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test doubles generator generate mocks, stubs, spies, and fakes for unit testing with jest, sinon, and test frameworks testing testing mocks stubs spies fakes test-doubles jest sinon"
     },
     {
@@ -7684,7 +7685,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test environment manager manage test environments with docker compose, testcontainers, and environment isolation testing testing environment docker testcontainers isolation infrastructure"
     },
     {
@@ -7713,7 +7714,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test orchestrator orchestrate complex test workflows with dependencies, parallel execution, and smart test selection testing testing orchestration workflow parallel test-selection ci-cd"
     },
     {
@@ -7742,7 +7743,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "test report generator generate comprehensive test reports with coverage, trends, and stakeholder-friendly formats testing testing reporting coverage metrics dashboard ci-cd"
     },
     {
@@ -7769,7 +7770,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "throughput analyzer analyze and optimize system throughput performance throughput performance capacity optimization"
     },
     {
@@ -7797,7 +7798,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "time series forecaster time series forecasting and analysis ai-ml time-series forecasting arima prophet ml"
     },
     {
@@ -7828,7 +7829,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "token launch tracker track new token launches, detect rugpulls, and analyze contract security for early-stage crypto projects crypto crypto token-launch rugpull security scam-detection contract-analysis defi new-tokens"
     },
     {
@@ -7857,7 +7858,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "trading strategy backtester backtest trading strategies with historical data, performance metrics, and risk analysis crypto trading backtesting strategy historical performance risk"
     },
     {
@@ -7885,7 +7886,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "transfer learning adapter transfer learning adaptation ai-ml transfer-learning fine-tuning pretrained adapters ml"
     },
     {
@@ -7948,7 +7949,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "unit test generator automatically generate comprehensive unit tests from source code with multiple testing framework support testing testing unit-tests test-generation jest pytest mocha junit"
     },
     {
@@ -7978,7 +7979,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "visual regression tester visual diff testing with percy, chromatic, backstopjs - catch unintended ui changes testing testing visual-regression ui-testing percy chromatic backstop screenshot-testing"
     },
     {
@@ -8006,7 +8007,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "vulnerability scanner comprehensive vulnerability scanning for code, dependencies, and configurations with cve detection security security vulnerability scanning cve sast"
     },
     {
@@ -8064,7 +8065,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "web to github issue enhances web_search skill by automatically creating github issues from research findings. research topics, extract key insights, and generate formatted tickets in seconds. skill-enhancers web-search github automation research issue-tracking skill-enhancer productivity workflow"
     },
     {
@@ -8091,7 +8092,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "webhook handler creator create secure webhook endpoints with signature verification and retry logic api-development webhook events signature security"
     },
     {
@@ -8118,7 +8119,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "websocket server builder build websocket servers for real-time bidirectional communication api-development websocket real-time socket.io ws"
     },
     {
@@ -8146,7 +8147,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "whale alert monitor monitor large crypto transactions and whale wallet movements in real-time crypto whale alert monitor large transactions"
     },
     {
@@ -8202,7 +8203,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 1,
       "searchText": "xss vulnerability scanner scan for xss vulnerabilities security security compliance auditing"
     },
     {
@@ -8760,7 +8761,7 @@
       "badges": [
         "new"
       ],
-      "skillCount": 0,
+      "skillCount": 4,
       "searchText": "jeremy plugin tool production-grade plugin creator with nixtla-validated quality standards. 4 agent skills automate creating, validating, auditing, and versioning plugins in the claude-code-plugins marketplace example skills agent-skills plugin-management marketplace validation audit versioning meta-plugin repository-tools"
     },
     {
@@ -11295,6 +11296,34 @@
       "searchText": "wondelai web typography web typography framework for readable, beautiful type. select and pair typefaces, set optimal line length and height, implement responsive typography, and optimize web font loading. design typography web-fonts typeface font-pairing readability responsive-typography css type-hierarchy"
     },
     {
+      "type": "plugin",
+      "id": "windsurf",
+      "slug": "windsurf",
+      "name": "windsurf",
+      "displayName": "windsurf",
+      "description": "Windsurf AI IDE skill pack with 30 skills covering code flows, AI workflows, workspace management, and productivity features.",
+      "category": "saas-packs",
+      "keywords": [
+        "windsurf",
+        "ai-ide",
+        "code-editor",
+        "cascade",
+        "ai-coding"
+      ],
+      "author": {
+        "name": "Jeremy Longshore",
+        "email": "jeremy@intentsolutions.io"
+      },
+      "version": "1.0.0",
+      "isFeatured": false,
+      "isNew": true,
+      "badges": [
+        "new"
+      ],
+      "skillCount": 30,
+      "searchText": "windsurf windsurf ai ide skill pack with 30 skills covering code flows, ai workflows, workspace management, and productivity features. saas-packs windsurf ai-ide code-editor cascade ai-coding"
+    },
+    {
       "type": "skill",
       "id": "cursor-advanced-composer",
       "slug": "cursor-advanced-composer",
@@ -12069,6 +12098,762 @@
         "category": "saas-packs"
       },
       "searchText": "\"sentry-advanced-troubleshooting\" execute advanced sentry troubleshooting techniques. use when debugging complex sdk issues, missing events, source map problems, or performance anomalies. trigger with phrases like \"sentry not working\", \"debug sentry\", \"sentry events missing\", \"fix sentry issues\". saas-packs \"read write edit grep bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-api-development",
+      "slug": "windsurf-api-development",
+      "name": "\"windsurf-api-development\"",
+      "description": "Generate API clients and documentation with Cascade. Activate when users mention \"generate api client\", \"api documentation\", \"openapi generation\", \"sdk generation\", or \"api integration\". Handles API development workflows. Use when working with APIs or building integrations. Trigger with phrases like \"windsurf api development\", \"windsurf development\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-api-development\" generate api clients and documentation with cascade. activate when users mention \"generate api client\", \"api documentation\", \"openapi generation\", \"sdk generation\", or \"api integration\". handles api development workflows. use when working with apis or building integrations. trigger with phrases like \"windsurf api development\", \"windsurf development\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-audit-logging",
+      "slug": "windsurf-audit-logging",
+      "name": "\"windsurf-audit-logging\"",
+      "description": "Configure AI interaction audit logging for compliance. Activate when users mention \"audit logging\", \"compliance logging\", \"ai interaction logs\", \"security audit\", or \"activity tracking\". Handles compliance and audit configuration. Use when analyzing or auditing windsurf audit logging. Trigger with phrases like \"windsurf audit logging\", \"windsurf logging\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-audit-logging\" configure ai interaction audit logging for compliance. activate when users mention \"audit logging\", \"compliance logging\", \"ai interaction logs\", \"security audit\", or \"activity tracking\". handles compliance and audit configuration. use when analyzing or auditing windsurf audit logging. trigger with phrases like \"windsurf audit logging\", \"windsurf logging\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-cascade-agents",
+      "slug": "windsurf-cascade-agents",
+      "name": "\"windsurf-cascade-agents\"",
+      "description": "Create custom Cascade agent configurations for specialized tasks. Activate when users mention \"custom cascade agent\", \"specialized ai agent\", \"domain-specific cascade\", \"agent configuration\", or \"custom ai behavior\". Handles custom agent creation and configuration. Use when working with windsurf cascade agents functionality. Trigger with phrases like \"windsurf cascade agents\", \"windsurf agents\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-cascade-agents\" create custom cascade agent configurations for specialized tasks. activate when users mention \"custom cascade agent\", \"specialized ai agent\", \"domain-specific cascade\", \"agent configuration\", or \"custom ai behavior\". handles custom agent creation and configuration. use when working with windsurf cascade agents functionality. trigger with phrases like \"windsurf cascade agents\", \"windsurf agents\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep glob\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-cascade-context",
+      "slug": "windsurf-cascade-context",
+      "name": "\"windsurf-cascade-context\"",
+      "description": "Manage Cascade context window and memory for complex projects. Activate when users mention \"cascade context\", \"ai memory\", \"context management\", \"large codebase navigation\", or \"multi-session development\". Handles context optimization and persistence. Use when working with windsurf cascade context functionality. Trigger with phrases like \"windsurf cascade context\", \"windsurf context\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-cascade-context\" manage cascade context window and memory for complex projects. activate when users mention \"cascade context\", \"ai memory\", \"context management\", \"large codebase navigation\", or \"multi-session development\". handles context optimization and persistence. use when working with windsurf cascade context functionality. trigger with phrases like \"windsurf cascade context\", \"windsurf context\", \"windsurf\". saas-packs read write edit grep glob claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-cascade-onboarding",
+      "slug": "windsurf-cascade-onboarding",
+      "name": "\"windsurf-cascade-onboarding\"",
+      "description": "Configure Cascade AI agent for new team projects. Activate when users mention \"setup cascade\", \"configure windsurf ai\", \"initialize cascade agent\", \"new windsurf project\", or \"onboard team to windsurf\". Handles agent configuration, context settings, and team defaults. Use when working with windsurf cascade onboarding functionality. Trigger with phrases like \"windsurf cascade onboarding\", \"windsurf onboarding\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-cascade-onboarding\" configure cascade ai agent for new team projects. activate when users mention \"setup cascade\", \"configure windsurf ai\", \"initialize cascade agent\", \"new windsurf project\", or \"onboard team to windsurf\". handles agent configuration, context settings, and team defaults. use when working with windsurf cascade onboarding functionality. trigger with phrases like \"windsurf cascade onboarding\", \"windsurf onboarding\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep glob\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-cicd-github-actions",
+      "slug": "windsurf-cicd-github-actions",
+      "name": "\"windsurf-cicd-github-actions\"",
+      "description": "Generate and maintain GitHub Actions with Cascade assistance. Activate when users mention \"github actions\", \"ci/cd pipeline\", \"workflow automation\", \"continuous integration\", or \"deployment pipeline\". Handles CI/CD configuration with AI assistance. Use when working with windsurf cicd github actions functionality. Trigger with phrases like \"windsurf cicd github actions\", \"windsurf actions\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-cicd-github-actions\" generate and maintain github actions with cascade assistance. activate when users mention \"github actions\", \"ci/cd pipeline\", \"workflow automation\", \"continuous integration\", or \"deployment pipeline\". handles ci/cd configuration with ai assistance. use when working with windsurf cicd github actions functionality. trigger with phrases like \"windsurf cicd github actions\", \"windsurf actions\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-code-completion",
+      "slug": "windsurf-code-completion",
+      "name": "\"windsurf-code-completion\"",
+      "description": "Configure and optimize Supercomplete code suggestions. Activate when users mention \"code completion\", \"autocomplete\", \"supercomplete\", \"inline suggestions\", or \"ai completions\". Handles completion configuration and optimization. Use when working with windsurf code completion functionality. Trigger with phrases like \"windsurf code completion\", \"windsurf completion\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-code-completion\" configure and optimize supercomplete code suggestions. activate when users mention \"code completion\", \"autocomplete\", \"supercomplete\", \"inline suggestions\", or \"ai completions\". handles completion configuration and optimization. use when working with windsurf code completion functionality. trigger with phrases like \"windsurf code completion\", \"windsurf completion\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-code-privacy",
+      "slug": "windsurf-code-privacy",
+      "name": "\"windsurf-code-privacy\"",
+      "description": "Configure code privacy and data retention policies. Activate when users mention \"code privacy\", \"data retention\", \"privacy settings\", \"data governance\", or \"gdpr compliance\". Handles privacy and data protection configuration. Use when working with windsurf code privacy functionality. Trigger with phrases like \"windsurf code privacy\", \"windsurf privacy\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-code-privacy\" configure code privacy and data retention policies. activate when users mention \"code privacy\", \"data retention\", \"privacy settings\", \"data governance\", or \"gdpr compliance\". handles privacy and data protection configuration. use when working with windsurf code privacy functionality. trigger with phrases like \"windsurf code privacy\", \"windsurf privacy\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-custom-prompts",
+      "slug": "windsurf-custom-prompts",
+      "name": "\"windsurf-custom-prompts\"",
+      "description": "Create and manage custom prompt libraries for Cascade. Activate when users mention \"custom prompts\", \"prompt library\", \"prompt templates\", \"cascade prompts\", or \"prompt management\". Handles prompt library creation and organization. Use when working with windsurf custom prompts functionality. Trigger with phrases like \"windsurf custom prompts\", \"windsurf prompts\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-custom-prompts\" create and manage custom prompt libraries for cascade. activate when users mention \"custom prompts\", \"prompt library\", \"prompt templates\", \"cascade prompts\", or \"prompt management\". handles prompt library creation and organization. use when working with windsurf custom prompts functionality. trigger with phrases like \"windsurf custom prompts\", \"windsurf prompts\", \"windsurf\". saas-packs read write edit grep glob claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-debugging-ai",
+      "slug": "windsurf-debugging-ai",
+      "name": "\"windsurf-debugging-ai\"",
+      "description": "Execute use Cascade for intelligent debugging and error analysis. Activate when users mention \"debug with ai\", \"error analysis\", \"cascade debug\", \"find bug\", or \"troubleshoot code\". Handles AI-assisted debugging workflows. Use when debugging issues or troubleshooting. Trigger with phrases like \"windsurf debugging ai\", \"windsurf ai\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Grep",
+        "Glob",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-debugging-ai\" execute use cascade for intelligent debugging and error analysis. activate when users mention \"debug with ai\", \"error analysis\", \"cascade debug\", \"find bug\", or \"troubleshoot code\". handles ai-assisted debugging workflows. use when debugging issues or troubleshooting. trigger with phrases like \"windsurf debugging ai\", \"windsurf ai\", \"windsurf\". saas-packs \"read grep glob bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-dependency-management",
+      "slug": "windsurf-dependency-management",
+      "name": "\"windsurf-dependency-management\"",
+      "description": "Analyze and update dependencies with vulnerability scanning. Activate when users mention \"update dependencies\", \"security audit\", \"npm audit\", \"vulnerability scan\", or \"dependency updates\". Handles dependency analysis and updates. Use when working with windsurf dependency management functionality. Trigger with phrases like \"windsurf dependency management\", \"windsurf management\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-dependency-management\" analyze and update dependencies with vulnerability scanning. activate when users mention \"update dependencies\", \"security audit\", \"npm audit\", \"vulnerability scan\", or \"dependency updates\". handles dependency analysis and updates. use when working with windsurf dependency management functionality. trigger with phrases like \"windsurf dependency management\", \"windsurf management\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-dockerfile-generation",
+      "slug": "windsurf-dockerfile-generation",
+      "name": "\"windsurf-dockerfile-generation\"",
+      "description": "Create optimized Dockerfiles with AI-driven best practices. Activate when users mention \"create dockerfile\", \"container image\", \"docker optimization\", \"containerize application\", or \"docker best practices\". Handles Docker configuration generation. Use when working with windsurf dockerfile generation functionality. Trigger with phrases like \"windsurf dockerfile generation\", \"windsurf generation\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-dockerfile-generation\" create optimized dockerfiles with ai-driven best practices. activate when users mention \"create dockerfile\", \"container image\", \"docker optimization\", \"containerize application\", or \"docker best practices\". handles docker configuration generation. use when working with windsurf dockerfile generation functionality. trigger with phrases like \"windsurf dockerfile generation\", \"windsurf generation\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-enterprise-sso",
+      "slug": "windsurf-enterprise-sso",
+      "name": "\"windsurf-enterprise-sso\"",
+      "description": "Configure enterprise SSO integration for Windsurf. Activate when users mention \"sso configuration\", \"single sign-on\", \"enterprise authentication\", \"saml setup\", or \"identity provider\". Handles enterprise identity integration. Use when working with windsurf enterprise sso functionality. Trigger with phrases like \"windsurf enterprise sso\", \"windsurf sso\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-enterprise-sso\" configure enterprise sso integration for windsurf. activate when users mention \"sso configuration\", \"single sign-on\", \"enterprise authentication\", \"saml setup\", or \"identity provider\". handles enterprise identity integration. use when working with windsurf enterprise sso functionality. trigger with phrases like \"windsurf enterprise sso\", \"windsurf sso\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-extension-pack",
+      "slug": "windsurf-extension-pack",
+      "name": "\"windsurf-extension-pack\"",
+      "description": "Install and configure essential Windsurf extensions for productivity. Activate when users mention \"install extensions\", \"setup windsurf plugins\", \"configure extensions\", \"extension recommendations\", or \"productivity extensions\". Handles extension installation and configuration. Use when working with windsurf extension pack functionality. Trigger with phrases like \"windsurf extension pack\", \"windsurf pack\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-extension-pack\" install and configure essential windsurf extensions for productivity. activate when users mention \"install extensions\", \"setup windsurf plugins\", \"configure extensions\", \"extension recommendations\", or \"productivity extensions\". handles extension installation and configuration. use when working with windsurf extension pack functionality. trigger with phrases like \"windsurf extension pack\", \"windsurf pack\", \"windsurf\". saas-packs \"read write bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-flows-automation",
+      "slug": "windsurf-flows-automation",
+      "name": "\"windsurf-flows-automation\"",
+      "description": "Create and manage Windsurf Flows for repetitive tasks. Activate when users mention \"windsurf flows\", \"task automation\", \"workflow automation\", \"repetitive tasks\", or \"process automation\". Handles Flow creation and management. Use when working with windsurf flows automation functionality. Trigger with phrases like \"windsurf flows automation\", \"windsurf automation\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-flows-automation\" create and manage windsurf flows for repetitive tasks. activate when users mention \"windsurf flows\", \"task automation\", \"workflow automation\", \"repetitive tasks\", or \"process automation\". handles flow creation and management. use when working with windsurf flows automation functionality. trigger with phrases like \"windsurf flows automation\", \"windsurf automation\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-git-integration",
+      "slug": "windsurf-git-integration",
+      "name": "\"windsurf-git-integration\"",
+      "description": "Configure Git integration with Cascade AI assistance. Activate when users mention \"git setup\", \"version control\", \"commit messages\", \"branch management\", or \"source control\". Handles Git configuration and AI-assisted workflows. Use when working with windsurf git integration functionality. Trigger with phrases like \"windsurf git integration\", \"windsurf integration\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-git-integration\" configure git integration with cascade ai assistance. activate when users mention \"git setup\", \"version control\", \"commit messages\", \"branch management\", or \"source control\". handles git configuration and ai-assisted workflows. use when working with windsurf git integration functionality. trigger with phrases like \"windsurf git integration\", \"windsurf integration\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-keyboard-shortcuts",
+      "slug": "windsurf-keyboard-shortcuts",
+      "name": "\"windsurf-keyboard-shortcuts\"",
+      "description": "Configure custom keyboard shortcuts for Cascade and AI features. Activate when users mention \"keyboard shortcuts\", \"keybindings\", \"hotkeys\", \"shortcut configuration\", or \"customize shortcuts\". Handles keybinding setup and optimization. Use when working with windsurf keyboard shortcuts functionality. Trigger with phrases like \"windsurf keyboard shortcuts\", \"windsurf shortcuts\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-keyboard-shortcuts\" configure custom keyboard shortcuts for cascade and ai features. activate when users mention \"keyboard shortcuts\", \"keybindings\", \"hotkeys\", \"shortcut configuration\", or \"customize shortcuts\". handles keybinding setup and optimization. use when working with windsurf keyboard shortcuts functionality. trigger with phrases like \"windsurf keyboard shortcuts\", \"windsurf shortcuts\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-license-management",
+      "slug": "windsurf-license-management",
+      "name": "\"windsurf-license-management\"",
+      "description": "Manage Windsurf licenses and seat allocation. Activate when users mention \"license management\", \"seat allocation\", \"billing optimization\", \"user licenses\", or \"subscription management\". Handles license administration. Use when working with windsurf license management functionality. Trigger with phrases like \"windsurf license management\", \"windsurf management\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-license-management\" manage windsurf licenses and seat allocation. activate when users mention \"license management\", \"seat allocation\", \"billing optimization\", \"user licenses\", or \"subscription management\". handles license administration. use when working with windsurf license management functionality. trigger with phrases like \"windsurf license management\", \"windsurf management\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-linting-config",
+      "slug": "windsurf-linting-config",
+      "name": "\"windsurf-linting-config\"",
+      "description": "Configure and enforce code quality with AI-assisted linting. Activate when users mention \"configure linting\", \"eslint setup\", \"code quality rules\", \"linting configuration\", or \"code standards\". Handles linting tool configuration. Use when configuring systems or services. Trigger with phrases like \"windsurf linting config\", \"windsurf config\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-linting-config\" configure and enforce code quality with ai-assisted linting. activate when users mention \"configure linting\", \"eslint setup\", \"code quality rules\", \"linting configuration\", or \"code standards\". handles linting tool configuration. use when configuring systems or services. trigger with phrases like \"windsurf linting config\", \"windsurf config\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-mcp-integration",
+      "slug": "windsurf-mcp-integration",
+      "name": "\"windsurf-mcp-integration\"",
+      "description": "Manage integrate MCP servers with Windsurf for extended capabilities. Activate when users mention \"mcp integration\", \"model context protocol\", \"external tools\", \"mcp server\", or \"cascade tools\". Handles MCP server configuration and integration. Use when working with windsurf mcp integration functionality. Trigger with phrases like \"windsurf mcp integration\", \"windsurf integration\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-mcp-integration\" manage integrate mcp servers with windsurf for extended capabilities. activate when users mention \"mcp integration\", \"model context protocol\", \"external tools\", \"mcp server\", or \"cascade tools\". handles mcp server configuration and integration. use when working with windsurf mcp integration functionality. trigger with phrases like \"windsurf mcp integration\", \"windsurf integration\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-multi-file-editing",
+      "slug": "windsurf-multi-file-editing",
+      "name": "\"windsurf-multi-file-editing\"",
+      "description": "Manage multi-file edits with Cascade coordination. Activate when users mention \"multi-file edit\", \"edit multiple files\", \"cross-file changes\", \"refactor across files\", or \"batch modifications\". Handles coordinated multi-file operations. Use when working with windsurf multi file editing functionality. Trigger with phrases like \"windsurf multi file editing\", \"windsurf editing\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-multi-file-editing\" manage multi-file edits with cascade coordination. activate when users mention \"multi-file edit\", \"edit multiple files\", \"cross-file changes\", \"refactor across files\", or \"batch modifications\". handles coordinated multi-file operations. use when working with windsurf multi file editing functionality. trigger with phrases like \"windsurf multi file editing\", \"windsurf editing\", \"windsurf\". saas-packs read write edit grep glob claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-performance-profiling",
+      "slug": "windsurf-performance-profiling",
+      "name": "\"windsurf-performance-profiling\"",
+      "description": "Profile and optimize code with AI-assisted analysis. Activate when users mention \"performance profiling\", \"optimize performance\", \"bottleneck analysis\", \"profiling\", or \"performance tuning\". Handles performance analysis and optimization. Use when working with windsurf performance profiling functionality. Trigger with phrases like \"windsurf performance profiling\", \"windsurf profiling\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-performance-profiling\" profile and optimize code with ai-assisted analysis. activate when users mention \"performance profiling\", \"optimize performance\", \"bottleneck analysis\", \"profiling\", or \"performance tuning\". handles performance analysis and optimization. use when working with windsurf performance profiling functionality. trigger with phrases like \"windsurf performance profiling\", \"windsurf profiling\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-refactoring-large",
+      "slug": "windsurf-refactoring-large",
+      "name": "\"windsurf-refactoring-large\"",
+      "description": "Manage large-scale refactoring with Cascade coordination. Activate when users mention \"large refactoring\", \"codebase migration\", \"architecture refactor\", \"major refactoring\", or \"system-wide changes\". Handles complex refactoring operations. Use when working with windsurf refactoring large functionality. Trigger with phrases like \"windsurf refactoring large\", \"windsurf large\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-refactoring-large\" manage large-scale refactoring with cascade coordination. activate when users mention \"large refactoring\", \"codebase migration\", \"architecture refactor\", \"major refactoring\", or \"system-wide changes\". handles complex refactoring operations. use when working with windsurf refactoring large functionality. trigger with phrases like \"windsurf refactoring large\", \"windsurf large\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep glob\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-release-automation",
+      "slug": "windsurf-release-automation",
+      "name": "\"windsurf-release-automation\"",
+      "description": "Execute automate release processes with semantic versioning. Activate when users mention \"release automation\", \"version bump\", \"changelog generation\", \"semantic release\", or \"publish release\". Handles release engineering automation. Use when working with windsurf release automation functionality. Trigger with phrases like \"windsurf release automation\", \"windsurf automation\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-release-automation\" execute automate release processes with semantic versioning. activate when users mention \"release automation\", \"version bump\", \"changelog generation\", \"semantic release\", or \"publish release\". handles release engineering automation. use when working with windsurf release automation functionality. trigger with phrases like \"windsurf release automation\", \"windsurf automation\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-team-settings",
+      "slug": "windsurf-team-settings",
+      "name": "\"windsurf-team-settings\"",
+      "description": "Manage team-wide Windsurf settings and AI policies. Activate when users mention \"team settings\", \"organization config\", \"team policies\", \"shared settings\", or \"team standardization\". Handles team configuration management. Use when working with windsurf team settings functionality. Trigger with phrases like \"windsurf team settings\", \"windsurf settings\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-team-settings\" manage team-wide windsurf settings and ai policies. activate when users mention \"team settings\", \"organization config\", \"team policies\", \"shared settings\", or \"team standardization\". handles team configuration management. use when working with windsurf team settings functionality. trigger with phrases like \"windsurf team settings\", \"windsurf settings\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-terminal-ai",
+      "slug": "windsurf-terminal-ai",
+      "name": "\"windsurf-terminal-ai\"",
+      "description": "Execute leverage AI-assisted terminal commands and debugging. Activate when users mention \"terminal help\", \"command suggestion\", \"debug terminal\", \"shell assistance\", or \"cli help\". Handles AI-enhanced terminal operations. Use when working with windsurf terminal ai functionality. Trigger with phrases like \"windsurf terminal ai\", \"windsurf ai\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Bash(cmd:*)",
+        "Grep\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-terminal-ai\" execute leverage ai-assisted terminal commands and debugging. activate when users mention \"terminal help\", \"command suggestion\", \"debug terminal\", \"shell assistance\", or \"cli help\". handles ai-enhanced terminal operations. use when working with windsurf terminal ai functionality. trigger with phrases like \"windsurf terminal ai\", \"windsurf ai\", \"windsurf\". saas-packs \"read bash(cmd:*) grep\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-test-generation",
+      "slug": "windsurf-test-generation",
+      "name": "\"windsurf-test-generation\"",
+      "description": "Generate comprehensive test suites using Cascade. Activate when users mention \"generate tests\", \"test coverage\", \"write unit tests\", \"create test suite\", or \"tdd assistance\". Handles AI-powered test generation. Use when writing or running tests. Trigger with phrases like \"windsurf test generation\", \"windsurf generation\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)",
+        "Grep",
+        "Glob\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-test-generation\" generate comprehensive test suites using cascade. activate when users mention \"generate tests\", \"test coverage\", \"write unit tests\", \"create test suite\", or \"tdd assistance\". handles ai-powered test generation. use when writing or running tests. trigger with phrases like \"windsurf test generation\", \"windsurf generation\", \"windsurf\". saas-packs \"read write edit bash(cmd:*) grep glob\" claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-theme-customization",
+      "slug": "windsurf-theme-customization",
+      "name": "\"windsurf-theme-customization\"",
+      "description": "Configure Windsurf themes and visual settings for accessibility. Activate when users mention \"change theme\", \"customize colors\", \"accessibility settings\", \"visual preferences\", or \"dark mode\". Handles theme configuration and accessibility compliance. Use when working with windsurf theme customization functionality. Trigger with phrases like \"windsurf theme customization\", \"windsurf customization\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Write",
+        "Edit"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-theme-customization\" configure windsurf themes and visual settings for accessibility. activate when users mention \"change theme\", \"customize colors\", \"accessibility settings\", \"visual preferences\", or \"dark mode\". handles theme configuration and accessibility compliance. use when working with windsurf theme customization functionality. trigger with phrases like \"windsurf theme customization\", \"windsurf customization\", \"windsurf\". saas-packs read write edit claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-usage-analytics",
+      "slug": "windsurf-usage-analytics",
+      "name": "\"windsurf-usage-analytics\"",
+      "description": "Analyze team AI usage patterns and productivity metrics. Activate when users mention \"usage analytics\", \"ai metrics\", \"productivity tracking\", \"usage reports\", or \"roi analysis\". Handles analytics and reporting configuration. Use when working with windsurf usage analytics functionality. Trigger with phrases like \"windsurf usage analytics\", \"windsurf analytics\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "Read",
+        "Grep",
+        "Glob"
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-usage-analytics\" analyze team ai usage patterns and productivity metrics. activate when users mention \"usage analytics\", \"ai metrics\", \"productivity tracking\", \"usage reports\", or \"roi analysis\". handles analytics and reporting configuration. use when working with windsurf usage analytics functionality. trigger with phrases like \"windsurf usage analytics\", \"windsurf analytics\", \"windsurf\". saas-packs read grep glob claude-code codex openclaw"
+    },
+    {
+      "type": "skill",
+      "id": "windsurf-workspace-setup",
+      "slug": "windsurf-workspace-setup",
+      "name": "\"windsurf-workspace-setup\"",
+      "description": "Initialize Windsurf workspace with project-specific AI rules. Activate when users mention \"create windsurfrules\", \"setup workspace\", \"configure project ai\", \"initialize windsurf workspace\", or \"migrate to windsurf\". Handles workspace configuration and team standardization. Use when working with windsurf workspace setup functionality. Trigger with phrases like \"windsurf workspace setup\", \"windsurf setup\", \"windsurf\".",
+      "category": "saas-packs",
+      "allowedTools": [
+        "\"Read",
+        "Write",
+        "Edit",
+        "Bash(cmd:*)\""
+      ],
+      "compatibleWith": [
+        "claude-code",
+        "codex",
+        "openclaw"
+      ],
+      "version": "1.0.0",
+      "parentPlugin": {
+        "name": "windsurf",
+        "category": "saas-packs"
+      },
+      "searchText": "\"windsurf-workspace-setup\" initialize windsurf workspace with project-specific ai rules. activate when users mention \"create windsurfrules\", \"setup workspace\", \"configure project ai\", \"initialize windsurf workspace\", or \"migrate to windsurf\". handles workspace configuration and team standardization. use when working with windsurf workspace setup functionality. trigger with phrases like \"windsurf workspace setup\", \"windsurf setup\", \"windsurf\". saas-packs \"read write edit bash(cmd:*)\" claude-code codex openclaw"
     },
     {
       "type": "skill",
