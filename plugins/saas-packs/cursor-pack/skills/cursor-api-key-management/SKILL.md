@@ -13,8 +13,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-### Why Use Your Own API Keys?
-```
+Manage API keys and authentication for Cursor IDE, including configuring OpenAI, Anthropic, and custom model provider keys.
 
 ## Prerequisites
 
