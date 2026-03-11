@@ -1,0 +1,334 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import searchIndex from '../data/unified-search-index.json';
+
+const pageTitle = 'Community Contributors';
+const pageDescription = 'Meet the community contributors who build and share plugins for the Claude Code ecosystem.';
+
+// Compute community stats from search index
+const allPlugins = searchIndex.items.filter(i => i.type === 'plugin');
+const communityPlugins = allPlugins.filter(p => p.authorType === 'community');
+const officialPlugins = allPlugins.filter(p => p.authorType === 'official');
+
+// Group community plugins by contributor
+const contributorMap = new Map();
+communityPlugins.forEach(plugin => {
+  const name = plugin.author?.name || 'Unknown';
+  if (!contributorMap.has(name)) {
+    contributorMap.set(name, { name, plugins: [], email: plugin.author?.email || '' });
+  }
+  contributorMap.get(name).plugins.push(plugin);
+});
+const contributors = [...contributorMap.values()].sort((a, b) => b.plugins.length - a.plugins.length);
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <style>
+    .community-hero {
+      background: linear-gradient(135deg, var(--navy) 0%, #0a1628 100%);
+      color: var(--text);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+    }
+
+    .community-title {
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .community-subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      max-width: 700px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-stats-row {
+      display: flex;
+      gap: 3rem;
+      justify-content: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      opacity: 0.9;
+    }
+
+    .hero-stat span {
+      font-weight: 700;
+      font-size: 1.4rem;
+      display: block;
+      color: var(--gold);
+    }
+
+    .section-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 2rem;
+    }
+
+    .section-heading {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    /* Contributor Cards */
+    .contributors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 4rem;
+    }
+
+    .contributor-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.75rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .contributor-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .contributor-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .contributor-count {
+      font-size: 0.85rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .contributor-plugins {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .contributor-plugin-tag {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      background: var(--surface-2);
+      border-radius: 6px;
+      color: var(--text-2, var(--text));
+      border: 1px solid var(--border);
+    }
+
+    /* Community Plugin Grid */
+    .plugins-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 4rem;
+    }
+
+    .plugin-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .plugin-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .plugin-card-name {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .plugin-card-desc {
+      font-size: 0.875rem;
+      color: var(--text-2, var(--text));
+      opacity: 0.85;
+      line-height: 1.5;
+      margin-bottom: 0.75rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .plugin-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-2, var(--text));
+      opacity: 0.7;
+    }
+
+    .plugin-card-category {
+      text-transform: capitalize;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      background: var(--surface-1);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 3rem 2rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .cta-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
+
+    .cta-text {
+      color: var(--text-2, var(--text));
+      opacity: 0.85;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      line-height: 1.6;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .cta-btn-primary {
+      background: var(--gold);
+      color: var(--navy);
+    }
+
+    .cta-btn-primary:hover {
+      filter: brightness(1.1);
+    }
+
+    .cta-btn-secondary {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .cta-btn-secondary:hover {
+      border-color: var(--gold);
+    }
+
+    @media (max-width: 768px) {
+      .community-hero { padding: 3rem 1rem 2.5rem; }
+      .hero-stats-row { gap: 1.5rem; flex-wrap: wrap; }
+      .section-container { padding: 2rem 1rem; }
+      .contributors-grid { grid-template-columns: 1fr; }
+      .plugins-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- Hero Section -->
+  <section class="community-hero">
+    <h1 class="community-title">Community Contributors</h1>
+    <p class="community-subtitle">
+      Plugins built by the community, for the community. Every contribution makes the Claude Code ecosystem stronger.
+    </p>
+
+    <div class="hero-stats-row">
+      <div class="hero-stat">
+        <span>{communityPlugins.length}</span>
+        Community Plugins
+      </div>
+      <div class="hero-stat">
+        <span>{contributors.length}</span>
+        Contributors
+      </div>
+      <div class="hero-stat">
+        <span>{officialPlugins.length}</span>
+        Official Plugins
+      </div>
+      <div class="hero-stat">
+        <span>{allPlugins.length}</span>
+        Total Plugins
+      </div>
+    </div>
+  </section>
+
+  <!-- Contributors Section -->
+  <div class="section-container">
+    <h2 class="section-heading">Contributors</h2>
+    <div class="contributors-grid">
+      {contributors.map(contrib => (
+        <div class="contributor-card">
+          <div class="contributor-name">{contrib.name}</div>
+          <div class="contributor-count">{contrib.plugins.length} plugin{contrib.plugins.length !== 1 ? 's' : ''}</div>
+          <div class="contributor-plugins">
+            {contrib.plugins.slice(0, 6).map(p => (
+              <span class="contributor-plugin-tag">{p.displayName || p.name}</span>
+            ))}
+            {contrib.plugins.length > 6 && (
+              <span class="contributor-plugin-tag">+{contrib.plugins.length - 6} more</span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Community Plugins Grid -->
+    <h2 class="section-heading">Community Plugins</h2>
+    <div class="plugins-grid">
+      {communityPlugins.map(plugin => (
+        <a href={`/plugins/${plugin.name}/`} class="plugin-card">
+          <div class="plugin-card-name">{plugin.displayName || plugin.name}</div>
+          <p class="plugin-card-desc">{plugin.description}</p>
+          <div class="plugin-card-meta">
+            <span class="plugin-card-category">{plugin.category?.replace(/-/g, ' ')}</span>
+            <span>{plugin.author?.name || 'Community'}</span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    <!-- CTA Section -->
+    <div class="cta-section">
+      <h2 class="cta-title">Submit Your Plugin</h2>
+      <p class="cta-text">
+        Built something useful? Share it with the community. Every plugin goes through quality validation and gets listed in the marketplace.
+      </p>
+      <div class="cta-buttons">
+        <a href="https://github.com/jeremylongshore/claude-code-plugins/pulls" class="cta-btn cta-btn-primary" target="_blank">
+          Open a Pull Request
+        </a>
+        <a href="/getting-started" class="cta-btn cta-btn-secondary">
+          Read the Guide
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

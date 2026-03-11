@@ -81,6 +81,18 @@ if (fs.existsSync(EXTENDED_CATALOG_FILE)) {
   console.log(`   Verification data loaded for ${verificationMap.size} plugins`);
 }
 
+// Determine if author is official (Intent Solutions / Jeremy Longshore)
+function getAuthorType(author) {
+  if (!author) return 'community';
+  const name = (author.name || '').toLowerCase();
+  const email = (author.email || '').toLowerCase();
+  if (name.includes('jeremy longshore') || email.includes('intentsolutions.io') ||
+      name.includes('claude code plugins team')) {
+    return 'official';
+  }
+  return 'community';
+}
+
 // Transform plugins for search
 const plugins = catalogData.plugins.map(plugin => {
   const verification = verificationMap.get(plugin.name) || null;
@@ -94,6 +106,7 @@ const plugins = catalogData.plugins.map(plugin => {
     category: plugin.category,
     keywords: plugin.keywords || plugin.tags || [],
     author: plugin.author,
+    authorType: getAuthorType(plugin.author),
     version: plugin.version,
     // Trust signals
     isFeatured: plugin.isFeatured || false,
@@ -149,7 +162,10 @@ const unifiedIndex = {
     totalAgents: agentHookStats.totalAgents,
     totalHooks: agentHookStats.totalHooks,
     pluginsWithAgents: agentHookStats.pluginsWithAgents,
-    pluginsWithHooks: agentHookStats.pluginsWithHooks
+    pluginsWithHooks: agentHookStats.pluginsWithHooks,
+    officialPlugins: plugins.filter(p => p.authorType === 'official').length,
+    communityPlugins: plugins.filter(p => p.authorType === 'community').length,
+    communityContributors: [...new Set(plugins.filter(p => p.authorType === 'community').map(p => p.author?.name || 'Unknown'))].length
   },
   items: [...plugins, ...skills]
 };

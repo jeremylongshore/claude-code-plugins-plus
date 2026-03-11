@@ -400,6 +400,26 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
       color: var(--gold);
     }
 
+    .official-badge {
+      position: absolute;
+      top: 1rem;
+      right: 5.5rem;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 0.7rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .author-toggle {
+      margin-left: 0;
+    }
+
     .result-name {
       font-size: 1.15rem;
       font-weight: 600;
@@ -598,6 +618,12 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         <button class="type-btn" data-type="favorites" id="favorites-btn">♡ Favorites</button>
       </div>
 
+      <div class="type-toggle author-toggle">
+        <button class="type-btn active" data-author="all">All Authors</button>
+        <button class="type-btn" data-author="official">Official</button>
+        <button class="type-btn" data-author="community">Community</button>
+      </div>
+
       <select id="category-filter" class="filter-select">
         <option value="">All Categories</option>
         {searchIndex.stats.categories.map(category => (
@@ -660,6 +686,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
           data-skill-count={item.skillCount || 0}
           data-verification-badge={item.verificationBadge || ''}
           data-verification-score={item.verificationScore || 0}
+          data-author-type={item.authorType || 'official'}
         >
           <button
             class="bookmark-btn"
@@ -674,6 +701,9 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
             <span class={`result-type-badge ${item.type}`}>
               {item.type}
             </span>
+            {item.authorType === 'official' && (
+              <span class="official-badge" title="Official plugin maintained by Intent Solutions">&#x2713;</span>
+            )}
 
             {(item.isFeatured || item.skillCount > 0 || item.verificationBadge) && (
               <div class="card-badges">
@@ -762,6 +792,7 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
 
     let activeFilters = {
       type: 'all',
+      authorType: 'all',
       category: null,
       keyword: null,
       tool: null,
@@ -786,6 +817,11 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         filtered = filtered.filter(item => favorites.includes(item.id || item.name));
       } else if (activeFilters.type !== 'all') {
         filtered = filtered.filter(item => item.type === activeFilters.type);
+      }
+
+      // Apply author type filter
+      if (activeFilters.authorType !== 'all') {
+        filtered = filtered.filter(item => (item.authorType || 'official') === activeFilters.authorType);
       }
 
       // Apply category filter
@@ -939,15 +975,28 @@ const pageDescription = `Search all ${searchIndex.stats.totalPlugins} plugins an
         }
       });
 
-      // Type toggle buttons
-      document.querySelectorAll('.type-btn').forEach(btn => {
+      // Type toggle buttons (only in the first toggle group, not author toggle)
+      document.querySelectorAll('.type-toggle:not(.author-toggle) .type-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-          document.querySelectorAll('.type-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.type-toggle:not(.author-toggle) .type-btn').forEach(b => b.classList.remove('active'));
           e.target.classList.add('active');
           activeFilters.type = e.target.dataset.type;
           applyFilters();
           if (window.trackEvent) {
             window.trackEvent('filter_applied', { filter_type: 'type', value: activeFilters.type });
+          }
+        });
+      });
+
+      // Author type toggle buttons
+      document.querySelectorAll('.author-toggle .type-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          document.querySelectorAll('.author-toggle .type-btn').forEach(b => b.classList.remove('active'));
+          e.target.classList.add('active');
+          activeFilters.authorType = e.target.dataset.author;
+          applyFilters();
+          if (window.trackEvent) {
+            window.trackEvent('filter_applied', { filter_type: 'author', value: activeFilters.authorType });
           }
         });
       });

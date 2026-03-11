@@ -1,9 +1,9 @@
 # Claude Code Skills & Plugins Hub
 
-[![Version](https://img.shields.io/badge/version-4.16.0-brightgreen)](000-docs/247-OD-CHNG-changelog.md)
+[![Version](https://img.shields.io/badge/version-4.17.0-brightgreen)](000-docs/247-OD-CHNG-changelog.md)
 [![CLI](https://img.shields.io/badge/CLI-ccpi-blueviolet?logo=npm)](https://www.npmjs.com/package/@intentsolutionsio/ccpi)
-[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-1367%20Skills-orange?logo=sparkles)](000-docs/247-OD-CHNG-changelog.md)
-[![Plugins](https://img.shields.io/badge/Total%20Plugins-340-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
+[![Agent Skills](https://img.shields.io/badge/Agent%20Skills-1900%2B-orange)](000-docs/247-OD-CHNG-changelog.md)
+[![Plugins](https://img.shields.io/badge/Total%20Plugins-347-blue)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![2026 Schema](https://img.shields.io/badge/2026%20Schema-Compliant-success?logo=checkmarx)](tutorials/skills/05-skill-validation.ipynb)
 [![Tool Permissions](https://img.shields.io/badge/Tool%20Permissions-Secured-blueviolet?logo=shield)](tutorials/skills/02-skill-anatomy.ipynb)
 [![Interactive Tutorials](https://img.shields.io/badge/Tutorials-11%20Notebooks-yellow?logo=jupyter)](000-docs/185-MS-INDX-tutorials.md)
@@ -11,16 +11,211 @@
 [![GitHub Stars](https://img.shields.io/github/stars/jeremylongshore/claude-code-plugins-plus-skills?style=social)](https://github.com/jeremylongshore/claude-code-plugins-plus-skills)
 [![Powered by Anthropic](https://img.shields.io/badge/Powered%20by-Anthropic%20Claude-5436DA?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://www.anthropic.com/)
 [![Built on Google Cloud](https://img.shields.io/badge/Built%20on-Google%20Cloud-4285F4?logo=googlecloud&logoColor=white)](https://cloud.google.com/)
-[![Ollama Compatible](https://img.shields.io/badge/Ollama-Compatible-000000?logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://ollama.com/)
-[![Partnered with Nixtla](https://img.shields.io/badge/Partnered%20with-Nixtla-FF6B6B?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cGF0aCBkPSJNMTIgMkM2LjQ4IDIgMiA2LjQ4IDIgMTJzNC40OCAxMCAxMCAxMCAxMC00LjQ4IDEwLTEwUzE3LjUyIDIgMTIgMnoiIGZpbGw9IiNmZmYiLz48L3N2Zz4=)](https://nixtla.io)
 [![Buy me a monster](https://img.shields.io/badge/Buy%20me%20a-Monster-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/jeremylongshore)
 [![$5/month Sponsor](https://img.shields.io/badge/%245%2Fmonth-Sponsor-EA4AAA?style=for-the-badge&logo=github-sponsors&logoColor=white)](https://github.com/sponsors/jeremylongshore)
 
-## 📖 Learning Lab
+**The largest open-source marketplace for Claude Code plugins and agent skills.** 347 plugins, 1,900+ skills, 69 community contributions — validated, graded, and ready to install.
 
-**Build production agent workflows with empirical verification** - Complete teaching system with guides, diagrams, and working examples.
+```bash
+pnpm add -g @intentsolutionsio/ccpi    # Install the CLI
+ccpi install devops-automation-pack     # Install any plugin
+```
 
-**[→ Start Here: 5-Minute Introduction](workspace/lab/README.md)** | **[→ Visual Architecture Map](workspace/lab/VISUAL-MAP.md)** | **[→ System Summary](workspace/lab/BUILT-SYSTEM-SUMMARY.md)**
+Or use Claude's built-in command:
+```bash
+/plugin marketplace add jeremylongshore/claude-code-plugins
+```
+
+**[Browse the marketplace](https://claudecodeplugins.io/)** | **[Explore plugins](https://claudecodeplugins.io/explore)** | **[Download bundles](https://claudecodeplugins.io/cowork)**
+
+---
+
+## What Changed: Claude Code in 2026
+
+Anthropic shipped several features since plugins launched in October 2025 that change how developers extend Claude Code:
+
+- **Agent Skills (`SKILL.md`)** replaced static plugins as the primary extension point. Skills auto-activate based on conversation context — no slash commands needed. This repo now contains 1,900+ validated skills across 22 categories.
+- **`${CLAUDE_SKILL_DIR}`** is the official path variable for referencing files within a skill directory. It replaced the deprecated `{baseDir}` syntax. All 1,900+ skills in this repo use the current variable.
+- **Progressive Disclosure Architecture (PDA)** keeps skill files concise (target: 150 lines) and offloads detailed references to a `references/` subdirectory. Our 100-point grading rubric enforces this.
+- **Tool permissions** (`allowed-tools` frontmatter) give each skill fine-grained access control. Scoped patterns like `Bash(git:*)` limit what system commands a skill can run.
+- **New frontmatter fields**: `context: fork` (run in subagent), `agent` (subagent type), `user-invocable` (hide from slash menu), `argument-hint` (autocomplete), `hooks` (lifecycle events), and `compatibility` (AgentSkills.io standard for environment requirements).
+- **Claude 4.5/4.6 model family** — Opus 4.6, Sonnet 4.6, Haiku 4.5 are the current models. Skills can specify `model: sonnet` or `model: opus` in frontmatter.
+
+This README reflects the current state of the ecosystem as of March 2026.
+
+---
+
+## Quick Start
+
+**Option 1: CLI (Recommended)**
+```bash
+pnpm add -g @intentsolutionsio/ccpi
+ccpi search devops              # Find plugins by keyword
+ccpi install devops-automation-pack
+ccpi list --installed           # See what's installed
+ccpi update                     # Pull latest versions
+```
+
+**Option 2: Claude Built-in Commands**
+```bash
+/plugin marketplace add jeremylongshore/claude-code-plugins
+/plugin install devops-automation-pack@claude-code-plugins-plus
+```
+
+> Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new slug.
+
+**Browse the catalog:** Visit **[claudecodeplugins.io](https://claudecodeplugins.io/)** or explore [`plugins/`](./plugins/)
+
+---
+
+## How Agent Skills Work
+
+Agent Skills are instruction files (`SKILL.md`) that teach Claude Code **when** and **how** to perform specific tasks. Unlike commands that require explicit `/slash` triggers, skills activate automatically when Claude detects relevant conversation context.
+
+### The Activation Flow
+
+```
+1. INSTALL     /plugin install ansible-playbook-creator@claude-code-plugins-plus
+2. STARTUP     Claude reads SKILL.md frontmatter → learns trigger phrases
+3. ACTIVATE    You say "create an ansible playbook for Apache"
+4. EXECUTE     Claude matches trigger → reads full skill → follows instructions
+```
+
+### What a Skill Looks Like
+
+```yaml
+---
+name: ansible-playbook-creator
+description: |
+  Generate production-ready Ansible playbooks. Use when automating server
+  configuration or deployments. Trigger with "ansible playbook" or
+  "create playbook for [task]".
+allowed-tools: Read, Write, Bash(ansible:*), Glob
+version: 2.0.0
+author: Jeremy Longshore <jeremy@intentsolutions.io>
+license: MIT
+---
+
+# Ansible Playbook Creator
+
+## Overview
+Generates idempotent Ansible playbooks following infrastructure-as-code best practices.
+
+## Instructions
+1. Gather target host details and desired state
+2. Select appropriate Ansible modules
+3. Generate playbook with proper variable templating
+4. Validate syntax with `ansible-lint`
+
+## Output
+- Complete playbook YAML ready for `ansible-playbook` execution
+```
+
+### The Numbers
+
+| Metric | Count |
+|--------|-------|
+| Total skills | 1,900+ |
+| Plugin categories | 22 |
+| Community contributions | 69 plugins |
+| Average skill grade | B (87/100) |
+| Production ready (A+B) | 80%+ |
+
+---
+
+## Plugin Types
+
+### AI Instruction Plugins (98%)
+Markdown files that guide Claude's behavior through structured instructions, skills, commands, and agents. No external code — everything runs through Claude's built-in capabilities.
+
+### MCP Server Plugins (2%)
+TypeScript applications that run as separate Node.js processes. Claude communicates with them through the Model Context Protocol. Currently 7 MCP plugins providing 21 tools.
+
+### SaaS Skill Packs
+Pre-built skill collections for specific platforms — Deepgram, LangChain, Linear, Gamma, and 20+ others. Each pack includes install/auth, core workflows, debugging, deployment, and advanced pattern skills.
+
+---
+
+## Skill Quality: 100-Point Grading
+
+Every skill in this marketplace is automatically graded on a 100-point scale across five dimensions:
+
+| Dimension | Weight | What It Measures |
+|-----------|--------|-----------------|
+| Progressive Disclosure | 30 pts | File length, references/ usage, navigation |
+| Ease of Use | 25 pts | Metadata quality, discoverability, workflow clarity |
+| Utility | 20 pts | Problem solving, flexibility, error handling, examples |
+| Spec Compliance | 15 pts | Frontmatter validity, naming, description quality |
+| Writing Style | 10 pts | Imperative voice, objectivity, conciseness |
+
+Grades: **A** (90-100), **B** (80-89), **C** (70-79), **D** (60-69), **F** (<60)
+
+Run the validator yourself:
+```bash
+python3 scripts/validate-skills-schema.py --skills-only          # Grade all skills
+python3 scripts/validate-skills-schema.py --verbose --skills-only # Detailed breakdowns
+python3 scripts/validate-skills-schema.py --show-low-grades       # Find D+F skills
+```
+
+---
+
+## Building Your Own
+
+### Templates
+
+| Template | Includes | Best For |
+|----------|----------|----------|
+| **minimal-plugin** | plugin.json + README | Simple utilities |
+| **command-plugin** | Slash commands | Custom workflows |
+| **agent-plugin** | Specialized AI agent | Domain expertise |
+| **full-plugin** | Commands + agents + hooks + skills | Complex automation |
+
+All templates live in [`templates/`](templates/).
+
+### Step by Step
+
+1. Copy a template: `cp -r templates/command-plugin my-plugin`
+2. Edit `.claude-plugin/plugin.json` with your metadata
+3. Add your skill to `skills/my-skill/SKILL.md`
+4. Validate: `ccpi validate ./my-plugin`
+5. Submit a pull request
+
+### Skill Frontmatter Reference
+
+```yaml
+---
+# Required
+name: my-skill-name                     # kebab-case, matches folder name
+description: |                          # Include "Use when..." and "Trigger with..."
+  Describe what this skill does. Use when building X.
+  Trigger with "build X" or "create X workflow".
+allowed-tools: Read, Write, Bash(npm:*) # Comma-separated, scoped Bash recommended
+version: 1.0.0                          # Semver
+author: Your Name <you@example.com>
+license: MIT
+
+# Optional
+model: sonnet                           # Model override (sonnet, haiku, opus)
+context: fork                           # Run in subagent
+agent: Explore                          # Subagent type
+user-invocable: false                   # Hide from / menu
+argument-hint: "<file-path>"            # Autocomplete hint
+hooks: {}                               # Lifecycle hooks
+compatibility: "Node.js >= 18"          # Environment requirements
+compatible-with: claude-code, cursor    # Platform compatibility
+tags: [devops, ci]                      # Discovery tags
+---
+```
+
+Path variable: Use `${CLAUDE_SKILL_DIR}` to reference files relative to the skill directory.
+
+---
+
+## Learning Lab
+
+Production agent workflow patterns with empirical verification — guides, diagrams, and working examples.
+
+**[Start Here (5 min)](workspace/lab/README.md)** | **[Architecture Map](workspace/lab/VISUAL-MAP.md)** | **[System Summary](workspace/lab/BUILT-SYSTEM-SUMMARY.md)**
 
 <table>
 <tr>
@@ -31,675 +226,135 @@
 - [Architecture Deep Dive (15 min)](workspace/lab/GUIDE-01-PATTERN-EXPLAINED.md)
 - [Build Your Own (30 min)](workspace/lab/GUIDE-02-BUILDING-YOUR-OWN.md)
 - [Debugging Tips (15 min)](workspace/lab/GUIDE-03-DEBUGGING-TIPS.md)
-- [**Orchestration Pattern** (60 min)](workspace/lab/ORCHESTRATION-PATTERN.md) ⭐
-
-**Interactive Tutorials** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
-- [Skills Tutorials (5 notebooks)](000-docs/185-MS-INDX-tutorials.md#skills-tutorials-5-notebooks)
-- [Plugins Tutorials (4 notebooks)](000-docs/185-MS-INDX-tutorials.md#plugins-tutorials-4-notebooks)
-- [Orchestration Tutorials (2 notebooks)](000-docs/185-MS-INDX-tutorials.md#orchestration-tutorials-2-notebooks)
+- [Orchestration Pattern (60 min)](workspace/lab/ORCHESTRATION-PATTERN.md)
 
 </td>
 <td width="50%">
 
+**Interactive Tutorials** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jeremylongshore/claude-code-plugins-plus-skills/blob/main/tutorials/)
+- [Skills (5 notebooks)](000-docs/185-MS-INDX-tutorials.md#skills-tutorials-5-notebooks)
+- [Plugins (4 notebooks)](000-docs/185-MS-INDX-tutorials.md#plugins-tutorials-4-notebooks)
+- [Orchestration (2 notebooks)](000-docs/185-MS-INDX-tutorials.md#orchestration-tutorials-2-notebooks)
+
 **Reference Implementation**
-- [Complete 5-Phase Workflow](workspace/lab/schema-optimization/SKILL.md)
+- [5-Phase Workflow](workspace/lab/schema-optimization/SKILL.md)
 - [Phase Contracts & Agents](workspace/lab/schema-optimization/agents/)
 - [Verification Scripts](workspace/lab/schema-optimization/scripts/)
-- [Hands-On Exercise](workspace/lab/exercises/exercise-1-run-workflow.md)
 
 </td>
 </tr>
 </table>
 
-**What you'll learn:** Turn "LLM analyzed my code" into "LLM + script verified with evidence" - The pattern for production-ready agent systems.
-
 ---
 
-**Claude Code plugins with embedded agent skills and interactive tutorials**
-
-**v4.16.0:** Keyword filtering, SEO structured data, CONTRIBUTING.md, repo housekeeping.
-
-**Latest:** [v4.16.0 Release](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/releases/tag/v4.16.0)
-
-```bash
-/plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install devops-automation-pack@claude-code-plugins-plus
-```
-
-⚡🪽 **[Buy me a Red Bull](https://buymeacoffee.com/jeremylongshore)** – Give these plugins wings and support ongoing development.
-
----
-
-## 📦 Package Manager (CLI)
-
-**Discover, install, and manage plugins from your terminal.** The CLI reads from this repo's published catalog—no manual cloning required.
-
-### Install
-
-```bash
-pnpm add -g @intentsolutionsio/ccpi
-```
-
-Or with npm/yarn:
-```bash
-npm install -g @intentsolutionsio/ccpi
-yarn global add @intentsolutionsio/ccpi
-```
-
-### Usage
-
-```bash
-# Search plugins by keyword
-ccpi search devops
-
-# List all available plugins
-ccpi list
-
-# List installed plugins
-ccpi list --installed
-
-# Install a plugin
-ccpi install ansible-playbook-creator
-
-# Install multiple plugins at once
-ccpi install devops-automation-pack security-pack api-development-pack
-
-# Update all installed plugins
-ccpi update
-
-# Show plugin details
-ccpi info project-health-auditor
-
-# Validate plugin structure (for developers)
-ccpi validate ./my-plugin
-```
-
-### How It Works
-
-- **This repo is the source of truth** — All plugins live in `plugins/` and catalog in `.claude-plugin/marketplace.extended.json`
-- **Website publishes versioned catalog** — On merge to `main`, the catalog JSON is deployed to tonsofskills.com
-- **CLI consumes catalog with caching** — Fetches latest catalog on first use, caches locally for speed
-
-### Update Model
-
-- **Catalog updates:** Happen automatically when PRs merge to `main`
-- **CLI releases:** Only when CLI code changes (version bumps in `packages/cli/`)
-- **Plugin updates:** Run `ccpi update` to pull latest versions
-
----
-
-## 🙏 Contributors
-
-**Huge thanks to our community contributors who make this marketplace better:**
-
-- **[@mjaskolski](https://github.com/mjaskolski) (Michal Jaskolski)** - 📚 **SKILLS CONTRIBUTOR:** Added 25 externally-synced agent skills from [wondelai/skills](https://github.com/wondelai/skills) covering product strategy, UX design, marketing/CRO, sales/influence, and growth frameworks — each based on a bestselling business book. ([#303](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/303))
-- **[@clowreed](https://github.com/clowreed) (B12.io)** - 🌐 **PLUGIN AUTHOR:** Created [b12-claude-plugin](https://tonsofskills.com/plugins/b12-claude-plugin) — an official B12.io plugin that ships a website-generator skill, letting users go from idea to a production-ready website draft in a single conversation. ([#307](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/307))
-- **[@duskfallcrew](https://github.com/duskfallcrew) (Duskfall Crew)** - 🛡️ **SECURITY REPORTER:** Discovered that the penetration-tester plugin README contained literal PHP webshell payloads that triggered Windows Defender false positives. This report drove a complete v2.0.0 rebuild replacing boilerplate stubs with 3 real Python security scanners (~4,500 lines), proper OWASP reference docs, and AV-safe documentation. ([#300](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/300))
-- **[@rowanbrooks100](https://github.com/rowanbrooks100) (Rowan Brooks)** - 📣 **BRAND STRATEGIST:** Created the [brand-strategy-framework](https://tonsofskills.com/plugins/brand-strategy-framework) plugin — a 7-part brand strategy methodology used by top agencies with Fortune 500 clients, now available as an AI skill. ([#292](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/292))
-- **[@RichardHightower](https://github.com/RichardHightower) (Rick Hightower)** - 🎯 **QUALITY CHAMPION:** Creator of [skilz](https://skillzwave.ai/) (universal agent skill installer supporting 14+ coding agents) and co-founder of [SkillzWave](https://skillzwave.ai/), the world's largest agentic skill marketplace with 44,000+ skills. His rigorous skill quality reviews (#293, #294, #295) exposed critical content validation gaps—files listed in READMEs that didn't exist, stub scripts with placeholder code, and generic boilerplate masquerading as documentation. This feedback drove **4,300+ lines** of fixes across 3 skills and spawned new validator checks that catch these issues automatically. Author of the [Claude Code Skills Deep Dive](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) series and extensive AI architecture content on [Medium](https://medium.com/@richardhightower) and [Spillwave Solutions](https://pub.spillwave.com/). ([#293](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/293), [#294](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/294), [#295](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/295))
-- **[@TomLucidor](https://github.com/TomLucidor) (Tom)** - 🏆 **TRANSPARENCY CHAMPION:** His simple question *"Which plugins require paid APIs vs free/self-hosted?"* sparked the entire "Make All Plugins Free" initiative (v4.1.0). His follow-up about rate limits and registration requirements drove **2,400+ lines** of comprehensive constraint documentation across 6 plugins (v4.3.0). Tom doesn't write code, but he keeps projects honest by asking the questions users are afraid to ask. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
-- **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** - 🎓 Shared production agent workflow patterns and validation techniques that inspired the complete Learning Lab system (v4.0.0). His insights on empirical verification transformed how we teach agent development.
-- **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** - 🎉 **MASSIVE CONTRIBUTION:** Created geepers-agents with **51 specialized agents** for development workflows, deployment, quality audits, research, and game development - the largest single plugin contribution to date! ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
-- **[@beepsoft](https://github.com/beepsoft)** - Provided valuable feedback on skill implementations that inspired comprehensive quality enhancements across the entire plugin ecosystem ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
-- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** - Created Axiom, battle-tested iOS development plugin with 13 production-ready skills for Swift/Xcode debugging and optimization ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
-- **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** - Fixed 7 critical JSON syntax errors and added production CI/CD patterns from real-world debugging ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117), [spotlight](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/118))
-- **[@JackReis](https://github.com/JackReis) (Jack Reis)** - Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams and accessibility features ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
-- **[@terrylica](https://github.com/terrylica) (Terry Li)** - Built prettier-markdown-hook with zero-config markdown formatting and comprehensive documentation ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
-- **[@clickmediapropy](https://github.com/clickmediapropy)** - Reported mobile horizontal scrolling bug, improving website UX ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
-- **[@BayramAnnakov](https://github.com/bayramannakov) (Bayram Annakov)** - 🧠 Created claude-reflect, a self-learning system that captures corrections during sessions and syncs them to CLAUDE.md - teaching Claude to remember your preferences! ([#241](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/241))
-- **[@jleonelion](https://github.com/jleonelion) (James Leone)** - 🔧 Fixed critical bash variable scoping bug in Learning Lab scripts and improved markdown formatting for better copy-paste experience ([#239](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/239))
-
-**Want to contribute?** See [000-docs/007-DR-GUID-contributing.md](./000-docs/007-DR-GUID-contributing.md) or reach out to **jeremy@intentsolutions.io**
-
----
-
-## Quick Start
-
-**Option 1: CLI (Recommended)**
-```bash
-pnpm add -g @intentsolutionsio/ccpi
-ccpi install devops-automation-pack
-```
-
-**Option 2: Claude Built-in Commands**
-```bash
-/plugin marketplace add jeremylongshore/claude-code-plugins
-/plugin install devops-automation-pack@claude-code-plugins-plus
-```
-
-> Already using an older install? Run `/plugin marketplace remove claude-code-plugins` and re-add with the command above to switch to the new `claude-code-plugins-plus` slug.
-
-**Browse the catalog:**
-Visit **[Claude Code Skills & Plugins Marketplace](https://tonsofskills.com/)** or explore [`plugins/`](./plugins/)
-
-**Learn to build:**
-See [Learning Paths](#-learning-paths) for step-by-step guides
-
----
-
-## 🚀 Agent Skills - The Future of Claude Automation
-
-**1,537 production-ready Agent Skills** (1,298 standalone + 239 embedded) that activate automatically based on your conversations:
-
-### What are Agent Skills?
-Agent Skills are intelligent automation tools that Claude Code can invoke automatically when relevant. Unlike plugins that need manual commands, **Skills detect when they're needed and activate seamlessly**.
-
-### Why Skills Matter More
-- **🔍 SEO Advantage:** "Claude Skills" gets 3x more searches than "Claude Plugins"
-- **🎯 Auto-Activation:** No need to remember commands - Skills trigger automatically
-- **🛡️ Tool Permissions:** Fine-grained control over what each skill can do
-- **📈 Future-Proof:** Aligned with Anthropic's 2026 vision for AI agents
-
-### Featured Skills Categories
-- **🔧 DevOps Skills:** Automated CI/CD, deployment, monitoring
-- **🔒 Security Skills:** Code auditing, vulnerability scanning, compliance
-- **📊 Data Skills:** Analysis, visualization, reporting
-- **🎨 Frontend Skills:** UI/UX improvements, responsive design, accessibility
-- **🧪 Testing Skills:** Automated test generation, coverage analysis
-- **📝 Documentation Skills:** Auto-documentation, API specs, tutorials
-
-### Quick Stats
-- **1,537 Total Skills:** 1,298 standalone + 239 embedded in plugins
-- **20 Standalone Categories:** DevOps, Security, ML, Data, API, and more
-- **2026 Schema:** Validated against Anthropic standards
-- **Average skill size:** 3.2KB of intelligent automation
-
----
-
-<details>
-  <summary><strong>📚 Essential Documentation</strong> (click to expand)</summary>
-
-  
-  | Document | Purpose |
-  |----------|---------|
-  | **[User Security Guide](./000-docs/071-DR-GUID-user-security.md)** | 🛡️ How to safely evaluate and install plugins |
-  | **[Code of Conduct](./000-docs/006-BL-POLI-code-of-conduct.md)** | Community standards and reporting |
-  | **[000-docs/008-TQ-SECU-security.md](./000-docs/008-TQ-SECU-security.md)** | Security policy, threat model, vulnerability reporting |
-  | **[000-docs/247-OD-CHNG-changelog.md](./000-docs/247-OD-CHNG-changelog.md)** | Release history & version updates |
-  | **[000-docs/007-DR-GUID-contributing.md](./000-docs/007-DR-GUID-contributing.md)** | How to submit plugins |
-  | **[Learning Paths](#-learning-paths)** | Structured guides from beginner to expert |
-
-</details>
-
----
-
-## 🎓 Understanding Agent Skills
-
-**What are Agent Skills?** They're instruction manuals that teach Claude Code **when** and **how** to use your installed plugins automatically.
-
-### How It Works: The 4-Step Flow
-
-```
-1. DISCOVERY (Marketplace)
-   └─ You browse tonsofskills.com
-   └─ Find "ansible-playbook-creator"
-   └─ Install: /plugin install ansible-playbook-creator@claude-code-plugins-plus
-
-2. INSTALLATION (Files Copied)
-   └─ Plugin files copied to your machine
-   └─ Including skills/skill-adapter/SKILL.md ← The instruction manual!
-
-3. STARTUP (Claude Learns)
-   └─ Claude Code reads SKILL.md frontmatter from ALL installed plugins
-   └─ Loads trigger phrases: "ansible playbook", "automate deployment"
-   └─ Now Claude knows this plugin exists and when to use it
-
-4. USAGE (Automatic Activation)
-   └─ You: "Create an Ansible playbook for Apache"
-   └─ Claude: Sees "ansible playbook" trigger → reads full SKILL.md
-   └─ Claude: Activates plugin with correct workflow automatically!
-```
-
-### Real Example: Before vs After
-
-**WITHOUT Agent Skills:**
-```
-You: "Create ansible playbook"
-Claude: "I have ansible-playbook-creator installed somewhere...
-         Let me manually search and figure out how to use it..."
-Result: ❌ Plugin sits unused, you have to name it explicitly
-```
-
-**WITH Agent Skills:**
-```
-You: "Create ansible playbook"
-Claude: *Recognizes trigger phrase instantly*
-        *Reads SKILL.md for workflow*
-        "I'll use ansible-playbook-creator for this!"
-        *Automatically applies best practices*
-Result: ✅ Instant activation, correct usage, zero thinking
-```
-
-### What's in a SKILL.md?
-
-Each plugin gets ONE skill file teaching Claude:
-
-```yaml
----
-name: Creating Ansible Playbooks
-description: |
-  Automates Ansible playbook creation. Use when you need to automate
-  server configurations or deployments. Trigger with "ansible playbook"
-  or "create playbook for [task]".
----
-
-## How It Works
-1. Receives user request with infrastructure details
-2. Generates production-ready Ansible playbook
-3. Includes best practices and security configurations
-
-## When to Use This Skill
-- Automate server configuration tasks
-- Deploy applications consistently
-- Create repeatable infrastructure setups
-
-## Examples
-User: "Create ansible playbook to install Apache on Ubuntu"
-Skill activates → Generates playbook → Ready to deploy
-```
-
-### Key Points
-
-- ✅ **Not creating new plugins** - Adding instruction manuals to existing ones
-- ✅ **Automatic activation** - Claude recognizes trigger phrases
-- ✅ **Best practices built-in** - Each skill teaches optimal workflows
-- ✅ **One skill per plugin** - Comprehensive instruction manual
-- ✅ **Only for installed plugins** - Not for discovering new ones
-
-**Status:** 1,537 skills deployed! 1,298 standalone skills across 20 categories + 239 embedded in plugins. All validated against 2026 schema.
-
-**Resources:**
-- [Internal Guide: How Agent Skills Work →](backups/HOW_AGENT_SKILLS_WORK.md)
-- [External Deep Dive: Claude Skills Technical Analysis →](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) - Comprehensive technical breakdown by Lee-Han Chung
-
----
-
-### Skills Powerkit - First Agent Skills Plugin
-**NEW:** The first plugin using Anthropic's Agent Skills feature (launched Oct 16, 2025). Say "create a plugin" or "validate this plugin" and Claude automatically uses these model-invoked capabilities:
-- 🛠️ Plugin Creator - Auto-scaffolds plugins
-- ✅ Plugin Validator - Auto-validates structure
-- 📦 Marketplace Manager - Auto-manages catalog
-- 🔍 Plugin Auditor - Auto-audits security
-- 🔢 Version Bumper - Auto-handles versions
-
-```bash
-/plugin install skills-powerkit@claude-code-plugins-plus
-```
-
-### Skill Enhancers - Automation for Claude's Skills
-**NEW CATEGORY:** Plugins that extend Claude's built-in Skills (web_search, web_fetch) with automation. Claude searches → Plugin acts.
-
-Example: `web-to-github-issue` - Research → GitHub tickets
-
-[Explore Skill Enhancers →](plugins/skill-enhancers/)
-
----
-
-## Understanding Plugin Types
-
-This marketplace contains **two types of plugins** that work differently:
-
-### 1. AI Instruction Plugins (98% of marketplace)
-- **What they are**: Markdown instructions that guide Claude's behavior
-- **How they work**: Tell Claude HOW to perform tasks using its built-in capabilities
-- **Examples**: DevOps pack, Security pack, API development tools
-- **Count**: 249 plugins
-- **No external code execution** - work entirely through Claude's interpretation
-
-### 2. MCP Server Plugins (2% of marketplace)
-- **What they are**: TypeScript/JavaScript applications
-- **How they work**: Run as separate Node.js processes that Claude can communicate with
-- **Examples**: project-health-auditor, conversational-api-debugger, domain-memory-agent
-- **Count**: 7 plugins (21 MCP tools total)
-- **Actual compiled code** - 13-26KB of executable JavaScript per plugin
-
-#### Tool Routing for Token Efficiency
-
-MCP servers load tool schemas into context. Manage active servers to optimize token usage:
-
-```bash
-/mcp                              # See active MCP servers
-/mcp disable design-to-code       # Disable unused server
-/mcp enable project-health-auditor # Enable when needed
-/context                          # Check context usage
-```
-
-**[Full Guide: ZCF Integration & Tool Routing →](docs/zcf-integration.md)**
-
----
-
-### 🧠 Agent Skills - A Feature, Not a Type
-
-**1,537 Agent Skills across the marketplace** - automatic capabilities that Claude activates based on conversation context (1,298 standalone + 239 embedded in plugins).
-
-- **What they are**: SKILL.md files that teach Claude when and how to use the plugin
-- **How they work**: Claude reads trigger phrases and activates skills automatically
-- **Example**: Say "create a plugin" and Claude uses the Skills Powerkit automatically
-- **Invocation**: Automatic - no `/command` needed
-- **Launched**: October 16, 2025 by Anthropic
-
-**Skills vs Commands:** Commands require explicit `/command` trigger. Skills activate automatically based on what you're asking for.
-
-**Note:** Plugins can bundle Skills, Commands, Agents, and MCP servers together. Agent Skills are a feature that enhances any plugin type.
-
----
-
-## 📚 Featured Resources
-
-### Claude Skills Deep Dive - Essential Reading
-
-**[Technical Analysis: How Claude Skills Work →](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/)**
-
-A comprehensive technical breakdown by **Lee-Han Chung** covering:
-
-- **How Skills Activate**: Understanding trigger phrases and automatic invocation
-- **Tool Permission System**: Deep dive into `allowed-tools` and security boundaries
-- **Architecture Patterns**: Design principles for effective skill-based plugins
-- **Best Practices**: Real-world examples and common pitfalls to avoid
-
-This article is the definitive external resource for understanding how Agent Skills work under the hood.
-
-*1,537 skills in this marketplace are built on these principles.*
-
----
-
-## Example Use Cases
-
-### For Developers
-
-```bash
-# Install multiple plugins at once (CLI)
-ccpi install project-health-auditor conversational-api-debugger git-commit-smart
-
-# Or install individually (Claude built-in)
-/plugin install project-health-auditor@claude-code-plugins-plus
-
-# Then use the plugin commands
-/analyze /path/to/repo    # Analyze codebase health
-/debug-api                # Debug API failures
-/gc                       # Smart commit messages
-```
-
-### For Teams
-
-Share custom workflows across your organization:
-
-```json
-// .claude/settings.json
-{
-  "extraKnownMarketplaces": {
-    "claude-code-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "jeremylongshore/claude-code-plugins"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "project-health-auditor@claude-code-plugins-plus": true,
-    "conversational-api-debugger@claude-code-plugins-plus": true
-  }
-}
-```
-
-### For Plugin Creators
-
-Use our templates to build your own plugins:
-
-```bash
-# Copy a template
-cp -r templates/command-plugin my-awesome-plugin
-
-# Validate your plugin structure
-ccpi validate ./my-awesome-plugin
-
-# Test locally
-/plugin marketplace add ./my-test-marketplace
-/plugin install my-awesome-plugin@test
-```
-
-## Documentation
-
-### Getting Started
-- [Installation & Usage](docs/getting-started.md) - Install and use plugins
-- [Creating Your First Plugin](docs/creating-plugins.md) - Step-by-step tutorial
-- [Plugin Reference](docs/plugin-structure.md) - Technical specifications
-
-### Advanced Topics
-- [Marketplace Guide](docs/marketplace-guide.md) - Distribute your plugins
-- [Security Best Practices](docs/security-best-practices.md) - Secure plugin development
-- [MCP Server Status](./MCP-SERVERS-STATUS.md) - MCP plugin configurations
-- [ZCF Integration](docs/zcf-integration.md) - Tool routing, BMAD workflows, token optimization
-
-### Production Playbooks
-- [Production Playbooks Index](000-docs/206-DR-SOPS-readme.md) - 11 comprehensive guides (~53,500 words)
-- [Advanced Tool Use](000-docs/207-DR-SOPS-11-advanced-tool-use.md) - Dynamic discovery & programmatic orchestration ⭐ NEW
-- [Multi-Agent Rate Limits](000-docs/204-DR-SOPS-01-multi-agent-rate.md) - Prevent API throttling
-- [Cost Caps & Budget Management](000-docs/196-DR-SOPS-02-cost-caps.md) - Control AI spending
-- [MCP Server Reliability](000-docs/198-DR-SOPS-03-mcp-reliability.md) - Self-healing MCP servers
-- [Ollama Migration Guide](000-docs/199-DR-SOPS-04-ollama-migration.md) - Switch to self-hosted LLMs
-- [Incident Debugging](000-docs/203-DR-SOPS-05-incident-debugging.md) - SEV-1/2/3/4 response protocols
-- [Self-Hosted Stack Setup](000-docs/202-DR-SOPS-06-self-hosted-stack.md) - Full infrastructure deployment
-- [Compliance & Audit](000-docs/200-DR-SOPS-07-compliance-audit.md) - SOC 2, GDPR, HIPAA, PCI DSS
-- [Team Presets & Workflows](000-docs/197-DR-SOPS-08-team-presets.md) - Team standardization
-- [Cost Attribution System](000-docs/201-DR-SOPS-09-cost-attribution.md) - Multi-dimensional cost tracking
-- [Progressive Enhancement](000-docs/205-DR-SOPS-10-progressive-enhancement.md) - Safe feature rollout
-
----
-
-## Contributing
-
-We welcome community plugin submissions! This ecosystem thrives on shared knowledge and collaboration.
-
-### Submit Your Plugin
-
-1. **Fork** this repository
-2. **Add** your plugin to `plugins/community/your-plugin/`
-3. **Update** `.claude-plugin/marketplace.extended.json` with your plugin entry
-4. **Run** `pnpm run sync-marketplace` (or `npm run sync-marketplace`) to regenerate `.claude-plugin/marketplace.json`
-5. **Submit** a pull request using our plugin submission template
-
-See [000-docs/007-DR-GUID-contributing.md](000-docs/007-DR-GUID-contributing.md) for detailed guidelines.
-
-### Plugin Requirements
-
-- Valid `.claude-plugin/plugin.json`
-- Comprehensive README.md with examples
-- 000-docs/001-BL-LICN-license.txt file (MIT or Apache-2.0 recommended)
-- Tested locally and working
-- No hardcoded secrets or credentials
-- All scripts executable (`chmod +x`)
-
-### External Plugin Sync (Recommended for Active Projects)
-
-If you're actively developing your plugin and want us to stay in sync with your repo:
-
-1. **Open an issue** requesting external sync
-2. **We add your repo** to `sources.yaml`
-3. **Daily sync** pulls your latest changes at midnight UTC
-4. **You maintain ownership** - keep developing in your repo
-5. **Attribution preserved** - `.source.json` tracks provenance
-
-**Benefits:**
-- No stale copies - your updates appear within 24 hours
-- You control your codebase - we mirror it
-- Full attribution - clear provenance tracking
-
-**Currently synced from:**
-- [@numman-ali/n-skills](https://github.com/numman-ali/n-skills) - gastown, zai-cli
-
-See `sources.yaml` for the full list of synced sources.
-
----
-
-## Important Notes
-
-### Not on GitHub Marketplace
-
-**Claude Code plugins do NOT use GitHub Marketplace.** They operate in a completely separate ecosystem using JSON-based marketplace catalogs hosted in Git repositories. This repository IS a Claude Code plugin marketplace.
-
-### No Built-in Monetization
-
-**There is currently no monetization mechanism** for Claude Code plugins. All plugins in the ecosystem are free and open-source. See [Monetization Alternatives](docs/monetization-alternatives.md) for external revenue strategies.
-
-### Beta Status
-
-Claude Code plugins are in **public beta** (October 2025). Features and best practices may evolve. This marketplace will stay updated with the latest changes.
-
----
-
-## Plugin Templates
-
-Start building your own plugin today:
-
-| Template | What's Included | Best For |
-|----------|----------------|----------|
-| **minimal-plugin** | Just plugin.json & README | Simple utilities |
-| **command-plugin** | Slash commands | Custom workflows |
-| **agent-plugin** | Specialized AI agent | Domain expertise |
-| **full-plugin** | Commands + agents + hooks | Complex automation |
-
-All templates are in the [`templates/`](templates/) directory with complete examples.
+## Contributors
+
+Community contributors make this marketplace better. Newest first.
+
+- **[@mjaskolski](https://github.com/mjaskolski) (Michal Jaskolski)** — Added 25 externally-synced agent skills from [wondelai/skills](https://github.com/wondelai/skills) covering product strategy, UX design, marketing/CRO, sales/influence, and growth frameworks. ([#303](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/303))
+- **[@clowreed](https://github.com/clowreed) (B12.io)** — Created [b12-claude-plugin](https://claudecodeplugins.io/plugins/b12-claude-plugin), an official B12.io plugin with a website-generator skill that takes users from idea to production-ready website draft in one conversation. ([#307](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/307))
+- **[@duskfallcrew](https://github.com/duskfallcrew) (Duskfall Crew)** — Reported PHP webshell payloads in penetration-tester plugin README that triggered AV false positives. Drove a complete v2.0.0 rebuild with real Python security scanners. ([#300](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/300))
+- **[@rowanbrooks100](https://github.com/rowanbrooks100) (Rowan Brooks)** — Created [brand-strategy-framework](https://claudecodeplugins.io/plugins/brand-strategy-framework), a 7-part brand strategy methodology used by top agencies with Fortune 500 clients. ([#292](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/292))
+- **[@RichardHightower](https://github.com/RichardHightower) (Rick Hightower)** — Creator of [SkillzWave](https://skillzwave.ai/) (44,000+ agentic skills). His quality reviews exposed validation gaps and drove 4,300+ lines of fixes plus new validator checks. Author of the [Claude Code Skills Deep Dive](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) series. ([#293](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/293), [#294](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/294), [#295](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/issues/295))
+- **[@TomLucidor](https://github.com/TomLucidor) (Tom)** — His question about paid API requirements sparked the "Make All Plugins Free" initiative (v4.1.0) and drove 2,400+ lines of constraint documentation across 6 plugins. ([#148](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/discussions/148))
+- **[@alexfazio](https://github.com/alexfazio) (Alex Fazio)** — Production agent workflow patterns and validation techniques that inspired the Learning Lab system (v4.0.0).
+- **[@lukeslp](https://github.com/lukeslp) (Lucas Steuber)** — Created geepers-agents with 51 specialized agents for development, deployment, quality audits, research, and game development. ([#159](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/159))
+- **[@BayramAnnakov](https://github.com/bayramannakov) (Bayram Annakov)** — Created claude-reflect, a self-learning system that captures corrections and syncs them to CLAUDE.md. ([#241](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/241))
+- **[@jleonelion](https://github.com/jleonelion) (James Leone)** — Fixed bash variable scoping bug in Learning Lab scripts and improved markdown formatting. ([#239](https://github.com/jeremylongshore/claude-code-plugins-plus-skills/pull/239))
+- **[@CharlesWiltgen](https://github.com/CharlesWiltgen) (Charles Wiltgen)** — Created Axiom, iOS development plugin with 13 production-ready skills for Swift/Xcode. ([#121](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/121))
+- **[@aledlie](https://github.com/aledlie) (Alyshia Ledlie)** — Fixed 7 critical JSON syntax errors and added production CI/CD patterns. ([#117](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/117))
+- **[@JackReis](https://github.com/JackReis) (Jack Reis)** — Contributed neurodivergent-visual-org plugin with ADHD-friendly Mermaid diagrams. ([#106](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/106))
+- **[@terrylica](https://github.com/terrylica) (Terry Li)** — Built prettier-markdown-hook with zero-config markdown formatting. ([#101](https://github.com/jeremylongshore/claude-code-plugins-plus/pull/101))
+- **[@beepsoft](https://github.com/beepsoft)** — Quality feedback on skill implementations that drove ecosystem-wide improvements. ([#134](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/134))
+- **[@clickmediapropy](https://github.com/clickmediapropy)** — Reported mobile horizontal scrolling bug. ([#120](https://github.com/jeremylongshore/claude-code-plugins-plus/issues/120))
+
+**Want to contribute?** See [CONTRIBUTING.md](./000-docs/007-DR-GUID-contributing.md) or reach out to **jeremy@intentsolutions.io**
 
 ---
 
 ## Resources
 
-### Official
+### Official Anthropic
 
-- [Claude Code Documentation](https://docs.claude.com/en/docs/claude-code/)
-- [Plugin Guide](https://docs.claude.com/en/docs/claude-code/plugins)
-- [Plugin Reference](https://docs.claude.com/en/docs/claude-code/plugins-reference)
-- [Announcement Blog](https://www.anthropic.com/news/claude-code-plugins)
+- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code/)
+- [Agent Skills Guide](https://docs.anthropic.com/en/docs/claude-code/skills)
+- [Plugin Reference](https://docs.anthropic.com/en/docs/claude-code/plugins)
 - [Best Practices](https://www.anthropic.com/engineering/claude-code-best-practices)
+
+### Technical Deep Dives
+
+- [Claude Skills Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) — Lee-Han Chung's definitive technical analysis
+- [Skills Deep Dive Series](https://pub.spillwave.com/claude-code-skills-deep-dive-part-1-82b572ad9450) — Rick Hightower's architecture-focused analysis
+- [SkillzWave](https://skillzwave.ai/) — Universal skill installer supporting 14+ coding agents
 
 ### Community
 
-- [Claude Developers Discord](https://discord.com/invite/6PPFFzqPDZ) - 40,000+ members
-- [Report Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- [Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)
-- [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) - Curated resources
+- [Claude Developers Discord](https://discord.com/invite/6PPFFzqPDZ) — 40,000+ members
+- [GitHub Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions) — Ideas, Q&A, show and tell
+- [Issue Tracker](https://github.com/jeremylongshore/claude-code-plugins/issues) — Bugs and feature requests
+- [Awesome Claude Code](https://github.com/hesreallyhim/awesome-claude-code) — Curated resource list
 
-### Other Marketplaces
+### Ecosystem
 
-- [Dan Ávila's Marketplace](https://github.com/davila7/claude-code-marketplace) - DevOps & productivity
-- [Seth Hobson's Agents](https://github.com/wshobson/agents) - 80+ specialized subagents
-- [CCPlugins](https://github.com/brennercruvinel/CCPlugins) - Professional commands
-
----
-
-## Statistics
-
-- **Plugin Packs**: 4 (62 total plugin components)
-- **MCP Plugins**: 7 (21 total MCP tools)
-- **Production Plugins**: 2 (git-commit-smart, overnight-dev)
-- **AI Agency Plugins**: 6 (complete business toolkit)
-- **Example Plugins**: 3 (hello-world, formatter, security-agent)
-- **Templates**: 4 (minimal, command, agent, full)
-- **Total Marketplace Plugins**: 20
+- [AgentSkills.io](https://agentskills.io) — Open standard for skill compatibility fields
+- [Numman Ali's Skills](https://github.com/numman-ali/n-skills) — Externally-synced community skills
 
 ---
 
-## Our Mission
+<details>
+  <summary><strong>Documentation & Playbooks</strong> (click to expand)</summary>
 
-To be **THE definitive resource** for Claude Code plugins by:
+  | Document | Purpose |
+  |----------|---------|
+  | **[User Security Guide](./000-docs/071-DR-GUID-user-security.md)** | How to safely evaluate and install plugins |
+  | **[Code of Conduct](./000-docs/006-BL-POLI-code-of-conduct.md)** | Community standards |
+  | **[Security Policy](./000-docs/008-TQ-SECU-security.md)** | Threat model, vulnerability reporting |
+  | **[Changelog](./000-docs/247-OD-CHNG-changelog.md)** | Release history |
 
-1. **Educating** - Clear examples showing how plugins work
-2. **Curating** - High-quality plugins you can trust
-3. **Connecting** - Building a vibrant community of creators
-4. **Growing** - Setting standards as the ecosystem evolves
+  **Production Playbooks** (11 guides, ~53,500 words):
+  - [Multi-Agent Rate Limits](000-docs/204-DR-SOPS-01-multi-agent-rate.md)
+  - [Cost Caps & Budgets](000-docs/196-DR-SOPS-02-cost-caps.md)
+  - [MCP Server Reliability](000-docs/198-DR-SOPS-03-mcp-reliability.md)
+  - [Incident Debugging](000-docs/203-DR-SOPS-05-incident-debugging.md)
+  - [Compliance & Audit](000-docs/200-DR-SOPS-07-compliance-audit.md)
+  - [Advanced Tool Use](000-docs/207-DR-SOPS-11-advanced-tool-use.md)
+  - [Full Index](000-docs/206-DR-SOPS-readme.md)
+
+</details>
 
 ---
 
-## Why This Marketplace?
+## Important Notes
 
-- **Quality over Quantity** - Every plugin is reviewed and tested
-- **Learning-Focused** - Understand how plugins work, don't just use them
-- **First-Mover** - Establishing best practices for the ecosystem
-- **Community-Driven** - Built by developers, for developers
-- **Actively Maintained** - Updated with latest Claude Code features
+**Not on GitHub Marketplace.** Claude Code plugins use a separate ecosystem with JSON-based catalogs hosted in Git repositories. This repository is a Claude Code plugin marketplace.
+
+**Free and open-source.** All plugins are MIT-licensed. No monetization mechanism exists for Claude Code plugins. See [Monetization Alternatives](docs/monetization-alternatives.md) for external revenue strategies.
+
+**Production status.** Claude Code plugins launched in public beta (October 2025) and are now a stable part of the Claude Code workflow. This marketplace tracks all specification changes.
 
 ---
 
 ## License
 
-MIT License - See [000-docs/001-BL-LICN-license.txt](000-docs/001-BL-LICN-license.txt) file for details.
-
----
+MIT License — See [LICENSE](000-docs/001-BL-LICN-license.txt) for details.
 
 ## Acknowledgments
 
-- **Anthropic** - For creating Claude Code and the plugin system
-- **Richard Hightower** - Creator of [skilz](https://skillzwave.ai/) and co-founder of SkillzWave; his rigorous skill quality reviews drove our 100-point grading rubric improvements
-- **Community Contributors** - Everyone who submits plugins and improvements
-- **Early Adopters** - Users who provide feedback and help us improve
-
----
-
-## 💬 Community
-
-Join the conversation and connect with other plugin developers and users!
-
-### Discussions
-- **[General Discussions](https://github.com/jeremylongshore/claude-code-plugins/discussions)** - Community hub for all things plugins
-- **[Announcements](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/announcements)** - Stay updated with the latest releases
-- **[Ideas](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/ideas)** - Suggest new plugins or features
-- **[Q&A](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/q-a)** - Get help from the community
-- **[Show and Tell](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/show-and-tell)** - Share what you've built!
-
-### Other Channels
-- **[Discord](https://discord.com/invite/6PPFFzqPDZ)** - Claude Code Community (#claude-code channel)
-- **[Issues](https://github.com/jeremylongshore/claude-code-plugins/issues)** - Report bugs or request features
-- **[Pull Requests](https://github.com/jeremylongshore/claude-code-plugins/pulls)** - Contribute your own plugins
-
----
-
-## Get Help
-
-- **Questions?** - [Open a discussion](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/q-a)
-- **Found a bug?** - [Report an issue](https://github.com/jeremylongshore/claude-code-plugins/issues)
-- **Have an idea?** - [Share in Ideas](https://github.com/jeremylongshore/claude-code-plugins/discussions/categories/ideas)
-- **Want to chat?** - [Join our Discord](https://discord.com/invite/6PPFFzqPDZ)
-
----
-
-## Documentation Filing System
-
-This repository uses a structured documentation filing system for all internal project documentation. All documentation files are stored in the **`000-docs/` directory** using a standardized naming convention.
-
-### File Naming Format
-
-```
-NNN-CC-ABCD-short-description.ext
-```
-
-- **NNN** = Zero-padded sequence number (001-999)
-- **CC** = Two-letter category code (PP, AT, DR, RA, etc.)
-- **ABCD** = Four-letter document type (PROD, GUID, REPT, etc.)
-- **short-description** = 1-4 words, kebab-case
-
-### Examples
-
-```
-048-RA-INDX-audit-index.md                   # Audit index report
-061-DR-REFF-vertex-ai-gemini-tiers.md       # Reference documentation
-086-PP-PLAN-release-v1-2-0.md               # Release plan
-```
-
-**Full specification:** See the Document Filing System v3.0 in prompts-intent-solutions master-systems folder
+- **Anthropic** — For Claude Code and the plugin/skills system
+- **Richard Hightower** — Co-founder of [SkillzWave](https://skillzwave.ai/); his quality reviews shaped our grading rubric
+- **Lee-Han Chung** — Definitive [Claude Skills Deep Dive](https://leehanchung.github.io/blogs/2025/10/26/claude-skills-deep-dive/) technical analysis
+- **Community Contributors** — Everyone who builds, reviews, and improves the ecosystem
 
 ---
 
 <div align="center">
 
-**[Star this repo](https://github.com/jeremylongshore/claude-code-plugins)** if you find it useful!
+**[Star this repo](https://github.com/jeremylongshore/claude-code-plugins)** if you find it useful
 
-Made with dedication by the Claude Code community
-
-**[Get Started Now](#quick-start)** | **[Browse Plugins](#all-plugins)** | **[Contribute](#contributing)**
+**[Get Started](#quick-start)** | **[Browse Plugins](https://claudecodeplugins.io/explore)** | **[Contribute](#contributors)**
 
 </div>
 
 ---
 
-**Status**: Public Beta | **Version**: 4.15.0 | **Last Updated**: February 2026 | **Skills**: 1,537
+**Version**: 4.17.0 | **Last Updated**: March 2026 | **Skills**: 1,900+ | **Plugins**: 347
