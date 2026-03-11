@@ -1,7 +1,7 @@
 {
   "name": "pm-ai-partner",
-  "version": "3.0.0",
-  "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks, and 17 MCP server configs for Product Managers",
+  "version": "1.0.0",
+  "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
   "author": {
     "name": "Ahmed Khaled",
     "email": "ahmd.khaled.a.mohamed@gmail.com"

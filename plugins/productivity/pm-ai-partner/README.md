@@ -5,7 +5,7 @@ Structured thinking partner for Product Managers. 12 agent skills, 6 workflow co
 ## Install
 
 ```bash
-npx pm-ai-partner@latest
+ccpi install pm-ai-partner
 ```
 
 ## Skills (12)

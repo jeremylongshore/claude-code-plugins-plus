@@ -9042,6 +9042,31 @@
       "components": {
         "skills": 30
       }
+    },
+    {
+      "name": "pm-ai-partner",
+      "source": "./plugins/productivity/pm-ai-partner",
+      "description": "12 PM-specific agent skills, 6 workflow commands, 3 automation hooks for Product Managers",
+      "version": "1.0.0",
+      "category": "productivity",
+      "keywords": [
+        "product-management",
+        "pm",
+        "ai-partner",
+        "skills",
+        "commands",
+        "hooks"
+      ],
+      "author": {
+        "name": "Ahmed Khaled",
+        "email": "ahmd.khaled.a.mohamed@gmail.com"
+      },
+      "components": {
+        "skills": 12,
+        "commands": 6,
+        "hooks": 3,
+        "total": 21
+      }
     }
   ]
 }

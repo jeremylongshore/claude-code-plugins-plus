@@ -1,0 +1,33 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash plugin/hooks/quality-gate.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "bash plugin/hooks/draft-status.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash plugin/hooks/pre-commit-reminder.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
