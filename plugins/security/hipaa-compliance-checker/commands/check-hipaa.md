@@ -1,7 +1,7 @@
 ---
 name: check-hipaa
 description: DESCRIPTION_PLACEHOLDER
-shortcut: hipaa
+shortcut: hipa
 ---
 # TITLE_PLACEHOLDER
 

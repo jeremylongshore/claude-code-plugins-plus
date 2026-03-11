@@ -1,7 +1,7 @@
 ---
 name: check-owasp
 description: DESCRIPTION_PLACEHOLDER
-shortcut: owasp
+shortcut: owsp
 ---
 # TITLE_PLACEHOLDER
 
