@@ -15,93 +15,55 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Provides cryptocurrency market sentiment analysis by combining multiple data sources:
-
-- **Fear & Greed Index**: Market-wide sentiment from Alternative.me
-- **News Sentiment**: Keyword-based analysis of recent crypto news
-- **Market Momentum**: Price and volume trends from CoinGecko
-
-**Key Capabilities:**
-- Composite sentiment score (0-100) with classification
-- Coin-specific sentiment analysis
-- Detailed breakdown of sentiment components
-- Multiple output formats (table, JSON, CSV)
+Cryptocurrency market sentiment analysis combining Fear & Greed Index, news keyword analysis, and price/volume momentum into a composite 0-100 score.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-
-1. **Python 3.8+** is installed
-2. **requests** library is available: `pip install requests`
+1. **Python 3.8+** installed
+2. **Dependencies**: `pip install requests`
 3. Internet connectivity for API access (Alternative.me, CoinGecko)
 4. Optional: `crypto-news-aggregator` skill for enhanced news analysis
 
 ## Instructions
 
-### Step 1: Assess User Intent
+1. **Assess user intent** - determine what analysis is needed:
+   - Overall market: no specific coin, general sentiment
+   - Coin-specific: extract symbol (BTC, ETH, etc.)
+   - Quick vs detailed: quick score or full component breakdown
 
-Determine what sentiment analysis the user needs:
-- **Overall market**: No specific coin, general sentiment
-- **Coin-specific**: Extract coin symbol (BTC, ETH, etc.)
-- **Quick vs detailed**: Quick score or full breakdown
+2. **Run sentiment analysis** with appropriate options:
+   ```bash
+   # Quick market sentiment check
+   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
 
-### Step 2: Execute Sentiment Analysis
+   # Coin-specific sentiment
+   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
 
-Run the sentiment analyzer with appropriate options:
+   # Detailed breakdown with all components
+   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
 
-```bash
-# Quick sentiment check (default)
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
+   # Custom time period
+   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
+   ```
 
-# Coin-specific sentiment
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
+3. **Export results** for trading models or analysis:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
+   ```
 
-# Detailed analysis with component breakdown
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
-
-# Export to JSON
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
-
-# Custom time period
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
-```
-
-### Step 3: Present Results
-
-Format and present the sentiment analysis:
-- Show composite score and classification
-- Explain what the sentiment means
-- Highlight any extreme readings
-- For detailed mode, show component breakdown
-
-### Command-Line Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--coin` | Analyze specific coin (BTC, ETH, etc.) | All market |
-| `--period` | Time period (1h, 4h, 24h, 7d) | 24h |
-| `--detailed` | Show full component breakdown | false |
-| `--format` | Output format (table, json, csv) | table |
-| `--output` | Output file path | stdout |
-| `--weights` | Custom weights (e.g., "news:0.5,fng:0.3,momentum:0.2") | Default |
-| `--verbose` | Enable verbose output | false |
-
-### Sentiment Classifications
-
-| Score Range | Classification | Description |
-|-------------|----------------|-------------|
-| 0-20 | Extreme Fear | Market panic, potential bottom |
-| 21-40 | Fear | Cautious sentiment, bearish |
-| 41-60 | Neutral | Balanced, no strong bias |
-| 61-80 | Greed | Optimistic, bullish sentiment |
-| 81-100 | Extreme Greed | Euphoria, potential top |
+4. **Present results** to the user:
+   - Show composite score and classification prominently
+   - Explain what the sentiment reading means
+   - Highlight extreme readings (potential contrarian signals)
+   - For detailed mode, show component breakdown with weights
 
 ## Output
 
-### Table Format (Default)
+Composite sentiment score (0-100) with classification and weighted component breakdown. Extreme readings serve as contrarian indicators:
+
 ```
 ==============================================================================
-  MARKET SENTIMENT ANALYZER                         Updated: 2026-01-14 15:30  # 2026 year
+  MARKET SENTIMENT ANALYZER                         Updated: 2026-01-14 15:30  # 2026 - current year timestamp
 ==============================================================================
 
   COMPOSITE SENTIMENT
@@ -109,9 +71,9 @@ Format and present the sentiment analysis:
   Score: 65.5 / 100                         Classification: GREED
 
   Component Breakdown:
-  - Fear & Greed Index:  72.0  (weight: 40%)  → 28.8 pts
-  - News Sentiment:      58.5  (weight: 40%)  → 23.4 pts
-  - Market Momentum:     66.5  (weight: 20%)  → 13.3 pts
+  - Fear & Greed Index:  72.0  (weight: 40%)  -> 28.8 pts
+  - News Sentiment:      58.5  (weight: 40%)  -> 23.4 pts
+  - Market Momentum:     66.5  (weight: 20%)  -> 13.3 pts
 
   Interpretation: Market is moderately greedy. Consider taking profits or
   reducing position sizes. Watch for reversal signals.
@@ -119,44 +81,7 @@ Format and present the sentiment analysis:
 ==============================================================================
 ```
 
-### JSON Format
-```json
-{
-  "composite_score": 65.5,
-  "classification": "Greed",
-  "components": {
-    "fear_greed": {
-      "score": 72,
-      "classification": "Greed",
-      "weight": 0.40,
-      "contribution": 28.8
-    },
-    "news_sentiment": {
-      "score": 58.5,
-      "articles_analyzed": 25,
-      "positive": 12,
-      "negative": 5,
-      "neutral": 8,
-      "weight": 0.40,
-      "contribution": 23.4
-    },
-    "market_momentum": {
-      "score": 66.5,
-      "btc_change_24h": 3.5,
-      "weight": 0.20,
-      "contribution": 13.3
-    }
-  },
-  "meta": {
-    "timestamp": "2026-01-14T15:30:00Z",  # 2026 year
-    "period": "24h"
-  }
-}
-```
-
 ## Error Handling
-
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -164,35 +89,34 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 | News fetch failed | Network issue | Reduces weight of news component |
 | Invalid coin | Unknown symbol | Proceeds with market-wide analysis |
 
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
-
-### Quick Examples
+Sentiment analysis patterns from quick checks to custom-weighted deep analysis:
 
 ```bash
-# Quick market sentiment check
+# Quick market sentiment
 python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py
 
 # Bitcoin-specific sentiment
 python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --coin BTC
 
-# Detailed analysis
+# Detailed analysis with component breakdown
 python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --detailed
 
-# Export for trading model
-python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --format json --output sentiment.json
-
-# Custom weights (emphasize news)
+# Custom weights emphasizing news
 python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --weights "news:0.5,fng:0.3,momentum:0.2"
 
-# Weekly sentiment comparison
+# Weekly sentiment trend
 python ${CLAUDE_SKILL_DIR}/scripts/sentiment_analyzer.py --period 7d --detailed
 ```
 
 ## Resources
 
-- **Alternative.me Fear & Greed Index**: https://alternative.me/crypto/fear-and-greed-index/
-- **CoinGecko API**: https://www.coingecko.com/en/api
-- **Sentiment Analysis Theory**: Contrarian indicator - extreme readings often precede reversals
-- See `${CLAUDE_SKILL_DIR}/config/settings.yaml` for configuration options
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - CLI options, classifications, JSON format, contrarian theory
+- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
+- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
+- Alternative.me Fear & Greed: https://alternative.me/crypto/fear-and-greed-index/
+- CoinGecko API: https://www.coingecko.com/en/api
+- `${CLAUDE_SKILL_DIR}/config/settings.yaml` - Configuration options

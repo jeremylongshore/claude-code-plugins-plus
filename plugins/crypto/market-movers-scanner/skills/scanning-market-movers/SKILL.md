@@ -16,99 +16,55 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Real-time detection and analysis of significant price movements and unusual volume patterns across cryptocurrency markets. This skill identifies top gainers, losers, and volume spikes, ranking them by a composite significance score.
-
-**Key Features:**
-- Scan 1,000+ cryptocurrencies for movers
-- Configurable thresholds (change %, volume spike, market cap)
-- Significance scoring for prioritization
-- Category filtering (DeFi, L2, NFT, etc.)
-- Multiple output formats (table, JSON, CSV)
-
-**Dependency:**
-This skill uses `tracking-crypto-prices` from `market-price-tracker` plugin for price data infrastructure.
+Real-time detection of significant price movements and unusual volume patterns across 1,000+ cryptocurrencies, ranked by composite significance score.
 
 ## Prerequisites
 
-Install required dependencies:
-
-```bash
-set -euo pipefail
-pip install requests pandas
-```
-
-**Dependency Setup:**
-Ensure `market-price-tracker` plugin is installed with `tracking-crypto-prices` skill configured.
+1. **Python 3.8+** installed
+2. **Dependencies**: `pip install requests pandas`
+3. **market-price-tracker** plugin installed with `tracking-crypto-prices` skill configured
 
 ## Instructions
 
-### Step 1: Quick Market Scan
+1. **Run a default scan** for top gainers and losers (top 20 each by 24h change with volume confirmation):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
+   ```
 
-Run a default scan for top gainers and losers:
+2. **Set custom thresholds** for minimum change and volume spike:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 100000000 = $100M min cap, 1000000000 = $1B max cap
+   ```
 
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py
-```
+3. **Filter by category** (defi, layer2, nft, gaming, meme):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
+   ```
 
-This returns the top 20 gainers and top 20 losers by 24h change with volume confirmation.
+4. **Scan different timeframes** (1h, 24h, 7d):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
+   ```
 
-### Step 2: Custom Thresholds
+5. **Export results** to JSON or CSV:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
+   ```
 
-Scan with specific criteria:
-
-```bash
-# Only show moves > 10% with volume spike > 3x
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-change 10 --volume-spike 3
-
-# Filter by market cap
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 100000000 --max-cap 1000000000  # 1000000000 = configured value
-```
-
-### Step 3: Category Filtering
-
-Focus on specific sectors:
-
-```bash
-# DeFi tokens only
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi
-
-# Layer 2 tokens
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category layer2
-
-# Available: defi, layer2, nft, gaming, meme
-```
-
-### Step 4: Different Timeframes
-
-Scan across timeframes:
-
-```bash
-# 1-hour movers
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 1h
-
-# 7-day movers
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 7d
-```
-
-### Step 5: Export Results
-
-Save results for analysis:
-
-```bash
-# JSON export
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json --output movers.json
-
-# CSV export
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
-```
+6. **Use named presets** for predefined threshold sets:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
+   ```
 
 ## Output
 
-### Default Table Output
+Default table shows top gainers and losers ranked by significance score (0-100), combining price change (40%), volume ratio (40%), and market cap (20%):
 
 ```
 ================================================================================
-  MARKET MOVERS                                    Updated: 2025-01-14 15:30:00  # 2025 year
+  MARKET MOVERS                                    Updated: 2025-01-14 15:30:00  # 2025 timestamp
 ================================================================================
 
   TOP GAINERS (24h)
@@ -128,120 +84,11 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
     2   JKL       $0.123        -22.34%        2.5x       $12.3M      58.9
 --------------------------------------------------------------------------------
 
-  Summary: 42 movers found | Scanned: 1000 assets  # 1000: 1 second in ms
+  Summary: 42 movers found | Scanned: 1000 assets  # 1000 assets in scan universe
 ================================================================================
 ```
 
-### JSON Output (--format json)
-
-```json
-{
-  "gainers": [
-    {
-      "rank": 1,
-      "symbol": "XYZ",
-      "name": "Example Token",
-      "price": 1.234,
-      "change_24h": 45.67,
-      "volume_ratio": 5.2,
-      "market_cap": 123400000,  # 123400000 = configured value
-      "significance_score": 89.3,
-      "category": "defi"
-    }
-  ],
-  "losers": [...],
-  "meta": {
-    "scan_time": "2025-01-14T15:30:00Z",  # 2025 year
-    "thresholds": {
-      "min_change": 5,
-      "volume_spike": 2,
-      "min_market_cap": 10000000  # 10000000 = 10M limit
-    },
-    "total_scanned": 1000,  # 1000: 1 second in ms
-    "matches": 42
-  }
-}
-```
-
-### Significance Score
-
-The significance score (0-100) combines:
-- **Change %** (40%): Larger moves score higher
-- **Volume Ratio** (40%): Higher volume confirmation scores higher
-- **Market Cap** (20%): Larger caps score slightly higher
-
-Higher scores indicate more significant, higher-conviction moves.
-
-## Configuration
-
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml`:
-
-```yaml
-# Default Thresholds
-thresholds:
-  min_change: 5           # Minimum % change to include
-  volume_spike: 2         # Minimum volume ratio (current/avg)
-  min_market_cap: 10000000  # 10000000: $10M minimum
-  max_market_cap: null    # No maximum by default
-
-# Scoring Weights
-scoring:
-  change_weight: 0.40
-  volume_weight: 0.40
-  cap_weight: 0.20
-
-# Display
-display:
-  top_n: 20               # Number of results per category
-  sort_by: significance   # significance, change, volume, market_cap
-
-# Categories (CoinGecko category IDs)
-categories:
-  defi:
-    - decentralized-finance-defi
-    - yield-farming
-  layer2:
-    - layer-2
-    - polygon-ecosystem
-    - arbitrum-ecosystem
-  nft:
-    - non-fungible-tokens-nft
-  gaming:
-    - gaming
-  meme:
-    - meme-token
-```
-
-### Named Presets
-
-Create presets in `${CLAUDE_SKILL_DIR}/config/presets/`:
-
-**aggressive.yaml:**
-```yaml
-min_change: 3
-volume_spike: 1.5
-min_market_cap: 1000000  # 1000000 = 1M limit
-top_n: 50
-```
-
-**conservative.yaml:**
-```yaml
-min_change: 10
-volume_spike: 3
-min_market_cap: 100000000  # 100000000 = configured value
-top_n: 10
-```
-
-Use with:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --preset aggressive
-```
-
 ## Error Handling
-
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
-
-### Common Errors
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -250,63 +97,30 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 | `Rate limit exceeded` | Too many API calls | Wait or use cached data |
 | `Partial results` | Some assets unavailable | Normal, proceed with available data |
 
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed usage examples.
-
-### Example 1: Daily Scan
+Common scanning patterns for different market analysis scenarios:
 
 ```bash
+# Daily scan - top 20 gainers/losers
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --timeframe 24h --top 20
-```
 
-### Example 2: Volume Spike Hunt
+# Volume spike hunt (5x+ volume, $1M+ daily volume)
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000  # 1000000 = $1M min volume
 
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --volume-spike 5 --min-volume 1000000  # 1000000 = 1M limit
-```
-
-### Example 3: DeFi Movers Export
-
-```bash
+# DeFi movers exported to CSV
 python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --category defi --format csv --output defi_movers.csv
+
+# High-cap gainers only (>$1B market cap)
+python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10  # 1000000000 = $1B cap
 ```
-
-### Example 4: High-Cap Gainers
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --min-cap 1000000000 --gainers-only --top 10  # 1000000000 = configured value
-```
-
-## Integration with Other Skills
-
-This skill can be combined with other crypto skills:
-
-**With crypto-signal-generator:**
-```bash
-# Get movers, then generate signals for top gainers
-python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format json | \
-  python ../crypto-signal-generator/.../scanner.py --from-stdin
-```
-
-**With arbitrage-opportunity-finder:**
-Volume spikes often precede arbitrage opportunities. Use movers as input for arbitrage scanning.
-
-## Files
-
-| File | Purpose |
-|------|---------|
-| `scripts/scanner.py` | Main CLI entry point |
-| `scripts/analyzer.py` | Core analysis logic |
-| `scripts/filters.py` | Threshold filtering |
-| `scripts/scorers.py` | Significance scoring |
-| `scripts/formatters.py` | Output formatting |
-| `config/settings.yaml` | User configuration |
-| `config/presets/` | Named preset configurations |
 
 ## Resources
 
-- PRD.md - Product requirements
-- ARD.md - Architecture documentation
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Configuration, presets, JSON format, scoring details
+- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
+- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
 - Depends on: tracking-crypto-prices skill
-- CoinGecko API documentation: https://www.coingecko.com/en/api
+- CoinGecko API: https://www.coingecko.com/en/api

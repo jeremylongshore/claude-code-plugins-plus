@@ -90,6 +90,14 @@ See `${CLAUDE_SKILL_DIR}/references/implementation.md` for exchange fee tables a
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py scan ETH USDC
 ```
 
+Sample detection output:
+```
+  ARB OPPORTUNITY: ETH/USDC
+  Buy:  Binance  @ $3,198.50  |  Sell: Coinbase @ $3,214.20
+  Spread: 0.49%  |  Net Profit (after fees): 0.29% ($9.27 per ETH)
+  Risk: LOW  |  Confidence: HIGH  |  Window: ~30s
+```
+
 **Triangular arb on Binance** - Discover circular paths with minimum 0.5% net profit:
 ```bash
 python ${CLAUDE_SKILL_DIR}/scripts/arb_finder.py triangular binance --min-profit 0.5

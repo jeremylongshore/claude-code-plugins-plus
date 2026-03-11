@@ -15,120 +15,54 @@ compatible-with: claude-code, codex, openclaw
 
 ## Overview
 
-Provides cryptocurrency portfolio tracking with:
-
-- **Real-Time Valuations**: Current prices from CoinGecko
-- **Holdings Breakdown**: Quantity, value, and allocation per asset
-- **P&L Tracking**: Unrealized gains/losses with cost basis
-- **Allocation Analysis**: Category breakdown and concentration flags
-- **Multiple Export Formats**: Table, JSON, CSV
-
-**Key Capabilities:**
-- Track holdings across multiple assets
-- Calculate portfolio total value in USD
-- Identify overweight positions (concentration risk)
-- Export for analysis tools and tax reporting
+Track cryptocurrency holdings with real-time CoinGecko valuations, allocation analysis, P&L tracking, and concentration risk alerts.
 
 ## Prerequisites
 
-Before using this skill, ensure:
-
-1. **Python 3.8+** is installed
-2. **requests** library is available: `pip install requests`
+1. **Python 3.8+** installed
+2. **Dependencies**: `pip install requests`
 3. Internet connectivity for CoinGecko API access
-4. A portfolio JSON file with your holdings
-
-### Portfolio File Format
-
-Create a portfolio file (e.g., `holdings.json`):
-
-```json
-{
-  "name": "My Portfolio",
-  "holdings": [
-    {"coin": "BTC", "quantity": 0.5, "cost_basis": 25000},  # 25000 = configured value
-    {"coin": "ETH", "quantity": 10, "cost_basis": 2000},  # 2000: 2 seconds in ms
-    {"coin": "SOL", "quantity": 100}
-  ]
-}
-```
-
-Fields:
-- `coin`: Symbol (BTC, ETH, etc.) - **required**
-- `quantity`: Amount held - **required**
-- `cost_basis`: Average purchase price per coin (optional, for P&L)
-- `acquired`: Date acquired (optional, for records)
+4. A portfolio JSON file with your holdings (see `references/implementation.md` for format)
 
 ## Instructions
 
-### Step 1: Assess User Intent
+1. **Assess user intent** - determine what portfolio view is needed:
+   - Quick check: total value and top holdings
+   - Holdings list: full breakdown of all positions
+   - Detailed analysis: allocations, P&L, risk flags
+   - Export: JSON or CSV for external tools
 
-Determine what portfolio information the user needs:
-- **Quick check**: Total value and top holdings
-- **Holdings list**: Full breakdown of all positions
-- **Detailed analysis**: Allocations, P&L, risk flags
-- **Export**: JSON or CSV for external tools
+2. **Run the portfolio tracker** with appropriate options:
+   ```bash
+   # Quick portfolio summary
+   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json
 
-### Step 2: Execute Portfolio Tracking
+   # Full holdings breakdown
+   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings
 
-Run the tracker with appropriate options:
+   # Detailed analysis with P&L and allocations
+   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed
+   ```
 
-```bash
-# Quick portfolio summary
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json
+3. **Export results** for analysis tools or tax reporting:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
+   python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
+   ```
 
-# Full holdings breakdown
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings
-
-# Detailed analysis with P&L and allocations
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed
-
-# Export to JSON
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_export.json
-
-# Export to CSV
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output portfolio.csv
-```
-
-### Step 3: Present Results
-
-Format and explain the portfolio data:
-- Show total portfolio value prominently
-- Highlight 24h and 7d changes
-- Explain allocation percentages
-- Flag any concentration risks
-- For detailed mode, explain P&L calculations
-
-### Command-Line Options
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--portfolio` | Path to portfolio JSON file | Required |
-| `--holdings` | Show all holdings breakdown | false |
-| `--detailed` | Full analysis with P&L | false |
-| `--sort` | Sort by: value, allocation, name, change | value |
-| `--format` | Output format (table, json, csv) | table |
-| `--output` | Output file path | stdout |
-| `--threshold` | Allocation warning threshold | 25% |
-| `--verbose` | Enable verbose output | false |
-
-### Allocation Thresholds
-
-By default, positions > 25% allocation are flagged:
-
-| Allocation | Risk Level | Action |
-|------------|------------|--------|
-| < 10% | Low | Normal position |
-| 10-25% | Medium | Monitor closely |
-| 25-50% | High | Consider rebalancing |
-| > 50% | Very High | Significant concentration risk |
+4. **Present results** to the user:
+   - Show total portfolio value prominently
+   - Highlight 24h and 7d changes
+   - Explain allocation percentages
+   - Flag any concentration risks (positions > 25% allocation by default)
 
 ## Output
 
-### Table Format (Default)
+Summary showing total value, 24h/7d changes, per-asset allocation, and concentration warnings for positions exceeding threshold:
+
 ```
 ==============================================================================
-  CRYPTO PORTFOLIO TRACKER                          Updated: 2026-01-14 15:30  # 2026 year
+  CRYPTO PORTFOLIO TRACKER                          Updated: 2026-01-14 15:30  # 2026 - current year timestamp
 ==============================================================================
 
   PORTFOLIO SUMMARY: My Portfolio
@@ -145,37 +79,12 @@ By default, positions > 25% allocation are flagged:
   ETH      10.000     $3,200.00   $32,000.00    25.5%   +1.8%
   SOL      100.000      $180.00   $18,000.00    14.4%   +4.2%
 
-  ⚠ CONCENTRATION WARNING: BTC (37.9%) exceeds 25% threshold
+  WARNING: BTC (37.9%) exceeds 25% threshold
 
 ==============================================================================
 ```
 
-### JSON Format
-```json
-{
-  "portfolio_name": "My Portfolio",
-  "total_value_usd": 125450.00,
-  "change_24h": {"amount": 2540.50, "percent": 2.07},
-  "holdings": [
-    {
-      "coin": "BTC",
-      "quantity": 0.5,
-      "price_usd": 95000,  # 95000 = configured value
-      "value_usd": 47500,  # 47500 = configured value
-      "allocation_pct": 37.9,
-      "change_24h_pct": 2.5
-    }
-  ],
-  "meta": {
-    "timestamp": "2026-01-14T15:30:00Z",  # 2026 year
-    "holdings_count": 8
-  }
-}
-```
-
 ## Error Handling
-
-See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 
 | Error | Cause | Solution |
 |-------|-------|----------|
@@ -184,32 +93,30 @@ See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
 | Coin not found | Unknown symbol | Check symbol spelling, use standard symbols |
 | API rate limited | Too many requests | Wait and retry, use caching |
 
+See `${CLAUDE_SKILL_DIR}/references/errors.md` for comprehensive error handling.
+
 ## Examples
 
-See `${CLAUDE_SKILL_DIR}/references/examples.md` for detailed examples.
-
-### Quick Examples
+Portfolio tracking workflows from quick checks to detailed analysis and export:
 
 ```bash
 # Basic portfolio check
 python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio ~/crypto/holdings.json
 
-# Show all holdings sorted by allocation
+# All holdings sorted by allocation
 python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --holdings --sort allocation
 
-# Detailed analysis with 15% threshold
+# Detailed analysis with custom 15% threshold
 python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --detailed --threshold 15
 
 # Export for tax software
 python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format csv --output tax_export.csv
-
-# JSON export for trading bot
-python ${CLAUDE_SKILL_DIR}/scripts/portfolio_tracker.py --portfolio holdings.json --format json --output portfolio_data.json
 ```
 
 ## Resources
 
-- **CoinGecko API**: https://www.coingecko.com/en/api - Free crypto market data
-- **Portfolio Schema**: See PRD.md for complete portfolio file format
-- **Configuration**: See `${CLAUDE_SKILL_DIR}/config/settings.yaml` for options
-- See `${CLAUDE_SKILL_DIR}/references/examples.md` for integration examples
+- `${CLAUDE_SKILL_DIR}/references/implementation.md` - Portfolio file format, CLI options, allocation thresholds, JSON format
+- `${CLAUDE_SKILL_DIR}/references/errors.md` - Comprehensive error handling
+- `${CLAUDE_SKILL_DIR}/references/examples.md` - Detailed usage examples
+- CoinGecko API: https://www.coingecko.com/en/api
+- `${CLAUDE_SKILL_DIR}/config/settings.yaml` - Configuration options
