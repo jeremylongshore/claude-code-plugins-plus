@@ -16,187 +16,105 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Cost Tuning
 
 ## Overview
-Optimize Retell AI costs through smart tier selection, sampling, and usage monitoring.
+Reduce Retell AI voice agent costs by optimizing call duration, choosing the right voice model, and implementing conversation design patterns that resolve calls faster. Retell charges per minute of voice call with rates varying by model and voice quality. The biggest cost levers are: reducing average call duration through better conversation design (a 2-minute call costs half of a 4-minute call), using faster/cheaper LLM backends for simple tasks, and setting maximum call duration limits to prevent runaway costs.
 
 ## Prerequisites
-- Access to Retell AI billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateRetell AICost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class Retell AIUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Retell AI budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateRetell AICost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await retellaiClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => retellaiClient.get(id)));
-
-// Use batch endpoint (1 call)
-await retellaiClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new RetellAIClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Retell AI dashboard
-# Or use API if available:
-# Check Retell AI documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM retellai_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Retell AI dashboard access with billing visibility
+- Understanding of agent call patterns and average durations
+- Ability to modify agent prompts and configurations
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Retell AI dashboard for usage patterns and costs.
+### Step 1: Analyze Call Duration Distribution
+```bash
+# Find agents with longest average call durations (highest cost)
+curl "https://api.retellai.com/v1/calls?limit=200&sort=-created_at" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | \
+  jq 'group_by(.agent_id) | map({
+    agent: .[0].agent_name,
+    calls: length,
+    avg_duration_sec: ([.[].duration] | add / length),
+    total_minutes: ([.[].duration] | add / 60),
+    estimated_cost: ([.[].cost] | add)
+  }) | sort_by(-.estimated_cost)'
+```
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Set Maximum Call Duration
+```bash
+# Prevent runaway costs from calls that loop or get stuck
+curl -X PATCH "https://api.retellai.com/v1/agents/agt_abc123" \
+  -H "Authorization: Bearer $RETELL_API_KEY" \
+  -d '{
+    "max_call_duration_seconds": 300,
+    "end_call_after_silence_seconds": 15
+  }'
+# 5-minute cap prevents a single call from costing more than ~$0.50
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 3: Optimize Conversation Design for Brevity
+```yaml
+# Conversation design patterns that reduce call duration
+fast_resolution_patterns:
+  greeting:
+    bad: "Hello! Welcome to Company. How are you doing today? I hope you're having a great day."  # 8 seconds
+    good: "Hi, this is Company. How can I help?"  # 3 seconds
+    savings: "5 seconds per call * 1000 calls/month = 83 minutes saved"
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+  confirmation:
+    bad: "Let me repeat that back to you to make sure I have it right..."  # Long
+    good: "Got it. Anything else?"  # Short
+    savings: "10 seconds per interaction"
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+  closing:
+    bad: "Thank you so much for calling. Is there anything else I can help you with today?"
+    good: "All set. Goodbye!"
+    savings: "5 seconds per call"
+```
+
+### Step 4: Use Cheaper LLM Backends for Simple Tasks
+```yaml
+# Agent configuration: match LLM cost to task complexity
+simple_agents:  # FAQ, routing, appointment scheduling
+  llm: "fast/cheap model"
+  expected_duration: "30-90 seconds"
+  cost_per_call: "~$0.05-0.10"
+
+complex_agents:  # Sales qualification, technical support
+  llm: "smart/capable model"
+  expected_duration: "2-5 minutes"
+  cost_per_call: "~$0.20-0.50"
+
+# Don't use expensive models for "press 1 for sales" routing
+```
+
+### Step 5: Monitor Daily Costs
+```bash
+# Daily cost tracking with anomaly detection
+curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | \
+  jq '{
+    calls_today: length,
+    total_minutes: ([.[].duration] | add / 60),
+    total_cost: ([.[].cost] | add),
+    avg_cost_per_call: (([.[].cost] | add) / length),
+    projected_monthly: (([.[].cost] | add) * 30)
+  }'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| High per-call cost | Agent prompts too verbose | Shorten greetings, confirmations, closings |
+| Stuck calls burning minutes | Agent in conversation loop | Set `max_call_duration_seconds` |
+| Cost spike from one agent | Agent handling unexpected topic | Add fallback to transfer to human |
+| Budget exceeded | No daily spending cap | Implement daily cost monitoring with alerts |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateRetell AICost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# ROI calculator: cost per successful outcome
+TOTAL_COST=$(curl -s "https://api.retellai.com/v1/calls?created_after=$(date -d '30 days ago' -I)" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | jq '[.[].cost] | add')
+SUCCESSFUL=$(curl -s "https://api.retellai.com/v1/calls?created_after=$(date -d '30 days ago' -I)&status=completed" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | jq 'length')
+echo "Cost per successful call: \$$(echo "$TOTAL_COST / $SUCCESSFUL" | bc -l | head -c 5)"
 ```
-
-## Resources
-- [Retell AI Pricing](https://retellai.com/pricing)
-- [Retell AI Billing Dashboard](https://dashboard.retellai.com/billing)
-
-## Next Steps
-For architecture patterns, see `retellai-reference-architecture`.

@@ -16,228 +16,182 @@ compatible-with: claude-code, codex, openclaw
 # LangChain CI Integration
 
 ## Overview
-Configure comprehensive CI/CD pipelines for LangChain applications with testing, linting, and deployment automation.
+Integrate LangChain chain and agent testing into CI/CD pipelines. Covers chain unit tests with mocked LLMs, RAG pipeline validation, agent tool testing, and integration tests with real LLM calls gated behind environment flags.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- LangChain application with test suite
-- API keys for testing (stored as GitHub Secrets)
+- LangChain installed (`langchain`, `langchain-openai`)
+- GitHub Actions configured
+- pytest for Python or Vitest for TypeScript
+- LLM API keys stored as GitHub secrets
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
+### Step 1: CI Workflow with Mocked and Live Tests
 ```yaml
-# .github/workflows/langchain-ci.yml
-name: LangChain CI
+# .github/workflows/langchain-tests.yml
+name: LangChain Tests
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main]
-
-env:
-  PYTHON_VERSION: "3.11"
+    paths:
+      - 'src/chains/**'
+      - 'src/agents/**'
+      - 'src/tools/**'
+      - 'tests/**'
 
 jobs:
-  lint:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Run unit tests (no API calls)
+        run: pytest tests/unit/ -v --tb=short
 
-      - name: Install dependencies
-        run: |
-          pip install ruff mypy
-
-      - name: Lint with Ruff
-        run: ruff check .
-
-      - name: Type check with mypy
-        run: mypy src/
-
-  test-unit:
+  integration-tests:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: pip install -r requirements.txt -r requirements-dev.txt
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-
-      - name: Run unit tests
-        run: |
-          pytest tests/unit -v --cov=src --cov-report=xml
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: coverage.xml
-
-  test-integration:
-    runs-on: ubuntu-latest
-    needs: [lint, test-unit]
-    # Only run on main branch or manual trigger
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          pip install -e ".[dev]"
-
-      - name: Run integration tests
+      - name: Run integration tests (with LLM calls)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: |
-          pytest tests/integration -v -m integration
+          LANGCHAIN_TRACING_V2: "true"
+          LANGCHAIN_API_KEY: ${{ secrets.LANGCHAIN_API_KEY }}
+        run: pytest tests/integration/ -v --tb=short -m "not slow"
 ```
 
-### Step 2: Configure Test Markers
+### Step 2: Chain Unit Tests with Mocked LLM
 ```python
-# pyproject.toml
-[tool.pytest.ini_options]
-markers = [
-    "unit: Unit tests (no external API calls)",
-    "integration: Integration tests (requires API keys)",
-    "slow: Slow tests (skip in fast mode)",
-]
-asyncio_mode = "auto"
-testpaths = ["tests"]
-```
-
-### Step 3: Create Mock Fixtures
-```python
-# tests/conftest.py
+# tests/unit/test_chains.py
 import pytest
-from unittest.mock import MagicMock, AsyncMock
+from unittest.mock import AsyncMock, patch
 from langchain_core.messages import AIMessage
+
+from src.chains.summarize import create_summarize_chain
 
 @pytest.fixture
 def mock_llm():
-    """Mock LLM for unit tests."""
-    mock = MagicMock()
-    mock.invoke.return_value = AIMessage(content="Mock response")
-    mock.ainvoke = AsyncMock(return_value=AIMessage(content="Mock response"))
+    mock = AsyncMock()
+    mock.ainvoke.return_value = AIMessage(content="This is a summary of the document.")
     return mock
 
-@pytest.fixture
-def mock_chain(mock_llm):
-    """Mock chain for testing."""
-    from langchain_core.prompts import ChatPromptTemplate
-    from langchain_core.output_parsers import StrOutputParser
+def test_summarize_chain_output_format(mock_llm):
+    """Test chain produces expected output structure."""
+    chain = create_summarize_chain(llm=mock_llm)
+    result = chain.invoke({"document": "Long document text here..."})
 
-    prompt = ChatPromptTemplate.from_template("{input}")
-    return prompt | mock_llm | StrOutputParser()
+    assert "summary" in result
+    assert len(result["summary"]) > 0
+
+def test_summarize_chain_handles_empty_input(mock_llm):
+    """Test chain handles edge cases."""
+    chain = create_summarize_chain(llm=mock_llm)
+
+    with pytest.raises(ValueError, match="Document cannot be empty"):
+        chain.invoke({"document": ""})
+
+@patch("src.chains.summarize.ChatOpenAI")
+def test_chain_uses_correct_model(mock_chat):
+    """Test chain configures model correctly."""
+    mock_chat.return_value = AsyncMock()
+    chain = create_summarize_chain(model_name="gpt-4o-mini")
+
+    mock_chat.assert_called_once_with(model="gpt-4o-mini", temperature=0)
 ```
 
-### Step 4: Add Pre-commit Hooks
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.1.6
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.7.1
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - langchain-core
-          - pydantic
-```
-
-### Step 5: Add Deployment Stage
-```yaml
-# Add to .github/workflows/langchain-ci.yml
-  deploy:
-    runs-on: ubuntu-latest
-    needs: [test-integration]
-    if: github.ref == 'refs/heads/main'
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy to Cloud Run
-        uses: google-github-actions/deploy-cloudrun@v2
-        with:
-          service: langchain-api
-          source: .
-          env_vars: |
-            LANGCHAIN_PROJECT=production
-```
-
-## Output
-- GitHub Actions workflow with lint, test, deploy stages
-- pytest configuration with markers
-- Mock fixtures for unit testing
-- Pre-commit hooks for code quality
-
-## Examples
-
-### Running Tests Locally
-```bash
-# Run unit tests only (fast)
-pytest tests/unit -v
-
-# Run with coverage
-pytest tests/unit --cov=src --cov-report=html
-
-# Run integration tests (requires API key)
-OPENAI_API_KEY=sk-... pytest tests/integration -v -m integration
-
-# Skip slow tests
-pytest tests/ -v -m "not slow"
-```
-
-### Integration Test Example
+### Step 3: RAG Pipeline Validation
 ```python
-# tests/integration/test_chain.py
+# tests/integration/test_rag_pipeline.py
 import pytest
-from langchain_openai import ChatOpenAI
-from langchain_core.prompts import ChatPromptTemplate
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import FAISS
+
+from src.chains.rag import create_rag_chain
+
+@pytest.fixture(scope="session")
+def vector_store():
+    """Create test vector store with known documents."""
+    embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+    texts = [
+        "Python was created by Guido van Rossum in 1991.",
+        "TypeScript was developed by Microsoft and released in 2012.",
+        "Rust was first released in 2010 by Mozilla.",
+    ]
+    return FAISS.from_texts(texts, embeddings)
 
 @pytest.mark.integration
-def test_real_chain_invocation():
-    """Test with real LLM (requires API key)."""
-    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
-    prompt = ChatPromptTemplate.from_template("Say exactly: {word}")
-    chain = prompt | llm
+def test_rag_retrieval_relevance(vector_store):
+    """Test RAG pipeline retrieves relevant documents."""
+    chain = create_rag_chain(vector_store)
+    result = chain.invoke({"question": "Who created Python?"})
 
-    result = chain.invoke({"word": "hello"})
-    assert "hello" in result.content.lower()
+    assert "guido" in result["answer"].lower()
+    assert len(result["source_documents"]) > 0
+
+@pytest.mark.integration
+def test_rag_no_hallucination(vector_store):
+    """Test RAG doesn't hallucinate when answer not in context."""
+    chain = create_rag_chain(vector_store)
+    result = chain.invoke({"question": "What is the capital of France?"})
+
+    # Should indicate it doesn't know from the context
+    assert any(phrase in result["answer"].lower()
+               for phrase in ["don't have", "not in", "cannot find", "no information"])
+```
+
+### Step 4: Agent Tool Testing
+```python
+# tests/unit/test_tools.py
+import pytest
+from src.tools.calculator import calculator_tool
+from src.tools.search import search_tool
+
+def test_calculator_tool():
+    """Test calculator tool produces correct results."""
+    result = calculator_tool.invoke({"expression": "2 + 2"})
+    assert result == "4"
+
+def test_calculator_tool_handles_invalid_input():
+    """Test tool handles bad input gracefully."""
+    result = calculator_tool.invoke({"expression": "not math"})
+    assert "error" in result.lower()
+
+@pytest.mark.integration
+def test_search_tool_returns_results():
+    """Test search tool (requires API key)."""
+    result = search_tool.invoke({"query": "LangChain framework"})
+    assert len(result) > 0
 ```
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret Not Found | Missing GitHub secret | Add OPENAI_API_KEY to repository secrets |
-| Rate Limit in CI | Too many API calls | Use mocks for unit tests, limit integration tests |
-| Timeout | Slow tests | Add timeout markers, parallelize tests |
-| Import Error | Missing dev dependencies | Ensure `.[dev]` extras installed |
+| Unit tests call real API | Mock not applied | Use `@patch` or dependency injection |
+| Integration test fails | Missing API key | Gate behind `if` condition and secrets |
+| Flaky RAG tests | Embedding variability | Use deterministic test data, pin embeddings |
+| Agent test timeout | Tool execution slow | Set timeout on agent, mock external tools |
+
+## Examples
+
+### Quick Chain Smoke Test
+```python
+# Minimal test that chain constructs correctly
+def test_chain_builds():
+    from src.chains.summarize import create_summarize_chain
+    chain = create_summarize_chain()
+    assert chain is not None
+    assert hasattr(chain, 'invoke')
+```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [pytest Documentation](https://docs.pytest.org/)
-- [Pre-commit](https://pre-commit.com/)
-
-## Next Steps
-Proceed to `langchain-deploy-integration` for deployment configuration.
+- [LangChain Testing Guide](https://python.langchain.com/docs/contributing/testing)
+- [LangSmith Tracing](https://docs.smith.langchain.com/)
+- [LangChain CI Examples](https://github.com/langchain-ai/langchain/tree/master/.github)

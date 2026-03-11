@@ -13,310 +13,165 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Mistral AI SDK Patterns
+# Mistral SDK Patterns
 
 ## Overview
-Production-ready patterns for Mistral AI SDK usage in TypeScript and Python.
+Production-ready patterns for the Mistral AI SDK (`mistralai` Python package). Covers client initialization, chat completions, streaming, function calling, and embeddings with idiomatic error handling.
 
 ## Prerequisites
-- Completed `mistral-install-auth` setup
-- Familiarity with async/await patterns
-- Understanding of error handling best practices
+- `pip install mistralai` (v1.0+)
+- `MISTRAL_API_KEY` environment variable set
+- Familiarity with async Python patterns
 
 ## Instructions
 
-### Step 1: Implement Singleton Pattern (Recommended)
+### Step 1: Client Initialization with Configuration
 
-**TypeScript**
-```typescript
-// src/mistral/client.ts
-import Mistral from '@mistralai/mistralai';
-
-let instance: Mistral | null = null;
-
-export interface MistralConfig {
-  apiKey: string;
-  timeout?: number;
-  maxRetries?: number;
-}
-
-export function getMistralClient(config?: Partial<MistralConfig>): Mistral {
-  if (!instance) {
-    const apiKey = config?.apiKey || process.env.MISTRAL_API_KEY;
-    if (!apiKey) {
-      throw new Error('MISTRAL_API_KEY is required');
-    }
-    instance = new Mistral({
-      apiKey,
-      timeout: config?.timeout ?? 30000,
-    });
-  }
-  return instance;
-}
-
-// For testing - reset singleton
-export function resetMistralClient(): void {
-  instance = null;
-}
-```
-
-**Python**
 ```python
-# src/mistral/client.py
-import os
 from mistralai import Mistral
-from typing import Optional
+import os
 
-_instance: Optional[Mistral] = None
+# Singleton client with configuration
+_client = None
 
-def get_mistral_client(api_key: Optional[str] = None) -> Mistral:
-    global _instance
-    if _instance is None:
-        key = api_key or os.environ.get("MISTRAL_API_KEY")
-        if not key:
-            raise ValueError("MISTRAL_API_KEY is required")
-        _instance = Mistral(api_key=key)
-    return _instance
-
-def reset_mistral_client() -> None:
-    global _instance
-    _instance = None
+def get_mistral_client() -> Mistral:
+    global _client
+    if _client is None:
+        _client = Mistral(
+            api_key=os.environ["MISTRAL_API_KEY"],
+            timeout_ms=30000,
+            max_retries=3
+        )
+    return _client
 ```
 
-### Step 2: Add Error Handling Wrapper
+### Step 2: Chat Completions with Structured Output
 
-**TypeScript**
-```typescript
-import Mistral from '@mistralai/mistralai';
+```python
+from mistralai import Mistral
+import json
 
-interface MistralResult<T> {
-  data: T | null;
-  error: Error | null;
-  usage?: { promptTokens: number; completionTokens: number; totalTokens: number };
-}
+client = get_mistral_client()
 
-async function safeMistralCall<T>(
-  operation: () => Promise<T>
-): Promise<MistralResult<T>> {
-  try {
-    const data = await operation();
-    return { data, error: null };
-  } catch (err) {
-    const error = err as Error;
-    console.error({
-      name: error.name,
-      message: error.message,
-      // Extract status code if available
-      status: (err as any).status,
-    });
-    return { data: null, error };
-  }
-}
+# Basic chat
+response = client.chat.complete(
+    model="mistral-small-latest",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Explain quantum computing briefly."}
+    ],
+    temperature=0.7,
+    max_tokens=500
+)
+print(response.choices[0].message.content)
 
-// Usage
-const result = await safeMistralCall(() =>
-  client.chat.complete({
-    model: 'mistral-small-latest',
-    messages: [{ role: 'user', content: 'Hello!' }],
-  })
-);
-
-if (result.error) {
-  console.error('Chat failed:', result.error.message);
-} else {
-  console.log(result.data?.choices?.[0]?.message?.content);
-}
+# JSON mode for structured output
+response = client.chat.complete(
+    model="mistral-small-latest",
+    messages=[{"role": "user", "content": "List 3 programming languages as JSON array"}],
+    response_format={"type": "json_object"}
+)
+data = json.loads(response.choices[0].message.content)
 ```
 
-### Step 3: Implement Retry Logic with Exponential Backoff
+### Step 3: Streaming Responses
 
-```typescript
-interface RetryConfig {
-  maxRetries: number;
-  baseDelayMs: number;
-  maxDelayMs: number;
-  jitterMs: number;
-}
+```python
+def stream_response(prompt: str):
+    stream = client.chat.stream(
+        model="mistral-small-latest",
+        messages=[{"role": "user", "content": prompt}]
+    )
+    full_response = ""
+    for event in stream:
+        chunk = event.data.choices[0].delta.content or ""
+        full_response += chunk
+        yield chunk
+    return full_response
+```
 
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  config: RetryConfig = { maxRetries: 3, baseDelayMs: 1000, maxDelayMs: 32000, jitterMs: 500 }
-): Promise<T> {
-  for (let attempt = 0; attempt <= config.maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (err) {
-      if (attempt === config.maxRetries) throw err;
+### Step 4: Function Calling
 
-      const status = (err as any).status;
-      // Only retry on rate limits (429) or server errors (5xx)
-      if (status !== 429 && (status < 500 || status >= 600)) throw err;
+```python
+import json
 
-      const exponentialDelay = config.baseDelayMs * Math.pow(2, attempt);
-      const jitter = Math.random() * config.jitterMs;
-      const delay = Math.min(exponentialDelay + jitter, config.maxDelayMs);
-
-      console.log(`Attempt ${attempt + 1} failed. Retrying in ${delay.toFixed(0)}ms...`);
-      await new Promise(r => setTimeout(r, delay));
+tools = [{
+    "type": "function",
+    "function": {
+        "name": "get_weather",
+        "description": "Get current weather for a city",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "city": {"type": "string", "description": "City name"},
+                "units": {"type": "string", "enum": ["celsius", "fahrenheit"]}
+            },
+            "required": ["city"]
+        }
     }
-  }
-  throw new Error('Unreachable');
-}
+}]
+
+response = client.chat.complete(
+    model="mistral-small-latest",
+    messages=[{"role": "user", "content": "What's the weather in Paris?"}],
+    tools=tools,
+    tool_choice="auto"
+)
+
+# Handle tool calls
+if response.choices[0].message.tool_calls:
+    for call in response.choices[0].message.tool_calls:
+        args = json.loads(call.function.arguments)
+        result = get_weather(**args)  # your implementation
+        # Send result back
+        messages.append(response.choices[0].message)
+        messages.append({"role": "tool", "name": call.function.name,
+                         "content": json.dumps(result), "tool_call_id": call.id})
 ```
 
-### Step 4: Type-Safe Chat Wrapper
+### Step 5: Embeddings
 
-```typescript
-import Mistral from '@mistralai/mistralai';
+```python
+def embed_texts(texts: list[str]) -> list[list[float]]:
+    response = client.embeddings.create(
+        model="mistral-embed",
+        inputs=texts
+    )
+    return [d.embedding for d in response.data]
 
-type MistralModel =
-  | 'mistral-large-latest'
-  | 'mistral-medium-latest'
-  | 'mistral-small-latest'
-  | 'open-mistral-7b'
-  | 'open-mixtral-8x7b';
-
-interface ChatOptions {
-  model?: MistralModel;
-  temperature?: number;
-  maxTokens?: number;
-  topP?: number;
-  stream?: boolean;
-}
-
-interface Message {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-export async function chat(
-  client: Mistral,
-  messages: Message[],
-  options: ChatOptions = {}
-): Promise<string> {
-  const response = await client.chat.complete({
-    model: options.model ?? 'mistral-small-latest',
-    messages,
-    temperature: options.temperature,
-    maxTokens: options.maxTokens,
-    topP: options.topP,
-  });
-
-  return response.choices?.[0]?.message?.content ?? '';
-}
+# Batch large sets
+def embed_batch(texts: list[str], batch_size: int = 64) -> list[list[float]]:
+    embeddings = []
+    for i in range(0, len(texts), batch_size):
+        batch = texts[i:i+batch_size]
+        embeddings.extend(embed_texts(batch))
+    return embeddings
 ```
-
-### Step 5: Streaming Helper
-
-```typescript
-export async function* streamChat(
-  client: Mistral,
-  messages: Message[],
-  options: ChatOptions = {}
-): AsyncGenerator<string, void, unknown> {
-  const stream = await client.chat.stream({
-    model: options.model ?? 'mistral-small-latest',
-    messages,
-    temperature: options.temperature,
-    maxTokens: options.maxTokens,
-  });
-
-  for await (const event of stream) {
-    const content = event.data?.choices?.[0]?.delta?.content;
-    if (content) {
-      yield content;
-    }
-  }
-}
-
-// Usage
-for await (const chunk of streamChat(client, messages)) {
-  process.stdout.write(chunk);
-}
-```
-
-## Output
-- Type-safe client singleton
-- Robust error handling with structured logging
-- Automatic retry with exponential backoff
-- Streaming support with async generators
 
 ## Error Handling
-| Pattern | Use Case | Benefit |
-|---------|----------|---------|
-| Safe wrapper | All API calls | Prevents uncaught exceptions |
-| Retry logic | Transient failures | Improves reliability |
-| Type guards | Response validation | Catches API changes |
-| Logging | All operations | Debugging and monitoring |
+| Error | Cause | Solution |
+|-------|-------|----------|
+| `401 Unauthorized` | Invalid API key | Check `MISTRAL_API_KEY` |
+| `429 Too Many Requests` | Rate limit hit | Use built-in retry or add backoff |
+| `400 Bad Request` | Invalid model or params | Check model name and parameter ranges |
+| Timeout | Large prompt or slow network | Increase `timeout_ms` |
 
 ## Examples
 
-### Factory Pattern (Multi-tenant)
-```typescript
-const clients = new Map<string, Mistral>();
-
-export function getClientForTenant(tenantId: string): Mistral {
-  if (!clients.has(tenantId)) {
-    const apiKey = getTenantApiKey(tenantId);
-    clients.set(tenantId, new Mistral({ apiKey }));
-  }
-  return clients.get(tenantId)!;
-}
-```
-
-### Python Context Manager
+### Async Client
 ```python
-from contextlib import contextmanager
 from mistralai import Mistral
+import asyncio
 
-@contextmanager
-def mistral_client():
-    client = Mistral(api_key=os.environ.get("MISTRAL_API_KEY"))
-    try:
-        yield client
-    finally:
-        pass  # Cleanup if needed
-
-# Usage
-with mistral_client() as client:
-    response = client.chat.complete(
+async def async_chat(prompt: str):
+    client = Mistral(api_key=os.environ["MISTRAL_API_KEY"])
+    response = await client.chat.complete_async(
         model="mistral-small-latest",
-        messages=[{"role": "user", "content": "Hello!"}]
+        messages=[{"role": "user", "content": prompt}]
     )
-```
-
-### Zod Response Validation
-```typescript
-import { z } from 'zod';
-
-const mistralResponseSchema = z.object({
-  id: z.string(),
-  object: z.literal('chat.completion'),
-  model: z.string(),
-  choices: z.array(z.object({
-    index: z.number(),
-    message: z.object({
-      role: z.enum(['assistant']),
-      content: z.string(),
-    }),
-    finishReason: z.string(),
-  })),
-  usage: z.object({
-    promptTokens: z.number(),
-    completionTokens: z.number(),
-    totalTokens: z.number(),
-  }),
-});
-
-function validateResponse(response: unknown) {
-  return mistralResponseSchema.parse(response);
-}
+    return response.choices[0].message.content
 ```
 
 ## Resources
-- [Mistral AI API Reference](https://docs.mistral.ai/api/)
-- [Mistral AI Client Libraries](https://docs.mistral.ai/getting-started/clients/)
-- [Zod Documentation](https://zod.dev/)
-
-## Next Steps
-Apply patterns in `mistral-core-workflow-a` for chat completions.
+- [Mistral AI SDK](https://github.com/mistralai/client-python)
+- [API Reference](https://docs.mistral.ai/api/)
