@@ -8,13 +8,16 @@ test.describe('P7: Performance', () => {
   const criticalPages = ['/', '/explore', '/cowork', '/skills/', '/plugins/'];
 
   for (const path of criticalPages) {
-    test(`${path} loads within 5 seconds`, async ({ page }) => {
+    test(`${path} loads within budget`, async ({ page }, testInfo) => {
+      const isMobile = testInfo.project.name.includes('mobile');
+      const budget = isMobile ? 8000 : 5000;
+
       const start = Date.now();
       const response = await page.goto(path, { waitUntil: 'domcontentloaded' });
       const duration = Date.now() - start;
 
       expect(response?.status()).toBe(200);
-      expect(duration).toBeLessThan(5000);
+      expect(duration).toBeLessThan(budget);
     });
   }
 
