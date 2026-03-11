@@ -34,7 +34,11 @@ Follow these steps to configure webhooks:
 
 ## Webhook Event Types
 
-```
+| Event | Description |
+|-------|-------------|
+| `job.completed` | Video generation finished successfully |
+| `job.failed` | Video generation encountered an error |
+| `job.status_changed` | Job status transitioned to a new state |
 
 ## Output
 

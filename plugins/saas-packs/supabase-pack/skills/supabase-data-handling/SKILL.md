@@ -34,7 +34,7 @@ Handle sensitive data correctly when integrating with Supabase.
 
 ## PII Detection
 
-```typescript
+Scan request and response payloads for PII patterns (emails, phone numbers, SSNs) before logging or storing data.
 
 ## Instructions
 

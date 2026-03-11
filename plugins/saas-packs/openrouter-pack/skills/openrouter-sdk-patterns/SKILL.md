@@ -30,20 +30,9 @@ Follow these steps to implement this skill:
 4. **Test the Integration**: Run the verification steps to confirm functionality
 5. **Monitor in Production**: Set up appropriate logging and monitoring
 
-## Overview
-
-This skill covers proven SDK patterns including client initialization, error handling, retry logic, and configuration management for robust OpenRouter integrations.
-
-## Prerequisites
-
-- OpenRouter API key configured
-- Python 3.8+ or Node.js 18+
-- OpenAI SDK installed
-
 ## Python with OpenAI SDK
 
-### Basic Setup
-```python
+Initialize the OpenAI SDK client with OpenRouter base URL and configure retry logic for production use.
 
 ## Output
 

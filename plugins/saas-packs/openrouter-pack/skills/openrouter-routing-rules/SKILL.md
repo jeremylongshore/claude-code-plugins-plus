@@ -29,19 +29,9 @@ Follow these steps to implement this skill:
 4. **Test the Integration**: Run the verification steps to confirm functionality
 5. **Monitor in Production**: Set up appropriate logging and monitoring
 
-## Overview
-
-This skill covers implementing request-based routing logic to select optimal models based on content, urgency, or cost constraints.
-
-## Prerequisites
-
-- OpenRouter integration
-- Understanding of model capabilities and pricing
-
 ## Basic Routing Strategies
 
-### Content-Based Routing
-```python
+Use content-based, cost-based, or latency-based routing to direct requests to the optimal model.
 
 ## Output
 
