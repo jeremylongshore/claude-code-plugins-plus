@@ -16,208 +16,83 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Windsurf integrations.
+Manage team access to Windsurf AI IDE features, workspace settings, and code generation capabilities. Windsurf (by Codeium) uses per-seat licensing with workspace roles that control access to AI features like Cascade (agentic flows), Supercomplete, and Command. Enterprise plans add SSO, admin dashboards, and the ability to set organization-wide AI usage policies including model selection and code context boundaries.
 
 ## Prerequisites
-- Windsurf Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum WindsurfRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface WindsurfPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<WindsurfRole, WindsurfPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: WindsurfRole,
-  action: keyof WindsurfPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Windsurf SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://windsurf.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/windsurf/callback',
-};
-
-// Map IdP groups to Windsurf roles
-const groupRoleMapping: Record<string, WindsurfRole> = {
-  'Engineering': WindsurfRole.Developer,
-  'Platform-Admins': WindsurfRole.Admin,
-  'Data-Team': WindsurfRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@windsurf/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.WINDSURF_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.WINDSURF_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/windsurf/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface WindsurfOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: WindsurfRole;
-}
-
-async function createOrganization(
-  config: WindsurfOrganization
-): Promise<void> {
-  await windsurfClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireWindsurfPermission(
-  requiredPermission: keyof WindsurfPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { windsurfRole: WindsurfRole };
-
-    if (!checkPermission(user.windsurfRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/windsurf/resource/:id',
-  requireWindsurfPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface WindsurfAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: WindsurfRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logWindsurfAccess(entry: WindsurfAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Windsurf Pro or Enterprise plan (per-seat pricing)
+- Organization admin access at windsurf.com/dashboard
+- Identity provider for SSO (Enterprise only)
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Windsurf permissions.
+### Step 1: Configure Organization-Wide AI Policies
+In Windsurf Admin Dashboard > Policies:
+```yaml
+# Recommended enterprise AI policy settings
+ai_policies:
+  code_context_sharing: "workspace_only"     # AI cannot see code outside workspace
+  telemetry: "anonymized"                     # No raw code sent to telemetry
+  allowed_models: ["windsurf-cascade", "windsurf-supercomplete"]
+  code_generation_review: "suggest_only"      # AI suggests, human applies
+  max_cascade_steps: 10                       # Limit agentic flow depth
+```
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+### Step 2: Manage Seat Assignments
+```yaml
+# seat-allocation.yaml
+teams:
+  engineering:
+    plan: pro
+    seats: 25
+    features: [cascade, supercomplete, command, inline_chat]
+  design:
+    plan: pro
+    seats: 5
+    features: [supercomplete, command]  # No cascade (agentic flows)
+  contractors:
+    plan: basic
+    seats: 10
+    features: [supercomplete]  # Limited AI features
+```
+Assign seats via Admin Dashboard > Members > Invite with Role.
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 3: Enable SSO (Enterprise Only)
+In Admin Dashboard > Security > SSO:
+- Configure SAML 2.0 with your IdP
+- Map IdP groups to Windsurf workspace roles (Admin, Member)
+- Enable "Enforce SSO" to block password login
+- Set auto-provisioning for new users from approved email domains
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 4: Set Workspace Access Boundaries
+Control which repositories and folders Windsurf AI can access:
+```json
+// .windsurf/settings.json (workspace-level)
+{
+  "ai.contextExclusions": [
+    "**/secrets/**",
+    "**/.env*",
+    "**/credentials/**"
+  ],
+  "ai.allowedWorkspaces": ["src", "lib", "tests"]
+}
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 5: Review AI Usage Metrics
+Monitor the Admin Dashboard for per-user AI usage: completions accepted, Cascade flows run, and tokens consumed. Use this data for seat optimization (remove seats from users with <10 AI interactions per month).
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| AI features grayed out | Seat not assigned | Assign Pro seat in admin dashboard |
+| Cascade flow blocked | `max_cascade_steps` exceeded | Increase limit or break task into smaller flows |
+| SSO login fails | SAML certificate expired | Update certificate in IdP and Windsurf config |
+| Code context leak concern | No exclusion rules set | Add `.windsurf/settings.json` with exclusions |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```yaml
+# Offboard a team member: reclaim seat and transfer workspace
+# 1. Remove from organization in Admin Dashboard > Members
+# 2. Transfer shared workspaces to new owner
+# 3. Revoke any personal API tokens
+# 4. Seat becomes available for reallocation
 ```
-
-## Resources
-- [Windsurf Enterprise Guide](https://docs.windsurf.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `windsurf-migration-deep-dive`.

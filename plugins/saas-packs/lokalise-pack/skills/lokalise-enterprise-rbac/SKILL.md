@@ -16,372 +16,94 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Lokalise with teams, roles, and SSO.
+Manage fine-grained access to Lokalise translation projects using its built-in role hierarchy. Lokalise distinguishes between organization-level roles (Owner, Admin, Biller) and project-level contributor roles (Manager, Developer, Translator, Reviewer) with optional language-pair restrictions, making it possible to give a French translator write access only to `fr` keys while locking them out of `de` content.
 
 ## Prerequisites
-- Lokalise Enterprise or Team plan
-- Identity Provider (IdP) for SSO (optional)
-- Understanding of role-based access patterns
-- Admin access to Lokalise organization
-
-## Lokalise Role Hierarchy
-
-| Role | Scope | Permissions |
-|------|-------|-------------|
-| Owner | Organization | Full control, billing, delete org |
-| Admin | Organization | Manage teams, projects, users |
-| Manager | Team/Project | Manage project settings, contributors |
-| Developer | Project | Read/write keys, translations |
-| Translator | Project | Read/write translations only |
-| Reviewer | Project | Review and approve translations |
-| Viewer | Project | Read-only access |
+- Lokalise Team or Enterprise plan
+- Admin or Owner role in the Lokalise organization
+- `@lokalise/node-api` SDK or direct REST API access
 
 ## Instructions
 
-### Step 1: Define Role Mappings
+### Step 1: Assign Project Contributors with Language Scoping
 ```typescript
-// Role definitions aligned with Lokalise
-enum LokaliseRole {
-  Owner = "owner",
-  Admin = "admin",
-  Manager = "manager",
-  Developer = "developer",
-  Translator = "translator",
-  Reviewer = "reviewer",
-  Viewer = "viewer",
-}
+import { LokaliseApi } from '@lokalise/node-api';
+const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
 
-interface LokalisePermissions {
-  manageTeam: boolean;
-  manageProject: boolean;
-  manageKeys: boolean;
-  editTranslations: boolean;
-  reviewTranslations: boolean;
-  downloadFiles: boolean;
-  uploadFiles: boolean;
-  viewOnly: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<LokaliseRole, LokalisePermissions> = {
-  owner: {
-    manageTeam: true,
-    manageProject: true,
-    manageKeys: true,
-    editTranslations: true,
-    reviewTranslations: true,
-    downloadFiles: true,
-    uploadFiles: true,
-    viewOnly: false,
-  },
-  admin: {
-    manageTeam: true,
-    manageProject: true,
-    manageKeys: true,
-    editTranslations: true,
-    reviewTranslations: true,
-    downloadFiles: true,
-    uploadFiles: true,
-    viewOnly: false,
-  },
-  manager: {
-    manageTeam: false,
-    manageProject: true,
-    manageKeys: true,
-    editTranslations: true,
-    reviewTranslations: true,
-    downloadFiles: true,
-    uploadFiles: true,
-    viewOnly: false,
-  },
-  developer: {
-    manageTeam: false,
-    manageProject: false,
-    manageKeys: true,
-    editTranslations: true,
-    reviewTranslations: false,
-    downloadFiles: true,
-    uploadFiles: true,
-    viewOnly: false,
-  },
-  translator: {
-    manageTeam: false,
-    manageProject: false,
-    manageKeys: false,
-    editTranslations: true,
-    reviewTranslations: false,
-    downloadFiles: true,
-    uploadFiles: false,
-    viewOnly: false,
-  },
-  reviewer: {
-    manageTeam: false,
-    manageProject: false,
-    manageKeys: false,
-    editTranslations: false,
-    reviewTranslations: true,
-    downloadFiles: true,
-    uploadFiles: false,
-    viewOnly: false,
-  },
-  viewer: {
-    manageTeam: false,
-    manageProject: false,
-    manageKeys: false,
-    editTranslations: false,
-    reviewTranslations: false,
-    downloadFiles: true,
-    uploadFiles: false,
-    viewOnly: true,
-  },
-};
-
-function checkPermission(
-  role: LokaliseRole,
-  permission: keyof LokalisePermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][permission];
-}
+// Add a translator restricted to French and Spanish only
+await lok.contributors().create('PROJECT_ID', [{
+  email: 'translator@agency.com',
+  fullname: 'Marie Dupont',
+  is_admin: false,
+  is_reviewer: false,
+  languages: [
+    { lang_iso: 'fr', is_writable: true },
+    { lang_iso: 'es', is_writable: true },
+  ],
+}]);
 ```
 
-### Step 2: Team Management
-```typescript
-import { LokaliseApi } from "@lokalise/node-api";
+### Step 2: Manage Team-Level Roles
+```bash
+# List team members and roles
+curl -X GET "https://api.lokalise.com/api2/teams/TEAM_ID/users" \
+  -H "X-Api-Token: $LOKALISE_API_TOKEN"
 
-const client = new LokaliseApi({
-  apiKey: process.env.LOKALISE_API_TOKEN!,
-});
-
-// List team users
-async function listTeamUsers(teamId: number) {
-  const users = await client.teamUsers().list({ team_id: teamId });
-  return users.items.map(u => ({
-    userId: u.user_id,
-    email: u.email,
-    fullname: u.fullname,
-    role: u.role,
-    createdAt: u.created_at,
-  }));
-}
-
-// Add user to team
-async function addTeamUser(teamId: number, email: string, role: LokaliseRole) {
-  const user = await client.teamUsers().create({
-    team_id: teamId,
-    email,
-    role,
-  });
-
-  console.log(`Added ${email} as ${role} to team ${teamId}`);
-  return user;
-}
-
-// Update user role
-async function updateUserRole(teamId: number, userId: number, newRole: LokaliseRole) {
-  const user = await client.teamUsers().update(userId, {
-    team_id: teamId,
-    role: newRole,
-  });
-
-  console.log(`Updated user ${userId} to role ${newRole}`);
-  return user;
-}
-
-// Remove user from team
-async function removeTeamUser(teamId: number, userId: number) {
-  await client.teamUsers().delete(userId, { team_id: teamId });
-  console.log(`Removed user ${userId} from team ${teamId}`);
-}
+# Change a user from admin to member
+curl -X PUT "https://api.lokalise.com/api2/teams/TEAM_ID/users/USER_ID" \
+  -H "X-Api-Token: $LOKALISE_API_TOKEN" \
+  -d '{"role": "member"}'
 ```
 
-### Step 3: Project-Level Access Control
-```typescript
-// Add contributor to project with specific role
-async function addProjectContributor(
-  projectId: string,
-  email: string,
-  role: LokaliseRole,
-  languages?: string[]  // Optional: restrict to specific languages
-) {
-  const params: any = {
-    email,
-    is_admin: role === LokaliseRole.Admin || role === LokaliseRole.Manager,
-    is_reviewer: role === LokaliseRole.Reviewer,
-  };
+### Step 3: Configure SSO (Enterprise Only)
+In Lokalise Organization Settings > SSO, configure SAML 2.0 with your IdP. Map IdP groups to Lokalise roles:
+- `Eng-Localization` -> Admin
+- `Translators-FR` -> Contributor with `fr` language scope
+- `Product-Managers` -> Reviewer
 
-  // Language-specific access for translators
-  if (languages && languages.length > 0) {
-    params.languages = languages.map(lang => ({
-      lang_iso: lang,
-      is_writable: role === LokaliseRole.Translator,
-    }));
+Enable "Enforce SSO" to block password-based login for all org members.
+
+### Step 4: Set Up Contributor Groups for Bulk Management
+```bash
+# Create a contributor group scoped to specific languages and projects
+curl -X POST "https://api.lokalise.com/api2/teams/TEAM_ID/groups" \
+  -H "X-Api-Token: $LOKALISE_API_TOKEN" \
+  -d '{
+    "name": "APAC Translators",
+    "is_reviewer": false,
+    "is_admin": false,
+    "admin_rights": [],
+    "languages": [{"lang_iso": "ja", "is_writable": true}, {"lang_iso": "ko", "is_writable": true}]
+  }'
+```
+
+### Step 5: Audit Access Regularly
+```typescript
+// List all contributors across projects and flag over-privileged users
+const projects = await lok.projects().list();
+for (const proj of projects.items) {
+  const contributors = await lok.contributors().list({ project_id: proj.project_id });
+  const admins = contributors.items.filter(c => c.is_admin);
+  if (admins.length > 3) {
+    console.warn(`Project ${proj.name}: ${admins.length} admins (review needed)`);
   }
-
-  const contributor = await client.contributors().create(projectId, params);
-  console.log(`Added ${email} to project ${projectId} as ${role}`);
-  return contributor;
-}
-
-// List project contributors
-async function listProjectContributors(projectId: string) {
-  const contributors = await client.contributors().list({
-    project_id: projectId,
-  });
-
-  return contributors.items.map(c => ({
-    userId: c.user_id,
-    email: c.email,
-    fullname: c.fullname,
-    isAdmin: c.is_admin,
-    isReviewer: c.is_reviewer,
-    languages: c.languages,
-  }));
 }
 ```
-
-### Step 4: Permission Middleware
-```typescript
-// Express middleware for permission checks
-function requireLokalisePermission(permission: keyof LokalisePermissions) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { lokaliseRole: LokaliseRole };
-
-    if (!checkPermission(user.lokaliseRole, permission)) {
-      return res.status(403).json({
-        error: "Forbidden",
-        message: `Missing permission: ${permission}`,
-        requiredPermission: permission,
-        userRole: user.lokaliseRole,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage in routes
-app.post("/api/translations/upload",
-  requireLokalisePermission("uploadFiles"),
-  uploadHandler
-);
-
-app.delete("/api/keys/:keyId",
-  requireLokalisePermission("manageKeys"),
-  deleteKeyHandler
-);
-
-app.get("/api/translations",
-  requireLokalisePermission("downloadFiles"),
-  downloadHandler
-);
-```
-
-### Step 5: SSO Integration (Enterprise)
-```typescript
-// Map IdP groups to Lokalise roles
-const IDP_GROUP_MAPPING: Record<string, LokaliseRole> = {
-  "Engineering": LokaliseRole.Developer,
-  "Localization-Admins": LokaliseRole.Admin,
-  "Translators-ES": LokaliseRole.Translator,
-  "Translators-FR": LokaliseRole.Translator,
-  "QA-Team": LokaliseRole.Reviewer,
-  "Product": LokaliseRole.Viewer,
-};
-
-// SAML callback handler
-async function handleSamlCallback(samlResponse: any) {
-  const { email, groups } = parseSamlResponse(samlResponse);
-
-  // Determine Lokalise role from IdP groups
-  let role = LokaliseRole.Viewer;  // Default
-  for (const group of groups) {
-    if (IDP_GROUP_MAPPING[group]) {
-      const mappedRole = IDP_GROUP_MAPPING[group];
-      // Use highest privilege role
-      if (roleHierarchy(mappedRole) > roleHierarchy(role)) {
-        role = mappedRole;
-      }
-    }
-  }
-
-  // Provision user in Lokalise if needed
-  await ensureUserExists(email, role);
-
-  return { email, role };
-}
-
-function roleHierarchy(role: LokaliseRole): number {
-  const hierarchy: Record<LokaliseRole, number> = {
-    owner: 100,
-    admin: 90,
-    manager: 80,
-    developer: 70,
-    reviewer: 50,
-    translator: 40,
-    viewer: 10,
-  };
-  return hierarchy[role];
-}
-```
-
-## Output
-- Role definitions implemented
-- Team management APIs
-- Project-level access control
-- Permission middleware active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Permission denied | Wrong role | Check role assignment |
-| SSO mismatch | Group mapping wrong | Update IDP_GROUP_MAPPING |
-| User not found | Not provisioned | Auto-provision on first login |
-| Language access denied | Not in languages array | Update contributor languages |
+| `403` on contributor create | Caller lacks Admin role | Elevate to Admin or Owner |
+| Translator sees all languages | No language scope set | Update contributor with explicit `languages` array |
+| SSO login loop | Mismatched ACS URL | Verify callback URL matches IdP config exactly |
+| Cannot remove Owner | Last owner protection | Transfer ownership before removal |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-// Before allowing action
-if (!checkPermission(user.role, "uploadFiles")) {
-  throw new ForbiddenError("You don't have permission to upload files");
-}
+```bash
+# Bulk add translators from CSV (email,lang)
+while IFS=, read -r email lang; do
+  curl -s -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/contributors" \
+    -H "X-Api-Token: $LOKALISE_API_TOKEN" \
+    -d "[{\"email\":\"$email\",\"languages\":[{\"lang_iso\":\"$lang\",\"is_writable\":true}]}]"
+done < translators.csv
 ```
-
-### Audit User Access
-```typescript
-async function auditProjectAccess(projectId: string) {
-  const contributors = await listProjectContributors(projectId);
-
-  console.log(`Project ${projectId} access audit:`);
-  contributors.forEach(c => {
-    console.log(`  ${c.email}: ${c.isAdmin ? "Admin" : c.isReviewer ? "Reviewer" : "Contributor"}`);
-    if (c.languages) {
-      console.log(`    Languages: ${c.languages.map(l => l.lang_iso).join(", ")}`);
-    }
-  });
-
-  return contributors;
-}
-```
-
-### Bulk Role Update
-```typescript
-async function updateTeamRoles(
-  teamId: number,
-  roleUpdates: Array<{ userId: number; newRole: LokaliseRole }>
-) {
-  for (const update of roleUpdates) {
-    await updateUserRole(teamId, update.userId, update.newRole);
-    // Respect rate limits
-    await new Promise(r => setTimeout(r, 200));
-  }
-}
-```
-
-## Resources
-- [Lokalise Team Management](https://docs.lokalise.com/en/articles/1400472-team-management)
-- [Lokalise Contributors](https://developers.lokalise.com/reference/list-all-contributors)
-- [Lokalise Enterprise](https://lokalise.com/enterprise)
-
-## Next Steps
-For major migrations, see `lokalise-migration-deep-dive`.

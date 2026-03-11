@@ -16,320 +16,131 @@ compatible-with: claude-code, codex, openclaw
 # Exa Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Exa.
+Real gotchas when integrating Exa's neural search API. Exa uses embeddings-based search rather than keyword matching, which creates a different class of failure modes than traditional search APIs.
 
 ## Prerequisites
-- Access to Exa codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Exa API call
-app.post('/checkout', async (req, res) => {
-  const payment = await exaClient.processPayment(req.body);  // 2-5s latency
-  const notification = await exaClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await exaClient.processPayment(data);
-  await exaClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await exaClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => exaClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new ExaClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new ExaClient({
-  apiKey: process.env.EXA_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await exaClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await exaClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await exaClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-exa-signature'];
-    if (!verifyExaSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await exaClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await exaClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof ExaNotFoundError) {
-    return null;
-  }
-  if (error instanceof ExaRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new ExaClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.exa.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new ExaClient({
-  timeout: parseInt(process.env.EXA_TIMEOUT || '30000'),
-  baseUrl: process.env.EXA_BASE_URL || 'https://api.exa.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Exa is down, every request hangs
-for (const user of users) {
-  await exaClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(exaClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Exa is down
-const recommendations = await exaClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await exaClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('exa', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Exa API key configured
+- Understanding of neural vs keyword search differences
+- Familiarity with search result relevance scoring
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Avoid Keyword-Style Queries
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Exa's neural search interprets natural language, not keywords. Boolean operators and exact-match syntax degrade results.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```python
+from exa_py import Exa
+exa = Exa(api_key=os.environ["EXA_API_KEY"])
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+# BAD: keyword-style query returns poor results
+results = exa.search("python AND machine learning OR deep learning 2024")
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+# GOOD: natural language query
+results = exa.search(
+    "recent tutorials on building ML models with Python",
+    num_results=10,
+    use_autoprompt=True  # let Exa optimize the query
+)
+```
+
+### Step 2: Don't Ignore Search Type Selection
+
+Exa offers `neural` and `keyword` search. Using the wrong type silently degrades quality.
+
+```python
+# BAD: using neural search for a specific URL or exact title
+results = exa.search("arxiv.org/abs/2301.00001", type="neural")
+
+# GOOD: use keyword search for exact matches, neural for concepts
+results = exa.search("arxiv.org/abs/2301.00001", type="keyword")
+results_concept = exa.search(
+    "transformer architecture improvements for long context",
+    type="neural"
+)
+```
+
+### Step 3: Handle Content Retrieval Separately
+
+A common mistake is assuming `search()` returns full page content. It returns metadata only unless you request contents.
+
+```python
+# BAD: accessing content that wasn't fetched
+results = exa.search("AI safety research papers")
+text = results.results[0].text  # None! Content not requested
+
+# GOOD: use search_and_contents or get_contents
+results = exa.search_and_contents(
+    "AI safety research papers",
+    text={"max_characters": 3000},
+    highlights=True
+)
+print(results.results[0].text)       # full text
+print(results.results[0].highlights) # key excerpts
+```
+
+### Step 4: Watch Date Filtering Edge Cases
+
+Date filters silently exclude results. Overly narrow windows return empty results without error.
+
+```python
+# BAD: too narrow, may return nothing
+results = exa.search(
+    "breaking news in AI",
+    start_published_date="2024-03-10",
+    end_published_date="2024-03-10"  # single day = few results
+)
+
+# GOOD: reasonable date window with fallback
+results = exa.search(
+    "breaking news in AI",
+    start_published_date="2024-03-01",
+    end_published_date="2024-03-15"
+)
+if not results.results:
+    results = exa.search("breaking news in AI", num_results=5)
+```
+
+### Step 5: Autoprompt Cost Awareness
+
+`use_autoprompt=True` makes an extra LLM call per request, adding latency and cost.
+
+```python
+# BAD: autoprompt on every request in a high-volume loop
+for query in thousands_of_queries:
+    exa.search(query, use_autoprompt=True)  # 2x cost, extra latency
+
+# GOOD: use autoprompt selectively
+results = exa.search(
+    well_formed_query,
+    use_autoprompt=False  # skip when query is already well-structured
+)
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Empty results, no error | Date filter too narrow | Widen date range or remove filter |
+| Low relevance scores | Keyword-style query | Rewrite as natural language |
+| Missing `.text` field | Content not requested | Use `search_and_contents()` |
+| Slow responses | Autoprompt on every call | Disable for pre-optimized queries |
+| 429 rate limit | Burst requests | Add exponential backoff with jitter |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Similarity Search Pitfall
+```python
+# find_similar requires a URL, not a query string
+# BAD:
+results = exa.find_similar("machine learning papers")
+
+# GOOD:
+results = exa.find_similar(
+    "https://arxiv.org/abs/2301.00001",
+    num_results=10
+)
 ```
 
 ## Resources
-- [Exa Security Guide](https://docs.exa.com/security)
-- [Exa Best Practices](https://docs.exa.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Exa API Docs](https://docs.exa.ai)
+- [Search Types Guide](https://docs.exa.ai/reference/search)

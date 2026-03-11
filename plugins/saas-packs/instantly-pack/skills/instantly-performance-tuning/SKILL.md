@@ -16,200 +16,176 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Performance Tuning
 
 ## Overview
-Optimize Instantly API performance with caching, batching, and connection pooling.
+Optimize Instantly cold outreach campaigns for deliverability and API throughput. Focus on lead upload batching, campaign analytics caching, email warmup scheduling, and webhook processing for reply tracking.
 
 ## Prerequisites
-- Instantly SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedInstantlyRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const instantlyLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Instantly
-    const results = await instantlyClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  instantlyLoader.load('id-1'),
-  instantlyLoader.load('id-2'),
-  instantlyLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new InstantlyClient({
-  apiKey: process.env.INSTANTLY_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedInstantlyList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedInstantlyList(cursor =>
-  instantlyClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredInstantlyCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Instantly API key (v1 REST API)
+- Understanding of email sending limits and warmup
+- Redis or database for campaign state caching
+- Webhook endpoint for reply/bounce tracking
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Instantly operations.
+### Step 1: Batch Lead Upload with Rate Limiting
+```typescript
+const INSTANTLY_API = 'https://api.instantly.ai/api/v1';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+async function batchUploadLeads(
+  campaignId: string,
+  leads: Array<{ email: string; first_name?: string; company?: string }>,
+  batchSize = 100
+) {
+  const results = { uploaded: 0, errors: 0 };
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+  for (let i = 0; i < leads.length; i += batchSize) {
+    const batch = leads.slice(i, i + batchSize);
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+    const response = await fetch(`${INSTANTLY_API}/lead/add`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        api_key: process.env.INSTANTLY_API_KEY,
+        campaign_id: campaignId,
+        skip_if_in_workspace: true,
+        leads: batch,
+      }),
+    });
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+    if (response.ok) {
+      results.uploaded += batch.length;
+    } else {
+      results.errors += batch.length;
+    }
+
+    // Respect rate limits: 10 req/sec
+    await new Promise(r => setTimeout(r, 200));
+  }
+  return results;
+}
+```
+
+### Step 2: Cache Campaign Analytics
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const analyticsCache = new LRUCache<string, any>({
+  max: 100,
+  ttl: 1000 * 60 * 5, // 5 min - analytics change slowly
+});
+
+async function getCampaignAnalytics(campaignId: string) {
+  const cacheKey = `analytics:${campaignId}`;
+  const cached = analyticsCache.get(cacheKey);
+  if (cached) return cached;
+
+  const response = await fetch(
+    `${INSTANTLY_API}/analytics/campaign/summary?api_key=${process.env.INSTANTLY_API_KEY}&campaign_id=${campaignId}`
+  );
+  const data = await response.json();
+  analyticsCache.set(cacheKey, data);
+  return data;
+}
+
+async function getAllCampaignMetrics() {
+  const campaigns = await fetch(
+    `${INSTANTLY_API}/campaign/list?api_key=${process.env.INSTANTLY_API_KEY}`
+  ).then(r => r.json());
+
+  return Promise.all(
+    campaigns.map((c: any) => getCampaignAnalytics(c.id))
+  );
+}
+```
+
+### Step 3: Efficient Lead Status Polling
+```typescript
+async function* paginateLeads(campaignId: string, limit = 100) {
+  let skip = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const response = await fetch(`${INSTANTLY_API}/lead/get`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: process.env.INSTANTLY_API_KEY,
+        campaign_id: campaignId,
+        limit,
+        skip,
+      }),
+    });
+
+    const leads = await response.json();
+    if (!leads.length) { hasMore = false; break; }
+
+    yield* leads;
+    skip += limit;
+    await new Promise(r => setTimeout(r, 150));
+  }
+}
+
+// Usage: stream leads without loading all into memory
+for await (const lead of paginateLeads('campaign-123')) {
+  if (lead.status === 'replied') {
+    await processReply(lead);
+  }
+}
+```
+
+### Step 4: Webhook Reply Processing Queue
+```typescript
+const replyQueue: any[] = [];
+
+async function handleInstantlyWebhook(event: any) {
+  if (event.event_type === 'reply_received') {
+    replyQueue.push({
+      leadEmail: event.lead_email,
+      campaignId: event.campaign_id,
+      replyText: event.reply_text,
+      timestamp: Date.now(),
+    });
+  }
+  // Process asynchronously
+  setImmediate(drainReplyQueue);
+}
+
+async function drainReplyQueue() {
+  while (replyQueue.length > 0) {
+    const reply = replyQueue.shift();
+    // Invalidate analytics cache
+    analyticsCache.delete(`analytics:${reply.campaignId}`);
+    await syncReplyToCRM(reply);
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| 429 rate limit | Over 10 req/sec | Add 200ms delay between requests |
+| Duplicate leads | Re-uploading same list | Use `skip_if_in_workspace: true` |
+| Stale analytics | Cached too long | Reduce TTL or invalidate on webhook |
+| Upload timeout | Batch too large | Reduce batch size to 100 leads |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Campaign Health Monitor
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredInstantlyCall(name, () =>
-    cachedInstantlyRequest(`cache:${name}`, fn)
-  );
+async function monitorCampaigns() {
+  const metrics = await getAllCampaignMetrics();
+  return metrics.map((m: any) => ({
+    campaign: m.campaign_name,
+    sent: m.sent,
+    opened: m.opened,
+    replied: m.replied,
+    openRate: ((m.opened / m.sent) * 100).toFixed(1) + '%',
+    replyRate: ((m.replied / m.sent) * 100).toFixed(1) + '%',
+  }));
+}
 ```
 
 ## Resources
-- [Instantly Performance Guide](https://docs.instantly.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `instantly-cost-tuning`.
+- [Instantly API Docs](https://developer.instantly.ai/)
+- [Instantly Rate Limits](https://developer.instantly.ai/rate-limits)

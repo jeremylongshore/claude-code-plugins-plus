@@ -16,224 +16,185 @@ compatible-with: claude-code, codex, openclaw
 # Clay Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Clay integrations.
+Production architecture for Clay-based lead enrichment and data operations. Covers table design, enrichment pipeline patterns, webhook integration, and CRM synchronization flows.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Clay SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Clay account with API access
+- Understanding of Clay tables and enrichment columns
+- CRM integration configured (HubSpot, Salesforce)
+- Webhook endpoint for automation triggers
 
-## Project Structure
-
-```
-my-clay-project/
-├── src/
-│   ├── clay/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── clay/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── clay/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── clay/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── clay/
-│   └── integration/
-│       └── clay/
-├── config/
-│   ├── clay.development.json
-│   ├── clay.staging.json
-│   └── clay.production.json
-└── docs/
-    └── clay/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Clay Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/clay/client.ts
-export class ClayService {
-  private client: ClayClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: ClayConfig) {
-    this.client = new ClayClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('clay');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/clay/errors.ts
-export class ClayServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'ClayServiceError';
-  }
-}
-
-export function wrapClayError(error: unknown): ClayServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/clay/health.ts
-export async function checkClayHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await clayClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Clay    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Clay    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/clay.ts
-export interface ClayConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadClayConfig(): ClayConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./clay.${env}.json`);
-}
+┌─────────────────────────────────────────────────────┐
+│                  Data Sources                        │
+│  CSV Upload │ CRM Import │ API Trigger │ Webhook    │
+└──────┬──────────┬──────────┬──────────────┬─────────┘
+       │          │          │              │
+       ▼          ▼          ▼              ▼
+┌─────────────────────────────────────────────────────┐
+│              Clay Tables                             │
+│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐   │
+│  │ Inbound  │  │ Outbound │  │ Enrichment       │   │
+│  │ Leads    │  │ Targets  │  │ Queue            │   │
+│  └────┬─────┘  └────┬─────┘  └────────┬─────────┘   │
+│       │              │                 │             │
+│       ▼              ▼                 ▼             │
+│  ┌──────────────────────────────────────────────┐    │
+│  │         Enrichment Columns                    │    │
+│  │  Email Finder │ Company Data │ LinkedIn │ AI  │    │
+│  └──────────────────────┬───────────────────────┘    │
+│                         │                            │
+│                         ▼                            │
+│  ┌──────────────────────────────────────────────┐    │
+│  │         Formula & AI Columns                  │    │
+│  │  Lead Score │ ICP Match │ Personalization     │    │
+│  └──────────────────────┬───────────────────────┘    │
+└─────────────────────────┼───────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────┐
+│              Destinations                            │
+│  CRM Push │ Instantly │ Webhook │ CSV Export         │
+└─────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Design Table Schema
+```typescript
+// Table structure for lead enrichment pipeline
+interface ClayTableSchema {
+  // Input columns (from import)
+  company_name: string;
+  company_domain: string;
+  contact_name?: string;
+  linkedin_url?: string;
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+  // Enrichment columns (auto-populated by Clay)
+  company_size?: string;       // From Clearbit/Apollo enrichment
+  industry?: string;           // From company enrichment
+  email?: string;              // From email finder
+  phone?: string;              // From phone finder
+  technologies?: string[];     // From technographics
 
-### Step 3: Add Error Handling
-Implement custom error classes for Clay operations.
+  // Formula columns (computed)
+  icp_score?: number;          // Formula: weighted scoring
+  lead_tier?: 'A' | 'B' | 'C'; // Formula: based on icp_score
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Clay connectivity.
+  // AI columns
+  personalized_intro?: string; // AI: generate intro line
+  pain_points?: string;        // AI: identify from company data
+}
+```
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+### Step 2: Configure Enrichment Waterfall
+```typescript
+// Enrichment priority order for email finding
+const EMAIL_WATERFALL = [
+  { provider: 'apollo', credits: 1 },
+  { provider: 'hunter', credits: 1 },
+  { provider: 'dropcontact', credits: 2 },
+  { provider: 'findymail', credits: 3 },
+];
+
+// API trigger for enrichment
+async function triggerEnrichment(tableId: string, rowIds: string[]) {
+  const response = await fetch('https://api.clay.com/v1/tables/enrich', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${process.env.CLAY_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      table_id: tableId,
+      row_ids: rowIds,
+      columns: ['email', 'company_size', 'industry'],
+    }),
+  });
+  return response.json();
+}
+```
+
+### Step 3: Webhook Integration for Real-Time Processing
+```typescript
+import express from 'express';
+const app = express();
+
+// Clay sends webhook when enrichment completes
+app.post('/webhooks/clay', express.json(), async (req, res) => {
+  const { table_id, row_id, data } = req.body;
+
+  if (data.icp_score >= 80 && data.email) {
+    // High-value lead: push to CRM immediately
+    await pushToCRM({
+      email: data.email,
+      company: data.company_name,
+      score: data.icp_score,
+      tier: data.lead_tier,
+    });
+  }
+
+  if (data.lead_tier === 'A') {
+    // Add to outreach sequence
+    await addToInstantly(data.email, data.personalized_intro);
+  }
+
+  res.json({ status: 'processed' });
+});
+```
+
+### Step 4: ICP Scoring Formula Pattern
+```javascript
+// Clay formula column for ICP scoring
+// Weighted scoring based on enriched data
+
+function calculateICPScore(row) {
+  let score = 0;
+
+  // Company size scoring
+  const sizeScores = { '1-10': 10, '11-50': 30, '51-200': 50, '201-500': 40, '500+': 20 };
+  score += sizeScores[row.company_size] || 0;
+
+  // Industry match
+  const targetIndustries = ['SaaS', 'Technology', 'Software', 'AI'];
+  if (targetIndustries.includes(row.industry)) score += 30;
+
+  // Technology match
+  const targetTech = ['React', 'Node.js', 'AWS', 'Kubernetes'];
+  const techMatches = (row.technologies || []).filter(t => targetTech.includes(t));
+  score += techMatches.length * 10;
+
+  return Math.min(score, 100);
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Clay types |
-| Test isolation | Shared state | Use dependency injection |
+| Enrichment credits exhausted | Too many lookups | Use waterfall pattern, set daily limits |
+| Duplicate records | Re-importing same list | Deduplicate on domain + contact name |
+| Webhook timeout | Processing too slow | Acknowledge immediately, process async |
+| Low email find rate | Bad input data | Validate domains before enrichment |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/clay/{handlers} src/services/clay src/api/clay
-touch src/clay/{client,config,types,errors}.ts
-touch src/services/clay/{index,sync,cache}.ts
+### Quick Table Health Check
+```typescript
+async function checkTableHealth(tableId: string) {
+  const rows = await fetchTableRows(tableId);
+  return {
+    totalRows: rows.length,
+    enriched: rows.filter(r => r.email).length,
+    scored: rows.filter(r => r.icp_score > 0).length,
+    tierA: rows.filter(r => r.lead_tier === 'A').length,
+    emailRate: ((rows.filter(r => r.email).length / rows.length) * 100).toFixed(1) + '%',
+  };
+}
 ```
 
 ## Resources
-- [Clay SDK Documentation](https://docs.clay.com/sdk)
-- [Clay Best Practices](https://docs.clay.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `clay-multi-env-setup`.
+- [Clay API Documentation](https://docs.clay.com/api)
+- [Clay Enrichment Providers](https://docs.clay.com/enrichments)
+- [Clay Formulas Guide](https://docs.clay.com/formulas)

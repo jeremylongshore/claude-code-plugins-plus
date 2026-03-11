@@ -16,195 +16,111 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Deploy Integration
 
 ## Overview
-Deploy PostHog-powered applications to popular platforms with proper secrets management.
+Deploy PostHog analytics integration to production. Covers client-side snippet deployment, server-side event capture with `posthog-node`, reverse proxy setup to avoid ad blockers, and self-hosted PostHog deployment using Docker.
 
 ## Prerequisites
-- PostHog API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- PostHog project API key (starts with `phc_`)
+- PostHog personal API key for server-side operations
+- Platform CLI installed (vercel, docker, or gcloud)
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
-```bash
-# Add PostHog secrets to Vercel
-vercel secrets add posthog_api_key sk_live_***
-vercel secrets add posthog_webhook_secret whsec_***
+### Step 1: Client-Side Integration
+```typescript
+// lib/posthog.ts
+import posthog from "posthog-js";
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "POSTHOG_API_KEY": "@posthog_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+export function initPostHog() {
+  if (typeof window !== "undefined") {
+    posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
+      api_host: process.env.NEXT_PUBLIC_POSTHOG_HOST || "https://us.i.posthog.com",
+      capture_pageview: false, // Manual pageview tracking
+      loaded: (posthog) => {
+        if (process.env.NODE_ENV === "development") posthog.debug();
+      },
+    });
   }
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-posthog-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set PostHog secrets
-fly secrets set POSTHOG_API_KEY=sk_live_***
-fly secrets set POSTHOG_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="posthog-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=POSTHOG_API_KEY=posthog-api-key:latest
-```
-
-## Environment Configuration Pattern
-
+### Step 2: Server-Side Event Capture
 ```typescript
-// config/posthog.ts
-interface PostHogConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// lib/posthog-server.ts
+import { PostHog } from "posthog-node";
 
-export function getPostHogConfig(): PostHogConfig {
-  const env = process.env.NODE_ENV || 'development';
+const posthog = new PostHog(process.env.POSTHOG_API_KEY!, {
+  host: process.env.POSTHOG_HOST || "https://us.i.posthog.com",
+});
 
-  return {
-    apiKey: process.env.POSTHOG_API_KEY!,
-    environment: env as PostHogConfig['environment'],
-    webhookSecret: process.env.POSTHOG_WEBHOOK_SECRET,
-  };
+export async function trackServerEvent(
+  distinctId: string,
+  event: string,
+  properties?: Record<string, any>
+) {
+  posthog.capture({ distinctId, event, properties });
+  await posthog.flush();
 }
 ```
 
-## Health Check Endpoint
-
+### Step 3: Reverse Proxy (Avoid Ad Blockers)
 ```typescript
-// api/health.ts
-export async function GET() {
-  const posthogStatus = await checkPostHogConnection();
-
-  return Response.json({
-    status: posthogStatus ? 'healthy' : 'degraded',
-    services: {
-      posthog: posthogStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
+// next.config.js - Proxy PostHog through your domain
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: "/ingest/static/:path*",
+        destination: "https://us-assets.i.posthog.com/static/:path*",
+      },
+      {
+        source: "/ingest/:path*",
+        destination: "https://us.i.posthog.com/:path*",
+      },
+    ];
+  },
+};
 ```
 
-## Instructions
+### Step 4: Self-Hosted Docker Deployment
+```bash
+# Deploy PostHog self-hosted
+git clone https://github.com/PostHog/posthog.git
+cd posthog
+docker compose -f docker-compose.hobby.yml up -d
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+# Your PostHog instance at http://localhost:8000
+```
 
-### Step 2: Configure Secrets
-Store PostHog API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with PostHog integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm PostHog connectivity.
-
-## Output
-- Application deployed to production
-- PostHog secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+### Step 5: Vercel Deployment
+```bash
+vercel env add NEXT_PUBLIC_POSTHOG_KEY production
+vercel env add NEXT_PUBLIC_POSTHOG_HOST production
+vercel env add POSTHOG_API_KEY production  # Server-side key
+vercel --prod
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Events not appearing | Wrong API key | Verify `phc_` project key |
+| Ad blocker blocking | Direct PostHog requests | Set up reverse proxy |
+| Self-hosted slow | Under-provisioned | Increase Docker resources |
+| Missing server events | Not flushing | Call `posthog.flush()` in serverless |
 
 ## Examples
 
-### Quick Deploy Script
-```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add posthog_api_key "$POSTHOG_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set POSTHOG_API_KEY="$POSTHOG_API_KEY"
-    fly deploy
-    ;;
-esac
+### Health Check
+```typescript
+export async function GET() {
+  const hasKey = !!process.env.POSTHOG_API_KEY;
+  return Response.json({ status: hasKey ? "configured" : "missing_key" });
+}
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [PostHog Deploy Guide](https://docs.posthog.com/deploy)
+- [PostHog Documentation](https://posthog.com/docs)
+- [PostHog Self-Hosting](https://posthog.com/docs/self-host)
+- [PostHog Node SDK](https://posthog.com/docs/libraries/node)
 
 ## Next Steps
 For webhook handling, see `posthog-webhooks-events`.

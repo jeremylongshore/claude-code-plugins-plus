@@ -16,206 +16,180 @@ compatible-with: claude-code, codex, openclaw
 # FireCrawl Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with FireCrawl.
+Manage scraped web content from FireCrawl pipelines. Covers content extraction filtering, HTML sanitization, markdown cleaning, structured data validation, and storage patterns for crawled content.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- FireCrawl SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('FireCrawl request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupFireCrawlData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.firecrawlLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupFireCrawlData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const firecrawlData = await firecrawlClient.getUserData(userId);
-
-  return {
-    source: 'FireCrawl',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: firecrawlData.profile,
-      activities: firecrawlData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from FireCrawl
-  await firecrawlClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.firecrawlUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'firecrawl',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await firecrawlClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- FireCrawl API key
+- `@mendable/firecrawl-js` SDK
+- Storage system for crawled content
+- Understanding of web scraping data formats
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all FireCrawl data by sensitivity level.
+### Step 1: Content Format Selection and Cleaning
+```typescript
+import FirecrawlApp from '@mendable/firecrawl-js';
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+const firecrawl = new FirecrawlApp({
+  apiKey: process.env.FIRECRAWL_API_KEY!,
+});
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+// Scrape with controlled output formats
+async function scrapeClean(url: string) {
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ['markdown'],       // Markdown is cleanest for LLMs
+    onlyMainContent: true,       // Strip nav, footer, sidebar
+    excludeTags: ['script', 'style', 'nav', 'footer', 'iframe'],
+    waitFor: 2000,
+  });
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+  return {
+    markdown: cleanMarkdown(result.markdown || ''),
+    metadata: result.metadata,
+    url,
+    scrapedAt: new Date().toISOString(),
+  };
+}
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+function cleanMarkdown(md: string): string {
+  return md
+    .replace(/\n{3,}/g, '\n\n')        // Collapse multiple newlines
+    .replace(/\[.*?\]\(javascript:.*?\)/g, '') // Remove JS links
+    .replace(/!\[.*?\]\(data:.*?\)/g, '') // Remove inline data URIs
+    .replace(/<!--[\s\S]*?-->/g, '')    // Remove HTML comments
+    .trim();
+}
+```
+
+### Step 2: Structured Data Extraction and Validation
+```typescript
+import { z } from 'zod';
+
+const ArticleSchema = z.object({
+  title: z.string().min(1),
+  author: z.string().optional(),
+  publishedDate: z.string().optional(),
+  content: z.string().min(50),
+  wordCount: z.number(),
+});
+
+async function extractArticle(url: string) {
+  const result = await firecrawl.scrapeUrl(url, {
+    formats: ['extract'],
+    extract: {
+      schema: {
+        type: 'object',
+        properties: {
+          title: { type: 'string' },
+          author: { type: 'string' },
+          publishedDate: { type: 'string' },
+          content: { type: 'string' },
+        },
+        required: ['title', 'content'],
+      },
+    },
+  });
+
+  const extracted = result.extract;
+  if (!extracted) throw new Error('Extraction failed');
+
+  return ArticleSchema.parse({
+    ...extracted,
+    wordCount: extracted.content?.split(/\s+/).length || 0,
+  });
+}
+```
+
+### Step 3: Batch Crawl with Storage Pipeline
+```typescript
+import { writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
+
+async function crawlAndStore(
+  baseUrl: string,
+  outputDir: string,
+  options?: { maxPages?: number; includePaths?: string[] }
+) {
+  mkdirSync(outputDir, { recursive: true });
+
+  const crawlResult = await firecrawl.crawlUrl(baseUrl, {
+    limit: options?.maxPages || 50,
+    includePaths: options?.includePaths,
+    scrapeOptions: {
+      formats: ['markdown'],
+      onlyMainContent: true,
+    },
+  });
+
+  const manifest: Array<{ url: string; path: string; size: number }> = [];
+
+  for (const page of crawlResult.data || []) {
+    const slug = new URL(page.metadata?.sourceURL || baseUrl)
+      .pathname.replace(/\//g, '_').replace(/^_|_$/g, '') || 'index';
+    const filename = `${slug}.md`;
+    const filePath = join(outputDir, filename);
+
+    const content = cleanMarkdown(page.markdown || '');
+    writeFileSync(filePath, content);
+
+    manifest.push({
+      url: page.metadata?.sourceURL || baseUrl,
+      path: filename,
+      size: content.length,
+    });
+  }
+
+  writeFileSync(join(outputDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
+  return manifest;
+}
+```
+
+### Step 4: Content Deduplication
+```typescript
+import { createHash } from 'crypto';
+
+function contentHash(text: string): string {
+  return createHash('sha256').update(text.trim().toLowerCase()).digest('hex');
+}
+
+function deduplicatePages(pages: Array<{ url: string; content: string }>) {
+  const seen = new Map<string, string>(); // hash -> url
+  const unique: typeof pages = [];
+  const duplicates: Array<{ url: string; duplicateOf: string }> = [];
+
+  for (const page of pages) {
+    const hash = contentHash(page.content);
+    if (seen.has(hash)) {
+      duplicates.push({ url: page.url, duplicateOf: seen.get(hash)! });
+    } else {
+      seen.set(hash, page.url);
+      unique.push(page);
+    }
+  }
+
+  return { unique, duplicates };
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| Empty content | Dynamic JS not loaded | Increase `waitFor` timeout |
+| Garbage in markdown | Bad HTML cleanup | Use `onlyMainContent` and `excludeTags` |
+| Duplicate pages | URL aliases or redirects | Hash content for deduplication |
+| Large file sizes | Full HTML stored | Use markdown format only |
 
 ## Examples
 
-### Quick PII Scan
+### Documentation Scraper
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
-
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('FireCrawl response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+const docs = await crawlAndStore('https://docs.example.com', './scraped-docs', {
+  maxPages: 100,
+  includePaths: ['/docs/*', '/api/*'],
+});
+console.log(`Scraped ${docs.length} pages`);
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [FireCrawl Privacy Guide](https://docs.firecrawl.com/privacy)
-
-## Next Steps
-For enterprise access control, see `firecrawl-enterprise-rbac`.
+- [FireCrawl Documentation](https://docs.firecrawl.dev)
+- [FireCrawl Scrape Options](https://docs.firecrawl.dev/features/scrape)

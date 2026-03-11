@@ -16,68 +16,28 @@ compatible-with: claude-code, codex, openclaw
 # Databricks CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Databricks using GitHub Actions and Asset Bundles.
+Automate Databricks deployments with Asset Bundles and GitHub Actions. Covers bundle validation, unit testing notebooks, deploying to staging/production, and integration testing against Databricks workspaces.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
 - Databricks workspace with service principal
-- Asset Bundles project structure
+- Databricks CLI v0.200+ installed
+- GitHub secrets for authentication
+- Asset Bundle (`databricks.yml`) configured
 
 ## Instructions
 
-### Step 1: Configure Service Principal
-
-```bash
-# Create service principal in Databricks
-databricks service-principals create --json '{
-  "display_name": "GitHub Actions CI",
-  "active": true
-}'
-
-# Note the application_id returned
-
-# Create OAuth secret
-databricks service-principal-secrets create \
-  --service-principal-id <application_id>
-
-# Grant permissions to service principal
-databricks permissions update workspace --json '{
-  "access_control_list": [{
-    "service_principal_name": "<application_id>",
-    "permission_level": "CAN_MANAGE"
-  }]
-}'
-```
-
-### Step 2: Configure GitHub Secrets
-
-```bash
-# Set GitHub secrets
-gh secret set DATABRICKS_HOST --body "https://adb-1234567890.1.azuredatabricks.net"
-gh secret set DATABRICKS_CLIENT_ID --body "your-client-id"
-gh secret set DATABRICKS_CLIENT_SECRET --body "your-client-secret"
-
-# For staging/prod environments
-gh secret set DATABRICKS_HOST_STAGING --body "https://staging.azuredatabricks.net"
-gh secret set DATABRICKS_HOST_PROD --body "https://prod.azuredatabricks.net"
-```
-
-### Step 3: Create GitHub Actions Workflow
-
+### Step 1: GitHub Actions for Bundle Validation
 ```yaml
 # .github/workflows/databricks-ci.yml
-name: Databricks CI/CD
+name: Databricks CI
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main]
-
-env:
-  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-  DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
-  DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+    paths:
+      - 'src/**'
+      - 'resources/**'
+      - 'databricks.yml'
+      - 'tests/**'
 
 jobs:
   validate:
@@ -85,250 +45,165 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-          cache: 'pip'
-
-      - name: Install dependencies
+      - name: Install Databricks CLI
         run: |
-          pip install databricks-cli databricks-sdk pytest
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      - name: Validate Asset Bundle
+      - name: Validate bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
         run: databricks bundle validate
 
-      - name: Run unit tests
-        run: pytest tests/unit/ -v --tb=short
+      - name: Run Python unit tests
+        run: |
+          pip install pytest pyspark delta-spark
+          pytest tests/unit/ -v --tb=short
 
   deploy-staging:
     needs: validate
-    if: github.ref == 'refs/heads/develop'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    environment: staging
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_STAGING }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
-
-      - name: Deploy to Staging
-        run: |
-          databricks bundle deploy -t staging
-
-      - name: Run Integration Tests
-        run: |
-          # Trigger test job and wait for completion
-          RUN_ID=$(databricks bundle run -t staging integration-tests | jq -r '.run_id')
-          databricks runs get --run-id $RUN_ID --wait
-          # Check result
-          RESULT=$(databricks runs get --run-id $RUN_ID | jq -r '.state.result_state')
-          if [ "$RESULT" != "SUCCESS" ]; then
-            echo "Integration tests failed!"
-            exit 1
-          fi
-
-  deploy-production:
-    needs: [validate, deploy-staging]
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment:
-      name: production
-      url: ${{ secrets.DATABRICKS_HOST_PROD }}
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install Databricks CLI
-        run: pip install databricks-cli
-
-      - name: Deploy to Production
-        run: |
-          databricks bundle deploy -t prod
-
-      - name: Verify Deployment
-        run: |
-          databricks bundle summary -t prod
-          # Trigger smoke test
-          databricks bundle run -t prod smoke-test
-```
-
-### Step 4: PR Validation Workflow
-
-```yaml
-# .github/workflows/pr-validation.yml
-name: PR Validation
-
-on:
-  pull_request:
-    branches: [main, develop]
-
-jobs:
-  lint-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Install dependencies
-        run: |
-          pip install ruff mypy pytest pytest-cov databricks-sdk
-
-      - name: Lint with ruff
-        run: ruff check src/
-
-      - name: Type check with mypy
-        run: mypy src/ --ignore-missing-imports
-
-      - name: Run tests with coverage
-        run: pytest tests/unit/ --cov=src --cov-report=xml
-
-      - name: Upload coverage
-        uses: codecov/codecov-action@v4
-        with:
-          files: coverage.xml
-
-  bundle-validation:
-    runs-on: ubuntu-latest
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
-      DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
-      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Databricks CLI
-        run: pip install databricks-cli
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
 
-      - name: Validate bundle for all targets
-        run: |
-          databricks bundle validate -t dev
-          databricks bundle validate -t staging
-          databricks bundle validate -t prod
-
-      - name: Check for breaking changes
-        run: |
-          # Compare job configurations
-          databricks bundle summary -t prod --output json > current.json
-          # Add logic to detect breaking changes
-```
-
-### Step 5: Nightly Test Workflow
-
-```yaml
-# .github/workflows/nightly-tests.yml
-name: Nightly Tests
-
-on:
-  schedule:
-    - cron: '0 2 * * *'  # 2 AM UTC daily
-  workflow_dispatch:
-
-jobs:
-  integration-tests:
-    runs-on: ubuntu-latest
-    env:
-      DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_STAGING }}
-      DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
-      DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: pip install databricks-cli
-
-      - name: Run full integration test suite
-        run: |
-          databricks bundle deploy -t staging
-          RUN_ID=$(databricks bundle run -t staging full-integration-tests | jq -r '.run_id')
-          databricks runs get --run-id $RUN_ID --wait
-
-      - name: Generate test report
-        if: always()
-        run: |
-          # Download test results
-          databricks fs cp dbfs:/test-results/latest/ ./test-results/ --recursive
-
-      - name: Upload test artifacts
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: test-results
-          path: test-results/
-
-      - name: Notify on failure
-        if: failure()
-        uses: slackapi/slack-github-action@v1
-        with:
-          channel-id: 'data-engineering-alerts'
-          slack-message: 'Nightly tests failed! Check ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+      - name: Deploy to staging
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: databricks bundle deploy --target staging
 ```
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Staging deployment on merge to develop
-- Production deployment on merge to main
+### Step 2: Unit Tests for Notebooks
+```python
+# tests/unit/test_transformations.py
+import pytest
+from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType, StructField, StringType, IntegerType
+
+@pytest.fixture(scope="session")
+def spark():
+    return SparkSession.builder.master("local[*]").getOrCreate()
+
+def test_clean_events(spark):
+    """Test silver layer cleaning logic."""
+    from src.transformation.silver_clean_events import clean_events
+
+    schema = StructType([
+        StructField("event_id", StringType()),
+        StructField("user_id", StringType()),
+        StructField("event_type", StringType()),
+        StructField("timestamp", StringType()),
+    ])
+
+    raw_data = [
+        ("1", "user-1", "click", "2024-01-01T00:00:00Z"),
+        ("1", "user-1", "click", "2024-01-01T00:00:00Z"),  # Duplicate
+        ("2", None, "click", "2024-01-02T00:00:00Z"),       # Null user
+    ]
+
+    df = spark.createDataFrame(raw_data, schema)
+    result = clean_events(df)
+
+    assert result.count() == 1  # Deduped and nulls removed
+    assert result.first()["user_id"] == "user-1"
+
+def test_aggregate_metrics(spark):
+    """Test gold layer aggregation."""
+    from src.aggregation.gold_daily_metrics import aggregate_daily
+
+    # Create test data...
+    result = aggregate_daily(spark, "2024-01-01")
+    assert result.count() > 0
+```
+
+### Step 3: Deploy to Production on Merge
+```yaml
+# .github/workflows/databricks-deploy.yml
+name: Databricks Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'resources/**'
+      - 'databricks.yml'
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Validate bundle
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+        run: databricks bundle validate --target prod
+
+      - name: Deploy to production
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST_PROD }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN_PROD }}
+        run: |
+          databricks bundle deploy --target prod
+          databricks bundle run daily_etl --target prod --no-wait
+```
+
+### Step 4: Integration Tests
+```yaml
+  integration-tests:
+    needs: deploy-staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        run: curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+
+      - name: Run integration test job
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          # Run the test notebook on staging
+          databricks bundle run integration_tests --target staging
+
+      - name: Verify output tables
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          databricks sql execute \
+            --statement "SELECT COUNT(*) FROM staging_catalog.silver.clean_events WHERE date = current_date()"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Auth failed | Invalid credentials | Regenerate service principal secret |
-| Bundle validation failed | Invalid YAML | Run `databricks bundle validate` locally |
-| Deployment timeout | Slow cluster startup | Use warm pools or increase timeout |
-| Tests failed | Code regression | Fix code and re-run |
+| Bundle validation fails | Invalid YAML | Run `databricks bundle validate` locally first |
+| Auth error in CI | Token expired | Use service principal with OIDC |
+| Test cluster timeout | Cluster not started | Increase timeout or use existing cluster |
+| Deploy conflict | Concurrent deployments | Use GitHub environments with concurrency limit |
 
 ## Examples
 
-### Matrix Testing (Multiple DBR Versions)
-```yaml
-jobs:
-  test-matrix:
-    strategy:
-      matrix:
-        dbr_version: ['13.3', '14.3', '15.1']
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Test on DBR ${{ matrix.dbr_version }}
-        run: |
-          databricks bundle deploy -t test-${{ matrix.dbr_version }}
-          databricks bundle run -t test-${{ matrix.dbr_version }} tests
-```
-
-### Branch Protection Rules
-```yaml
-# Set via GitHub API or UI
-required_status_checks:
-  - "lint-and-test"
-  - "bundle-validation"
-required_reviews: 1
-dismiss_stale_reviews: true
+### Quick Local Validation
+```bash
+# Validate and see what would be deployed
+databricks bundle validate --target staging
+databricks bundle deploy --target staging --dry-run
 ```
 
 ## Resources
-- [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/index.html)
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Service Principal Auth](https://docs.databricks.com/dev-tools/auth.html#oauth-machine-to-machine-m2m)
-
-## Next Steps
-For deployment patterns, see `databricks-deploy-integration`.
+- [Databricks Asset Bundles](https://docs.databricks.com/dev-tools/bundles/)
+- [Databricks CLI Reference](https://docs.databricks.com/dev-tools/cli/)
+- [Databricks GitHub Actions](https://github.com/databricks/setup-cli)

@@ -16,236 +16,86 @@ compatible-with: claude-code, codex, openclaw
 # Exa Observability
 
 ## Overview
-Set up comprehensive observability for Exa integrations.
+Monitor Exa AI search API performance, result quality, and cost efficiency. Key metrics include search latency (Exa neural search typically takes 500-2000ms), result relevance (measured by click-through or downstream usage), search volume by type (neural vs keyword vs auto), per-search cost tracking, and cache hit rates for repeated queries. Since Exa charges per search, tracking search efficiency directly impacts cost.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Exa API integration in production
+- Metrics backend (Prometheus, Datadog, or equivalent)
+- Request logging infrastructure
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `exa_requests_total` | Counter | Total API requests |
-| `exa_request_duration_seconds` | Histogram | Request latency |
-| `exa_errors_total` | Counter | Error count by type |
-| `exa_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
+### Step 1: Instrument the Exa Client
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+import Exa from 'exa-js';
 
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'exa_requests_total',
-  help: 'Total Exa API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'exa_request_duration_seconds',
-  help: 'Exa request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'exa_errors_total',
-  help: 'Exa errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
+async function trackedSearch(exa: Exa, query: string, options: any) {
+  const start = performance.now();
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+    const results = await exa.search(query, options);
+    const duration = performance.now() - start;
+    emitHistogram('exa_search_duration_ms', duration, { type: options.type || 'auto' });
+    emitCounter('exa_searches_total', 1, { type: options.type || 'auto', status: 'success' });
+    emitGauge('exa_results_count', results.results.length, { type: options.type || 'auto' });
+    return results;
+  } catch (err: any) {
+    emitCounter('exa_searches_total', 1, { status: 'error', code: err.status });
+    throw err;
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
+### Step 2: Track Result Quality
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('exa-client');
-
-async function tracedExaCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`exa.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+// Measure whether search results are actually used by downstream consumers
+function trackResultUsage(searchId: string, resultIndex: number, action: 'clicked' | 'used_in_context' | 'discarded') {
+  emitCounter('exa_result_usage', 1, { action, position: String(resultIndex) });
+  // Results at position 0-2 should have high usage; if not, query needs tuning
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'exa',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logExaOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'exa',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
+### Step 3: Monitor Search Budget
+```bash
+# Check remaining search quota
+curl -s https://api.exa.ai/v1/usage \
+  -H "x-api-key: $EXA_API_KEY" | \
+  jq '{searches_today, searches_this_month, monthly_limit, budget_remaining_pct: (1 - .searches_this_month / .monthly_limit) * 100}'
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 4: Configure Alerts
 ```yaml
-# exa_alerts.yaml
 groups:
-  - name: exa_alerts
+  - name: exa
     rules:
-      - alert: ExaHighErrorRate
-        expr: |
-          rate(exa_errors_total[5m]) /
-          rate(exa_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Exa error rate > 5%"
-
       - alert: ExaHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(exa_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Exa P95 latency > 2s"
-
-      - alert: ExaDown
-        expr: up{job="exa"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Exa integration is down"
+        expr: histogram_quantile(0.95, rate(exa_search_duration_ms_bucket[5m])) > 3000
+        annotations: { summary: "Exa search P95 latency exceeds 3 seconds" }
+      - alert: ExaBudgetLow
+        expr: exa_monthly_searches_remaining < 1000
+        annotations: { summary: "Exa monthly search budget nearly exhausted" }
+      - alert: ExaLowResultQuality
+        expr: rate(exa_result_usage{action="discarded"}[1h]) / rate(exa_result_usage[1h]) > 0.5
+        annotations: { summary: "Over 50% of Exa search results being discarded" }
+      - alert: ExaApiErrors
+        expr: rate(exa_searches_total{status="error"}[5m]) > 0.1
+        annotations: { summary: "Exa API errors detected" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Exa Request Rate",
-      "targets": [{
-        "expr": "rate(exa_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Exa Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(exa_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Build a Search Efficiency Dashboard
+Key panels: search volume by type (neural/keyword/auto), latency p50/p95, results per search distribution, result usage rate (used vs discarded), daily cost tracking, and cache hit rate. Low result counts with high latency indicate poorly formed queries.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| `429 Too Many Requests` | Rate limit exceeded | Implement exponential backoff and request queue |
+| Zero results returned | Query too specific or domain filter too narrow | Broaden query, remove `includeDomains` filter |
+| Latency spike to 5s+ | Neural search on complex query | Use `type: "keyword"` for simpler lookups |
+| Monthly budget exhausted | Uncapped search volume | Add application-level search budget tracking |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick latency benchmark for Exa search
+time curl -s -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -d '{"query": "test search", "numResults": 5, "type": "auto"}' -o /dev/null
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Exa Observability Guide](https://docs.exa.com/observability)
-
-## Next Steps
-For incident response, see `exa-incident-runbook`.

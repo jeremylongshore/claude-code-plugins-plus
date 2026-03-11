@@ -16,206 +16,184 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Vast.ai.
+Manage training data and model artifacts securely on Vast.ai GPU instances. Covers secure data transfer to instances, training data encryption, model checkpoint management, and instance cleanup to prevent data leakage.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Vast.ai SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Vast.ai request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupVast.aiData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.vastaiLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupVast.aiData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const vastaiData = await vastaiClient.getUserData(userId);
-
-  return {
-    source: 'Vast.ai',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: vastaiData.profile,
-      activities: vastaiData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Vast.ai
-  await vastaiClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.vastaiUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'vastai',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await vastaiClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Vast.ai account with SSH access
+- Understanding of GPU instance lifecycle
+- Encryption tools (gpg, openssl)
+- rsync for data transfer
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Vast.ai data by sensitivity level.
+### Step 1: Encrypted Data Transfer
+```bash
+#!/bin/bash
+# scripts/secure-upload.sh
+# Encrypt data before sending to Vast.ai instance
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+INSTANCE_IP=$1
+INSTANCE_PORT=$2
+DATA_DIR=$3
+ENCRYPTION_KEY=${ENCRYPTION_KEY:-""}
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+if [ -z "$ENCRYPTION_KEY" ]; then
+  echo "ERROR: Set ENCRYPTION_KEY environment variable"
+  exit 1
+fi
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+# Compress and encrypt
+tar czf - "$DATA_DIR" | \
+  openssl enc -aes-256-cbc -salt -pbkdf2 -pass env:ENCRYPTION_KEY \
+  > /tmp/data.tar.gz.enc
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+# Transfer encrypted archive
+rsync -avz --progress \
+  -e "ssh -p $INSTANCE_PORT -o StrictHostKeyChecking=no" \
+  /tmp/data.tar.gz.enc "root@${INSTANCE_IP}:/workspace/"
+
+# Decrypt on instance
+ssh -p "$INSTANCE_PORT" "root@${INSTANCE_IP}" << 'REMOTE'
+  cd /workspace
+  openssl enc -d -aes-256-cbc -pbkdf2 -pass env:ENCRYPTION_KEY \
+    -in data.tar.gz.enc | tar xzf -
+  rm data.tar.gz.enc
+REMOTE
+
+rm /tmp/data.tar.gz.enc
+echo "Secure upload complete"
+```
+
+### Step 2: Training Data Validation
+```python
+import json
+from pathlib import Path
+
+def validate_training_data(data_dir: str) -> dict:
+    """Validate training data before uploading to Vast.ai."""
+    issues = []
+    stats = {"files": 0, "total_size_mb": 0}
+
+    for path in Path(data_dir).rglob("*"):
+        if path.is_file():
+            stats["files"] += 1
+            stats["total_size_mb"] += path.stat().st_size / 1_048_576
+
+            # Check for accidentally included secrets
+            if path.name in [".env", "credentials.json", "secrets.yaml"]:
+                issues.append(f"SECRET FILE: {path}")
+
+            # Check for PII in JSONL training files
+            if path.suffix == ".jsonl":
+                with open(path) as f:
+                    for i, line in enumerate(f):
+                        record = json.loads(line)
+                        text = json.dumps(record)
+                        if check_pii(text):
+                            issues.append(f"PII in {path}:{i+1}")
+
+    return {"stats": stats, "issues": issues, "safe": len(issues) == 0}
+
+def check_pii(text: str) -> bool:
+    """Basic PII detection."""
+    import re
+    patterns = [
+        r'\b[\w.+-]+@[\w-]+\.[\w.]+\b',  # Email
+        r'\b\d{3}-\d{2}-\d{4}\b',          # SSN
+        r'\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b',  # Credit card
+    ]
+    return any(re.search(p, text) for p in patterns)
+```
+
+### Step 3: Model Checkpoint Management
+```python
+import subprocess
+import json
+from datetime import datetime
+
+def download_checkpoints(
+    instance_id: int,
+    remote_dir: str = "/workspace/checkpoints",
+    local_dir: str = "./checkpoints"
+):
+    """Download model checkpoints from Vast.ai instance."""
+    info = get_instance_info(instance_id)
+
+    Path(local_dir).mkdir(parents=True, exist_ok=True)
+
+    subprocess.run([
+        "rsync", "-avz", "--progress",
+        "--include=*.pt", "--include=*.safetensors",
+        "--include=*.json", "--exclude=*",
+        "-e", f"ssh -p {info['ssh_port']}",
+        f"root@{info['ssh_host']}:{remote_dir}/",
+        f"{local_dir}/"
+    ], check=True)
+
+    # Create manifest
+    manifest = {
+        "downloaded_at": datetime.utcnow().isoformat(),
+        "instance_id": instance_id,
+        "files": [str(p) for p in Path(local_dir).glob("*")],
+    }
+
+    with open(f"{local_dir}/manifest.json", "w") as f:
+        json.dump(manifest, f, indent=2)
+
+    return manifest
+```
+
+### Step 4: Secure Instance Cleanup
+```python
+def secure_destroy_instance(instance_id: int):
+    """Securely wipe data before destroying instance."""
+    info = get_instance_info(instance_id)
+
+    # Wipe sensitive directories on instance
+    try:
+        subprocess.run([
+            "ssh", "-p", str(info["ssh_port"]),
+            f"root@{info['ssh_host']}",
+            "rm -rf /workspace/data /workspace/checkpoints /workspace/*.env && "
+            "echo 'Data wiped'"
+        ], timeout=30, check=True)
+    except Exception as e:
+        print(f"Warning: cleanup failed ({e}), destroying anyway")
+
+    # Destroy the instance
+    subprocess.run(
+        ["vastai", "destroy", "instance", str(instance_id)],
+        check=True
+    )
+    print(f"Instance {instance_id} destroyed")
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| Secrets in training data | Unvalidated dataset | Run `validate_training_data` before upload |
+| Data left on instance | Instance destroyed without cleanup | Use `secure_destroy_instance` |
+| Transfer interrupted | Network issue | Use rsync (resumes partial transfers) |
+| Unencrypted transfer | Forgot encryption step | Always use `secure-upload.sh` script |
 
 ## Examples
 
-### Quick PII Scan
-```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
+### Full Secure Training Pipeline
+```python
+# 1. Validate data
+result = validate_training_data("./training-data")
+assert result["safe"], f"Data issues: {result['issues']}"
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Vast.ai response:', safeData);
-```
+# 2. Upload encrypted
+os.system(f"./scripts/secure-upload.sh {ip} {port} ./training-data")
 
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+# 3. Train on instance...
+
+# 4. Download results and cleanup
+download_checkpoints(instance_id)
+secure_destroy_instance(instance_id)
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Vast.ai Privacy Guide](https://docs.vastai.com/privacy)
-
-## Next Steps
-For enterprise access control, see `vastai-enterprise-rbac`.
+- [Vast.ai Security](https://vast.ai/docs/security)
+- [Vast.ai CLI](https://vast.ai/docs/cli/commands)

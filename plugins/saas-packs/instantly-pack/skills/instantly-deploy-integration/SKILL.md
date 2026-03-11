@@ -16,195 +16,120 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Deploy Integration
 
 ## Overview
-Deploy Instantly-powered applications to popular platforms with proper secrets management.
+Deploy applications integrating with Instantly's email outreach API. Covers deploying webhook receivers for email engagement events, campaign management endpoints, and CRM sync services with proper API credential management.
 
 ## Prerequisites
-- Instantly API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Instantly API key stored in `INSTANTLY_API_KEY` environment variable
+- Application with webhook endpoint for email events
+- Platform CLI installed (vercel, docker, or gcloud)
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Configure Secrets
 ```bash
-# Add Instantly secrets to Vercel
-vercel secrets add instantly_api_key sk_live_***
-vercel secrets add instantly_webhook_secret whsec_***
+# Vercel
+vercel env add INSTANTLY_API_KEY production
+vercel env add INSTANTLY_WEBHOOK_SECRET production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Docker
+echo "INSTANTLY_API_KEY=your-key" >> .env.production
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "INSTANTLY_API_KEY": "@instantly_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
+### Step 2: Deploy Campaign Management API
+```typescript
+// api/campaigns.ts
+export async function GET() {
+  const response = await fetch("https://api.instantly.ai/api/v1/campaigns", {
+    headers: { "Authorization": `Bearer ${process.env.INSTANTLY_API_KEY}` },
+  });
+  return Response.json(await response.json());
+}
+
+export async function POST(req: Request) {
+  const { name, sendingAccounts, schedule } = await req.json();
+
+  const response = await fetch("https://api.instantly.ai/api/v1/campaigns", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.INSTANTLY_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ name, sending_accounts: sendingAccounts, schedule }),
+  });
+
+  return Response.json(await response.json());
 }
 ```
 
-## Fly.io Deployment
+### Step 3: Webhook Receiver Deployment
+```typescript
+// api/webhooks/instantly.ts
+export async function POST(req: Request) {
+  const apiKey = req.headers.get("x-api-key");
+  if (apiKey !== process.env.INSTANTLY_WEBHOOK_SECRET) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
-### fly.toml
-```toml
-app = "my-instantly-app"
-primary_region = "iad"
+  const { event_type, data } = await req.json();
 
-[env]
-  NODE_ENV = "production"
+  switch (event_type) {
+    case "email.replied":
+      await syncReplyToCRM(data);
+      break;
+    case "email.bounced":
+      await handleBounce(data);
+      break;
+  }
 
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
+  return Response.json({ received: true });
+}
 ```
 
-### Secrets
-```bash
-# Set Instantly secrets
-fly secrets set INSTANTLY_API_KEY=sk_live_***
-fly secrets set INSTANTLY_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+### Step 4: Docker Deployment
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
 ```
 
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="instantly-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=INSTANTLY_API_KEY=instantly-api-key:latest
-```
-
-## Environment Configuration Pattern
-
+### Step 5: Health Check
 ```typescript
-// config/instantly.ts
-interface InstantlyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getInstantlyConfig(): InstantlyConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.INSTANTLY_API_KEY!,
-    environment: env as InstantlyConfig['environment'],
-    webhookSecret: process.env.INSTANTLY_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
 export async function GET() {
-  const instantlyStatus = await checkInstantlyConnection();
-
-  return Response.json({
-    status: instantlyStatus ? 'healthy' : 'degraded',
-    services: {
-      instantly: instantlyStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+  try {
+    const response = await fetch("https://api.instantly.ai/api/v1/campaigns?limit=1", {
+      headers: { "Authorization": `Bearer ${process.env.INSTANTLY_API_KEY}` },
+    });
+    return Response.json({ status: response.ok ? "healthy" : "degraded" });
+  } catch {
+    return Response.json({ status: "unhealthy" }, { status: 503 });
+  }
 }
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Instantly API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Instantly integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Instantly connectivity.
-
-## Output
-- Application deployed to production
-- Instantly secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| API auth failure | Invalid key | Regenerate in Instantly dashboard |
+| Webhook not received | URL unreachable | Verify HTTPS endpoint accessibility |
+| Campaign not sending | Account warming | Check sending account warmup status |
+| Rate limited | Too many API calls | Implement request throttling |
 
 ## Examples
 
-### Quick Deploy Script
+### Deploy Script
 ```bash
 #!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add instantly_api_key "$INSTANTLY_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set INSTANTLY_API_KEY="$INSTANTLY_API_KEY"
-    fly deploy
-    ;;
-esac
+npm run build && npm test && vercel --prod
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Instantly Deploy Guide](https://docs.instantly.com/deploy)
+- [Instantly API Documentation](https://developer.instantly.ai)
+- [Instantly Campaign Guide](https://developer.instantly.ai/campaigns)
 
 ## Next Steps
 For webhook handling, see `instantly-webhooks-events`.

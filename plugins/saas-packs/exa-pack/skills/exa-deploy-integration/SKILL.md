@@ -16,195 +16,114 @@ compatible-with: claude-code, codex, openclaw
 # Exa Deploy Integration
 
 ## Overview
-Deploy Exa-powered applications to popular platforms with proper secrets management.
+Deploy applications that use Exa's neural search API (`api.exa.ai`) to production. Covers API key management, deployment to Vercel and Docker, rate limit configuration, and caching strategies for search-heavy applications.
 
 ## Prerequisites
-- Exa API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Exa API key stored in `EXA_API_KEY` environment variable
+- Application using `exa-js` SDK or REST API
+- Platform CLI installed (vercel, docker, or gcloud)
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Configure Secrets
 ```bash
-# Add Exa secrets to Vercel
-vercel secrets add exa_api_key sk_live_***
-vercel secrets add exa_webhook_secret whsec_***
+# Vercel
+vercel env add EXA_API_KEY production
 
-# Link to project
-vercel link
+# Docker
+echo "EXA_API_KEY=your-key" >> .env.production
 
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Cloud Run
+echo -n "your-key" | gcloud secrets create exa-api-key --data-file=-
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "EXA_API_KEY": "@exa_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
+### Step 2: Vercel Edge Deployment
+```typescript
+// api/search.ts
+import Exa from "exa-js";
+
+export const config = { runtime: "edge" };
+
+export default async function handler(req: Request) {
+  const exa = new Exa(process.env.EXA_API_KEY!);
+  const { query, numResults } = await req.json();
+
+  const results = await exa.searchAndContents(query, {
+    type: "neural",
+    numResults: numResults || 5,
+    text: { maxCharacters: 500 },
+  });
+
+  return Response.json(results);
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-exa-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Exa secrets
-fly secrets set EXA_API_KEY=sk_live_***
-fly secrets set EXA_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+### Step 3: Docker with Caching
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
 ```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="exa-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=EXA_API_KEY=exa-api-key:latest
-```
-
-## Environment Configuration Pattern
 
 ```typescript
-// config/exa.ts
-interface ExaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
+// Search with Redis cache
+import Exa from "exa-js";
+import { Redis } from "ioredis";
 
-export function getExaConfig(): ExaConfig {
-  const env = process.env.NODE_ENV || 'development';
+const exa = new Exa(process.env.EXA_API_KEY!);
+const redis = new Redis(process.env.REDIS_URL!);
 
-  return {
-    apiKey: process.env.EXA_API_KEY!,
-    environment: env as ExaConfig['environment'],
-    webhookSecret: process.env.EXA_WEBHOOK_SECRET,
-  };
-}
-```
+async function cachedSearch(query: string, ttl = 3600) {
+  const cacheKey = `exa:${Buffer.from(query).toString("base64")}`;
+  const cached = await redis.get(cacheKey);
+  if (cached) return JSON.parse(cached);
 
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const exaStatus = await checkExaConnection();
-
-  return Response.json({
-    status: exaStatus ? 'healthy' : 'degraded',
-    services: {
-      exa: exaStatus,
-    },
-    timestamp: new Date().toISOString(),
+  const results = await exa.searchAndContents(query, {
+    type: "neural",
+    numResults: 5,
   });
+
+  await redis.set(cacheKey, JSON.stringify(results), "EX", ttl);
+  return results;
 }
 ```
 
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Exa API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Exa integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Exa connectivity.
-
-## Output
-- Application deployed to production
-- Exa secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+### Step 4: Health Check
+```typescript
+export async function GET() {
+  try {
+    const exa = new Exa(process.env.EXA_API_KEY!);
+    await exa.search("test", { numResults: 1 });
+    return Response.json({ status: "healthy" });
+  } catch {
+    return Response.json({ status: "unhealthy" }, { status: 503 });
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Rate limited | Too many requests | Implement caching and request queuing |
+| Empty results | Query too specific | Broaden search terms |
+| API key invalid | Key expired | Regenerate at dashboard.exa.ai |
+| Timeout | Large content request | Reduce `maxCharacters` or `numResults` |
 
 ## Examples
 
-### Quick Deploy Script
+### Deploy to Vercel
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add exa_api_key "$EXA_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set EXA_API_KEY="$EXA_API_KEY"
-    fly deploy
-    ;;
-esac
+vercel env add EXA_API_KEY production && vercel --prod
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Exa Deploy Guide](https://docs.exa.com/deploy)
+- [Exa API Documentation](https://docs.exa.ai)
+- [Exa JavaScript SDK](https://github.com/exa-labs/exa-js)
 
 ## Next Steps
-For webhook handling, see `exa-webhooks-events`.
+For multi-environment setup, see `exa-multi-env-setup`.

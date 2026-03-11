@@ -16,224 +16,194 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Instantly integrations.
+Production architecture for cold outreach automation with Instantly. Covers campaign orchestration, lead management pipelines, multi-account warmup strategies, and reply handling with CRM synchronization.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Instantly SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Instantly API key (v1 REST)
+- Email accounts configured with warmup
+- CRM for lead status tracking
+- Webhook endpoint for reply/bounce handling
 
-## Project Structure
-
-```
-my-instantly-project/
-├── src/
-│   ├── instantly/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── instantly/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── instantly/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── instantly/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── instantly/
-│   └── integration/
-│       └── instantly/
-├── config/
-│   ├── instantly.development.json
-│   ├── instantly.staging.json
-│   └── instantly.production.json
-└── docs/
-    └── instantly/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Instantly Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/instantly/client.ts
-export class InstantlyService {
-  private client: InstantlyClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: InstantlyConfig) {
-    this.client = new InstantlyClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('instantly');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/instantly/errors.ts
-export class InstantlyServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'InstantlyServiceError';
-  }
-}
-
-export function wrapInstantlyError(error: unknown): InstantlyServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/instantly/health.ts
-export async function checkInstantlyHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await instantlyClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Instantly    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Instantly    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/instantly.ts
-export interface InstantlyConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadInstantlyConfig(): InstantlyConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./instantly.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Lead Sources                             │
+│  Clay │ Apollo │ CSV Import │ CRM Export │ API       │
+└──────────┬───────────────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────┐
+│              Instantly Platform                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐   │
+│  │ Email        │  │ Campaigns    │  │ Lead      │   │
+│  │ Accounts     │  │ & Sequences  │  │ Lists     │   │
+│  │ (warmup)     │  │ (A/B test)   │  │ (import)  │   │
+│  └──────┬───────┘  └──────┬───────┘  └─────┬─────┘   │
+│         │                 │                │          │
+│         ▼                 ▼                ▼          │
+│  ┌──────────────────────────────────────────────┐     │
+│  │         Sending Engine                        │     │
+│  │  Throttling │ Rotation │ Tracking │ Warmup   │     │
+│  └──────────────────────┬───────────────────────┘     │
+└─────────────────────────┼───────────────────────────┘
+                          │
+           ┌──────────────┼──────────────┐
+           ▼              ▼              ▼
+   ┌──────────────┐ ┌────────┐ ┌──────────────┐
+   │ Replies      │ │ Opens  │ │ Bounces      │
+   │ (webhook)    │ │ Clicks │ │ Unsubscribes │
+   └──────┬───────┘ └────────┘ └──────────────┘
+          │
+          ▼
+   ┌──────────────┐
+   │ CRM Sync     │
+   │ (HubSpot/SF) │
+   └──────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Campaign Management Service
+```typescript
+const INSTANTLY_API = 'https://api.instantly.ai/api/v1';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+async function instantlyRequest(endpoint: string, options?: RequestInit) {
+  const url = new URL(`${INSTANTLY_API}${endpoint}`);
+  url.searchParams.set('api_key', process.env.INSTANTLY_API_KEY!);
 
-### Step 3: Add Error Handling
-Implement custom error classes for Instantly operations.
+  const response = await fetch(url.toString(), {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...options?.headers },
+  });
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Instantly connectivity.
+  if (!response.ok) throw new Error(`Instantly API error: ${response.status}`);
+  return response.json();
+}
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+async function listCampaigns() {
+  return instantlyRequest('/campaign/list');
+}
+
+async function getCampaignStatus(campaignId: string) {
+  return instantlyRequest(`/campaign/get?campaign_id=${campaignId}`);
+}
+```
+
+### Step 2: Lead Upload Pipeline
+```typescript
+interface Lead {
+  email: string;
+  first_name?: string;
+  last_name?: string;
+  company_name?: string;
+  personalization?: string;
+  custom_variables?: Record<string, string>;
+}
+
+async function uploadLeads(campaignId: string, leads: Lead[]) {
+  const BATCH_SIZE = 100;
+  let totalUploaded = 0;
+
+  for (let i = 0; i < leads.length; i += BATCH_SIZE) {
+    const batch = leads.slice(i, i + BATCH_SIZE);
+    await instantlyRequest('/lead/add', {
+      method: 'POST',
+      body: JSON.stringify({
+        campaign_id: campaignId,
+        skip_if_in_workspace: true,
+        leads: batch,
+      }),
+    });
+    totalUploaded += batch.length;
+    await new Promise(r => setTimeout(r, 200)); // Rate limit
+  }
+
+  return { uploaded: totalUploaded };
+}
+```
+
+### Step 3: Multi-Sequence Campaign Structure
+```typescript
+// Campaign sequence design for cold outreach
+const CAMPAIGN_SEQUENCE = {
+  name: 'Q1 Outreach - {ICP Segment}',
+  sequences: [
+    {
+      step: 1,
+      delay: 0,
+      subject: 'Quick question about {{company_name}}',
+      body: 'Hi {{first_name}},\n\n{{personalization}}\n\n...',
+      variant: 'A',
+    },
+    {
+      step: 1,
+      delay: 0,
+      subject: '{{first_name}} - saw something interesting',
+      body: 'Hi {{first_name}},\n\n...',
+      variant: 'B', // A/B test variant
+    },
+    {
+      step: 2,
+      delay: 3, // 3 days after step 1
+      subject: 'Re: Quick question',
+      body: 'Hi {{first_name}},\n\nJust following up...',
+    },
+    {
+      step: 3,
+      delay: 5, // 5 days after step 2
+      subject: 'Last try',
+      body: 'Hi {{first_name}},\n\nI know you\'re busy...',
+    },
+  ],
+};
+```
+
+### Step 4: Reply Handling Webhook
+```typescript
+app.post('/webhooks/instantly', express.json(), async (req, res) => {
+  const { event_type, lead_email, campaign_id, reply_text } = req.body;
+
+  switch (event_type) {
+    case 'reply_received':
+      await syncToCRM({ email: lead_email, status: 'replied', note: reply_text });
+      break;
+    case 'email_bounced':
+      await syncToCRM({ email: lead_email, status: 'bounced' });
+      break;
+    case 'unsubscribed':
+      await addToSuppressionList(lead_email);
+      break;
+  }
+
+  res.json({ processed: true });
+});
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Instantly types |
-| Test isolation | Shared state | Use dependency injection |
+| Low deliverability | Accounts not warmed | Run warmup 2+ weeks before campaigns |
+| High bounce rate | Bad lead data | Verify emails before upload |
+| Duplicate sends | Lead in multiple campaigns | Use `skip_if_in_workspace` flag |
+| Rate limit | Too many API calls | Add 200ms delay between requests |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/instantly/{handlers} src/services/instantly src/api/instantly
-touch src/instantly/{client,config,types,errors}.ts
-touch src/services/instantly/{index,sync,cache}.ts
+### Campaign Analytics Dashboard
+```typescript
+async function getCampaignMetrics() {
+  const campaigns = await listCampaigns();
+  return Promise.all(campaigns.map(async (c: any) => ({
+    name: c.name,
+    status: c.status,
+    analytics: await instantlyRequest(
+      `/analytics/campaign/summary?campaign_id=${c.id}`
+    ),
+  })));
+}
 ```
 
 ## Resources
-- [Instantly SDK Documentation](https://docs.instantly.com/sdk)
-- [Instantly Best Practices](https://docs.instantly.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `instantly-multi-env-setup`.
+- [Instantly API Documentation](https://developer.instantly.ai/)
+- [Instantly Campaign Guide](https://instantly.ai/resources)

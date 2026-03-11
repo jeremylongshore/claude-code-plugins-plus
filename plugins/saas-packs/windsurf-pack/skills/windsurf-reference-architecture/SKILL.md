@@ -16,224 +16,168 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Windsurf integrations.
+Project architecture optimized for Windsurf (Codeium) AI-assisted development. Covers workspace configuration, Cascade AI flow optimization, rules files for context, and team standardization patterns.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Windsurf SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Windsurf IDE installed
+- Team agreement on coding standards
+- Repository with consistent project structure
+- Understanding of Cascade AI flows
 
-## Project Structure
-
-```
-my-windsurf-project/
-├── src/
-│   ├── windsurf/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── windsurf/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── windsurf/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── windsurf/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── windsurf/
-│   └── integration/
-│       └── windsurf/
-├── config/
-│   ├── windsurf.development.json
-│   ├── windsurf.staging.json
-│   └── windsurf.production.json
-└── docs/
-    └── windsurf/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Windsurf Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/windsurf/client.ts
-export class WindsurfService {
-  private client: WindsurfClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: WindsurfConfig) {
-    this.client = new WindsurfClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('windsurf');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/windsurf/errors.ts
-export class WindsurfServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'WindsurfServiceError';
-  }
-}
-
-export function wrapWindsurfError(error: unknown): WindsurfServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/windsurf/health.ts
-export async function checkWindsurfHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await windsurfClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Windsurf    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Windsurf    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/windsurf.ts
-export interface WindsurfConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadWindsurfConfig(): WindsurfConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./windsurf.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Windsurf Workspace                       │
+│  ┌───────────────┐  ┌────────────────────────────┐    │
+│  │ .windsurfrules│  │ .windsurf/settings.json    │    │
+│  │ (AI context)  │  │ (IDE configuration)        │    │
+│  └───────────────┘  └────────────────────────────┘    │
+├──────────────────────────────────────────────────────┤
+│              Cascade AI Engine                        │
+│  ┌───────────┐  ┌───────────┐  ┌─────────────────┐   │
+│  │ Inline    │  │ Chat      │  │ Multi-file      │   │
+│  │ Complete  │  │ (Cascade) │  │ Edit            │   │
+│  └───────────┘  └───────────┘  └─────────────────┘   │
+├──────────────────────────────────────────────────────┤
+│              Project Structure                        │
+│  src/ │ tests/ │ docs/ │ .windsurf/ │ .windsurfrules │
+├──────────────────────────────────────────────────────┤
+│              Indexing Engine                           │
+│  Semantic Index │ File Cache │ Dependency Graph       │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Create Windsurf Rules File
+```markdown
+<!-- .windsurfrules - Project context for Cascade AI -->
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+# Project: MyApp
 
-### Step 3: Add Error Handling
-Implement custom error classes for Windsurf operations.
+## Tech Stack
+- Framework: Next.js 14 (App Router)
+- Language: TypeScript (strict mode)
+- Styling: Tailwind CSS v3
+- State: Zustand
+- Testing: Vitest + React Testing Library
+- Database: PostgreSQL with Drizzle ORM
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Windsurf connectivity.
+## Architecture Patterns
+- Server Components by default, Client Components only when needed
+- API routes in app/api/ using Route Handlers
+- Shared types in types/ directory
+- Business logic in services/ directory
+- Database queries in db/ directory
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+## Coding Standards
+- Named exports only, never default exports
+- Use async/await, never raw Promises
+- All functions must have JSDoc comments
+- Error handling: use Result pattern, never throw in services
+- Use zod for all runtime validation
+```
+
+### Step 2: Configure Workspace Settings
+```json
+{
+  "codeium.indexing.excludePatterns": [
+    "node_modules/**",
+    ".next/**",
+    "dist/**",
+    "coverage/**",
+    "*.min.js",
+    "**/*.map"
+  ],
+  "codeium.autocomplete.enable": true,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "biomejs.biome",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.associations": {
+    "*.css": "tailwindcss"
+  }
+}
+```
+
+### Step 3: Team Configuration Template
+```json
+// .windsurf/team-config.json - Shared team settings
+{
+  "cascade": {
+    "preferredModels": ["claude-sonnet", "gpt-4o"],
+    "contextRules": {
+      "maxContextFiles": 15,
+      "preferOpenTabs": true,
+      "includeTestFiles": true,
+      "includeTypeDefinitions": true
+    },
+    "codeGeneration": {
+      "language": "typescript",
+      "strictMode": true,
+      "includeTypes": true,
+      "includeTests": false
+    }
+  },
+  "formatting": {
+    "tabSize": 2,
+    "useTabs": false,
+    "trailingComma": "all",
+    "singleQuote": true,
+    "printWidth": 100
+  }
+}
+```
+
+### Step 4: Project-Specific Context Files
+```typescript
+// .windsurf/patterns.md - Common patterns for Cascade
+/**
+ * API Route Pattern:
+ * ```typescript
+ * export async function GET(req: NextRequest) {
+ *   const params = searchParamsSchema.parse(Object.fromEntries(req.nextUrl.searchParams));
+ *   const result = await service.find(params);
+ *   return NextResponse.json(result);
+ * }
+ * ```
+ *
+ * Service Pattern:
+ * ```typescript
+ * export async function findById(id: string): Promise<Result<Entity, AppError>> {
+ *   const entity = await db.query.entities.findFirst({ where: eq(entities.id, id) });
+ *   if (!entity) return err(new NotFoundError('Entity', id));
+ *   return ok(entity);
+ * }
+ * ```
+ */
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Windsurf types |
-| Test isolation | Shared state | Use dependency injection |
+| Cascade ignores rules | File not at project root | Place `.windsurfrules` in workspace root |
+| Slow indexing | Large repo with no excludes | Add node_modules and dist to excludes |
+| Inconsistent suggestions | No team config | Create shared `.windsurf/` directory |
+| Wrong framework patterns | Missing context | Add framework details to rules file |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/windsurf/{handlers} src/services/windsurf src/api/windsurf
-touch src/windsurf/{client,config,types,errors}.ts
-touch src/services/windsurf/{index,sync,cache}.ts
+### Monorepo Rules File
+```markdown
+<!-- .windsurfrules for monorepo -->
+# Monorepo Structure
+- packages/api - Express REST API (Node.js)
+- packages/web - Next.js frontend
+- packages/shared - Shared TypeScript types and utilities
+- packages/db - Database schema and migrations (Drizzle)
+
+When editing files in packages/api, use Express patterns.
+When editing files in packages/web, use Next.js App Router patterns.
+Always import from @repo/shared for shared types.
 ```
 
 ## Resources
-- [Windsurf SDK Documentation](https://docs.windsurf.com/sdk)
-- [Windsurf Best Practices](https://docs.windsurf.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `windsurf-multi-env-setup`.
+- [Windsurf Documentation](https://docs.windsurf.com)
+- [Cascade AI Guide](https://docs.windsurf.com/cascade)
+- [Windsurf Rules Reference](https://docs.windsurf.com/rules)

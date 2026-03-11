@@ -16,185 +16,195 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Webhooks & Events
 
 ## Overview
-Securely handle Fireflies.ai webhooks with signature validation and replay protection.
+Handle Fireflies.ai webhooks for real-time meeting transcript notifications. Fireflies sends webhook events when meeting transcripts are ready, when action items are extracted, and when meeting summaries complete. Use these to build automated CRM updates, task creation workflows, and meeting analytics pipelines.
 
 ## Prerequisites
-- Fireflies.ai webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Fireflies.ai account with API access (Business or Enterprise plan)
+- Fireflies API key stored in `FIREFLIES_API_KEY` environment variable
+- HTTPS endpoint for receiving webhook deliveries
+- Understanding of Fireflies GraphQL API at `api.fireflies.ai/graphql`
 
-## Webhook Endpoint Setup
+## Webhook Event Types
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/fireflies',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-fireflies-signature'] as string;
-    const timestamp = req.headers['x-fireflies-timestamp'] as string;
-
-    if (!verifyFireflies.aiSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleFireflies.aiEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyFireflies.aiSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.FIREFLIES_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type Fireflies.aiEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface Fireflies.aiEvent {
-  id: string;
-  type: Fireflies.aiEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<Fireflies.aiEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleFireflies.aiEvent(event: Fireflies.aiEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `fireflies:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `fireflies:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Fireflies.ai CLI to send test events
-fireflies webhooks trigger resource.created --url http://localhost:3000/webhooks/fireflies
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Event | Trigger | Payload |
+|-------|---------|---------|
+| `Transcription completed` | Transcript ready | Meeting ID, transcript text, speakers |
+| `Meeting started` | Bot joins meeting | Meeting ID, participants |
+| `Meeting ended` | Bot leaves meeting | Meeting ID, duration |
+| `Summary ready` | AI summary generated | Summary, action items, keywords |
+| `Upload processed` | Audio file processed | Transcript ID, duration |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Fireflies.ai dashboard.
+### Step 1: Register Webhook via GraphQL
+```typescript
+const FIREFLIES_API = "https://api.fireflies.ai/graphql";
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+async function registerWebhook(url: string) {
+  const mutation = `
+    mutation AddWebhook($input: WebhookInput!) {
+      addWebhook(input: $input) {
+        id
+        url
+        events
+        is_active
+      }
+    }
+  `;
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  const response = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({
+      query: mutation,
+      variables: {
+        input: {
+          url,
+          events: ["Transcription completed", "Summary ready"],
+          is_active: true,
+        },
+      },
+    }),
+  });
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  return response.json();
+}
+```
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+### Step 2: Handle Transcript Events
+```typescript
+import express from "express";
+
+const app = express();
+app.use(express.json());
+
+app.post("/webhooks/fireflies", async (req, res) => {
+  const { event_type, meeting_id, data } = req.body;
+  res.status(200).json({ received: true });
+
+  switch (event_type) {
+    case "Transcription completed":
+      await handleTranscriptReady(meeting_id, data);
+      break;
+    case "Summary ready":
+      await handleSummaryReady(meeting_id, data);
+      break;
+  }
+});
+
+async function handleTranscriptReady(meetingId: string, data: any) {
+  // Fetch full transcript via GraphQL
+  const transcript = await fetchTranscript(meetingId);
+  const { title, speakers, sentences, duration } = transcript;
+
+  console.log(`Transcript ready: "${title}" (${duration}min, ${speakers.length} speakers)`);
+
+  // Store transcript
+  await db.transcripts.create({
+    meetingId,
+    title,
+    speakers,
+    sentences,
+    duration,
+    processedAt: new Date(),
+  });
+}
+```
+
+### Step 3: Fetch Full Transcript Data
+```typescript
+async function fetchTranscript(meetingId: string) {
+  const query = `
+    query GetTranscript($id: String!) {
+      transcript(id: $id) {
+        id
+        title
+        date
+        duration
+        speakers {
+          name
+          email
+        }
+        sentences {
+          text
+          speaker_name
+          start_time
+          end_time
+        }
+        summary {
+          overview
+          action_items
+          keywords
+        }
+      }
+    }
+  `;
+
+  const response = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({ query, variables: { id: meetingId } }),
+  });
+
+  const result = await response.json();
+  return result.data.transcript;
+}
+```
+
+### Step 4: Process Action Items
+```typescript
+async function handleSummaryReady(meetingId: string, data: any) {
+  const transcript = await fetchTranscript(meetingId);
+  const { summary } = transcript;
+
+  // Create tasks from action items
+  for (const item of summary.action_items) {
+    await taskManager.createTask({
+      title: item,
+      source: `Meeting: ${transcript.title}`,
+      meetingId,
+      assignee: extractAssignee(item, transcript.speakers),
+    });
+  }
+
+  // Send Slack digest
+  await sendSlackDigest({
+    title: transcript.title,
+    overview: summary.overview,
+    actionItems: summary.action_items,
+    keywords: summary.keywords,
+  });
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Webhook not firing | Inactive webhook | Verify `is_active` via GraphQL query |
+| Empty transcript | Short meeting | Minimum meeting duration required |
+| Missing speakers | No calendar match | Ensure calendar integration is connected |
+| Auth error on GraphQL | Invalid API key | Regenerate key in Fireflies dashboard |
 
 ## Examples
 
-### Testing Webhooks Locally
+### Query Recent Transcripts
 ```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/fireflies \
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  -d '{"query": "{ transcripts(limit: 5) { id title date duration } }"}'
 ```
 
 ## Resources
-- [Fireflies.ai Webhooks Guide](https://docs.fireflies.com/webhooks)
-- [Webhook Security Best Practices](https://docs.fireflies.com/webhooks/security)
+- [Fireflies API Documentation](https://docs.fireflies.ai/api)
+- [Fireflies GraphQL Reference](https://docs.fireflies.ai/graphql)
+- [Webhook Configuration](https://docs.fireflies.ai/webhooks)
 
 ## Next Steps
-For performance optimization, see `fireflies-performance-tuning`.
+For deployment setup, see `fireflies-deploy-integration`.

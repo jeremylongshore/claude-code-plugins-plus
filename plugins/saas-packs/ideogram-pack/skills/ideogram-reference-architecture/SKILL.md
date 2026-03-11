@@ -16,224 +16,191 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Ideogram integrations.
+Production architecture for AI image generation with Ideogram. Covers generation pipelines, asset management, brand consistency workflows, prompt templating, and CDN delivery for generated images.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Ideogram SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Ideogram API key
+- Image storage (S3, GCS, or filesystem)
+- CDN for image delivery (optional)
+- Understanding of Ideogram models and parameters
 
-## Project Structure
-
-```
-my-ideogram-project/
-├── src/
-│   ├── ideogram/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── ideogram/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── ideogram/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── ideogram/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── ideogram/
-│   └── integration/
-│       └── ideogram/
-├── config/
-│   ├── ideogram.development.json
-│   ├── ideogram.staging.json
-│   └── ideogram.production.json
-└── docs/
-    └── ideogram/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Ideogram Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/ideogram/client.ts
-export class IdeogramService {
-  private client: IdeogramClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: IdeogramConfig) {
-    this.client = new IdeogramClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('ideogram');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/ideogram/errors.ts
-export class IdeogramServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'IdeogramServiceError';
-  }
-}
-
-export function wrapIdeogramError(error: unknown): IdeogramServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/ideogram/health.ts
-export async function checkIdeogramHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await ideogramClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Ideogram    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Ideogram    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/ideogram.ts
-export interface IdeogramConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadIdeogramConfig(): IdeogramConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./ideogram.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Prompt Engineering Layer                  │
+│  Templates │ Brand Guidelines │ Style Presets         │
+└──────────────────────────┬───────────────────────────┘
+                           │
+                           ▼
+┌──────────────────────────────────────────────────────┐
+│              Ideogram Generation API                  │
+│  ┌───────────┐  ┌───────────┐  ┌─────────────────┐   │
+│  │ Generate  │  │ Edit      │  │ Remix           │   │
+│  │ (text→img)│  │ (inpaint) │  │ (style transfer)│   │
+│  └─────┬─────┘  └─────┬─────┘  └───────┬─────────┘   │
+│        └───────────────┴────────────────┘             │
+│                        │                              │
+│                        ▼                              │
+│  ┌──────────────────────────────────────────────┐     │
+│  │         Post-Processing                       │     │
+│  │  Resize │ Optimize │ Watermark │ Metadata    │     │
+│  └──────────────────────┬───────────────────────┘     │
+└─────────────────────────┼───────────────────────────┘
+                          │
+                          ▼
+┌──────────────────────────────────────────────────────┐
+│              Asset Storage & Delivery                 │
+│  S3/GCS │ CDN │ DAM System │ CMS Integration        │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Prompt Template System
+```typescript
+interface PromptTemplate {
+  name: string;
+  base: string;
+  style: string;
+  negativePrompt?: string;
+  aspectRatio: string;
+  model: 'V_2' | 'V_2_TURBO';
+}
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+const BRAND_TEMPLATES: Record<string, PromptTemplate> = {
+  socialPost: {
+    name: 'Social Media Post',
+    base: '{subject}, modern clean design, vibrant colors',
+    style: 'professional photography, high quality',
+    negativePrompt: 'text, watermark, blurry, low quality',
+    aspectRatio: 'ASPECT_1_1',
+    model: 'V_2',
+  },
+  blogHero: {
+    name: 'Blog Hero Image',
+    base: '{subject}, editorial style, wide composition',
+    style: 'professional, minimalist, tech aesthetic',
+    aspectRatio: 'ASPECT_16_9',
+    model: 'V_2',
+  },
+  appIcon: {
+    name: 'App Icon',
+    base: '{subject}, flat design, rounded corners, gradient',
+    style: 'minimal, modern, app store ready',
+    aspectRatio: 'ASPECT_1_1',
+    model: 'V_2_TURBO',
+  },
+};
 
-### Step 3: Add Error Handling
-Implement custom error classes for Ideogram operations.
+function buildPrompt(template: PromptTemplate, subject: string): string {
+  return template.base.replace('{subject}', subject) + ', ' + template.style;
+}
+```
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Ideogram connectivity.
+### Step 2: Generation Service
+```typescript
+const IDEOGRAM_API = 'https://api.ideogram.ai/generate';
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+async function generateFromTemplate(
+  templateKey: string,
+  subject: string
+) {
+  const template = BRAND_TEMPLATES[templateKey];
+  if (!template) throw new Error(`Unknown template: ${templateKey}`);
+
+  const response = await fetch(IDEOGRAM_API, {
+    method: 'POST',
+    headers: {
+      'Api-Key': process.env.IDEOGRAM_API_KEY!,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt: buildPrompt(template, subject),
+        negative_prompt: template.negativePrompt,
+        aspect_ratio: template.aspectRatio,
+        model: template.model,
+        magic_prompt_option: 'AUTO',
+      },
+    }),
+  });
+
+  return response.json();
+}
+```
+
+### Step 3: Asset Management Pipeline
+```typescript
+import { createWriteStream, mkdirSync } from 'fs';
+import { join } from 'path';
+
+async function generateAndStore(
+  templateKey: string,
+  subject: string,
+  outputDir: string
+) {
+  mkdirSync(outputDir, { recursive: true });
+
+  const result = await generateFromTemplate(templateKey, subject);
+  const imageUrl = result.data?.[0]?.url;
+  if (!imageUrl) throw new Error('No image generated');
+
+  const filename = `${templateKey}_${Date.now()}.png`;
+  const outputPath = join(outputDir, filename);
+
+  const response = await fetch(imageUrl);
+  const buffer = Buffer.from(await response.arrayBuffer());
+  const { writeFileSync } = await import('fs');
+  writeFileSync(outputPath, buffer);
+
+  return {
+    path: outputPath,
+    url: imageUrl,
+    prompt: buildPrompt(BRAND_TEMPLATES[templateKey], subject),
+    seed: result.data[0].seed,
+  };
+}
+```
+
+### Step 4: Batch Generation with Style Consistency
+```typescript
+async function generateBrandAssets(brandSubjects: string[]) {
+  const assets = [];
+
+  for (const subject of brandSubjects) {
+    for (const templateKey of Object.keys(BRAND_TEMPLATES)) {
+      const asset = await generateAndStore(templateKey, subject, './assets');
+      assets.push(asset);
+      // Rate limit: wait between generations
+      await new Promise(r => setTimeout(r, 3000));
+    }
+  }
+
+  return assets;
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Ideogram types |
-| Test isolation | Shared state | Use dependency injection |
+| Content filtered | NSFW prompt detected | Review and sanitize prompt text |
+| Generation timeout | Complex prompt | Simplify prompt, use V_2_TURBO |
+| URL expired | Images are temporary (~1hr) | Download immediately after generation |
+| Inconsistent style | No template system | Use consistent prompt templates |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/ideogram/{handlers} src/services/ideogram src/api/ideogram
-touch src/ideogram/{client,config,types,errors}.ts
-touch src/services/ideogram/{index,sync,cache}.ts
+### Quick Brand Asset Generation
+```typescript
+const assets = await generateBrandAssets([
+  'cloud computing platform',
+  'data analytics dashboard',
+  'team collaboration tool',
+]);
+console.log(`Generated ${assets.length} brand assets`);
 ```
 
 ## Resources
-- [Ideogram SDK Documentation](https://docs.ideogram.com/sdk)
-- [Ideogram Best Practices](https://docs.ideogram.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `ideogram-multi-env-setup`.
+- [Ideogram API Reference](https://docs.ideogram.ai/api)
+- [Ideogram Prompt Guide](https://docs.ideogram.ai/prompting)

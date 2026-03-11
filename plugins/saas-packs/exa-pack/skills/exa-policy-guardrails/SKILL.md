@@ -13,246 +13,136 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Exa Policy & Guardrails
+# Exa Policy Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Exa integrations.
+Policy enforcement for Exa neural search integrations. Exa searches the open web, which means results may include inappropriate content, competitors' sites, or unreliable sources that need filtering before user presentation.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom Exa Plugin
-```javascript
-// eslint-plugin-exa/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Exa API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Exa API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['exa'],
-  rules: {
-    'exa/no-hardcoded-keys': 'error',
-    'exa/require-error-handling': 'warn',
-    'exa/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: exa-secrets-check
-        name: Check for Exa secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: exa-config-validate
-        name: Validate Exa configuration
-        entry: node scripts/validate-exa-config.js
-        language: node
-        files: '\.exa\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface ExaStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Exa code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new ExaClient(config satisfies ExaStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Exa Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Exa client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: exa/use-singleton-client
-- CI check: grep for "new ExaClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# exa-policy.rego
-package exa
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/exa-policy.yml
-name: Exa Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Exa keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s exa-config.schema.json -d config/exa/*.json
-
-      - name: Run ESLint Exa rules
-        run: npx eslint --plugin exa --rule 'exa/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardExaOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.EXA_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Exa rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Exa rate limit exceeded - request blocked');
-  }
-}
-```
+- Exa API configured
+- Content filtering requirements defined
+- Understanding of domain allowlist/blocklist patterns
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Exa patterns.
+### Step 1: Domain Allowlist/Blocklist Filtering
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Control which sources appear in search results to prevent showing competitor content or unreliable sites.
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```python
+DOMAIN_BLOCKLIST = [
+    "competitor1.com", "competitor2.io",
+    "spam-farm.com", "content-mill.net"
+]
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+DOMAIN_ALLOWLIST_FOR_MEDICAL = [
+    "pubmed.ncbi.nlm.nih.gov", "who.int",
+    "cdc.gov", "nejm.org", "nature.com"
+]
 
-## Output
-- ESLint plugin with Exa rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+def filter_results(results, blocklist=None, allowlist=None):
+    filtered = []
+    for r in results.results:
+        domain = extract_domain(r.url)
+        if blocklist and domain in blocklist:
+            continue
+        if allowlist and domain not in allowlist:
+            continue
+        filtered.append(r)
+    return filtered
+
+def enforce_search_policy(query: str, category: str = "general"):
+    results = exa.search(query, num_results=20)
+    if category == "medical":
+        return filter_results(results, allowlist=DOMAIN_ALLOWLIST_FOR_MEDICAL)
+    return filter_results(results, blocklist=DOMAIN_BLOCKLIST)
+```
+
+### Step 2: Query Content Policy
+
+Block or sanitize queries that could return harmful content.
+
+```python
+BLOCKED_QUERY_PATTERNS = [
+    r'how to (hack|exploit|attack)',
+    r'(drugs|weapons)\s+(buy|purchase|order)',
+    r'personal.*(address|phone|ssn)',
+]
+
+def validate_query(query: str) -> str:
+    import re
+    for pattern in BLOCKED_QUERY_PATTERNS:
+        if re.search(pattern, query, re.IGNORECASE):
+            raise PolicyViolation(f"Query blocked by content policy")
+    return query
+```
+
+### Step 3: Result Freshness Policy
+
+Enforce minimum recency for time-sensitive use cases.
+
+```python
+from datetime import datetime, timedelta
+
+def enforce_freshness(results, max_age_days: int = 365):
+    cutoff = datetime.now() - timedelta(days=max_age_days)
+    fresh = []
+    for r in results.results:
+        if r.published_date and datetime.fromisoformat(r.published_date) >= cutoff:
+            fresh.append(r)
+    if not fresh:
+        raise PolicyViolation(f"No results found within {max_age_days} day freshness window")
+    return fresh
+```
+
+### Step 4: API Usage Budget Enforcement
+
+Prevent excessive API consumption with per-user and per-project quotas.
+
+```python
+class ExaUsagePolicy:
+    def __init__(self, redis_client):
+        self.r = redis_client
+        self.limits = {"per_user_hourly": 100, "per_project_daily": 5000}
+
+    def check_quota(self, user_id: str, project_id: str):
+        user_key = f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}"
+        user_count = int(self.r.get(user_key) or 0)
+        if user_count >= self.limits["per_user_hourly"]:
+            raise PolicyViolation(f"User hourly quota exceeded ({user_count})")
+        proj_key = f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}"
+        proj_count = int(self.r.get(proj_key) or 0)
+        if proj_count >= self.limits["per_project_daily"]:
+            raise PolicyViolation(f"Project daily quota exceeded")
+
+    def record_usage(self, user_id: str, project_id: str):
+        for key, ttl in [
+            (f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}", 3600),
+            (f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}", 86400)
+        ]:
+            self.r.incr(key)
+            self.r.expire(key, ttl)
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| Competitor content in results | No domain filtering | Apply blocklist before displaying |
+| Harmful query accepted | No content policy | Validate queries against blocked patterns |
+| Stale results shown | No freshness check | Enforce date cutoff on results |
+| API cost overrun | No usage limits | Implement per-user/project quotas |
 
 ## Examples
 
-### Quick ESLint Check
-```bash
-npx eslint --plugin exa --rule 'exa/no-hardcoded-keys: error' src/
+### Combined Policy Check
+```python
+query = validate_query(user_input)
+usage_policy.check_quota(user_id, project_id)
+results = exa.search(query, num_results=15)
+filtered = filter_results(results, blocklist=DOMAIN_BLOCKLIST)
+fresh = enforce_freshness(filtered, max_age_days=90)
+usage_policy.record_usage(user_id, project_id)
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
-
-## Next Steps
-For architecture blueprints, see `exa-architecture-variants`.
+- [Exa API Docs](https://docs.exa.ai)

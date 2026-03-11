@@ -16,195 +16,110 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Deploy Integration
 
 ## Overview
-Deploy Fireflies.ai-powered applications to popular platforms with proper secrets management.
+Deploy applications that integrate with Fireflies.ai's meeting transcription service. Covers configuring the GraphQL API connection, deploying webhook receivers for transcript notifications, and managing API credentials across deployment platforms.
 
 ## Prerequisites
-- Fireflies.ai API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Fireflies.ai account with API access (Business or Enterprise plan)
+- Fireflies API key stored in `FIREFLIES_API_KEY` environment variable
+- Platform CLI installed (vercel, docker, or gcloud)
+- GraphQL client for Fireflies API at `api.fireflies.ai/graphql`
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Configure Secrets
 ```bash
-# Add Fireflies.ai secrets to Vercel
-vercel secrets add fireflies_api_key sk_live_***
-vercel secrets add fireflies_webhook_secret whsec_***
+# Vercel
+vercel env add FIREFLIES_API_KEY production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Docker
+echo "FIREFLIES_API_KEY=your-key" >> .env.production
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "FIREFLIES_API_KEY": "@fireflies_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
+### Step 2: GraphQL Client Setup
+```typescript
+// lib/fireflies.ts
+const FIREFLIES_API = "https://api.fireflies.ai/graphql";
+
+export async function firefliesQuery(query: string, variables?: any) {
+  const response = await fetch(FIREFLIES_API, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.FIREFLIES_API_KEY}`,
+    },
+    body: JSON.stringify({ query, variables }),
+  });
+
+  const result = await response.json();
+  if (result.errors) throw new Error(result.errors[0].message);
+  return result.data;
 }
 ```
 
-## Fly.io Deployment
+### Step 3: Deploy Webhook Receiver
+```typescript
+// api/webhooks/fireflies.ts
+export async function POST(req: Request) {
+  const { event_type, meeting_id, data } = await req.json();
 
-### fly.toml
-```toml
-app = "my-fireflies-app"
-primary_region = "iad"
+  if (event_type === "Transcription completed") {
+    const transcript = await firefliesQuery(`
+      query { transcript(id: "${meeting_id}") {
+        title duration speakers { name } summary { overview action_items }
+      }}
+    `);
+    await processTranscript(transcript);
+  }
 
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
+  return Response.json({ received: true });
+}
 ```
 
-### Secrets
-```bash
-# Set Fireflies.ai secrets
-fly secrets set FIREFLIES_API_KEY=sk_live_***
-fly secrets set FIREFLIES_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+### Step 4: Docker Deployment
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
 ```
 
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="fireflies-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=FIREFLIES_API_KEY=fireflies-api-key:latest
-```
-
-## Environment Configuration Pattern
-
+### Step 5: Health Check
 ```typescript
-// config/fireflies.ts
-interface Fireflies.aiConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getFireflies.aiConfig(): Fireflies.aiConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.FIREFLIES_API_KEY!,
-    environment: env as Fireflies.aiConfig['environment'],
-    webhookSecret: process.env.FIREFLIES_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
 export async function GET() {
-  const firefliesStatus = await checkFireflies.aiConnection();
-
-  return Response.json({
-    status: firefliesStatus ? 'healthy' : 'degraded',
-    services: {
-      fireflies: firefliesStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+  try {
+    await firefliesQuery("{ user { email } }");
+    return Response.json({ status: "healthy", service: "fireflies" });
+  } catch {
+    return Response.json({ status: "unhealthy" }, { status: 503 });
+  }
 }
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Fireflies.ai API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Fireflies.ai integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Fireflies.ai connectivity.
-
-## Output
-- Application deployed to production
-- Fireflies.ai secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| GraphQL auth error | Invalid API key | Regenerate key in Fireflies dashboard |
+| No transcripts | Bot not invited | Ensure Fireflies bot joins meetings |
+| Webhook not firing | Webhook not registered | Register via GraphQL mutation |
+| Query timeout | Large transcript | Paginate results or request specific fields |
 
 ## Examples
 
-### Quick Deploy Script
+### Register Webhook
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add fireflies_api_key "$FIREFLIES_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set FIREFLIES_API_KEY="$FIREFLIES_API_KEY"
-    fly deploy
-    ;;
-esac
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"query": "mutation { addWebhook(input: { url: \"https://api.yourapp.com/webhooks/fireflies\", events: [\"Transcription completed\"] }) { id } }"}'
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Fireflies.ai Deploy Guide](https://docs.fireflies.com/deploy)
+- [Fireflies API Documentation](https://docs.fireflies.ai/api)
+- [Fireflies GraphQL Reference](https://docs.fireflies.ai/graphql)
 
 ## Next Steps
 For webhook handling, see `fireflies-webhooks-events`.

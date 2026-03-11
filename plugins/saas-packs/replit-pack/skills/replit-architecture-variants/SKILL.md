@@ -16,270 +16,99 @@ compatible-with: claude-code, codex, openclaw
 # Replit Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Replit integrations.
+Application architectures on Replit at different scales. Replit's container model, built-in database, and Deployments feature support architectures from simple scripts to production web services.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── replit/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── replit.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── replit.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous Replit calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await replitClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── replit/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── replit.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── replit-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── replit/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class ReplitService {
-  constructor(
-    private client: ReplitClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('replit.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-replit-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── replit.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── replit/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls replit-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated Replit microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class ReplitAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: ReplitCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new ReplitProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(ReplitProcessedEvent)
-class ReplitEventHandler {
-  async handle(event: ReplitProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Replit code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated replit-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
+- Replit account (Free, Hacker, or Pro)
+- Understanding of Replit's container lifecycle
+- Awareness of plan-specific resource limits
 
 ## Instructions
 
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
+### Step 1: Single-File Script (Prototype)
 
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
+**Best for:** Scripts, bots, automation, learning.
 
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
+```python
+# main.py - everything in one file
+from flask import Flask
+from replit import db
 
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
+app = Flask(__name__)
 
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+@app.route('/')
+def home():
+    count = db.get("visits") or 0
+    db["visits"] = count + 1
+    return f"Visit #{count + 1}"
+
+app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 3000)))
+```
+
+**Limits:** Sleeps after inactivity (free plan). 512MB RAM. Replit DB (50MB).
+
+### Step 2: Modular App with External DB (Production)
+
+**Best for:** Web apps, APIs, 100-10K daily users.
+
+```
+Replit Deployment -> External PostgreSQL (Neon/Supabase)
+                  -> External Redis (Upstash)
+                  -> External Storage (S3/Replit Object Storage)
+```
+
+```python
+# Structured project layout
+# main.py -> routes/ -> services/ -> models/
+import os
+from flask import Flask
+from sqlalchemy import create_engine
+
+app = Flask(__name__)
+engine = create_engine(os.environ["DATABASE_URL"])  # External Postgres
+
+# Use Replit Deployments for always-on
+# Use external DB for persistence beyond container lifecycle
+```
+
+### Step 3: Multi-Service with Replit Deployments (Scale)
+
+**Best for:** Production services, microservices, 10K+ daily users.
+
+```
+CDN (Cloudflare) -> Replit Deployment (API)
+                         |
+                    External DB (Neon Postgres)
+                    External Cache (Upstash Redis)
+                    External Queue (Upstash Kafka)
+                         |
+                    Replit Deployment (Worker)
+```
+
+```python
+# API service (Replit Deployment 1)
+# Worker service (Replit Deployment 2)
+# Each in its own Repl with own Deployment
+# Communicate via shared database/queue
+```
+
+## Decision Matrix
+
+| Factor | Single-File | Modular + External DB | Multi-Service |
+|--------|------------|----------------------|---------------|
+| Users | Prototype | 100-10K/day | 10K+/day |
+| Database | Replit DB | External Postgres | External + cache |
+| Persistence | Ephemeral | Durable | Durable |
+| Cost | Free | $7-20/mo | $20+/mo |
+| Always-on | No (free) | Yes (Deployment) | Yes |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| Data loss | Using filesystem/Replit DB | Migrate to external database |
+| Container sleeping | Free plan limitations | Use Deployments or keep-alive |
+| Memory limit | Large in-memory datasets | Stream data, use external storage |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Replit Architecture Guide](https://docs.replit.com/architecture)
-
-## Next Steps
-For common anti-patterns, see `replit-known-pitfalls`.
+- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- [Replit Database Options](https://docs.replit.com/hosting/databases)

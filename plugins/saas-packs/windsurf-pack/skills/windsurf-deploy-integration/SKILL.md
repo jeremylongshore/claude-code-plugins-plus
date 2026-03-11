@@ -16,195 +16,131 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Deploy Integration
 
 ## Overview
-Deploy Windsurf-powered applications to popular platforms with proper secrets management.
+Deploy Windsurf extensions and configurations to teams. Windsurf, as a VS Code-based IDE, uses the standard extension deployment model. Covers packaging extensions with `vsce`, publishing to marketplaces, and distributing team-wide Windsurf configurations via shared settings and extension packs.
 
 ## Prerequisites
-- Windsurf API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Node.js and npm installed
+- `vsce` CLI for extension packaging (`npm install -g @vscode/vsce`)
+- Windsurf extension project with `package.json`
+- Marketplace publisher account (for public distribution)
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Package Extension
 ```bash
-# Add Windsurf secrets to Vercel
-vercel secrets add windsurf_api_key sk_live_***
-vercel secrets add windsurf_webhook_secret whsec_***
+# Install vsce
+npm install -g @vscode/vsce
 
-# Link to project
-vercel link
+# Package extension as .vsix
+cd my-windsurf-extension
+vsce package
 
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Output: my-extension-1.0.0.vsix
 ```
 
-### vercel.json Configuration
+### Step 2: Extension package.json
 ```json
 {
-  "env": {
-    "WINDSURF_API_KEY": "@windsurf_api_key"
+  "name": "my-windsurf-extension",
+  "displayName": "My Windsurf Extension",
+  "version": "1.0.0",
+  "engines": {
+    "vscode": "^1.85.0"
   },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [{
+      "command": "myext.activate",
+      "title": "Activate My Extension"
+    }],
+    "configuration": {
+      "title": "My Extension",
+      "properties": {
+        "myext.apiKey": {
+          "type": "string",
+          "description": "API key for backend service"
+        }
+      }
     }
+  },
+  "scripts": {
+    "build": "tsc -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
   }
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-windsurf-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
+### Step 3: Distribute to Team
 ```bash
-# Set Windsurf secrets
-fly secrets set WINDSURF_API_KEY=sk_live_***
-fly secrets set WINDSURF_WEBHOOK_SECRET=whsec_***
+# Install .vsix manually in Windsurf
+# Extensions sidebar > "..." menu > "Install from VSIX..."
 
-# Deploy
-fly deploy
+# Or via command line
+code --install-extension my-extension-1.0.0.vsix
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="windsurf-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=WINDSURF_API_KEY=windsurf-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/windsurf.ts
-interface WindsurfConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getWindsurfConfig(): WindsurfConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.WINDSURF_API_KEY!,
-    environment: env as WindsurfConfig['environment'],
-    webhookSecret: process.env.WINDSURF_WEBHOOK_SECRET,
-  };
+### Step 4: Shared Team Settings
+```json
+// .vscode/settings.json (commit to repo)
+{
+  "myext.apiKey": "",
+  "editor.formatOnSave": true,
+  "windsurf.cascade.enabled": true
 }
 ```
 
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const windsurfStatus = await checkWindsurfConnection();
-
-  return Response.json({
-    status: windsurfStatus ? 'healthy' : 'degraded',
-    services: {
-      windsurf: windsurfStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+```json
+// .vscode/extensions.json (recommended extensions)
+{
+  "recommendations": [
+    "publisher.my-windsurf-extension",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
+  ]
 }
 ```
 
-## Instructions
+### Step 5: CI/CD for Extension
+```yaml
+# .github/workflows/publish.yml
+name: Publish Extension
+on:
+  push:
+    tags: ["v*"]
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Windsurf API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Windsurf integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Windsurf connectivity.
-
-## Output
-- Application deployed to production
-- Windsurf secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+      - run: npm ci && npm run build
+      - run: npx vsce package
+      - run: npx vsce publish
+        env:
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Package fails | Missing files | Check `files` field in package.json |
+| Extension not loading | Wrong engine version | Match `engines.vscode` to Windsurf version |
+| Settings not applied | Wrong scope | Use workspace vs user settings appropriately |
+| Publish rejected | Invalid publisher | Create publisher at marketplace.visualstudio.com |
 
 ## Examples
 
-### Quick Deploy Script
+### Quick Package and Install
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add windsurf_api_key "$WINDSURF_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set WINDSURF_API_KEY="$WINDSURF_API_KEY"
-    fly deploy
-    ;;
-esac
+npm run build && vsce package && code --install-extension *.vsix
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Windsurf Deploy Guide](https://docs.windsurf.com/deploy)
+- [VS Code Extension Publishing](https://code.visualstudio.com/api/working-with-extensions/publishing-extension)
+- [Windsurf Documentation](https://docs.windsurf.ai)
 
 ## Next Steps
-For webhook handling, see `windsurf-webhooks-events`.
+For multi-environment setup, see `windsurf-multi-env-setup`.

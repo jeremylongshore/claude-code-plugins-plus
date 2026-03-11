@@ -16,320 +16,110 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Windsurf.
+Real gotchas when using Windsurf (Codeium's AI IDE). Windsurf's Cascade AI agent, Flows architecture, and workspace indexing behave differently from VS Code copilots -- understanding these differences prevents frustrating debugging sessions.
 
 ## Prerequisites
-- Access to Windsurf codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Windsurf API call
-app.post('/checkout', async (req, res) => {
-  const payment = await windsurfClient.processPayment(req.body);  // 2-5s latency
-  const notification = await windsurfClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await windsurfClient.processPayment(data);
-  await windsurfClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await windsurfClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => windsurfClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new WindsurfClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new WindsurfClient({
-  apiKey: process.env.WINDSURF_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await windsurfClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await windsurfClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await windsurfClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-windsurf-signature'];
-    if (!verifyWindsurfSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await windsurfClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await windsurfClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof WindsurfNotFoundError) {
-    return null;
-  }
-  if (error instanceof WindsurfRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new WindsurfClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.windsurf.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new WindsurfClient({
-  timeout: parseInt(process.env.WINDSURF_TIMEOUT || '30000'),
-  baseUrl: process.env.WINDSURF_BASE_URL || 'https://api.windsurf.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Windsurf is down, every request hangs
-for (const user of users) {
-  await windsurfClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(windsurfClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Windsurf is down
-const recommendations = await windsurfClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await windsurfClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('windsurf', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Windsurf installed and configured
+- Understanding of Cascade's agent model vs inline autocomplete
+- Awareness of workspace indexing behavior
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Don't Confuse Cascade with Autocomplete
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Windsurf has two AI systems: Cascade (agentic, multi-file) and Supercomplete (inline). Using Cascade for quick completions wastes context.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```
+# BAD: opening Cascade to complete a single line
+User: "finish this function signature"
+# Cascade spins up full agent context, reads multiple files = slow
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+# GOOD: use Tab for inline Supercomplete, Cascade for multi-step tasks
+# Supercomplete: just type and press Tab
+# Cascade: Cmd+L for multi-file refactoring, debugging, architecture
+```
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+### Step 2: Manage Cascade Context Window
+
+Cascade reads your entire workspace to build context. Large monorepos with node_modules or build artifacts slow it down.
+
+```
+# BAD: no .windsurfignore in a large monorepo
+# Cascade indexes node_modules, dist/, .git/ = slow and noisy context
+
+# GOOD: create .windsurfignore (same syntax as .gitignore)
+# .windsurfignore
+node_modules/
+dist/
+build/
+.next/
+*.min.js
+*.bundle.js
+coverage/
+```
+
+### Step 3: Avoid Overly Broad Cascade Instructions
+
+Vague instructions cause Cascade to make sweeping changes across many files.
+
+```
+# BAD: "refactor the codebase to use TypeScript"
+# Cascade may try to convert every file at once
+
+# GOOD: scope the task
+"Convert src/utils/api.js to TypeScript. Add proper types for all
+function parameters and return values. Don't change other files."
+```
+
+### Step 4: Trust But Verify File Edits
+
+Cascade can write directly to files. Not reviewing diffs before accepting leads to subtle bugs.
+
+```
+# BAD: accepting all Cascade changes without review
+# Cascade modified 12 files -> "Accept All" -> broken tests
+
+# GOOD: review each file change in the diff view
+# 1. Read the Cascade output explaining what it changed
+# 2. Review each file diff individually
+# 3. Accept file by file, or reject problematic changes
+# 4. Run tests before committing
+```
+
+### Step 5: Handle Extension Compatibility
+
+Windsurf is VS Code-based but not all extensions work. Some conflict with Cascade.
+
+```
+# KNOWN CONFLICTS:
+# - GitHub Copilot: conflicts with Supercomplete (disable one)
+# - Other AI assistants: may interfere with Cascade context
+# - Some language servers: duplicate suggestions
+
+# GOOD: disable competing AI extensions
+# Settings > Extensions > disable Copilot if using Windsurf AI
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Cascade is slow | Large workspace indexed | Add `.windsurfignore` |
+| Wrong file modified | Ambiguous instruction | Be specific about file paths |
+| Conflicting completions | Multiple AI extensions | Disable competing extensions |
+| Cascade loses context | Very long conversation | Start fresh Cascade session |
+| Edits break build | Accepted without review | Always review diffs, run tests |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Effective Cascade Prompts
+```
+GOOD: "In src/api/routes.ts, add input validation for the POST /users
+endpoint using zod. Validate email format and name length (2-50 chars).
+Return 400 with specific error messages on validation failure."
+
+BAD: "Add validation to the API"
 ```
 
 ## Resources
-- [Windsurf Security Guide](https://docs.windsurf.com/security)
-- [Windsurf Best Practices](https://docs.windsurf.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Windsurf Docs](https://docs.windsurf.com)
+- [Cascade Guide](https://docs.windsurf.com/cascade)

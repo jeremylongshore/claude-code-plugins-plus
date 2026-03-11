@@ -16,206 +16,161 @@ compatible-with: claude-code, codex, openclaw
 # Replit Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Replit.
+Manage application data securely on Replit. Covers secrets management, database connection security, environment isolation between development and production, and data handling patterns for Replit-hosted applications.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Replit SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Replit request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupReplitData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.replitLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupReplitData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const replitData = await replitClient.getUserData(userId);
-
-  return {
-    source: 'Replit',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: replitData.profile,
-      activities: replitData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Replit
-  await replitClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.replitUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'replit',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await replitClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Replit account with workspace access
+- Understanding of Replit Secrets
+- Database provisioned (PostgreSQL or Replit DB)
+- Familiarity with environment variables
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Replit data by sensitivity level.
+### Step 1: Secure Secrets Management
+```typescript
+// Never hardcode secrets - use Replit Secrets tab
+// Validate all required secrets at startup
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+function validateSecrets(required: string[]): Record<string, string> {
+  const secrets: Record<string, string> = {};
+  const missing: string[] = [];
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+  for (const key of required) {
+    const value = process.env[key];
+    if (!value) {
+      missing.push(key);
+    } else {
+      secrets[key] = value;
+    }
+  }
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+  if (missing.length > 0) {
+    console.error(`Missing required secrets: ${missing.join(', ')}`);
+    console.error('Add them in the Replit Secrets tab (lock icon in sidebar)');
+    process.exit(1);
+  }
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+  return secrets;
+}
+
+const config = validateSecrets([
+  'DATABASE_URL',
+  'API_KEY',
+  'JWT_SECRET',
+  'ENCRYPTION_KEY',
+]);
+```
+
+### Step 2: Database Connection Security
+```typescript
+import { Pool } from 'pg';
+
+function createSecurePool(): Pool {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
+    max: 10,
+    idleTimeoutMillis: 30000,
+    connectionTimeoutMillis: 5000,
+  });
+
+  // Log connection events without exposing credentials
+  pool.on('error', (err) => {
+    console.error('Database pool error:', err.message);
+    // Never log the full error object (may contain connection string)
+  });
+
+  return pool;
+}
+
+// Parameterized queries only - never string concatenation
+async function findUser(pool: Pool, userId: string) {
+  const result = await pool.query(
+    'SELECT id, username, created_at FROM users WHERE id = $1',
+    [userId]
+  );
+  return result.rows[0];
+}
+```
+
+### Step 3: Request Data Sanitization
+```typescript
+import { z } from 'zod';
+
+// Validate and sanitize all incoming data
+const UserInputSchema = z.object({
+  name: z.string().min(1).max(100).trim(),
+  email: z.string().email().toLowerCase(),
+  message: z.string().max(1000).trim(),
+});
+
+function sanitizeInput(data: unknown) {
+  const result = UserInputSchema.safeParse(data);
+  if (!result.success) {
+    return { valid: false, errors: result.error.flatten().fieldErrors };
+  }
+  return { valid: true, data: result.data };
+}
+
+// Strip sensitive fields from response
+function sanitizeResponse(user: any) {
+  const { password_hash, email, phone, ...safe } = user;
+  return safe;
+}
+```
+
+### Step 4: Environment-Based Data Handling
+```typescript
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Logging: never log sensitive data in production
+function safeLog(message: string, data?: any) {
+  if (isProduction) {
+    // Strip potential PII from logs
+    const safeData = data ? JSON.parse(JSON.stringify(data, (key, value) => {
+      if (['password', 'token', 'secret', 'email', 'ssn'].includes(key.toLowerCase())) {
+        return '[REDACTED]';
+      }
+      return value;
+    })) : undefined;
+    console.log(message, safeData);
+  } else {
+    console.log(message, data);
+  }
+}
+
+// Error responses: never expose stack traces in production
+function errorHandler(err: Error, req: any, res: any, next: any) {
+  safeLog('Error:', { message: err.message });
+
+  res.status(500).json({
+    error: isProduction ? 'Internal server error' : err.message,
+    ...(isProduction ? {} : { stack: err.stack }),
+  });
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| Secret undefined | Not set in Secrets tab | Run `validateSecrets` at startup |
+| DB connection exposed | Logged in error | Sanitize error messages before logging |
+| PII in logs | Full object logged | Use `safeLog` wrapper in production |
+| SQL injection | String concatenation | Always use parameterized queries |
 
 ## Examples
 
-### Quick PII Scan
+### Secure API Endpoint
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
+app.post('/api/users', async (req, res) => {
+  const input = sanitizeInput(req.body);
+  if (!input.valid) return res.status(400).json({ errors: input.errors });
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Replit response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+  const user = await createUser(pool, input.data);
+  res.json(sanitizeResponse(user));
+});
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Replit Privacy Guide](https://docs.replit.com/privacy)
-
-## Next Steps
-For enterprise access control, see `replit-enterprise-rbac`.
+- [Replit Secrets Guide](https://docs.replit.com/programming-ide/workspace-features/secrets)
+- [Replit Database](https://docs.replit.com/hosting/databases)

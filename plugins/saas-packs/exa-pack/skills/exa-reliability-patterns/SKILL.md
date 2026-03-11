@@ -16,276 +16,139 @@ compatible-with: claude-code, codex, openclaw
 # Exa Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Exa integrations.
+Production reliability patterns for Exa neural search integrations. Exa's search-focused API has unique failure modes: query relevance degradation, empty result sets, and variable response times based on query complexity.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const exaBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-exaBreaker.on('open', () => {
-  console.warn('Exa circuit OPEN - requests failing fast');
-  alertOps('Exa circuit breaker opened');
-});
-
-exaBreaker.on('halfOpen', () => {
-  console.info('Exa circuit HALF-OPEN - testing recovery');
-});
-
-exaBreaker.on('close', () => {
-  console.info('Exa circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeExaCall<T>(fn: () => Promise<T>): Promise<T> {
-  return exaBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const exaQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedExaCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return exaQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedExaCall('critical', () =>
-  exaClient.processPayment(order)
-);
-
-await prioritizedExaCall('bulk', () =>
-  exaClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutExaCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Exa ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface ExaFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withExaFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Exa failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class ExaDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await exaClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function exaHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: exaBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Exa API configured
+- Caching infrastructure (Redis recommended)
+- Understanding of search quality metrics
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap Exa calls with circuit breaker.
+### Step 1: Cache Search Results with TTL
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+Search results for the same query are stable over short periods. Caching reduces API calls and latency.
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+```python
+import hashlib, json, time
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+class ExaSearchCache:
+    def __init__(self, redis_client, default_ttl=300):
+        self.r = redis_client
+        self.ttl = default_ttl
 
-## Output
-- Circuit breaker protecting Exa calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+    def _key(self, query: str, **params) -> str:
+        data = json.dumps({"q": query, **params}, sort_keys=True)
+        return f"exa:search:{hashlib.sha256(data.encode()).hexdigest()}"
+
+    def search(self, exa_client, query: str, **params):
+        key = self._key(query, **params)
+        cached = self.r.get(key)
+        if cached:
+            return json.loads(cached)
+        results = exa_client.search(query, **params)
+        self.r.setex(key, self.ttl, json.dumps(results.to_dict()))
+        return results
+```
+
+### Step 2: Query Fallback Chain
+
+If neural search returns low-relevance results, fall back to keyword search, then to cached results.
+
+```python
+from exa_py import Exa
+
+def resilient_search(exa: Exa, query: str, min_results: int = 3):
+    # Try neural search first
+    results = exa.search(query, type="neural", num_results=10)
+    if len(results.results) >= min_results:
+        return results
+
+    # Fall back to keyword search
+    results = exa.search(query, type="keyword", num_results=10)
+    if len(results.results) >= min_results:
+        return results
+
+    # Fall back to broader query with autoprompt
+    results = exa.search(query, type="neural", use_autoprompt=True, num_results=10)
+    return results
+```
+
+### Step 3: Retry with Exponential Backoff
+
+Exa returns 429 on rate limits and 5xx on transient failures.
+
+```python
+import time, random
+
+def exa_with_retry(fn, max_retries=3, base_delay=1.0):
+    for attempt in range(max_retries + 1):
+        try:
+            return fn()
+        except Exception as e:
+            status = getattr(e, 'status_code', 0)
+            if status == 429 or status >= 500:
+                if attempt == max_retries:
+                    raise
+                delay = base_delay * (2 ** attempt) + random.uniform(0, 0.5)
+                time.sleep(delay)
+            else:
+                raise
+```
+
+### Step 4: Result Quality Monitoring
+
+Track search quality metrics to detect degradation before users notice.
+
+```python
+class SearchQualityMonitor:
+    def __init__(self, redis_client):
+        self.r = redis_client
+
+    def record(self, query: str, result_count: int, has_content: bool):
+        key = f"exa:quality:{time.strftime('%Y-%m-%d-%H')}"
+        self.r.hincrby(key, "total", 1)
+        if result_count == 0:
+            self.r.hincrby(key, "empty", 1)
+        if not has_content:
+            self.r.hincrby(key, "no_content", 1)
+        self.r.expire(key, 86400 * 7)
+
+    def get_health(self) -> dict:
+        key = f"exa:quality:{time.strftime('%Y-%m-%d-%H')}"
+        stats = self.r.hgetall(key)
+        total = int(stats.get(b"total", 0))
+        empty = int(stats.get(b"empty", 0))
+        return {
+            "total": total,
+            "empty_rate": empty / total if total > 0 else 0,
+            "healthy": (empty / total < 0.2) if total > 10 else True
+        }
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Empty results | Overly specific query | Use autoprompt and query fallback chain |
+| Slow responses | Complex neural search | Cache results, set timeouts |
+| 429 rate limit | Burst traffic | Exponential backoff with jitter |
+| Quality degradation | API changes or query drift | Monitor empty result rates |
 
 ## Examples
 
-### Quick Circuit Check
-```typescript
-const state = exaBreaker.stats().state;
-console.log('Exa circuit:', state);
+### Timeout Wrapper
+```python
+import asyncio
+
+async def search_with_timeout(exa, query, timeout=10):
+    try:
+        return await asyncio.wait_for(
+            asyncio.to_thread(exa.search, query),
+            timeout=timeout
+        )
+    except asyncio.TimeoutError:
+        return cached_fallback(query)
 ```
 
 ## Resources
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Exa Reliability Guide](https://docs.exa.com/reliability)
-
-## Next Steps
-For policy enforcement, see `exa-policy-guardrails`.
+- [Exa API Reference](https://docs.exa.ai/reference)

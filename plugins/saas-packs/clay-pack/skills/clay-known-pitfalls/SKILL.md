@@ -16,320 +16,149 @@ compatible-with: claude-code, codex, openclaw
 # Clay Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Clay.
+Real gotchas when using Clay's data enrichment platform. Clay's credit-based waterfall enrichment model, table-based workflow, and multi-provider data sourcing create specific failure modes.
 
 ## Prerequisites
-- Access to Clay codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Clay API call
-app.post('/checkout', async (req, res) => {
-  const payment = await clayClient.processPayment(req.body);  // 2-5s latency
-  const notification = await clayClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await clayClient.processPayment(data);
-  await clayClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await clayClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => clayClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new ClayClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new ClayClient({
-  apiKey: process.env.CLAY_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await clayClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await clayClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await clayClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-clay-signature'];
-    if (!verifyClaySignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await clayClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await clayClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof ClayNotFoundError) {
-    return null;
-  }
-  if (error instanceof ClayRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new ClayClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.clay.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new ClayClient({
-  timeout: parseInt(process.env.CLAY_TIMEOUT || '30000'),
-  baseUrl: process.env.CLAY_BASE_URL || 'https://api.clay.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Clay is down, every request hangs
-for (const user of users) {
-  await clayClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(clayClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Clay is down
-const recommendations = await clayClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await clayClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('clay', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Clay account with API access
+- Understanding of waterfall enrichment logic
+- Familiarity with Clay's credit billing model
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Prevent Credit Burn from Waterfall Misconfiguration
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Clay's waterfall enrichment tries multiple providers sequentially. Misconfigured waterfalls burn credits on every provider even after finding valid data.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```
+# BAD: waterfall with no stop conditions
+Enrichment Column: "Company Revenue"
+  Provider 1: Clearbit -> found data -> 1 credit
+  Provider 2: ZoomInfo -> also runs -> 1 credit (wasted)
+  Provider 3: Apollo -> also runs -> 1 credit (wasted)
+  Total: 3 credits for 1 data point
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+# GOOD: configure waterfall to stop on first match
+Enrichment Column: "Company Revenue"
+  Provider 1: Clearbit -> found data -> STOP
+  Total: 1 credit
+  
+# In Clay UI: enable "Stop on first result" for each waterfall step
+# In API: set fallback_only=true on subsequent providers
+```
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+### Step 2: Avoid Blank Row Processing
+
+Clay charges credits per row processed, even if the input data is blank or invalid.
+
+```python
+import requests
+
+# BAD: sending rows with missing emails
+rows = [
+    {"email": "valid@company.com"},
+    {"email": ""},           # blank = wasted credit
+    {"email": "not-email"},  # invalid = wasted credit
+]
+# All 3 rows consume credits
+
+# GOOD: filter before sending to Clay
+valid_rows = [
+    row for row in rows
+    if row.get("email") and "@" in row["email"]
+]
+response = requests.post(
+    "https://api.clay.com/v1/tables/{table_id}/rows",
+    json={"rows": valid_rows},
+    headers={"Authorization": f"Bearer {api_key}"}
+)
+```
+
+### Step 3: Handle CSV Import Column Mapping
+
+Clay auto-maps CSV columns by name. Slight naming differences cause silent data mismatches.
+
+```
+# BAD: CSV has "Company Name", Clay table expects "company_name"
+# Import succeeds but column maps to wrong field or creates duplicate
+
+# GOOD: match CSV headers exactly to Clay table columns
+# Before import, normalize headers:
+import pandas as pd
+df = pd.read_csv("leads.csv")
+df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
+df.to_csv("leads_normalized.csv", index=False)
+```
+
+### Step 4: Rate Limit Clay Table API Calls
+
+Clay's API has per-minute rate limits. Bulk operations without throttling get 429 errors.
+
+```python
+import time
+
+# BAD: blast all rows at once
+for row in thousands_of_rows:
+    requests.post(f"{clay_api}/tables/{table_id}/rows", json=row)
+
+# GOOD: batch with rate limiting
+BATCH_SIZE = 50
+DELAY_BETWEEN_BATCHES = 2  # seconds
+
+for i in range(0, len(rows), BATCH_SIZE):
+    batch = rows[i:i + BATCH_SIZE]
+    response = requests.post(
+        f"{clay_api}/tables/{table_id}/rows",
+        json={"rows": batch},
+        headers=headers
+    )
+    if response.status_code == 429:
+        retry_after = int(response.headers.get("Retry-After", 30))
+        time.sleep(retry_after)
+    else:
+        time.sleep(DELAY_BETWEEN_BATCHES)
+```
+
+### Step 5: Don't Rely on Real-Time Enrichment Results
+
+Clay enrichments run asynchronously. Polling for results immediately after row creation returns empty fields.
+
+```python
+# BAD: read immediately after write
+requests.post(f"{clay_api}/tables/{table_id}/rows", json=row_data)
+result = requests.get(f"{clay_api}/tables/{table_id}/rows/{row_id}")
+print(result.json()["enriched_field"])  # None -- enrichment hasn't run
+
+# GOOD: poll with backoff or use webhooks
+import time
+for attempt in range(10):
+    result = requests.get(f"{clay_api}/tables/{table_id}/rows/{row_id}")
+    if result.json().get("enriched_field"):
+        break
+    time.sleep(min(2 ** attempt, 30))
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Credits burning fast | Waterfall not stopping on match | Enable "stop on first result" |
+| Blank enrichment results | Input rows have invalid data | Pre-validate before sending |
+| Column mapping errors | CSV header mismatch | Normalize headers before import |
+| 429 rate limit errors | Too many API calls/minute | Batch requests with delays |
+| Empty enrichment fields | Reading before enrichment completes | Poll with backoff or use webhooks |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Credit Usage Monitoring
+```python
+usage = requests.get(
+    f"{clay_api}/v1/usage",
+    headers=headers
+).json()
+remaining = usage["credits_remaining"]
+if remaining < 100:
+    print(f"WARNING: Only {remaining} credits left")
 ```
 
 ## Resources
-- [Clay Security Guide](https://docs.clay.com/security)
-- [Clay Best Practices](https://docs.clay.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Clay API Docs](https://docs.clay.com/api)
+- [Clay Waterfall Guide](https://docs.clay.com/enrichment/waterfall)

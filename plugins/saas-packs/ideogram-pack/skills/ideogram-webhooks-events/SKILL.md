@@ -13,188 +13,168 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Ideogram Webhooks & Events
+# Ideogram Events & Async Patterns
 
 ## Overview
-Securely handle Ideogram webhooks with signature validation and replay protection.
+Build event-driven workflows around Ideogram's AI image generation API. Ideogram's `api.ideogram.ai` endpoints handle text-to-image and image editing requests. Since generation can take several seconds, this skill covers async patterns for handling generation callbacks, building image processing pipelines, and monitoring generation jobs.
 
 ## Prerequisites
-- Ideogram webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Ideogram API key stored in `IDEOGRAM_API_KEY` environment variable
+- Storage solution for generated images (S3, GCS, Cloudflare R2)
+- Queue system for batch image generation
+- Understanding of Ideogram models (V_2, V_2_TURBO)
 
-## Webhook Endpoint Setup
+## Event Patterns
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/ideogram',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-ideogram-signature'] as string;
-    const timestamp = req.headers['x-ideogram-timestamp'] as string;
-
-    if (!verifyIdeogramSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleIdeogramEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyIdeogramSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.IDEOGRAM_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type IdeogramEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface IdeogramEvent {
-  id: string;
-  type: IdeogramEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<IdeogramEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleIdeogramEvent(event: IdeogramEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `ideogram:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `ideogram:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Ideogram CLI to send test events
-ideogram webhooks trigger resource.created --url http://localhost:3000/webhooks/ideogram
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Pattern | Trigger | Use Case |
+|---------|---------|----------|
+| Generation callback | Image generation completes | Asset pipeline processing |
+| Batch generation | Multiple prompts queued | Marketing asset creation |
+| Image ready notification | Post-processing done | CDN upload and cache warming |
+| Generation failure alert | API error or content filter | Retry or manual review |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Ideogram dashboard.
+### Step 1: Async Image Generation with Callbacks
+```typescript
+import { Queue, Worker } from "bullmq";
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+interface GenerationJob {
+  prompt: string;
+  style: "REALISTIC" | "DESIGN" | "RENDER_3D" | "ANIME";
+  aspectRatio: "ASPECT_1_1" | "ASPECT_16_9" | "ASPECT_9_16";
+  callbackUrl?: string;
+  model: "V_2" | "V_2_TURBO";
+}
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+const imageQueue = new Queue("ideogram-generation");
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+async function queueGeneration(job: GenerationJob) {
+  return imageQueue.add("generate", job, {
+    attempts: 3,
+    backoff: { type: "exponential", delay: 2000 },
+  });
+}
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+const worker = new Worker("ideogram-generation", async (job) => {
+  const { prompt, style, aspectRatio, model, callbackUrl } = job.data;
+
+  const response = await fetch("https://api.ideogram.ai/generate", {
+    method: "POST",
+    headers: {
+      "Api-Key": process.env.IDEOGRAM_API_KEY!,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt,
+        model,
+        style_type: style,
+        aspect_ratio: aspectRatio,
+        magic_prompt_option: "AUTO",
+      },
+    }),
+  });
+
+  const result = await response.json();
+  const images = result.data;
+
+  // Upload generated images to storage
+  const uploadedUrls = [];
+  for (const image of images) {
+    const url = await uploadToStorage(image.url, `generated/${job.id}`);
+    uploadedUrls.push(url);
+  }
+
+  // Fire callback
+  if (callbackUrl) {
+    await fetch(callbackUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "ideogram.generation.completed",
+        jobId: job.id,
+        prompt,
+        images: uploadedUrls,
+        resolution: images[0]?.resolution,
+      }),
+    });
+  }
+
+  return { images: uploadedUrls };
+});
+```
+
+### Step 2: Handle Generation Events
+```typescript
+app.post("/webhooks/ideogram-callback", async (req, res) => {
+  const { event, jobId, images, prompt } = req.body;
+  res.status(200).json({ received: true });
+
+  switch (event) {
+    case "ideogram.generation.completed":
+      console.log(`Generated ${images.length} images for: "${prompt}"`);
+      await processGeneratedImages(jobId, images);
+      break;
+    case "ideogram.generation.failed":
+      console.error(`Generation failed for job ${jobId}`);
+      await handleGenerationFailure(jobId, req.body.error);
+      break;
+  }
+});
+```
+
+### Step 3: Batch Marketing Asset Generation
+```typescript
+async function generateMarketingAssets(campaign: string, prompts: string[]) {
+  const jobs = prompts.map(prompt =>
+    queueGeneration({
+      prompt,
+      style: "DESIGN",
+      aspectRatio: "ASPECT_16_9",
+      model: "V_2",
+      callbackUrl: `https://api.myapp.com/webhooks/ideogram-callback`,
+    })
+  );
+
+  const results = await Promise.all(jobs);
+  return results.map(j => j.id);
+}
+```
+
+### Step 4: Image Post-Processing Pipeline
+```typescript
+async function processGeneratedImages(jobId: string, imageUrls: string[]) {
+  for (const url of imageUrls) {
+    // Resize for different platforms
+    await imageProcessor.resize(url, { width: 1200, height: 630, format: "og-image" });
+    await imageProcessor.resize(url, { width: 1080, height: 1080, format: "instagram" });
+    await imageProcessor.resize(url, { width: 1500, height: 500, format: "twitter-header" });
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Content filtered | Prompt violates policy | Revise prompt, check content guidelines |
+| Rate limited | Too many requests | Queue jobs with concurrency limits |
+| Low quality output | Vague prompt | Add style details and negative prompts |
+| Timeout | Large batch | Process sequentially with delays |
 
 ## Examples
 
-### Testing Webhooks Locally
+### Quick Single Generation
 ```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/ideogram \
+curl -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  -d '{"image_request": {"prompt": "Modern logo for tech startup", "model": "V_2", "style_type": "DESIGN"}}'
 ```
 
 ## Resources
-- [Ideogram Webhooks Guide](https://docs.ideogram.com/webhooks)
-- [Webhook Security Best Practices](https://docs.ideogram.com/webhooks/security)
+- [Ideogram API Documentation](https://developer.ideogram.ai/api-reference)
+- [Ideogram Style Guide](https://developer.ideogram.ai/styles)
 
 ## Next Steps
-For performance optimization, see `ideogram-performance-tuning`.
+For deployment setup, see `ideogram-deploy-integration`.

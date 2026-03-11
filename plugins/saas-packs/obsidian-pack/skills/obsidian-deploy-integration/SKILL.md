@@ -13,258 +13,153 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Obsidian Deploy Integration
+# Obsidian Plugin Deploy Integration
 
 ## Overview
-Complete guide for publishing Obsidian plugins to the official community plugin directory.
+Publish and distribute Obsidian plugins through the official community plugin directory. Covers the complete release workflow: building, versioning, creating GitHub releases, and submitting to the Obsidian community plugins repository for review and listing.
 
 ## Prerequisites
-- Completed and tested plugin
-- GitHub account
+- Obsidian plugin with `main.ts`, `manifest.json`, and `styles.css` (if applicable)
 - GitHub repository for your plugin
-- `gh` CLI installed (optional but recommended)
-
-## Community Plugin Directory Structure
-
-### Your Repository Requirements
-```
-your-plugin-repo/
-├── main.js              # Built plugin (required)
-├── manifest.json        # Plugin metadata (required)
-├── styles.css           # Optional styles
-├── README.md            # Documentation
-├── LICENSE              # License file
-└── .github/
-    └── workflows/       # CI/CD workflows
-```
-
-### obsidian-releases Repository
-```
-obsidian-releases/
-├── community-plugins.json    # Plugin registry
-└── community-css-themes.json # Theme registry
-```
+- Node.js build toolchain (esbuild recommended)
+- Understanding of Obsidian plugin review requirements
 
 ## Instructions
 
-### Step 1: Prepare Your Repository
-```bash
-# Ensure all required files are in repo root
-ls -la main.js manifest.json
-
-# Validate manifest.json
-cat manifest.json
-# Should have: id, name, version, minAppVersion, description, author
-
-# Create GitHub release
-gh release create 1.0.0 \
-  main.js \
-  manifest.json \
-  styles.css \
-  --title "v1.0.0" \
-  --notes "Initial release"
-```
-
-### Step 2: Fork obsidian-releases
-```bash
-# Fork the releases repository
-gh repo fork obsidianmd/obsidian-releases --clone
-
-# Navigate to fork
-cd obsidian-releases
-
-# Create branch for your submission
-git checkout -b add-my-plugin
-```
-
-### Step 3: Add Plugin Entry
-```bash
-# Edit community-plugins.json
-# Add your plugin in alphabetical order by id
-
-# Example entry to add:
+### Step 1: Configure Build Pipeline
+```json
 {
-  "id": "my-plugin-id",
-  "name": "My Plugin Name",
-  "author": "Your Name",
-  "description": "Brief description of what your plugin does",
-  "repo": "your-username/your-repo-name"
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "version": "node version-bump.mjs && git add manifest.json versions.json"
+  }
 }
 ```
 
-### Step 4: Validate Entry
-```bash
-# Validate JSON syntax
-cat community-plugins.json | jq empty
+```javascript
+// esbuild.config.mjs
+import esbuild from "esbuild";
 
-# Check your entry
-cat community-plugins.json | jq '.[] | select(.id == "my-plugin-id")'
+const prod = process.argv[2] === "production";
 
-# Verify alphabetical ordering
-cat community-plugins.json | jq '.[].id' | sort -c
+await esbuild.build({
+  entryPoints: ["main.ts"],
+  bundle: true,
+  external: ["obsidian", "electron", "@codemirror/*"],
+  format: "cjs",
+  target: "es2018",
+  outfile: "main.js",
+  sourcemap: prod ? false : "inline",
+  minify: prod,
+  treeShaking: true,
+});
 ```
 
-### Step 5: Submit Pull Request
-```bash
-# Commit changes
-git add community-plugins.json
-git commit -m "Add my-plugin-id to community plugins"
-
-# Push to your fork
-git push origin add-my-plugin
-
-# Create PR
-gh pr create \
-  --repo obsidianmd/obsidian-releases \
-  --title "Add my-plugin-id" \
-  --body "## Plugin Submission
-
-**Plugin ID:** my-plugin-id
-**Plugin Name:** My Plugin Name
-**Repository:** https://github.com/your-username/your-repo-name
-
-### Description
-Brief description of what the plugin does and why it's useful.
-
-### Checklist
-- [x] Plugin works on desktop (Windows, macOS, Linux)
-- [x] Plugin works on mobile (iOS, Android) or is marked desktop-only
-- [x] README.md explains installation and usage
-- [x] No console errors during normal operation
-- [x] Follows Obsidian plugin guidelines
-
-### Screenshots
-[Include screenshots if visual]
-"
+### Step 2: Version and Release Files
+```json
+// manifest.json
+{
+  "id": "my-plugin",
+  "name": "My Plugin",
+  "version": "1.0.0",
+  "minAppVersion": "1.4.0",
+  "description": "Description of your plugin",
+  "author": "Your Name",
+  "isDesktopOnly": false
+}
 ```
 
-### Step 6: Post-Submission Process
+```json
+// versions.json (maps plugin version to minimum Obsidian version)
+{
+  "1.0.0": "1.4.0"
+}
+```
+
+### Step 3: GitHub Release Workflow
+```yaml
+# .github/workflows/release.yml
+name: Release Plugin
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci
+      - run: npm run build
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            main.js
+            manifest.json
+            styles.css
+```
+
+### Step 4: Submit to Community Plugins
 ```markdown
-## After Submitting
-
-### Review Process
-1. **Automated checks** run within minutes
-2. **Manual review** by Obsidian team (1-7 days typically)
-3. **Feedback** may be provided via PR comments
-4. **Approval** leads to automatic publication
-
-### Common Review Feedback
-- Missing README documentation
-- Console.log statements in production code
-- Hardcoded API keys or sensitive data
-- Missing error handling
-- Incompatibility with mobile
-
-### Responding to Feedback
-1. Make requested changes in your plugin repo
-2. Create new release with fixes
-3. Comment on PR when ready for re-review
+1. Fork https://github.com/obsidianmd/obsidian-releases
+2. Edit community-plugins.json, add your plugin entry:
+   {
+     "id": "my-plugin",
+     "name": "My Plugin",
+     "author": "Your Name",
+     "description": "What it does",
+     "repo": "username/my-plugin"
+   }
+3. Create a Pull Request
+4. Wait for Obsidian team review (typically 1-2 weeks)
 ```
 
-### Step 7: Post-Publication Maintenance
-```bash
-# After approval, your plugin is live!
+### Step 5: Version Bump Script
+```javascript
+// version-bump.mjs
+import { readFileSync, writeFileSync } from "fs";
 
-# For updates, just create new GitHub releases
-gh release create 1.0.1 \
-  main.js manifest.json styles.css \
-  --title "v1.0.1" \
-  --notes "Bug fixes and improvements"
+const targetVersion = process.env.npm_package_version;
 
-# Obsidian automatically picks up new releases
-# Users will see update notifications
+// Update manifest.json
+let manifest = JSON.parse(readFileSync("manifest.json", "utf8"));
+const { minAppVersion } = manifest;
+manifest.version = targetVersion;
+writeFileSync("manifest.json", JSON.stringify(manifest, null, "\t"));
 
-# For major updates, update community-plugins.json if needed
-# (usually only for name/description changes)
+// Update versions.json
+let versions = JSON.parse(readFileSync("versions.json", "utf8"));
+versions[targetVersion] = minAppVersion;
+writeFileSync("versions.json", JSON.stringify(versions, null, "\t"));
 ```
-
-## Output
-- Plugin repository properly structured
-- GitHub release created
-- Pull request submitted to obsidian-releases
-- Plugin published to community directory
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PR validation fails | JSON syntax error | Validate with `jq` |
-| Plugin not found | Wrong repo path | Check repo URL exactly matches |
-| Release not picked up | No GitHub release | Create release with required files |
-| Mobile crash | Desktop-only API | Set `isDesktopOnly: true` |
+| Plugin not loading | Wrong manifest ID | Ensure `id` matches directory name |
+| Build fails | Missing externals | Add `obsidian` to esbuild externals |
+| Review rejected | Guidelines violation | Review obsidian.md/plugins/guidelines |
+| Version mismatch | versions.json outdated | Run version-bump script before release |
 
 ## Examples
 
-### Updating Plugin Description
+### Quick Release
 ```bash
-# If you need to update name/description after publication
-# Edit community-plugins.json in your fork
-
-# Create PR with changes
-gh pr create \
-  --repo obsidianmd/obsidian-releases \
-  --title "Update my-plugin-id description" \
-  --body "Updating plugin description to better reflect new features."
-```
-
-### Complete Submission Script
-```bash
-#!/bin/bash
-# submit-plugin.sh
-
-PLUGIN_ID="my-plugin"
-PLUGIN_NAME="My Plugin"
-AUTHOR="Your Name"
-DESCRIPTION="Plugin description"
-REPO="username/repo-name"
-
-# Fork and clone obsidian-releases
-gh repo fork obsidianmd/obsidian-releases --clone
-cd obsidian-releases
-
-# Create branch
-git checkout -b add-$PLUGIN_ID
-
-# Add entry (using jq to maintain proper format)
-jq --arg id "$PLUGIN_ID" \
-   --arg name "$PLUGIN_NAME" \
-   --arg author "$AUTHOR" \
-   --arg desc "$DESCRIPTION" \
-   --arg repo "$REPO" \
-   '. += [{"id": $id, "name": $name, "author": $author, "description": $desc, "repo": $repo}] | sort_by(.id)' \
-   community-plugins.json > tmp.json && mv tmp.json community-plugins.json
-
-# Commit and push
-git add community-plugins.json
-git commit -m "Add $PLUGIN_ID"
-git push origin add-$PLUGIN_ID
-
-# Create PR
-gh pr create --repo obsidianmd/obsidian-releases \
-  --title "Add $PLUGIN_ID" \
-  --body "Plugin submission for $PLUGIN_NAME"
-
-echo "PR submitted! Check: https://github.com/obsidianmd/obsidian-releases/pulls"
-```
-
-### BRAT Beta Distribution
-```markdown
-## Pre-Release Distribution via BRAT
-
-For beta testing before community submission:
-
-1. User installs BRAT plugin
-2. BRAT Settings > Add Beta Plugin
-3. Enter: `your-username/your-repo-name`
-4. BRAT installs directly from your repo
-
-No community-plugins.json entry needed for BRAT!
+npm version patch
+git push --tags
+# GitHub Actions creates the release automatically
 ```
 
 ## Resources
-- [Plugin Submission Guidelines](https://docs.obsidian.md/Plugins/Releasing/Submit+your+plugin)
-- [obsidian-releases Repository](https://github.com/obsidianmd/obsidian-releases)
-- [Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
-- [BRAT Plugin](https://github.com/TfTHacker/obsidian42-brat)
+- [Obsidian Plugin Guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines)
+- [Sample Plugin Template](https://github.com/obsidianmd/obsidian-sample-plugin)
+- [Community Plugins Repo](https://github.com/obsidianmd/obsidian-releases)
 
 ## Next Steps
-For event handling patterns, see `obsidian-webhooks-events`.
+For event handling, see `obsidian-webhooks-events`.

@@ -16,200 +16,157 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Performance Tuning
 
 ## Overview
-Optimize Perplexity API performance with caching, batching, and connection pooling.
+Optimize Perplexity Sonar API for research automation and fact-checking workflows. Focus on query caching for repeated searches, citation deduplication, streaming for long research queries, and model selection between speed and depth.
 
 ## Prerequisites
-- Perplexity SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedPerplexityRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const perplexityLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Perplexity
-    const results = await perplexityClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  perplexityLoader.load('id-1'),
-  perplexityLoader.load('id-2'),
-  perplexityLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new PerplexityClient({
-  apiKey: process.env.PERPLEXITY_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedPerplexityList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedPerplexityList(cursor =>
-  perplexityClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredPerplexityCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Perplexity API key (sonar access)
+- Understanding of Perplexity model tiers
+- Cache layer for search result deduplication
+- Monitoring for token usage and costs
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Perplexity operations.
+### Step 1: Model Selection for Speed vs Depth
+```typescript
+import OpenAI from 'openai';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+const perplexity = new OpenAI({
+  apiKey: process.env.PERPLEXITY_API_KEY,
+  baseURL: 'https://api.perplexity.ai',
+});
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+// Model tiers:
+// sonar:             Fast, basic search (cheapest)
+// sonar-pro:         Deeper search, more citations
+// sonar-reasoning:   Multi-step reasoning with search
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+async function quickSearch(query: string) {
+  return perplexity.chat.completions.create({
+    model: 'sonar',
+    messages: [{ role: 'user', content: query }],
+    max_tokens: 512,
+  });
+}
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+async function deepResearch(query: string) {
+  return perplexity.chat.completions.create({
+    model: 'sonar-pro',
+    messages: [
+      { role: 'system', content: 'Provide comprehensive research with citations.' },
+      { role: 'user', content: query },
+    ],
+    max_tokens: 2048,
+  });
+}
+```
+
+### Step 2: Cache Search Results by Query Hash
+```typescript
+import { LRUCache } from 'lru-cache';
+import { createHash } from 'crypto';
+
+const searchCache = new LRUCache<string, any>({
+  max: 1000,
+  ttl: 1000 * 60 * 60, // 1 hour - search results age
+});
+
+function queryHash(query: string, model: string): string {
+  return createHash('sha256')
+    .update(`${model}:${query.toLowerCase().trim()}`)
+    .digest('hex');
+}
+
+async function cachedSearch(query: string, model = 'sonar') {
+  const key = queryHash(query, model);
+  const cached = searchCache.get(key);
+  if (cached) return cached;
+
+  const result = await perplexity.chat.completions.create({
+    model,
+    messages: [{ role: 'user', content: query }],
+  });
+
+  searchCache.set(key, result);
+  return result;
+}
+```
+
+### Step 3: Stream Long Research Queries
+```typescript
+async function streamResearch(
+  query: string,
+  onChunk: (text: string) => void
+) {
+  const stream = await perplexity.chat.completions.create({
+    model: 'sonar-pro',
+    messages: [{ role: 'user', content: query }],
+    stream: true,
+    max_tokens: 4096,
+  });
+
+  let fullText = '';
+  for await (const chunk of stream) {
+    const text = chunk.choices[0]?.delta?.content || '';
+    fullText += text;
+    onChunk(text);
+  }
+  return { text: fullText, citations: extractCitations(fullText) };
+}
+
+function extractCitations(text: string): string[] {
+  const urlRegex = /https?:\/\/[^\s\]]+/g;
+  return [...new Set(text.match(urlRegex) || [])];
+}
+```
+
+### Step 4: Parallel Research with Deduplication
+```typescript
+async function parallelResearch(
+  queries: string[],
+  concurrency = 3
+) {
+  const results: Map<string, any> = new Map();
+
+  for (let i = 0; i < queries.length; i += concurrency) {
+    const batch = queries.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(q => cachedSearch(q, 'sonar'))
+    );
+
+    batch.forEach((q, idx) => results.set(q, batchResults[idx]));
+
+    if (i + concurrency < queries.length) {
+      await new Promise(r => setTimeout(r, 500));
+    }
+  }
+  return results;
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Rate limit 429 | Exceeding RPM quota | Reduce concurrency, add delays |
+| Stale citations | Cache TTL too long | Reduce to 30 min for time-sensitive queries |
+| Incomplete citations | Using sonar basic | Upgrade to sonar-pro for more sources |
+| High token cost | Using sonar-pro for simple queries | Route simple queries to sonar basic |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Fact-Checking Pipeline
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredPerplexityCall(name, () =>
-    cachedPerplexityRequest(`cache:${name}`, fn)
+async function factCheck(claims: string[]) {
+  const results = await parallelResearch(
+    claims.map(c => `Verify this claim with sources: ${c}`)
   );
+
+  return claims.map(claim => ({
+    claim,
+    analysis: results.get(`Verify this claim with sources: ${claim}`),
+  }));
+}
 ```
 
 ## Resources
-- [Perplexity Performance Guide](https://docs.perplexity.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `perplexity-cost-tuning`.
+- [Perplexity API Docs](https://docs.perplexity.ai/)
+- [Perplexity Model Guide](https://docs.perplexity.ai/guides/model-cards)

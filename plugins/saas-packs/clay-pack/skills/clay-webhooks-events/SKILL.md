@@ -16,185 +16,155 @@ compatible-with: claude-code, codex, openclaw
 # Clay Webhooks & Events
 
 ## Overview
-Securely handle Clay webhooks with signature validation and replay protection.
+Handle Clay webhooks for real-time notifications when data enrichment completes, tables update, or workflows finish. Clay fires webhooks on enrichment lifecycle events so you can trigger downstream actions like CRM updates, Slack alerts, or pipeline syncs automatically.
 
 ## Prerequisites
-- Clay webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Clay account with API access and webhook configuration enabled
+- HTTPS endpoint accessible from the internet
+- Clay API key stored in `CLAY_API_KEY` environment variable
+- Familiarity with Clay table and enrichment concepts
 
-## Webhook Endpoint Setup
+## Webhook Event Types
 
-### Express.js
+| Event | Trigger | Payload |
+|-------|---------|---------|
+| `enrichment.completed` | Column enrichment finishes | Row data, enrichment results |
+| `enrichment.failed` | Enrichment errors out | Row ID, error details |
+| `table.row.created` | New row added to table | Full row data |
+| `table.row.updated` | Row data changes | Changed fields, row ID |
+| `table.export.completed` | Table export finishes | Export URL, row count |
+| `workflow.completed` | Automated workflow ends | Workflow ID, results summary |
+
+## Instructions
+
+### Step 1: Configure Webhook Endpoint
 ```typescript
-import express from 'express';
-import crypto from 'crypto';
+import express from "express";
+import crypto from "crypto";
 
 const app = express();
 
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/clay',
-  express.raw({ type: 'application/json' }),
+app.post("/webhooks/clay",
+  express.raw({ type: "application/json" }),
   async (req, res) => {
-    const signature = req.headers['x-clay-signature'] as string;
-    const timestamp = req.headers['x-clay-timestamp'] as string;
+    const signature = req.headers["x-clay-signature"] as string;
+    const secret = process.env.CLAY_WEBHOOK_SECRET!;
 
-    if (!verifyClaySignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
+    const expected = crypto
+      .createHmac("sha256", secret)
+      .update(req.body)
+      .digest("hex");
+
+    if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
+      return res.status(401).json({ error: "Invalid signature" });
     }
 
     const event = JSON.parse(req.body.toString());
-    await handleClayEvent(event);
-
     res.status(200).json({ received: true });
+    await handleClayEvent(event);
   }
 );
 ```
 
-## Signature Verification
-
+### Step 2: Route Events by Type
 ```typescript
-function verifyClaySignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.CLAY_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ClayEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ClayEvent {
-  id: string;
-  type: ClayEventType;
+interface ClayWebhookPayload {
+  event: string;
+  table_id: string;
+  row_id?: string;
   data: Record<string, any>;
-  created: string;
+  timestamp: string;
 }
 
-const eventHandlers: Record<ClayEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleClayEvent(event: ClayEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
+async function handleClayEvent(payload: ClayWebhookPayload): Promise<void> {
+  switch (payload.event) {
+    case "enrichment.completed":
+      await handleEnrichmentComplete(payload);
+      break;
+    case "enrichment.failed":
+      await handleEnrichmentFailed(payload);
+      break;
+    case "table.row.created":
+      await syncNewLeadToCRM(payload);
+      break;
+    case "table.export.completed":
+      await processExportFile(payload);
+      break;
+    default:
+      console.log(`Unhandled Clay event: ${payload.event}`);
   }
 }
 ```
 
-## Idempotency Handling
-
+### Step 3: Handle Enrichment Results
 ```typescript
-import { Redis } from 'ioredis';
+async function handleEnrichmentComplete(payload: ClayWebhookPayload) {
+  const { row_id, data } = payload;
+  const enrichedCompany = data.company_enrichment;
+  const linkedinData = data.linkedin_enrichment;
 
-const redis = new Redis(process.env.REDIS_URL);
+  console.log(`Enrichment complete for row ${row_id}`);
 
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `clay:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
+  // Push enriched data to your CRM
+  await crmClient.updateContact(row_id, {
+    company: enrichedCompany?.name,
+    companySize: enrichedCompany?.employee_count,
+    linkedinUrl: linkedinData?.profile_url,
+    title: linkedinData?.title,
+  });
 }
 
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `clay:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
+async function handleEnrichmentFailed(payload: ClayWebhookPayload) {
+  const { row_id, data } = payload;
+  console.error(`Enrichment failed for row ${row_id}: ${data.error}`);
+
+  await retryQueue.add("clay-enrichment-retry", {
+    rowId: row_id,
+    tableId: payload.table_id,
+    error: data.error,
+  });
 }
 ```
 
-## Webhook Testing
-
+### Step 4: Register Webhook via Clay API
 ```bash
-# Use Clay CLI to send test events
-clay webhooks trigger resource.created --url http://localhost:3000/webhooks/clay
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
+curl -X POST https://api.clay.com/v1/webhooks \
+  -H "Authorization: Bearer $CLAY_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
+  -d '{
+    "url": "https://api.yourapp.com/webhooks/clay",
+    "events": ["enrichment.completed", "enrichment.failed", "table.row.created"],
+    "table_id": "tbl_abc123"
+  }'
 ```
-
-## Instructions
-
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Clay dashboard.
-
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
-
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
-
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
-
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Invalid signature | Wrong webhook secret | Verify secret in Clay dashboard settings |
+| Missing enrichment data | Column not configured | Check enrichment column setup in table |
+| Duplicate events | Retry delivery | Track `row_id + timestamp` for idempotency |
+| Webhook timeout | Slow handler | Respond 200 immediately, process async |
 
 ## Examples
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/clay \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+### Sync Enriched Leads to Slack
+```typescript
+async function syncNewLeadToCRM(payload: ClayWebhookPayload) {
+  const { data } = payload;
+  await fetch(process.env.SLACK_WEBHOOK_URL!, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: `New enriched lead: ${data.full_name} at ${data.company}\nTitle: ${data.title}`,
+    }),
+  });
+}
 ```
 
 ## Resources
+- [Clay API Documentation](https://docs.clay.com/api)
 - [Clay Webhooks Guide](https://docs.clay.com/webhooks)
-- [Webhook Security Best Practices](https://docs.clay.com/webhooks/security)
 
 ## Next Steps
 For performance optimization, see `clay-performance-tuning`.

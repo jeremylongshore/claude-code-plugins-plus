@@ -16,208 +16,93 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Retell AI integrations.
+Control access to Retell AI voice agents, phone numbers, and call recordings through organization-level roles and API key management. Retell uses per-minute pricing for voice calls, so RBAC must govern who can create voice agents, assign phone numbers, access call recordings, and modify agent prompts. Unauthorized prompt changes can directly impact customer-facing voice interactions.
 
 ## Prerequisites
-- Retell AI Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum Retell AIRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface Retell AIPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<Retell AIRole, Retell AIPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: Retell AIRole,
-  action: keyof Retell AIPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Retell AI SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://retellai.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/retellai/callback',
-};
-
-// Map IdP groups to Retell AI roles
-const groupRoleMapping: Record<string, Retell AIRole> = {
-  'Engineering': Retell AIRole.Developer,
-  'Platform-Admins': Retell AIRole.Admin,
-  'Data-Team': Retell AIRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@retellai/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.RETELLAI_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.RETELLAI_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/retellai/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface Retell AIOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: Retell AIRole;
-}
-
-async function createOrganization(
-  config: Retell AIOrganization
-): Promise<void> {
-  await retellaiClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireRetell AIPermission(
-  requiredPermission: keyof Retell AIPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { retellaiRole: Retell AIRole };
-
-    if (!checkPermission(user.retellaiRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/retellai/resource/:id',
-  requireRetell AIPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface Retell AIAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: Retell AIRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logRetell AIAccess(entry: Retell AIAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Retell AI account with team plan (per-minute call pricing)
+- Organization admin access at dashboard.retellai.com
+- At least one phone number provisioned
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Retell AI permissions.
+### Step 1: Define Role-Based Access for Voice Operations
+```yaml
+# retell-rbac-matrix.yaml
+roles:
+  org_admin:
+    permissions: [manage_members, manage_billing, manage_phone_numbers, all_agent_ops, access_all_recordings]
+  agent_developer:
+    permissions: [create_agent, edit_agent_prompt, test_agent, view_own_call_logs]
+    restrictions: [cannot_assign_phone_numbers, cannot_access_billing]
+  call_operator:
+    permissions: [trigger_outbound_calls, view_call_logs, listen_recordings]
+    restrictions: [cannot_edit_agents, cannot_manage_members]
+  auditor:
+    permissions: [view_call_logs, listen_recordings, export_transcripts]
+    restrictions: [read_only]
+```
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+### Step 2: Create Scoped API Keys
+```bash
+# Key for the voice agent development team
+curl -X POST https://api.retellai.com/v1/api-keys \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" \
+  -d '{
+    "name": "agent-dev-team",
+    "scopes": ["agent:read", "agent:write", "call:read"],
+    "rate_limit_rpm": 60
+  }'
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+# Key for the call center integration (outbound calls only)
+curl -X POST https://api.retellai.com/v1/api-keys \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" \
+  -d '{
+    "name": "call-center-prod",
+    "scopes": ["call:create", "call:read"],
+    "rate_limit_rpm": 200
+  }'
+```
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 3: Protect Agent Prompt Changes
+```bash
+# List all agents and their last-modified timestamps
+curl https://api.retellai.com/v1/agents \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \
+  jq '.[] | {agent_id, agent_name, last_modified_at, modified_by}'
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+# Require approval for prompt changes to production agents
+# Implement via your CI/CD pipeline: agent config stored in git, changes require PR review
+```
+
+### Step 4: Control Phone Number Assignment
+Only org admins should assign phone numbers to agents, as each number incurs monthly costs and represents the company's voice identity:
+```bash
+# Assign a phone number to a specific agent (admin only)
+curl -X POST https://api.retellai.com/v1/phone-numbers/pn_abc123/assign \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" \
+  -d '{"agent_id": "agt_xyz789"}'
+```
+
+### Step 5: Audit Call Recordings and Transcripts
+```bash
+# Review recent calls with cost data
+curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \
+  jq '.[] | {call_id, agent_name, duration_minutes, cost_usd, caller_number, created_at}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `403` on agent update | Key missing `agent:write` scope | Create key with write scope |
+| Phone number unassigned | Admin removed assignment | Reassign via phone number API |
+| Call recording inaccessible | Retention policy expired | Extend retention in org settings |
+| Agent prompt regression | Unauthorized edit | Store configs in git, require PR reviews |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Estimate monthly voice costs from recent usage
+curl -s "https://api.retellai.com/v1/calls?created_after=2026-03-01" \
+  -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \
+  jq '[.[].cost_usd] | add as $total | {total_cost: $total, projected_monthly: ($total * 30 / 10)}'
 ```
-
-## Resources
-- [Retell AI Enterprise Guide](https://docs.retellai.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `retellai-migration-deep-dive`.

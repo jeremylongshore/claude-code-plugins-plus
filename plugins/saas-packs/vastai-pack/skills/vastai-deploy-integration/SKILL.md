@@ -16,195 +16,132 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Deploy Integration
 
 ## Overview
-Deploy Vast.ai-powered applications to popular platforms with proper secrets management.
+Deploy ML training jobs and inference services on Vast.ai GPU cloud. Covers instance provisioning via the REST API, Docker image configuration, data transfer strategies, and automated deployment scripts for GPU workloads.
 
 ## Prerequisites
-- Vast.ai API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add Vast.ai secrets to Vercel
-vercel secrets add vastai_api_key sk_live_***
-vercel secrets add vastai_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "VASTAI_API_KEY": "@vastai_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-vastai-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Vast.ai secrets
-fly secrets set VASTAI_API_KEY=sk_live_***
-fly secrets set VASTAI_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="vastai-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=VASTAI_API_KEY=vastai-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/vastai.ts
-interface Vast.aiConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getVast.aiConfig(): Vast.aiConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.VASTAI_API_KEY!,
-    environment: env as Vast.aiConfig['environment'],
-    webhookSecret: process.env.VASTAI_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const vastaiStatus = await checkVast.aiConnection();
-
-  return Response.json({
-    status: vastaiStatus ? 'healthy' : 'degraded',
-    services: {
-      vastai: vastaiStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- Vast.ai account with API key stored in `VASTAI_API_KEY` environment variable
+- Vast.ai CLI installed (`pip install vastai`)
+- Docker image for your workload published to a registry
+- SSH key configured for instance access
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Step 1: Search and Provision GPU
+```bash
+# Search for available GPUs
+vastai search offers 'gpu_name=RTX_4090 reliability2>0.95 disk_space>50' \
+  -o 'dph_total' --limit 5
 
-### Step 2: Configure Secrets
-Store Vast.ai API keys securely using the platform's secrets management.
+# Create instance from best offer
+vastai create instance $OFFER_ID \
+  --image pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime \
+  --disk 100 \
+  --onstart-cmd "cd /workspace && git clone https://github.com/myorg/project.git && pip install -r project/requirements.txt"
+```
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Vast.ai integration.
+### Step 2: Deploy Custom Docker Image
+```dockerfile
+# Dockerfile.gpu
+FROM pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm Vast.ai connectivity.
+WORKDIR /workspace
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
 
-## Output
-- Application deployed to production
-- Vast.ai secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+CMD ["python", "train.py", "--config", "config.yaml"]
+```
+
+```bash
+# Build and push
+docker build -f Dockerfile.gpu -t myregistry/ml-trainer:latest .
+docker push myregistry/ml-trainer:latest
+
+# Deploy on Vast.ai
+vastai create instance $OFFER_ID \
+  --image myregistry/ml-trainer:latest \
+  --disk 100 \
+  --env "WANDB_API_KEY=$WANDB_API_KEY HF_TOKEN=$HF_TOKEN"
+```
+
+### Step 3: Automated Deployment Script
+```python
+import requests
+import json
+import os
+
+VASTAI_API = "https://cloud.vast.ai/api/v0"
+API_KEY = os.environ["VASTAI_API_KEY"]
+
+def deploy_training_job(gpu_type="RTX_4090", disk_gb=100):
+    # Find cheapest matching offer
+    response = requests.get(f"{VASTAI_API}/bundles", params={
+        "api_key": API_KEY,
+        "q": json.dumps({
+            "gpu_name": {"eq": gpu_type},
+            "rentable": {"eq": True},
+            "disk_space": {"gte": disk_gb},
+            "reliability2": {"gte": 0.95},
+        }),
+        "order": "dph_total",
+        "limit": 1,
+    })
+
+    offers = response.json()["offers"]
+    if not offers:
+        raise ValueError(f"No {gpu_type} available")
+
+    # Provision instance
+    result = requests.put(
+        f"{VASTAI_API}/asks/{offers[0]['id']}/",
+        params={"api_key": API_KEY},
+        json={
+            "image": "myregistry/ml-trainer:latest",
+            "disk": disk_gb,
+            "env": {"WANDB_API_KEY": os.environ.get("WANDB_API_KEY", "")},
+        },
+    )
+
+    instance = result.json()
+    print(f"Instance {instance['new_contract']} created at ${offers[0]['dph_total']}/hr")
+    return instance
+```
+
+### Step 4: Monitor and Cleanup
+```bash
+# List running instances
+vastai show instances
+
+# Check instance status
+vastai show instance $INSTANCE_ID
+
+# Download results
+vastai scp $INSTANCE_ID:/workspace/output ./results/
+
+# Destroy instance when done
+vastai destroy instance $INSTANCE_ID
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| No GPU available | High demand | Try different GPU type or region |
+| Instance preempted | Outbid on spot | Use on-demand or increase bid |
+| SSH connection refused | Instance still booting | Wait for `running` status |
+| Out of disk | Large dataset | Increase `--disk` parameter |
 
 ## Examples
 
-### Quick Deploy Script
+### Quick Training Deploy
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add vastai_api_key "$VASTAI_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set VASTAI_API_KEY="$VASTAI_API_KEY"
-    fly deploy
-    ;;
-esac
+vastai search offers 'gpu_name=A100_SXM4 num_gpus=1' -o 'dph_total' --limit 3
+vastai create instance $BEST_OFFER --image myregistry/trainer:latest --disk 200
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Vast.ai Deploy Guide](https://docs.vastai.com/deploy)
+- [Vast.ai Documentation](https://vast.ai/docs)
+- [Vast.ai CLI Reference](https://vast.ai/docs/cli)
+- [GPU Pricing](https://vast.ai/pricing)
 
 ## Next Steps
-For webhook handling, see `vastai-webhooks-events`.
+For multi-environment setup, see `vastai-multi-env-setup`.

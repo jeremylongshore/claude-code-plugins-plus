@@ -16,195 +16,111 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Deploy Integration
 
 ## Overview
-Deploy CodeRabbit-powered applications to popular platforms with proper secrets management.
+Deploy CodeRabbit AI code review integration across your repositories and CI/CD pipelines. CodeRabbit is a GitHub/GitLab App, so deployment means configuring the App installation, customizing review behavior via `.coderabbit.yaml`, and integrating review status into your merge workflows.
 
 ## Prerequisites
-- CodeRabbit API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
-
-## Vercel Deployment
-
-### Environment Setup
-```bash
-# Add CodeRabbit secrets to Vercel
-vercel secrets add coderabbit_api_key sk_live_***
-vercel secrets add coderabbit_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "CODERABBIT_API_KEY": "@coderabbit_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-coderabbit-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set CodeRabbit secrets
-fly secrets set CODERABBIT_API_KEY=sk_live_***
-fly secrets set CODERABBIT_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
-```
-
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="coderabbit-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=CODERABBIT_API_KEY=coderabbit-api-key:latest
-```
-
-## Environment Configuration Pattern
-
-```typescript
-// config/coderabbit.ts
-interface CodeRabbitConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getCodeRabbitConfig(): CodeRabbitConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.CODERABBIT_API_KEY!,
-    environment: env as CodeRabbitConfig['environment'],
-    webhookSecret: process.env.CODERABBIT_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
-export async function GET() {
-  const coderabbitStatus = await checkCodeRabbitConnection();
-
-  return Response.json({
-    status: coderabbitStatus ? 'healthy' : 'degraded',
-    services: {
-      coderabbit: coderabbitStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
-}
-```
+- GitHub or GitLab organization admin access
+- CodeRabbit GitHub App installed from coderabbit.ai
+- Repository access configured for CodeRabbit
+- `.coderabbit.yaml` configuration file
 
 ## Instructions
 
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
+### Step 1: Install CodeRabbit GitHub App
+```markdown
+1. Visit https://github.com/apps/coderabbitai
+2. Click "Install" and select your organization
+3. Choose repositories (all or select specific ones)
+4. Authorize the required permissions
+```
 
-### Step 2: Configure Secrets
-Store CodeRabbit API keys securely using the platform's secrets management.
+### Step 2: Configure Review Behavior
+```yaml
+# .coderabbit.yaml (repository root)
+language: en
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+      - develop
+  path_filters:
+    - "!dist/**"
+    - "!**/*.min.js"
+    - "!**/generated/**"
+    - "!**/*.lock"
+  review_instructions:
+    - path: "src/api/**"
+      instructions: "Focus on security, authentication, and input validation"
+    - path: "src/db/**"
+      instructions: "Check for SQL injection and proper transaction handling"
+    - path: "**/*.test.*"
+      instructions: "Verify test coverage and edge cases"
+chat:
+  auto_reply: true
+```
 
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with CodeRabbit integration.
+### Step 3: Branch Protection Rules
+```bash
+# Require CodeRabbit approval before merge
+gh api repos/$OWNER/$REPO/branches/main/protection -X PUT \
+  --field required_pull_request_reviews='{"required_approving_review_count":1}' \
+  --field required_status_checks='{"strict":true,"contexts":["coderabbitai"]}'
+```
 
-### Step 4: Verify Health
-Test the health check endpoint to confirm CodeRabbit connectivity.
+### Step 4: CI Integration
+```yaml
+# .github/workflows/pr-check.yml
+name: PR Checks
+on: [pull_request]
 
-## Output
-- Application deployed to production
-- CodeRabbit secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
+jobs:
+  wait-for-coderabbit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CodeRabbit review
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          check-name: "coderabbitai"
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 30
+```
+
+### Step 5: Organization-Wide Configuration
+```yaml
+# .github/.coderabbit.yaml (organization-level defaults)
+language: en
+reviews:
+  auto_review:
+    enabled: true
+  path_filters:
+    - "!**/*.generated.*"
+chat:
+  auto_reply: true
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Review not triggered | App not installed on repo | Check GitHub App installation |
+| Config not applied | YAML syntax error | Validate `.coderabbit.yaml` syntax |
+| Review takes too long | Large PR | Split into smaller PRs |
+| False positives | Missing context | Add `review_instructions` for specific paths |
 
 ## Examples
 
-### Quick Deploy Script
+### Verify Installation
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add coderabbit_api_key "$CODERABBIT_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set CODERABBIT_API_KEY="$CODERABBIT_API_KEY"
-    fly deploy
-    ;;
-esac
+gh api repos/$OWNER/$REPO/installation --jq '.app_slug'
+# Should output: coderabbitai
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [CodeRabbit Deploy Guide](https://docs.coderabbit.com/deploy)
+- [CodeRabbit Setup Guide](https://docs.coderabbit.ai/getting-started)
+- [Configuration Reference](https://docs.coderabbit.ai/configuration)
+- [GitHub App Permissions](https://docs.coderabbit.ai/permissions)
 
 ## Next Steps
-For webhook handling, see `coderabbit-webhooks-events`.
+For multi-environment config, see `coderabbit-multi-env-setup`.

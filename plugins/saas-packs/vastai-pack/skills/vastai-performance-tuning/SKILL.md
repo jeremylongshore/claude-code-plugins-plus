@@ -16,200 +16,177 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Performance Tuning
 
 ## Overview
-Optimize Vast.ai API performance with caching, batching, and connection pooling.
+Optimize GPU instance selection, startup time, and training throughput on Vast.ai. Focus on instance filtering by cost-performance ratio, Docker image caching, data transfer optimization, and multi-GPU orchestration.
 
 ## Prerequisites
-- Vast.ai SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedVast.aiRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const vastaiLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Vast.ai
-    const results = await vastaiClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  vastaiLoader.load('id-1'),
-  vastaiLoader.load('id-2'),
-  vastaiLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new Vast.aiClient({
-  apiKey: process.env.VASTAI_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedVast.aiList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedVast.aiList(cursor =>
-  vastaiClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredVast.aiCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Vast.ai account with API key
+- `vastai` CLI installed (`pip install vastai`)
+- Understanding of GPU types (A100, H100, RTX 4090)
+- SSH key configured for instance access
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Vast.ai operations.
+### Step 1: Smart Instance Selection by Cost-Performance
+```bash
+# Find cheapest A100 instances with high reliability
+vastai search offers \
+  --type on-demand \
+  --gpu-name "A100" \
+  --min-ram 32 \
+  --min-disk 100 \
+  --reliability ">0.95" \
+  --order "dph_total" \
+  --limit 10
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+# Filter by DLPerf score for training workloads
+vastai search offers \
+  --gpu-name "RTX 4090" \
+  --min-dlperf 30 \
+  --order "dlperf_per_dphtotal-desc" \
+  --limit 5
+```
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+```python
+# Automated instance selection
+import subprocess
+import json
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+def find_best_instance(
+    gpu_type: str = "A100",
+    max_price: float = 1.50,
+    min_reliability: float = 0.95
+):
+    cmd = [
+        "vastai", "search", "offers",
+        "--gpu-name", gpu_type,
+        "--reliability", f">{min_reliability}",
+        "--dph", f"<={max_price}",
+        "--order", "dlperf_per_dphtotal-desc",
+        "--limit", "1",
+        "--raw"
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    offers = json.loads(result.stdout)
+    return offers[0] if offers else None
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 2: Optimize Docker Image for Fast Startup
+```dockerfile
+# Use Vast.ai optimized base images for faster pulls
+FROM vastai/pytorch:2.1.0-cuda12.1-cudnn8-runtime
+
+# Install dependencies in a cached layer
+COPY requirements.txt /app/
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy code last (changes most frequently)
+COPY . /app/
+WORKDIR /app
+
+# Pre-download model weights during build
+RUN python -c "from transformers import AutoModel; AutoModel.from_pretrained('bert-base-uncased')"
+
+CMD ["python", "train.py"]
+```
+
+### Step 3: Data Transfer Optimization
+```python
+import subprocess
+
+def sync_data_to_instance(instance_id: int, local_path: str, remote_path: str):
+    """Use rsync with compression for fast data transfer."""
+    # Get instance SSH info
+    info = subprocess.run(
+        ["vastai", "show", "instance", str(instance_id), "--raw"],
+        capture_output=True, text=True
+    )
+    instance = json.loads(info.stdout)
+    ssh_host = instance["ssh_host"]
+    ssh_port = instance["ssh_port"]
+
+    subprocess.run([
+        "rsync", "-avz", "--progress",
+        "--compress-level=9",
+        "-e", f"ssh -p {ssh_port} -o StrictHostKeyChecking=no",
+        local_path,
+        f"root@{ssh_host}:{remote_path}"
+    ], check=True)
+
+def download_results(instance_id: int, remote_path: str, local_path: str):
+    """Download trained model and logs."""
+    info = subprocess.run(
+        ["vastai", "show", "instance", str(instance_id), "--raw"],
+        capture_output=True, text=True
+    )
+    instance = json.loads(info.stdout)
+
+    subprocess.run([
+        "rsync", "-avz",
+        "-e", f"ssh -p {instance['ssh_port']}",
+        f"root@{instance['ssh_host']}:{remote_path}",
+        local_path
+    ], check=True)
+```
+
+### Step 4: Instance Lifecycle Management
+```python
+def create_and_monitor(
+    template_id: int,
+    image: str,
+    disk_gb: int = 50
+):
+    """Create instance and wait until ready."""
+    result = subprocess.run([
+        "vastai", "create", "instance",
+        str(template_id),
+        "--image", image,
+        "--disk", str(disk_gb),
+        "--raw"
+    ], capture_output=True, text=True)
+
+    instance_id = json.loads(result.stdout)["new_contract"]
+
+    # Poll until running
+    import time
+    for _ in range(60):
+        status = subprocess.run(
+            ["vastai", "show", "instance", str(instance_id), "--raw"],
+            capture_output=True, text=True
+        )
+        info = json.loads(status.stdout)
+        if info.get("actual_status") == "running":
+            return instance_id
+        time.sleep(10)
+
+    raise TimeoutError("Instance did not start within 10 minutes")
+
+def cleanup_instance(instance_id: int):
+    """Destroy instance to stop billing."""
+    subprocess.run(["vastai", "destroy", "instance", str(instance_id)])
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| No offers found | Filters too strict | Relax reliability or price constraints |
+| Slow instance startup | Large Docker image | Use pre-cached base images |
+| SSH timeout | Instance not ready | Poll status before connecting |
+| High data transfer cost | Uploading large datasets | Use compressed rsync, store on instance disk |
 
 ## Examples
 
-### Quick Performance Wrapper
-```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredVast.aiCall(name, () =>
-    cachedVast.aiRequest(`cache:${name}`, fn)
-  );
+### Training Job Automation
+```python
+instance_id = create_and_monitor(
+    template_id=best_offer["id"],
+    image="pytorch/pytorch:2.1.0-cuda12.1-cudnn8-runtime"
+)
+sync_data_to_instance(instance_id, "./data/", "/workspace/data/")
+# Run training via SSH...
+download_results(instance_id, "/workspace/output/", "./results/")
+cleanup_instance(instance_id)
 ```
 
 ## Resources
-- [Vast.ai Performance Guide](https://docs.vastai.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `vastai-cost-tuning`.
+- [Vast.ai CLI Reference](https://vast.ai/docs/cli/commands)
+- [Vast.ai Instance Types](https://vast.ai/docs/gpu-faq)

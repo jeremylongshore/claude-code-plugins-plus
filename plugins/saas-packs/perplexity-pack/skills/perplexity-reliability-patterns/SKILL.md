@@ -16,276 +16,126 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Perplexity integrations.
+Production reliability patterns for Perplexity Sonar API integrations. Perplexity performs live web searches per request, making response times variable and dependent on search complexity -- unlike static LLM inference.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const perplexityBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-perplexityBreaker.on('open', () => {
-  console.warn('Perplexity circuit OPEN - requests failing fast');
-  alertOps('Perplexity circuit breaker opened');
-});
-
-perplexityBreaker.on('halfOpen', () => {
-  console.info('Perplexity circuit HALF-OPEN - testing recovery');
-});
-
-perplexityBreaker.on('close', () => {
-  console.info('Perplexity circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safePerplexityCall<T>(fn: () => Promise<T>): Promise<T> {
-  return perplexityBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const perplexityQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedPerplexityCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return perplexityQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedPerplexityCall('critical', () =>
-  perplexityClient.processPayment(order)
-);
-
-await prioritizedPerplexityCall('bulk', () =>
-  perplexityClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutPerplexityCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Perplexity ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface PerplexityFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withPerplexityFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Perplexity failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class PerplexityDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await perplexityClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function perplexityHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: perplexityBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Perplexity API key configured
+- Caching layer (Redis recommended)
+- Understanding of search-augmented generation latency
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap Perplexity calls with circuit breaker.
+### Step 1: Cache Identical Queries
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+Perplexity's web search is expensive per call. Cache results for repeated queries within a time window.
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+```python
+import hashlib, json
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+class PerplexityCache:
+    def __init__(self, redis_client, ttl=600):
+        self.r = redis_client
+        self.ttl = ttl
 
-## Output
-- Circuit breaker protecting Perplexity calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+    def get_or_search(self, client, messages, model="sonar", **kwargs):
+        key = self._cache_key(messages, model, **kwargs)
+        cached = self.r.get(key)
+        if cached:
+            return json.loads(cached)
+        result = client.chat.completions.create(
+            model=model, messages=messages, **kwargs
+        )
+        self.r.setex(key, self.ttl, json.dumps(result.to_dict()))
+        return result
+
+    def _cache_key(self, messages, model, **kwargs):
+        data = json.dumps({"m": messages, "model": model, **kwargs}, sort_keys=True)
+        return f"pplx:{hashlib.sha256(data.encode()).hexdigest()}"
+```
+
+### Step 2: Model Tier Fallback
+
+If `sonar-pro` times out or errors, fall back to `sonar` for a faster but shallower response.
+
+```python
+def resilient_search(client, messages, timeout=30):
+    try:
+        return client.chat.completions.create(
+            model="sonar-pro", messages=messages, timeout=timeout
+        )
+    except Exception:
+        return client.chat.completions.create(
+            model="sonar", messages=messages, timeout=15
+        )
+```
+
+### Step 3: Streaming with Timeout Protection
+
+Perplexity streams can stall on complex searches. Set per-chunk timeouts.
+
+```python
+import time
+
+def stream_with_timeout(client, messages, chunk_timeout=10):
+    stream = client.chat.completions.create(
+        model="sonar", messages=messages, stream=True
+    )
+    last_chunk = time.time()
+    full_response = ""
+    citations = []
+
+    for chunk in stream:
+        if time.time() - last_chunk > chunk_timeout:
+            raise TimeoutError("Stream stalled")
+        last_chunk = time.time()
+        delta = chunk.choices[0].delta.content or ""
+        full_response += delta
+        if hasattr(chunk, 'citations'):
+            citations = chunk.citations
+        yield delta
+
+    return full_response, citations
+```
+
+### Step 4: Citation Validation
+
+Verify cited URLs are accessible before presenting to users.
+
+```python
+import aiohttp
+
+async def validate_citations(citations: list[str]) -> list[dict]:
+    validated = []
+    async with aiohttp.ClientSession() as session:
+        for url in citations[:5]:  # limit to top 5
+            try:
+                async with session.head(url, timeout=aiohttp.ClientTimeout(total=5)) as r:
+                    validated.append({"url": url, "status": r.status, "valid": r.status < 400})
+            except:
+                validated.append({"url": url, "status": 0, "valid": False})
+    return validated
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Slow responses (>15s) | Complex search query | Use sonar instead of sonar-pro |
+| Stream stalls | Search taking too long | Per-chunk timeout detection |
+| Stale results | Cached data too old | Reduce TTL for time-sensitive queries |
+| Broken citation links | Source pages moved | Validate URLs before displaying |
 
 ## Examples
 
-### Quick Circuit Check
-```typescript
-const state = perplexityBreaker.stats().state;
-console.log('Perplexity circuit:', state);
+### Health Check
+```python
+def pplx_health(client, cache):
+    start = time.time()
+    r = client.chat.completions.create(model="sonar", messages=[
+        {"role": "user", "content": "What day is it today?"}
+    ])
+    latency = time.time() - start
+    return {"status": "ok", "latency_ms": int(latency * 1000), "cache_size": cache.r.dbsize()}
 ```
 
 ## Resources
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Perplexity Reliability Guide](https://docs.perplexity.com/reliability)
-
-## Next Steps
-For policy enforcement, see `perplexity-policy-guardrails`.
+- [Perplexity API Docs](https://docs.perplexity.ai)

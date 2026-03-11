@@ -16,187 +16,105 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Cost Tuning
 
 ## Overview
-Optimize Windsurf costs through smart tier selection, sampling, and usage monitoring.
+Optimize Windsurf AI IDE licensing costs by right-sizing seat allocation and matching plan tiers to actual AI feature usage. Windsurf charges per seat with different tiers offering different AI capabilities (Free: basic completions, Pro: Cascade + Supercomplete + Command). The primary cost lever is ensuring every Pro seat is actively used -- a developer averaging <5 AI interactions per day may not justify the Pro tier cost.
 
 ## Prerequisites
-- Access to Windsurf billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateWindsurfCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class WindsurfUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Windsurf budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateWindsurfCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await windsurfClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => windsurfClient.get(id)));
-
-// Use batch endpoint (1 call)
-await windsurfClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new WindsurfClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Windsurf dashboard
-# Or use API if available:
-# Check Windsurf documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM windsurf_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Windsurf Admin dashboard access
+- Team usage analytics data
+- Understanding of which AI features each team member uses
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Windsurf dashboard for usage patterns and costs.
+### Step 1: Audit Seat Utilization
+```yaml
+# Seat utilization analysis from Admin Dashboard > Analytics
+seat_audit:
+  total_pro_seats: 20
+  high_usage:  8    # >20 AI interactions/day (power users)
+  medium_usage: 5   # 5-20 interactions/day (regular users)
+  low_usage: 4      # 1-5 interactions/day (occasional)
+  inactive: 3       # <1 interaction/day (wasting money)
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+# Action: Downgrade 3 inactive seats to Free = immediate savings
+# Action: Review 4 low-usage seats -- offer training or downgrade
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 2: Match Features to Needs
+```yaml
+# Not everyone needs the same tier
+seat_allocation:
+  full_time_developers:
+    tier: Pro
+    features_used: [cascade, supercomplete, command, inline_chat]
+    justification: "Core workflow, high ROI"
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+  code_reviewers:
+    tier: Free (or basic)
+    features_needed: [supercomplete]  # Occasional completions only
+    justification: "Reading code more than writing"
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+  designers_with_code:
+    tier: Free
+    features_needed: []  # Rarely use AI features
+    justification: "Mainly CSS/HTML, AI less useful"
+
+  contractors_short_term:
+    tier: Free
+    justification: "Temporary, not worth Pro investment"
+```
+
+### Step 3: Track ROI per Seat
+```typescript
+// Measure productivity impact to justify costs
+function calculateSeatROI(member: { completionsAccepted: number; cascadeFlows: number; hoursSaved: number }) {
+  const seatCostPerMonth = 25; // Pro tier
+  const hourlyRate = 75; // Developer hourly rate
+  const moneySaved = member.hoursSaved * hourlyRate;
+  const roi = (moneySaved - seatCostPerMonth) / seatCostPerMonth * 100;
+  return { moneySaved, roi: `${roi.toFixed(0)}% ROI` };
+}
+// If ROI < 0%, seat is costing more than it saves
+```
+
+### Step 4: Negotiate Enterprise Pricing
+```yaml
+# Volume discounts for larger teams
+negotiation_tips:
+  - threshold: 20+ seats
+    action: "Request volume discount (typically 15-20% off list)"
+  - threshold: 50+ seats
+    action: "Request enterprise tier with custom pricing"
+  - annual_vs_monthly: "Annual commitment typically saves 15-20%"
+  - bundling: "Bundle with other Codeium products for better rates"
+```
+
+### Step 5: Quarterly Review Cycle
+```yaml
+# Implement quarterly seat optimization review
+quarterly_review:
+  step_1: "Export usage analytics from Admin Dashboard"
+  step_2: "Identify seats with <5 interactions/day for 60+ days"
+  step_3: "Survey low-usage members: need training or not useful?"
+  step_4: "Downgrade or remove underperforming seats"
+  step_5: "Reallocate freed seats to new team members or save costs"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Paying for unused Pro seats | No utilization monitoring | Implement quarterly seat reviews |
+| Developer resistance to downgrade | Perceived loss of tool | Show usage data, offer training first |
+| Cannot track usage | Admin analytics not enabled | Contact Windsurf support for enterprise analytics |
+| Cost growing with team | No seat approval process | Require manager approval for new Pro seats |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateWindsurfCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```yaml
+# Cost optimization example
+before:
+  pro_seats: 20
+  monthly_cost: "$500" # 20 * $25
+after_optimization:
+  pro_seats: 13  # Removed 3 inactive, downgraded 4 low-usage
+  monthly_cost: "$325"
+  annual_savings: "$2,100"
 ```
-
-## Resources
-- [Windsurf Pricing](https://windsurf.com/pricing)
-- [Windsurf Billing Dashboard](https://dashboard.windsurf.com/billing)
-
-## Next Steps
-For architecture patterns, see `windsurf-reference-architecture`.

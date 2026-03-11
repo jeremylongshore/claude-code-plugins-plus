@@ -16,206 +16,188 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Instantly.
+Manage lead and campaign data in Instantly outreach pipelines. Covers email validation before import, lead deduplication, unsubscribe/suppression list management, and GDPR-compliant lead data practices for cold outreach.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Instantly SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+- Instantly API key
+- Understanding of CAN-SPAM and GDPR requirements
+- Email validation service (recommended)
+- Suppression list management
 
-## Data Classification
+## Instructions
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
+### Step 1: Lead Data Validation Before Import
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
+import { z } from 'zod';
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+const InstantlyLeadSchema = z.object({
+  email: z.string().email().toLowerCase(),
+  first_name: z.string().min(1).optional(),
+  last_name: z.string().min(1).optional(),
+  company_name: z.string().optional(),
+  personalization: z.string().max(500).optional(),
+});
 
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
+function validateLeads(records: any[]) {
+  const valid: any[] = [];
+  const invalid: Array<{ record: any; error: string }> = [];
+
+  for (const record of records) {
+    // Skip obviously bad emails
+    if (record.email?.includes('noreply') || record.email?.includes('info@')) {
+      invalid.push({ record, error: 'Generic email address' });
+      continue;
+    }
+
+    const result = InstantlyLeadSchema.safeParse(record);
+    if (result.success) {
+      valid.push(result.data);
+    } else {
+      invalid.push({ record, error: result.error.message });
     }
   }
 
-  return findings;
+  return { valid, invalid };
 }
 ```
 
-## Data Redaction
-
+### Step 2: Suppression List Management
 ```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+class SuppressionList {
+  private emails = new Set<string>();
+  private domains = new Set<string>();
 
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
+  addEmail(email: string) {
+    this.emails.add(email.toLowerCase());
   }
 
-  return redacted;
+  addDomain(domain: string) {
+    this.domains.add(domain.toLowerCase());
+  }
+
+  isBlocked(email: string): boolean {
+    const lower = email.toLowerCase();
+    const domain = lower.split('@')[1];
+    return this.emails.has(lower) || this.domains.has(domain);
+  }
+
+  filterLeads(leads: any[]) {
+    const allowed: any[] = [];
+    const blocked: any[] = [];
+
+    for (const lead of leads) {
+      if (this.isBlocked(lead.email)) {
+        blocked.push(lead);
+      } else {
+        allowed.push(lead);
+      }
+    }
+
+    return { allowed, blocked };
+  }
 }
 
-// Use in logging
-console.log('Instantly request:', redactPII(requestData));
+// Initialize with common suppression entries
+const suppression = new SuppressionList();
+suppression.addDomain('government.gov');
+suppression.addDomain('military.mil');
 ```
 
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
+### Step 3: Lead Deduplication Across Campaigns
 ```typescript
-async function cleanupInstantlyData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
+const INSTANTLY_API = 'https://api.instantly.ai/api/v1';
 
-  await db.instantlyLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
+async function deduplicateBeforeUpload(
+  campaignId: string,
+  newLeads: any[]
+) {
+  // Get existing workspace leads
+  const existing = new Set<string>();
+  let skip = 0;
+  let hasMore = true;
 
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupInstantlyData(30));
-```
+  while (hasMore) {
+    const response = await fetch(`${INSTANTLY_API}/lead/get`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        api_key: process.env.INSTANTLY_API_KEY,
+        campaign_id: campaignId,
+        limit: 100,
+        skip,
+      }),
+    });
+    const leads = await response.json();
+    if (!leads.length) { hasMore = false; break; }
+    leads.forEach((l: any) => existing.add(l.email?.toLowerCase()));
+    skip += 100;
+  }
 
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const instantlyData = await instantlyClient.getUserData(userId);
-
+  const unique = newLeads.filter(l => !existing.has(l.email?.toLowerCase()));
   return {
-    source: 'Instantly',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: instantlyData.profile,
-      activities: instantlyData.activities,
-      // Include all user-related data
-    },
+    unique,
+    duplicatesSkipped: newLeads.length - unique.length,
   };
 }
 ```
 
-### Right to Deletion
-
+### Step 4: Unsubscribe Webhook Handler
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Instantly
-  await instantlyClient.deleteUser(userId);
+import express from 'express';
+const app = express();
 
-  // 2. Delete local copies
-  await db.instantlyUserCache.deleteMany({ userId });
+app.post('/webhooks/instantly/unsubscribe', express.json(), async (req, res) => {
+  const { lead_email, campaign_id } = req.body;
 
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'instantly',
-    timestamp: new Date(),
-  });
+  // Add to global suppression list
+  suppression.addEmail(lead_email);
 
-  return { success: true, deletedAt: new Date() };
-}
-```
+  // Remove from all active campaigns
+  await removeFromAllCampaigns(lead_email);
 
-## Data Minimization
+  // Log for compliance
+  console.log(`Unsubscribe: ${lead_email} from campaign ${campaign_id}`);
 
-```typescript
-// Only request needed fields
-const user = await instantlyClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
+  res.json({ processed: true });
 });
 
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
+async function removeFromAllCampaigns(email: string) {
+  await fetch(`${INSTANTLY_API}/lead/delete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      api_key: process.env.INSTANTLY_API_KEY,
+      delete_all_from_company: false,
+      delete_list: [email],
+    }),
+  });
+}
 ```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Instantly data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| High bounce rate | Invalid emails imported | Validate before upload |
+| Compliance violation | Emailing unsubscribed leads | Check suppression list before import |
+| Duplicate sends | Lead in multiple campaigns | Use `skip_if_in_workspace` or manual dedup |
+| Missing opt-out link | Template misconfigured | Always include `{unsubscribe}` variable |
 
 ## Examples
 
-### Quick PII Scan
+### Full Import Pipeline
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+async function safeImport(campaignId: string, rawLeads: any[]) {
+  const { valid, invalid } = validateLeads(rawLeads);
+  const { allowed, blocked } = suppression.filterLeads(valid);
+  const { unique } = await deduplicateBeforeUpload(campaignId, allowed);
+
+  console.log(`Import: ${rawLeads.length} total -> ${unique.length} to upload`);
+  console.log(`Rejected: ${invalid.length} invalid, ${blocked.length} suppressed`);
+
+  return unique;
 }
 ```
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Instantly response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
-
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Instantly Privacy Guide](https://docs.instantly.com/privacy)
-
-## Next Steps
-For enterprise access control, see `instantly-enterprise-rbac`.
+- [Instantly API Docs](https://developer.instantly.ai/)
+- [CAN-SPAM Compliance](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business)

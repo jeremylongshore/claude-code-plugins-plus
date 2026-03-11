@@ -16,208 +16,85 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for PostHog integrations.
+Control access to PostHog analytics data, feature flags, and experiments using its organization and project-level permission model. PostHog has three hierarchy levels: Organization > Project > Resource. Roles (Admin, Member) are set per organization, while project-level access controls which dashboards, feature flags, and session recordings each team can see. Feature flag permissions are critical -- an unauthorized flag change can break production.
 
 ## Prerequisites
-- PostHog Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum PostHogRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface PostHogPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<PostHogRole, PostHogPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: PostHogRole,
-  action: keyof PostHogPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// PostHog SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://posthog.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/posthog/callback',
-};
-
-// Map IdP groups to PostHog roles
-const groupRoleMapping: Record<string, PostHogRole> = {
-  'Engineering': PostHogRole.Developer,
-  'Platform-Admins': PostHogRole.Admin,
-  'Data-Team': PostHogRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@posthog/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.POSTHOG_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.POSTHOG_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/posthog/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface PostHogOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: PostHogRole;
-}
-
-async function createOrganization(
-  config: PostHogOrganization
-): Promise<void> {
-  await posthogClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requirePostHogPermission(
-  requiredPermission: keyof PostHogPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { posthogRole: PostHogRole };
-
-    if (!checkPermission(user.posthogRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/posthog/resource/:id',
-  requirePostHogPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface PostHogAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: PostHogRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logPostHogAccess(entry: PostHogAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- PostHog Cloud or self-hosted with Enterprise license
+- Organization admin role
+- Multiple projects configured for environment separation (prod, staging)
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to PostHog permissions.
+### Step 1: Set Up Project-Level Access
+```bash
+# Create separate projects for prod and staging environments
+curl -X POST https://app.posthog.com/api/organizations/ORG_ID/projects/ \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -d '{"name": "Production", "access_control": true}'
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+# Restrict team members to specific projects
+curl -X POST https://app.posthog.com/api/projects/PROJECT_ID/members/ \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
+  -d '{"user_id": "USER_ID", "level": 1}'
+# Levels: 1=Member, 8=Admin
+```
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 2: Configure Feature Flag Permissions
+```yaml
+# Feature flag access matrix
+feature_flags:
+  production_project:
+    who_can_create: [admin, senior_engineer]
+    who_can_edit: [admin, senior_engineer, engineer]
+    who_can_delete: [admin]
+    require_description: true
+    require_rollout_review: true  # Two-person rule for >50% rollout
+  staging_project:
+    who_can_create: [admin, member]
+    who_can_edit: [admin, member]
+    who_can_delete: [admin, member]
+```
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 3: Set Up SSO (Enterprise Only)
+In PostHog Organization Settings > Authentication:
+- Enable SAML 2.0 with your IdP
+- Set "Enforce SSO" to require all members to authenticate via IdP
+- Map IdP groups to PostHog organization roles
+- Configure automatic provisioning for new IdP users
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 4: Create Scoped API Keys
+```bash
+# Read-only key for the BI dashboard (no write access)
+curl -X POST https://app.posthog.com/api/personal_api_keys/ \
+  -H "Authorization: Bearer $POSTHOG_ADMIN_KEY" \
+  -d '{"label": "bi-dashboard-readonly", "scopes": ["event:read", "insight:read", "dashboard:read"]}'
+
+# Key for the feature flag service (flags only)
+curl -X POST https://app.posthog.com/api/personal_api_keys/ \
+  -H "Authorization: Bearer $POSTHOG_ADMIN_KEY" \
+  -d '{"label": "feature-flag-service", "scopes": ["feature_flag:read", "feature_flag:write"]}'
+```
+
+### Step 5: Audit Access and Changes
+```bash
+# Query the activity log for permission changes
+curl "https://app.posthog.com/api/projects/PROJECT_ID/activity_log/?scope=Organization" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.results[] | select(.activity | contains("member")) | {user: .user.email, activity, created_at}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `403` on feature flag endpoint | Key missing `feature_flag` scope | Create key with appropriate scopes |
+| Member can see prod data | Project access not restricted | Remove from prod project, add to staging only |
+| SSO bypass possible | SSO not enforced | Enable "Enforce SSO" in org settings |
+| Activity log gaps | Self-hosted log rotation | Increase retention in `posthog-config` |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# List all members and their access levels across projects
+curl -s "https://app.posthog.com/api/organizations/ORG_ID/members/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.results[] | {email: .user.email, org_level: .level, joined: .joined_at}'
 ```
-
-## Resources
-- [PostHog Enterprise Guide](https://docs.posthog.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `posthog-migration-deep-dive`.

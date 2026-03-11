@@ -16,206 +16,185 @@ compatible-with: claude-code, codex, openclaw
 # Groq Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Groq.
+Manage data flowing through Groq's ultra-fast LPU inference. Covers prompt sanitization, response filtering, conversation logging with PII redaction, and token usage tracking for cost management.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Groq SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+- Groq API key
+- `groq-sdk` npm package
+- Understanding of LLM data flow (prompts in, completions out)
+- Logging infrastructure for audit
 
-## Data Classification
+## Instructions
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
+### Step 1: Prompt Sanitization Layer
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
+import Groq from 'groq-sdk';
+
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+
+const PII_REDACTORS = [
+  { pattern: /\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, replace: '[EMAIL]' },
+  { pattern: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, replace: '[PHONE]' },
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replace: '[SSN]' },
 ];
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+function sanitizePrompt(text: string): { text: string; hadPII: boolean } {
+  let hadPII = false;
+  let sanitized = text;
 
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
+  for (const { pattern, replace } of PII_REDACTORS) {
+    if (pattern.test(sanitized)) hadPII = true;
+    sanitized = sanitized.replace(pattern, replace);
+  }
+
+  return { text: sanitized, hadPII };
+}
+
+async function safeChatCompletion(messages: any[], model = 'llama-3.1-8b-instant') {
+  const sanitizedMessages = messages.map(m => ({
+    ...m,
+    content: sanitizePrompt(m.content).text,
+  }));
+
+  return groq.chat.completions.create({ model, messages: sanitizedMessages });
+}
+```
+
+### Step 2: Response Content Filtering
+```typescript
+interface FilterResult {
+  content: string;
+  filtered: boolean;
+  reasons: string[];
+}
+
+function filterResponse(content: string): FilterResult {
+  const reasons: string[] = [];
+
+  // Check for leaked PII patterns in response
+  for (const { pattern, replace } of PII_REDACTORS) {
+    if (pattern.test(content)) {
+      reasons.push(`Response contained ${replace} pattern`);
+      content = content.replace(pattern, replace);
     }
   }
 
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
+  // Check for code injection patterns
+  if (/<script|javascript:|onclick=/i.test(content)) {
+    reasons.push('Response contained script injection');
+    content = content.replace(/<script[\s\S]*?<\/script>/gi, '[REMOVED]');
   }
 
-  return redacted;
+  return { content, filtered: reasons.length > 0, reasons };
 }
 
-// Use in logging
-console.log('Groq request:', redactPII(requestData));
+async function safeCompletion(messages: any[]) {
+  const result = await safeChatCompletion(messages);
+  const raw = result.choices[0].message.content || '';
+  const filtered = filterResponse(raw);
+
+  if (filtered.filtered) {
+    console.warn('Response filtered:', filtered.reasons);
+  }
+
+  return { ...result, choices: [{ ...result.choices[0], message: { ...result.choices[0].message, content: filtered.content } }] };
+}
 ```
 
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
+### Step 3: Token Usage Tracking
 ```typescript
-async function cleanupGroqData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.groqLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
+interface UsageRecord {
+  timestamp: string;
+  model: string;
+  promptTokens: number;
+  completionTokens: number;
+  totalTokens: number;
+  estimatedCost: number;
 }
 
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupGroqData(30));
-```
+const COST_PER_MILLION: Record<string, { input: number; output: number }> = {
+  'llama-3.1-8b-instant': { input: 0.05, output: 0.08 },
+  'llama-3.3-70b-versatile': { input: 0.59, output: 0.79 },
+  'mixtral-8x7b-32768': { input: 0.24, output: 0.24 },
+};
 
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const groqData = await groqClient.getUserData(userId);
+function trackUsage(model: string, usage: any): UsageRecord {
+  const costs = COST_PER_MILLION[model] || { input: 0.50, output: 0.50 };
 
   return {
-    source: 'Groq',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: groqData.profile,
-      activities: groqData.activities,
-      // Include all user-related data
-    },
+    timestamp: new Date().toISOString(),
+    model,
+    promptTokens: usage.prompt_tokens,
+    completionTokens: usage.completion_tokens,
+    totalTokens: usage.total_tokens,
+    estimatedCost:
+      (usage.prompt_tokens / 1_000_000) * costs.input +
+      (usage.completion_tokens / 1_000_000) * costs.output,
   };
 }
 ```
 
-### Right to Deletion
-
+### Step 4: Conversation Logging with Redaction
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Groq
-  await groqClient.deleteUser(userId);
+interface AuditLog {
+  sessionId: string;
+  timestamp: string;
+  model: string;
+  promptRedacted: string;
+  responseRedacted: string;
+  tokenUsage: UsageRecord;
+}
 
-  // 2. Delete local copies
-  await db.groqUserCache.deleteMany({ userId });
+async function loggedCompletion(
+  sessionId: string,
+  messages: any[],
+  model = 'llama-3.1-8b-instant'
+): Promise<{ response: string; log: AuditLog }> {
+  const sanitized = messages.map(m => ({
+    ...m,
+    content: sanitizePrompt(m.content).text,
+  }));
 
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'groq',
-    timestamp: new Date(),
-  });
+  const result = await groq.chat.completions.create({ model, messages: sanitized });
+  const response = filterResponse(result.choices[0].message.content || '');
+  const usage = trackUsage(model, result.usage);
 
-  return { success: true, deletedAt: new Date() };
+  const log: AuditLog = {
+    sessionId,
+    timestamp: new Date().toISOString(),
+    model,
+    promptRedacted: sanitized.map(m => m.content).join(' | '),
+    responseRedacted: response.content,
+    tokenUsage: usage,
+  };
+
+  return { response: response.content, log };
 }
 ```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await groqClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Groq data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| PII in responses | Model echoed sensitive input | Apply response filtering |
+| Cost spike | Using 70b model for all requests | Route simple tasks to 8b model |
+| Missing usage data | Stream mode has no usage object | Track token estimates manually for streams |
+| Audit gaps | Logging not on all paths | Use `loggedCompletion` wrapper everywhere |
 
 ## Examples
 
-### Quick PII Scan
+### Daily Cost Report
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+function dailyCostReport(logs: AuditLog[]) {
+  const totalCost = logs.reduce((s, l) => s + l.tokenUsage.estimatedCost, 0);
+  const byModel = logs.reduce((acc, l) => {
+    acc[l.tokenUsage.model] = (acc[l.tokenUsage.model] || 0) + l.tokenUsage.estimatedCost;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return { totalCost: totalCost.toFixed(4), byModel };
 }
 ```
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Groq response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
-
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Groq Privacy Guide](https://docs.groq.com/privacy)
-
-## Next Steps
-For enterprise access control, see `groq-enterprise-rbac`.
+- [Groq Privacy Policy](https://groq.com/privacy-policy/)
+- [Groq Pricing](https://console.groq.com/docs/pricing)

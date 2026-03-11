@@ -16,208 +16,95 @@ compatible-with: claude-code, codex, openclaw
 # Clay Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Clay integrations.
+Control access to Clay data enrichment tables, credit pools, and integrations at the team level. Clay uses a workspace model where team members are assigned Admin, Member, or Viewer roles. Credits are shared at the workspace level, so RBAC is critical to prevent one team from burning through the enrichment budget that another team depends on.
 
 ## Prerequisites
-- Clay Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum ClayRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface ClayPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<ClayRole, ClayPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: ClayRole,
-  action: keyof ClayPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Clay SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://clay.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/clay/callback',
-};
-
-// Map IdP groups to Clay roles
-const groupRoleMapping: Record<string, ClayRole> = {
-  'Engineering': ClayRole.Developer,
-  'Platform-Admins': ClayRole.Admin,
-  'Data-Team': ClayRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@clay/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.CLAY_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.CLAY_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/clay/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface ClayOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: ClayRole;
-}
-
-async function createOrganization(
-  config: ClayOrganization
-): Promise<void> {
-  await clayClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireClayPermission(
-  requiredPermission: keyof ClayPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { clayRole: ClayRole };
-
-    if (!checkPermission(user.clayRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/clay/resource/:id',
-  requireClayPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface ClayAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: ClayRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logClayAccess(entry: ClayAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Clay Team or Enterprise plan (credit-based pricing)
+- Workspace admin privileges
+- Understanding of Clay's credit consumption per enrichment provider
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Clay permissions.
+### Step 1: Define Workspace Roles
+```yaml
+# clay-role-matrix.yaml
+roles:
+  admin:
+    capabilities:
+      - manage_members
+      - manage_billing_and_credits
+      - create_delete_tables
+      - run_enrichments
+      - configure_integrations (Salesforce, HubSpot, etc.)
+      - export_data
+    assign_to: Revenue ops leads
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+  member:
+    capabilities:
+      - create_tables
+      - run_enrichments (within credit budget)
+      - view_all_tables
+      - export_data
+    assign_to: SDRs, growth engineers
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+  viewer:
+    capabilities:
+      - view_tables (read-only)
+      - export_data
+    assign_to: Managers reviewing lead lists
+```
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 2: Invite Members with Appropriate Roles
+```bash
+# Invite via Clay API
+curl -X POST https://api.clay.com/v1/workspace/members \
+  -H "Authorization: Bearer $CLAY_API_KEY" \
+  -d '{"email": "sdr@company.com", "role": "member"}'
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+# List current members
+curl https://api.clay.com/v1/workspace/members \
+  -H "Authorization: Bearer $CLAY_API_KEY" | jq '.[] | {email, role}'
+```
+
+### Step 3: Set Credit Budgets per Table
+Since Clay charges credits per enrichment (e.g., 1 credit for email lookup, 5 credits for company data), set row limits on tables to cap spending:
+```bash
+# Configure a table with a 500-row enrichment cap
+curl -X PATCH https://api.clay.com/v1/tables/tbl_abc123 \
+  -H "Authorization: Bearer $CLAY_API_KEY" \
+  -d '{"max_rows": 500, "auto_enrich": false}'
+```
+
+### Step 4: Separate API Keys by Integration
+Create distinct API keys for each downstream integration (CRM sync, outbound tool, internal dashboard) so you can revoke one without disrupting others. Label keys clearly: `crm-sync-prod`, `outbound-instantly`, `internal-dashboard`.
+
+### Step 5: Review Credit Usage by Member
+```bash
+# Pull credit consumption grouped by user
+curl "https://api.clay.com/v1/workspace/usage?group_by=user&period=last_30d" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '.usage[] | {user: .email, credits_used: .total_credits}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `403` on table creation | User is Viewer role | Upgrade to Member role |
+| Credits exhausted mid-enrichment | No budget cap on table | Set `max_rows` to limit spend |
+| Integration key rejected | Key was revoked | Generate new key, update integration |
+| Member cannot see table | Table in another workspace | Share table or move to shared workspace |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Offboard a team member: revoke access and transfer table ownership
+curl -X DELETE "https://api.clay.com/v1/workspace/members/usr_xyz" \
+  -H "Authorization: Bearer $CLAY_API_KEY"
+# Reassign their tables to another member via the Clay UI
 ```
 
-## Resources
-- [Clay Enterprise Guide](https://docs.clay.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `clay-migration-deep-dive`.
+```bash
+# Monthly credit audit: find tables consuming the most credits
+curl "https://api.clay.com/v1/workspace/usage?group_by=table&period=last_30d" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '.usage | sort_by(-.total_credits) | .[0:5]'
+```

@@ -13,246 +13,125 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Perplexity Policy & Guardrails
+# Perplexity Policy Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Perplexity integrations.
+Policy enforcement for Perplexity Sonar API usage. Since Perplexity performs live web searches, guardrails must address query content moderation, citation reliability, cost control, and responsible AI usage.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom Perplexity Plugin
-```javascript
-// eslint-plugin-perplexity/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Perplexity API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Perplexity API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['perplexity'],
-  rules: {
-    'perplexity/no-hardcoded-keys': 'error',
-    'perplexity/require-error-handling': 'warn',
-    'perplexity/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: perplexity-secrets-check
-        name: Check for Perplexity secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: perplexity-config-validate
-        name: Validate Perplexity configuration
-        entry: node scripts/validate-perplexity-config.js
-        language: node
-        files: '\.perplexity\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface PerplexityStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Perplexity code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new PerplexityClient(config satisfies PerplexityStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Perplexity Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Perplexity client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: perplexity/use-singleton-client
-- CI check: grep for "new PerplexityClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# perplexity-policy.rego
-package perplexity
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/perplexity-policy.yml
-name: Perplexity Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Perplexity keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s perplexity-config.schema.json -d config/perplexity/*.json
-
-      - name: Run ESLint Perplexity rules
-        run: npx eslint --plugin perplexity --rule 'perplexity/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardPerplexityOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.PERPLEXITY_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Perplexity rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Perplexity rate limit exceeded - request blocked');
-  }
-}
-```
+- Perplexity API configured
+- Content moderation requirements defined
+- Cost monitoring in place
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Perplexity patterns.
+### Step 1: Query Content Moderation
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Filter user queries before sending to Perplexity to prevent misuse.
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```python
+import re
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+BLOCKED_INTENTS = [
+    r"(write|generate|create)\s+(malware|virus|exploit)",
+    r"(personal|private)\s+(information|data|address)\s+of\s+",
+    r"(bypass|circumvent|hack)\s+(security|firewall|authentication)",
+]
 
-## Output
-- ESLint plugin with Perplexity rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+def moderate_query(query: str) -> str:
+    for pattern in BLOCKED_INTENTS:
+        if re.search(pattern, query, re.IGNORECASE):
+            raise PolicyViolation("Query blocked by content policy")
+    if len(query) > 2000:
+        raise PolicyViolation("Query exceeds maximum length")
+    return query
+```
+
+### Step 2: Model Selection Policy
+
+Route queries to appropriate model tiers to control costs.
+
+```python
+class ModelSelectionPolicy:
+    RULES = {
+        "sonar": {"max_tokens": 4096, "cost_per_request": 0.005},
+        "sonar-pro": {"max_tokens": 8192, "cost_per_request": 0.025},
+    }
+
+    def select_model(self, query: str, user_tier: str = "free") -> str:
+        if user_tier == "free":
+            return "sonar"
+        if len(query.split()) > 100 or "detailed" in query.lower():
+            return "sonar-pro"
+        return "sonar"
+
+    def enforce_token_limit(self, model: str, requested_tokens: int):
+        max_tokens = self.RULES[model]["max_tokens"]
+        if requested_tokens > max_tokens:
+            raise PolicyViolation(f"Requested {requested_tokens} tokens exceeds {model} limit of {max_tokens}")
+```
+
+### Step 3: Citation Quality Enforcement
+
+Verify that citations come from trusted sources before displaying to users.
+
+```python
+TRUSTED_DOMAINS = {"gov", "edu", "org"}
+UNTRUSTED_DOMAINS = {"reddit.com", "quora.com", "medium.com"}
+
+def score_citation_quality(citations: list[str]) -> dict:
+    scores = []
+    for url in citations:
+        domain = extract_domain(url)
+        tld = domain.split('.')[-1]
+        if tld in TRUSTED_DOMAINS:
+            scores.append({"url": url, "trust": "high"})
+        elif domain in UNTRUSTED_DOMAINS:
+            scores.append({"url": url, "trust": "low"})
+        else:
+            scores.append({"url": url, "trust": "medium"})
+    return {"citations": scores, "high_trust_pct": sum(1 for s in scores if s["trust"] == "high") / max(len(scores), 1)}
+```
+
+### Step 4: Per-User Usage Quotas
+
+Limit API consumption to control costs.
+
+```python
+class PerplexityQuota:
+    def __init__(self, redis_client):
+        self.r = redis_client
+        self.limits = {"free": 50, "pro": 500, "enterprise": 5000}
+
+    def check_and_consume(self, user_id: str, tier: str = "free"):
+        key = f"pplx:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d')}"
+        current = int(self.r.get(key) or 0)
+        limit = self.limits.get(tier, 50)
+        if current >= limit:
+            raise PolicyViolation(f"Daily quota exceeded ({current}/{limit})")
+        self.r.incr(key)
+        self.r.expire(key, 86400)
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| Harmful query sent | No content moderation | Pre-filter with blocked patterns |
+| High API costs | Using sonar-pro for simple queries | Route by complexity and user tier |
+| Unreliable citations shown | No source filtering | Score and filter citation quality |
+| Usage spike | No per-user limits | Implement daily quotas by tier |
 
 ## Examples
 
-### Quick ESLint Check
-```bash
-npx eslint --plugin perplexity --rule 'perplexity/no-hardcoded-keys: error' src/
+### Full Policy Pipeline
+```python
+query = moderate_query(user_input)
+quota.check_and_consume(user_id, user_tier)
+model = model_policy.select_model(query, user_tier)
+result = client.chat.completions.create(model=model, messages=[{"role": "user", "content": query}])
+citation_quality = score_citation_quality(result.citations)
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
-
-## Next Steps
-For architecture blueprints, see `perplexity-architecture-variants`.
+- [Perplexity API Docs](https://docs.perplexity.ai)
+- [Responsible AI Practices](https://docs.perplexity.ai/guides/responsible-use)

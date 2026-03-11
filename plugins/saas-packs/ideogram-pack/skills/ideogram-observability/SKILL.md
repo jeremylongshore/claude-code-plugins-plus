@@ -16,236 +16,84 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Observability
 
 ## Overview
-Set up comprehensive observability for Ideogram integrations.
+Monitor Ideogram AI image generation for latency, credit consumption, and output quality. Key metrics include generation time (typically 5-15 seconds per image depending on model and resolution), credit cost per generation (varies by model version and quality setting), generation success rate, and prompt safety filter rejection rate. Tracking credit velocity is critical since Ideogram uses a credit-based pricing model.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Ideogram API account with active credits
+- Metrics backend for tracking generation data
+- Webhook or polling mechanism for async generation status
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `ideogram_requests_total` | Counter | Total API requests |
-| `ideogram_request_duration_seconds` | Histogram | Request latency |
-| `ideogram_errors_total` | Counter | Error count by type |
-| `ideogram_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
+### Step 1: Instrument Image Generation Calls
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'ideogram_requests_total',
-  help: 'Total Ideogram API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'ideogram_request_duration_seconds',
-  help: 'Ideogram request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'ideogram_errors_total',
-  help: 'Ideogram errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
+async function trackedGeneration(prompt: string, options: any) {
+  const start = performance.now();
   try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
+    const result = await ideogram.generate({ image_request: { prompt, ...options } });
+    const duration = performance.now() - start;
+    emitHistogram('ideogram_generation_duration_ms', duration, { model: options.model || 'V_2' });
+    emitCounter('ideogram_generations_total', 1, { model: options.model || 'V_2', status: 'success' });
+    emitCounter('ideogram_credits_used', result.credits_consumed || 1, { model: options.model || 'V_2' });
     return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+  } catch (err: any) {
+    emitCounter('ideogram_generations_total', 1, { status: 'error', reason: err.code || 'unknown' });
+    throw err;
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
+### Step 2: Track Prompt Safety Rejections
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('ideogram-client');
-
-async function tracedIdeogramCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`ideogram.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+// Monitor how often prompts are rejected by the safety filter
+function handleSafetyRejection(prompt: string, reason: string) {
+  emitCounter('ideogram_safety_rejections_total', 1, { reason });
+  console.warn(`Prompt rejected: ${reason}`, { prompt: prompt.substring(0, 50) });
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'ideogram',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logIdeogramOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'ideogram',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
+### Step 3: Monitor Credit Balance
+```bash
+# Check remaining credits and burn rate
+curl -s https://api.ideogram.ai/v1/usage \
+  -H "Api-Key: $IDEOGRAM_API_KEY" | \
+  jq '{credits_remaining, credits_used_today, credits_used_month, daily_avg: (.credits_used_month / 30), days_remaining: (.credits_remaining / (.credits_used_month / 30 + 0.01))}'
 ```
 
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 4: Set Up Alerts
 ```yaml
-# ideogram_alerts.yaml
 groups:
-  - name: ideogram_alerts
+  - name: ideogram
     rules:
-      - alert: IdeogramHighErrorRate
-        expr: |
-          rate(ideogram_errors_total[5m]) /
-          rate(ideogram_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Ideogram error rate > 5%"
-
-      - alert: IdeogramHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(ideogram_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Ideogram P95 latency > 2s"
-
-      - alert: IdeogramDown
-        expr: up{job="ideogram"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Ideogram integration is down"
+      - alert: IdeogramGenerationSlow
+        expr: histogram_quantile(0.95, rate(ideogram_generation_duration_ms_bucket[30m])) > 20000
+        annotations: { summary: "Ideogram P95 generation time exceeds 20 seconds" }
+      - alert: IdeogramCreditBurnHigh
+        expr: rate(ideogram_credits_used[1h]) > 100
+        annotations: { summary: "Ideogram burning >100 credits/hour" }
+      - alert: IdeogramCreditsLow
+        expr: ideogram_credits_remaining < 200
+        annotations: { summary: "Ideogram credits below 200 -- purchase more" }
+      - alert: IdeogramHighRejectionRate
+        expr: rate(ideogram_safety_rejections_total[1h]) / rate(ideogram_generations_total[1h]) > 0.1
+        annotations: { summary: "Ideogram safety rejection rate exceeds 10%" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Ideogram Request Rate",
-      "targets": [{
-        "expr": "rate(ideogram_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Ideogram Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(ideogram_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: generation volume by model version, latency distribution, credit consumption trend, safety rejection rate, generation success/failure ratio, and average credits per generation. Compare V_2 vs V_2_TURBO for cost-vs-speed tradeoffs.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Generation timeout | Complex prompt or high-res request | Reduce resolution or simplify prompt |
+| `402` credit error | Credits exhausted | Purchase more credits on ideogram.ai |
+| Safety filter rejection | Prompt contains restricted content | Rephrase prompt, avoid brand names |
+| `429` rate limited | Too many concurrent generations | Queue requests with concurrency limit |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick latency test
+time curl -s -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -d '{"image_request": {"prompt": "simple test image", "model": "V_2_TURBO"}}' -o /dev/null
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Ideogram Observability Guide](https://docs.ideogram.com/observability)
-
-## Next Steps
-For incident response, see `ideogram-incident-runbook`.

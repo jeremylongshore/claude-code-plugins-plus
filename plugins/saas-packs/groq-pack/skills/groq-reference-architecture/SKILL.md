@@ -16,224 +16,177 @@ compatible-with: claude-code, codex, openclaw
 # Groq Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Groq integrations.
+Production architecture for ultra-fast LLM inference with Groq LPU. Covers model routing by latency requirements, streaming pipelines, fallback strategies, and integration patterns for real-time AI applications.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Groq SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Groq API key
+- `groq-sdk` npm package
+- Understanding of model capabilities (Llama, Mixtral)
+- Monitoring for latency and token usage
 
-## Project Structure
-
-```
-my-groq-project/
-├── src/
-│   ├── groq/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── groq/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── groq/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── groq/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── groq/
-│   └── integration/
-│       └── groq/
-├── config/
-│   ├── groq.development.json
-│   ├── groq.staging.json
-│   └── groq.production.json
-└── docs/
-    └── groq/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Groq Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/groq/client.ts
-export class GroqService {
-  private client: GroqClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: GroqConfig) {
-    this.client = new GroqClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('groq');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/groq/errors.ts
-export class GroqServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'GroqServiceError';
-  }
-}
-
-export function wrapGroqError(error: unknown): GroqServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/groq/health.ts
-export async function checkGroqHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await groqClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Groq    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Groq    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/groq.ts
-export interface GroqConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadGroqConfig(): GroqConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./groq.${env}.json`);
-}
+┌─────────────────────────────────────────────────────┐
+│                Application Layer                     │
+│  Chat UI │ API Backend │ Batch Processor │ Agent    │
+└──────────┬──────────────┬───────────────┬───────────┘
+           │              │               │
+           ▼              ▼               ▼
+┌─────────────────────────────────────────────────────┐
+│              Model Router                            │
+│  ┌───────────────┐  ┌──────────────┐  ┌───────────┐ │
+│  │ Speed Tier    │  │ Quality Tier │  │ Long Ctx  │ │
+│  │ llama-3.1-8b  │  │ llama-3.3-70b│  │ mixtral   │ │
+│  │ (80ms TTFT)   │  │ (200ms TTFT) │  │ (32k ctx) │ │
+│  └───────────────┘  └──────────────┘  └───────────┘ │
+├─────────────────────────────────────────────────────┤
+│              Middleware                               │
+│  Prompt Cache │ Rate Limiter │ Token Counter │ Log  │
+├─────────────────────────────────────────────────────┤
+│              Fallback Layer                          │
+│  Groq Primary → OpenAI Fallback → Local Model      │
+└─────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Model Router Pattern
+```typescript
+import Groq from 'groq-sdk';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-### Step 3: Add Error Handling
-Implement custom error classes for Groq operations.
+type ModelTier = 'speed' | 'quality' | 'long-context';
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Groq connectivity.
+const MODEL_MAP: Record<ModelTier, string> = {
+  speed: 'llama-3.1-8b-instant',
+  quality: 'llama-3.3-70b-versatile',
+  'long-context': 'mixtral-8x7b-32768',
+};
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+function selectModel(options: {
+  maxLatencyMs?: number;
+  contextLength?: number;
+  needsReasoning?: boolean;
+}): string {
+  if (options.contextLength && options.contextLength > 8192)
+    return MODEL_MAP['long-context'];
+  if (options.maxLatencyMs && options.maxLatencyMs < 150)
+    return MODEL_MAP.speed;
+  if (options.needsReasoning) return MODEL_MAP.quality;
+  return MODEL_MAP.speed;
+}
+```
+
+### Step 2: Completion Service with Middleware
+```typescript
+interface CompletionOptions {
+  messages: any[];
+  tier?: ModelTier;
+  stream?: boolean;
+  maxTokens?: number;
+  temperature?: number;
+}
+
+async function complete(options: CompletionOptions) {
+  const model = MODEL_MAP[options.tier || 'speed'];
+  const start = performance.now();
+
+  const response = await groq.chat.completions.create({
+    model,
+    messages: options.messages,
+    stream: options.stream || false,
+    max_tokens: options.maxTokens || 1024,
+    temperature: options.temperature ?? 0.7,
+  });
+
+  const latency = performance.now() - start;
+  logMetrics({ model, latency, tokens: response.usage });
+
+  return response;
+}
+```
+
+### Step 3: Streaming Pipeline
+```typescript
+async function* streamCompletion(messages: any[], tier: ModelTier = 'quality') {
+  const model = MODEL_MAP[tier];
+
+  const stream = await groq.chat.completions.create({
+    model,
+    messages,
+    stream: true,
+    max_tokens: 2048,
+  });
+
+  for await (const chunk of stream) {
+    const content = chunk.choices[0]?.delta?.content;
+    if (content) yield content;
+  }
+}
+
+// Usage with Express SSE
+app.get('/api/chat', async (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+
+  for await (const token of streamCompletion(messages, 'quality')) {
+    res.write(`data: ${JSON.stringify({ token })}\n\n`);
+  }
+
+  res.write('data: [DONE]\n\n');
+  res.end();
+});
+```
+
+### Step 4: Fallback Chain
+```typescript
+async function completionWithFallback(messages: any[]) {
+  try {
+    return await complete({ messages, tier: 'quality' });
+  } catch (error: any) {
+    if (error.status === 429 || error.status >= 500) {
+      console.warn('Groq unavailable, falling back to OpenAI');
+      return openai.chat.completions.create({
+        model: 'gpt-4o-mini',
+        messages,
+      });
+    }
+    throw error;
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Groq types |
-| Test isolation | Shared state | Use dependency injection |
+| 429 rate limit | RPM/TPM exceeded | Implement queue with backoff |
+| Model not available | Temporary outage | Use fallback chain to OpenAI |
+| Context overflow | Input too long | Route to mixtral for 32k context |
+| High latency | Wrong model tier | Use 8b-instant for latency-sensitive |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/groq/{handlers} src/services/groq src/api/groq
-touch src/groq/{client,config,types,errors}.ts
-touch src/services/groq/{index,sync,cache}.ts
+### Multi-Model Pipeline
+```typescript
+async function analyzeDocument(doc: string) {
+  // Fast extraction with speed tier
+  const summary = await complete({
+    messages: [{ role: 'user', content: `Summarize: ${doc}` }],
+    tier: 'speed',
+  });
+
+  // Deep analysis with quality tier
+  const analysis = await complete({
+    messages: [{ role: 'user', content: `Analyze in detail: ${summary}` }],
+    tier: 'quality',
+  });
+
+  return { summary, analysis };
+}
 ```
 
 ## Resources
-- [Groq SDK Documentation](https://docs.groq.com/sdk)
-- [Groq Best Practices](https://docs.groq.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `groq-multi-env-setup`.
+- [Groq API Documentation](https://console.groq.com/docs)
+- [Groq Model Cards](https://console.groq.com/docs/models)
+- [Groq Rate Limits](https://console.groq.com/docs/rate-limits)

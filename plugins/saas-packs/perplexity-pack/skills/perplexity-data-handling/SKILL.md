@@ -16,206 +16,184 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Perplexity.
+Manage search query data and results from Perplexity Sonar API. Covers query sanitization, citation validation, result caching with freshness policies, and conversation context management for research workflows.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Perplexity SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Perplexity request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupPerplexityData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.perplexityLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupPerplexityData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const perplexityData = await perplexityClient.getUserData(userId);
-
-  return {
-    source: 'Perplexity',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: perplexityData.profile,
-      activities: perplexityData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Perplexity
-  await perplexityClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.perplexityUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'perplexity',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await perplexityClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Perplexity API key
+- OpenAI-compatible client library
+- Understanding of search result data structures
+- Cache storage for results
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Perplexity data by sensitivity level.
+### Step 1: Query Sanitization
+```typescript
+function sanitizeQuery(query: string): string {
+  // Remove PII that might leak into search queries
+  let clean = query
+    .replace(/\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, '[email]')
+    .replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[phone]')
+    .replace(/\b\d{3}-\d{2}-\d{4}\b/g, '[ssn]');
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+  // Remove overly specific identifiers
+  clean = clean
+    .replace(/\b(user|customer|account)\s*#?\s*\d+\b/gi, '[ID]')
+    .replace(/\b[A-Z0-9]{20,}\b/g, '[TOKEN]');
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+  return clean;
+}
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+async function safeSearch(rawQuery: string) {
+  const query = sanitizeQuery(rawQuery);
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+  const result = await perplexity.chat.completions.create({
+    model: 'sonar',
+    messages: [{ role: 'user', content: query }],
+  });
+
+  return result;
+}
+```
+
+### Step 2: Citation Validation and Cleaning
+```typescript
+interface ValidatedCitation {
+  url: string;
+  domain: string;
+  isAccessible: boolean;
+  title?: string;
+}
+
+function extractAndValidateCitations(responseText: string): ValidatedCitation[] {
+  const urlRegex = /https?:\/\/[^\s\])"]+/g;
+  const urls = [...new Set(responseText.match(urlRegex) || [])];
+
+  return urls.map(url => {
+    try {
+      const parsed = new URL(url);
+      return {
+        url: url.replace(/[.,;:]+$/, ''), // Clean trailing punctuation
+        domain: parsed.hostname,
+        isAccessible: true,
+      };
+    } catch {
+      return { url, domain: 'unknown', isAccessible: false };
+    }
+  }).filter(c => c.isAccessible);
+}
+
+function deduplicateCitations(citations: ValidatedCitation[]): ValidatedCitation[] {
+  const seen = new Set<string>();
+  return citations.filter(c => {
+    const key = c.domain + c.url.split('?')[0]; // Ignore query params
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+```
+
+### Step 3: Result Caching with Freshness Policy
+```typescript
+import { LRUCache } from 'lru-cache';
+import { createHash } from 'crypto';
+
+interface CachedResult {
+  response: string;
+  citations: ValidatedCitation[];
+  cachedAt: number;
+  queryHash: string;
+}
+
+// Different TTLs based on query type
+const CACHE_TTL = {
+  factual: 1000 * 60 * 60 * 24,  // 24 hours for stable facts
+  news: 1000 * 60 * 30,           // 30 min for news queries
+  research: 1000 * 60 * 60 * 4,   // 4 hours for research
+  default: 1000 * 60 * 60,        // 1 hour default
+};
+
+const resultCache = new LRUCache<string, CachedResult>({ max: 500 });
+
+function detectQueryType(query: string): keyof typeof CACHE_TTL {
+  if (/\b(latest|today|breaking|recent)\b/i.test(query)) return 'news';
+  if (/\b(research|study|paper|analysis)\b/i.test(query)) return 'research';
+  if (/\b(what is|define|how does)\b/i.test(query)) return 'factual';
+  return 'default';
+}
+
+async function cachedSearch(query: string) {
+  const hash = createHash('sha256').update(query.toLowerCase().trim()).digest('hex');
+  const cached = resultCache.get(hash);
+  if (cached) return cached;
+
+  const result = await safeSearch(query);
+  const content = result.choices[0].message.content || '';
+  const citations = deduplicateCitations(extractAndValidateCitations(content));
+  const queryType = detectQueryType(query);
+
+  const entry: CachedResult = {
+    response: content,
+    citations,
+    cachedAt: Date.now(),
+    queryHash: hash,
+  };
+
+  resultCache.set(hash, entry, { ttl: CACHE_TTL[queryType] });
+  return entry;
+}
+```
+
+### Step 4: Conversation Context Limits
+```typescript
+class ResearchContext {
+  private messages: any[] = [];
+  private maxMessages = 10;
+  private maxTokenEstimate = 8000;
+
+  addMessage(role: string, content: string) {
+    this.messages.push({ role, content });
+
+    // Trim oldest messages if over limit
+    while (this.messages.length > this.maxMessages) {
+      this.messages.shift();
+    }
+
+    // Trim if estimated tokens too high
+    while (this.estimateTokens() > this.maxTokenEstimate && this.messages.length > 2) {
+      this.messages.splice(1, 1); // Remove second oldest (keep system prompt)
+    }
+  }
+
+  getMessages() { return [...this.messages]; }
+  clear() { this.messages = []; }
+
+  private estimateTokens(): number {
+    return this.messages.reduce((sum, m) => sum + Math.ceil(m.content.length / 4), 0);
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| PII in search query | User entered personal data | Apply `sanitizeQuery` before API call |
+| Broken citations | URL changed or removed | Validate URLs, remove inaccessible ones |
+| Stale cached results | TTL too long for news queries | Use query-type-aware TTL |
+| Context overflow | Too many conversation turns | Trim old messages automatically |
 
 ## Examples
 
-### Quick PII Scan
+### Research Session with Caching
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
-}
-```
+const context = new ResearchContext();
+context.addMessage('system', 'You are a research assistant.');
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Perplexity response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
+const result = await cachedSearch('Latest advances in quantum computing 2025');
+console.log(`Response: ${result.response.slice(0, 200)}...`);
+console.log(`Citations: ${result.citations.length} sources`);
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Perplexity Privacy Guide](https://docs.perplexity.com/privacy)
-
-## Next Steps
-For enterprise access control, see `perplexity-enterprise-rbac`.
+- [Perplexity API Docs](https://docs.perplexity.ai/)
+- [Perplexity Data Policy](https://perplexity.ai/privacy)

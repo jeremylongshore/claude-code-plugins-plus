@@ -16,185 +16,157 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Webhooks & Events
 
 ## Overview
-Securely handle Windsurf webhooks with signature validation and replay protection.
+Handle Windsurf workspace and editor events for extension development and team workflow integration. Windsurf, built on VS Code architecture, exposes extension events for workspace changes, editor actions, AI interactions (Cascade), and terminal activity. Use these to build custom extensions, sync state with external tools, or automate development workflows.
 
 ## Prerequisites
-- Windsurf webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Windsurf IDE installed with extension development support
+- Node.js and VS Code extension API familiarity
+- Understanding of VS Code extension model (activationEvents, commands)
+- Windsurf workspace with Cascade AI enabled
 
-## Webhook Endpoint Setup
+## Event Types
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/windsurf',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-windsurf-signature'] as string;
-    const timestamp = req.headers['x-windsurf-timestamp'] as string;
-
-    if (!verifyWindsurfSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleWindsurfEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyWindsurfSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.WINDSURF_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type WindsurfEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface WindsurfEvent {
-  id: string;
-  type: WindsurfEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<WindsurfEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleWindsurfEvent(event: WindsurfEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `windsurf:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `windsurf:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Windsurf CLI to send test events
-windsurf webhooks trigger resource.created --url http://localhost:3000/webhooks/windsurf
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Event | Source | Payload |
+|-------|--------|---------|
+| `workspace.onDidOpenTextDocument` | VS Code API | Document URI, language |
+| `workspace.onDidSaveTextDocument` | VS Code API | File path, content |
+| `cascade.onSuggestionAccepted` | Windsurf API | Suggestion text, file, line |
+| `cascade.onFlowCompleted` | Windsurf API | Flow ID, changes made |
+| `terminal.onDidWriteTerminalData` | VS Code API | Terminal output text |
+| `debug.onDidStartDebugSession` | VS Code API | Session config, type |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Windsurf dashboard.
+### Step 1: Create Windsurf Extension
+```typescript
+import * as vscode from "vscode";
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+export function activate(context: vscode.ExtensionContext) {
+  const saveListener = vscode.workspace.onDidSaveTextDocument(
+    async (document) => {
+      console.log(`File saved: ${document.uri.fsPath}`);
+      await handleFileSave(document);
+    }
+  );
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  const editorListener = vscode.window.onDidChangeActiveTextEditor(
+    (editor) => {
+      if (editor) {
+        trackFileOpen(editor.document);
+      }
+    }
+  );
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  const folderListener = vscode.workspace.onDidChangeWorkspaceFolders(
+    (event) => {
+      for (const added of event.added) {
+        console.log(`Folder added: ${added.uri.fsPath}`);
+      }
+    }
+  );
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+  context.subscriptions.push(saveListener, editorListener, folderListener);
+}
+```
+
+### Step 2: Track AI Interaction Events
+```typescript
+async function trackCascadeEvents(context: vscode.ExtensionContext) {
+  const outputChannel = vscode.window.createOutputChannel("Cascade Tracker");
+
+  const completionListener = vscode.languages.registerInlineCompletionItemProvider(
+    { pattern: "**" },
+    {
+      provideInlineCompletionItems(document, position) {
+        outputChannel.appendLine(
+          `Completion requested: ${document.fileName}:${position.line}`
+        );
+        return [];
+      },
+    }
+  );
+
+  context.subscriptions.push(completionListener);
+}
+```
+
+### Step 3: Send Events to External System
+```typescript
+async function handleFileSave(document: vscode.TextDocument) {
+  const webhookUrl = vscode.workspace
+    .getConfiguration("windsurf-events")
+    .get<string>("webhookUrl");
+
+  if (!webhookUrl) return;
+
+  await fetch(webhookUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      event: "file.saved",
+      file: document.uri.fsPath,
+      language: document.languageId,
+      lineCount: document.lineCount,
+      timestamp: new Date().toISOString(),
+    }),
+  });
+}
+
+function trackFileOpen(document: vscode.TextDocument) {
+  const diagnostics = vscode.languages.getDiagnostics(document.uri);
+  const errorCount = diagnostics.filter(
+    d => d.severity === vscode.DiagnosticSeverity.Error
+  ).length;
+  console.log(`${document.fileName}: ${errorCount} errors`);
+}
+```
+
+### Step 4: Package Configuration
+```json
+{
+  "name": "windsurf-events",
+  "activationEvents": ["onStartupFinished"],
+  "contributes": {
+    "configuration": {
+      "title": "Windsurf Events",
+      "properties": {
+        "windsurf-events.webhookUrl": {
+          "type": "string",
+          "description": "URL to send workspace events to"
+        }
+      }
+    }
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Extension not activating | Wrong activationEvents | Use `onStartupFinished` for always-on |
+| Webhook delivery fails | Network issue | Queue events locally, retry on connect |
+| High CPU usage | Too many listeners | Debounce frequent events (saves, edits) |
+| API deprecation | VS Code API changes | Pin engine version in package.json |
 
 ## Examples
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
+### Debounced Save Handler
+```typescript
+const saveDebounce = new Map<string, NodeJS.Timeout>();
 
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/windsurf \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {
+  const key = document.uri.fsPath;
+  clearTimeout(saveDebounce.get(key));
+  saveDebounce.set(key, setTimeout(() => {
+    handleFileSave(document);
+    saveDebounce.delete(key);
+  }, delayMs));
+}
 ```
 
 ## Resources
-- [Windsurf Webhooks Guide](https://docs.windsurf.com/webhooks)
-- [Webhook Security Best Practices](https://docs.windsurf.com/webhooks/security)
+- [VS Code Extension API](https://code.visualstudio.com/api)
+- [Windsurf Documentation](https://docs.windsurf.ai)
 
 ## Next Steps
-For performance optimization, see `windsurf-performance-tuning`.
+For multi-environment setup, see `windsurf-multi-env-setup`.

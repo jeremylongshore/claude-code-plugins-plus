@@ -13,211 +13,81 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Fireflies.ai Enterprise RBAC
+# Fireflies Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Fireflies.ai integrations.
+Manage who can record, view, and share meeting transcripts in Fireflies.ai. Fireflies uses per-seat licensing with three workspace roles: Admin, Member, and Guest. Admins control recording policies, transcript visibility, and integration settings. Privacy controls determine whether transcripts are visible to the meeting organizer only, all attendees, or the entire workspace.
 
 ## Prerequisites
-- Fireflies.ai Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum Fireflies.aiRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface Fireflies.aiPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<Fireflies.aiRole, Fireflies.aiPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: Fireflies.aiRole,
-  action: keyof Fireflies.aiPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Fireflies.ai SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://fireflies.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/fireflies/callback',
-};
-
-// Map IdP groups to Fireflies.ai roles
-const groupRoleMapping: Record<string, Fireflies.aiRole> = {
-  'Engineering': Fireflies.aiRole.Developer,
-  'Platform-Admins': Fireflies.aiRole.Admin,
-  'Data-Team': Fireflies.aiRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@fireflies/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.FIREFLIES_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.FIREFLIES_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/fireflies/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface Fireflies.aiOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: Fireflies.aiRole;
-}
-
-async function createOrganization(
-  config: Fireflies.aiOrganization
-): Promise<void> {
-  await firefliesClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireFireflies.aiPermission(
-  requiredPermission: keyof Fireflies.aiPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { firefliesRole: Fireflies.aiRole };
-
-    if (!checkPermission(user.firefliesRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/fireflies/resource/:id',
-  requireFireflies.aiPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface Fireflies.aiAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: Fireflies.aiRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logFireflies.aiAccess(entry: Fireflies.aiAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Fireflies Business or Enterprise plan (per-seat pricing)
+- Workspace admin privileges
+- Calendar integration (Google Calendar or Outlook) connected
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Fireflies.ai permissions.
+### Step 1: Configure Workspace Privacy Settings
+Navigate to Fireflies Settings > Privacy:
+```yaml
+# Recommended enterprise privacy configuration
+transcript_visibility: "attendees_only"   # Only meeting participants see transcript
+auto_record: "internal_only"              # Only record meetings with internal participants
+external_sharing: "admin_approval"        # External links require admin approval
+download_permissions: "admins_only"       # Only admins can download raw audio
+data_retention: "365_days"                # Auto-delete transcripts after 1 year
+```
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+### Step 2: Manage Team Members via API
+```bash
+# Add a new member
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "mutation { addTeamMember(email: \"new@company.com\", role: MEMBER) { id email role } }"}'
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+# List all team members and their roles
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ teamMembers { id email role last_active } }"}'
+```
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 3: Create Channel-Based Access Groups
+Organize transcripts into channels (e.g., Sales, Engineering, Leadership) so team members only see transcripts relevant to their department:
+```bash
+# Create a private channel for leadership meetings
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "mutation { createChannel(name: \"Leadership\", visibility: PRIVATE, memberIds: [\"id1\", \"id2\"]) { id } }"}'
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 4: Configure SSO (Enterprise Only)
+In Fireflies Admin > Security > SSO, enable SAML 2.0 and map IdP groups:
+- `Engineering` -> Member (auto-record internal meetings)
+- `Sales` -> Member (auto-record all meetings including external)
+- `IT-Admins` -> Admin (full workspace control)
+
+Enable "Enforce SSO" to require SSO for all workspace members.
+
+### Step 5: Audit Transcript Access
+```bash
+# Query who accessed a specific transcript
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ transcript(id: \"tr_abc123\") { title views { user_email accessed_at } shares { shared_with shared_by } } }"}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| Bot not joining meetings | Calendar not connected | Re-authorize calendar integration |
+| Transcript not visible | Privacy set to organizer-only | Change to attendees_only or add to channel |
+| Seat limit exceeded | Too many active members | Remove inactive members or upgrade plan |
+| SSO login fails | SAML assertion clock skew | Sync server clocks, allow 5-min skew tolerance |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Bulk remove inactive members (no activity in 90 days)
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ teamMembers { id email last_active } }"}' | \
+  jq -r '.data.teamMembers[] | select(.last_active < "2025-12-01") | .id' | \
+  xargs -I{} echo "Remove member {}"
 ```
-
-## Resources
-- [Fireflies.ai Enterprise Guide](https://docs.fireflies.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `fireflies-migration-deep-dive`.

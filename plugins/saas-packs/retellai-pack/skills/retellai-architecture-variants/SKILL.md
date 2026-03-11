@@ -16,270 +16,122 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Retell AI integrations.
+Deployment architectures for Retell AI voice agents at different scales. Voice AI systems require real-time processing with strict latency budgets -- architecture choices directly impact call quality.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── retellai/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── retellai.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── retellai.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous Retell AI calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await retellaiClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── retellai/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── retellai.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── retellai-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── retellai/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class Retell AIService {
-  constructor(
-    private client: RetellAIClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('retellai.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-retellai-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── retellai.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── retellai/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls retellai-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated Retell AI microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class Retell AIAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: Retell AICommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new Retell AIProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(Retell AIProcessedEvent)
-class Retell AIEventHandler {
-  async handle(event: Retell AIProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Retell AI code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated retellai-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
+- Retell AI account with agent configured
+- Understanding of WebSocket real-time communication
+- Infrastructure for voice processing latency requirements
 
 ## Instructions
 
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
+### Step 1: Single Webhook Server (Simple)
 
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
+**Best for:** Prototyping, < 10 concurrent calls, single agent.
 
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
+```
+Retell Platform -> WebSocket -> Your Webhook Server -> LLM API
+                                       |
+                                  Local State (memory)
+```
 
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
+```typescript
+import express from 'express';
+const app = express();
+const callState = new Map();
 
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+app.post('/retell-webhook', async (req, res) => {
+  const { call_id, transcript } = req.body;
+  const state = callState.get(call_id) || { history: [] };
+  state.history.push(transcript);
+  const response = await generateResponse(state);
+  callState.set(call_id, state);
+  res.json({ response });  // Must respond < 1 second
+});
+```
+
+### Step 2: Distributed Webhook with Shared State (Production)
+
+**Best for:** 10-100 concurrent calls, multiple agents, production.
+
+```
+Retell Platform -> Load Balancer -> Webhook Server 1
+                                 -> Webhook Server 2
+                                 -> Webhook Server 3
+                                         |
+                                    Redis (shared state)
+                                         |
+                                    LLM API (cached)
+```
+
+```typescript
+class DistributedCallHandler {
+  constructor(private redis: Redis, private llm: LLMClient) {}
+
+  async handleTurn(callId: string, transcript: string) {
+    const state = await this.redis.get(`call:${callId}`);
+    const context = JSON.parse(state || '{"history":[]}');
+    context.history.push(transcript);
+
+    // Cache common responses for < 100ms latency
+    const cacheKey = `response:${this.hash(transcript)}`;
+    let response = await this.redis.get(cacheKey);
+    if (!response) {
+      response = await this.llm.generate(context);
+      await this.redis.setex(cacheKey, 3600, response);
+    }
+    await this.redis.setex(`call:${callId}`, 3600, JSON.stringify(context));
+    return response;
+  }
+}
+```
+
+### Step 3: Event-Driven Voice Pipeline (Scale)
+
+**Best for:** 100+ concurrent calls, complex flows, analytics.
+
+```
+Retell Platform -> API Gateway -> Webhook Service -> Redis (state)
+                                                  -> Event Bus (Kafka)
+                                                         |
+                                          +--------------+------------+
+                                          |              |            |
+                                    Analytics      Transcription   Escalation
+                                     Service        Archive       Handler
+```
+
+```typescript
+class VoicePipeline {
+  async handleCall(event: RetellEvent) {
+    // Fast response path (< 500ms budget)
+    const response = await this.generateFast(event);
+    // Async: emit events for downstream processing
+    await this.eventBus.emit('call.turn', {
+      callId: event.call_id,
+      transcript: event.transcript,
+      response: response
+    });
+    return response;
+  }
+}
+```
+
+## Decision Matrix
+
+| Factor | Single Server | Distributed | Event-Driven |
+|--------|--------------|-------------|--------------|
+| Concurrent Calls | < 10 | 10-100 | 100+ |
+| Latency Budget | 800ms | 500ms | 300ms |
+| State | In-memory | Redis | Redis + Events |
+| Scaling | Vertical | Horizontal | Auto-scaling |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
-
-## Examples
-
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
-```
+| Calls drop under load | Single server bottleneck | Scale to distributed architecture |
+| Lost call state | Server restart | Move state to Redis |
+| High latency | LLM response too slow | Pre-cache common responses |
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Retell AI Architecture Guide](https://docs.retellai.com/architecture)
-
-## Next Steps
-For common anti-patterns, see `retellai-known-pitfalls`.
+- [Retell AI Architecture](https://docs.retellai.com/guide/architecture)
+- [Retell AI Docs](https://docs.retellai.com)

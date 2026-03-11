@@ -13,279 +13,131 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Reliability Patterns
+# Firecrawl Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for FireCrawl integrations.
+Production reliability patterns for Firecrawl web scraping pipelines. Firecrawl's async crawl model, JavaScript rendering, and credit-based pricing create specific reliability challenges around job completion, content quality, and cost control.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const firecrawlBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-firecrawlBreaker.on('open', () => {
-  console.warn('FireCrawl circuit OPEN - requests failing fast');
-  alertOps('FireCrawl circuit breaker opened');
-});
-
-firecrawlBreaker.on('halfOpen', () => {
-  console.info('FireCrawl circuit HALF-OPEN - testing recovery');
-});
-
-firecrawlBreaker.on('close', () => {
-  console.info('FireCrawl circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeFireCrawlCall<T>(fn: () => Promise<T>): Promise<T> {
-  return firecrawlBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const firecrawlQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedFireCrawlCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return firecrawlQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedFireCrawlCall('critical', () =>
-  firecrawlClient.processPayment(order)
-);
-
-await prioritizedFireCrawlCall('bulk', () =>
-  firecrawlClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutFireCrawlCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`FireCrawl ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface FireCrawlFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withFireCrawlFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('FireCrawl failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class FireCrawlDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await firecrawlClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function firecrawlHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: firecrawlBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Firecrawl API key configured
+- Understanding of async job polling
+- Queue infrastructure for retry handling
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap FireCrawl calls with circuit breaker.
+### Step 1: Robust Crawl Job Polling
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+Crawl jobs can take minutes. Implement proper polling with timeout and failure detection.
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+```typescript
+import FirecrawlApp from '@mendable/firecrawl-js';
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {
+  const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
+  const crawl = await firecrawl.asyncCrawlUrl(url, options);
+  const deadline = Date.now() + timeoutMs;
+  let pollInterval = 2000;
 
-## Output
-- Circuit breaker protecting FireCrawl calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+  while (Date.now() < deadline) {
+    const status = await firecrawl.checkCrawlStatus(crawl.id);
+    if (status.status === 'completed') return status;
+    if (status.status === 'failed') throw new Error(`Crawl failed: ${status.error}`);
+
+    await new Promise(r => setTimeout(r, pollInterval));
+    pollInterval = Math.min(pollInterval * 1.5, 30000);  // back off
+  }
+  throw new Error(`Crawl timed out after ${timeoutMs}ms`);
+}
+```
+
+### Step 2: Content Quality Validation
+
+Scraped pages may return empty or boilerplate content. Validate before processing.
+
+```typescript
+interface ScrapedPage {
+  url: string;
+  markdown: string;
+  metadata: { title?: string; statusCode?: number };
+}
+
+function validateContent(page: ScrapedPage): boolean {
+  if (!page.markdown || page.markdown.length < 100) return false;
+  if (page.metadata.statusCode && page.metadata.statusCode >= 400) return false;
+  // Detect common error pages
+  const errorPatterns = ['access denied', '403 forbidden', 'page not found', 'captcha'];
+  const lower = page.markdown.toLowerCase();
+  return !errorPatterns.some(p => lower.includes(p));
+}
+```
+
+### Step 3: Credit-Aware Processing
+
+Track credit usage per crawl to prevent budget overruns.
+
+```typescript
+class CreditTracker {
+  private dailyUsage: Map<string, number> = new Map();
+  private dailyLimit: number;
+
+  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }
+
+  canAfford(estimatedPages: number): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    const used = this.dailyUsage.get(today) || 0;
+    return (used + estimatedPages) <= this.dailyLimit;
+  }
+
+  record(pages: number) {
+    const today = new Date().toISOString().split('T')[0];
+    this.dailyUsage.set(today, (this.dailyUsage.get(today) || 0) + pages);
+  }
+}
+```
+
+### Step 4: Fallback from Crawl to Individual Scrape
+
+If a full crawl fails, fall back to scraping critical pages individually.
+
+```typescript
+async function resilientScrape(urls: string[]) {
+  try {
+    return await reliableCrawl(urls[0], { limit: urls.length });
+  } catch (crawlError) {
+    console.warn('Crawl failed, falling back to individual scrapes');
+    const results = [];
+    for (const url of urls) {
+      try {
+        const result = await firecrawl.scrapeUrl(url, {
+          formats: ['markdown'], onlyMainContent: true
+        });
+        results.push(result);
+      } catch (e) { console.error(`Failed: ${url}`); }
+      await new Promise(r => setTimeout(r, 1000));
+    }
+    return results;
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Crawl times out | Large site, slow JS rendering | Set page limits and timeout |
+| Empty markdown | Anti-bot or JS-rendered content | Increase `waitFor`, try individual scrape |
+| Credit overrun | No budget tracking | Implement credit-aware circuit breaker |
+| Partial crawl results | Site structure changes | Validate content, retry failed pages |
 
 ## Examples
 
-### Quick Circuit Check
+### Health Check
 ```typescript
-const state = firecrawlBreaker.stats().state;
-console.log('FireCrawl circuit:', state);
+const health = {
+  creditsUsedToday: tracker.getUsage(),
+  activeJobs: await getActiveCrawlCount(),
+  failureRate: monitor.getHourlyFailureRate()
+};
 ```
 
 ## Resources
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [FireCrawl Reliability Guide](https://docs.firecrawl.com/reliability)
-
-## Next Steps
-For policy enforcement, see `firecrawl-policy-guardrails`.
+- [Firecrawl API Docs](https://docs.firecrawl.dev)

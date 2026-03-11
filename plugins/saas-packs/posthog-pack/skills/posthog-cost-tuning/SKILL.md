@@ -16,187 +16,99 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Cost Tuning
 
 ## Overview
-Optimize PostHog costs through smart tier selection, sampling, and usage monitoring.
+Reduce PostHog event-based pricing costs by controlling event volume, optimizing autocapture settings, and leveraging the generous free tier. PostHog charges per event with a free tier of 1M events/month, then ~$0.00031 per event beyond that. The biggest cost levers are: disabling autocapture on high-frequency elements (a single button clicked 100K times/month = $31), filtering out bot traffic, and sampling non-critical events. Session recordings and feature flags have separate pricing tiers.
 
 ## Prerequisites
-- Access to PostHog billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimatePostHogCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class PostHogUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching PostHog budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimatePostHogCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await posthogClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => posthogClient.get(id)));
-
-// Use batch endpoint (1 call)
-await posthogClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new PostHogClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in PostHog dashboard
-# Or use API if available:
-# Check PostHog documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM posthog_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- PostHog Cloud account with billing dashboard access
+- Application instrumented with PostHog SDK
+- Understanding of which events drive business value
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review PostHog dashboard for usage patterns and costs.
+### Step 1: Audit Event Volume by Type
+```bash
+# Check which events consume the most quota
+curl "https://app.posthog.com/api/projects/PROJECT_ID/insights/trend/?events=[{\"id\":\"$pageview\"},{\"id\":\"$autocapture\"},{\"id\":\"$screen\"}]&date_from=-30d&interval=week" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.result[] | {event: .label, total_30d: (.data | add)}'
+```
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Disable Unnecessary Autocapture
+```typescript
+// posthog-init.ts - Configure autocapture to skip noisy elements
+posthog.init('phc_YOUR_KEY', {
+  autocapture: {
+    dom_event_allowlist: ['click', 'submit'], // Skip scroll, change, etc.
+    element_allowlist: ['a', 'button', 'form', 'input[type=submit]'],
+    css_selector_allowlist: ['.track-click'], // Only track explicitly marked elements
+    url_ignorelist: ['/health', '/api/internal'], // Skip internal endpoints
+  },
+  // Disable session recording for anonymous users to save on recording quota
+  session_recording: {
+    maskAllInputs: true,
+  },
+});
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 3: Sample High-Volume Events
+```typescript
+// Reduce non-critical event volume by sampling
+posthog.init('phc_YOUR_KEY', {
+  // Only send 10% of pageview events (still statistically significant)
+  before_send: (event) => {
+    if (event.event === '$pageview') {
+      return Math.random() < 0.1 ? event : null; // 90% reduction
+    }
+    // Always send business-critical events
+    if (['purchase', 'signup', 'upgrade'].includes(event.event)) {
+      return event;
+    }
+    // Sample other events at 50%
+    return Math.random() < 0.5 ? event : null;
+  },
+});
+```
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 4: Filter Bot Traffic
+```typescript
+// Bots generate significant event volume without business value
+posthog.init('phc_YOUR_KEY', {
+  before_send: (event) => {
+    const ua = navigator.userAgent.toLowerCase();
+    const isBot = /bot|crawler|spider|scrapy|headless|phantom/i.test(ua);
+    return isBot ? null : event;
+  },
+});
+```
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+### Step 5: Monitor Monthly Costs
+```bash
+# Check current event usage vs billing tier
+curl "https://app.posthog.com/api/organizations/ORG_ID/billing/" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '{
+    events_used: .events_current_usage,
+    events_limit: .events_plan_limit,
+    usage_pct: (.events_current_usage / .events_plan_limit * 100),
+    estimated_cost: (if .events_current_usage > 1000000 then ((.events_current_usage - 1000000) * 0.00031) else 0 end)
+  }'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Event volume spike | Autocapture on high-frequency element | Add element to `css_selector_denylist` |
+| Bill higher than expected | Bot traffic generating events | Add bot filtering in `before_send` |
+| Missing critical events | Sampling too aggressive | Exclude business events from sampling |
+| Free tier exceeded early | New feature launched without volume estimate | Forecast events before launch |
 
 ## Examples
-
-### Quick Cost Check
 ```typescript
-// Estimate monthly cost for your usage
-const estimate = estimatePostHogCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+// Cost projection calculator
+const monthlyEvents = 5_000_000;
+const freeEvents = 1_000_000;
+const costPerEvent = 0.00031;
+const monthlyCost = (monthlyEvents - freeEvents) * costPerEvent;
+console.log(`Projected cost: $${monthlyCost.toFixed(2)}/month`);
+// $1,240/month -> with 50% sampling on non-critical: $620/month
 ```
-
-## Resources
-- [PostHog Pricing](https://posthog.com/pricing)
-- [PostHog Billing Dashboard](https://dashboard.posthog.com/billing)
-
-## Next Steps
-For architecture patterns, see `posthog-reference-architecture`.

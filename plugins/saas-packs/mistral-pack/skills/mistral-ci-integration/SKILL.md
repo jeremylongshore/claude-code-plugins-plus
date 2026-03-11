@@ -13,320 +13,196 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Mistral AI CI Integration
+# Mistral CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Mistral AI integrations with automated testing.
+Integrate Mistral AI model validation and prompt testing into CI/CD pipelines. Covers automated prompt regression tests, model response quality checks, cost estimation in PRs, and deployment gates for prompt changes.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Mistral AI test API key
-- npm/pnpm project configured
+- Mistral API key stored as GitHub secret
+- GitHub Actions configured
+- Test framework (Vitest or Jest)
+- Understanding of prompt versioning
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-
-Create `.github/workflows/mistral-integration.yml`:
-
+### Step 1: GitHub Actions Workflow for Prompt Testing
 ```yaml
-name: Mistral AI Integration Tests
+# .github/workflows/mistral-tests.yml
+name: Mistral AI Tests
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main]
-
-env:
-  NODE_VERSION: '20'
+    paths:
+      - 'src/prompts/**'
+      - 'src/ai/**'
+      - 'tests/ai/**'
 
 jobs:
-  lint-and-type:
-    name: Lint & Type Check
+  prompt-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '20'
           cache: 'npm'
 
       - run: npm ci
 
-      - name: Type Check
-        run: npm run typecheck
+      - name: Run prompt regression tests
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: npm test -- --grep "mistral" --reporter=verbose
 
-      - name: Lint
-        run: npm run lint
-
-  unit-tests:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - run: npm ci
-
-      - name: Run Unit Tests
-        run: npm test -- --coverage
-
-      - name: Upload Coverage
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage/lcov.info
-
-  integration-tests:
-    name: Integration Tests
-    runs-on: ubuntu-latest
-    needs: [lint-and-type, unit-tests]
-    # Only run on main branch or manual trigger
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'
-    env:
-      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-
-      - run: npm ci
-
-      - name: Run Integration Tests
-        run: npm run test:integration
-        timeout-minutes: 10
-
-      - name: Upload Test Results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-results
-          path: test-results/
+      - name: Estimate token costs
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: node scripts/estimate-costs.js >> $GITHUB_STEP_SUMMARY
 ```
 
-### Step 2: Configure Secrets
-
-```bash
-# Add API key to repository secrets
-gh secret set MISTRAL_API_KEY --body "your-test-api-key"
-
-# Verify secret is set
-gh secret list
-```
-
-### Step 3: Create Integration Test File
-
+### Step 2: Prompt Regression Test Suite
 ```typescript
-// tests/integration/mistral.integration.test.ts
-import { describe, it, expect, beforeAll } from 'vitest';
-import Mistral from '@mistralai/mistralai';
+// tests/ai/mistral-prompts.test.ts
+import { describe, it, expect } from 'vitest';
+import { Mistral } from '@mistralai/mistralai';
 
-describe('Mistral AI Integration', () => {
-  let client: Mistral;
+const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY! });
 
-  beforeAll(() => {
-    const apiKey = process.env.MISTRAL_API_KEY;
-    if (!apiKey) {
-      throw new Error('MISTRAL_API_KEY required for integration tests');
-    }
-    client = new Mistral({ apiKey });
-  });
-
-  it('should list available models', async () => {
-    const models = await client.models.list();
-
-    expect(models.data).toBeDefined();
-    expect(models.data?.length).toBeGreaterThan(0);
-
-    const modelIds = models.data?.map(m => m.id) || [];
-    expect(modelIds).toContain('mistral-small-latest');
-  });
-
-  it('should complete a chat request', async () => {
-    const response = await client.chat.complete({
+describe('Mistral Prompt Regression', () => {
+  it('summarization prompt returns valid output', async () => {
+    const result = await mistral.chat.complete({
       model: 'mistral-small-latest',
       messages: [
-        { role: 'user', content: 'Reply with exactly: Integration test passed' }
+        { role: 'system', content: 'Summarize in 2-3 sentences.' },
+        { role: 'user', content: 'TypeScript is a typed superset of JavaScript...' },
       ],
-      maxTokens: 20,
+      maxTokens: 150,
     });
 
-    expect(response.choices).toBeDefined();
-    expect(response.choices?.[0]?.message?.content).toContain('Integration test');
-    expect(response.usage?.totalTokens).toBeGreaterThan(0);
+    const content = result.choices?.[0]?.message?.content || '';
+    expect(content.length).toBeGreaterThan(20);
+    expect(content.split('.').length).toBeGreaterThanOrEqual(2);
   });
 
-  it('should handle streaming responses', async () => {
-    const stream = await client.chat.stream({
+  it('classification prompt returns valid category', async () => {
+    const result = await mistral.chat.complete({
       model: 'mistral-small-latest',
       messages: [
-        { role: 'user', content: 'Count from 1 to 3' }
+        { role: 'system', content: 'Classify as: bug, feature, question. Reply with one word.' },
+        { role: 'user', content: 'The login page crashes on mobile devices' },
       ],
-      maxTokens: 20,
+      maxTokens: 10,
     });
 
-    const chunks: string[] = [];
-    for await (const event of stream) {
-      const content = event.data?.choices?.[0]?.delta?.content;
-      if (content) {
-        chunks.push(content);
-      }
-    }
-
-    expect(chunks.length).toBeGreaterThan(0);
-    expect(chunks.join('')).toBeTruthy();
+    const category = result.choices?.[0]?.message?.content?.trim().toLowerCase();
+    expect(['bug', 'feature', 'question']).toContain(category);
   });
 
-  it('should generate embeddings', async () => {
-    const response = await client.embeddings.create({
-      model: 'mistral-embed',
-      inputs: ['Hello world'],
+  it('respects token limits', async () => {
+    const result = await mistral.chat.complete({
+      model: 'mistral-small-latest',
+      messages: [{ role: 'user', content: 'Write a haiku about programming' }],
+      maxTokens: 50,
     });
 
-    expect(response.data).toBeDefined();
-    expect(response.data[0].embedding.length).toBe(1024);
+    expect(result.usage?.completionTokens).toBeLessThanOrEqual(50);
   });
 });
 ```
 
-### Step 4: Create Vitest Integration Config
-
+### Step 3: Cost Estimation Script
 ```typescript
-// vitest.integration.config.ts
-import { defineConfig } from 'vitest/config';
+// scripts/estimate-costs.ts
+import { readFileSync, readdirSync } from 'fs';
+import { join } from 'path';
 
-export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'node',
-    include: ['tests/integration/**/*.test.ts'],
-    testTimeout: 60000, // 60s for API calls
-    hookTimeout: 30000,
-    retry: 2, // Retry flaky tests
-    reporters: ['verbose', 'junit'],
-    outputFile: {
-      junit: 'test-results/junit.xml',
-    },
-  },
-});
-```
+const COST_PER_MILLION = {
+  'mistral-small-latest': { input: 0.1, output: 0.3 },
+  'mistral-medium-latest': { input: 0.275, output: 0.81 },
+  'mistral-large-latest': { input: 2.0, output: 6.0 },
+};
 
-### Step 5: Add Package Scripts
+function estimatePromptCost(promptFile: string) {
+  const content = readFileSync(promptFile, 'utf-8');
+  const tokens = Math.ceil(content.length / 4);
 
-```json
-{
-  "scripts": {
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:integration": "vitest run --config vitest.integration.config.ts",
-    "test:coverage": "vitest run --coverage",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint src tests --ext .ts"
+  console.log(`| ${promptFile} | ~${tokens} tokens |`);
+
+  for (const [model, costs] of Object.entries(COST_PER_MILLION)) {
+    const costPer1k = (tokens / 1_000_000) * costs.input;
+    console.log(`|   ${model} | $${costPer1k.toFixed(6)}/call |`);
   }
+}
+
+console.log('## Prompt Cost Estimates');
+console.log('| File | Metric |');
+console.log('|------|--------|');
+
+const promptDir = join(process.cwd(), 'src/prompts');
+for (const file of readdirSync(promptDir)) {
+  estimatePromptCost(join(promptDir, file));
 }
 ```
 
-## Output
-- Automated test pipeline
-- PR checks configured
-- Coverage reports uploaded
-- Integration tests on main branch
+### Step 4: Deployment Gate for Model Changes
+```yaml
+# .github/workflows/deploy-gate.yml
+name: AI Deployment Gate
+
+on:
+  pull_request:
+    paths:
+      - 'src/ai/models.ts'
+      - 'src/prompts/**'
+
+jobs:
+  validate-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20', cache: 'npm' }
+      - run: npm ci
+
+      - name: Validate model references
+        run: |
+          # Ensure all referenced models are valid
+          grep -r "mistral-" src/ --include="*.ts" | \
+            grep -oP "mistral-\w+-\w+" | sort -u | while read model; do
+            echo "Checking model: $model"
+          done
+
+      - name: Run AI integration tests
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+        run: npm test -- tests/ai/ --reporter=verbose
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Tests timeout | Slow API | Increase timeout or mock |
-| Auth failures | Invalid key | Check secret value |
-| Rate limiting | Too many tests | Add delays or reduce test count |
+| Tests fail in CI | Missing API key | Add `MISTRAL_API_KEY` to repo secrets |
+| Flaky prompt tests | Non-deterministic output | Set `temperature: 0` for regression tests |
+| High CI costs | Running on every push | Only trigger on prompt/AI file changes |
+| Model deprecation | Using outdated model ID | Validate model names in CI |
 
 ## Examples
 
-### Release Workflow with Mistral Validation
-
+### Minimal CI Config
 ```yaml
-# .github/workflows/release.yml
-name: Release
-
-on:
-  push:
-    tags: ['v*']
-
-jobs:
-  validate:
-    runs-on: ubuntu-latest
-    env:
-      MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY_PROD }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: npm ci
-
-      - name: Verify Mistral Integration
-        run: npm run test:integration
-
-      - name: Build
-        run: npm run build
-
-      - name: Publish
-        run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-```
-
-### PR Comment with Test Results
-
-```yaml
-- name: Comment PR with Results
-  if: github.event_name == 'pull_request'
-  uses: actions/github-script@v6
-  with:
-    script: |
-      const fs = require('fs');
-      const coverage = fs.readFileSync('coverage/coverage-summary.json', 'utf8');
-      const data = JSON.parse(coverage);
-
-      github.rest.issues.createComment({
-        owner: context.repo.owner,
-        repo: context.repo.repo,
-        issue_number: context.issue.number,
-        body: `## Test Results
-
-        | Metric | Coverage |
-        |--------|----------|
-        | Lines | ${data.total.lines.pct}% |
-        | Functions | ${data.total.functions.pct}% |
-        | Branches | ${data.total.branches.pct}% |
-        `
-      });
-```
-
-### Branch Protection Rules
-
-```yaml
-# Configure via GitHub UI or API
-required_status_checks:
-  strict: true
-  contexts:
-    - "Lint & Type Check"
-    - "Unit Tests"
-    - "Integration Tests"
+- name: Quick Mistral smoke test
+  env:
+    MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+  run: |
+    curl -s -X POST https://api.mistral.ai/v1/chat/completions \
+      -H "Authorization: Bearer $MISTRAL_API_KEY" \
+      -H "Content-Type: application/json" \
+      -d '{"model":"mistral-small-latest","messages":[{"role":"user","content":"ping"}]}' \
+      | jq '.choices[0].message.content'
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Vitest Documentation](https://vitest.dev/)
 - [Mistral AI API Reference](https://docs.mistral.ai/api/)
-
-## Next Steps
-For deployment patterns, see `mistral-deploy-integration`.
+- [Mistral Models](https://docs.mistral.ai/getting-started/models/)

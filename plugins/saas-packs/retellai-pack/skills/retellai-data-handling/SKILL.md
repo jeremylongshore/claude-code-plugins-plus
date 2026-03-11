@@ -16,206 +16,176 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Retell AI.
+Manage voice call data from Retell AI agents. Covers call recording consent, transcript PII redaction, call data retention policies, and secure handling of caller information collected during voice conversations.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Retell AI SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Retell AI request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupRetell AIData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.retellaiLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupRetell AIData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const retellaiData = await retellaiClient.getUserData(userId);
-
-  return {
-    source: 'Retell AI',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: retellaiData.profile,
-      activities: retellaiData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Retell AI
-  await retellaiClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.retellaiUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'retellai',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await retellaiClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Retell AI account with API key
+- `retell-sdk` npm package
+- Understanding of call recording laws (varies by jurisdiction)
+- Database for call record storage
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Retell AI data by sensitivity level.
+### Step 1: Call Recording Consent Configuration
+```typescript
+import Retell from 'retell-sdk';
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+// Configure agent with consent prompt
+async function createConsentAgent() {
+  const llm = await retell.llm.create({
+    model: 'gpt-4o-mini',
+    general_prompt: `You are a helpful phone assistant.
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+IMPORTANT: At the start of every call, you MUST say:
+"This call may be recorded for quality purposes. Do you consent to continue?"
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+If the caller says no:
+- Say "I understand. Let me transfer you to a team member."
+- Call the transfer_call tool
+
+If the caller says yes:
+- Proceed with the normal conversation flow`,
+    begin_message: 'Hello! This call may be recorded for quality purposes. Do you consent to continue?',
+  });
+
+  return llm;
+}
+```
+
+### Step 2: Transcript PII Redaction
+```typescript
+interface CallTranscript {
+  callId: string;
+  utterances: Array<{ speaker: string; text: string; timestamp: number }>;
+}
+
+const PII_PATTERNS = [
+  { regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, tag: '[PHONE]' },
+  { regex: /\b\d{3}-\d{2}-\d{4}\b/g, tag: '[SSN]' },
+  { regex: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, tag: '[CARD]' },
+  { regex: /\b[\w.+-]+@[\w-]+\.[\w.]+\b/g, tag: '[EMAIL]' },
+  { regex: /\b\d{5}(-\d{4})?\b/g, tag: '[ZIP]' },
+];
+
+function redactTranscript(transcript: CallTranscript): CallTranscript {
+  return {
+    ...transcript,
+    utterances: transcript.utterances.map(u => ({
+      ...u,
+      text: redactText(u.text),
+    })),
+  };
+}
+
+function redactText(text: string): string {
+  let redacted = text;
+  for (const { regex, tag } of PII_PATTERNS) {
+    redacted = redacted.replace(regex, tag);
+  }
+  return redacted;
+}
+```
+
+### Step 3: Call Data Retention Policy
+```typescript
+interface CallRecord {
+  callId: string;
+  agentId: string;
+  startedAt: string;
+  endedAt: string;
+  duration: number;
+  transcript: string;
+  recordingUrl?: string;
+  retainUntil: string;
+}
+
+function calculateRetention(callRecord: any): CallRecord {
+  const retentionDays = 90; // Default 90-day retention
+  const retainUntil = new Date(callRecord.end_timestamp * 1000);
+  retainUntil.setDate(retainUntil.getDate() + retentionDays);
+
+  return {
+    callId: callRecord.call_id,
+    agentId: callRecord.agent_id,
+    startedAt: new Date(callRecord.start_timestamp * 1000).toISOString(),
+    endedAt: new Date(callRecord.end_timestamp * 1000).toISOString(),
+    duration: callRecord.end_timestamp - callRecord.start_timestamp,
+    transcript: JSON.stringify(callRecord.transcript_object || []),
+    recordingUrl: callRecord.recording_url,
+    retainUntil: retainUntil.toISOString(),
+  };
+}
+
+async function cleanExpiredRecords(records: CallRecord[]) {
+  const now = new Date();
+  const expired = records.filter(r => new Date(r.retainUntil) < now);
+
+  for (const record of expired) {
+    // Delete recording if stored locally
+    if (record.recordingUrl) {
+      await deleteRecording(record.callId);
+    }
+    // Clear transcript
+    record.transcript = '[EXPIRED]';
+  }
+
+  return { expired: expired.length, active: records.length - expired.length };
+}
+```
+
+### Step 4: Webhook Data Filtering
+```typescript
+app.post('/webhooks/retell', express.json(), async (req, res) => {
+  const { event, call } = req.body;
+
+  if (event === 'call_ended') {
+    // Redact PII before storing
+    const transcript = {
+      callId: call.call_id,
+      utterances: (call.transcript_object || []).map((u: any) => ({
+        speaker: u.role,
+        text: redactText(u.content),
+        timestamp: u.words?.[0]?.start,
+      })),
+    };
+
+    const record = calculateRetention(call);
+    record.transcript = JSON.stringify(transcript);
+
+    await storeCallRecord(record);
+  }
+
+  res.json({ received: true });
+});
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| PII in stored transcripts | No redaction applied | Always redact before storage |
+| Missing consent | Agent skips consent prompt | Include consent in `begin_message` |
+| Recordings not deleted | No retention enforcement | Schedule cleanup for expired records |
+| Caller PII in tool args | Phone/email passed to tools | Redact tool argument logs |
 
 ## Examples
 
-### Quick PII Scan
+### Compliance Report
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+async function complianceReport(records: CallRecord[]) {
+  const now = new Date();
+  return {
+    totalCalls: records.length,
+    withRecordings: records.filter(r => r.recordingUrl).length,
+    expiringThisWeek: records.filter(r => {
+      const exp = new Date(r.retainUntil);
+      return exp > now && exp < new Date(now.getTime() + 7 * 86400000);
+    }).length,
+  };
 }
 ```
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Retell AI response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
-
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Retell AI Privacy Guide](https://docs.retellai.com/privacy)
-
-## Next Steps
-For enterprise access control, see `retellai-enterprise-rbac`.
+- [Retell AI Privacy](https://www.retellai.com/privacy)
+- [Retell Call Data](https://docs.retellai.com/api-references/get-call)

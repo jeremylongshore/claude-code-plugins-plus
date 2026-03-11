@@ -16,224 +16,183 @@ compatible-with: claude-code, codex, openclaw
 # Exa Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Exa integrations.
+Production architecture for Exa neural search integration. Covers search pipeline design, content extraction patterns, embedding-based retrieval, and caching strategies for semantic search applications.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Exa SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Exa API key
+- Understanding of neural vs keyword search
+- TypeScript project with async support
+- Cache layer for search result deduplication
 
-## Project Structure
-
-```
-my-exa-project/
-├── src/
-│   ├── exa/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── exa/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── exa/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── exa/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── exa/
-│   └── integration/
-│       └── exa/
-├── config/
-│   ├── exa.development.json
-│   ├── exa.staging.json
-│   └── exa.production.json
-└── docs/
-    └── exa/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Exa Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/exa/client.ts
-export class ExaService {
-  private client: ExaClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: ExaConfig) {
-    this.client = new ExaClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('exa');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/exa/errors.ts
-export class ExaServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'ExaServiceError';
-  }
-}
-
-export function wrapExaError(error: unknown): ExaServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/exa/health.ts
-export async function checkExaHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await exaClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Exa    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Exa    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/exa.ts
-export interface ExaConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadExaConfig(): ExaConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./exa.${env}.json`);
-}
+┌─────────────────────────────────────────────────────┐
+│                Application Layer                     │
+│   RAG Pipeline │ Research Agent │ Content Discovery  │
+└───────────┬─────────────┬────────────┬──────────────┘
+            │             │            │
+            ▼             ▼            ▼
+┌─────────────────────────────────────────────────────┐
+│              Exa Search Service                      │
+│  ┌───────────┐  ┌───────────┐  ┌────────────────┐   │
+│  │ Neural    │  │ Keyword   │  │ Auto (hybrid)  │   │
+│  │ Search    │  │ Search    │  │ Search         │   │
+│  └─────┬─────┘  └─────┬─────┘  └──────┬─────────┘   │
+│        │              │               │              │
+│        ▼              ▼               ▼              │
+│  ┌──────────────────────────────────────────────┐    │
+│  │           Content Extraction                  │    │
+│  │   Text │ Highlights │ Full HTML │ Summary    │    │
+│  └──────────────────────┬───────────────────────┘    │
+│                         │                            │
+│  ┌──────────────────────┴───────────────────────┐    │
+│  │           Result Cache (LRU + Redis)          │    │
+│  └──────────────────────────────────────────────┘    │
+└─────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Exa Client Service Layer
+```typescript
+import Exa from 'exa-js';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+const exa = new Exa(process.env.EXA_API_KEY!);
 
-### Step 3: Add Error Handling
-Implement custom error classes for Exa operations.
+interface SearchOptions {
+  query: string;
+  type?: 'neural' | 'keyword' | 'auto';
+  numResults?: number;
+  startDate?: string;
+  endDate?: string;
+  includeDomains?: string[];
+  excludeDomains?: string[];
+  category?: string;
+}
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Exa connectivity.
+async function searchWithContents(options: SearchOptions) {
+  return exa.searchAndContents(options.query, {
+    type: options.type || 'auto',
+    numResults: options.numResults || 10,
+    text: { maxCharacters: 3000 },
+    highlights: { numSentences: 3 },
+    startPublishedDate: options.startDate,
+    endPublishedDate: options.endDate,
+    includeDomains: options.includeDomains,
+    excludeDomains: options.excludeDomains,
+    category: options.category,
+  });
+}
+```
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+### Step 2: Search Pipeline with Content Extraction
+```typescript
+async function researchTopic(topic: string) {
+  // Step 1: Broad neural search for relevant sources
+  const sources = await exa.searchAndContents(topic, {
+    type: 'neural',
+    numResults: 20,
+    text: true,
+    highlights: { numSentences: 5 },
+    startPublishedDate: '2024-01-01',
+    category: 'research paper',
+  });
+
+  // Step 2: Find similar content to top results
+  const topUrl = sources.results[0]?.url;
+  const similar = topUrl
+    ? await exa.findSimilarAndContents(topUrl, {
+        numResults: 5,
+        text: { maxCharacters: 2000 },
+      })
+    : { results: [] };
+
+  return {
+    primary: sources.results,
+    similar: similar.results,
+    totalSources: sources.results.length + similar.results.length,
+  };
+}
+```
+
+### Step 3: RAG Integration Pattern
+```typescript
+async function ragSearch(
+  userQuery: string,
+  contextWindow = 5
+) {
+  const results = await exa.searchAndContents(userQuery, {
+    type: 'neural',
+    numResults: contextWindow,
+    text: { maxCharacters: 2000 },
+    highlights: { numSentences: 3 },
+  });
+
+  // Format for LLM context injection
+  const context = results.results.map((r, i) => (
+    `[Source ${i + 1}] ${r.title}\n` +
+    `URL: ${r.url}\n` +
+    `Content: ${r.text}\n` +
+    `Key highlights: ${r.highlights?.join(' | ')}\n`
+  )).join('\n---\n');
+
+  return {
+    context,
+    sources: results.results.map(r => ({
+      title: r.title,
+      url: r.url,
+      score: r.score,
+    })),
+  };
+}
+```
+
+### Step 4: Domain-Specific Search Configuration
+```typescript
+const SEARCH_PROFILES = {
+  technical: {
+    includeDomains: ['github.com', 'stackoverflow.com', 'arxiv.org', 'docs.python.org'],
+    category: 'github repo' as const,
+  },
+  news: {
+    includeDomains: ['techcrunch.com', 'theverge.com', 'arstechnica.com'],
+    category: 'news' as const,
+  },
+  research: {
+    includeDomains: ['arxiv.org', 'scholar.google.com', 'nature.com'],
+    category: 'research paper' as const,
+  },
+};
+
+async function profiledSearch(query: string, profile: keyof typeof SEARCH_PROFILES) {
+  const config = SEARCH_PROFILES[profile];
+  return searchWithContents({ query, ...config, numResults: 10 });
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Exa types |
-| Test isolation | Shared state | Use dependency injection |
+| No results | Query too specific | Broaden query, switch to neural search |
+| Low relevance | Wrong search type | Use `auto` type for hybrid results |
+| Content extraction empty | Site blocks scraping | Use highlights instead of full text |
+| Rate limit | Too many concurrent requests | Add request queue with delays |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/exa/{handlers} src/services/exa src/api/exa
-touch src/exa/{client,config,types,errors}.ts
-touch src/services/exa/{index,sync,cache}.ts
+### Content Discovery Pipeline
+```typescript
+async function discoverCompetitors(companyUrl: string) {
+  const similar = await exa.findSimilar(companyUrl, {
+    numResults: 10,
+    excludeDomains: [new URL(companyUrl).hostname],
+  });
+  return similar.results.map(r => ({ title: r.title, url: r.url }));
+}
 ```
 
 ## Resources
-- [Exa SDK Documentation](https://docs.exa.com/sdk)
-- [Exa Best Practices](https://docs.exa.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `exa-multi-env-setup`.
+- [Exa API Documentation](https://docs.exa.ai)
+- [Exa Search Types](https://docs.exa.ai/reference/search)
+- [Exa Content Extraction](https://docs.exa.ai/reference/contents)

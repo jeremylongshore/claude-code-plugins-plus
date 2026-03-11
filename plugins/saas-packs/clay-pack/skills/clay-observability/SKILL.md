@@ -16,236 +16,78 @@ compatible-with: claude-code, codex, openclaw
 # Clay Observability
 
 ## Overview
-Set up comprehensive observability for Clay integrations.
+Monitor Clay data enrichment pipeline health, credit consumption velocity, and enrichment success rates. Clay's credit-based pricing model means observability must track per-enrichment costs (email lookup: ~1 credit, company enrichment: ~5 credits, waterfall enrichment: variable). Key signals include enrichment hit rates (percentage of rows that return data), credit burn rate, API response times from enrichment providers, and table processing throughput.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Clay Team or Enterprise plan
+- API access for usage queries
+- External metrics/alerting system
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `clay_requests_total` | Counter | Total API requests |
-| `clay_request_duration_seconds` | Histogram | Request latency |
-| `clay_errors_total` | Counter | Error count by type |
-| `clay_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'clay_requests_total',
-  help: 'Total Clay API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'clay_request_duration_seconds',
-  help: 'Clay request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'clay_errors_total',
-  help: 'Clay errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
+### Step 1: Track Credit Consumption in Real Time
+```bash
+# Query current credit usage by table
+curl "https://api.clay.com/v1/workspace/usage?group_by=table&period=today" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '.usage[] | {table_name, credits_used, rows_enriched, avg_credits_per_row: (.credits_used / (.rows_enriched + 0.01))}'
 ```
 
-### Instrumented Client
-
+### Step 2: Monitor Enrichment Hit Rates
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+// clay-enrichment-monitor.ts
+async function monitorEnrichments() {
+  const tables = await clayApi.listTables();
+  for (const table of tables) {
+    const stats = await clayApi.getTableStats(table.id);
+    const hitRate = stats.rows_with_data / Math.max(stats.total_rows, 1) * 100;
+    emitGauge('clay_enrichment_hit_rate_pct', hitRate, { table: table.name, enrichment: stats.enrichment_type });
+    emitCounter('clay_credits_consumed', stats.credits_used, { table: table.name });
 
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+    if (hitRate < 30) {
+      console.warn(`Low hit rate on ${table.name}: ${hitRate.toFixed(1)}% (check enrichment config)`);
+    }
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('clay-client');
-
-async function tracedClayCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`clay.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'clay',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logClayOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'clay',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 3: Set Up Credit Burn Alerts
 ```yaml
-# clay_alerts.yaml
 groups:
-  - name: clay_alerts
+  - name: clay
     rules:
-      - alert: ClayHighErrorRate
-        expr: |
-          rate(clay_errors_total[5m]) /
-          rate(clay_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Clay error rate > 5%"
-
-      - alert: ClayHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(clay_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Clay P95 latency > 2s"
-
-      - alert: ClayDown
-        expr: up{job="clay"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Clay integration is down"
+      - alert: ClayCreditBurnHigh
+        expr: rate(clay_credits_consumed[1h]) > 500
+        annotations: { summary: "Clay burning >500 credits/hour (projected monthly: {{ $value * 720 }})" }
+      - alert: ClayLowHitRate
+        expr: clay_enrichment_hit_rate_pct < 20
+        for: 30m
+        annotations: { summary: "Clay enrichment hit rate below 20% on {{ $labels.table }}" }
+      - alert: ClayCreditBalance
+        expr: clay_credits_remaining < 1000
+        annotations: { summary: "Clay credit balance below 1,000 -- refill needed" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
+### Step 4: Log Enrichment Results for Audit
 ```json
-{
-  "panels": [
-    {
-      "title": "Clay Request Rate",
-      "targets": [{
-        "expr": "rate(clay_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Clay Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(clay_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
+{"ts":"2026-03-10T14:30:00Z","table":"outbound-leads","enrichment":"email_finder","rows_attempted":100,"rows_enriched":72,"credits_used":100,"hit_rate":72.0,"duration_ms":4500}
 ```
 
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Build a Credit Efficiency Dashboard
+Key panels: credit consumption by table (bar chart), enrichment hit rate by provider, daily/weekly credit burn trend, credits remaining gauge, and cost-per-enriched-row (credits used / rows with actual data returned). Tables with low hit rates and high credit burn are optimization targets.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Credits depleting fast | Waterfall enrichment trying all providers | Limit waterfall steps or set credit cap per row |
+| Hit rate near 0% | Bad input data (invalid emails/domains) | Clean input data before enrichment |
+| API timeout on enrichment | Provider rate limit | Reduce table auto-enrich concurrency |
+| Usage API returning stale data | Caching lag | Wait 5 minutes for usage data to update |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick credit health check
+curl -s "https://api.clay.com/v1/workspace/usage?period=last_30d" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '{credits_used: .total_credits, credits_remaining: .credits_balance, daily_avg: (.total_credits / 30), projected_days_remaining: (.credits_balance / (.total_credits / 30))}'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Clay Observability Guide](https://docs.clay.com/observability)
-
-## Next Steps
-For incident response, see `clay-incident-runbook`.

@@ -13,246 +13,133 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Replit Policy & Guardrails
+# Replit Policy Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Replit integrations.
+Policy enforcement for Replit-hosted applications. Replit's shared hosting model, public-by-default Repls, and resource limits require guardrails around secrets exposure, resource consumption, and deployment security.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom Replit Plugin
-```javascript
-// eslint-plugin-replit/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Replit API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Replit API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['replit'],
-  rules: {
-    'replit/no-hardcoded-keys': 'error',
-    'replit/require-error-handling': 'warn',
-    'replit/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: replit-secrets-check
-        name: Check for Replit secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: replit-config-validate
-        name: Validate Replit configuration
-        entry: node scripts/validate-replit-config.js
-        language: node
-        files: '\.replit\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface ReplitStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Replit code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new ReplitClient(config satisfies ReplitStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Replit Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Replit client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: replit/use-singleton-client
-- CI check: grep for "new ReplitClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# replit-policy.rego
-package replit
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/replit-policy.yml
-name: Replit Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Replit keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s replit-config.schema.json -d config/replit/*.json
-
-      - name: Run ESLint Replit rules
-        run: npx eslint --plugin replit --rule 'replit/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardReplitOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.REPLIT_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Replit rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Replit rate limit exceeded - request blocked');
-  }
-}
-```
+- Replit account with Deployments access
+- Understanding of Replit's security model
+- Awareness of Replit's Terms of Service
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Replit patterns.
+### Step 1: Prevent Secrets Exposure
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Replit Repls are public by default. Secrets in code are visible to anyone.
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```python
+# BAD: secrets in source code (visible in public Repl)
+API_KEY = "sk-live-abc123"  # anyone can see this
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+# GOOD: use Replit Secrets (Environment Variables)
+import os
+API_KEY = os.environ.get("API_KEY")
+if not API_KEY:
+    raise RuntimeError("API_KEY not set in Replit Secrets")
 
-## Output
-- ESLint plugin with Replit rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+# Validate secrets are properly configured on startup
+REQUIRED_SECRETS = ["API_KEY", "DATABASE_URL", "JWT_SECRET"]
+missing = [s for s in REQUIRED_SECRETS if not os.environ.get(s)]
+if missing:
+    raise RuntimeError(f"Missing required secrets: {missing}")
+```
+
+### Step 2: Resource Usage Limits
+
+Replit enforces CPU and memory limits. Guard against runaway processes.
+
+```python
+import resource, signal
+
+# Set memory limit (512MB)
+resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))
+
+# Set CPU time limit
+def timeout_handler(signum, frame):
+    raise TimeoutError("Request exceeded CPU time limit")
+
+signal.signal(signal.SIGALRM, timeout_handler)
+
+@app.route('/process')
+def process_request():
+    signal.alarm(30)  # 30 second max per request
+    try:
+        result = heavy_computation()
+        return jsonify(result)
+    except TimeoutError:
+        return jsonify({"error": "Request timed out"}), 504
+    finally:
+        signal.alarm(0)  # cancel alarm
+```
+
+### Step 3: Deployment Visibility Controls
+
+Ensure production Repls are not accidentally made public.
+
+```python
+# Validate deployment configuration before deploy
+def validate_deployment_config():
+    checks = []
+    # Check visibility
+    if os.environ.get("REPL_SLUG"):
+        # Running on Replit
+        if not os.environ.get("REPL_DEPLOYMENT"):
+            checks.append("WARNING: Running as Repl, not Deployment (may sleep)")
+    # Check required env vars
+    if os.environ.get("NODE_ENV") != "production":
+        checks.append("WARNING: NODE_ENV not set to production")
+    # Check HTTPS
+    if not os.environ.get("REPL_DEPLOYMENT"):
+        checks.append("INFO: Custom domain HTTPS managed by Replit Deployments")
+    return checks
+```
+
+### Step 4: Database Access Controls
+
+Replit DB is accessible to anyone with the Repl URL if not properly secured.
+
+```python
+from functools import wraps
+
+def require_auth(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        auth = request.headers.get('Authorization')
+        if not auth or not verify_token(auth):
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args, **kwargs)
+    return decorated
+
+# Protect all database-accessing endpoints
+@app.route('/api/data')
+@require_auth
+def get_data():
+    return jsonify(db.get("data"))
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| Secrets leaked | Code is public by default | Use Replit Secrets, never hardcode |
+| OOM kills | No memory limits | Set resource limits, monitor usage |
+| Unauthorized DB access | No auth on endpoints | Add authentication middleware |
+| Repl sleeping in prod | Using Repl instead of Deployment | Use Replit Deployments for production |
 
 ## Examples
 
-### Quick ESLint Check
-```bash
-npx eslint --plugin replit --rule 'replit/no-hardcoded-keys: error' src/
+### Startup Security Check
+```python
+def security_check():
+    issues = []
+    if not os.environ.get("JWT_SECRET"):
+        issues.append("CRITICAL: JWT_SECRET not configured")
+    if os.environ.get("DEBUG") == "true":
+        issues.append("WARNING: Debug mode enabled in production")
+    return {"secure": len(issues) == 0, "issues": issues}
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
-
-## Next Steps
-For architecture blueprints, see `replit-architecture-variants`.
+- [Replit Security](https://docs.replit.com/programming-ide/workspace-features/secrets)
+- [Replit Deployments](https://docs.replit.com/hosting/deployments)

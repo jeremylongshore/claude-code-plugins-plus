@@ -16,200 +16,145 @@ compatible-with: claude-code, codex, openclaw
 # Groq Performance Tuning
 
 ## Overview
-Optimize Groq API performance with caching, batching, and connection pooling.
+Maximize Groq's ultra-low-latency LPU inference. Groq delivers sub-100ms token generation; tuning focuses on streaming efficiency, prompt caching, model selection for speed vs quality, and parallel request orchestration.
 
 ## Prerequisites
-- Groq SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedGroqRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const groqLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Groq
-    const results = await groqClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  groqLoader.load('id-1'),
-  groqLoader.load('id-2'),
-  groqLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new GroqClient({
-  apiKey: process.env.GROQ_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedGroqList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedGroqList(cursor =>
-  groqClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredGroqCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Groq API key with rate limit awareness
+- `groq-sdk` npm package installed
+- Understanding of LLM token economics
+- Monitoring for TTFT (time to first token)
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Groq operations.
+### Step 1: Select Optimal Model for Speed
+```typescript
+import Groq from 'groq-sdk';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+// Model speed tiers (approximate TTFT):
+// llama-3.3-70b-versatile: ~200ms TTFT, best quality
+// llama-3.1-8b-instant:    ~80ms TTFT, fastest
+// mixtral-8x7b-32768:      ~150ms TTFT, long context
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+async function fastCompletion(prompt: string) {
+  return groq.chat.completions.create({
+    model: 'llama-3.1-8b-instant', // Fastest model
+    messages: [{ role: 'user', content: prompt }],
+    temperature: 0,       // Deterministic = cacheable
+    max_tokens: 256,      // Limit output for speed
+  });
+}
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 2: Streaming for Perceived Performance
+```typescript
+async function streamCompletion(
+  messages: any[],
+  onToken: (token: string) => void
+) {
+  const stream = await groq.chat.completions.create({
+    model: 'llama-3.3-70b-versatile',
+    messages,
+    stream: true,
+    max_tokens: 1024,
+  });
+
+  let fullResponse = '';
+  for await (const chunk of stream) {
+    const token = chunk.choices[0]?.delta?.content || '';
+    fullResponse += token;
+    onToken(token);
+  }
+  return fullResponse;
+}
+```
+
+### Step 3: Semantic Prompt Cache
+```typescript
+import { LRUCache } from 'lru-cache';
+import { createHash } from 'crypto';
+
+const promptCache = new LRUCache<string, string>({
+  max: 500,
+  ttl: 1000 * 60 * 10, // 10 min for deterministic prompts
+});
+
+function hashPrompt(messages: any[], model: string): string {
+  return createHash('sha256')
+    .update(JSON.stringify({ messages, model }))
+    .digest('hex');
+}
+
+async function cachedCompletion(messages: any[], model: string) {
+  const key = hashPrompt(messages, model);
+  const cached = promptCache.get(key);
+  if (cached) return cached;
+
+  const response = await groq.chat.completions.create({
+    model,
+    messages,
+    temperature: 0,
+  });
+
+  const result = response.choices[0].message.content!;
+  promptCache.set(key, result);
+  return result;
+}
+```
+
+### Step 4: Parallel Request Orchestration
+```typescript
+async function parallelCompletions(
+  prompts: string[],
+  concurrency = 5
+) {
+  const results: string[] = [];
+
+  for (let i = 0; i < prompts.length; i += concurrency) {
+    const batch = prompts.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(prompt =>
+        cachedCompletion(
+          [{ role: 'user', content: prompt }],
+          'llama-3.1-8b-instant'
+        )
+      )
+    );
+    results.push(...batchResults);
+  }
+  return results;
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Rate limit 429 | Over RPM/TPM quota | Use exponential backoff, batch requests |
+| High TTFT | Using 70b model | Switch to 8b-instant for latency-sensitive tasks |
+| Stream disconnect | Network timeout | Implement reconnection with partial response recovery |
+| Token overflow | max_tokens too high | Set conservative limits, truncate prompts |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Latency Benchmark
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredGroqCall(name, () =>
-    cachedGroqRequest(`cache:${name}`, fn)
-  );
+async function benchmarkModels(prompt: string) {
+  const models = ['llama-3.1-8b-instant', 'llama-3.3-70b-versatile'];
+
+  for (const model of models) {
+    const start = performance.now();
+    await groq.chat.completions.create({
+      model,
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 100,
+    });
+    console.log(`${model}: ${(performance.now() - start).toFixed(0)}ms`);
+  }
+}
 ```
 
 ## Resources
-- [Groq Performance Guide](https://docs.groq.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `groq-cost-tuning`.
+- [Groq API Documentation](https://console.groq.com/docs)
+- [Groq Rate Limits](https://console.groq.com/docs/rate-limits)
+- [Groq Model Cards](https://console.groq.com/docs/models)

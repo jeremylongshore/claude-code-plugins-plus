@@ -13,347 +13,172 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Mistral AI Data Handling
+# Mistral Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Mistral AI, ensuring privacy compliance.
+Manage data flows through Mistral AI APIs safely. Covers input sanitization before sending to models, response filtering, conversation history management, and fine-tuning dataset preparation with PII redaction.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Mistral AI SDK installed
-- Database for audit logging
-- Understanding of Mistral's data handling policies
-
-## Mistral AI Data Policies
-
-**Key Points:**
-- Mistral AI does NOT use customer data for training (by default)
-- API data is retained for 30 days for abuse monitoring
-- Enterprise plans offer data processing agreements (DPAs)
-- Check current policies at docs.mistral.ai
+- Mistral API key
+- `@mistralai/mistralai` SDK installed
+- Understanding of data classification (PII, PHI, PCI)
+- Logging infrastructure for audit trails
 
 ## Instructions
 
-### Step 1: Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone, SSN | Redact before sending |
-| Sensitive | Medical, financial | Anonymize or don't send |
-| Credentials | API keys, passwords | NEVER send |
-| Business | Internal data | Consider anonymization |
-| Public | Product names, general info | Safe to send |
-
-### Step 2: PII Detection
-
+### Step 1: PII Redaction Before API Calls
 ```typescript
-interface PIIMatch {
+interface RedactionRule {
+  pattern: RegExp;
+  replacement: string;
   type: string;
-  match: string;
-  start: number;
-  end: number;
 }
 
-const PII_PATTERNS: Array<{ type: string; regex: RegExp }> = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b(\+?1[-.]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-  { type: 'ip_address', regex: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g },
-  { type: 'date_of_birth', regex: /\b(0[1-9]|1[0-2])[\/\-](0[1-9]|[12]\d|3[01])[\/\-](19|20)\d{2}\b/g },
+const PII_RULES: RedactionRule[] = [
+  { pattern: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, replacement: '[EMAIL]', type: 'email' },
+  { pattern: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, replacement: '[PHONE]', type: 'phone' },
+  { pattern: /\b\d{3}-\d{2}-\d{4}\b/g, replacement: '[SSN]', type: 'ssn' },
+  { pattern: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, replacement: '[CARD]', type: 'credit_card' },
+  { pattern: /\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b/g, replacement: '[IP]', type: 'ip_address' },
 ];
 
-function detectPII(text: string): PIIMatch[] {
-  const findings: PIIMatch[] = [];
+function redactPII(text: string): { cleaned: string; redactions: string[] } {
+  const redactions: string[] = [];
+  let cleaned = text;
 
-  for (const { type, regex } of PII_PATTERNS) {
-    // Reset regex state
-    regex.lastIndex = 0;
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-      findings.push({
-        type,
-        match: match[0],
-        start: match.index,
-        end: match.index + match[0].length,
-      });
+  for (const rule of PII_RULES) {
+    const matches = cleaned.match(rule.pattern);
+    if (matches) {
+      redactions.push(...matches.map(m => `${rule.type}: ${m}`));
+      cleaned = cleaned.replace(rule.pattern, rule.replacement);
     }
   }
 
-  return findings;
+  return { cleaned, redactions };
 }
-
-// Usage
-const text = 'Contact John at john@example.com or 555-123-4567';
-const pii = detectPII(text);
-console.log(pii);
-// [{ type: 'email', match: 'john@example.com', ... }, { type: 'phone', match: '555-123-4567', ... }]
 ```
 
-### Step 3: Data Redaction
-
+### Step 2: Safe Mistral API Wrapper
 ```typescript
-function redactPII(text: string, replacement = '[REDACTED]'): string {
-  let redacted = text;
+import { Mistral } from '@mistralai/mistralai';
 
-  for (const { regex } of PII_PATTERNS) {
-    regex.lastIndex = 0;
-    redacted = redacted.replace(regex, replacement);
-  }
+const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY! });
 
-  return redacted;
-}
-
-function redactWithPlaceholders(text: string): { redacted: string; mapping: Map<string, string> } {
-  const mapping = new Map<string, string>();
-  let redacted = text;
-  let counter = 0;
-
-  for (const { type, regex } of PII_PATTERNS) {
-    regex.lastIndex = 0;
-    redacted = redacted.replace(regex, (match) => {
-      const placeholder = `[${type.toUpperCase()}_${++counter}]`;
-      mapping.set(placeholder, match);
-      return placeholder;
-    });
-  }
-
-  return { redacted, mapping };
-}
-
-// Usage
-const input = 'Send report to john@example.com and jane@company.org';
-const { redacted, mapping } = redactWithPlaceholders(input);
-console.log(redacted);
-// 'Send report to [EMAIL_1] and [EMAIL_2]'
-```
-
-### Step 4: Pre-Request Validation
-
-```typescript
-interface ValidationResult {
-  safe: boolean;
-  warnings: string[];
-  piiFound: PIIMatch[];
-}
-
-function validateBeforeSending(messages: Array<{ role: string; content: string }>): ValidationResult {
-  const warnings: string[] = [];
-  const allPII: PIIMatch[] = [];
-
-  for (const message of messages) {
-    const pii = detectPII(message.content);
-    allPII.push(...pii);
-  }
-
-  // Group by type
-  const piiByType = allPII.reduce((acc, p) => {
-    acc[p.type] = (acc[p.type] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  if (allPII.length > 0) {
-    const typeList = Object.entries(piiByType)
-      .map(([type, count]) => `${count} ${type}(s)`)
-      .join(', ');
-    warnings.push(`PII detected: ${typeList}`);
-  }
-
-  return {
-    safe: allPII.length === 0,
-    warnings,
-    piiFound: allPII,
-  };
-}
-
-// Middleware
-async function safeChat(
-  client: Mistral,
+async function safeChatCompletion(
   messages: Array<{ role: string; content: string }>,
-  options?: { allowPII?: boolean; autoRedact?: boolean }
-): Promise<string> {
-  const validation = validateBeforeSending(messages);
-
-  if (!validation.safe) {
-    if (options?.autoRedact) {
-      // Auto-redact PII
-      messages = messages.map(m => ({
-        ...m,
-        content: redactPII(m.content),
-      }));
-    } else if (!options?.allowPII) {
-      throw new Error(`PII detected in request: ${validation.warnings.join(', ')}`);
+  options?: { redactPII?: boolean; model?: string }
+) {
+  const processedMessages = messages.map(msg => {
+    if (options?.redactPII !== false) {
+      const { cleaned, redactions } = redactPII(msg.content);
+      if (redactions.length > 0) {
+        console.warn(`Redacted ${redactions.length} PII items from ${msg.role} message`);
+      }
+      return { ...msg, content: cleaned };
     }
-  }
-
-  const response = await client.chat.complete({
-    model: 'mistral-small-latest',
-    messages,
+    return msg;
   });
 
-  return response.choices?.[0]?.message?.content ?? '';
+  return mistral.chat.complete({
+    model: options?.model || 'mistral-small-latest',
+    messages: processedMessages,
+  });
 }
 ```
 
-### Step 5: Audit Logging
-
+### Step 3: Fine-Tuning Dataset Sanitization
 ```typescript
-interface AuditLog {
-  timestamp: Date;
-  requestId: string;
-  userId?: string;
-  operation: string;
-  model: string;
-  inputTokens: number;
-  outputTokens: number;
-  piiDetected: boolean;
-  piiTypes: string[];
-  redacted: boolean;
-}
+import { createReadStream, createWriteStream } from 'fs';
+import { createInterface } from 'readline';
 
-class MistralAuditLogger {
-  private logs: AuditLog[] = [];
+async function sanitizeTrainingData(
+  inputPath: string,
+  outputPath: string
+) {
+  const input = createInterface({ input: createReadStream(inputPath) });
+  const output = createWriteStream(outputPath);
+  let lineCount = 0;
+  let redactedCount = 0;
 
-  async log(entry: Omit<AuditLog, 'timestamp'>): Promise<void> {
-    const log: AuditLog = {
-      ...entry,
-      timestamp: new Date(),
-    };
-
-    // Store in database
-    await db.auditLogs.insert(log);
-
-    // Console log for immediate visibility
-    console.log('[AUDIT]', JSON.stringify(log));
-  }
-
-  async getLogsForUser(userId: string, days = 30): Promise<AuditLog[]> {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - days);
-
-    return db.auditLogs.find({
-      userId,
-      timestamp: { $gte: cutoff },
-    });
-  }
-}
-```
-
-### Step 6: GDPR Data Subject Requests
-
-```typescript
-// Right to Access (DSAR)
-async function exportUserData(userId: string): Promise<{
-  auditLogs: AuditLog[];
-  exportedAt: string;
-}> {
-  const auditLogs = await auditLogger.getLogsForUser(userId);
-
-  return {
-    auditLogs: auditLogs.map(log => ({
-      ...log,
-      // Don't include actual content, just metadata
-    })),
-    exportedAt: new Date().toISOString(),
-  };
-}
-
-// Right to Erasure
-async function deleteUserData(userId: string): Promise<{
-  success: boolean;
-  deletedCount: number;
-}> {
-  // 1. Delete audit logs older than legal retention period
-  const result = await db.auditLogs.deleteMany({
-    userId,
-    timestamp: { $lt: new Date(Date.now() - 7 * 365 * 24 * 60 * 60 * 1000) }, // Keep 7 years for compliance
-  });
-
-  // 2. Anonymize remaining logs
-  await db.auditLogs.updateMany(
-    { userId },
-    { $set: { userId: '[DELETED]' } }
-  );
-
-  // 3. Record deletion for compliance
-  await db.deletionLog.insert({
-    userId,
-    deletedAt: new Date(),
-    recordsAffected: result.deletedCount,
-  });
-
-  return {
-    success: true,
-    deletedCount: result.deletedCount,
-  };
-}
-```
-
-### Step 7: Data Retention Policy
-
-```typescript
-interface RetentionPolicy {
-  dataType: string;
-  retentionDays: number;
-  reason: string;
-}
-
-const RETENTION_POLICIES: RetentionPolicy[] = [
-  { dataType: 'audit_logs', retentionDays: 90, reason: 'Operational debugging' },
-  { dataType: 'error_logs', retentionDays: 30, reason: 'Error tracking' },
-  { dataType: 'compliance_logs', retentionDays: 2555, reason: 'Legal requirement (7 years)' },
-];
-
-async function enforceRetention(): Promise<void> {
-  for (const policy of RETENTION_POLICIES) {
-    const cutoff = new Date();
-    cutoff.setDate(cutoff.getDate() - policy.retentionDays);
-
-    const result = await db.collection(policy.dataType).deleteMany({
-      createdAt: { $lt: cutoff },
+  for await (const line of input) {
+    const record = JSON.parse(line);
+    const messages = record.messages.map((msg: any) => {
+      const { cleaned, redactions } = redactPII(msg.content);
+      if (redactions.length > 0) redactedCount++;
+      return { ...msg, content: cleaned };
     });
 
-    console.log(`Cleaned ${result.deletedCount} records from ${policy.dataType}`);
+    output.write(JSON.stringify({ messages }) + '\n');
+    lineCount++;
   }
-}
 
-// Run daily
-// cron.schedule('0 3 * * *', enforceRetention);
+  output.end();
+  return { lineCount, redactedCount };
+}
 ```
 
-## Output
-- PII detection implemented
-- Data redaction active
-- Audit logging enabled
-- GDPR compliance procedures in place
+### Step 4: Conversation History with Retention
+```typescript
+interface ConversationStore {
+  get(sessionId: string): Promise<any[]>;
+  append(sessionId: string, message: any): Promise<void>;
+  expire(sessionId: string): Promise<void>;
+}
+
+class TimeBoundConversationStore implements ConversationStore {
+  private store = new Map<string, { messages: any[]; createdAt: number }>();
+  private maxAgeMins: number;
+
+  constructor(maxAgeMins = 60) {
+    this.maxAgeMins = maxAgeMins;
+  }
+
+  async get(sessionId: string) {
+    const entry = this.store.get(sessionId);
+    if (!entry) return [];
+
+    const ageMs = Date.now() - entry.createdAt;
+    if (ageMs > this.maxAgeMins * 60 * 1000) {
+      this.store.delete(sessionId);
+      return [];
+    }
+
+    return entry.messages;
+  }
+
+  async append(sessionId: string, message: any) {
+    const entry = this.store.get(sessionId) || { messages: [], createdAt: Date.now() };
+    entry.messages.push(message);
+    this.store.set(sessionId, entry);
+  }
+
+  async expire(sessionId: string) {
+    this.store.delete(sessionId);
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Apply logging middleware |
-| Deletion failed | Locked records | Check foreign key constraints |
-| False positives | Overly broad regex | Tune PII patterns |
-| Audit gaps | Async failures | Add retry logic |
+| PII leaks to API | Regex missed pattern | Add custom rules for domain-specific PII |
+| Fine-tune rejected | Unsanitized data | Run sanitization before upload |
+| Conversation too long | No retention policy | Set max age and message count limits |
+| Audit trail gaps | No redaction logging | Log all redaction events |
 
 ## Examples
 
-### Safe Chat Wrapper
+### Safe Embedding Generation
 ```typescript
-const response = await safeChat(client, messages, { autoRedact: true });
-```
-
-### Quick PII Check
-```typescript
-const hasPII = detectPII(userInput).length > 0;
-if (hasPII) {
-  console.warn('PII detected in user input');
+async function safeEmbed(texts: string[]) {
+  const cleaned = texts.map(t => redactPII(t).cleaned);
+  return mistral.embeddings.create({
+    model: 'mistral-embed',
+    inputs: cleaned,
+  });
 }
 ```
 
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Mistral AI Privacy Policy](https://mistral.ai/privacy/)
-
-## Next Steps
-For enterprise access control, see `mistral-enterprise-rbac`.
+- [Mistral AI Data Policy](https://docs.mistral.ai/capabilities/data-policy/)
+- [Mistral Fine-Tuning Guide](https://docs.mistral.ai/capabilities/finetuning/)

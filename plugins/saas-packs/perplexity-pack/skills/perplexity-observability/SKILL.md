@@ -16,236 +16,98 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Observability
 
 ## Overview
-Set up comprehensive observability for Perplexity integrations.
+Monitor Perplexity AI search API performance, citation quality, and per-query costs. Key signals include search latency (sonar: 1-3s, sonar-pro: 3-8s), citation count per response (more citations generally means higher answer quality), cost per query by model, and cache effectiveness for repeated queries. Since Perplexity combines search with LLM generation, both network retrieval time and generation time contribute to total latency.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Metrics Collection
-
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `perplexity_requests_total` | Counter | Total API requests |
-| `perplexity_request_duration_seconds` | Histogram | Request latency |
-| `perplexity_errors_total` | Counter | Error count by type |
-| `perplexity_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'perplexity_requests_total',
-  help: 'Total Perplexity API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'perplexity_request_duration_seconds',
-  help: 'Perplexity request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'perplexity_errors_total',
-  help: 'Perplexity errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
-  }
-}
-```
-
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('perplexity-client');
-
-async function tracedPerplexityCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`perplexity.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'perplexity',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logPerplexityOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'perplexity',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
-```yaml
-# perplexity_alerts.yaml
-groups:
-  - name: perplexity_alerts
-    rules:
-      - alert: PerplexityHighErrorRate
-        expr: |
-          rate(perplexity_errors_total[5m]) /
-          rate(perplexity_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Perplexity error rate > 5%"
-
-      - alert: PerplexityHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(perplexity_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Perplexity P95 latency > 2s"
-
-      - alert: PerplexityDown
-        expr: up{job="perplexity"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Perplexity integration is down"
-```
-
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Perplexity Request Rate",
-      "targets": [{
-        "expr": "rate(perplexity_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Perplexity Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(perplexity_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
+- Perplexity API integration (pplx-api or OpenAI-compatible endpoint)
+- Metrics backend (Prometheus, Datadog, or similar)
+- Request logging for cost tracking
 
 ## Instructions
 
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
+### Step 1: Instrument the Perplexity Client
+```typescript
+async function trackedSearch(query: string, model: string = 'sonar') {
+  const start = performance.now();
+  const res = await fetch('https://api.perplexity.ai/chat/completions', {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${PPLX_API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ model, messages: [{ role: 'user', content: query }], return_citations: true }),
+  });
+  const data = await res.json();
+  const duration = performance.now() - start;
 
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
+  emitHistogram('perplexity_latency_ms', duration, { model });
+  emitCounter('perplexity_queries_total', 1, { model, status: res.ok ? 'success' : 'error' });
+  emitGauge('perplexity_citations_count', data.citations?.length || 0, { model });
+  emitCounter('perplexity_tokens_total', data.usage?.total_tokens || 0, { model });
+  return data;
+}
+```
 
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
+### Step 2: Track Citation Quality
+```typescript
+// Measure whether responses include high-quality citations
+function evaluateCitations(citations: string[]) {
+  const domainQuality: Record<string, string> = {
+    '.gov': 'authoritative', '.edu': 'authoritative',
+    'wikipedia.org': 'reference', 'arxiv.org': 'academic',
+  };
+  const quality = citations.map(url => {
+    const match = Object.entries(domainQuality).find(([domain]) => url.includes(domain));
+    return match ? match[1] : 'general';
+  });
+  const authoritativeCount = quality.filter(q => q === 'authoritative' || q === 'academic').length;
+  emitGauge('perplexity_authoritative_citations', authoritativeCount);
+}
+```
 
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
+### Step 3: Monitor Cost and Budget
+```bash
+# Check API usage and budget status
+curl -s https://api.perplexity.ai/v1/usage \
+  -H "Authorization: Bearer $PPLX_API_KEY" | \
+  jq '{queries_today, cost_today_usd, monthly_cost_usd, budget_remaining}'
+```
 
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 4: Alert Configuration
+```yaml
+groups:
+  - name: perplexity
+    rules:
+      - alert: PerplexityHighLatency
+        expr: histogram_quantile(0.95, rate(perplexity_latency_ms_bucket[5m])) > 8000
+        annotations: { summary: "Perplexity P95 latency exceeds 8 seconds" }
+      - alert: PerplexityNoCitations
+        expr: perplexity_citations_count == 0
+        for: 10m
+        annotations: { summary: "Perplexity returning responses with zero citations" }
+      - alert: PerplexityCostSpike
+        expr: increase(perplexity_tokens_total[1h]) * 0.000005 > 5
+        annotations: { summary: "Perplexity spend exceeds $5/hour" }
+      - alert: PerplexityErrors
+        expr: rate(perplexity_queries_total{status="error"}[5m]) > 0.05
+        annotations: { summary: "Perplexity API error rate elevated" }
+```
+
+### Step 5: Dashboard Panels
+Track: query latency by model (sonar vs sonar-pro), citations per response distribution, query volume over time, cost per query trend, error rate, and cache hit rate if implementing local query caching. Compare sonar vs sonar-pro latency and citation quality to inform model selection.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| High latency on sonar-pro | Deep research queries | Expected for complex queries; use sonar for simple ones |
+| Zero citations | Query too vague or niche | Rephrase query with more specific terms |
+| `429` rate limited | Too many concurrent requests | Add request queue with backoff |
+| Budget exhausted | Monthly cap reached | Increase budget or reduce query volume |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Compare model latency
+for model in sonar sonar-pro; do
+  echo -n "$model: "
+  time curl -s -X POST https://api.perplexity.ai/chat/completions \
+    -H "Authorization: Bearer $PPLX_API_KEY" \
+    -d "{\"model\": \"$model\", \"messages\": [{\"role\": \"user\", \"content\": \"What is GraphQL?\"}]}" -o /dev/null
+done
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Perplexity Observability Guide](https://docs.perplexity.com/observability)
-
-## Next Steps
-For incident response, see `perplexity-incident-runbook`.

@@ -16,117 +16,40 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise CI Integration
 
 ## Overview
-Set up CI/CD pipelines for Lokalise integrations with automated translation sync.
+Automate translation workflows with Lokalise in CI/CD pipelines. Covers pushing source strings on merge, pulling translations before builds, validating translation completeness, and webhook-triggered deployments.
 
 ## Prerequisites
-- GitHub repository with Actions enabled
-- Lokalise API token
-- npm/pnpm project configured
+- Lokalise API token stored as GitHub secret
+- Lokalise CLI (`@lokalise/cli2`) or API SDK
+- GitHub Actions configured
+- Project ID identified
 
 ## Instructions
 
-### Step 1: Create GitHub Actions Workflow
-Create `.github/workflows/lokalise-sync.yml`:
-
+### Step 1: Push Source Strings on Merge
 ```yaml
-name: Lokalise Translation Sync
-
-on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/locales/en.json'  # Trigger on source changes
-  pull_request:
-    branches: [main]
-  schedule:
-    - cron: '0 6 * * *'  # Daily sync at 6 AM UTC
-  workflow_dispatch:  # Manual trigger
-
-env:
-  LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-  LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
-
-jobs:
-  sync-translations:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install Lokalise CLI
-        run: |
-          curl -sL https://github.com/lokalise/lokalise-cli-2-go/releases/latest/download/lokalise2_linux_x86_64.tar.gz | tar xz
-          sudo mv lokalise2 /usr/local/bin/
-
-      - name: Download translations
-        run: |
-          lokalise2 file download \
-            --token "$LOKALISE_API_TOKEN" \
-            --project-id "$LOKALISE_PROJECT_ID" \
-            --format json \
-            --original-filenames=false \
-            --bundle-structure "src/locales/%LANG_ISO%.json" \
-            --export-empty-as skip \
-            --unzip-to .
-
-      - name: Check for changes
-        id: changes
-        run: |
-          if git diff --quiet src/locales/; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-          else
-            echo "changed=true" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Commit and push
-        if: steps.changes.outputs.changed == 'true' && github.event_name != 'pull_request'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add src/locales/
-          git commit -m "chore: sync translations from Lokalise"
-          git push
-```
-
-### Step 2: Configure Secrets
-```bash
-# Using GitHub CLI
-gh secret set LOKALISE_API_TOKEN --body "your-api-token"
-gh secret set LOKALISE_PROJECT_ID --body "123456789.abcdef"
-
-# Or via GitHub UI:
-# Settings -> Secrets and variables -> Actions -> New repository secret
-```
-
-### Step 3: Upload Source Strings Workflow
-Create `.github/workflows/lokalise-upload.yml`:
-
-```yaml
-name: Upload Source Strings to Lokalise
+# .github/workflows/lokalise-push.yml
+name: Push Source Strings to Lokalise
 
 on:
   push:
     branches: [main]
     paths:
       - 'src/locales/en.json'
+      - 'src/locales/en/**'
 
 jobs:
-  upload:
+  push-translations:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
       - name: Install Lokalise CLI
         run: |
-          curl -sL https://github.com/lokalise/lokalise-cli-2-go/releases/latest/download/lokalise2_linux_x86_64.tar.gz | tar xz
-          sudo mv lokalise2 /usr/local/bin/
+          curl -sfL https://raw.githubusercontent.com/nicholasgasior/gvm/master/bin/gvm | bash
+          npm install -g @lokalise/cli2
 
-      - name: Upload source strings
+      - name: Push source strings
         env:
           LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
           LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
@@ -135,23 +58,65 @@ jobs:
             --token "$LOKALISE_API_TOKEN" \
             --project-id "$LOKALISE_PROJECT_ID" \
             --file "src/locales/en.json" \
-            --lang-iso en \
+            --lang-iso "en" \
             --replace-modified \
-            --convert-placeholders \
-            --detect-icu-plurals \
-            --tag-inserted-keys \
-            --tags "ci-upload" \
+            --distinguish-by-file \
             --poll \
-            --poll-timeout 120s
+            --poll-timeout 120
 ```
 
-### Step 4: PR Preview with Translation Status
+### Step 2: Pull Translations Before Build
 ```yaml
-name: Translation Status Check
+# .github/workflows/build-with-translations.yml
+name: Build with Latest Translations
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pull translations from Lokalise
+        env:
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
+        run: |
+          lokalise2 file download \
+            --token "$LOKALISE_API_TOKEN" \
+            --project-id "$LOKALISE_PROJECT_ID" \
+            --format json \
+            --original-filenames true \
+            --directory-prefix "" \
+            --export-empty-as "skip" \
+            --unzip-to "src/locales/"
+
+      - name: Check for translation changes
+        run: |
+          if git diff --quiet src/locales/; then
+            echo "No translation changes"
+          else
+            echo "TRANSLATIONS_CHANGED=true" >> $GITHUB_ENV
+            git diff --stat src/locales/
+          fi
+
+      - name: Build application
+        run: npm ci && npm run build
+```
+
+### Step 3: Translation Completeness Check on PR
+```yaml
+# .github/workflows/translation-check.yml
+name: Translation Completeness
 
 on:
   pull_request:
-    branches: [main]
+    paths:
+      - 'src/locales/**'
 
 jobs:
   check-translations:
@@ -159,161 +124,96 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check translation coverage
+      - name: Check translation completeness
         run: |
-          node scripts/check-translations.js
-        env:
-          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
+          node -e "
+            const en = require('./src/locales/en.json');
+            const enKeys = Object.keys(en).length;
+            const locales = ['es', 'fr', 'de', 'ja'];
+            let allGood = true;
 
-      - name: Comment on PR
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const report = fs.readFileSync('translation-report.md', 'utf8');
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: report
-            });
+            console.log('| Locale | Keys | Coverage |');
+            console.log('|--------|------|----------|');
+
+            for (const locale of locales) {
+              try {
+                const trans = require('./src/locales/' + locale + '.json');
+                const transKeys = Object.keys(trans).length;
+                const pct = ((transKeys / enKeys) * 100).toFixed(1);
+                const status = transKeys >= enKeys ? 'OK' : 'INCOMPLETE';
+                console.log('| ' + locale + ' | ' + transKeys + '/' + enKeys + ' | ' + pct + '% ' + status + ' |');
+                if (transKeys < enKeys) allGood = false;
+              } catch {
+                console.log('| ' + locale + ' | MISSING | 0% |');
+                allGood = false;
+              }
+            }
+
+            if (!allGood) {
+              console.log('\\nWARNING: Some translations are incomplete');
+              process.exit(0); // Warn but don't fail
+            }
+          " >> $GITHUB_STEP_SUMMARY
 ```
 
-## Output
-- Automated translation sync pipeline
-- PR checks for translation status
-- Daily sync scheduled
-- Upload on source file changes
-
-## Error Handling
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via `gh secret set` |
-| Upload timeout | Large file | Increase poll-timeout |
-| Auth failures | Invalid token | Check secret value |
-| Rate limited | Too many requests | Add delay or reduce frequency |
-
-## Examples
-
-### Translation Coverage Check Script
-```javascript
-// scripts/check-translations.js
-import { LokaliseApi } from "@lokalise/node-api";
-import fs from "fs";
-
-const client = new LokaliseApi({
-  apiKey: process.env.LOKALISE_API_TOKEN,
-});
-
-async function checkCoverage() {
-  const projectId = process.env.LOKALISE_PROJECT_ID;
-
-  // Get project statistics
-  const project = await client.projects().get(projectId);
-
-  // Get language statistics
-  const languages = await client.languages().list({
-    project_id: projectId,
-  });
-
-  let report = "## Translation Status Report\n\n";
-  report += `**Project:** ${project.name}\n`;
-  report += `**Total Keys:** ${project.statistics.keys_total}\n\n`;
-
-  report += "| Language | Progress | Words |\n";
-  report += "|----------|----------|-------|\n";
-
-  for (const lang of languages.items) {
-    const progress = lang.statistics?.progress ?? 0;
-    report += `| ${lang.lang_name} (${lang.lang_iso}) | ${progress}% | ${lang.statistics?.words_total ?? 0} |\n`;
-  }
-
-  fs.writeFileSync("translation-report.md", report);
-  console.log(report);
-
-  // Fail if critical languages below threshold
-  const criticalLanguages = ["es", "fr", "de"];
-  for (const lang of languages.items) {
-    if (criticalLanguages.includes(lang.lang_iso)) {
-      if ((lang.statistics?.progress ?? 0) < 90) {
-        console.error(`WARNING: ${lang.lang_iso} is below 90% coverage`);
-        process.exit(1);
-      }
-    }
-  }
-}
-
-checkCoverage().catch(console.error);
-```
-
-### Branch-Based Workflow
+### Step 4: Webhook-Triggered Deploy
 ```yaml
-name: Branch Translation Sync
+# .github/workflows/lokalise-webhook.yml
+name: Deploy on Translation Update
 
 on:
-  push:
-    branches:
-      - 'feature/*'
-      - 'release/*'
+  repository_dispatch:
+    types: [lokalise-translations-updated]
 
 jobs:
-  sync:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: Determine Lokalise branch
-        id: branch
-        run: |
-          # Map Git branch to Lokalise branch
-          LOKALISE_BRANCH="${GITHUB_REF_NAME//\//-}"
-          echo "lokalise_branch=$LOKALISE_BRANCH" >> $GITHUB_OUTPUT
-
-      - name: Sync with Lokalise branch
+      - name: Pull latest translations
+        env:
+          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
+          LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
         run: |
           lokalise2 file download \
             --token "$LOKALISE_API_TOKEN" \
-            --project-id "$LOKALISE_PROJECT_ID:${{ steps.branch.outputs.lokalise_branch }}" \
+            --project-id "$LOKALISE_PROJECT_ID" \
             --format json \
-            --unzip-to ./src/locales
+            --unzip-to "src/locales/"
+
+      - name: Commit and deploy
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/locales/
+          git diff --staged --quiet || git commit -m "chore: update translations from Lokalise"
+          git push
 ```
 
-### GitLab CI Configuration
-```yaml
-# .gitlab-ci.yml
-lokalise-sync:
-  stage: build
-  image: node:20
-  before_script:
-    - curl -sL https://github.com/lokalise/lokalise-cli-2-go/releases/latest/download/lokalise2_linux_x86_64.tar.gz | tar xz
-    - mv lokalise2 /usr/local/bin/
-  script:
-    - lokalise2 file download
-        --token "$LOKALISE_API_TOKEN"
-        --project-id "$LOKALISE_PROJECT_ID"
-        --format json
-        --unzip-to ./src/locales
-  artifacts:
-    paths:
-      - src/locales/
-  only:
-    - main
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Upload fails | Invalid JSON | Validate locale files before push |
+| Missing translations | Download with empty strings | Use `--export-empty-as skip` |
+| Webhook not triggered | Dispatcher not configured | Set up Lokalise webhook to GitHub |
+| Wrong file structure | Prefix mismatch | Use `--directory-prefix ""` in download |
+
+## Examples
+
+### Local Translation Script
+```bash
+#!/bin/bash
+# scripts/lokalise-pull.sh
+lokalise2 file download \
+  --token "$LOKALISE_API_TOKEN" \
+  --project-id "$LOKALISE_PROJECT_ID" \
+  --format json \
+  --unzip-to "src/locales/"
+echo "Translations updated"
 ```
 
 ## Resources
-- [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Lokalise CLI Documentation](https://docs.lokalise.com/en/articles/3401683-lokalise-cli-v2)
-- [Lokalise GitHub Integration](https://docs.lokalise.com/en/articles/1558810-github)
-
-## Next Steps
-For deployment patterns, see `lokalise-deploy-integration`.
+- [Lokalise CLI Reference](https://docs.lokalise.com/cli2)
+- [Lokalise GitHub Actions](https://docs.lokalise.com/integrations/github)
+- [Lokalise Webhooks](https://docs.lokalise.com/webhooks)

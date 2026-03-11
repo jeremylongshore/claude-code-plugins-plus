@@ -16,200 +16,149 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Performance Tuning
 
 ## Overview
-Optimize Fireflies.ai API performance with caching, batching, and connection pooling.
+Optimize Fireflies.ai transcript retrieval and meeting data processing. Focus on GraphQL query efficiency, transcript caching, and webhook throughput for high-volume meeting analytics pipelines.
 
 ## Prerequisites
-- Fireflies.ai SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedFireflies.aiRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const firefliesLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Fireflies.ai
-    const results = await firefliesClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  firefliesLoader.load('id-1'),
-  firefliesLoader.load('id-2'),
-  firefliesLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new Fireflies.aiClient({
-  apiKey: process.env.FIREFLIES_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedFireflies.aiList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedFireflies.aiList(cursor =>
-  firefliesClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredFireflies.aiCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Fireflies.ai API key with GraphQL access
+- Node.js 18+ with GraphQL client
+- Understanding of meeting transcript structure
+- Redis available for transcript caching (recommended)
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Fireflies.ai operations.
+### Step 1: Optimize GraphQL Queries with Field Selection
+```typescript
+// Only request fields you need - transcripts can be large
+const LIGHT_TRANSCRIPT_QUERY = `
+  query GetTranscripts($limit: Int) {
+    transcripts(limit: $limit) {
+      id
+      title
+      date
+      duration
+      organizer_email
+      participants
+    }
+  }
+`;
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+// Full transcript only when needed
+const FULL_TRANSCRIPT_QUERY = `
+  query GetTranscript($id: String!) {
+    transcript(id: $id) {
+      id
+      title
+      sentences {
+        speaker_name
+        text
+        start_time
+        end_time
+      }
+      action_items
+      summary { overview keywords }
+    }
+  }
+`;
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+async function getTranscriptSummaries(limit = 50) {
+  return graphqlClient.request(LIGHT_TRANSCRIPT_QUERY, { limit });
+}
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+### Step 2: Cache Transcripts with TTL
+```typescript
+import { LRUCache } from 'lru-cache';
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+const transcriptCache = new LRUCache<string, any>({
+  max: 200,
+  ttl: 1000 * 60 * 30, // 30 min - transcripts are immutable
+});
+
+async function getCachedTranscript(id: string) {
+  const cached = transcriptCache.get(id);
+  if (cached) return cached;
+
+  const result = await graphqlClient.request(FULL_TRANSCRIPT_QUERY, { id });
+  transcriptCache.set(id, result.transcript);
+  return result.transcript;
+}
+```
+
+### Step 3: Batch Process Meeting Data
+```typescript
+async function batchProcessMeetings(
+  meetingIds: string[],
+  concurrency = 3
+) {
+  const results: any[] = [];
+  for (let i = 0; i < meetingIds.length; i += concurrency) {
+    const batch = meetingIds.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(id => getCachedTranscript(id))
+    );
+    results.push(...batchResults);
+    // Respect rate limits: 50 req/min
+    if (i + concurrency < meetingIds.length) {
+      await new Promise(r => setTimeout(r, 1200));
+    }
+  }
+  return results;
+}
+```
+
+### Step 4: Efficient Webhook Processing
+```typescript
+import { createHmac } from 'crypto';
+
+// Process webhooks asynchronously with a queue
+const webhookQueue: any[] = [];
+
+async function handleWebhook(payload: any) {
+  // Acknowledge immediately
+  webhookQueue.push(payload);
+  // Process in background
+  setImmediate(() => processWebhookQueue());
+}
+
+async function processWebhookQueue() {
+  while (webhookQueue.length > 0) {
+    const event = webhookQueue.shift();
+    if (event.event_type === 'Transcription completed') {
+      // Pre-cache the transcript
+      await getCachedTranscript(event.meeting_id);
+    }
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| GraphQL timeout | Requesting full transcript list | Use pagination with `limit` param |
+| Rate limit 429 | Over 50 requests/minute | Add 1.2s delay between batches |
+| Large response OOM | Fetching all sentences | Stream sentences or paginate |
+| Stale webhook data | Cache not warmed | Pre-fetch on webhook events |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Meeting Analytics Pipeline
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredFireflies.aiCall(name, () =>
-    cachedFireflies.aiRequest(`cache:${name}`, fn)
+async function analyzeMeetingTrends(days = 30) {
+  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const summaries = await getTranscriptSummaries(200);
+
+  const recent = summaries.transcripts.filter(
+    (t: any) => new Date(t.date) > new Date(since)
   );
+
+  return {
+    totalMeetings: recent.length,
+    avgDuration: recent.reduce((s: number, t: any) => s + t.duration, 0) / recent.length,
+    topParticipants: countParticipants(recent),
+  };
+}
 ```
 
 ## Resources
-- [Fireflies.ai Performance Guide](https://docs.fireflies.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `fireflies-cost-tuning`.
+- [Fireflies GraphQL API](https://docs.fireflies.ai/graphql)
+- [Fireflies Rate Limits](https://docs.fireflies.ai/rate-limits)

@@ -16,200 +16,153 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Performance Tuning
 
 ## Overview
-Optimize Ideogram API performance with caching, batching, and connection pooling.
+Optimize Ideogram image generation pipelines for throughput, cost, and latency. Focus on prompt reuse, resolution selection, parallel generation, and CDN caching for generated assets.
 
 ## Prerequisites
-- Ideogram SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedIdeogramRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const ideogramLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Ideogram
-    const results = await ideogramClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  ideogramLoader.load('id-1'),
-  ideogramLoader.load('id-2'),
-  ideogramLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new IdeogramClient({
-  apiKey: process.env.IDEOGRAM_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedIdeogramList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedIdeogramList(cursor =>
-  ideogramClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredIdeogramCall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Ideogram API key
+- Image storage (S3, GCS, or local filesystem)
+- Understanding of Ideogram generation parameters
+- CDN or caching layer for generated images
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Ideogram operations.
+### Step 1: Optimize Generation Parameters
+```typescript
+const IDEOGRAM_API = 'https://api.ideogram.ai/generate';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+// Quality tiers for different use cases
+const QUALITY_PRESETS = {
+  draft: { resolution: '512x512', model: 'V_2', steps: 20 },
+  standard: { resolution: '1024x1024', model: 'V_2', steps: 30 },
+  premium: { resolution: '1024x1024', model: 'V_2_TURBO', steps: 50 },
+};
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+async function generateImage(
+  prompt: string,
+  preset: keyof typeof QUALITY_PRESETS = 'standard'
+) {
+  const config = QUALITY_PRESETS[preset];
+  const response = await fetch(IDEOGRAM_API, {
+    method: 'POST',
+    headers: {
+      'Api-Key': process.env.IDEOGRAM_API_KEY!,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      image_request: {
+        prompt,
+        aspect_ratio: 'ASPECT_1_1',
+        model: config.model,
+        magic_prompt_option: 'AUTO',
+      },
+    }),
+  });
+  return response.json();
+}
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+### Step 2: Prompt-Based Cache Layer
+```typescript
+import { createHash } from 'crypto';
+import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { join } from 'path';
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+const CACHE_DIR = './image-cache';
+
+function promptHash(prompt: string, preset: string): string {
+  return createHash('sha256')
+    .update(`${preset}:${prompt.toLowerCase().trim()}`)
+    .digest('hex')
+    .slice(0, 16);
+}
+
+async function cachedGenerate(prompt: string, preset = 'standard') {
+  const hash = promptHash(prompt, preset);
+  const cachePath = join(CACHE_DIR, `${hash}.json`);
+
+  if (existsSync(cachePath)) {
+    return JSON.parse(readFileSync(cachePath, 'utf-8'));
+  }
+
+  const result = await generateImage(prompt, preset as any);
+
+  mkdirSync(CACHE_DIR, { recursive: true });
+  writeFileSync(cachePath, JSON.stringify(result));
+  return result;
+}
+```
+
+### Step 3: Batch Generation with Concurrency Control
+```typescript
+async function batchGenerate(
+  prompts: string[],
+  concurrency = 2 // Ideogram rate limits are strict
+) {
+  const results: any[] = [];
+
+  for (let i = 0; i < prompts.length; i += concurrency) {
+    const batch = prompts.slice(i, i + concurrency);
+    const batchResults = await Promise.all(
+      batch.map(p => cachedGenerate(p))
+    );
+    results.push(...batchResults);
+
+    // Rate limit: ~10 requests/minute on standard plans
+    if (i + concurrency < prompts.length) {
+      await new Promise(r => setTimeout(r, 6000));
+    }
+  }
+  return results;
+}
+```
+
+### Step 4: Image Asset Pipeline
+```typescript
+import { pipeline } from 'stream/promises';
+import { createWriteStream } from 'fs';
+
+async function downloadAndStore(imageUrl: string, outputPath: string) {
+  const response = await fetch(imageUrl);
+  if (!response.ok) throw new Error(`Download failed: ${response.status}`);
+
+  const fileStream = createWriteStream(outputPath);
+  await pipeline(response.body as any, fileStream);
+  return outputPath;
+}
+
+async function generateAndStore(prompt: string, outputDir: string) {
+  const result = await cachedGenerate(prompt);
+  const imageUrl = result.data?.[0]?.url;
+  if (!imageUrl) throw new Error('No image URL in response');
+
+  const hash = promptHash(prompt, 'standard');
+  const outputPath = join(outputDir, `${hash}.png`);
+  return downloadAndStore(imageUrl, outputPath);
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| Rate limit 429 | Too many concurrent requests | Limit concurrency to 2, add 6s delays |
+| Generation timeout | Complex prompt or high resolution | Use draft preset, simplify prompt |
+| NSFW rejection | Content filter triggered | Review prompt for flagged terms |
+| Expired URL | Image URLs are temporary | Download immediately, cache locally |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Brand Asset Batch Generation
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredIdeogramCall(name, () =>
-    cachedIdeogramRequest(`cache:${name}`, fn)
-  );
+const brandPrompts = [
+  'Minimalist logo for tech startup, blue gradient, clean lines',
+  'Social media banner, abstract geometric pattern, brand colors',
+  'App icon, rounded square, modern flat design',
+];
+
+const assets = await batchGenerate(brandPrompts);
+console.log(`Generated ${assets.length} brand assets`);
 ```
 
 ## Resources
-- [Ideogram Performance Guide](https://docs.ideogram.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `ideogram-cost-tuning`.
+- [Ideogram API Reference](https://docs.ideogram.ai/api)
+- [Ideogram Model Guide](https://docs.ideogram.ai/models)

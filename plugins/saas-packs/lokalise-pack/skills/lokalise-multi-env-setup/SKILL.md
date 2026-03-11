@@ -16,303 +16,181 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Multi-Environment Setup
 
 ## Overview
-Configure Lokalise across development, staging, and production environments with proper isolation.
+Configure Lokalise across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
 
 ## Prerequisites
-- Separate Lokalise projects or branches per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+- Separate Lokalise API keys per environment
+- Secret management solution (environment variables, Vault, or cloud secrets)
+- CI/CD pipeline with environment-aware deployment
+- Application with environment detection logic
 
 ## Environment Strategy
 
-| Environment | Lokalise Setup | Use Case |
-|-------------|---------------|----------|
-| Development | Separate project or `dev` branch | Local testing, rapid iteration |
-| Staging | Separate project or `staging` branch | Pre-prod validation, QA |
-| Production | Main project/branch | Live users |
+| Environment | Purpose | API Key Source | Settings |
+|-------------|---------|---------------|----------|
+| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
+| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
+| Production | Live traffic | Secret manager | Optimized, hardened |
 
 ## Instructions
 
-### Step 1: Create Configuration Structure
+### Step 1: Configuration Structure
 ```
 config/
-├── lokalise/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
+  lokalise/
+    base.ts           # Shared defaults
+    development.ts    # Dev overrides
+    staging.ts        # Staging overrides
+    production.ts     # Prod overrides
+    index.ts          # Environment resolver
 ```
 
-### base.json
-```json
-{
-  "enableCompression": true,
-  "cacheEnabled": true,
-  "cacheTtlSeconds": 300,
-  "syncOnBuild": true,
-  "fallbackLocale": "en",
-  "supportedLocales": ["en", "es", "fr", "de"]
-}
-```
-
-### development.json
-```json
-{
-  "projectId": "${LOKALISE_PROJECT_ID_DEV}",
-  "branch": "development",
-  "cacheEnabled": false,
-  "syncOnBuild": false,
-  "debug": true
-}
-```
-
-### staging.json
-```json
-{
-  "projectId": "${LOKALISE_PROJECT_ID}",
-  "branch": "staging",
-  "cacheEnabled": true,
-  "cacheTtlSeconds": 60,
-  "syncOnBuild": true
-}
-```
-
-### production.json
-```json
-{
-  "projectId": "${LOKALISE_PROJECT_ID}",
-  "branch": null,
-  "cacheEnabled": true,
-  "cacheTtlSeconds": 3600,
-  "syncOnBuild": true,
-  "webhookSecret": "${LOKALISE_WEBHOOK_SECRET}"
-}
-```
-
-### Step 2: Environment Detection and Config Loading
+### Step 2: Base Configuration
 ```typescript
-// src/config/lokalise.ts
-import baseConfig from "../../config/lokalise/base.json";
+// config/lokalise/base.ts
+export const baseConfig = {
+  timeout: 30000,
+  maxRetries: 3,
+  cache: {
+    enabled: true,
+    ttlSeconds: 300,
+  },
+};
+```
+
+### Step 3: Environment-Specific Configs
+```typescript
+// config/lokalise/development.ts
+import { baseConfig } from "./base";
+
+export const developmentConfig = {
+  ...baseConfig,
+  apiKey: process.env.LOKALISE_API_TOKEN_DEV,
+  debug: true,
+  cache: { enabled: false, ttlSeconds: 60 },
+};
+
+// config/lokalise/staging.ts
+import { baseConfig } from "./base";
+
+export const stagingConfig = {
+  ...baseConfig,
+  apiKey: process.env.LOKALISE_API_TOKEN_STAGING,
+  debug: false,
+};
+
+// config/lokalise/production.ts
+import { baseConfig } from "./base";
+
+export const productionConfig = {
+  ...baseConfig,
+  apiKey: process.env.LOKALISE_API_TOKEN_PROD,
+  debug: false,
+  timeout: 60000,
+  maxRetries: 5,
+  cache: { enabled: true, ttlSeconds: 600 },
+};
+```
+
+### Step 4: Environment Resolver
+```typescript
+// config/lokalise/index.ts
+import { developmentConfig } from "./development";
+import { stagingConfig } from "./staging";
+import { productionConfig } from "./production";
 
 type Environment = "development" | "staging" | "production";
 
-interface LokaliseConfig {
-  projectId: string;
-  branch: string | null;
-  apiToken: string;
-  enableCompression: boolean;
-  cacheEnabled: boolean;
-  cacheTtlSeconds: number;
-  syncOnBuild: boolean;
-  fallbackLocale: string;
-  supportedLocales: string[];
-  debug?: boolean;
-  webhookSecret?: string;
-}
+const configs = {
+  development: developmentConfig,
+  staging: stagingConfig,
+  production: productionConfig,
+};
 
-function detectEnvironment(): Environment {
+export function detectEnvironment(): Environment {
   const env = process.env.NODE_ENV || "development";
-  if (["development", "staging", "production"].includes(env)) {
-    return env as Environment;
-  }
+  if (env === "production") return "production";
+  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
   return "development";
 }
 
-export function getLokaliseConfig(): LokaliseConfig {
+export function getLokaliseConfig() {
   const env = detectEnvironment();
-  const envConfig = require(`../../config/lokalise/${env}.json`);
+  const config = configs[env];
 
-  const config = {
-    ...baseConfig,
-    ...envConfig,
-    apiToken: process.env.LOKALISE_API_TOKEN!,
-  };
-
-  // Resolve environment variable placeholders
-  config.projectId = config.projectId.replace(
-    /\${(\w+)}/g,
-    (_, key) => process.env[key] || ""
-  );
-
-  if (config.webhookSecret) {
-    config.webhookSecret = process.env.LOKALISE_WEBHOOK_SECRET;
+  if (!config.apiKey) {
+    throw new Error(`LOKALISE_API_TOKEN not set for environment: ${env}`);
   }
 
-  return config;
-}
-
-// Get project ID with branch suffix
-export function getProjectIdWithBranch(): string {
-  const config = getLokaliseConfig();
-  if (config.branch) {
-    return `${config.projectId}:${config.branch}`;
-  }
-  return config.projectId;
+  return { ...config, environment: env };
 }
 ```
 
-### Step 3: Environment-Specific Clients
-```typescript
-// src/services/lokalise/client.ts
-import { LokaliseApi } from "@lokalise/node-api";
-import { getLokaliseConfig, getProjectIdWithBranch } from "../../config/lokalise";
-
-let client: LokaliseApi | null = null;
-
-export function getLokaliseClient(): LokaliseApi {
-  if (!client) {
-    const config = getLokaliseConfig();
-    client = new LokaliseApi({
-      apiKey: config.apiToken,
-      enableCompression: config.enableCompression,
-    });
-  }
-  return client;
-}
-
-export function getProjectId(): string {
-  return getProjectIdWithBranch();
-}
-
-// For debugging - log current environment
-export function logEnvironmentInfo(): void {
-  const config = getLokaliseConfig();
-  console.log({
-    environment: process.env.NODE_ENV,
-    projectId: config.projectId,
-    branch: config.branch,
-    cacheEnabled: config.cacheEnabled,
-    debug: config.debug,
-  });
-}
-```
-
-### Step 4: Secret Management by Environment
-
-#### Local Development
+### Step 5: Secret Management
 ```bash
-# .env.local (git-ignored)
-LOKALISE_API_TOKEN=dev_token_here
-LOKALISE_PROJECT_ID=123456789.abcdef
-LOKALISE_PROJECT_ID_DEV=987654321.fedcba
-```
+# Local development (.env.local - git-ignored)
+LOKALISE_API_TOKEN_DEV=your-dev-key
 
-#### CI/CD (GitHub Actions)
-```yaml
-jobs:
-  deploy:
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
-    env:
-      LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-      LOKALISE_PROJECT_ID: ${{ secrets.LOKALISE_PROJECT_ID }}
-```
+# GitHub Actions
+# Settings > Environments > staging/production > Secrets
+# Add LOKALISE_API_TOKEN_STAGING and LOKALISE_API_TOKEN_PROD
 
-#### Production (Secret Manager)
-```bash
 # AWS Secrets Manager
-aws secretsmanager get-secret-value \
-  --secret-id lokalise/production \
-  --query SecretString --output text
+aws secretsmanager create-secret \
+  --name lokalise/production/api-key \
+  --secret-string "your-prod-key"
 
 # GCP Secret Manager
-gcloud secrets versions access latest --secret=lokalise-api-token
-
-# HashiCorp Vault
-vault kv get -field=api_token secret/lokalise/production
+echo -n "your-prod-key" | gcloud secrets create lokalise-api-key-prod --data-file=-
 ```
 
-### Step 5: Environment Isolation Guards
-```typescript
-// Prevent dangerous operations in wrong environment
-function guardProductionOperation(operation: string): void {
-  const config = getLokaliseConfig();
-  const env = process.env.NODE_ENV;
+```yaml
+# .github/workflows/deploy.yml
+jobs:
+  deploy-staging:
+    environment: staging
+    env:
+      LOKALISE_API_TOKEN_STAGING: ${{ secrets.LOKALISE_API_TOKEN_STAGING }}
 
-  if (env !== "production" && config.projectId.includes("prod")) {
-    throw new Error(
-      `SAFETY: ${operation} targeting production project from ${env} environment`
-    );
-  }
-}
-
-// Example usage
-async function deleteAllKeys(projectId: string) {
-  guardProductionOperation("deleteAllKeys");
-  // ... dangerous operation
-}
-
-// Prevent accidental production writes from dev
-function isProductionSafe(): boolean {
-  const env = process.env.NODE_ENV;
-  return env === "production" || process.env.ALLOW_PROD_WRITE === "true";
-}
+  deploy-production:
+    environment: production
+    env:
+      LOKALISE_API_TOKEN_PROD: ${{ secrets.LOKALISE_API_TOKEN_PROD }}
 ```
-
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Branch not found | Typo in branch name | Check Lokalise project branches |
-| Production guard | Safety mechanism | Use correct environment |
+| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
+| Secret not found | Wrong secret path | Verify secret manager configuration |
+| Cross-env data leak | Shared API key | Use separate keys per environment |
+| Config validation fail | Missing field | Add startup validation with Zod schema |
 
 ## Examples
-
-### Branch-Based Environment Workflow
-```typescript
-// Use Lokalise branches instead of separate projects
-const envToBranch: Record<string, string | null> = {
-  development: "dev",
-  staging: "staging",
-  production: null,  // Main branch
-};
-
-function getProjectIdForEnv(env: string): string {
-  const projectId = process.env.LOKALISE_PROJECT_ID!;
-  const branch = envToBranch[env];
-  return branch ? `${projectId}:${branch}` : projectId;
-}
-```
-
-### CI Pipeline with Environment Matrix
-```yaml
-# .github/workflows/sync-translations.yml
-jobs:
-  sync:
-    strategy:
-      matrix:
-        environment: [staging, production]
-    environment: ${{ matrix.environment }}
-    steps:
-      - name: Sync translations
-        env:
-          LOKALISE_API_TOKEN: ${{ secrets.LOKALISE_API_TOKEN }}
-          NODE_ENV: ${{ matrix.environment }}
-        run: npm run i18n:pull
-```
 
 ### Quick Environment Check
 ```typescript
 const config = getLokaliseConfig();
-console.log(`
-Environment: ${process.env.NODE_ENV}
-Project ID: ${config.projectId}
-Branch: ${config.branch || 'main'}
-Cache: ${config.cacheEnabled ? `enabled (${config.cacheTtlSeconds}s)` : 'disabled'}
-`);
+console.log(`Running in ${config.environment}`);
+console.log(`Cache enabled: ${config.cache.enabled}`);
+```
+
+### Startup Validation
+```typescript
+import { z } from "zod";
+
+const configSchema = z.object({
+  apiKey: z.string().min(1, "LOKALISE_API_TOKEN is required"),
+  environment: z.enum(["development", "staging", "production"]),
+  timeout: z.number().positive(),
+});
+
+const config = configSchema.parse(getLokaliseConfig());
 ```
 
 ## Resources
-- [Lokalise Branching](https://docs.lokalise.com/en/articles/3183265-project-branching)
-- [12-Factor App Config](https://12factor.net/config)
-- [AWS Secrets Manager](https://aws.amazon.com/secrets-manager/)
+- [Lokalise API](https://developers.lokalise.com)
+- [12-Factor Config](https://12factor.net/config)
 
 ## Next Steps
-For observability setup, see `lokalise-observability`.
+For deployment, see `lokalise-deploy-integration`.

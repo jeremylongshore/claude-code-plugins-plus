@@ -13,190 +13,109 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Cost Tuning
+# Firecrawl Cost Tuning
 
 ## Overview
-Optimize FireCrawl costs through smart tier selection, sampling, and usage monitoring.
+Reduce Firecrawl web scraping costs by limiting crawl depth, caching scraped content, and choosing the right scrape mode. Firecrawl charges credits per page: 1 credit for single-page scrape, variable credits for crawl jobs (each discovered page costs credits). The biggest cost levers are: setting `limit` and `maxDepth` on every crawl job (unbounded crawls can consume thousands of credits), caching previously scraped URLs, and using `scrape` instead of `crawl` when you only need specific pages.
 
 ## Prerequisites
-- Access to FireCrawl billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateFireCrawlCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class FireCrawlUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching FireCrawl budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateFireCrawlCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await firecrawlClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => firecrawlClient.get(id)));
-
-// Use batch endpoint (1 call)
-await firecrawlClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new FireCrawlClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in FireCrawl dashboard
-# Or use API if available:
-# Check FireCrawl documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM firecrawl_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Firecrawl account with credit balance visibility
+- Understanding of your scraping patterns (single page vs crawl)
+- Cache infrastructure for storing scraped content
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review FireCrawl dashboard for usage patterns and costs.
+### Step 1: Always Set Crawl Limits
+```bash
+# BAD: Unbounded crawl (could consume thousands of credits)
+curl -X POST https://api.firecrawl.dev/v1/crawl \
+  -d '{"url": "https://docs.example.com"}'
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+# GOOD: Bounded crawl with depth and page limits
+curl -X POST https://api.firecrawl.dev/v1/crawl \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -d '{
+    "url": "https://docs.example.com",
+    "maxDepth": 2,
+    "limit": 50,
+    "scrapeOptions": {"formats": ["markdown"]}
+  }'
+# Saves: potentially hundreds or thousands of credits per crawl
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 2: Use Scrape for Known URLs Instead of Crawl
+```typescript
+// If you know the specific pages you need, scrape individually instead of crawling
+const targetUrls = [
+  'https://docs.example.com/api/authentication',
+  'https://docs.example.com/api/endpoints',
+  'https://docs.example.com/api/errors',
+];
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+// Scrape 3 specific pages: 3 credits
+for (const url of targetUrls) {
+  await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
+}
+// vs. Crawl entire docs site: potentially 500+ credits
+```
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+### Step 3: Cache Scraped Content
+```typescript
+import { createHash } from 'crypto';
+
+const scrapeCache = new Map<string, { content: string; timestamp: number }>();
+const CACHE_TTL = 24 * 3600 * 1000; // 24 hours
+
+async function cachedScrape(url: string): Promise<string> {
+  const key = createHash('md5').update(url).digest('hex');
+  const cached = scrapeCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL) return cached.content;
+
+  const result = await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
+  scrapeCache.set(key, { content: result.markdown, timestamp: Date.now() });
+  return result.markdown;
+}
+// Typical savings: 50-80% credit reduction for recurring scrape patterns
+```
+
+### Step 4: Choose Minimal Scrape Options
+```bash
+# Only request what you need -- each format option has cost implications
+# Minimal (cheapest): markdown only
+curl -X POST https://api.firecrawl.dev/v1/scrape \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" \
+  -d '{"url": "https://example.com", "formats": ["markdown"]}'
+
+# Avoid requesting screenshots, PDFs, or rawHtml unless actually needed
+# Each additional format increases processing time and may affect credit usage
+```
+
+### Step 5: Monitor Credit Efficiency
+```bash
+# Find which crawl jobs consumed the most credits
+curl -s https://api.firecrawl.dev/v1/usage \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
+  jq '{
+    credits_remaining: .credits_remaining,
+    credits_used_today: .credits_used_today,
+    avg_credits_per_job: (.credits_used_month / (.jobs_count + 0.01)),
+    projected_monthly: (.credits_used_today * 30)
+  }'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Credits drained by one crawl | No `limit` or `maxDepth` set | Always set both on crawl jobs |
+| Duplicate scraping costs | Same URLs scraped daily | Implement URL-based caching |
+| High credit per page | Requesting all formats | Request only `markdown` format |
+| Budget overrun | Automated crawls without caps | Set per-job credit limits and daily caps |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateFireCrawlCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# Compare crawl vs scrape costs for same content
+echo "Scrape 5 known pages: 5 credits"
+echo "Crawl entire site: $(curl -s -X POST https://api.firecrawl.dev/v1/map \
+  -H 'Authorization: Bearer $FIRECRAWL_API_KEY' \
+  -d '{"url": "https://docs.example.com"}' | jq '.links | length') pages = same number of credits"
 ```
-
-## Resources
-- [FireCrawl Pricing](https://firecrawl.com/pricing)
-- [FireCrawl Billing Dashboard](https://dashboard.firecrawl.com/billing)
-
-## Next Steps
-For architecture patterns, see `firecrawl-reference-architecture`.

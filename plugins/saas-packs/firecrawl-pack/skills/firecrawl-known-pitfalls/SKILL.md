@@ -13,323 +13,133 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Known Pitfalls
+# Firecrawl Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with FireCrawl.
+Real gotchas when using Firecrawl for web scraping and crawling. Firecrawl handles JavaScript rendering and anti-bot bypassing, but its async crawl model and credit-based pricing create specific failure modes.
 
 ## Prerequisites
-- Access to FireCrawl codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for FireCrawl API call
-app.post('/checkout', async (req, res) => {
-  const payment = await firecrawlClient.processPayment(req.body);  // 2-5s latency
-  const notification = await firecrawlClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await firecrawlClient.processPayment(data);
-  await firecrawlClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await firecrawlClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => firecrawlClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new FireCrawlClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new FireCrawlClient({
-  apiKey: process.env.FIRECRAWL_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await firecrawlClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await firecrawlClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await firecrawlClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-firecrawl-signature'];
-    if (!verifyFireCrawlSignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await firecrawlClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await firecrawlClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof FireCrawlNotFoundError) {
-    return null;
-  }
-  if (error instanceof FireCrawlRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new FireCrawlClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.firecrawl.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new FireCrawlClient({
-  timeout: parseInt(process.env.FIRECRAWL_TIMEOUT || '30000'),
-  baseUrl: process.env.FIRECRAWL_BASE_URL || 'https://api.firecrawl.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When FireCrawl is down, every request hangs
-for (const user of users) {
-  await firecrawlClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(firecrawlClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if FireCrawl is down
-const recommendations = await firecrawlClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await firecrawlClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('firecrawl', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Firecrawl API key configured
+- Understanding of async job patterns
+- Awareness of credit-based billing model
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Handle Async Crawl Jobs Properly
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+`crawlUrl` returns a job ID, not results. Polling too aggressively wastes credits and may trigger rate limits.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```typescript
+import FirecrawlApp from '@mendable/firecrawl-js';
+const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+// BAD: assuming synchronous results
+const result = await firecrawl.crawlUrl('https://example.com');
+console.log(result.data); // This is a job object, not page data!
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+// GOOD: use the async crawl with proper polling
+const crawl = await firecrawl.asyncCrawlUrl('https://example.com', {
+  limit: 50,
+  scrapeOptions: { formats: ['markdown'] }
+});
+// Poll with backoff
+let status;
+do {
+  await new Promise(r => setTimeout(r, 5000));
+  status = await firecrawl.checkCrawlStatus(crawl.id);
+} while (status.status === 'scraping');
+```
+
+### Step 2: Avoid Credit Burn on Large Sites
+
+Firecrawl charges per page. Crawling without limits on large sites burns credits fast.
+
+```typescript
+// BAD: no limit on a site with 100K pages
+await firecrawl.crawlUrl('https://docs.large-project.org');  // burns entire quota
+
+// GOOD: set explicit limits and use URL filters
+await firecrawl.crawlUrl('https://docs.large-project.org', {
+  limit: 100,
+  includePaths: ['/api/*', '/guides/*'],
+  excludePaths: ['/changelog/*', '/blog/*'],
+  maxDepth: 3
+});
+```
+
+### Step 3: Don't Assume Markdown Output by Default
+
+Firecrawl can return HTML, markdown, links, or screenshots. Not specifying format returns raw HTML.
+
+```typescript
+// BAD: getting HTML when you wanted clean text
+const result = await firecrawl.scrapeUrl('https://example.com');
+// result.html exists but result.markdown may be absent
+
+// GOOD: specify output format explicitly
+const result = await firecrawl.scrapeUrl('https://example.com', {
+  formats: ['markdown', 'links'],
+  onlyMainContent: true  // strips nav, footer, sidebars
+});
+console.log(result.markdown);
+```
+
+### Step 4: Handle JavaScript-Heavy Pages
+
+Some SPAs need extra wait time for content to render. Default timeouts may capture loading states.
+
+```typescript
+// BAD: scraping an SPA with default settings
+const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard');
+// Gets "Loading..." instead of actual content
+
+// GOOD: configure wait time for JS rendering
+const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard', {
+  waitFor: 5000,  // wait 5s for JS to render
+  formats: ['markdown'],
+  onlyMainContent: true
+});
+```
+
+### Step 5: Respect robots.txt and Rate Limits
+
+Firecrawl honors robots.txt by default. Disabling it risks IP bans and legal issues.
+
+```typescript
+// BAD: aggressive crawling that ignores site limits
+await firecrawl.crawlUrl('https://example.com', {
+  limit: 10000,
+  // No delay between requests = potential IP ban
+});
+
+// GOOD: respect site constraints
+await firecrawl.crawlUrl('https://example.com', {
+  limit: 200,
+  maxDepth: 3,
+  // Firecrawl handles rate limiting internally
+});
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Empty markdown | JS not rendered | Increase `waitFor` timeout |
+| Credit depletion | No crawl limit set | Always set `limit` parameter |
+| 402 Payment Required | Out of credits | Check balance before large crawls |
+| Partial crawl results | Site blocks crawler | Use `scrapeUrl` for individual pages |
+| Stale job status | Polling stopped early | Poll until `completed` or `failed` |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Safe Batch Scraping
+```typescript
+const urls = ['https://a.com', 'https://b.com', 'https://c.com'];
+const results = await firecrawl.batchScrapeUrls(urls, {
+  formats: ['markdown'],
+  onlyMainContent: true
+});
 ```
 
 ## Resources
-- [FireCrawl Security Guide](https://docs.firecrawl.com/security)
-- [FireCrawl Best Practices](https://docs.firecrawl.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Firecrawl Docs](https://docs.firecrawl.dev)
+- [Crawl vs Scrape](https://docs.firecrawl.dev/features/crawl)

@@ -13,188 +13,180 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Perplexity Webhooks & Events
+# Perplexity Events & Async Patterns
 
 ## Overview
-Securely handle Perplexity webhooks with signature validation and replay protection.
+Build event-driven architectures around Perplexity's AI search API. Perplexity provides a chat completions API at `api.perplexity.ai` with real-time web search capabilities. Since Perplexity does not offer native webhooks, this skill covers streaming patterns, async search pipelines, and callback-based workflows for integrating Perplexity's grounded search responses into your systems.
 
 ## Prerequisites
-- Perplexity webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Perplexity API key stored in `PERPLEXITY_API_KEY` environment variable
+- Understanding of Perplexity models (sonar, sonar-pro, sonar-reasoning)
+- Queue system for batch search processing
+- Familiarity with OpenAI-compatible API format
 
-## Webhook Endpoint Setup
+## Event Patterns
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/perplexity',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-perplexity-signature'] as string;
-    const timestamp = req.headers['x-perplexity-timestamp'] as string;
-
-    if (!verifyPerplexitySignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handlePerplexityEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyPerplexitySignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.PERPLEXITY_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type PerplexityEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface PerplexityEvent {
-  id: string;
-  type: PerplexityEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<PerplexityEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handlePerplexityEvent(event: PerplexityEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `perplexity:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `perplexity:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Perplexity CLI to send test events
-perplexity webhooks trigger resource.created --url http://localhost:3000/webhooks/perplexity
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Pattern | Trigger | Use Case |
+|---------|---------|----------|
+| Streaming SSE | Client search request | Real-time search answers |
+| Batch research callback | Queue job completes | Research automation pipeline |
+| Scheduled search monitor | Cron trigger | News monitoring, trend alerts |
+| Citation extraction | Post-processing | Source verification workflow |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Perplexity dashboard.
+### Step 1: Streaming Search Responses
+```typescript
+app.post("/api/search/stream", async (req, res) => {
+  const { query, model } = req.body;
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+  res.writeHead(200, {
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+  });
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+  const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: model || "sonar",
+      messages: [{ role: "user", content: query }],
+      stream: true,
+      return_citations: true,
+    }),
+  });
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  const reader = response.body!.getReader();
+  const decoder = new TextDecoder();
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+
+    const chunk = decoder.decode(value);
+    res.write(chunk);
+  }
+
+  res.end();
+});
+```
+
+### Step 2: Batch Research Pipeline
+```typescript
+import { Queue, Worker } from "bullmq";
+
+const searchQueue = new Queue("perplexity-research");
+
+async function queueResearch(queries: string[], callbackUrl: string) {
+  const batchId = crypto.randomUUID();
+
+  for (const query of queries) {
+    await searchQueue.add("search", {
+      batchId,
+      query,
+      callbackUrl,
+    });
+  }
+
+  return batchId;
+}
+
+const worker = new Worker("perplexity-research", async (job) => {
+  const { query, callbackUrl, batchId } = job.data;
+
+  const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "sonar-pro",
+      messages: [{ role: "user", content: query }],
+      return_citations: true,
+    }),
+  });
+
+  const result = await response.json();
+  const answer = result.choices[0].message.content;
+  const citations = result.citations || [];
+
+  await fetch(callbackUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      event: "perplexity.search.completed",
+      batchId,
+      query,
+      answer,
+      citations,
+      model: result.model,
+    }),
+  });
+});
+```
+
+### Step 3: News Monitoring Service
+```typescript
+async function monitorTopic(topic: string, webhookUrl: string) {
+  const response = await fetch("https://api.perplexity.ai/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${process.env.PERPLEXITY_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "sonar",
+      messages: [{
+        role: "user",
+        content: `What are the latest developments about ${topic} in the past 24 hours? Include specific sources.`,
+      }],
+      return_citations: true,
+      search_recency_filter: "day",
+    }),
+  });
+
+  const result = await response.json();
+
+  if (result.choices[0].message.content.length > 100) {
+    await fetch(webhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "perplexity.monitor.update",
+        topic,
+        summary: result.choices[0].message.content,
+        citations: result.citations,
+      }),
+    });
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Rate limited (429) | Too many requests | Add delays between requests, use queue |
+| Empty citations | Query too abstract | Make queries more specific and factual |
+| Stale results | No recency filter | Use `search_recency_filter` parameter |
+| Model unavailable | Capacity limit | Fall back to smaller model variant |
 
 ## Examples
 
-### Testing Webhooks Locally
+### Quick Search with Citations
 ```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/perplexity \
+curl -X POST https://api.perplexity.ai/chat/completions \
+  -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+  -d '{"model": "sonar", "messages": [{"role": "user", "content": "Latest AI developments"}], "return_citations": true}'
 ```
 
 ## Resources
-- [Perplexity Webhooks Guide](https://docs.perplexity.com/webhooks)
-- [Webhook Security Best Practices](https://docs.perplexity.com/webhooks/security)
+- [Perplexity API Documentation](https://docs.perplexity.ai)
+- [Perplexity Models](https://docs.perplexity.ai/guides/model-cards)
 
 ## Next Steps
-For performance optimization, see `perplexity-performance-tuning`.
+For deployment setup, see `perplexity-deploy-integration`.

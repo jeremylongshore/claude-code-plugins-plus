@@ -16,206 +16,173 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Fireflies.ai.
+Manage meeting transcript data from Fireflies.ai. Covers transcript export formats, PII redaction in transcripts, meeting data retention policies, and selective data sync to CRM and project management tools.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Fireflies.ai SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
-
-## Data Classification
-
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
-```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
-
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
-
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
-    }
-  }
-
-  return findings;
-}
-```
-
-## Data Redaction
-
-```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
-
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
-    }
-  }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Fireflies.ai request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupFireflies.aiData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.firefliesLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupFireflies.aiData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const firefliesData = await firefliesClient.getUserData(userId);
-
-  return {
-    source: 'Fireflies.ai',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: firefliesData.profile,
-      activities: firefliesData.activities,
-      // Include all user-related data
-    },
-  };
-}
-```
-
-### Right to Deletion
-
-```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Fireflies.ai
-  await firefliesClient.deleteUser(userId);
-
-  // 2. Delete local copies
-  await db.firefliesUserCache.deleteMany({ userId });
-
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'fireflies',
-    timestamp: new Date(),
-  });
-
-  return { success: true, deletedAt: new Date() };
-}
-```
-
-## Data Minimization
-
-```typescript
-// Only request needed fields
-const user = await firefliesClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
-
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
-```
+- Fireflies.ai API key
+- GraphQL client configured
+- Understanding of transcript data structure
+- Storage for processed transcripts
 
 ## Instructions
 
-### Step 1: Classify Data
-Categorize all Fireflies.ai data by sensitivity level.
+### Step 1: Transcript Export and Format Conversion
+```typescript
+import { GraphQLClient } from 'graphql-request';
 
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
+const fireflies = new GraphQLClient('https://api.fireflies.ai/graphql', {
+  headers: { Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}` },
+});
 
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
+const FULL_TRANSCRIPT = `
+  query GetTranscript($id: String!) {
+    transcript(id: $id) {
+      id title date duration
+      sentences { speaker_name text start_time end_time }
+      summary { overview action_items keywords }
+    }
+  }
+`;
 
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
+async function exportTranscript(id: string, format: 'json' | 'text' | 'srt') {
+  const { transcript } = await fireflies.request(FULL_TRANSCRIPT, { id });
 
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
+  switch (format) {
+    case 'json':
+      return JSON.stringify(transcript, null, 2);
+    case 'text':
+      return transcript.sentences
+        .map((s: any) => `${s.speaker_name}: ${s.text}`)
+        .join('\n');
+    case 'srt':
+      return transcript.sentences
+        .map((s: any, i: number) => [
+          i + 1,
+          `${formatTime(s.start_time)} --> ${formatTime(s.end_time)}`,
+          `${s.speaker_name}: ${s.text}`,
+          '',
+        ].join('\n'))
+        .join('\n');
+  }
+}
+
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = Math.floor(seconds % 60);
+  const ms = Math.floor((seconds % 1) * 1000);
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
+}
+```
+
+### Step 2: PII Redaction in Transcripts
+```typescript
+const PII_PATTERNS = [
+  { regex: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, tag: '[EMAIL]' },
+  { regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, tag: '[PHONE]' },
+  { regex: /\b\d{3}-\d{2}-\d{4}\b/g, tag: '[SSN]' },
+  { regex: /\b\d{4}[\s-]?\d{4}[\s-]?\d{4}[\s-]?\d{4}\b/g, tag: '[CARD]' },
+];
+
+function redactTranscript(sentences: any[]) {
+  return sentences.map(s => ({
+    ...s,
+    text: redactText(s.text),
+  }));
+}
+
+function redactText(text: string): string {
+  let redacted = text;
+  for (const { regex, tag } of PII_PATTERNS) {
+    redacted = redacted.replace(regex, tag);
+  }
+  return redacted;
+}
+```
+
+### Step 3: Meeting Data Retention Policy
+```typescript
+interface RetentionPolicy {
+  transcriptRetentionDays: number;
+  summaryRetentionDays: number;
+  actionItemRetentionDays: number;
+}
+
+const DEFAULT_POLICY: RetentionPolicy = {
+  transcriptRetentionDays: 90,
+  summaryRetentionDays: 365,
+  actionItemRetentionDays: 180,
+};
+
+async function applyRetention(
+  transcripts: any[],
+  policy = DEFAULT_POLICY
+) {
+  const now = Date.now();
+  const results = { kept: 0, archived: 0, deleted: 0 };
+
+  for (const t of transcripts) {
+    const ageDays = (now - new Date(t.date).getTime()) / 86400000;
+
+    if (ageDays > policy.transcriptRetentionDays) {
+      // Archive: keep summary, delete full transcript
+      await archiveTranscript(t.id, {
+        keepSummary: ageDays <= policy.summaryRetentionDays,
+        keepActions: ageDays <= policy.actionItemRetentionDays,
+      });
+      results.archived++;
+    } else {
+      results.kept++;
+    }
+  }
+
+  return results;
+}
+```
+
+### Step 4: Selective CRM Sync
+```typescript
+async function syncActionItemsToCRM(transcriptId: string) {
+  const { transcript } = await fireflies.request(FULL_TRANSCRIPT, { id: transcriptId });
+
+  const actionItems = transcript.summary?.action_items || [];
+  if (actionItems.length === 0) return { synced: 0 };
+
+  const tasks = actionItems.map((item: string) => ({
+    title: item.slice(0, 200),
+    source: 'fireflies',
+    meetingTitle: transcript.title,
+    meetingDate: transcript.date,
+    participants: transcript.sentences
+      .map((s: any) => s.speaker_name)
+      .filter((v: string, i: number, a: string[]) => a.indexOf(v) === i),
+  }));
+
+  return { synced: tasks.length, tasks };
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| Missing sentences | Transcription still processing | Check transcript status before export |
+| PII in action items | Redaction only applied to sentences | Also redact summary fields |
+| Large transcript | Long meeting (2+ hours) | Process in chunks, stream export |
+| Retention policy gap | No automated cleanup | Schedule weekly retention job |
 
 ## Examples
 
-### Quick PII Scan
+### Batch Export for Compliance
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+async function exportAllForAudit(ids: string[]) {
+  return Promise.all(ids.map(async id => ({
+    id,
+    text: await exportTranscript(id, 'text'),
+    exportedAt: new Date().toISOString(),
+  })));
 }
 ```
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Fireflies.ai response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
-
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Fireflies.ai Privacy Guide](https://docs.fireflies.com/privacy)
-
-## Next Steps
-For enterprise access control, see `fireflies-enterprise-rbac`.
+- [Fireflies GraphQL API](https://docs.fireflies.ai/graphql)
+- [Fireflies Data Retention](https://fireflies.ai/privacy)

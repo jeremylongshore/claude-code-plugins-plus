@@ -16,224 +16,203 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for CodeRabbit integrations.
+Configure CodeRabbit AI code review for team workflows. Covers repository configuration, custom review instructions, path-based rules, and integration with CI pipelines for automated review enforcement.
 
 ## Prerequisites
-- Understanding of layered architecture
-- CodeRabbit SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- CodeRabbit GitHub/GitLab app installed
+- Repository admin access for configuration
+- Understanding of team coding standards
+- CI pipeline for review status checks
 
-## Project Structure
-
-```
-my-coderabbit-project/
-├── src/
-│   ├── coderabbit/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── coderabbit/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── coderabbit/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── coderabbit/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── coderabbit/
-│   └── integration/
-│       └── coderabbit/
-├── config/
-│   ├── coderabbit.development.json
-│   ├── coderabbit.staging.json
-│   └── coderabbit.production.json
-└── docs/
-    └── coderabbit/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          CodeRabbit Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/coderabbit/client.ts
-export class CodeRabbitService {
-  private client: CodeRabbitClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: CodeRabbitConfig) {
-    this.client = new CodeRabbitClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('coderabbit');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/coderabbit/errors.ts
-export class CodeRabbitServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'CodeRabbitServiceError';
-  }
-}
-
-export function wrapCodeRabbitError(error: unknown): CodeRabbitServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/coderabbit/health.ts
-export async function checkCodeRabbitHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await coderabbitClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ CodeRabbit    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ CodeRabbit    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/coderabbit.ts
-export interface CodeRabbitConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadCodeRabbitConfig(): CodeRabbitConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./coderabbit.${env}.json`);
-}
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Developer   │────▶│  Pull        │────▶│  CodeRabbit  │
+│  Push/PR     │     │  Request     │     │  AI Review   │
+└──────────────┘     └──────────────┘     └──────┬───────┘
+                                                  │
+                     ┌────────────────────────────┤
+                     │                            │
+                     ▼                            ▼
+              ┌──────────────┐          ┌──────────────┐
+              │ Line-level   │          │ Summary      │
+              │ Comments     │          │ Review       │
+              └──────┬───────┘          └──────┬───────┘
+                     │                          │
+                     ▼                          ▼
+              ┌──────────────┐          ┌──────────────┐
+              │ Developer    │          │ CI Status    │
+              │ Response     │          │ Check        │
+              └──────────────┘          └──────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Create Repository Configuration
+```yaml
+# .coderabbit.yaml - Root configuration
+language: "en-US"
+early_access: false
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+reviews:
+  profile: "assertive"        # Options: chill, assertive, proactive
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  path_instructions:
+    - path: "src/api/**"
+      instructions: |
+        Review for REST API best practices:
+        - Validate all inputs with zod schemas
+        - Return proper HTTP status codes
+        - Include error response bodies per RFC 7807
+        - Check for SQL injection in query parameters
+    - path: "src/components/**"
+      instructions: |
+        Review React components for:
+        - Proper use of hooks (no conditional hooks)
+        - Memoization where appropriate
+        - Accessibility (aria labels, keyboard navigation)
+        - Component size (flag if >200 lines)
+    - path: "**/*.test.*"
+      instructions: |
+        Review tests for:
+        - Meaningful test descriptions
+        - Edge cases covered
+        - No implementation details tested
+        - Proper async handling
 
-### Step 3: Add Error Handling
-Implement custom error classes for CodeRabbit operations.
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "develop"
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
 
-### Step 4: Configure Health Checks
-Add health check endpoint for CodeRabbit connectivity.
+chat:
+  auto_reply: true
+```
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+### Step 2: Configure Path-Based Review Rules
+```yaml
+# .coderabbit.yaml continued
+reviews:
+  path_filters:
+    # Skip auto-generated files
+    - "!**/*.generated.ts"
+    - "!**/generated/**"
+    - "!package-lock.json"
+    - "!pnpm-lock.yaml"
+    - "!**/*.min.js"
+    - "!dist/**"
+
+    # Always review security-sensitive paths
+    - "+src/auth/**"
+    - "+src/middleware/**"
+    - "+**/migrations/**"
+
+  tools:
+    eslint:
+      enabled: true
+    biome:
+      enabled: true
+    shellcheck:
+      enabled: true
+    markdownlint:
+      enabled: true
+```
+
+### Step 3: Custom Review Instructions for Team Standards
+```yaml
+# .coderabbit.yaml - Team-specific instructions
+reviews:
+  path_instructions:
+    - path: "**"
+      instructions: |
+        Team coding standards:
+        1. All exported functions must have JSDoc comments
+        2. Use named exports, never default exports
+        3. Prefer const assertions for literal types
+        4. Error handling: never catch and ignore silently
+        5. Logging: use structured logger, never console.log in production
+
+    - path: "src/db/**"
+      instructions: |
+        Database layer rules:
+        - All queries must use parameterized statements
+        - Include index hints for complex queries
+        - Transactions required for multi-table mutations
+        - Migration files must be reversible
+
+    - path: ".github/workflows/**"
+      instructions: |
+        CI/CD pipeline rules:
+        - Pin all action versions to SHA, not tags
+        - Never use secrets in step names or logs
+        - Include timeout-minutes on all jobs
+        - Use OIDC for cloud provider auth
+```
+
+### Step 4: Integrate with CI Pipeline
+```yaml
+# .github/workflows/pr-checks.yml
+name: PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  wait-for-coderabbit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for CodeRabbit review
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Check if CodeRabbit has reviewed
+            const reviews = await github.rest.pulls.listReviews({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const coderabbitReview = reviews.data.find(
+              r => r.user.login === 'coderabbitai[bot]'
+            );
+
+            if (!coderabbitReview) {
+              core.info('Waiting for CodeRabbit review...');
+            }
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add CodeRabbit types |
-| Test isolation | Shared state | Use dependency injection |
+| Review not triggered | PR to non-configured branch | Add branch to `base_branches` |
+| Too many comments | Profile too aggressive | Switch to `chill` profile |
+| Ignoring config changes | YAML syntax error | Validate YAML before committing |
+| Reviewing generated files | Missing path filter | Add `!` exclusion patterns |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/coderabbit/{handlers} src/services/coderabbit src/api/coderabbit
-touch src/coderabbit/{client,config,types,errors}.ts
-touch src/services/coderabbit/{index,sync,cache}.ts
+### Minimal Configuration
+```yaml
+# .coderabbit.yaml - Quick start
+reviews:
+  profile: "assertive"
+  auto_review:
+    enabled: true
+    drafts: false
 ```
 
 ## Resources
-- [CodeRabbit SDK Documentation](https://docs.coderabbit.com/sdk)
-- [CodeRabbit Best Practices](https://docs.coderabbit.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `coderabbit-multi-env-setup`.
+- [CodeRabbit Configuration](https://docs.coderabbit.ai/configuration)
+- [CodeRabbit Path Instructions](https://docs.coderabbit.ai/guides/review-instructions)
+- [CodeRabbit Tools](https://docs.coderabbit.ai/tools)

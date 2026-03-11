@@ -16,208 +16,89 @@ compatible-with: claude-code, codex, openclaw
 # FireCrawl Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for FireCrawl integrations.
+Control access to Firecrawl web scraping and crawling resources through API key management and team credit allocation. Firecrawl uses credit-based pricing where each page scraped costs credits (1 credit for scrape, 5+ for full crawl). Access control focuses on API key scoping, credit budgets per key, and restricting which endpoints each consumer can call.
 
 ## Prerequisites
-- FireCrawl Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum FireCrawlRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface FireCrawlPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<FireCrawlRole, FireCrawlPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: FireCrawlRole,
-  action: keyof FireCrawlPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// FireCrawl SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://firecrawl.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/firecrawl/callback',
-};
-
-// Map IdP groups to FireCrawl roles
-const groupRoleMapping: Record<string, FireCrawlRole> = {
-  'Engineering': FireCrawlRole.Developer,
-  'Platform-Admins': FireCrawlRole.Admin,
-  'Data-Team': FireCrawlRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@firecrawl/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.FIRECRAWL_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.FIRECRAWL_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/firecrawl/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface FireCrawlOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: FireCrawlRole;
-}
-
-async function createOrganization(
-  config: FireCrawlOrganization
-): Promise<void> {
-  await firecrawlClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireFireCrawlPermission(
-  requiredPermission: keyof FireCrawlPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { firecrawlRole: FireCrawlRole };
-
-    if (!checkPermission(user.firecrawlRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/firecrawl/resource/:id',
-  requireFireCrawlPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface FireCrawlAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: FireCrawlRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logFireCrawlAccess(entry: FireCrawlAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Firecrawl account with Team or Scale plan
+- Dashboard access at firecrawl.dev
+- Admin-level API key for key management
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to FireCrawl permissions.
+### Step 1: Create Separate API Keys per Consumer
+```bash
+# Key for the content indexing pipeline (high volume, crawl access)
+curl -X POST https://api.firecrawl.dev/v1/api-keys \
+  -H "Authorization: Bearer $FIRECRAWL_ADMIN_KEY" \
+  -d '{
+    "name": "content-indexer-prod",
+    "allowed_endpoints": ["scrape", "crawl", "map"],
+    "monthly_credit_limit": 50000
+  }'
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+# Key for the sales team (scrape only, limited)
+curl -X POST https://api.firecrawl.dev/v1/api-keys \
+  -H "Authorization: Bearer $FIRECRAWL_ADMIN_KEY" \
+  -d '{
+    "name": "sales-prospect-research",
+    "allowed_endpoints": ["scrape"],
+    "monthly_credit_limit": 5000
+  }'
+```
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 2: Implement a Proxy with Domain Allowlists
+```typescript
+// firecrawl-gateway.ts
+const ALLOWED_DOMAINS: Record<string, string[]> = {
+  'sales-team':   ['linkedin.com', 'crunchbase.com', 'g2.com'],
+  'content-team': ['*.docs.*', '*.blog.*', 'medium.com'],
+  'engineering':  ['*'],  // unrestricted
+};
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+function isDomainAllowed(team: string, url: string): boolean {
+  const domain = new URL(url).hostname;
+  const patterns = ALLOWED_DOMAINS[team] || [];
+  return patterns.some(p => p === '*' || domain.endsWith(p.replace('*', '')));
+}
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 3: Set Credit Alerts
+Configure webhook alerts in the Firecrawl dashboard at 50%, 80%, and 95% of monthly credit allocation. This prevents surprise overages from runaway crawl jobs.
+
+### Step 4: Restrict Crawl Depth per Key
+```bash
+# For the research team, limit crawl depth to prevent multi-thousand page crawls
+curl -X POST https://api.firecrawl.dev/v1/crawl \
+  -H "Authorization: Bearer $FIRECRAWL_RESEARCH_KEY" \
+  -d '{
+    "url": "https://docs.example.com",
+    "maxDepth": 2,
+    "limit": 100,
+    "scrapeOptions": {"formats": ["markdown"]}
+  }'
+```
+
+### Step 5: Audit and Rotate Keys
+```bash
+# Check credit usage per key
+curl https://api.firecrawl.dev/v1/usage \
+  -H "Authorization: Bearer $FIRECRAWL_ADMIN_KEY" | \
+  jq '.keys[] | {name, credits_used, credits_remaining}'
+```
+Rotate keys quarterly. Create new key, update consumers, delete old key after 48-hour overlap.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `402 Payment Required` | Credit limit exhausted | Increase credit limit or wait for cycle reset |
+| `403` on `/crawl` endpoint | Key only allows `/scrape` | Create key with crawl permission |
+| Crawl job stuck | Target site rate-limiting | Reduce concurrency, add delays |
+| Unexpected credit burn | No `limit` set on crawl | Always set `limit` and `maxDepth` |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Verify key permissions before deploying
+curl -s https://api.firecrawl.dev/v1/api-keys/current \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
+  jq '{name, allowed_endpoints, credits_remaining}'
 ```
-
-## Resources
-- [FireCrawl Enterprise Guide](https://docs.firecrawl.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `firecrawl-migration-deep-dive`.

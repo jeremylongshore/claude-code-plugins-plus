@@ -16,187 +16,111 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Cost Tuning
 
 ## Overview
-Optimize Ideogram costs through smart tier selection, sampling, and usage monitoring.
+Reduce Ideogram AI image generation costs by optimizing credit usage per generation, choosing appropriate model quality, and implementing generation caching. Ideogram uses credit-based pricing where each generation costs credits based on model version (V_2 vs V_2_TURBO) and quality settings. The key cost levers are: using V_2_TURBO for drafts and iteration (faster, fewer credits), reserving V_2 for final outputs, and caching generated images for repeated similar prompts.
 
 ## Prerequisites
-- Access to Ideogram billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateIdeogramCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class IdeogramUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Ideogram budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateIdeogramCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await ideogramClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => ideogramClient.get(id)));
-
-// Use batch endpoint (1 call)
-await ideogramClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new IdeogramClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Ideogram dashboard
-# Or use API if available:
-# Check Ideogram documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM ideogram_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Ideogram API account with credit balance visibility
+- Understanding of model differences (V_2 vs V_2_TURBO)
+- Image storage for caching generated outputs
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Ideogram dashboard for usage patterns and costs.
+### Step 1: Use the Right Model for the Right Phase
+```yaml
+# Model selection by workflow phase
+draft_iteration:
+  model: V_2_TURBO
+  quality: standard
+  use_for: "Exploring concepts, testing prompts, quick previews"
+  cost: "~1 credit per generation"
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+final_production:
+  model: V_2
+  quality: high
+  use_for: "Final marketing assets, client deliverables"
+  cost: "~2-3 credits per generation"
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+# Workflow: Generate 5 drafts with TURBO (5 credits) -> pick best -> regenerate with V_2 (3 credits)
+# Total: 8 credits instead of 15 credits (5 x V_2)
+```
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 2: Optimize Resolution Settings
+```typescript
+// Only use high resolution when needed
+const RESOLUTION_CONFIGS: Record<string, { resolution: string; credits: number }> = {
+  'social-thumbnail':  { resolution: 'RESOLUTION_512_512',   credits: 1 },
+  'blog-header':       { resolution: 'RESOLUTION_1024_576',  credits: 1 },
+  'marketing-banner':  { resolution: 'RESOLUTION_1024_1024', credits: 2 },
+  'print-quality':     { resolution: 'RESOLUTION_1024_1024', credits: 3 }, // V_2 + high quality
+};
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+function getResolution(useCase: string) {
+  return RESOLUTION_CONFIGS[useCase] || RESOLUTION_CONFIGS['social-thumbnail'];
+}
+```
+
+### Step 3: Cache Generated Images
+```typescript
+import { createHash } from 'crypto';
+
+// Cache images by prompt hash to avoid regenerating identical content
+const imageCache = new Map<string, { url: string; timestamp: number }>();
+
+async function cachedGeneration(prompt: string, options: any) {
+  const key = createHash('md5').update(`${prompt}:${JSON.stringify(options)}`).digest('hex');
+  const cached = imageCache.get(key);
+  if (cached && Date.now() - cached.timestamp < 7 * 24 * 3600 * 1000) {
+    return cached.url; // Reuse for 7 days
+  }
+  const result = await ideogram.generate({ image_request: { prompt, ...options } });
+  imageCache.set(key, { url: result.data[0].url, timestamp: Date.now() });
+  return result.data[0].url;
+}
+```
+
+### Step 4: Batch Similar Generations
+```typescript
+// Generate variations in a single API call instead of multiple calls
+async function generateVariations(prompt: string, count: number = 4) {
+  // Single API call generates up to 4 images
+  const result = await ideogram.generate({
+    image_request: {
+      prompt,
+      model: 'V_2_TURBO',
+      magic_prompt_option: 'AUTO',
+      num_images: count, // 1 API call for 4 images vs 4 separate calls
+    },
+  });
+  return result.data;
+}
+```
+
+### Step 5: Monitor Credit Burn Rate
+```bash
+# Track credit consumption and forecast depletion
+curl -s https://api.ideogram.ai/v1/usage \
+  -H "Api-Key: $IDEOGRAM_API_KEY" | \
+  jq '{
+    credits_remaining: .credits_remaining,
+    used_today: .credits_used_today,
+    used_month: .credits_used_month,
+    daily_avg: (.credits_used_month / 30),
+    days_until_empty: (.credits_remaining / ((.credits_used_month / 30) + 0.01))
+  }'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Credits exhausted mid-project | No budget tracking | Set daily credit alerts at 80% of daily budget |
+| Regenerating same images | No caching implemented | Cache by prompt hash, reuse for 7 days |
+| High cost per final image | Using V_2 for all iterations | Draft with V_2_TURBO, finalize with V_2 |
+| Unexpected credit drain | High-res generations for small uses | Match resolution to actual display size needed |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateIdeogramCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# Cost comparison: draft vs production workflow
+echo "5 iterations all on V_2: ~15 credits"
+echo "4 drafts on V_2_TURBO + 1 final V_2: ~7 credits"
+echo "Savings: 53%"
 ```
-
-## Resources
-- [Ideogram Pricing](https://ideogram.com/pricing)
-- [Ideogram Billing Dashboard](https://dashboard.ideogram.com/billing)
-
-## Next Steps
-For architecture patterns, see `ideogram-reference-architecture`.

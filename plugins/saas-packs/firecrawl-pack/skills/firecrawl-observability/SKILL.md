@@ -13,239 +13,92 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Observability
+# Firecrawl Observability
 
 ## Overview
-Set up comprehensive observability for FireCrawl integrations.
+Monitor Firecrawl web scraping and crawling jobs for success rates, credit consumption, and extraction quality. Key signals include crawl job completion rate, pages scraped per credit, scrape latency (single page vs full crawl), credit burn velocity, and extraction success rate (did the markdown/structured data extraction return useful content). Firecrawl charges 1 credit per page for scrape and 5+ for crawl jobs, making credit monitoring critical.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Metrics Collection
-
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `firecrawl_requests_total` | Counter | Total API requests |
-| `firecrawl_request_duration_seconds` | Histogram | Request latency |
-| `firecrawl_errors_total` | Counter | Error count by type |
-| `firecrawl_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'firecrawl_requests_total',
-  help: 'Total FireCrawl API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'firecrawl_request_duration_seconds',
-  help: 'FireCrawl request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'firecrawl_errors_total',
-  help: 'FireCrawl errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
-```
-
-### Instrumented Client
-
-```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
-  }
-}
-```
-
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('firecrawl-client');
-
-async function tracedFireCrawlCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`firecrawl.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'firecrawl',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logFireCrawlOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'firecrawl',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
-```yaml
-# firecrawl_alerts.yaml
-groups:
-  - name: firecrawl_alerts
-    rules:
-      - alert: FireCrawlHighErrorRate
-        expr: |
-          rate(firecrawl_errors_total[5m]) /
-          rate(firecrawl_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "FireCrawl error rate > 5%"
-
-      - alert: FireCrawlHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(firecrawl_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "FireCrawl P95 latency > 2s"
-
-      - alert: FireCrawlDown
-        expr: up{job="firecrawl"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "FireCrawl integration is down"
-```
-
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "FireCrawl Request Rate",
-      "targets": [{
-        "expr": "rate(firecrawl_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "FireCrawl Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(firecrawl_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
+- Firecrawl account with API access
+- Webhook endpoint for job status callbacks
+- Metrics backend for tracking
 
 ## Instructions
 
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
+### Step 1: Track Crawl Job Status via Webhooks
+```typescript
+// firecrawl-webhook-handler.ts
+app.post('/webhooks/firecrawl', (req, res) => {
+  const { jobId, status, pagesScraped, creditsUsed, failedUrls } = req.body;
+  emitCounter('firecrawl_jobs_total', 1, { status });
+  emitGauge('firecrawl_pages_per_job', pagesScraped, { job: jobId });
+  emitCounter('firecrawl_credits_used', creditsUsed);
+  if (failedUrls?.length > 0) {
+    emitCounter('firecrawl_page_failures', failedUrls.length, { job: jobId });
+  }
+  res.sendStatus(200);
+});
+```
 
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
+### Step 2: Monitor Credit Consumption
+```bash
+# Check credit usage and remaining balance
+curl https://api.firecrawl.dev/v1/usage \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
+  jq '{credits_used_today, credits_remaining, daily_avg: .credits_used_month / 30, days_until_empty: (.credits_remaining / (.credits_used_month / 30 + 0.01))}'
+```
 
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
+### Step 3: Measure Extraction Quality
+```typescript
+// Track whether scraped content is actually usable
+function evaluateExtractionQuality(result: any) {
+  const markdown = result.markdown || '';
+  const metrics = {
+    contentLength: markdown.length,
+    hasHeadings: /^#{1,3}\s/m.test(markdown),
+    hasContent: markdown.length > 200,
+    isErrorPage: /404|not found|access denied/i.test(markdown),
+  };
+  const quality = metrics.hasContent && !metrics.isErrorPage ? 'good' : 'poor';
+  emitCounter('firecrawl_extraction_quality', 1, { quality });
+  return quality;
+}
+```
 
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
+### Step 4: Alert on Crawl Issues
+```yaml
+groups:
+  - name: firecrawl
+    rules:
+      - alert: FirecrawlHighFailureRate
+        expr: rate(firecrawl_page_failures[1h]) / rate(firecrawl_pages_per_job[1h]) > 0.2
+        annotations: { summary: "Firecrawl page failure rate exceeds 20%" }
+      - alert: FirecrawlCreditBurnHigh
+        expr: rate(firecrawl_credits_used[1h]) > 200
+        annotations: { summary: "Firecrawl burning >200 credits/hour" }
+      - alert: FirecrawlCreditLow
+        expr: firecrawl_credits_remaining < 500
+        annotations: { summary: "Firecrawl credits below 500 -- refill soon" }
+      - alert: FirecrawlPoorExtraction
+        expr: rate(firecrawl_extraction_quality{quality="poor"}[1h]) / rate(firecrawl_extraction_quality[1h]) > 0.3
+        annotations: { summary: "Over 30% of Firecrawl extractions returning poor quality" }
+```
 
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: crawl job success/failure rate, pages scraped per hour, credit consumption trend, extraction quality ratio, average scrape latency, and top failed domains (to identify sites blocking scraping).
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| High page failure rate | Target site blocking bots | Enable stealth mode or add delays between requests |
+| Poor extraction quality | Dynamic JS content not rendering | Enable `waitFor` option to wait for page load |
+| Credit burn spike | Crawl job with no `limit` set | Always set `limit` and `maxDepth` on crawl jobs |
+| Webhook not firing | Endpoint unreachable | Verify endpoint URL and SSL certificate |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick check: crawl job status
+curl -s "https://api.firecrawl.dev/v1/crawl/JOB_ID" \
+  -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
+  jq '{status, pages_crawled, credits_used, failed_urls: (.failed | length)}'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [FireCrawl Observability Guide](https://docs.firecrawl.com/observability)
-
-## Next Steps
-For incident response, see `firecrawl-incident-runbook`.

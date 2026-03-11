@@ -13,246 +13,124 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Policy & Guardrails
+# Firecrawl Policy Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for FireCrawl integrations.
+Policy enforcement for Firecrawl web scraping pipelines. Web scraping raises legal (robots.txt, ToS), ethical (rate limiting, attribution), and cost (credit burn) concerns that need automated guardrails.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom FireCrawl Plugin
-```javascript
-// eslint-plugin-firecrawl/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded FireCrawl API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded FireCrawl API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['firecrawl'],
-  rules: {
-    'firecrawl/no-hardcoded-keys': 'error',
-    'firecrawl/require-error-handling': 'warn',
-    'firecrawl/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: firecrawl-secrets-check
-        name: Check for FireCrawl secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: firecrawl-config-validate
-        name: Validate FireCrawl configuration
-        entry: node scripts/validate-firecrawl-config.js
-        language: node
-        files: '\.firecrawl\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface FireCrawlStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in FireCrawl code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new FireCrawlClient(config satisfies FireCrawlStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: FireCrawl Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the FireCrawl client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: firecrawl/use-singleton-client
-- CI check: grep for "new FireCrawlClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# firecrawl-policy.rego
-package firecrawl
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/firecrawl-policy.yml
-name: FireCrawl Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded FireCrawl keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s firecrawl-config.schema.json -d config/firecrawl/*.json
-
-      - name: Run ESLint FireCrawl rules
-        run: npx eslint --plugin firecrawl --rule 'firecrawl/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardFireCrawlOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.FIRECRAWL_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching FireCrawl rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('FireCrawl rate limit exceeded - request blocked');
-  }
-}
-```
+- Firecrawl API configured
+- Understanding of web scraping legal considerations
+- Credit monitoring setup
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for FireCrawl patterns.
+### Step 1: Enforce Domain-Level Scraping Policies
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Block scraping of sensitive or prohibited domains.
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```typescript
+const SCRAPE_POLICY = {
+  blockedDomains: [
+    'facebook.com', 'linkedin.com',   // ToS prohibit scraping
+    'bank*.com', 'healthcare*.com',   // sensitive data
+  ],
+  maxPagesPerDomain: 500,
+  requireRobotsTxt: true,
+};
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+function validateScrapeTarget(url: string): void {
+  const domain = new URL(url).hostname;
+  for (const blocked of SCRAPE_POLICY.blockedDomains) {
+    const pattern = new RegExp('^' + blocked.replace('*', '.*') + '$');
+    if (pattern.test(domain)) {
+      throw new PolicyViolation(`Domain ${domain} is blocked by scraping policy`);
+    }
+  }
+}
+```
 
-## Output
-- ESLint plugin with FireCrawl rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+### Step 2: Credit Budget Enforcement
+
+Prevent crawls from exceeding allocated credit budgets.
+
+```typescript
+class CrawlBudget {
+  private dailyLimit: number;
+  private usage: Map<string, number> = new Map();
+
+  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }
+
+  authorize(estimatedPages: number): boolean {
+    const today = new Date().toISOString().split('T')[0];
+    const used = this.usage.get(today) || 0;
+    if (used + estimatedPages > this.dailyLimit) {
+      throw new PolicyViolation(
+        `Daily limit exceeded: ${used} + ${estimatedPages} > ${this.dailyLimit}`
+      );
+    }
+    return true;
+  }
+
+  record(pagesScraped: number) {
+    const today = new Date().toISOString().split('T')[0];
+    this.usage.set(today, (this.usage.get(today) || 0) + pagesScraped);
+  }
+}
+```
+
+### Step 3: Content Type Filtering
+
+Only retain scraped content that matches expected types; discard binary files, media, and error pages.
+
+```typescript
+function validateScrapedContent(result: any): boolean {
+  if (!result.markdown || result.markdown.length < 50) return false;
+  const lower = result.markdown.toLowerCase();
+  // Reject error pages
+  if (lower.includes('403 forbidden') || lower.includes('access denied')) return false;
+  // Reject login walls
+  if (lower.includes('sign in to continue') || lower.includes('create an account')) return false;
+  return true;
+}
+```
+
+### Step 4: Rate Limiting Per Target Domain
+
+Respect target site capacity even when Firecrawl allows faster crawling.
+
+```typescript
+const DOMAIN_RATE_LIMITS: Record<string, number> = {
+  'docs.example.com': 2,    // 2 pages/second
+  'blog.example.com': 1,    // 1 page/second
+  'default': 5              // default rate
+};
+
+function getCrawlDelay(domain: string): number {
+  const rate = DOMAIN_RATE_LIMITS[domain] || DOMAIN_RATE_LIMITS['default'];
+  return 1000 / rate;  // milliseconds between requests
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| Legal risk from scraping | Blocked domain not filtered | Enforce domain blocklist |
+| Credit overrun | No budget tracking | Implement daily credit caps |
+| Junk data in pipeline | Error pages scraped | Validate content quality |
+| Target site blocking IP | Too aggressive crawling | Enforce per-domain rate limits |
 
 ## Examples
 
-### Quick ESLint Check
-```bash
-npx eslint --plugin firecrawl --rule 'firecrawl/no-hardcoded-keys: error' src/
+### Policy-Checked Crawl
+```typescript
+validateScrapeTarget(url);
+budget.authorize(estimatedPages);
+const results = await firecrawl.crawlUrl(url, { limit: estimatedPages });
+const valid = results.filter(validateScrapedContent);
+budget.record(valid.length);
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
-
-## Next Steps
-For architecture blueprints, see `firecrawl-architecture-variants`.
+- [Firecrawl Docs](https://docs.firecrawl.dev)
+- [Web Scraping Legal Guide](https://www.eff.org/issues/web-scraping)

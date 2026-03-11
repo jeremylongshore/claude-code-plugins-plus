@@ -16,372 +16,105 @@ compatible-with: claude-code, codex, openclaw
 # Databricks Cost Tuning
 
 ## Overview
-Optimize Databricks costs through cluster policies, instance selection, and monitoring.
+Reduce Databricks spending by optimizing cluster configurations, leveraging spot instances, right-sizing SQL warehouses, and implementing cost governance policies. Databricks charges per DBU (Databricks Unit) with rates varying by workload type: Jobs Compute (~$0.15/DBU), All-Purpose Compute (~$0.40/DBU), SQL Compute (~$0.22/DBU), and Serverless (~$0.07/DBU). The biggest cost levers are cluster auto-termination, spot instances, and moving interactive workloads to serverless.
 
 ## Prerequisites
-- Workspace admin access
-- Access to billing data
-- Understanding of workload patterns
+- Databricks Premium or Enterprise workspace
+- Access to `system.billing.usage` tables
+- Workspace admin for cluster policy creation
 
 ## Instructions
 
-### Step 1: Implement Cluster Policies
+### Step 1: Identify Top Cost Drivers
+```sql
+-- Top 10 most expensive clusters this month
+SELECT cluster_id, cluster_name, sku_name,
+       SUM(usage_quantity) AS total_dbus,
+       ROUND(SUM(usage_quantity * list_price), 2) AS cost_usd
+FROM system.billing.usage
+WHERE usage_date >= date_trunc('month', current_date())
+GROUP BY cluster_id, cluster_name, sku_name
+ORDER BY cost_usd DESC
+LIMIT 10;
+```
 
+### Step 2: Enforce Cluster Policies
 ```json
-// policies/cost_controlled_policy.json
 {
-  "cluster_type": {
-    "type": "fixed",
-    "value": "job"
-  },
-  "autotermination_minutes": {
-    "type": "range",
-    "minValue": 10,
-    "maxValue": 60,
-    "defaultValue": 30
-  },
-  "num_workers": {
-    "type": "range",
-    "minValue": 1,
-    "maxValue": 10,
-    "defaultValue": 2
-  },
-  "node_type_id": {
-    "type": "allowlist",
-    "values": [
-      "Standard_DS3_v2",
-      "Standard_DS4_v2",
-      "Standard_E4ds_v4"
-    ],
-    "defaultValue": "Standard_DS3_v2"
-  },
-  "spark_version": {
-    "type": "regex",
-    "pattern": "14\\.[0-9]+\\.x-scala2\\.12"
-  },
-  "azure_attributes.spot_bid_max_price": {
-    "type": "fixed",
-    "value": -1
-  },
-  "azure_attributes.first_on_demand": {
-    "type": "fixed",
-    "value": 1
-  },
-  "custom_tags.cost_center": {
-    "type": "fixed",
-    "value": "data-engineering"
+  "name": "cost-optimized-interactive",
+  "definition": {
+    "autotermination_minutes": { "type": "range", "minValue": 10, "maxValue": 60, "defaultValue": 20 },
+    "num_workers": { "type": "range", "minValue": 1, "maxValue": 8 },
+    "node_type_id": { "type": "allowlist", "values": ["m5.xlarge", "m5.2xlarge"] },
+    "aws_attributes.availability": { "type": "fixed", "value": "SPOT_WITH_FALLBACK" },
+    "spark_conf.spark.databricks.cluster.profile": { "type": "fixed", "value": "singleNode" }
   }
 }
 ```
 
+### Step 3: Use Spot Instances for Jobs
 ```python
-# Create policy via SDK
-from databricks.sdk import WorkspaceClient
-import json
-
-def create_cost_policy(w: WorkspaceClient, policy_name: str) -> str:
-    """Create cost-controlled cluster policy."""
-
-    policy_definition = {
-        "autotermination_minutes": {
-            "type": "range",
-            "minValue": 10,
-            "maxValue": 60,
-            "defaultValue": 30,
+# jobs/cost_optimized_job.py
+job_config = {
+    "name": "nightly-etl",
+    "new_cluster": {
+        "num_workers": 4,
+        "node_type_id": "m5.2xlarge",
+        "aws_attributes": {
+            "availability": "SPOT_WITH_FALLBACK",
+            "first_on_demand": 1,  # Driver on-demand, workers spot
+            "spot_bid_price_percent": 100,
         },
-        "num_workers": {
-            "type": "range",
-            "minValue": 1,
-            "maxValue": 10,
-        },
-        "node_type_id": {
-            "type": "allowlist",
-            "values": [
-                "Standard_DS3_v2",
-                "Standard_DS4_v2",
-            ],
-        },
-        "azure_attributes.spot_bid_max_price": {
-            "type": "fixed",
-            "value": -1,  # Use spot instances
-        },
-        "azure_attributes.first_on_demand": {
-            "type": "fixed",
-            "value": 1,  # At least 1 on-demand for driver
-        },
-    }
-
-    policy = w.cluster_policies.create(
-        name=policy_name,
-        definition=json.dumps(policy_definition),
-    )
-
-    return policy.policy_id
+        "autotermination_minutes": 0,  # Jobs clusters auto-terminate on completion
+    },
+}
+# Spot instances save 60-90% on worker node costs
 ```
 
-### Step 2: Spot Instance Configuration
-
-```yaml
-# resources/cost_optimized_cluster.yml
-job_clusters:
-  - job_cluster_key: cost_optimized
-    new_cluster:
-      spark_version: "14.3.x-scala2.12"
-      node_type_id: "Standard_DS3_v2"
-      num_workers: 4
-
-      # Azure Spot Configuration
-      azure_attributes:
-        first_on_demand: 1         # Driver on-demand
-        availability: SPOT_AZURE   # Workers on spot
-        spot_bid_max_price: -1     # Pay up to on-demand price
-
-      # AWS Spot Configuration (alternative)
-      # aws_attributes:
-      #   first_on_demand: 1
-      #   availability: SPOT_WITH_FALLBACK
-      #   spot_bid_price_percent: 100
-
-      autoscale:
-        min_workers: 1
-        max_workers: 8
-
-      custom_tags:
-        cost_center: analytics
-        environment: production
-```
-
-### Step 3: Instance Pool for Faster Startup
-
-```python
-# Create instance pool for reduced startup time and costs
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.service.compute import (
-    InstancePoolAndStats,
-    InstancePoolAzureAttributes,
-)
-
-def create_cost_optimized_pool(
-    w: WorkspaceClient,
-    pool_name: str,
-    min_idle: int = 1,
-    max_capacity: int = 10,
-    idle_timeout: int = 15,
-) -> str:
-    """
-    Create instance pool for cost optimization.
-
-    Benefits:
-    - Faster cluster startup (instances pre-warmed)
-    - Lower spot instance preemption risk
-    - Consistent performance
-    """
-    pool = w.instance_pools.create(
-        instance_pool_name=pool_name,
-        node_type_id="Standard_DS3_v2",
-        min_idle_instances=min_idle,
-        max_capacity=max_capacity,
-        idle_instance_autotermination_minutes=idle_timeout,
-        azure_attributes=InstancePoolAzureAttributes(
-            availability="SPOT_AZURE",
-            spot_bid_max_price=-1,
-        ),
-        preloaded_spark_versions=["14.3.x-scala2.12"],
-        custom_tags={
-            "pool_type": "cost_optimized",
-            "managed_by": "terraform",
-        },
-    )
-
-    return pool.instance_pool_id
-```
-
-### Step 4: Cost Monitoring
-
+### Step 4: Right-Size SQL Warehouses
 ```sql
--- Analyze cluster costs from system tables
-SELECT
-    cluster_name,
-    cluster_id,
-    DATE(usage_date) as date,
-    SUM(usage_quantity) as dbu_usage,
-    SUM(usage_quantity * list_price) as estimated_cost
-FROM system.billing.usage
-WHERE usage_date > current_date() - INTERVAL 30 DAYS
-  AND usage_type = 'COMPUTE'
-GROUP BY cluster_name, cluster_id, DATE(usage_date)
-ORDER BY estimated_cost DESC;
-
--- Top cost drivers by job
-SELECT
-    job_name,
-    COUNT(DISTINCT run_id) as runs,
-    SUM(duration) / 3600000 as total_hours,
-    AVG(duration) / 60000 as avg_minutes,
-    SUM(dbu_usage) as total_dbus
-FROM system.lakeflow.job_run_timeline r
-JOIN system.billing.usage u ON r.cluster_id = u.cluster_id
-WHERE r.start_time > current_timestamp() - INTERVAL 30 DAYS
-GROUP BY job_name
-ORDER BY total_dbus DESC
-LIMIT 20;
-
--- Identify idle clusters
-SELECT
-    cluster_name,
-    cluster_id,
-    state,
-    last_activity_time,
-    TIMESTAMPDIFF(HOUR, last_activity_time, current_timestamp()) as idle_hours
-FROM system.compute.clusters
-WHERE state = 'RUNNING'
-  AND TIMESTAMPDIFF(MINUTE, last_activity_time, current_timestamp()) > 30
-ORDER BY idle_hours DESC;
+-- Check warehouse utilization (queries/hour and queue time)
+SELECT warehouse_id, warehouse_name,
+       COUNT(*) AS query_count,
+       AVG(total_duration_ms) AS avg_duration_ms,
+       MAX(queue_duration_ms) AS max_queue_ms
+FROM system.query.history
+WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
+GROUP BY warehouse_id, warehouse_name;
+-- If max_queue_ms is near 0, warehouse is oversized. Reduce cluster size.
+-- If max_queue_ms > 30000, warehouse needs more capacity or auto-scaling.
 ```
 
-### Step 5: Cost Allocation Tags
-
-```python
-# Implement cost allocation with tags
-from databricks.sdk import WorkspaceClient
-
-def enforce_cost_tags(
-    w: WorkspaceClient,
-    required_tags: list[str] = ["cost_center", "team", "environment"],
-) -> list[dict]:
-    """
-    Audit and report clusters missing required cost tags.
-
-    Returns list of non-compliant clusters.
-    """
-    non_compliant = []
-
-    for cluster in w.clusters.list():
-        tags = cluster.custom_tags or {}
-        missing_tags = [t for t in required_tags if t not in tags]
-
-        if missing_tags:
-            non_compliant.append({
-                "cluster_id": cluster.cluster_id,
-                "cluster_name": cluster.cluster_name,
-                "missing_tags": missing_tags,
-                "creator": cluster.creator_user_name,
-            })
-
-    return non_compliant
-
-# Cost allocation report
-def generate_cost_report(w: WorkspaceClient, spark) -> dict:
-    """Generate cost allocation report by tags."""
-    query = """
-        SELECT
-            custom_tags:cost_center as cost_center,
-            custom_tags:team as team,
-            SUM(usage_quantity * list_price) as total_cost
-        FROM system.billing.usage
-        WHERE usage_date > current_date() - INTERVAL 30 DAYS
-        GROUP BY custom_tags:cost_center, custom_tags:team
-        ORDER BY total_cost DESC
-    """
-    return spark.sql(query).toPandas().to_dict('records')
+### Step 5: Schedule Auto-Stop for Development Clusters
+```bash
+# Set aggressive auto-termination for all dev clusters
+databricks clusters list --output JSON | \
+  jq -r '.[] | select(.cluster_name | test("dev|sandbox|test")) | .cluster_id' | \
+  xargs -I{} databricks clusters edit {} --json '{"autotermination_minutes": 15}'
 ```
-
-### Step 6: Auto-Termination and Scheduling
-
-```python
-# Job scheduling for cost optimization
-from databricks.sdk import WorkspaceClient
-from databricks.sdk.service.jobs import CronSchedule
-
-def configure_off_hours_schedule(
-    w: WorkspaceClient,
-    job_id: int,
-    cron_expression: str = "0 0 2 * * ?",  # 2 AM daily
-    timezone: str = "America/New_York",
-) -> None:
-    """Configure job to run during off-peak hours."""
-    w.jobs.update(
-        job_id=job_id,
-        new_settings={
-            "schedule": {
-                "quartz_cron_expression": cron_expression,
-                "timezone_id": timezone,
-            }
-        }
-    )
-
-# Cluster auto-stop policy
-def set_aggressive_auto_termination(
-    w: WorkspaceClient,
-    cluster_id: str,
-    minutes: int = 15,
-) -> None:
-    """Set aggressive auto-termination for development clusters."""
-    cluster = w.clusters.get(cluster_id)
-    w.clusters.edit(
-        cluster_id=cluster_id,
-        spark_version=cluster.spark_version,
-        node_type_id=cluster.node_type_id,
-        autotermination_minutes=minutes,
-    )
-```
-
-## Output
-- Cost-controlled cluster policies
-- Spot instance optimization
-- Instance pools configured
-- Cost monitoring dashboards
-- Auto-termination policies
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Spot preemption | Instance reclaimed | Use first_on_demand for stability |
-| Policy violation | Cluster over limits | Adjust policy or request exception |
-| Missing tags | Manual cluster creation | Enforce policy with required tags |
-| High idle costs | Long auto-term timeout | Reduce to 15-30 minutes |
+| Spot instance interruption | Cloud provider reclaiming capacity | Use SPOT_WITH_FALLBACK, checkpoint long jobs |
+| Cluster policy too restrictive | Workers can't handle workload | Increase max_workers or allow larger instance types |
+| SQL warehouse idle but running | No auto-stop configured | Enable auto-stop with 10-minute timeout |
+| Billing data not available | System tables not enabled | Enable system table access in account settings |
 
 ## Examples
-
-### Cost Savings Calculator
-```python
-def estimate_spot_savings(
-    on_demand_cost: float,
-    spot_ratio: float = 0.7,  # 70% workers on spot
-    spot_discount: float = 0.6,  # 60% discount
-) -> dict:
-    """Estimate savings from spot instances."""
-    on_demand_portion = on_demand_cost * (1 - spot_ratio)
-    spot_portion = on_demand_cost * spot_ratio * (1 - spot_discount)
-    new_cost = on_demand_portion + spot_portion
-    savings = on_demand_cost - new_cost
-
-    return {
-        "original_cost": on_demand_cost,
-        "optimized_cost": new_cost,
-        "savings": savings,
-        "savings_percent": (savings / on_demand_cost) * 100,
-    }
-```
-
-### Weekly Cost Alert
 ```sql
--- Alert when costs exceed threshold
-CREATE ALERT weekly_cost_alert
-AS SELECT
-    SUM(usage_quantity * list_price) as weekly_cost
+-- Monthly cost forecast based on current week's usage
+SELECT sku_name,
+       SUM(usage_quantity * list_price) * 4.3 AS projected_monthly_cost
 FROM system.billing.usage
-WHERE usage_date > current_date() - INTERVAL 7 DAYS
-HAVING weekly_cost > 10000  -- $10k threshold
-SCHEDULE CRON '0 9 * * 1'  -- Monday 9 AM
-NOTIFICATIONS (email_addresses = ['finops@company.com']);
+WHERE usage_date >= current_date() - INTERVAL 7 DAYS
+GROUP BY sku_name
+ORDER BY projected_monthly_cost DESC;
 ```
 
-## Resources
-- [Databricks Pricing](https://databricks.com/product/pricing)
-- [Cluster Policies](https://docs.databricks.com/administration-guide/clusters/policies.html)
-- [Instance Pools](https://docs.databricks.com/clusters/instance-pools/index.html)
-- [Cost Management](https://docs.databricks.com/administration-guide/account-settings/billable-usage.html)
-
-## Next Steps
-For reference architecture, see `databricks-reference-architecture`.
+```bash
+# Kill all running interactive clusters older than 4 hours
+databricks clusters list --output JSON | \
+  jq -r '.[] | select(.state=="RUNNING" and .cluster_source=="UI" and (now - (.start_time/1000)) > 14400) | .cluster_id' | \
+  xargs -I{} databricks clusters delete {}
+```

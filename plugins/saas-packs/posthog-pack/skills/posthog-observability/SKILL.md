@@ -16,236 +16,91 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Observability
 
 ## Overview
-Set up comprehensive observability for PostHog integrations.
+Monitor PostHog event ingestion health, query performance, and feature flag evaluation reliability. Key signals include event ingestion rate and latency (time from `posthog.capture()` to event appearing in queries), feature flag evaluation latency (critical for server-side flags in hot paths), event volume by type (to detect instrumentation regressions), and API rate limit consumption. PostHog's event-based pricing means tracking event volume is directly tied to billing.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- PostHog Cloud or self-hosted instance
+- Personal API key with read access
+- Application instrumented with PostHog SDK
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `posthog_requests_total` | Counter | Total API requests |
-| `posthog_request_duration_seconds` | Histogram | Request latency |
-| `posthog_errors_total` | Counter | Error count by type |
-| `posthog_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'posthog_requests_total',
-  help: 'Total PostHog API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'posthog_request_duration_seconds',
-  help: 'PostHog request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'posthog_errors_total',
-  help: 'PostHog errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
+### Step 1: Monitor Event Ingestion Health
+```bash
+# Check recent event ingestion via the API
+curl "https://app.posthog.com/api/projects/PROJECT_ID/insights/trend/?events=[{\"id\":\"$pageview\"}]&date_from=-24h" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.result[0].data | {total: add, last_hour: .[-1], trend: (if .[-1] > .[-2] then "up" else "down" end)}'
 ```
 
-### Instrumented Client
-
+### Step 2: Track Feature Flag Evaluation Performance
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+// posthog-flag-monitor.ts
+import PostHog from 'posthog-node';
+const posthog = new PostHog(process.env.POSTHOG_API_KEY!);
 
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+async function monitorFlagLatency(flagKey: string, distinctId: string) {
+  const start = performance.now();
+  const value = await posthog.getFeatureFlag(flagKey, distinctId);
+  const duration = performance.now() - start;
+
+  emitHistogram('posthog_flag_eval_ms', duration, { flag: flagKey });
+  emitCounter('posthog_flag_evals_total', 1, { flag: flagKey, result: String(value) });
+
+  if (duration > 200) {
+    console.warn(`Slow flag evaluation: ${flagKey} took ${duration.toFixed(0)}ms`);
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
+### Step 3: Monitor Event Volume for Billing
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('posthog-client');
-
-async function tracedPostHogCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`posthog.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
+// Track event counts to predict billing
+async function checkEventVolume() {
+  const res = await fetch(`https://app.posthog.com/api/projects/${PROJECT_ID}/insights/trend/?events=[{"id":"$pageview"},{"id":"$autocapture"}]&date_from=-7d`, {
+    headers: { Authorization: `Bearer ${POSTHOG_KEY}` },
   });
+  const data = await res.json();
+  const weeklyTotal = data.result.reduce((sum: number, series: any) => sum + series.data.reduce((a: number, b: number) => a + b, 0), 0);
+  emitGauge('posthog_weekly_events', weeklyTotal);
+  emitGauge('posthog_projected_monthly_events', weeklyTotal * 4.3);
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'posthog',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logPostHogOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'posthog',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 4: Alert on Anomalies
 ```yaml
-# posthog_alerts.yaml
 groups:
-  - name: posthog_alerts
+  - name: posthog
     rules:
-      - alert: PostHogHighErrorRate
-        expr: |
-          rate(posthog_errors_total[5m]) /
-          rate(posthog_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "PostHog error rate > 5%"
-
-      - alert: PostHogHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(posthog_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "PostHog P95 latency > 2s"
-
-      - alert: PostHogDown
-        expr: up{job="posthog"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "PostHog integration is down"
+      - alert: PostHogIngestionDrop
+        expr: rate(posthog_events_ingested[1h]) < rate(posthog_events_ingested[1h] offset 1d) * 0.5
+        annotations: { summary: "PostHog event ingestion dropped >50% vs yesterday" }
+      - alert: PostHogFlagSlow
+        expr: histogram_quantile(0.95, rate(posthog_flag_eval_ms_bucket[5m])) > 500
+        annotations: { summary: "PostHog feature flag P95 evaluation exceeds 500ms" }
+      - alert: PostHogEventBudgetHigh
+        expr: posthog_projected_monthly_events > 10000000
+        annotations: { summary: "Projected PostHog events exceed 10M/month (check billing tier)" }
+      - alert: PostHogApiErrors
+        expr: rate(posthog_api_errors_total[5m]) > 0.1
+        annotations: { summary: "PostHog API errors elevated" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "PostHog Request Rate",
-      "targets": [{
-        "expr": "rate(posthog_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "PostHog Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(posthog_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: event ingestion rate over time, event volume by type ($pageview, $autocapture, custom), feature flag evaluation latency, projected monthly events vs billing tier, API response times, and session recording count. An ingestion drop often means broken SDK instrumentation -- catch it early.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Events not appearing | SDK not initialized or blocked | Check browser console for PostHog errors, verify API key |
+| Flag always returns default | Flag not enabled for environment | Check flag filters and rollout percentage |
+| Event volume spike | Autocapture on high-frequency element | Exclude element from autocapture config |
+| API `429` rate limited | Too many insight queries | Cache insight results, reduce poll frequency |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick check: event ingestion working?
+curl -s "https://app.posthog.com/api/projects/PROJECT_ID/events/?limit=5" \
+  -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
+  jq '.results[] | {event: .event, timestamp, distinct_id}'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [PostHog Observability Guide](https://docs.posthog.com/observability)
-
-## Next Steps
-For incident response, see `posthog-incident-runbook`.

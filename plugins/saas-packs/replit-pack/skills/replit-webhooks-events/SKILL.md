@@ -16,185 +16,150 @@ compatible-with: claude-code, codex, openclaw
 # Replit Webhooks & Events
 
 ## Overview
-Securely handle Replit webhooks with signature validation and replay protection.
+Handle Replit deployment and workspace events for CI/CD integration. Replit provides deployment hooks and the Replit Extensions API for responding to workspace changes, deployment status updates, and collaboration events. Use these to build automated deployment pipelines, monitoring dashboards, and team notification systems.
 
 ## Prerequisites
-- Replit webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Replit account with Deployments enabled (Replit Core or Teams)
+- Replit API token stored in `REPLIT_TOKEN` environment variable
+- HTTPS endpoint for receiving deployment notifications
+- Understanding of Replit deployment types (Static, Autoscale, Reserved VM)
 
-## Webhook Endpoint Setup
+## Event Types
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/replit',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-replit-signature'] as string;
-    const timestamp = req.headers['x-replit-timestamp'] as string;
-
-    if (!verifyReplitSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleReplitEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyReplitSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.REPLIT_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ReplitEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ReplitEvent {
-  id: string;
-  type: ReplitEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<ReplitEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleReplitEvent(event: ReplitEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `replit:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `replit:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Replit CLI to send test events
-replit webhooks trigger resource.created --url http://localhost:3000/webhooks/replit
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Event | Trigger | Payload |
+|-------|---------|---------|
+| `deployment.started` | Deploy begins | Repl ID, deployment type |
+| `deployment.succeeded` | Deploy completes | Deployment URL, build logs |
+| `deployment.failed` | Deploy errors | Error message, build output |
+| `deployment.promoted` | Staging to prod | Deployment ID, environment |
+| `repl.forked` | Repl forked | Source repl, fork owner |
+| `health_check.failed` | Health endpoint down | Deployment ID, response code |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Replit dashboard.
+### Step 1: Configure Deployment Webhook
+```typescript
+import express from "express";
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+const app = express();
+app.use(express.json());
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+app.post("/webhooks/replit", async (req, res) => {
+  const token = req.headers["x-replit-token"] as string;
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+  if (token !== process.env.REPLIT_WEBHOOK_SECRET) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+  const { event, data, timestamp } = req.body;
+  res.status(200).json({ received: true });
+
+  await handleReplitEvent(event, data);
+});
+
+async function handleReplitEvent(event: string, data: any) {
+  switch (event) {
+    case "deployment.succeeded":
+      await handleDeploySuccess(data);
+      break;
+    case "deployment.failed":
+      await handleDeployFailure(data);
+      break;
+    case "health_check.failed":
+      await handleHealthCheckFailure(data);
+      break;
+  }
+}
+```
+
+### Step 2: Process Deployment Events
+```typescript
+async function handleDeploySuccess(data: any) {
+  const { replId, deploymentUrl, buildDuration, deploymentType } = data;
+
+  console.log(`Deployment successful: ${deploymentUrl} (${buildDuration}s)`);
+
+  // Run post-deploy smoke tests
+  const healthCheck = await fetch(`${deploymentUrl}/health`);
+  const isHealthy = healthCheck.ok;
+
+  await slackNotify("#deployments", {
+    text: `Replit deploy complete\nURL: ${deploymentUrl}\nType: ${deploymentType}\nHealth: ${isHealthy ? "OK" : "FAILING"}`,
+  });
+}
+
+async function handleDeployFailure(data: any) {
+  const { replId, error, buildOutput } = data;
+
+  console.error(`Deployment failed for ${replId}: ${error}`);
+
+  await alerting.createIncident({
+    title: `Replit deployment failed: ${replId}`,
+    severity: "high",
+    details: buildOutput,
+  });
+}
+```
+
+### Step 3: Monitor Deployment Health
+```typescript
+async function handleHealthCheckFailure(data: any) {
+  const { deploymentId, statusCode, responseTime } = data;
+
+  const failures = await getRecentFailures(deploymentId);
+
+  if (failures.length >= 3) {
+    console.log(`Rolling back deployment ${deploymentId}`);
+    await rollbackDeployment(deploymentId);
+  }
+}
+
+async function rollbackDeployment(deploymentId: string) {
+  const response = await fetch(
+    `https://api.replit.com/v1/deployments/${deploymentId}/rollback`,
+    {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${process.env.REPLIT_TOKEN}` },
+    }
+  );
+  return response.json();
+}
+```
+
+### Step 4: Deploy via API
+```bash
+# Trigger deployment via Replit API
+curl -X POST https://api.replit.com/v1/repls/$REPL_ID/deploy \
+  -H "Authorization: Bearer $REPLIT_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"type": "autoscale", "webhook_url": "https://api.yourapp.com/webhooks/replit"}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Deploy timeout | Large dependencies | Optimize package.json, use .replit config |
+| Health check fails | Wrong port | Verify internal port matches .replit config |
+| Webhook not received | Network issue | Check Replit firewall and endpoint accessibility |
+| Build failure | Missing env vars | Set secrets in Replit Secrets tab |
 
 ## Examples
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/replit \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+### Deployment Status Dashboard
+```typescript
+async function getDeploymentHistory(replId: string) {
+  const response = await fetch(
+    `https://api.replit.com/v1/repls/${replId}/deployments`,
+    { headers: { "Authorization": `Bearer ${process.env.REPLIT_TOKEN}` } }
+  );
+  return response.json();
+}
 ```
 
 ## Resources
-- [Replit Webhooks Guide](https://docs.replit.com/webhooks)
-- [Webhook Security Best Practices](https://docs.replit.com/webhooks/security)
+- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- [Replit API Reference](https://docs.replit.com/api)
+- [Replit Extensions](https://docs.replit.com/extensions)
 
 ## Next Steps
-For performance optimization, see `replit-performance-tuning`.
+For multi-environment setup, see `replit-multi-env-setup`.

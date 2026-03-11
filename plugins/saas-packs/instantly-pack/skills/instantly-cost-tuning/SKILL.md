@@ -16,187 +16,114 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Cost Tuning
 
 ## Overview
-Optimize Instantly costs through smart tier selection, sampling, and usage monitoring.
+Optimize Instantly email outreach costs by managing sending account count, right-sizing your plan tier, and maximizing deliverability (which is the core ROI metric). Instantly pricing combines per-seat costs with sending volume tiers (Growth: 5K leads/month, Hypergrowth: 25K leads/month, Light Speed: 100K leads/month). The biggest cost lever is improving deliverability -- a well-warmed account sending 50 emails/day with 40% open rate outperforms 3 accounts sending 200 emails/day with 10% open rate, at 1/3 the cost.
 
 ## Prerequisites
-- Access to Instantly billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateInstantlyCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class InstantlyUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Instantly budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateInstantlyCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await instantlyClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => instantlyClient.get(id)));
-
-// Use batch endpoint (1 call)
-await instantlyClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new InstantlyClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Instantly dashboard
-# Or use API if available:
-# Check Instantly documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM instantly_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Instantly workspace admin access
+- Sending account reputation data
+- Campaign performance analytics
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Instantly dashboard for usage patterns and costs.
+### Step 1: Audit Account Efficiency
+```bash
+# Check per-account performance
+curl "https://api.instantly.ai/api/v1/account/status" \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '.accounts[] | {
+    email, daily_limit, sent_today,
+    reputation_score, warmup_status,
+    effective_sends: (.sent_today * .reputation_score / 100)
+  }' | jq -s 'sort_by(-.effective_sends)'
+# Accounts with low reputation are wasting sends (emails go to spam)
+```
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Consolidate Sending Accounts
+```yaml
+# Before: 10 accounts, each sending 30 emails/day = 300 sends/day
+# Problem: 4 accounts have <50 reputation score (emails going to spam)
+current:
+  accounts: 10
+  effective_sends_per_day: 180  # Only 6 accounts delivering well
+  monthly_cost: "$97/month per account subscription"
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+optimized:
+  accounts: 6               # Remove low-reputation accounts
+  effective_sends_per_day: 180  # Same effective volume
+  monthly_cost: "58% of original"
+```
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 3: Optimize Warmup Strategy
+```yaml
+# Proper warmup maximizes deliverability, which maximizes ROI
+warmup_best_practices:
+  new_account:
+    week_1: 5 emails/day      # Start very low
+    week_2: 15 emails/day
+    week_3: 30 emails/day
+    week_4: 50 emails/day     # Full sending capacity
+    total_warmup: 28 days
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+  # Don't rush warmup to save time -- a burnt account costs more to replace
+  # than 4 weeks of gradual warmup
+
+  monitoring:
+    check_daily: reputation_score
+    pause_if: reputation_score < 60
+    reduce_volume_if: bounce_rate > 3%
+```
+
+### Step 4: Right-Size Your Plan
+```yaml
+# Plan selection based on actual sending needs
+growth_plan:
+  leads: 5000/month
+  best_for: "Small team, 1-2 SDRs, testing campaigns"
+  cost: "$37/month"
+
+hypergrowth_plan:
+  leads: 25000/month
+  best_for: "Active outbound team, 3-5 SDRs"
+  cost: "$97/month"
+  tip: "Only upgrade when Growth plan consistently hits >80% lead capacity"
+
+# Calculate: if you're on Hypergrowth but only importing 3K leads/month,
+# switch to Growth and save $60/month
+```
+
+### Step 5: Improve Reply Rate (Best ROI Optimization)
+```yaml
+# The highest ROI optimization is improving reply rate, not sending more emails
+optimization_priority:
+  1_clean_lead_lists:
+    action: "Verify emails before importing"
+    impact: "Reduces bounces, protects reputation, fewer wasted sends"
+  2_personalize_sequences:
+    action: "Use merge tags and custom variables"
+    impact: "2-3x reply rate improvement"
+  3_optimize_sending_schedule:
+    action: "Send Tuesday-Thursday 9-11am recipient timezone"
+    impact: "20-30% better open rates"
+  4_a_b_test_subject_lines:
+    action: "Test 2-3 variants per campaign"
+    impact: "10-20% open rate improvement"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Paying for unused sending capacity | Plan oversized for actual volume | Downgrade plan tier |
+| Low ROI per dollar spent | Poor deliverability | Fix warmup, clean lists, improve personalization |
+| Account costs without results | Account reputation too low | Pause account, rewarm or replace domain |
+| High bounce rate | Unverified lead lists | Use email verification before import |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateInstantlyCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# Quick ROI calculator
+echo "Monthly cost: \$97 (Hypergrowth)"
+echo "Leads contacted: 5000"
+echo "Reply rate: 3%"
+echo "Replies: 150"
+echo "Cost per reply: \$0.65"
+echo "If you improve reply rate to 5%: replies=250, cost/reply=\$0.39 (40% better ROI)"
 ```
-
-## Resources
-- [Instantly Pricing](https://instantly.com/pricing)
-- [Instantly Billing Dashboard](https://dashboard.instantly.com/billing)
-
-## Next Steps
-For architecture patterns, see `instantly-reference-architecture`.

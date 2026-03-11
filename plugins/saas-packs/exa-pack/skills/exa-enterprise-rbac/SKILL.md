@@ -16,208 +16,91 @@ compatible-with: claude-code, codex, openclaw
 # Exa Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Exa integrations.
+Manage access to Exa AI search API through API key scoping and team-level controls. Exa is an API-first product with per-search pricing, so access control centers on API key management, rate limiting, and domain restrictions rather than traditional user roles. Each key can be scoped to specific search types (neural, keyword, auto) and rate-limited independently.
 
 ## Prerequisites
-- Exa Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum ExaRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface ExaPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<ExaRole, ExaPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: ExaRole,
-  action: keyof ExaPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Exa SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://exa.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/exa/callback',
-};
-
-// Map IdP groups to Exa roles
-const groupRoleMapping: Record<string, ExaRole> = {
-  'Engineering': ExaRole.Developer,
-  'Platform-Admins': ExaRole.Admin,
-  'Data-Team': ExaRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@exa/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.EXA_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.EXA_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/exa/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface ExaOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: ExaRole;
-}
-
-async function createOrganization(
-  config: ExaOrganization
-): Promise<void> {
-  await exaClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireExaPermission(
-  requiredPermission: keyof ExaPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { exaRole: ExaRole };
-
-    if (!checkPermission(user.exaRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/exa/resource/:id',
-  requireExaPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface ExaAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: ExaRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logExaAccess(entry: ExaAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Exa API account with team plan
+- Dashboard access at dashboard.exa.ai
+- At least one API key with management permissions
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Exa permissions.
+### Step 1: Create Scoped API Keys per Use Case
+```bash
+# Create a key for the RAG pipeline (high volume, neural search only)
+curl -X POST https://api.exa.ai/v1/api-keys \
+  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
+  -d '{
+    "name": "rag-pipeline-prod",
+    "allowed_endpoints": ["search", "get-contents"],
+    "rate_limit_rpm": 300,
+    "monthly_search_limit": 50000
+  }'
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+# Create a restricted key for the internal tool (low volume)
+curl -X POST https://api.exa.ai/v1/api-keys \
+  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
+  -d '{
+    "name": "internal-research-tool",
+    "rate_limit_rpm": 30,
+    "monthly_search_limit": 5000
+  }'
+```
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 2: Implement Key-Based Access in Your Gateway
+```typescript
+// exa-proxy.ts - Route requests through your gateway
+const KEY_PERMISSIONS: Record<string, { maxResults: number; allowedTypes: string[] }> = {
+  'rag-pipeline':    { maxResults: 10, allowedTypes: ['neural', 'auto'] },
+  'research-tool':   { maxResults: 25, allowedTypes: ['neural', 'keyword', 'auto'] },
+  'marketing-team':  { maxResults: 5,  allowedTypes: ['keyword'] },
+};
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+function validateRequest(keyName: string, searchType: string, numResults: number): boolean {
+  const perms = KEY_PERMISSIONS[keyName];
+  if (!perms) return false;
+  return perms.allowedTypes.includes(searchType) && numResults <= perms.maxResults;
+}
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 3: Set Domain Restrictions
+Restrict search results to approved domains for compliance-sensitive teams:
+```bash
+# Only allow searches from vetted sources
+curl -X POST https://api.exa.ai/search \
+  -H "x-api-key: $EXA_API_KEY" \
+  -d '{
+    "query": "enterprise security best practices",
+    "includeDomains": ["nist.gov", "owasp.org", "sans.org"],
+    "numResults": 10
+  }'
+```
+
+### Step 4: Monitor Usage and Rotate Keys
+```bash
+# Check usage per API key
+curl https://api.exa.ai/v1/usage \
+  -H "Authorization: Bearer $EXA_ADMIN_KEY" | \
+  jq '.keys[] | {name, searches_this_month, cost_usd}'
+
+# Rotate a key (create new, then delete old)
+NEW_KEY=$(curl -s -X POST https://api.exa.ai/v1/api-keys \
+  -H "Authorization: Bearer $EXA_ADMIN_KEY" \
+  -d '{"name": "rag-pipeline-prod-v2"}' | jq -r '.key')
+echo "Update services with new key, then delete old key"
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `401` on search | Invalid or revoked API key | Regenerate key in dashboard |
+| `429 rate limited` | Exceeded RPM on key | Increase rate limit or add request queue |
+| Monthly limit hit | Search budget exhausted | Upgrade plan or wait for billing cycle reset |
+| Empty results | Domain filter too restrictive | Widen `includeDomains` or remove filter |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Quick test: verify API key works and check remaining quota
+curl -s https://api.exa.ai/v1/usage \
+  -H "x-api-key: $EXA_API_KEY" | jq '{searches_remaining, plan, rate_limit}'
 ```
-
-## Resources
-- [Exa Enterprise Guide](https://docs.exa.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `exa-migration-deep-dive`.

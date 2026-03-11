@@ -16,200 +16,159 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Performance Tuning
 
 ## Overview
-Optimize Retell AI API performance with caching, batching, and connection pooling.
+Optimize Retell AI voice agent latency and call quality. Focus on reducing voice-to-voice latency, LLM response time, WebSocket connection management, and agent configuration tuning for natural conversations.
 
 ## Prerequisites
-- Retell AI SDK installed
-- Understanding of async patterns
-- Redis or in-memory cache available (optional)
-- Performance monitoring in place
-
-## Latency Benchmarks
-
-| Operation | P50 | P95 | P99 |
-|-----------|-----|-----|-----|
-| Read | 50ms | 150ms | 300ms |
-| Write | 100ms | 250ms | 500ms |
-| List | 75ms | 200ms | 400ms |
-
-## Caching Strategy
-
-### Response Caching
-```typescript
-import { LRUCache } from 'lru-cache';
-
-const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
-  updateAgeOnGet: true,
-});
-
-async function cachedRetell AIRequest<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttl?: number
-): Promise<T> {
-  const cached = cache.get(key);
-  if (cached) return cached as T;
-
-  const result = await fetcher();
-  cache.set(key, result, { ttl });
-  return result;
-}
-```
-
-### Redis Caching (Distributed)
-```typescript
-import Redis from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function cachedWithRedis<T>(
-  key: string,
-  fetcher: () => Promise<T>,
-  ttlSeconds = 60
-): Promise<T> {
-  const cached = await redis.get(key);
-  if (cached) return JSON.parse(cached);
-
-  const result = await fetcher();
-  await redis.setex(key, ttlSeconds, JSON.stringify(result));
-  return result;
-}
-```
-
-## Request Batching
-
-```typescript
-import DataLoader from 'dataloader';
-
-const retellaiLoader = new DataLoader<string, any>(
-  async (ids) => {
-    // Batch fetch from Retell AI
-    const results = await retellaiClient.batchGet(ids);
-    return ids.map(id => results.find(r => r.id === id) || null);
-  },
-  {
-    maxBatchSize: 100,
-    batchScheduleFn: callback => setTimeout(callback, 10),
-  }
-);
-
-// Usage - automatically batched
-const [item1, item2, item3] = await Promise.all([
-  retellaiLoader.load('id-1'),
-  retellaiLoader.load('id-2'),
-  retellaiLoader.load('id-3'),
-]);
-```
-
-## Connection Optimization
-
-```typescript
-import { Agent } from 'https';
-
-// Keep-alive connection pooling
-const agent = new Agent({
-  keepAlive: true,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 30000,
-});
-
-const client = new RetellAIClient({
-  apiKey: process.env.RETELLAI_API_KEY!,
-  httpAgent: agent,
-});
-```
-
-## Pagination Optimization
-
-```typescript
-async function* paginatedRetell AIList<T>(
-  fetcher: (cursor?: string) => Promise<{ data: T[]; nextCursor?: string }>
-): AsyncGenerator<T> {
-  let cursor: string | undefined;
-
-  do {
-    const { data, nextCursor } = await fetcher(cursor);
-    for (const item of data) {
-      yield item;
-    }
-    cursor = nextCursor;
-  } while (cursor);
-}
-
-// Usage
-for await (const item of paginatedRetell AIList(cursor =>
-  retellaiClient.list({ cursor, limit: 100 })
-)) {
-  await process(item);
-}
-```
-
-## Performance Monitoring
-
-```typescript
-async function measuredRetell AICall<T>(
-  operation: string,
-  fn: () => Promise<T>
-): Promise<T> {
-  const start = performance.now();
-  try {
-    const result = await fn();
-    const duration = performance.now() - start;
-    console.log({ operation, duration, status: 'success' });
-    return result;
-  } catch (error) {
-    const duration = performance.now() - start;
-    console.error({ operation, duration, status: 'error', error });
-    throw error;
-  }
-}
-```
+- Retell AI account with API key
+- `retell-sdk` npm package installed
+- WebSocket infrastructure for real-time calls
+- Understanding of voice agent architecture
 
 ## Instructions
 
-### Step 1: Establish Baseline
-Measure current latency for critical Retell AI operations.
+### Step 1: Optimize Agent LLM Configuration
+```typescript
+import Retell from 'retell-sdk';
 
-### Step 2: Implement Caching
-Add response caching for frequently accessed data.
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
 
-### Step 3: Enable Batching
-Use DataLoader or similar for automatic request batching.
+// Configure agent for low latency
+async function createOptimizedAgent() {
+  return retell.agent.create({
+    agent_name: 'fast-responder',
+    response_engine: {
+      type: 'retell-llm',
+      llm_id: process.env.RETELL_LLM_ID!,
+    },
+    voice_id: 'eleven_labs_rachel', // Pre-cached voice
+    language: 'en-US',
+    interruption_sensitivity: 0.8, // Higher = faster interrupt detection
+    ambient_sound: null,           // Disable for lower latency
+    responsiveness: 0.9,           // Higher = responds faster
+    voice_speed: 1.1,              // Slightly faster speech
+    voice_temperature: 0.3,        // Lower = more deterministic
+    enable_backchannel: true,      // "uh-huh" for natural flow
+    boosted_keywords: ['appointment', 'schedule', 'callback'],
+  });
+}
+```
 
-### Step 4: Optimize Connections
-Configure connection pooling with keep-alive.
+### Step 2: Optimize LLM Prompt for Speed
+```typescript
+async function createOptimizedLLM() {
+  return retell.llm.create({
+    general_prompt: `You are a fast, helpful phone agent.
+Rules for speed:
+- Keep responses under 2 sentences
+- Never use filler words
+- Ask one question at a time
+- Confirm details immediately
+- Use short acknowledgments`,
+    begin_message: 'Hi, how can I help you today?',
+    model: 'gpt-4o-mini',     // Faster than gpt-4o
+    general_tools: [
+      {
+        type: 'end_call',
+        name: 'end_call',
+        description: 'End the call when conversation is complete',
+      },
+      {
+        type: 'custom',
+        name: 'book_appointment',
+        description: 'Book an appointment for the caller',
+        parameters: {
+          type: 'object',
+          properties: {
+            date: { type: 'string' },
+            time: { type: 'string' },
+            name: { type: 'string' },
+          },
+          required: ['date', 'time', 'name'],
+        },
+        url: process.env.BOOKING_WEBHOOK_URL!,
+      },
+    ],
+  });
+}
+```
 
-## Output
-- Reduced API latency
-- Caching layer implemented
-- Request batching enabled
-- Connection pooling configured
+### Step 3: WebSocket Connection Pooling
+```typescript
+import WebSocket from 'ws';
+
+const connectionPool: Map<string, WebSocket> = new Map();
+
+async function getWebSocketConnection(callId: string): Promise<WebSocket> {
+  const existing = connectionPool.get(callId);
+  if (existing?.readyState === WebSocket.OPEN) return existing;
+
+  const ws = new WebSocket(
+    `wss://api.retellai.com/audio-websocket/${callId}`,
+    { headers: { Authorization: `Bearer ${process.env.RETELL_API_KEY}` } }
+  );
+
+  return new Promise((resolve, reject) => {
+    ws.on('open', () => {
+      connectionPool.set(callId, ws);
+      resolve(ws);
+    });
+    ws.on('error', reject);
+    ws.on('close', () => connectionPool.delete(callId));
+  });
+}
+```
+
+### Step 4: Call Analytics Caching
+```typescript
+import { LRUCache } from 'lru-cache';
+
+const callCache = new LRUCache<string, any>({
+  max: 500,
+  ttl: 1000 * 60 * 15, // 15 min - completed calls don't change
+});
+
+async function getCallDetails(callId: string) {
+  const cached = callCache.get(callId);
+  if (cached) return cached;
+
+  const call = await retell.call.retrieve(callId);
+  if (call.call_status === 'ended') {
+    callCache.set(callId, call); // Only cache completed calls
+  }
+  return call;
+}
+
+async function getCallMetrics(callIds: string[]) {
+  const calls = await Promise.all(callIds.map(getCallDetails));
+  return {
+    avgDuration: calls.reduce((s, c) => s + (c.end_timestamp - c.start_timestamp), 0) / calls.length,
+    avgLatency: calls.reduce((s, c) => s + (c.latency_p50 || 0), 0) / calls.length,
+    successRate: calls.filter(c => c.disconnection_reason === 'agent_goodbye').length / calls.length,
+  };
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Cache miss storm | TTL expired | Use stale-while-revalidate |
-| Batch timeout | Too many items | Reduce batch size |
-| Connection exhausted | No pooling | Configure max sockets |
-| Memory pressure | Cache too large | Set max cache entries |
+| High voice latency | Complex LLM prompt | Shorten prompt, use gpt-4o-mini |
+| WebSocket disconnect | Network instability | Implement reconnection logic |
+| Unnatural pauses | Low responsiveness setting | Increase responsiveness to 0.8+ |
+| Missed interrupts | Low sensitivity | Increase interruption_sensitivity |
 
 ## Examples
 
-### Quick Performance Wrapper
+### Latency Monitoring
 ```typescript
-const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
-  measuredRetell AICall(name, () =>
-    cachedRetell AIRequest(`cache:${name}`, fn)
-  );
+retell.on('call_analyzed', (event) => {
+  const latency = event.call_analysis?.latency_p95;
+  if (latency && latency > 1500) {
+    console.warn(`High latency call ${event.call_id}: ${latency}ms p95`);
+  }
+});
 ```
 
 ## Resources
-- [Retell AI Performance Guide](https://docs.retellai.com/performance)
-- [DataLoader Documentation](https://github.com/graphql/dataloader)
-- [LRU Cache Documentation](https://github.com/isaacs/node-lru-cache)
-
-## Next Steps
-For cost optimization, see `retellai-cost-tuning`.
+- [Retell AI API Reference](https://docs.retellai.com/api-references)
+- [Retell Agent Configuration](https://docs.retellai.com/build-agent)
+- [Voice Latency Optimization](https://docs.retellai.com/optimize-latency)

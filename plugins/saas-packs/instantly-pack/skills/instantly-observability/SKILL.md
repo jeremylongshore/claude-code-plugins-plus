@@ -16,236 +16,88 @@ compatible-with: claude-code, codex, openclaw
 # Instantly Observability
 
 ## Overview
-Set up comprehensive observability for Instantly integrations.
+Monitor Instantly email outreach campaign health, deliverability metrics, and sending account reputation. Key signals include email deliverability rate, bounce rate, reply rate, open rate, sending volume vs daily limits, account warmup progress, and spam placement rate. For Instantly, deliverability is the critical metric -- a sending account with high bounces or spam complaints will damage domain reputation and reduce the effectiveness of all campaigns.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Instantly Growth or Hypergrowth plan
+- API access with campaign read permissions
+- Email deliverability monitoring (inbox placement tester recommended)
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `instantly_requests_total` | Counter | Total API requests |
-| `instantly_request_duration_seconds` | Histogram | Request latency |
-| `instantly_errors_total` | Counter | Error count by type |
-| `instantly_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'instantly_requests_total',
-  help: 'Total Instantly API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'instantly_request_duration_seconds',
-  help: 'Instantly request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'instantly_errors_total',
-  help: 'Instantly errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
+### Step 1: Track Campaign Metrics via API
+```bash
+# Pull campaign performance data
+curl "https://api.instantly.ai/api/v1/campaign/analytics?campaign_id=CAMP_ID" \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '{
+    sent: .total_sent, delivered: .total_delivered, bounced: .total_bounced,
+    opened: .total_opened, replied: .total_replied,
+    bounce_rate: (.total_bounced / .total_sent * 100),
+    reply_rate: (.total_replied / .total_sent * 100)
+  }'
 ```
 
-### Instrumented Client
-
+### Step 2: Monitor Sending Account Health
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+// instantly-account-monitor.ts
+async function monitorAccountHealth() {
+  const accounts = await instantlyApi.getAccounts();
+  for (const acct of accounts) {
+    emitGauge('instantly_account_reputation', acct.reputation_score, { email: acct.email });
+    emitGauge('instantly_daily_send_usage_pct', acct.sent_today / acct.daily_limit * 100, { email: acct.email });
+    emitGauge('instantly_warmup_progress_pct', acct.warmup_progress, { email: acct.email });
 
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+    if (acct.reputation_score < 70) {
+      console.warn(`Low reputation: ${acct.email} (score: ${acct.reputation_score})`);
+    }
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('instantly-client');
-
-async function tracedInstantlyCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`instantly.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'instantly',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logInstantlyOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'instantly',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 3: Set Deliverability Alerts
 ```yaml
-# instantly_alerts.yaml
 groups:
-  - name: instantly_alerts
+  - name: instantly
     rules:
-      - alert: InstantlyHighErrorRate
-        expr: |
-          rate(instantly_errors_total[5m]) /
-          rate(instantly_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Instantly error rate > 5%"
-
-      - alert: InstantlyHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(instantly_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Instantly P95 latency > 2s"
-
-      - alert: InstantlyDown
-        expr: up{job="instantly"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Instantly integration is down"
+      - alert: InstantlyHighBounceRate
+        expr: instantly_bounce_rate > 5
+        annotations: { summary: "Instantly bounce rate exceeds 5% -- check lead list quality" }
+      - alert: InstantlyLowReputation
+        expr: instantly_account_reputation < 60
+        for: 1h
+        annotations: { summary: "Sending account reputation below 60 on {{ $labels.email }}" }
+      - alert: InstantlySendingCapNear
+        expr: instantly_daily_send_usage_pct > 90
+        annotations: { summary: "Sending account at 90% of daily limit" }
+      - alert: InstantlyWarmupStalled
+        expr: delta(instantly_warmup_progress_pct[24h]) == 0 and instantly_warmup_progress_pct < 100
+        annotations: { summary: "Warmup progress stalled on {{ $labels.email }}" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Instantly Request Rate",
-      "targets": [{
-        "expr": "rate(instantly_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Instantly Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(instantly_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
+### Step 4: Monitor Campaign Sequence Health
+```bash
+# Check reply and bounce rates across all active campaigns
+curl "https://api.instantly.ai/api/v1/campaign/list?status=active" \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '.[] | {name, status, bounce_rate: (.bounced / .sent * 100), reply_rate: (.replied / .sent * 100), daily_sends: .sent_today}'
 ```
 
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: deliverability rate by campaign, bounce rate trend (alert if rising), sending account reputation scores (table), warmup progress per account, daily send volume vs limits, reply rate over time, and spam complaint rate. A rising bounce rate is the most urgent signal -- it can cascade into domain blacklisting.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Bounce rate >5% | Bad lead list quality | Verify emails before importing, use email verification API |
+| Reputation dropping | Too many emails too fast | Reduce daily limit, extend warmup period |
+| Campaign paused | Account hit daily send limit | Spread sends across more accounts |
+| Opens not tracking | Tracking pixel blocked | Expected for privacy-focused recipients; use reply rate instead |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick health check: overall workspace deliverability
+curl -s "https://api.instantly.ai/api/v1/campaign/analytics?period=last_7d" \
+  -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
+  jq '{total_sent, delivered_pct: (.delivered / .sent * 100), bounce_pct: (.bounced / .sent * 100), reply_pct: (.replied / .sent * 100)}'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Instantly Observability Guide](https://docs.instantly.com/observability)
-
-## Next Steps
-For incident response, see `instantly-incident-runbook`.

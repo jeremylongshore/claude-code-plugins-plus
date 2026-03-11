@@ -16,224 +16,169 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Vast.ai integrations.
+Production architecture for GPU compute on Vast.ai. Covers instance lifecycle management, training job orchestration, model serving patterns, and cost-optimized instance selection for ML workloads.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Vast.ai SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Vast.ai account with API key
+- `vastai` CLI installed
+- Docker for container image management
+- SSH key pair configured
 
-## Project Structure
-
-```
-my-vastai-project/
-├── src/
-│   ├── vastai/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── vastai/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── vastai/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── vastai/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── vastai/
-│   └── integration/
-│       └── vastai/
-├── config/
-│   ├── vastai.development.json
-│   ├── vastai.staging.json
-│   └── vastai.production.json
-└── docs/
-    └── vastai/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Vast.ai Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/vastai/client.ts
-export class Vast.aiService {
-  private client: Vast.aiClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: Vast.aiConfig) {
-    this.client = new Vast.aiClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('vastai');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/vastai/errors.ts
-export class Vast.aiServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'Vast.aiServiceError';
-  }
-}
-
-export function wrapVast.aiError(error: unknown): Vast.aiServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/vastai/health.ts
-export async function checkVast.aiHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await vastaiClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Vast.ai    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Vast.ai    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/vastai.ts
-export interface Vast.aiConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadVast.aiConfig(): Vast.aiConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./vastai.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Job Orchestrator                         │
+│  Training Jobs │ Inference Serving │ Batch Processing │
+└──────────┬───────────────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────┐
+│              Vast.ai Instance Manager                 │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐   │
+│  │ Search       │  │ Create       │  │ Monitor   │   │
+│  │ (find GPUs)  │  │ (provision)  │  │ (status)  │   │
+│  └──────────────┘  └──────────────┘  └───────────┘   │
+├──────────────────────────────────────────────────────┤
+│              GPU Instance                             │
+│  ┌──────────────────────────────────────────────┐     │
+│  │  Docker Container                             │     │
+│  │  PyTorch │ Data │ Model Weights │ Checkpoints│     │
+│  └──────────────────────────────────────────────┘     │
+├──────────────────────────────────────────────────────┤
+│              Data Transfer                            │
+│  rsync (upload) │ S3/GCS (persist) │ rsync (download)│
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Instance Selection Strategy
+```python
+import subprocess
+import json
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+def search_instances(
+    gpu_type: str = "RTX 4090",
+    max_price: float = 0.50,
+    min_ram_gb: int = 32,
+    min_disk_gb: int = 50,
+):
+    """Search for cost-effective GPU instances."""
+    cmd = [
+        "vastai", "search", "offers",
+        "--gpu-name", gpu_type,
+        "--dph", f"<={max_price}",
+        "--min-ram", str(min_ram_gb),
+        "--min-disk", str(min_disk_gb),
+        "--reliability", ">0.95",
+        "--order", "dlperf_per_dphtotal-desc",
+        "--limit", "5",
+        "--raw"
+    ]
+    result = subprocess.run(cmd, capture_output=True, text=True)
+    return json.loads(result.stdout)
 
-### Step 3: Add Error Handling
-Implement custom error classes for Vast.ai operations.
+# GPU selection guide:
+# Training:    A100 80GB ($1.50-2.50/hr) or H100 ($2.50-4.00/hr)
+# Fine-tuning: RTX 4090 ($0.30-0.50/hr) or A6000 ($0.60-1.00/hr)
+# Inference:   RTX 3090 ($0.20-0.35/hr) or RTX 4090
+```
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Vast.ai connectivity.
+### Step 2: Training Job Automation
+```python
+class VastTrainingJob:
+    def __init__(self, api_key: str):
+        self.api_key = api_key
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+    def launch(self, offer_id: int, image: str, disk_gb: int = 50):
+        result = subprocess.run([
+            "vastai", "create", "instance", str(offer_id),
+            "--image", image,
+            "--disk", str(disk_gb),
+            "--onstart-cmd", "cd /workspace && python train.py",
+            "--raw"
+        ], capture_output=True, text=True)
+        return json.loads(result.stdout)
+
+    def wait_until_ready(self, instance_id: int, timeout: int = 600):
+        import time
+        for _ in range(timeout // 10):
+            status = self.get_status(instance_id)
+            if status.get("actual_status") == "running":
+                return status
+            time.sleep(10)
+        raise TimeoutError("Instance failed to start")
+
+    def get_status(self, instance_id: int):
+        result = subprocess.run(
+            ["vastai", "show", "instance", str(instance_id), "--raw"],
+            capture_output=True, text=True
+        )
+        return json.loads(result.stdout)
+
+    def destroy(self, instance_id: int):
+        subprocess.run(["vastai", "destroy", "instance", str(instance_id)])
+```
+
+### Step 3: Docker Image for Training
+```dockerfile
+FROM pytorch/pytorch:2.2.0-cuda12.1-cudnn8-runtime
+
+WORKDIR /workspace
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+# Pre-download model weights during build
+RUN python -c "from transformers import AutoModel; AutoModel.from_pretrained('meta-llama/Llama-3.2-1B')"
+
+ENTRYPOINT ["python", "train.py"]
+```
+
+### Step 4: Data Transfer Pattern
+```python
+def upload_data(instance_id: int, local_path: str, remote_path: str = "/workspace/data"):
+    info = get_instance_info(instance_id)
+    subprocess.run([
+        "rsync", "-avz", "--progress",
+        "-e", f"ssh -p {info['ssh_port']} -o StrictHostKeyChecking=no",
+        local_path, f"root@{info['ssh_host']}:{remote_path}"
+    ], check=True)
+
+def download_results(instance_id: int, remote_path: str, local_path: str):
+    info = get_instance_info(instance_id)
+    subprocess.run([
+        "rsync", "-avz", "--progress",
+        "-e", f"ssh -p {info['ssh_port']}",
+        f"root@{info['ssh_host']}:{remote_path}", local_path
+    ], check=True)
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Vast.ai types |
-| Test isolation | Shared state | Use dependency injection |
+| No instances available | Filters too strict | Relax price or GPU type constraints |
+| Instance killed | Host maintenance | Use checkpointing, auto-restart |
+| Slow data transfer | Large dataset | Pre-load data in Docker image |
+| OOM during training | Model too large for VRAM | Use gradient checkpointing, smaller batch |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/vastai/{handlers} src/services/vastai src/api/vastai
-touch src/vastai/{client,config,types,errors}.ts
-touch src/services/vastai/{index,sync,cache}.ts
+### End-to-End Training Pipeline
+```python
+job = VastTrainingJob(api_key="...")
+offers = search_instances("A100", max_price=2.00)
+instance = job.launch(offers[0]["id"], "my-training:latest")
+job.wait_until_ready(instance["new_contract"])
+upload_data(instance["new_contract"], "./data/")
+# Training runs via onstart-cmd
+download_results(instance["new_contract"], "/workspace/output/", "./results/")
+job.destroy(instance["new_contract"])
 ```
 
 ## Resources
-- [Vast.ai SDK Documentation](https://docs.vastai.com/sdk)
-- [Vast.ai Best Practices](https://docs.vastai.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `vastai-multi-env-setup`.
+- [Vast.ai CLI Documentation](https://vast.ai/docs/cli/commands)
+- [Vast.ai Instance Guide](https://vast.ai/docs)

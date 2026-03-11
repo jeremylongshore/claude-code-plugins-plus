@@ -16,270 +16,133 @@ compatible-with: claude-code, codex, openclaw
 # Clay Architecture Variants
 
 ## Overview
-Three validated architecture blueprints for Clay integrations.
+Deployment architectures for Clay data enrichment at different scales. Clay's table-based enrichment model, credit billing, and webhook-driven workflow fit differently depending on volume, team size, and data freshness requirements.
 
 ## Prerequisites
-- Understanding of team size and DAU requirements
-- Knowledge of deployment infrastructure
-- Clear SLA requirements
-- Growth projections available
-
-## Variant A: Monolith (Simple)
-
-**Best for:** MVPs, small teams, < 10K daily active users
-
-```
-my-app/
-├── src/
-│   ├── clay/
-│   │   ├── client.ts          # Singleton client
-│   │   ├── types.ts           # Types
-│   │   └── middleware.ts      # Express middleware
-│   ├── routes/
-│   │   └── api/
-│   │       └── clay.ts    # API routes
-│   └── index.ts
-├── tests/
-│   └── clay.test.ts
-└── package.json
-```
-
-### Key Characteristics
-- Single deployment unit
-- Synchronous Clay calls in request path
-- In-memory caching
-- Simple error handling
-
-### Code Pattern
-```typescript
-// Direct integration in route handler
-app.post('/api/create', async (req, res) => {
-  try {
-    const result = await clayClient.create(req.body);
-    res.json(result);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-});
-```
-
----
-
-## Variant B: Service Layer (Moderate)
-
-**Best for:** Growing startups, 10K-100K DAU, multiple integrations
-
-```
-my-app/
-├── src/
-│   ├── services/
-│   │   ├── clay/
-│   │   │   ├── client.ts      # Client wrapper
-│   │   │   ├── service.ts     # Business logic
-│   │   │   ├── repository.ts  # Data access
-│   │   │   └── types.ts
-│   │   └── index.ts           # Service exports
-│   ├── controllers/
-│   │   └── clay.ts
-│   ├── routes/
-│   ├── middleware/
-│   ├── queue/
-│   │   └── clay-processor.ts  # Async processing
-│   └── index.ts
-├── config/
-│   └── clay/
-└── package.json
-```
-
-### Key Characteristics
-- Separation of concerns
-- Background job processing
-- Redis caching
-- Circuit breaker pattern
-- Structured error handling
-
-### Code Pattern
-```typescript
-// Service layer abstraction
-class ClayService {
-  constructor(
-    private client: ClayClient,
-    private cache: CacheService,
-    private queue: QueueService
-  ) {}
-
-  async createResource(data: CreateInput): Promise<Resource> {
-    // Business logic before API call
-    const validated = this.validate(data);
-
-    // Check cache
-    const cached = await this.cache.get(cacheKey);
-    if (cached) return cached;
-
-    // API call with retry
-    const result = await this.withRetry(() =>
-      this.client.create(validated)
-    );
-
-    // Cache result
-    await this.cache.set(cacheKey, result, 300);
-
-    // Async follow-up
-    await this.queue.enqueue('clay.post-create', result);
-
-    return result;
-  }
-}
-```
-
----
-
-## Variant C: Microservice (Complex)
-
-**Best for:** Enterprise, 100K+ DAU, strict SLAs
-
-```
-clay-service/              # Dedicated microservice
-├── src/
-│   ├── api/
-│   │   ├── grpc/
-│   │   │   └── clay.proto
-│   │   └── rest/
-│   │       └── routes.ts
-│   ├── domain/
-│   │   ├── entities/
-│   │   ├── events/
-│   │   └── services/
-│   ├── infrastructure/
-│   │   ├── clay/
-│   │   │   ├── client.ts
-│   │   │   ├── mapper.ts
-│   │   │   └── circuit-breaker.ts
-│   │   ├── cache/
-│   │   ├── queue/
-│   │   └── database/
-│   └── index.ts
-├── config/
-├── k8s/
-│   ├── deployment.yaml
-│   ├── service.yaml
-│   └── hpa.yaml
-└── package.json
-
-other-services/
-├── order-service/       # Calls clay-service
-├── payment-service/
-└── notification-service/
-```
-
-### Key Characteristics
-- Dedicated Clay microservice
-- gRPC for internal communication
-- Event-driven architecture
-- Database per service
-- Kubernetes autoscaling
-- Distributed tracing
-- Circuit breaker per service
-
-### Code Pattern
-```typescript
-// Event-driven with domain isolation
-class ClayAggregate {
-  private events: DomainEvent[] = [];
-
-  process(command: ClayCommand): void {
-    // Domain logic
-    const result = this.execute(command);
-
-    // Emit domain event
-    this.events.push(new ClayProcessedEvent(result));
-  }
-
-  getUncommittedEvents(): DomainEvent[] {
-    return [...this.events];
-  }
-}
-
-// Event handler
-@EventHandler(ClayProcessedEvent)
-class ClayEventHandler {
-  async handle(event: ClayProcessedEvent): Promise<void> {
-    // Saga orchestration
-    await this.sagaOrchestrator.continue(event);
-  }
-}
-```
-
----
-
-## Decision Matrix
-
-| Factor | Monolith | Service Layer | Microservice |
-|--------|----------|---------------|--------------|
-| Team Size | 1-5 | 5-20 | 20+ |
-| DAU | < 10K | 10K-100K | 100K+ |
-| Deployment Frequency | Weekly | Daily | Continuous |
-| Failure Isolation | None | Partial | Full |
-| Operational Complexity | Low | Medium | High |
-| Time to Market | Fastest | Moderate | Slowest |
-
-## Migration Path
-
-```
-Monolith → Service Layer:
-1. Extract Clay code to service/
-2. Add caching layer
-3. Add background processing
-
-Service Layer → Microservice:
-1. Create dedicated clay-service repo
-2. Define gRPC contract
-3. Add event bus
-4. Deploy to Kubernetes
-5. Migrate traffic gradually
-```
+- Clay account with API access
+- Clear understanding of data volume and freshness needs
+- Infrastructure for chosen architecture tier
 
 ## Instructions
 
-### Step 1: Assess Requirements
-Use the decision matrix to identify appropriate variant.
+### Step 1: Direct Integration (Simple)
 
-### Step 2: Choose Architecture
-Select Monolith, Service Layer, or Microservice based on needs.
+**Best for:** Small teams, < 1K enrichments/day, ad-hoc usage.
 
-### Step 3: Implement Structure
-Set up project layout following the chosen blueprint.
+```
+Application -> Clay API -> Enriched Data -> Application DB
+```
 
-### Step 4: Plan Migration Path
-Document upgrade path for future scaling.
+```python
+import requests
 
-## Output
-- Architecture variant selected
-- Project structure implemented
-- Migration path documented
-- Appropriate patterns applied
+def enrich_lead(email: str) -> dict:
+    response = requests.post(
+        f"{CLAY_API}/tables/{TABLE_ID}/rows",
+        json={"rows": [{"email": email}]},
+        headers={"Authorization": f"Bearer {API_KEY}"}
+    )
+    # Poll for enrichment completion
+    row_id = response.json()["row_ids"][0]
+    return poll_enrichment(TABLE_ID, row_id)
+```
+
+**Trade-offs:** Simple but synchronous. Each enrichment blocks until complete (30-60s). No retry or buffering.
+
+### Step 2: Queue-Based Pipeline (Moderate)
+
+**Best for:** Growing teams, 1K-50K enrichments/day, CRM integration.
+
+```
+CRM Webhook -> Queue (Redis/SQS) -> Worker -> Clay API
+                                        |
+                                        v
+                                   Enriched Data -> CRM Update
+```
+
+```python
+from rq import Queue
+import redis
+
+q = Queue(connection=redis.Redis())
+
+def on_new_lead(lead: dict):
+    q.enqueue(enrich_and_update, lead, job_timeout=120)
+
+def enrich_and_update(lead: dict):
+    # Batch multiple leads for efficiency
+    enriched = clay_enrich_batch([lead])
+    crm_client.update_contact(lead["id"], enriched[0])
+```
+
+**Trade-offs:** Decouples enrichment from user flow. Handles retries and batching. Needs queue infrastructure.
+
+### Step 3: Event-Driven with Webhooks (Scale)
+
+**Best for:** Enterprise, 50K+ enrichments/day, real-time data needs.
+
+```
+Data Sources -> Event Bus (Kafka) -> Clay Enrichment Service
+                                            |
+                                     Clay Webhooks -> Event Bus -> Downstream Services
+```
+
+```python
+# Clay enrichment microservice
+class ClayEnrichmentService:
+    def __init__(self, kafka_producer, credit_budget):
+        self.producer = kafka_producer
+        self.budget = credit_budget
+
+    async def handle_event(self, event: dict):
+        if not self.budget.can_afford(1):
+            self.producer.send("dlq.clay", event)
+            return
+        result = await self.enrich(event)
+        self.producer.send("enriched.contacts", result)
+        self.budget.record(1)
+
+# Clay webhook receiver
+@app.post('/clay-webhook')
+async def clay_webhook(request):
+    payload = await request.json()
+    # Clay sends enrichment results via webhook
+    await kafka_producer.send("enriched.contacts", payload)
+    return {"status": "ok"}
+```
+
+**Trade-offs:** Fully async, horizontally scalable. Requires event bus, monitoring, and DLQ handling.
+
+## Decision Matrix
+
+| Factor | Direct | Queue-Based | Event-Driven |
+|--------|--------|-------------|--------------|
+| Volume | < 1K/day | 1K-50K/day | 50K+/day |
+| Latency | Sync (30-60s) | Async (minutes) | Async (seconds) |
+| Cost Control | Manual | Budget caps | Credit circuit breaker |
+| Complexity | Low | Medium | High |
+| Team Size | 1-3 | 3-10 | 10+ |
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Over-engineering | Wrong variant choice | Start simpler |
-| Performance issues | Wrong layer | Add caching/async |
-| Team friction | Complex architecture | Simplify or train |
-| Deployment complexity | Microservice overhead | Consider service layer |
+| Slow enrichment in request path | Using direct integration at scale | Move to queue-based |
+| Lost enrichment results | No webhook receiver | Set up Clay webhooks |
+| Credit overspend | No budget enforcement | Add credit circuit breaker |
+| Stale data | No re-enrichment schedule | Add periodic refresh jobs |
 
 ## Examples
 
-### Quick Variant Check
-```bash
-# Count team size and DAU to select variant
-echo "Team: $(git log --format='%ae' | sort -u | wc -l) developers"
-echo "DAU: Check analytics dashboard"
+### Migration Path
+```
+Direct (MVP) -> Queue-Based (growth) -> Event-Driven (scale)
+
+Step 1: Extract Clay calls into a service module
+Step 2: Add Redis queue between API and Clay service
+Step 3: Add Clay webhook receiver
+Step 4: Replace polling with webhook-driven updates
 ```
 
 ## Resources
-- [Monolith First](https://martinfowler.com/bliki/MonolithFirst.html)
-- [Microservices Guide](https://martinfowler.com/microservices/)
-- [Clay Architecture Guide](https://docs.clay.com/architecture)
-
-## Next Steps
-For common anti-patterns, see `clay-known-pitfalls`.
+- [Clay API Docs](https://docs.clay.com/api)
+- [Clay Webhooks](https://docs.clay.com/webhooks)

@@ -16,206 +16,170 @@ compatible-with: claude-code, codex, openclaw
 # Clay Data Handling
 
 ## Overview
-Handle sensitive data correctly when integrating with Clay.
+Manage lead data through Clay enrichment pipelines safely. Covers data import validation, deduplication strategies, enrichment data retention, GDPR-compliant lead management, and secure export to CRM systems.
 
 ## Prerequisites
-- Understanding of GDPR/CCPA requirements
-- Clay SDK with data export capabilities
-- Database for audit logging
-- Scheduled job infrastructure for cleanup
+- Clay account with API access
+- Understanding of data enrichment sources
+- CRM integration for lead export
+- Knowledge of GDPR/CCPA lead data requirements
 
-## Data Classification
+## Instructions
 
-| Category | Examples | Handling |
-|----------|----------|----------|
-| PII | Email, name, phone | Encrypt, minimize |
-| Sensitive | API keys, tokens | Never log, rotate |
-| Business | Usage metrics | Aggregate when possible |
-| Public | Product names | Standard handling |
-
-## PII Detection
-
+### Step 1: Validate and Clean Import Data
 ```typescript
-const PII_PATTERNS = [
-  { type: 'email', regex: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g },
-  { type: 'phone', regex: /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g },
-  { type: 'ssn', regex: /\b\d{3}-\d{2}-\d{4}\b/g },
-  { type: 'credit_card', regex: /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b/g },
-];
+import { z } from 'zod';
 
-function detectPII(text: string): { type: string; match: string }[] {
-  const findings: { type: string; match: string }[] = [];
+const LeadImportSchema = z.object({
+  email: z.string().email().toLowerCase(),
+  first_name: z.string().min(1).optional(),
+  last_name: z.string().min(1).optional(),
+  company_domain: z.string().url().or(z.string().regex(/^[\w.-]+\.\w{2,}$/)),
+  company_name: z.string().optional(),
+  linkedin_url: z.string().url().optional(),
+});
 
-  for (const pattern of PII_PATTERNS) {
-    const matches = text.matchAll(pattern.regex);
-    for (const match of matches) {
-      findings.push({ type: pattern.type, match: match[0] });
+function validateImportData(records: any[]) {
+  const valid: any[] = [];
+  const invalid: Array<{ record: any; error: string }> = [];
+
+  for (const record of records) {
+    const result = LeadImportSchema.safeParse(record);
+    if (result.success) {
+      valid.push(result.data);
+    } else {
+      invalid.push({
+        record,
+        error: result.error.issues.map(i => i.message).join('; '),
+      });
     }
   }
 
-  return findings;
+  return { valid, invalid, validRate: (valid.length / records.length * 100).toFixed(1) + '%' };
 }
 ```
 
-## Data Redaction
-
+### Step 2: Deduplication Before Enrichment
 ```typescript
-function redactPII(data: Record<string, any>): Record<string, any> {
-  const sensitiveFields = ['email', 'phone', 'ssn', 'password', 'apiKey'];
-  const redacted = { ...data };
+interface DedupeResult {
+  unique: any[];
+  duplicates: any[];
+  dedupeRate: string;
+}
 
-  for (const field of sensitiveFields) {
-    if (redacted[field]) {
-      redacted[field] = '[REDACTED]';
+function deduplicateLeads(leads: any[]): DedupeResult {
+  const seen = new Map<string, any>();
+  const duplicates: any[] = [];
+
+  for (const lead of leads) {
+    // Primary key: email, fallback: domain + name
+    const key = lead.email ||
+      `${lead.company_domain}:${lead.first_name}:${lead.last_name}`;
+
+    if (seen.has(key)) {
+      duplicates.push(lead);
+    } else {
+      seen.set(key, lead);
     }
   }
-
-  return redacted;
-}
-
-// Use in logging
-console.log('Clay request:', redactPII(requestData));
-```
-
-## Data Retention Policy
-
-### Retention Periods
-| Data Type | Retention | Reason |
-|-----------|-----------|--------|
-| API logs | 30 days | Debugging |
-| Error logs | 90 days | Root cause analysis |
-| Audit logs | 7 years | Compliance |
-| PII | Until deletion request | GDPR/CCPA |
-
-### Automatic Cleanup
-
-```typescript
-async function cleanupClayData(retentionDays: number): Promise<void> {
-  const cutoff = new Date();
-  cutoff.setDate(cutoff.getDate() - retentionDays);
-
-  await db.clayLogs.deleteMany({
-    createdAt: { $lt: cutoff },
-    type: { $nin: ['audit', 'compliance'] },
-  });
-}
-
-// Schedule daily cleanup
-cron.schedule('0 3 * * *', () => cleanupClayData(30));
-```
-
-## GDPR/CCPA Compliance
-
-### Data Subject Access Request (DSAR)
-
-```typescript
-async function exportUserData(userId: string): Promise<DataExport> {
-  const clayData = await clayClient.getUserData(userId);
 
   return {
-    source: 'Clay',
-    exportedAt: new Date().toISOString(),
-    data: {
-      profile: clayData.profile,
-      activities: clayData.activities,
-      // Include all user-related data
-    },
+    unique: Array.from(seen.values()),
+    duplicates,
+    dedupeRate: ((duplicates.length / leads.length) * 100).toFixed(1) + '%',
   };
 }
 ```
 
-### Right to Deletion
-
+### Step 3: Enrichment Data with Retention Tracking
 ```typescript
-async function deleteUserData(userId: string): Promise<DeletionResult> {
-  // 1. Delete from Clay
-  await clayClient.deleteUser(userId);
+interface EnrichedLead {
+  email: string;
+  company_name?: string;
+  enrichment_source: string;
+  enriched_at: string;
+  retention_expires: string;
+  data: Record<string, any>;
+}
 
-  // 2. Delete local copies
-  await db.clayUserCache.deleteMany({ userId });
+function addRetentionMetadata(lead: any, retentionDays = 365): EnrichedLead {
+  const enrichedAt = new Date();
+  const expiresAt = new Date(enrichedAt);
+  expiresAt.setDate(expiresAt.getDate() + retentionDays);
 
-  // 3. Audit log (required to keep)
-  await auditLog.record({
-    action: 'GDPR_DELETION',
-    userId,
-    service: 'clay',
-    timestamp: new Date(),
-  });
+  return {
+    ...lead,
+    enriched_at: enrichedAt.toISOString(),
+    retention_expires: expiresAt.toISOString(),
+    enrichment_source: 'clay',
+  };
+}
 
-  return { success: true, deletedAt: new Date() };
+async function cleanExpiredData(leads: EnrichedLead[]): Promise<{
+  active: EnrichedLead[];
+  expired: EnrichedLead[];
+}> {
+  const now = new Date();
+  const active = leads.filter(l => new Date(l.retention_expires) > now);
+  const expired = leads.filter(l => new Date(l.retention_expires) <= now);
+
+  return { active, expired };
 }
 ```
 
-## Data Minimization
-
+### Step 4: GDPR-Compliant Export
 ```typescript
-// Only request needed fields
-const user = await clayClient.getUser(userId, {
-  fields: ['id', 'name'], // Not email, phone, address
-});
+function prepareForExport(leads: EnrichedLead[], destination: 'crm' | 'csv' | 'analytics') {
+  return leads.map(lead => {
+    const exported: Record<string, any> = {
+      email: lead.email,
+      company_name: lead.company_name,
+    };
 
-// Don't store unnecessary data
-const cacheData = {
-  id: user.id,
-  name: user.name,
-  // Omit sensitive fields
-};
+    if (destination === 'analytics') {
+      // Strip PII for analytics
+      delete exported.email;
+      exported.company_hash = hashString(lead.company_name || '');
+    }
+
+    if (destination === 'crm') {
+      exported.source = 'clay_enrichment';
+      exported.enriched_at = lead.enriched_at;
+      exported.consent_basis = 'legitimate_interest';
+    }
+
+    return exported;
+  });
+}
+
+function hashString(s: string): string {
+  const { createHash } = require('crypto');
+  return createHash('sha256').update(s).digest('hex').slice(0, 12);
+}
 ```
-
-## Instructions
-
-### Step 1: Classify Data
-Categorize all Clay data by sensitivity level.
-
-### Step 2: Implement PII Detection
-Add regex patterns to detect sensitive data in logs.
-
-### Step 3: Configure Redaction
-Apply redaction to sensitive fields before logging.
-
-### Step 4: Set Up Retention
-Configure automatic cleanup with appropriate retention periods.
-
-## Output
-- Data classification documented
-- PII detection implemented
-- Redaction in logging active
-- Retention policy enforced
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| PII in logs | Missing redaction | Wrap logging with redact |
-| Deletion failed | Data locked | Check dependencies |
-| Export incomplete | Timeout | Increase batch size |
-| Audit gap | Missing entries | Review log pipeline |
+| High duplicate rate | Same list imported twice | Run dedup before enrichment |
+| Invalid emails | Bad source data | Validate with zod before import |
+| Expired data in CRM | No retention cleanup | Schedule weekly expiration check |
+| Missing consent | No legal basis tracked | Add consent_basis to all exports |
 
 ## Examples
 
-### Quick PII Scan
+### Full Import Pipeline
 ```typescript
-const findings = detectPII(JSON.stringify(userData));
-if (findings.length > 0) {
-  console.warn(`PII detected: ${findings.map(f => f.type).join(', ')}`);
+async function importLeads(rawRecords: any[]) {
+  const { valid, invalid } = validateImportData(rawRecords);
+  const { unique, duplicates } = deduplicateLeads(valid);
+  const enriched = unique.map(l => addRetentionMetadata(l));
+
+  console.log(`Import: ${rawRecords.length} total, ${unique.length} unique, ${invalid.length} rejected`);
+  return enriched;
 }
 ```
 
-### Redact Before Logging
-```typescript
-const safeData = redactPII(apiResponse);
-logger.info('Clay response:', safeData);
-```
-
-### GDPR Data Export
-```typescript
-const userExport = await exportUserData('user-123');
-await sendToUser(userExport);
-```
-
 ## Resources
-- [GDPR Developer Guide](https://gdpr.eu/developers/)
-- [CCPA Compliance Guide](https://oag.ca.gov/privacy/ccpa)
-- [Clay Privacy Guide](https://docs.clay.com/privacy)
-
-## Next Steps
-For enterprise access control, see `clay-enterprise-rbac`.
+- [Clay API Documentation](https://docs.clay.com/api)
+- [GDPR Lead Data Requirements](https://gdpr.eu/what-is-gdpr/)

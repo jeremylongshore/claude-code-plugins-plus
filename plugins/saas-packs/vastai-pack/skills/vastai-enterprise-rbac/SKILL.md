@@ -16,208 +16,93 @@ compatible-with: claude-code, codex, openclaw
 # Vast.ai Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Vast.ai integrations.
+Control access to Vast.ai GPU cloud instances and spending through team billing and API key management. Vast.ai uses a marketplace model with per-GPU-hour pricing that varies by GPU type (RTX 4090 ~$0.20/hr, A100 ~$1.50/hr, H100 ~$3.00/hr). Access control focuses on API key scoping, spending limits, and restricting which GPU types and regions each team can provision to prevent runaway compute costs.
 
 ## Prerequisites
-- Vast.ai Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum Vast.aiRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface Vast.aiPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<Vast.aiRole, Vast.aiPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: Vast.aiRole,
-  action: keyof Vast.aiPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Vast.ai SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://vastai.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/vastai/callback',
-};
-
-// Map IdP groups to Vast.ai roles
-const groupRoleMapping: Record<string, Vast.aiRole> = {
-  'Engineering': Vast.aiRole.Developer,
-  'Platform-Admins': Vast.aiRole.Admin,
-  'Data-Team': Vast.aiRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@vastai/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.VASTAI_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.VASTAI_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/vastai/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface Vast.aiOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: Vast.aiRole;
-}
-
-async function createOrganization(
-  config: Vast.aiOrganization
-): Promise<void> {
-  await vastaiClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireVast.aiPermission(
-  requiredPermission: keyof Vast.aiPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { vastaiRole: Vast.aiRole };
-
-    if (!checkPermission(user.vastaiRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/vastai/resource/:id',
-  requireVast.aiPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface Vast.aiAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: Vast.aiRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logVast.aiAccess(entry: Vast.aiAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Vast.ai account with team billing enabled
+- API key from cloud.vast.ai
+- Understanding of GPU pricing tiers on the Vast.ai marketplace
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Vast.ai permissions.
+### Step 1: Create Scoped API Keys per Team
+```bash
+# Key for the ML training team (high-end GPUs, high budget)
+vastai set api-key --name "ml-training-team" \
+  --spending-limit 5000 \
+  --allowed-gpu-types "A100,H100" \
+  --max-instances 10
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+# Key for the inference team (cost-efficient GPUs)
+vastai set api-key --name "inference-prod" \
+  --spending-limit 1000 \
+  --allowed-gpu-types "RTX_4090,RTX_3090,A6000" \
+  --max-instances 20
+```
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 2: Implement GPU Provisioning Policies
+```typescript
+// vastai-policy.ts - Enforce rules before provisioning
+interface ProvisionPolicy {
+  allowedGpuTypes: string[];
+  maxPricePerHour: number;
+  maxInstances: number;
+  requireSpotInstance: boolean;
+}
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+const TEAM_POLICIES: Record<string, ProvisionPolicy> = {
+  training:  { allowedGpuTypes: ['A100', 'H100'], maxPricePerHour: 4.00, maxInstances: 10, requireSpotInstance: false },
+  inference: { allowedGpuTypes: ['RTX_4090', 'RTX_3090'], maxPricePerHour: 0.50, maxInstances: 20, requireSpotInstance: true },
+  research:  { allowedGpuTypes: ['RTX_4090'], maxPricePerHour: 0.30, maxInstances: 3, requireSpotInstance: true },
+};
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 3: Set Spending Alerts
+```bash
+# Configure spending alerts via the Vast.ai CLI
+vastai set spending-alert --threshold 1000 --email "ops@company.com"
+vastai set spending-alert --threshold 4000 --email "ops@company.com,finance@company.com"
+vastai set auto-stop --daily-limit 500  # Auto-destroy instances if daily spend exceeds $500
+```
+
+### Step 4: Monitor Active Instances and Costs
+```bash
+# List all running instances with cost data
+vastai show instances --raw | jq '.[] | {
+  id, gpu_name, num_gpus,
+  cost_per_hr: .dph_total,
+  hours_running: ((.end_date // now) - .start_date) / 3600,
+  total_cost: .total_dph
+}'
+
+# Get team spending summary
+vastai show invoices --last 30 | jq '.total_cost'
+```
+
+### Step 5: Auto-Terminate Idle Instances
+```bash
+# Cron job: destroy instances idle for more than 2 hours
+vastai show instances --raw | \
+  jq -r '.[] | select(.gpu_utilization < 5 and .duration > 7200) | .id' | \
+  xargs -I{} vastai destroy instance {}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `insufficient_funds` | Account balance depleted | Add credits or enable auto-recharge |
+| Instance won't start | GPU type unavailable in region | Try different region or GPU type |
+| Spending limit hit | Daily cap reached | Increase limit or wait for next day |
+| SSH connection refused | Instance still initializing | Wait 2-3 minutes after creation |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Find cheapest available A100 instance
+vastai search offers 'gpu_name=A100 num_gpus=1 reliability>0.95' \
+  --order 'dph_total' --limit 5
 ```
 
-## Resources
-- [Vast.ai Enterprise Guide](https://docs.vastai.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `vastai-migration-deep-dive`.
+```bash
+# Quick cost estimate for a training job
+echo "8x A100 for 24 hours at ~\$1.50/hr/gpu = \$$(echo '8 * 1.50 * 24' | bc)"
+```

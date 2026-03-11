@@ -16,195 +16,105 @@ compatible-with: claude-code, codex, openclaw
 # Replit Deploy Integration
 
 ## Overview
-Deploy Replit-powered applications to popular platforms with proper secrets management.
+Deploy applications on Replit's hosting platform. Covers Replit Deployments (Static, Autoscale, Reserved VM), configuring `.replit` files, managing secrets, and setting up custom domains. Replit handles infrastructure automatically, making it ideal for rapid deployment.
 
 ## Prerequisites
-- Replit API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Replit account with Deployments enabled (Core or Teams plan)
+- Application code in a Repl
+- Custom domain (optional) with DNS access
+- Replit CLI or web dashboard access
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
-```bash
-# Add Replit secrets to Vercel
-vercel secrets add replit_api_key sk_live_***
-vercel secrets add replit_webhook_secret whsec_***
-
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
-```
-
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "REPLIT_API_KEY": "@replit_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
-  }
-}
-```
-
-## Fly.io Deployment
-
-### fly.toml
+### Step 1: Configure .replit File
 ```toml
-app = "my-replit-app"
-primary_region = "iad"
+# .replit
+run = "npm start"
+entrypoint = "index.js"
+
+[deployment]
+run = ["sh", "-c", "npm start"]
+deploymentTarget = "autoscale"
+
+[nix]
+channel = "stable-24_05"
 
 [env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
+NODE_ENV = "production"
+PORT = "3000"
 ```
 
-### Secrets
+### Step 2: Set Secrets
+```markdown
+1. Open your Repl in Replit
+2. Click the lock icon (Secrets) in the sidebar
+3. Add each secret:
+   - Key: API_KEY, Value: your-api-key
+   - Key: DATABASE_URL, Value: your-db-url
+```
+
 ```bash
-# Set Replit secrets
-fly secrets set REPLIT_API_KEY=sk_live_***
-fly secrets set REPLIT_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
+# Or via Replit CLI
+replit secrets set API_KEY "your-api-key"
+replit secrets set DATABASE_URL "your-db-url"
 ```
 
-## Google Cloud Run
-
-### Dockerfile
-```dockerfile
-FROM node:20-slim
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-CMD ["npm", "start"]
+### Step 3: Deploy
+```markdown
+1. Click "Deploy" button in the Replit editor
+2. Choose deployment type:
+   - **Static**: For frontend-only apps (free)
+   - **Autoscale**: Scales to zero, pay per request
+   - **Reserved VM**: Always-on, fixed monthly cost
+3. Configure machine size (0.25 - 8 vCPU)
+4. Click "Deploy"
 ```
 
-### Deploy Script
-```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="replit-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=REPLIT_API_KEY=replit-api-key:latest
+### Step 4: Custom Domain Setup
+```markdown
+1. Go to Deployment settings > Custom Domain
+2. Enter your domain: app.example.com
+3. Add DNS records:
+   - CNAME: app -> your-repl.replit.app
+4. Wait for SSL certificate provisioning
 ```
 
-## Environment Configuration Pattern
-
+### Step 5: Health Check Endpoint
 ```typescript
-// config/replit.ts
-interface ReplitConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getReplitConfig(): ReplitConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.REPLIT_API_KEY!,
-    environment: env as ReplitConfig['environment'],
-    webhookSecret: process.env.REPLIT_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
+// health.ts
 export async function GET() {
-  const replitStatus = await checkReplitConnection();
-
   return Response.json({
-    status: replitStatus ? 'healthy' : 'degraded',
-    services: {
-      replit: replitStatus,
-    },
+    status: "healthy",
+    environment: process.env.REPL_SLUG,
+    region: process.env.REPLIT_DEPLOYMENT_REGION,
     timestamp: new Date().toISOString(),
   });
 }
 ```
 
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Replit API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Replit integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Replit connectivity.
-
-## Output
-- Application deployed to production
-- Replit secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
-
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Deploy fails | Build error | Check console logs in Replit |
+| Port mismatch | Wrong PORT | Use `process.env.PORT` or 3000 |
+| Cold start slow | Autoscale spin-up | Use Reserved VM for latency-sensitive apps |
+| Secret not found | Not set in Secrets | Add secret via Replit sidebar |
 
 ## Examples
 
-### Quick Deploy Script
+### Quick Deploy via CLI
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add replit_api_key "$REPLIT_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set REPLIT_API_KEY="$REPLIT_API_KEY"
-    fly deploy
-    ;;
-esac
+# Install Replit CLI
+npm install -g replit
+
+# Deploy current repl
+replit deploy --type autoscale
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Replit Deploy Guide](https://docs.replit.com/deploy)
+- [Replit Deployments](https://docs.replit.com/hosting/deployments)
+- [Replit Secrets](https://docs.replit.com/programming-ide/storing-sensitive-information)
+- [Custom Domains](https://docs.replit.com/hosting/custom-domains)
 
 ## Next Steps
-For webhook handling, see `replit-webhooks-events`.
+For multi-environment setup, see `replit-multi-env-setup`.

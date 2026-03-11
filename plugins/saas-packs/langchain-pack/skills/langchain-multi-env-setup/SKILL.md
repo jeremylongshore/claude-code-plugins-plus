@@ -16,343 +16,181 @@ compatible-with: claude-code, codex, openclaw
 # LangChain Multi-Environment Setup
 
 ## Overview
-Configure and manage LangChain applications across development, staging, and production environments.
+Configure LangChain across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
 
 ## Prerequisites
-- LangChain application ready for deployment
-- Access to multiple deployment environments
-- Secrets management solution (e.g., GCP Secret Manager)
+- Separate LangChain API keys per environment
+- Secret management solution (environment variables, Vault, or cloud secrets)
+- CI/CD pipeline with environment-aware deployment
+- Application with environment detection logic
+
+## Environment Strategy
+
+| Environment | Purpose | API Key Source | Settings |
+|-------------|---------|---------------|----------|
+| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
+| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
+| Production | Live traffic | Secret manager | Optimized, hardened |
 
 ## Instructions
 
-### Step 1: Environment Configuration Structure
+### Step 1: Configuration Structure
 ```
 config/
-├── base.yaml                # Shared configuration
-├── development.yaml         # Development overrides
-├── staging.yaml            # Staging overrides
-├── production.yaml         # Production overrides
-└── settings.py             # Configuration loader
+  langchain/
+    base.ts           # Shared defaults
+    development.ts    # Dev overrides
+    staging.ts        # Staging overrides
+    production.ts     # Prod overrides
+    index.ts          # Environment resolver
 ```
 
-### Step 2: Create Base Configuration
-```yaml
-# config/base.yaml
-app:
-  name: langchain-app
-  version: "1.0.0"
-
-llm:
-  max_retries: 3
-  request_timeout: 30
-
-logging:
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  date_format: "%Y-%m-%d %H:%M:%S"
-
-cache:
-  enabled: true
-  ttl_seconds: 3600
+### Step 2: Base Configuration
+```typescript
+// config/langchain/base.ts
+export const baseConfig = {
+  timeout: 30000,
+  maxRetries: 3,
+  cache: {
+    enabled: true,
+    ttlSeconds: 300,
+  },
+};
 ```
 
-### Step 3: Environment-Specific Overrides
-```yaml
-# config/development.yaml
-extends: base
+### Step 3: Environment-Specific Configs
+```typescript
+// config/langchain/development.ts
+import { baseConfig } from "./base";
 
-app:
-  debug: true
+export const developmentConfig = {
+  ...baseConfig,
+  apiKey: process.env.OPENAI_API_KEY_DEV,
+  debug: true,
+  cache: { enabled: false, ttlSeconds: 60 },
+};
 
-llm:
-  provider: openai
-  model: gpt-4o-mini
-  temperature: 0.7
-  # Use lower tier in dev
+// config/langchain/staging.ts
+import { baseConfig } from "./base";
 
-logging:
-  level: DEBUG
+export const stagingConfig = {
+  ...baseConfig,
+  apiKey: process.env.OPENAI_API_KEY_STAGING,
+  debug: false,
+};
 
-cache:
-  type: memory
-  # In-memory cache for local dev
+// config/langchain/production.ts
+import { baseConfig } from "./base";
 
-langsmith:
-  tracing: true
-  project: langchain-dev
+export const productionConfig = {
+  ...baseConfig,
+  apiKey: process.env.OPENAI_API_KEY_PROD,
+  debug: false,
+  timeout: 60000,
+  maxRetries: 5,
+  cache: { enabled: true, ttlSeconds: 600 },
+};
 ```
 
-```yaml
-# config/staging.yaml
-extends: base
+### Step 4: Environment Resolver
+```typescript
+// config/langchain/index.ts
+import { developmentConfig } from "./development";
+import { stagingConfig } from "./staging";
+import { productionConfig } from "./production";
 
-app:
-  debug: false
+type Environment = "development" | "staging" | "production";
 
-llm:
-  provider: openai
-  model: gpt-4o-mini
-  temperature: 0.5
+const configs = {
+  development: developmentConfig,
+  staging: stagingConfig,
+  production: productionConfig,
+};
 
-logging:
-  level: INFO
+export function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || "development";
+  if (env === "production") return "production";
+  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
+  return "development";
+}
 
-cache:
-  type: redis
-  url: ${REDIS_URL}  # From environment
+export function getLangChainConfig() {
+  const env = detectEnvironment();
+  const config = configs[env];
 
-langsmith:
-  tracing: true
-  project: langchain-staging
+  if (!config.apiKey) {
+    throw new Error(`OPENAI_API_KEY not set for environment: ${env}`);
+  }
+
+  return { ...config, environment: env };
+}
 ```
 
-```yaml
-# config/production.yaml
-extends: base
-
-app:
-  debug: false
-
-llm:
-  provider: openai
-  model: gpt-4o
-  temperature: 0.3
-  max_retries: 5
-  request_timeout: 60
-
-logging:
-  level: WARNING
-
-cache:
-  type: redis
-  url: ${REDIS_URL}
-
-langsmith:
-  tracing: true
-  project: langchain-production
-
-monitoring:
-  prometheus: true
-  sentry: true
-```
-
-### Step 4: Configuration Loader
-```python
-# config/settings.py
-import os
-from pathlib import Path
-from typing import Any, Dict, Optional
-import yaml
-from pydantic import BaseModel, Field
-from pydantic_settings import BaseSettings
-
-class LLMConfig(BaseModel):
-    provider: str = "openai"
-    model: str = "gpt-4o-mini"
-    temperature: float = 0.7
-    max_retries: int = 3
-    request_timeout: int = 30
-
-class CacheConfig(BaseModel):
-    enabled: bool = True
-    type: str = "memory"
-    url: Optional[str] = None
-    ttl_seconds: int = 3600
-
-class LangSmithConfig(BaseModel):
-    tracing: bool = False
-    project: str = "default"
-
-class Settings(BaseSettings):
-    environment: str = Field(default="development", env="ENVIRONMENT")
-    llm: LLMConfig = Field(default_factory=LLMConfig)
-    cache: CacheConfig = Field(default_factory=CacheConfig)
-    langsmith: LangSmithConfig = Field(default_factory=LangSmithConfig)
-
-    class Config:
-        env_file = ".env"
-
-def load_config(environment: str = None) -> Settings:
-    """Load configuration for specified environment."""
-    env = environment or os.environ.get("ENVIRONMENT", "development")
-    config_dir = Path(__file__).parent
-
-    # Load base config
-    config = {}
-    base_path = config_dir / "base.yaml"
-    if base_path.exists():
-        with open(base_path) as f:
-            config = yaml.safe_load(f) or {}
-
-    # Load environment-specific overrides
-    env_path = config_dir / f"{env}.yaml"
-    if env_path.exists():
-        with open(env_path) as f:
-            env_config = yaml.safe_load(f) or {}
-            config = deep_merge(config, env_config)
-
-    # Resolve environment variables
-    config = resolve_env_vars(config)
-
-    return Settings(**config)
-
-def deep_merge(base: Dict, override: Dict) -> Dict:
-    """Deep merge two dictionaries."""
-    result = base.copy()
-    for key, value in override.items():
-        if key in result and isinstance(result[key], dict) and isinstance(value, dict):
-            result[key] = deep_merge(result[key], value)
-        else:
-            result[key] = value
-    return result
-
-def resolve_env_vars(config: Any) -> Any:
-    """Resolve ${VAR} patterns in config values."""
-    if isinstance(config, dict):
-        return {k: resolve_env_vars(v) for k, v in config.items()}
-    elif isinstance(config, list):
-        return [resolve_env_vars(v) for v in config]
-    elif isinstance(config, str) and config.startswith("${") and config.endswith("}"):
-        var_name = config[2:-1]
-        return os.environ.get(var_name, "")
-    return config
-
-# Global settings instance
-settings = load_config()
-```
-
-### Step 5: Environment-Aware LLM Factory
-```python
-# infrastructure/llm_factory.py
-from config.settings import settings
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
-from langchain_core.language_models import BaseChatModel
-
-def create_llm() -> BaseChatModel:
-    """Create LLM based on environment configuration."""
-    llm_config = settings.llm
-
-    if llm_config.provider == "openai":
-        return ChatOpenAI(
-            model=llm_config.model,
-            temperature=llm_config.temperature,
-            max_retries=llm_config.max_retries,
-            request_timeout=llm_config.request_timeout,
-        )
-    elif llm_config.provider == "anthropic":
-        return ChatAnthropic(
-            model=llm_config.model,
-            temperature=llm_config.temperature,
-            max_retries=llm_config.max_retries,
-        )
-    else:
-        raise ValueError(f"Unknown provider: {llm_config.provider}")
-```
-
-### Step 6: Environment-Specific Secrets
-```python
-# infrastructure/secrets.py
-import os
-from google.cloud import secretmanager
-
-def get_secret(secret_id: str) -> str:
-    """Get secret from appropriate source based on environment."""
-    env = os.environ.get("ENVIRONMENT", "development")
-
-    if env == "development":
-        # Use local .env file in development
-        return os.environ.get(secret_id, "")
-
-    else:
-        # Use Secret Manager in staging/production
-        client = secretmanager.SecretManagerServiceClient()
-        project_id = os.environ.get("GCP_PROJECT")
-        name = f"projects/{project_id}/secrets/{secret_id}/versions/latest"
-        response = client.access_secret_version(request={"name": name})
-        return response.payload.data.decode("UTF-8")
-
-# Usage
-openai_key = get_secret("OPENAI_API_KEY")
-```
-
-### Step 7: Docker Compose for Local Environments
-```yaml
-# docker-compose.yml
-version: '3.8'
-
-services:
-  app:
-    build: .
-    environment:
-      - ENVIRONMENT=development
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-    ports:
-      - "8080:8080"
-    volumes:
-      - ./src:/app/src
-    depends_on:
-      - redis
-
-  redis:
-    image: redis:7-alpine
-    ports:
-      - "6379:6379"
-
-  # Local development tools
-  langsmith-proxy:
-    image: langchain/langsmith-proxy:latest
-    environment:
-      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
-```
-
-## Output
-- Multi-environment configuration structure
-- Environment-aware configuration loader
-- Secrets management per environment
-- Docker Compose for local development
-
-## Examples
-
-### Running Different Environments
+### Step 5: Secret Management
 ```bash
-# Development
-ENVIRONMENT=development python main.py
+# Local development (.env.local - git-ignored)
+OPENAI_API_KEY_DEV=your-dev-key
 
-# Staging
-ENVIRONMENT=staging python main.py
+# GitHub Actions
+# Settings > Environments > staging/production > Secrets
+# Add OPENAI_API_KEY_STAGING and OPENAI_API_KEY_PROD
 
-# Production
-ENVIRONMENT=production python main.py
+# AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name langchain/production/api-key \
+  --secret-string "your-prod-key"
+
+# GCP Secret Manager
+echo -n "your-prod-key" | gcloud secrets create langchain-api-key-prod --data-file=-
 ```
 
-### Environment Promotion Workflow
-```bash
-# 1. Test in development
-ENVIRONMENT=development pytest tests/
+```yaml
+# .github/workflows/deploy.yml
+jobs:
+  deploy-staging:
+    environment: staging
+    env:
+      OPENAI_API_KEY_STAGING: ${{ secrets.OPENAI_API_KEY_STAGING }}
 
-# 2. Deploy to staging
-gcloud run deploy langchain-api-staging \
-    --set-env-vars="ENVIRONMENT=staging"
-
-# 3. Run integration tests
-ENVIRONMENT=staging pytest tests/integration/
-
-# 4. Deploy to production
-gcloud run deploy langchain-api \
-    --set-env-vars="ENVIRONMENT=production"
+  deploy-production:
+    environment: production
+    env:
+      OPENAI_API_KEY_PROD: ${{ secrets.OPENAI_API_KEY_PROD }}
 ```
 
 ## Error Handling
-| Error | Cause | Solution |
+| Issue | Cause | Solution |
 |-------|-------|----------|
-| Config Not Found | Missing YAML file | Ensure environment file exists |
-| Secret Missing | Not in Secret Manager | Add secret for environment |
-| Env Var Not Set | Missing .env | Create .env from .env.example |
+| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
+| Secret not found | Wrong secret path | Verify secret manager configuration |
+| Cross-env data leak | Shared API key | Use separate keys per environment |
+| Config validation fail | Missing field | Add startup validation with Zod schema |
+
+## Examples
+
+### Quick Environment Check
+```typescript
+const config = getLangChainConfig();
+console.log(`Running in ${config.environment}`);
+console.log(`Cache enabled: ${config.cache.enabled}`);
+```
+
+### Startup Validation
+```typescript
+import { z } from "zod";
+
+const configSchema = z.object({
+  apiKey: z.string().min(1, "OPENAI_API_KEY is required"),
+  environment: z.enum(["development", "staging", "production"]),
+  timeout: z.number().positive(),
+});
+
+const config = configSchema.parse(getLangChainConfig());
+```
 
 ## Resources
-- [Pydantic Settings](https://docs.pydantic.dev/latest/concepts/pydantic_settings/)
-- [GCP Secret Manager](https://cloud.google.com/secret-manager/docs)
-- [12-Factor App Config](https://12factor.net/config)
+- [LangChain Configuration](https://python.langchain.com/docs/guides/deployment)
+- [LangSmith Environments](https://docs.smith.langchain.com)
 
 ## Next Steps
-Use `langchain-observability` for environment-specific monitoring.
+For deployment, see `langchain-deploy-integration`.

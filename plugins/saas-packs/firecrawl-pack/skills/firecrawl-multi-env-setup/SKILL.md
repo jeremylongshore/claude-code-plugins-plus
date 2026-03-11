@@ -13,211 +13,184 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# FireCrawl Multi-Environment Setup
+# Firecrawl Multi-Environment Setup
 
 ## Overview
-Configure FireCrawl across development, staging, and production environments.
+Configure Firecrawl across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
 
 ## Prerequisites
-- Separate FireCrawl accounts or API keys per environment
-- Secret management solution (Vault, AWS Secrets Manager, etc.)
-- CI/CD pipeline with environment variables
-- Environment detection in application
+- Separate Firecrawl API keys per environment
+- Secret management solution (environment variables, Vault, or cloud secrets)
+- CI/CD pipeline with environment-aware deployment
+- Application with environment detection logic
 
 ## Environment Strategy
 
-| Environment | Purpose | API Keys | Data |
-|-------------|---------|----------|------|
-| Development | Local dev | Test keys | Sandbox |
-| Staging | Pre-prod validation | Staging keys | Test data |
-| Production | Live traffic | Production keys | Real data |
+| Environment | Purpose | API Key Source | Settings |
+|-------------|---------|---------------|----------|
+| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
+| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
+| Production | Live traffic | Secret manager | Optimized, hardened |
 
-## Configuration Structure
+## Instructions
 
+### Step 1: Configuration Structure
 ```
 config/
-├── firecrawl/
-│   ├── base.json           # Shared config
-│   ├── development.json    # Dev overrides
-│   ├── staging.json        # Staging overrides
-│   └── production.json     # Prod overrides
+  firecrawl/
+    base.ts           # Shared defaults
+    development.ts    # Dev overrides
+    staging.ts        # Staging overrides
+    production.ts     # Prod overrides
+    index.ts          # Environment resolver
 ```
 
-### base.json
-```json
-{
-  "timeout": 30000,
-  "retries": 3,
-  "cache": {
-    "enabled": true,
-    "ttlSeconds": 60
-  }
-}
-```
-
-### development.json
-```json
-{
-  "apiKey": "${FIRECRAWL_API_KEY}",
-  "baseUrl": "https://api-sandbox.firecrawl.com",
-  "debug": true,
-  "cache": {
-    "enabled": false
-  }
-}
-```
-
-### staging.json
-```json
-{
-  "apiKey": "${FIRECRAWL_API_KEY_STAGING}",
-  "baseUrl": "https://api-staging.firecrawl.com",
-  "debug": false
-}
-```
-
-### production.json
-```json
-{
-  "apiKey": "${FIRECRAWL_API_KEY_PROD}",
-  "baseUrl": "https://api.firecrawl.com",
-  "debug": false,
-  "retries": 5
-}
-```
-
-## Environment Detection
-
+### Step 2: Base Configuration
 ```typescript
-// src/firecrawl/config.ts
-import baseConfig from '../../config/firecrawl/base.json';
-
-type Environment = 'development' | 'staging' | 'production';
-
-function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || 'development';
-  const validEnvs: Environment[] = ['development', 'staging', 'production'];
-  return validEnvs.includes(env as Environment)
-    ? (env as Environment)
-    : 'development';
-}
-
-export function getFireCrawlConfig() {
-  const env = detectEnvironment();
-  const envConfig = require(`../../config/firecrawl/${env}.json`);
-
-  return {
-    ...baseConfig,
-    ...envConfig,
-    environment: env,
-  };
-}
-```
-
-## Secret Management by Environment
-
-### Local Development
-```bash
-# .env.local (git-ignored)
-FIRECRAWL_API_KEY=sk_test_dev_***
-```
-
-### CI/CD (GitHub Actions)
-```yaml
-env:
-  FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY_${{ matrix.environment }} }}
-```
-
-### Production (Vault/Secrets Manager)
-```bash
-# AWS Secrets Manager
-aws secretsmanager get-secret-value --secret-id firecrawl/production/api-key
-
-# GCP Secret Manager
-gcloud secrets versions access latest --secret=firecrawl-api-key
-
-# HashiCorp Vault
-vault kv get -field=api_key secret/firecrawl/production
-```
-
-## Environment Isolation
-
-```typescript
-// Prevent production operations in non-prod
-function guardProductionOperation(operation: string): void {
-  const config = getFireCrawlConfig();
-
-  if (config.environment !== 'production') {
-    console.warn(`[firecrawl] ${operation} blocked in ${config.environment}`);
-    throw new Error(`${operation} only allowed in production`);
-  }
-}
-
-// Usage
-async function deleteAllData() {
-  guardProductionOperation('deleteAllData');
-  // Dangerous operation here
-}
-```
-
-## Feature Flags by Environment
-
-```typescript
-const featureFlags: Record<Environment, Record<string, boolean>> = {
-  development: {
-    newFeature: true,
-    betaApi: true,
-  },
-  staging: {
-    newFeature: true,
-    betaApi: false,
-  },
-  production: {
-    newFeature: false,
-    betaApi: false,
+// config/firecrawl/base.ts
+export const baseConfig = {
+  timeout: 30000,
+  maxRetries: 3,
+  cache: {
+    enabled: true,
+    ttlSeconds: 300,
   },
 };
 ```
 
-## Instructions
+### Step 3: Environment-Specific Configs
+```typescript
+// config/firecrawl/development.ts
+import { baseConfig } from "./base";
 
-### Step 1: Create Config Structure
-Set up the base and per-environment configuration files.
+export const developmentConfig = {
+  ...baseConfig,
+  apiKey: process.env.FIRECRAWL_API_KEY_DEV,
+  debug: true,
+  cache: { enabled: false, ttlSeconds: 60 },
+};
 
-### Step 2: Implement Environment Detection
-Add logic to detect and load environment-specific config.
+// config/firecrawl/staging.ts
+import { baseConfig } from "./base";
 
-### Step 3: Configure Secrets
-Store API keys securely using your secret management solution.
+export const stagingConfig = {
+  ...baseConfig,
+  apiKey: process.env.FIRECRAWL_API_KEY_STAGING,
+  debug: false,
+};
 
-### Step 4: Add Environment Guards
-Implement safeguards for production-only operations.
+// config/firecrawl/production.ts
+import { baseConfig } from "./base";
 
-## Output
-- Multi-environment config structure
-- Environment detection logic
-- Secure secret management
-- Production safeguards enabled
+export const productionConfig = {
+  ...baseConfig,
+  apiKey: process.env.FIRECRAWL_API_KEY_PROD,
+  debug: false,
+  timeout: 60000,
+  maxRetries: 5,
+  cache: { enabled: true, ttlSeconds: 600 },
+};
+```
+
+### Step 4: Environment Resolver
+```typescript
+// config/firecrawl/index.ts
+import { developmentConfig } from "./development";
+import { stagingConfig } from "./staging";
+import { productionConfig } from "./production";
+
+type Environment = "development" | "staging" | "production";
+
+const configs = {
+  development: developmentConfig,
+  staging: stagingConfig,
+  production: productionConfig,
+};
+
+export function detectEnvironment(): Environment {
+  const env = process.env.NODE_ENV || "development";
+  if (env === "production") return "production";
+  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
+  return "development";
+}
+
+export function getFirecrawlConfig() {
+  const env = detectEnvironment();
+  const config = configs[env];
+
+  if (!config.apiKey) {
+    throw new Error(`FIRECRAWL_API_KEY not set for environment: ${env}`);
+  }
+
+  return { ...config, environment: env };
+}
+```
+
+### Step 5: Secret Management
+```bash
+# Local development (.env.local - git-ignored)
+FIRECRAWL_API_KEY_DEV=your-dev-key
+
+# GitHub Actions
+# Settings > Environments > staging/production > Secrets
+# Add FIRECRAWL_API_KEY_STAGING and FIRECRAWL_API_KEY_PROD
+
+# AWS Secrets Manager
+aws secretsmanager create-secret \
+  --name firecrawl/production/api-key \
+  --secret-string "your-prod-key"
+
+# GCP Secret Manager
+echo -n "your-prod-key" | gcloud secrets create firecrawl-api-key-prod --data-file=-
+```
+
+```yaml
+# .github/workflows/deploy.yml
+jobs:
+  deploy-staging:
+    environment: staging
+    env:
+      FIRECRAWL_API_KEY_STAGING: ${{ secrets.FIRECRAWL_API_KEY_STAGING }}
+
+  deploy-production:
+    environment: production
+    env:
+      FIRECRAWL_API_KEY_PROD: ${{ secrets.FIRECRAWL_API_KEY_PROD }}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable |
-| Secret not found | Wrong secret path | Verify secret manager config |
-| Config merge fails | Invalid JSON | Validate config files |
-| Production guard triggered | Wrong environment | Check NODE_ENV value |
+| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
+| Secret not found | Wrong secret path | Verify secret manager configuration |
+| Cross-env data leak | Shared API key | Use separate keys per environment |
+| Config validation fail | Missing field | Add startup validation with Zod schema |
 
 ## Examples
 
 ### Quick Environment Check
 ```typescript
-const env = getFireCrawlConfig();
-console.log(`Running in ${env.environment} with ${env.baseUrl}`);
+const config = getFirecrawlConfig();
+console.log(`Running in ${config.environment}`);
+console.log(`Cache enabled: ${config.cache.enabled}`);
+```
+
+### Startup Validation
+```typescript
+import { z } from "zod";
+
+const configSchema = z.object({
+  apiKey: z.string().min(1, "FIRECRAWL_API_KEY is required"),
+  environment: z.enum(["development", "staging", "production"]),
+  timeout: z.number().positive(),
+});
+
+const config = configSchema.parse(getFirecrawlConfig());
 ```
 
 ## Resources
-- [FireCrawl Environments Guide](https://docs.firecrawl.com/environments)
-- [12-Factor App Config](https://12factor.net/config)
+- [Firecrawl Documentation](https://docs.firecrawl.dev)
+- [Firecrawl Self-Hosting](https://docs.firecrawl.dev/self-hosting)
 
 ## Next Steps
-For observability setup, see `firecrawl-observability`.
+For deployment, see `firecrawl-deploy-integration`.

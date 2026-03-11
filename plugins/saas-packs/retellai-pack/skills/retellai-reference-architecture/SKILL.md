@@ -16,224 +16,181 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Retell AI integrations.
+Production architecture for AI voice agents with Retell AI. Covers agent design, LLM configuration, telephony integration, custom tool functions, and call analytics for conversational AI applications.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Retell AI SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Retell AI account with API key
+- `retell-sdk` npm package
+- Twilio or phone number for inbound/outbound calls
+- WebSocket server for custom LLM (optional)
 
-## Project Structure
-
-```
-my-retellai-project/
-├── src/
-│   ├── retellai/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── retellai/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── retellai/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── retellai/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── retellai/
-│   └── integration/
-│       └── retellai/
-├── config/
-│   ├── retellai.development.json
-│   ├── retellai.staging.json
-│   └── retellai.production.json
-└── docs/
-    └── retellai/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Retell AI Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/retellai/client.ts
-export class Retell AIService {
-  private client: RetellAIClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: Retell AIConfig) {
-    this.client = new RetellAIClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('retellai');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/retellai/errors.ts
-export class Retell AIServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'Retell AIServiceError';
-  }
-}
-
-export function wrapRetell AIError(error: unknown): Retell AIServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/retellai/health.ts
-export async function checkRetell AIHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await retellaiClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Retell AI    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Retell AI    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/retellai.ts
-export interface Retell AIConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadRetell AIConfig(): Retell AIConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./retellai.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Phone/Web Interface                      │
+│  Twilio Number │ Web Call │ SIP Trunk                 │
+└──────────┬───────────────────────────────────────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────┐
+│              Retell AI Platform                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐   │
+│  │ Voice Agent  │  │ LLM Engine   │  │ Voice     │   │
+│  │ (config)     │  │ (prompts)    │  │ (TTS/STT) │   │
+│  └──────┬───────┘  └──────┬───────┘  └───────────┘   │
+│         │                 │                           │
+│         ▼                 ▼                           │
+│  ┌──────────────────────────────────────────────┐     │
+│  │         Custom Tool Functions                 │     │
+│  │  Book Appt │ Check Status │ Transfer Call    │     │
+│  └──────────────────────┬───────────────────────┘     │
+└─────────────────────────┼───────────────────────────┘
+                          │
+                          ▼
+┌──────────────────────────────────────────────────────┐
+│              Your Backend                             │
+│  Webhook Handler │ Tool Endpoints │ Call Analytics    │
+└──────────────────────────────────────────────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: Agent and LLM Configuration
+```typescript
+import Retell from 'retell-sdk';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+const retell = new Retell({ apiKey: process.env.RETELL_API_KEY! });
 
-### Step 3: Add Error Handling
-Implement custom error classes for Retell AI operations.
+// Create LLM with personality and tools
+async function createAgentLLM() {
+  const llm = await retell.llm.create({
+    model: 'gpt-4o-mini',
+    general_prompt: `You are Sarah, a friendly appointment scheduling assistant.
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Retell AI connectivity.
+Instructions:
+- Greet callers warmly and ask how you can help
+- Collect: name, preferred date/time, reason for appointment
+- Confirm all details before booking
+- Keep responses under 2 sentences
+- Be conversational, not robotic`,
+    begin_message: "Hi there! This is Sarah. How can I help you today?",
+    general_tools: [
+      {
+        type: 'end_call',
+        name: 'end_call',
+        description: 'End call when conversation is complete',
+      },
+      {
+        type: 'custom',
+        name: 'book_appointment',
+        description: 'Book an appointment after collecting all details',
+        url: `${process.env.BASE_URL}/api/retell/book`,
+        parameters: {
+          type: 'object',
+          properties: {
+            name: { type: 'string', description: 'Caller name' },
+            date: { type: 'string', description: 'Preferred date' },
+            time: { type: 'string', description: 'Preferred time' },
+            reason: { type: 'string', description: 'Appointment reason' },
+          },
+          required: ['name', 'date', 'time'],
+        },
+      },
+    ],
+  });
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+  return llm;
+}
+```
+
+### Step 2: Voice Agent Setup
+```typescript
+async function createVoiceAgent(llmId: string) {
+  return retell.agent.create({
+    agent_name: 'Appointment Scheduler',
+    response_engine: { type: 'retell-llm', llm_id: llmId },
+    voice_id: 'eleven_labs_rachel',
+    language: 'en-US',
+    responsiveness: 0.8,
+    interruption_sensitivity: 0.7,
+    enable_backchannel: true,
+    voice_speed: 1.0,
+    voice_temperature: 0.5,
+  });
+}
+```
+
+### Step 3: Tool Function Endpoints
+```typescript
+import express from 'express';
+const app = express();
+
+// Tool function: book appointment
+app.post('/api/retell/book', express.json(), async (req, res) => {
+  const { name, date, time, reason } = req.body.args;
+
+  const booking = await bookAppointment({ name, date, time, reason });
+
+  res.json({
+    result: `Appointment booked for ${name} on ${date} at ${time}. Confirmation number: ${booking.id}`,
+  });
+});
+
+// Webhook: call events
+app.post('/api/retell/webhook', express.json(), async (req, res) => {
+  const { event, call } = req.body;
+
+  if (event === 'call_ended') {
+    await saveCallRecord({
+      callId: call.call_id,
+      duration: call.end_timestamp - call.start_timestamp,
+      transcript: call.transcript,
+      sentiment: call.call_analysis?.sentiment,
+    });
+  }
+
+  res.json({ received: true });
+});
+```
+
+### Step 4: Initiate Outbound Calls
+```typescript
+async function makeOutboundCall(
+  toNumber: string,
+  agentId: string,
+  metadata?: Record<string, string>
+) {
+  return retell.call.createPhoneCall({
+    from_number: process.env.RETELL_PHONE_NUMBER!,
+    to_number: toNumber,
+    override_agent_id: agentId,
+    metadata,
+  });
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Retell AI types |
-| Test isolation | Shared state | Use dependency injection |
+| Agent not responding | LLM prompt too complex | Simplify prompt, use shorter responses |
+| Tool call fails | Webhook URL unreachable | Verify endpoint is publicly accessible |
+| Poor voice quality | High latency | Use gpt-4o-mini, increase responsiveness |
+| Call drops | WebSocket timeout | Check network stability, add reconnection |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/retellai/{handlers} src/services/retellai src/api/retellai
-touch src/retellai/{client,config,types,errors}.ts
-touch src/services/retellai/{index,sync,cache}.ts
+### Quick Agent Test
+```typescript
+// Create a web call for testing (no phone needed)
+const webCall = await retell.call.createWebCall({
+  agent_id: agentId,
+  metadata: { test: 'true' },
+});
+console.log(`Test call URL: ${webCall.call_id}`);
 ```
 
 ## Resources
-- [Retell AI SDK Documentation](https://docs.retellai.com/sdk)
-- [Retell AI Best Practices](https://docs.retellai.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `retellai-multi-env-setup`.
+- [Retell AI Documentation](https://docs.retellai.com)
+- [Retell Agent Setup](https://docs.retellai.com/build-agent)
+- [Retell API Reference](https://docs.retellai.com/api-references)

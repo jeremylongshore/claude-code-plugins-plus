@@ -16,208 +16,76 @@ compatible-with: claude-code, codex, openclaw
 # Replit Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Replit integrations.
+Manage team access to Replit workspaces, deployments, and AI coding features using its Teams and Organizations model. Replit uses per-seat licensing with workspace roles: Owner, Admin, and Member. Key controls include who can create and deploy Repls, access to Replit AI (Ghostwriter), and deployment environment permissions. Organizations on the Teams for Business or Enterprise plan get SSO, centralized billing, and deployment policies.
 
 ## Prerequisites
-- Replit Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum ReplitRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface ReplitPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<ReplitRole, ReplitPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: ReplitRole,
-  action: keyof ReplitPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Replit SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://replit.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/replit/callback',
-};
-
-// Map IdP groups to Replit roles
-const groupRoleMapping: Record<string, ReplitRole> = {
-  'Engineering': ReplitRole.Developer,
-  'Platform-Admins': ReplitRole.Admin,
-  'Data-Team': ReplitRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@replit/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.REPLIT_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.REPLIT_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/replit/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface ReplitOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: ReplitRole;
-}
-
-async function createOrganization(
-  config: ReplitOrganization
-): Promise<void> {
-  await replitClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireReplitPermission(
-  requiredPermission: keyof ReplitPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { replitRole: ReplitRole };
-
-    if (!checkPermission(user.replitRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/replit/resource/:id',
-  requireReplitPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface ReplitAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: ReplitRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logReplitAccess(entry: ReplitAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Replit Teams for Business or Enterprise plan (per-seat pricing)
+- Organization owner or admin role
+- SSO identity provider configured (Enterprise only)
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Replit permissions.
+### Step 1: Configure Organization Roles
+```yaml
+# replit-role-matrix.yaml
+roles:
+  owner:
+    permissions: [manage_billing, manage_members, manage_deployments, create_repls, use_ai, admin_settings]
+  admin:
+    permissions: [manage_members, manage_deployments, create_repls, use_ai]
+  member:
+    permissions: [create_repls, use_ai, deploy_to_staging]
+    restrictions: [cannot_deploy_to_prod, cannot_manage_members]
+```
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+### Step 2: Invite and Manage Team Members
+Navigate to Replit Teams > Members and invite users with assigned roles. For bulk management, use the Replit API:
+```bash
+# Invite a team member
+curl -X POST https://replit.com/api/v1/teams/TEAM_ID/members \
+  -H "Authorization: Bearer $REPLIT_API_KEY" \
+  -d '{"email": "dev@company.com", "role": "member"}'
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+# List current team members
+curl https://replit.com/api/v1/teams/TEAM_ID/members \
+  -H "Authorization: Bearer $REPLIT_API_KEY" | jq '.[] | {username, email, role}'
+```
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+### Step 3: Control Deployment Permissions
+Separate staging and production deployment access:
+- Members: can deploy to development/staging URLs
+- Admins: can deploy to custom domains and production
+- Owner: can configure deployment infrastructure (reserved VMs, autoscaling)
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+Configure in Team Settings > Deployments > Permission Policy.
+
+### Step 4: Enable SSO (Enterprise Only)
+In Organization Settings > Security > SSO:
+- Configure SAML 2.0 with your IdP (Okta, Azure AD, Google Workspace)
+- Map IdP groups to Replit roles
+- Enable "Require SSO" to block password-based login
+- Set session timeout policy (recommended: 12 hours)
+
+### Step 5: Audit Activity
+```bash
+# Review recent team activity
+curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
+  -H "Authorization: Bearer $REPLIT_API_KEY" | \
+  jq '.events[] | {user, action, resource, timestamp}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| Member can't deploy | Missing deployment permission | Promote to Admin or adjust deployment policy |
+| SSO login redirect loop | Incorrect callback URL | Verify ACS URL in IdP matches Replit config |
+| Seat limit exceeded | Too many active members | Remove inactive members or upgrade seat count |
+| AI features disabled | Ghostwriter not enabled for team | Enable AI features in Team Settings |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Offboard a team member: remove access and transfer Repls
+curl -X DELETE "https://replit.com/api/v1/teams/TEAM_ID/members/USERNAME" \
+  -H "Authorization: Bearer $REPLIT_API_KEY"
+# Transfer critical Repls via Team Settings > Repls > Transfer Ownership
 ```
-
-## Resources
-- [Replit Enterprise Guide](https://docs.replit.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `replit-migration-deep-dive`.

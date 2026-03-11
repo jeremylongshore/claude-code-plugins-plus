@@ -16,187 +16,93 @@ compatible-with: claude-code, codex, openclaw
 # CodeRabbit Cost Tuning
 
 ## Overview
-Optimize CodeRabbit costs through smart tier selection, sampling, and usage monitoring.
+Optimize CodeRabbit per-seat licensing costs by right-sizing seat allocation, focusing reviews on high-value repositories, and configuring review scope to minimize unnecessary AI processing. CodeRabbit charges per seat based on active committers. The key cost levers are: limiting which repositories have CodeRabbit enabled (focus on high-risk codebases), setting seat policy to "active committers only" (excludes bots and inactive users), and configuring path exclusions to skip low-value file reviews.
 
 ## Prerequisites
-- Access to CodeRabbit billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateCodeRabbitCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class CodeRabbitUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching CodeRabbit budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateCodeRabbitCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await coderabbitClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => coderabbitClient.get(id)));
-
-// Use batch endpoint (1 call)
-await coderabbitClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new CodeRabbitClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in CodeRabbit dashboard
-# Or use API if available:
-# Check CodeRabbit documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM coderabbit_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- CodeRabbit Pro or Enterprise plan
+- GitHub/GitLab org admin access
+- Access to CodeRabbit dashboard for seat management
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review CodeRabbit dashboard for usage patterns and costs.
+### Step 1: Audit Seat Utilization
+Navigate to CodeRabbit Dashboard > Organization > Seats:
+```yaml
+# Identify wasted seats
+seat_audit:
+  active_committers_30d: 15    # These cost money
+  bot_accounts: 3              # Dependabot, Renovate, CI bots (should NOT be seats)
+  inactive_30d: 7              # Haven't committed in 30 days
+  total_seats_billed: 25
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+  # Savings: Remove bots (3) + inactive (7) = 10 fewer seats
+  # At ~$15/seat/month = $150/month savings
+```
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+### Step 2: Set Seat Policy to Active Committers Only
+In CodeRabbit Dashboard > Organization > Billing:
+- Switch seat policy from "All org members" to "Active committers"
+- Define active as "committed in the last 30 days"
+- Exclude bot accounts explicitly: `dependabot[bot]`, `renovate[bot]`, `github-actions[bot]`
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 3: Focus Reviews on High-Value Repos
+```yaml
+# Only enable CodeRabbit on repos where code review matters most
+enable_coderabbit:
+  - backend-api           # Business logic, security-critical
+  - payment-service       # PCI compliance, financial data
+  - infrastructure        # Terraform/IaC, blast radius high
+  - mobile-app            # Customer-facing, release quality
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+disable_coderabbit:
+  - documentation         # Markdown only, low risk
+  - design-assets         # Binary files, not reviewable
+  - sandbox               # Experimental, throwaway code
+  - archived-*            # Read-only repos
+```
+
+### Step 4: Exclude Low-Value Paths from Reviews
+```yaml
+# .coderabbit.yaml - Skip files that don't benefit from AI review
+reviews:
+  auto_review:
+    enabled: true
+    ignore_paths:
+      - "**/*.md"           # Documentation
+      - "**/*.lock"         # Lock files
+      - "**/*.json"         # Config/data files
+      - "vendor/**"         # Third-party code
+      - "dist/**"           # Build output
+      - "**/*.generated.*"  # Auto-generated files
+      - "migrations/**"     # DB migrations (review manually)
+```
+
+### Step 5: Monitor Review Value
+Track comment acceptance rate. If acceptance rate is below 30%, reviews are costing money without adding value:
+```bash
+# Check acceptance rate for the last 100 PRs
+gh api repos/ORG/REPO/pulls?state=closed\&per_page=100 --jq '.[].number' | \
+  head -20 | xargs -I{} gh api repos/ORG/REPO/pulls/{}/reviews \
+  --jq '[.[] | select(.user.login=="coderabbitai")] | length' | \
+  awk '{sum+=$1; count++} END {print "Avg reviews/PR:", sum/count}'
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Seat count higher than expected | Bots counted as seats | Explicitly exclude bot accounts |
+| Reviews on archived repos | App still installed | Remove CodeRabbit from archived repos |
+| Low review acceptance | Wrong review profile | Switch from `nitpicky` to `chill` |
+| Cannot reduce seats | Active committers in all repos | Disable CodeRabbit on low-value repos |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateCodeRabbitCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```yaml
+# Minimal .coderabbit.yaml for cost-conscious setup
+reviews:
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: [main]  # Only review PRs to main (skip feature-to-feature)
+    ignore_paths: ["**/*.md", "**/*.lock", "vendor/**"]
+  profile: "assertive"    # Balanced signal-to-noise
 ```
-
-## Resources
-- [CodeRabbit Pricing](https://coderabbit.com/pricing)
-- [CodeRabbit Billing Dashboard](https://dashboard.coderabbit.com/billing)
-
-## Next Steps
-For architecture patterns, see `coderabbit-reference-architecture`.

@@ -16,236 +16,98 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Observability
 
 ## Overview
-Set up comprehensive observability for Retell AI integrations.
+Monitor Retell AI voice agent performance, call quality, and costs. Key signals include call completion rate (successful conversations vs dropped/failed calls), average call duration, latency between user speech and agent response (conversational latency), per-minute cost tracking, and agent-level success metrics (did the voice agent accomplish its goal). Since Retell charges per minute of voice call, monitoring call duration directly tracks cost.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Retell AI account with active voice agents
+- API access for call data queries
+- Webhook endpoint for real-time call events
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `retellai_requests_total` | Counter | Total API requests |
-| `retellai_request_duration_seconds` | Histogram | Request latency |
-| `retellai_errors_total` | Counter | Error count by type |
-| `retellai_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
+### Step 1: Monitor Call Quality via Webhooks
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
+// retell-webhook-handler.ts
+app.post('/webhooks/retell', (req, res) => {
+  const { call_id, agent_id, status, duration_seconds, cost_usd, disconnect_reason } = req.body;
 
-const registry = new Registry();
+  emitCounter('retell_calls_total', 1, { agent: agent_id, status });
+  emitHistogram('retell_call_duration_sec', duration_seconds, { agent: agent_id });
+  emitCounter('retell_cost_usd', cost_usd, { agent: agent_id });
 
-const requestCounter = new Counter({
-  name: 'retellai_requests_total',
-  help: 'Total Retell AI API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
+  if (disconnect_reason === 'agent_error' || disconnect_reason === 'system_error') {
+    emitCounter('retell_call_errors_total', 1, { agent: agent_id, reason: disconnect_reason });
+  }
 
-const requestDuration = new Histogram({
-  name: 'retellai_request_duration_seconds',
-  help: 'Retell AI request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'retellai_errors_total',
-  help: 'Retell AI errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
+  res.sendStatus(200);
 });
 ```
 
-### Instrumented Client
+### Step 2: Track Conversational Latency
+```bash
+# Query recent calls for response latency metrics
+curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | \
+  jq '.[] | {
+    call_id, agent_name, duration_sec: .duration,
+    avg_response_latency_ms: .avg_agent_response_latency_ms,
+    cost_usd: .cost,
+    disconnect_reason
+  }'
+```
 
+### Step 3: Monitor Per-Agent Performance
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
+// Track which agents are performing well vs poorly
+async function agentPerformanceReport() {
+  const agents = await retellApi.listAgents();
+  for (const agent of agents) {
+    const calls = await retellApi.listCalls({ agent_id: agent.agent_id, limit: 100 });
+    const completed = calls.filter(c => c.status === 'completed').length;
+    const avgDuration = calls.reduce((s, c) => s + c.duration, 0) / calls.length;
+    const totalCost = calls.reduce((s, c) => s + c.cost, 0);
 
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+    emitGauge('retell_agent_completion_rate', completed / calls.length * 100, { agent: agent.agent_name });
+    emitGauge('retell_agent_avg_duration_sec', avgDuration, { agent: agent.agent_name });
+    emitGauge('retell_agent_total_cost_usd', totalCost, { agent: agent.agent_name });
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
-```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('retellai-client');
-
-async function tracedRetell AICall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`retellai.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
-}
-```
-
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'retellai',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logRetell AIOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'retellai',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 4: Alert on Voice Quality Issues
 ```yaml
-# retellai_alerts.yaml
 groups:
-  - name: retellai_alerts
+  - name: retell
     rules:
-      - alert: Retell AIHighErrorRate
-        expr: |
-          rate(retellai_errors_total[5m]) /
-          rate(retellai_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Retell AI error rate > 5%"
-
-      - alert: Retell AIHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(retellai_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Retell AI P95 latency > 2s"
-
-      - alert: Retell AIDown
-        expr: up{job="retellai"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Retell AI integration is down"
+      - alert: RetellHighDropRate
+        expr: rate(retell_calls_total{status="failed"}[1h]) / rate(retell_calls_total[1h]) > 0.1
+        annotations: { summary: "Retell call failure rate exceeds 10%" }
+      - alert: RetellHighLatency
+        expr: histogram_quantile(0.95, rate(retell_response_latency_ms_bucket[1h])) > 2000
+        annotations: { summary: "Retell agent response latency P95 exceeds 2 seconds" }
+      - alert: RetellCostSpike
+        expr: increase(retell_cost_usd[1h]) > 50
+        annotations: { summary: "Retell voice costs exceed $50/hour" }
+      - alert: RetellShortCalls
+        expr: histogram_quantile(0.25, rate(retell_call_duration_sec_bucket[1h])) < 10
+        annotations: { summary: "25% of calls ending in <10 seconds (agent issue?)" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Retell AI Request Rate",
-      "targets": [{
-        "expr": "rate(retellai_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Retell AI Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(retellai_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: call volume by agent, call completion rate (pie chart), duration distribution, per-minute cost trend, conversational latency p50/p95, disconnect reasons breakdown, and daily cost by agent. Short calls (<10s) often indicate agent prompt issues where the bot fails to engage.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| High call drop rate | Agent prompt causing hang-ups | Review and simplify agent greeting prompt |
+| Latency >2 seconds | LLM response slow | Use faster model or reduce prompt complexity |
+| Unexpected high costs | Long average call duration | Add conversation time limits in agent config |
+| No webhook events | Endpoint unreachable | Verify webhook URL and SSL certificate |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick cost summary for today
+curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
+  -H "Authorization: Bearer $RETELL_API_KEY" | \
+  jq '{calls_today: length, total_cost: ([.[].cost] | add), avg_duration_sec: ([.[].duration] | add / length)}'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Retell AI Observability Guide](https://docs.retellai.com/observability)
-
-## Next Steps
-For incident response, see `retellai-incident-runbook`.

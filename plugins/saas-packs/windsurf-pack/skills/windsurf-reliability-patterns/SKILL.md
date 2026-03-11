@@ -16,276 +16,97 @@ compatible-with: claude-code, codex, openclaw
 # Windsurf Reliability Patterns
 
 ## Overview
-Production-grade reliability patterns for Windsurf integrations.
+Reliability patterns for Windsurf AI IDE workflows. Windsurf's Cascade agent can modify multiple files simultaneously, making reliable workflows dependent on proper checkpointing, review, and rollback strategies.
 
 ## Prerequisites
-- Understanding of circuit breaker pattern
-- opossum or similar library installed
-- Queue infrastructure for DLQ
-- Caching layer for fallbacks
-
-## Circuit Breaker
-
-```typescript
-import CircuitBreaker from 'opossum';
-
-const windsurfBreaker = new CircuitBreaker(
-  async (operation: () => Promise<any>) => operation(),
-  {
-    timeout: 30000,
-    errorThresholdPercentage: 50,
-    resetTimeout: 30000,
-    volumeThreshold: 10,
-  }
-);
-
-// Events
-windsurfBreaker.on('open', () => {
-  console.warn('Windsurf circuit OPEN - requests failing fast');
-  alertOps('Windsurf circuit breaker opened');
-});
-
-windsurfBreaker.on('halfOpen', () => {
-  console.info('Windsurf circuit HALF-OPEN - testing recovery');
-});
-
-windsurfBreaker.on('close', () => {
-  console.info('Windsurf circuit CLOSED - normal operation');
-});
-
-// Usage
-async function safeWindsurfCall<T>(fn: () => Promise<T>): Promise<T> {
-  return windsurfBreaker.fire(fn);
-}
-```
-
-## Idempotency Keys
-
-```typescript
-import { v4 as uuidv4 } from 'uuid';
-import crypto from 'crypto';
-
-// Generate deterministic idempotency key from input
-function generateIdempotencyKey(
-  operation: string,
-  params: Record<string, any>
-): string {
-  const data = JSON.stringify({ operation, params });
-  return crypto.createHash('sha256').update(data).digest('hex');
-}
-
-// Or use random key with storage
-class IdempotencyManager {
-  private store: Map<string, { key: string; expiresAt: Date }> = new Map();
-
-  getOrCreate(operationId: string): string {
-    const existing = this.store.get(operationId);
-    if (existing && existing.expiresAt > new Date()) {
-      return existing.key;
-    }
-
-    const key = uuidv4();
-    this.store.set(operationId, {
-      key,
-      expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
-    });
-    return key;
-  }
-}
-```
-
-## Bulkhead Pattern
-
-```typescript
-import PQueue from 'p-queue';
-
-// Separate queues for different operations
-const windsurfQueues = {
-  critical: new PQueue({ concurrency: 10 }),
-  normal: new PQueue({ concurrency: 5 }),
-  bulk: new PQueue({ concurrency: 2 }),
-};
-
-async function prioritizedWindsurfCall<T>(
-  priority: 'critical' | 'normal' | 'bulk',
-  fn: () => Promise<T>
-): Promise<T> {
-  return windsurfQueues[priority].add(fn);
-}
-
-// Usage
-await prioritizedWindsurfCall('critical', () =>
-  windsurfClient.processPayment(order)
-);
-
-await prioritizedWindsurfCall('bulk', () =>
-  windsurfClient.syncCatalog(products)
-);
-```
-
-## Timeout Hierarchy
-
-```typescript
-const TIMEOUT_CONFIG = {
-  connect: 5000,      // Initial connection
-  request: 30000,     // Standard requests
-  upload: 120000,     // File uploads
-  longPoll: 300000,   // Webhook long-polling
-};
-
-async function timedoutWindsurfCall<T>(
-  operation: 'connect' | 'request' | 'upload' | 'longPoll',
-  fn: () => Promise<T>
-): Promise<T> {
-  const timeout = TIMEOUT_CONFIG[operation];
-
-  return Promise.race([
-    fn(),
-    new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`Windsurf ${operation} timeout`)), timeout)
-    ),
-  ]);
-}
-```
-
-## Graceful Degradation
-
-```typescript
-interface WindsurfFallback {
-  enabled: boolean;
-  data: any;
-  staleness: 'fresh' | 'stale' | 'very_stale';
-}
-
-async function withWindsurfFallback<T>(
-  fn: () => Promise<T>,
-  fallbackFn: () => Promise<T>
-): Promise<{ data: T; fallback: boolean }> {
-  try {
-    const data = await fn();
-    // Update cache for future fallback
-    await updateFallbackCache(data);
-    return { data, fallback: false };
-  } catch (error) {
-    console.warn('Windsurf failed, using fallback:', error.message);
-    const data = await fallbackFn();
-    return { data, fallback: true };
-  }
-}
-```
-
-## Dead Letter Queue
-
-```typescript
-interface DeadLetterEntry {
-  id: string;
-  operation: string;
-  payload: any;
-  error: string;
-  attempts: number;
-  lastAttempt: Date;
-}
-
-class WindsurfDeadLetterQueue {
-  private queue: DeadLetterEntry[] = [];
-
-  add(entry: Omit<DeadLetterEntry, 'id' | 'lastAttempt'>): void {
-    this.queue.push({
-      ...entry,
-      id: uuidv4(),
-      lastAttempt: new Date(),
-    });
-  }
-
-  async processOne(): Promise<boolean> {
-    const entry = this.queue.shift();
-    if (!entry) return false;
-
-    try {
-      await windsurfClient[entry.operation](entry.payload);
-      console.log(`DLQ: Successfully reprocessed ${entry.id}`);
-      return true;
-    } catch (error) {
-      entry.attempts++;
-      entry.lastAttempt = new Date();
-
-      if (entry.attempts < 5) {
-        this.queue.push(entry);
-      } else {
-        console.error(`DLQ: Giving up on ${entry.id} after 5 attempts`);
-        await alertOnPermanentFailure(entry);
-      }
-      return false;
-    }
-  }
-}
-```
-
-## Health Check with Degraded State
-
-```typescript
-type HealthStatus = 'healthy' | 'degraded' | 'unhealthy';
-
-async function windsurfHealthCheck(): Promise<{
-  status: HealthStatus;
-  details: Record<string, any>;
-}> {
-  const checks = {
-    api: await checkApiConnectivity(),
-    circuitBreaker: windsurfBreaker.stats(),
-    dlqSize: deadLetterQueue.size(),
-  };
-
-  const status: HealthStatus =
-    !checks.api.connected ? 'unhealthy' :
-    checks.circuitBreaker.state === 'open' ? 'degraded' :
-    checks.dlqSize > 100 ? 'degraded' :
-    'healthy';
-
-  return { status, details: checks };
-}
-```
+- Windsurf installed with Cascade enabled
+- Git repository for version control
+- Understanding of Cascade's multi-file editing model
 
 ## Instructions
 
-### Step 1: Implement Circuit Breaker
-Wrap Windsurf calls with circuit breaker.
+### Step 1: Commit Before Cascade Sessions
 
-### Step 2: Add Idempotency Keys
-Generate deterministic keys for operations.
+Always create a clean git checkpoint before asking Cascade to make changes.
 
-### Step 3: Configure Bulkheads
-Separate queues for different priorities.
+```bash
+# Before starting a Cascade session
+git add -A && git commit -m "checkpoint: before cascade refactor"
 
-### Step 4: Set Up Dead Letter Queue
-Handle permanent failures gracefully.
+# Now ask Cascade to make changes
+# If results are bad:
+git diff               # review what changed
+git checkout -- .      # revert everything
+# Or keep good changes:
+git add specific-file.ts && git commit -m "cascade: extracted service layer"
+```
 
-## Output
-- Circuit breaker protecting Windsurf calls
-- Idempotency preventing duplicates
-- Bulkhead isolation implemented
-- DLQ for failed operations
+### Step 2: Scope Cascade Tasks Narrowly
+
+Large tasks cause Cascade to make sweeping changes that are hard to review.
+
+```
+# BAD: too broad
+"Refactor the authentication system"
+# Cascade may modify 30+ files
+
+# GOOD: incremental, reviewable steps
+Step 1: "Extract the JWT validation logic from src/middleware/auth.ts
+         into a new src/services/jwt.ts module"
+Step 2: "Update src/middleware/auth.ts to import from src/services/jwt.ts"
+Step 3: "Add unit tests for src/services/jwt.ts"
+```
+
+### Step 3: Validate After Each Cascade Edit
+
+Run tests and type checks after every Cascade modification.
+
+```bash
+# After accepting Cascade changes
+npm run typecheck     # catch type errors from refactoring
+npm test              # verify existing behavior preserved
+npm run lint          # check code style
+
+# If any fail, ask Cascade to fix:
+# "The typecheck failed with: [paste error]. Fix the type error in src/services/jwt.ts"
+```
+
+### Step 4: Use .windsurfignore for Workspace Performance
+
+Large workspaces slow down Cascade's context building. Exclude build artifacts.
+
+```gitignore
+# .windsurfignore
+node_modules/
+dist/
+build/
+.next/
+coverage/
+*.min.js
+*.map
+__pycache__/
+.venv/
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circuit stays open | Threshold too low | Adjust error percentage |
-| Duplicate operations | Missing idempotency | Add idempotency key |
-| Queue full | Rate too high | Increase concurrency |
-| DLQ growing | Persistent failures | Investigate root cause |
+| Cascade broke the build | Accepted changes without testing | Git revert, run tests after each edit |
+| Cascade modified wrong files | Ambiguous instructions | Specify exact file paths in prompt |
+| Slow Cascade responses | Large workspace indexed | Add `.windsurfignore` |
+| Lost good changes | Reverted too broadly | Commit incrementally, use `git stash` |
 
 ## Examples
 
-### Quick Circuit Check
-```typescript
-const state = windsurfBreaker.stats().state;
-console.log('Windsurf circuit:', state);
+### Safe Cascade Workflow
+```bash
+git stash                          # save WIP
+git checkout -b cascade/refactor   # new branch
+# Ask Cascade to make changes
+npm test && git add -A && git commit -m "cascade: refactored auth"
+# If bad: git checkout main && git branch -D cascade/refactor
 ```
 
 ## Resources
-- [Circuit Breaker Pattern](https://martinfowler.com/bliki/CircuitBreaker.html)
-- [Opossum Documentation](https://nodeshift.dev/opossum/)
-- [Windsurf Reliability Guide](https://docs.windsurf.com/reliability)
-
-## Next Steps
-For policy enforcement, see `windsurf-policy-guardrails`.
+- [Windsurf Docs](https://docs.windsurf.com)
+- [Cascade Best Practices](https://docs.windsurf.com/cascade)

@@ -16,224 +16,178 @@ compatible-with: claude-code, codex, openclaw
 # Fireflies.ai Reference Architecture
 
 ## Overview
-Production-ready architecture patterns for Fireflies.ai integrations.
+Production architecture for meeting intelligence with Fireflies.ai. Covers transcript processing pipelines, CRM integration, action item extraction, and meeting analytics dashboards using the GraphQL API.
 
 ## Prerequisites
-- Understanding of layered architecture
-- Fireflies.ai SDK knowledge
-- TypeScript project setup
-- Testing framework configured
+- Fireflies.ai API key with GraphQL access
+- GraphQL client (`graphql-request` or `urql`)
+- CRM system for action item sync (optional)
+- Database for transcript storage
 
-## Project Structure
-
-```
-my-fireflies-project/
-├── src/
-│   ├── fireflies/
-│   │   ├── client.ts           # Singleton client wrapper
-│   │   ├── config.ts           # Environment configuration
-│   │   ├── types.ts            # TypeScript types
-│   │   ├── errors.ts           # Custom error classes
-│   │   └── handlers/
-│   │       ├── webhooks.ts     # Webhook handlers
-│   │       └── events.ts       # Event processing
-│   ├── services/
-│   │   └── fireflies/
-│   │       ├── index.ts        # Service facade
-│   │       ├── sync.ts         # Data synchronization
-│   │       └── cache.ts        # Caching layer
-│   ├── api/
-│   │   └── fireflies/
-│   │       └── webhook.ts      # Webhook endpoint
-│   └── jobs/
-│       └── fireflies/
-│           └── sync.ts         # Background sync job
-├── tests/
-│   ├── unit/
-│   │   └── fireflies/
-│   └── integration/
-│       └── fireflies/
-├── config/
-│   ├── fireflies.development.json
-│   ├── fireflies.staging.json
-│   └── fireflies.production.json
-└── docs/
-    └── fireflies/
-        ├── SETUP.md
-        └── RUNBOOK.md
-```
-
-## Layer Architecture
+## Architecture Diagram
 
 ```
-┌─────────────────────────────────────────┐
-│             API Layer                    │
-│   (Controllers, Routes, Webhooks)        │
-├─────────────────────────────────────────┤
-│           Service Layer                  │
-│  (Business Logic, Orchestration)         │
-├─────────────────────────────────────────┤
-│          Fireflies.ai Layer        │
-│   (Client, Types, Error Handling)        │
-├─────────────────────────────────────────┤
-│         Infrastructure Layer             │
-│    (Cache, Queue, Monitoring)            │
-└─────────────────────────────────────────┘
-```
-
-## Key Components
-
-### Step 1: Client Wrapper
-```typescript
-// src/fireflies/client.ts
-export class Fireflies.aiService {
-  private client: Fireflies.aiClient;
-  private cache: Cache;
-  private monitor: Monitor;
-
-  constructor(config: Fireflies.aiConfig) {
-    this.client = new Fireflies.aiClient(config);
-    this.cache = new Cache(config.cacheOptions);
-    this.monitor = new Monitor('fireflies');
-  }
-
-  async get(id: string): Promise<Resource> {
-    return this.cache.getOrFetch(id, () =>
-      this.monitor.track('get', () => this.client.get(id))
-    );
-  }
-}
-```
-
-### Step 2: Error Boundary
-```typescript
-// src/fireflies/errors.ts
-export class Fireflies.aiServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly code: string,
-    public readonly retryable: boolean,
-    public readonly originalError?: Error
-  ) {
-    super(message);
-    this.name = 'Fireflies.aiServiceError';
-  }
-}
-
-export function wrapFireflies.aiError(error: unknown): Fireflies.aiServiceError {
-  // Transform SDK errors to application errors
-}
-```
-
-### Step 3: Health Check
-```typescript
-// src/fireflies/health.ts
-export async function checkFireflies.aiHealth(): Promise<HealthStatus> {
-  try {
-    const start = Date.now();
-    await firefliesClient.ping();
-    return {
-      status: 'healthy',
-      latencyMs: Date.now() - start,
-    };
-  } catch (error) {
-    return { status: 'unhealthy', error: error.message };
-  }
-}
-```
-
-## Data Flow Diagram
-
-```
-User Request
-     │
-     ▼
-┌─────────────┐
-│   API       │
-│   Gateway   │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐    ┌─────────────┐
-│   Service   │───▶│   Cache     │
-│   Layer     │    │   (Redis)   │
-└──────┬──────┘    └─────────────┘
-       │
-       ▼
-┌─────────────┐
-│ Fireflies.ai    │
-│   Client    │
-└──────┬──────┘
-       │
-       ▼
-┌─────────────┐
-│ Fireflies.ai    │
-│   API       │
-└─────────────┘
-```
-
-## Configuration Management
-
-```typescript
-// config/fireflies.ts
-export interface Fireflies.aiConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  timeout: number;
-  retries: number;
-  cache: {
-    enabled: boolean;
-    ttlSeconds: number;
-  };
-}
-
-export function loadFireflies.aiConfig(): Fireflies.aiConfig {
-  const env = process.env.NODE_ENV || 'development';
-  return require(`./fireflies.${env}.json`);
-}
+┌──────────────────────────────────────────────────────┐
+│              Meeting Sources                          │
+│  Zoom │ Google Meet │ Teams │ Dialpad │ Phone        │
+└──────────┬───────────────────────────────┬───────────┘
+           │                               │
+           ▼                               ▼
+┌──────────────────────┐     ┌─────────────────────────┐
+│  Fireflies.ai Bot    │     │  Upload API             │
+│  (auto-join meetings)│     │  (manual recordings)    │
+└──────────┬───────────┘     └──────────┬──────────────┘
+           │                            │
+           ▼                            ▼
+┌──────────────────────────────────────────────────────┐
+│              Fireflies Processing                     │
+│  Transcription │ Speaker ID │ AI Summary │ Actions   │
+└──────────────────────────┬───────────────────────────┘
+                           │
+              ┌────────────┼────────────┐
+              ▼            ▼            ▼
+     ┌──────────────┐ ┌────────┐ ┌──────────────┐
+     │ Transcript   │ │ Action │ │ Webhook      │
+     │ Storage      │ │ Items  │ │ Events       │
+     │ (DB/Search)  │ │ (CRM)  │ │ (Real-time)  │
+     └──────────────┘ └────────┘ └──────────────┘
 ```
 
 ## Instructions
 
-### Step 1: Create Directory Structure
-Set up the project layout following the reference structure above.
+### Step 1: GraphQL Client Setup
+```typescript
+import { GraphQLClient } from 'graphql-request';
 
-### Step 2: Implement Client Wrapper
-Create the singleton client with caching and monitoring.
+const fireflies = new GraphQLClient('https://api.fireflies.ai/graphql', {
+  headers: { Authorization: `Bearer ${process.env.FIREFLIES_API_KEY}` },
+});
 
-### Step 3: Add Error Handling
-Implement custom error classes for Fireflies.ai operations.
+// Fetch recent transcripts
+const GET_TRANSCRIPTS = `
+  query GetTranscripts($limit: Int) {
+    transcripts(limit: $limit) {
+      id title date duration
+      organizer_email participants
+      summary { overview action_items keywords }
+    }
+  }
+`;
 
-### Step 4: Configure Health Checks
-Add health check endpoint for Fireflies.ai connectivity.
+async function getRecentMeetings(limit = 20) {
+  const data = await fireflies.request(GET_TRANSCRIPTS, { limit });
+  return data.transcripts;
+}
+```
 
-## Output
-- Structured project layout
-- Client wrapper with caching
-- Error boundary implemented
-- Health checks configured
+### Step 2: Transcript Processing Pipeline
+```typescript
+const GET_FULL_TRANSCRIPT = `
+  query GetTranscript($id: String!) {
+    transcript(id: $id) {
+      id title
+      sentences {
+        speaker_name text
+        start_time end_time
+      }
+      summary { overview action_items keywords }
+      meeting_attendees { displayName email }
+    }
+  }
+`;
+
+interface ProcessedMeeting {
+  id: string;
+  title: string;
+  attendees: string[];
+  actionItems: string[];
+  keyTopics: string[];
+  speakerBreakdown: Record<string, number>;
+}
+
+async function processMeeting(id: string): Promise<ProcessedMeeting> {
+  const { transcript } = await fireflies.request(GET_FULL_TRANSCRIPT, { id });
+
+  const speakerTime: Record<string, number> = {};
+  for (const s of transcript.sentences) {
+    const duration = s.end_time - s.start_time;
+    speakerTime[s.speaker_name] = (speakerTime[s.speaker_name] || 0) + duration;
+  }
+
+  return {
+    id: transcript.id,
+    title: transcript.title,
+    attendees: transcript.meeting_attendees.map((a: any) => a.email),
+    actionItems: transcript.summary.action_items || [],
+    keyTopics: transcript.summary.keywords || [],
+    speakerBreakdown: speakerTime,
+  };
+}
+```
+
+### Step 3: Webhook Integration
+```typescript
+import express from 'express';
+const app = express();
+
+app.post('/webhooks/fireflies', express.json(), async (req, res) => {
+  const { event_type, meeting_id, transcript_id } = req.body;
+
+  if (event_type === 'Transcription completed') {
+    const meeting = await processMeeting(transcript_id);
+
+    // Sync action items to CRM
+    for (const item of meeting.actionItems) {
+      await createCRMTask(item, meeting.attendees);
+    }
+  }
+
+  res.json({ received: true });
+});
+```
+
+### Step 4: Meeting Analytics Aggregation
+```typescript
+async function weeklyMeetingReport() {
+  const meetings = await getRecentMeetings(50);
+  const oneWeekAgo = Date.now() - 7 * 86400000;
+
+  const recent = meetings.filter(
+    (m: any) => new Date(m.date).getTime() > oneWeekAgo
+  );
+
+  return {
+    totalMeetings: recent.length,
+    totalHours: recent.reduce((s: number, m: any) => s + m.duration / 3600, 0).toFixed(1),
+    topAttendees: countAttendees(recent).slice(0, 5),
+    actionItemCount: recent.reduce((s: number, m: any) =>
+      s + (m.summary?.action_items?.length || 0), 0),
+  };
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Circular dependencies | Wrong layering | Separate concerns by layer |
-| Config not loading | Wrong paths | Verify config file locations |
-| Type errors | Missing types | Add Fireflies.ai types |
-| Test isolation | Shared state | Use dependency injection |
+| Empty transcript | Meeting too short | Check minimum duration before processing |
+| Missing speakers | Speaker diarization failed | Fall back to participant list |
+| GraphQL rate limit | Too many queries | Batch requests, cache transcripts |
+| Webhook not firing | URL not configured | Verify in Fireflies dashboard settings |
 
 ## Examples
 
-### Quick Setup Script
-```bash
-# Create reference structure
-mkdir -p src/fireflies/{handlers} src/services/fireflies src/api/fireflies
-touch src/fireflies/{client,config,types,errors}.ts
-touch src/services/fireflies/{index,sync,cache}.ts
+### Quick Meeting Search
+```typescript
+async function searchMeetings(keyword: string) {
+  const meetings = await getRecentMeetings(100);
+  return meetings.filter((m: any) =>
+    m.title?.toLowerCase().includes(keyword.toLowerCase()) ||
+    m.summary?.keywords?.some((k: string) => k.toLowerCase().includes(keyword))
+  );
+}
 ```
 
 ## Resources
-- [Fireflies.ai SDK Documentation](https://docs.fireflies.com/sdk)
-- [Fireflies.ai Best Practices](https://docs.fireflies.com/best-practices)
-
-## Flagship Skills
-For multi-environment setup, see `fireflies-multi-env-setup`.
+- [Fireflies GraphQL API](https://docs.fireflies.ai/graphql)
+- [Fireflies Webhooks](https://docs.fireflies.ai/webhooks)
+- [Fireflies Integrations](https://fireflies.ai/integrations)

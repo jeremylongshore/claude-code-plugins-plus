@@ -16,187 +16,94 @@ compatible-with: claude-code, codex, openclaw
 # Clay Cost Tuning
 
 ## Overview
-Optimize Clay costs through smart tier selection, sampling, and usage monitoring.
+Reduce Clay data enrichment spending by optimizing credit usage per enrichment, limiting waterfall depth, and improving input data quality. Clay uses credit-based pricing where each enrichment provider costs different credits (email finder: ~1 credit, company enrichment: ~5 credits, waterfall enrichment: 3-15 credits depending on fallback depth). The biggest cost lever is improving input data quality so enrichments have higher hit rates, and limiting waterfall fallback chains to prevent credit waste on unenrichable records.
 
 ## Prerequisites
-- Access to Clay billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateClayCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class ClayUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Clay budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateClayCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await clayClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => clayClient.get(id)));
-
-// Use batch endpoint (1 call)
-await clayClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new ClayClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Clay dashboard
-# Or use API if available:
-# Check Clay documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM clay_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Clay account with visibility into credit consumption
+- Understanding of which enrichment columns are in your tables
+- Access to enrichment hit rate statistics
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Clay dashboard for usage patterns and costs.
+### Step 1: Audit Credit Consumption by Enrichment Type
+```bash
+# Break down credits by enrichment provider/type
+curl "https://api.clay.com/v1/workspace/usage?group_by=enrichment&period=last_30d" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '.usage[] | {enrichment: .enrichment_type, credits: .total_credits, rows: .rows_enriched, hit_rate_pct: (.rows_with_data / .rows_enriched * 100), cost_per_hit: (.total_credits / (.rows_with_data + 0.01))}' | \
+  jq -s 'sort_by(-.credits)'
+```
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Limit Waterfall Enrichment Depth
+```yaml
+# Instead of running all 5 email finder providers (15 credits/row):
+waterfall_before:
+  - provider: clearbit     # 3 credits
+  - provider: hunter       # 3 credits
+  - provider: apollo       # 3 credits
+  - provider: rocketreach  # 3 credits
+  - provider: snov         # 3 credits
+  # Total: 15 credits/row if none find email
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+# Cap at 2 providers (6 credits max):
+waterfall_after:
+  - provider: apollo       # 3 credits (highest hit rate first)
+  - provider: hunter       # 3 credits
+  # Total: 6 credits/row max, 3 if first provider hits
+```
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+### Step 3: Clean Input Data Before Enrichment
+```typescript
+// Pre-validate data to avoid wasting credits on unenrichable rows
+function shouldEnrich(row: any): boolean {
+  // Skip rows with invalid domains
+  if (row.domain && !row.domain.includes('.')) return false;
+  // Skip personal email domains
+  const personalDomains = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com'];
+  if (personalDomains.includes(row.domain)) return false;
+  // Skip already enriched rows
+  if (row.email && row.email.includes('@')) return false;
+  return true;
+}
+// Apply filter before running enrichment: 30-50% credit savings typical
+```
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+### Step 4: Use Sampling for Large Tables
+```yaml
+# Instead of enriching 10,000 rows at once:
+# 1. Enrich a 500-row sample first
+# 2. Check hit rate and data quality
+# 3. If hit rate >60%, proceed with full table
+# 4. If hit rate <40%, clean input data first
+
+sample_workflow:
+  step1: "Import 500-row sample into test table"
+  step2: "Run enrichments, check hit rate"
+  step3: "If good, import full list into production table"
+  step4: "Set max_rows limit as safety cap"
+```
+
+### Step 5: Set Table-Level Credit Caps
+```bash
+# Configure maximum credits per table to prevent runaway costs
+curl -X PATCH "https://api.clay.com/v1/tables/tbl_abc123" \
+  -H "Authorization: Bearer $CLAY_API_KEY" \
+  -d '{"max_rows": 1000, "auto_enrich": false}'
+# Disable auto_enrich and trigger manually after data review
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| Credits burning fast | Waterfall enriching every row | Limit waterfall to 2-3 providers max |
+| Low hit rate (<30%) | Bad input data (personal emails, typos) | Clean data before enrichment |
+| Table over-enriching | auto_enrich on with new rows streaming in | Disable auto_enrich, use manual triggers |
+| Unexpected charge | New enrichment column added without cap | Always set credit limits per table |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateClayCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# Quick optimization check: find tables with worst credit efficiency
+curl -s "https://api.clay.com/v1/workspace/usage?group_by=table&period=last_30d" \
+  -H "Authorization: Bearer $CLAY_API_KEY" | \
+  jq '[.usage[] | {table: .table_name, credits: .total_credits, hits: .rows_with_data, efficiency: (.rows_with_data / (.total_credits + 0.01))}] | sort_by(.efficiency) | .[0:5]'
 ```
-
-## Resources
-- [Clay Pricing](https://clay.com/pricing)
-- [Clay Billing Dashboard](https://dashboard.clay.com/billing)
-
-## Next Steps
-For architecture patterns, see `clay-reference-architecture`.

@@ -16,320 +16,129 @@ compatible-with: claude-code, codex, openclaw
 # Perplexity Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Perplexity.
+Real gotchas when integrating Perplexity's AI search API (Sonar). Perplexity uses an OpenAI-compatible chat endpoint but returns grounded, cited answers from web sources -- a fundamentally different paradigm from standard LLM completions.
 
 ## Prerequisites
-- Access to Perplexity codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Perplexity API call
-app.post('/checkout', async (req, res) => {
-  const payment = await perplexityClient.processPayment(req.body);  // 2-5s latency
-  const notification = await perplexityClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await perplexityClient.processPayment(data);
-  await perplexityClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await perplexityClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => perplexityClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new PerplexityClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new PerplexityClient({
-  apiKey: process.env.PERPLEXITY_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await perplexityClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await perplexityClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await perplexityClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-perplexity-signature'];
-    if (!verifyPerplexitySignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await perplexityClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await perplexityClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof PerplexityNotFoundError) {
-    return null;
-  }
-  if (error instanceof PerplexityRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new PerplexityClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.perplexity.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new PerplexityClient({
-  timeout: parseInt(process.env.PERPLEXITY_TIMEOUT || '30000'),
-  baseUrl: process.env.PERPLEXITY_BASE_URL || 'https://api.perplexity.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Perplexity is down, every request hangs
-for (const user of users) {
-  await perplexityClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(perplexityClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Perplexity is down
-const recommendations = await perplexityClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await perplexityClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('perplexity', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Perplexity API key configured
+- Understanding of OpenAI-compatible chat API format
+- Familiarity with citation-based response handling
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Don't Treat It Like a Standard LLM
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Perplexity Sonar searches the web per request. System prompts that assume a static knowledge model produce poor results.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```python
+import requests
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+# BAD: using it as a generic chatbot
+response = requests.post("https://api.perplexity.ai/chat/completions", json={
+    "model": "sonar",
+    "messages": [{"role": "user", "content": "Tell me a joke"}]
+}, headers={"Authorization": f"Bearer {api_key}"})
+# Works but wastes a search query on non-search tasks
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+# GOOD: leverage its search capability
+response = requests.post("https://api.perplexity.ai/chat/completions", json={
+    "model": "sonar",
+    "messages": [{"role": "user", "content": "What are the latest Next.js 15 features released this month?"}],
+    "search_recency_filter": "week"
+}, headers={"Authorization": f"Bearer {api_key}"})
+```
+
+### Step 2: Parse Citations Correctly
+
+Perplexity returns inline citation markers `[1]`, `[2]` with a separate `citations` array. Ignoring them loses the key value prop.
+
+```python
+data = response.json()
+answer = data["choices"][0]["message"]["content"]
+citations = data.get("citations", [])
+
+# BAD: displaying raw answer with [1] [2] markers
+print(answer)  # "According to [1], Next.js 15 adds..."
+
+# GOOD: replace markers with actual URLs
+import re
+for i, url in enumerate(citations, 1):
+    answer = answer.replace(f"[{i}]", f"[{i}]({url})")
+print(answer)
+```
+
+### Step 3: Choose the Right Model Tier
+
+Using `sonar-pro` for simple factual queries wastes budget. Using `sonar` for complex research gives shallow answers.
+
+```python
+# BAD: sonar-pro for a simple lookup
+response = call_perplexity("What is the capital of France?", model="sonar-pro")
+# Costs 5x more for a trivial question
+
+# GOOD: match model to task complexity
+def smart_search(query: str, complexity: str = "simple"):
+    model = "sonar-pro" if complexity == "deep" else "sonar"
+    return call_perplexity(query, model=model)
+```
+
+### Step 4: Handle Search Recency Properly
+
+Not setting `search_recency_filter` returns results from any time period, which may include outdated information for fast-moving topics.
+
+```python
+# BAD: no recency filter for current events
+response = call_perplexity("current Bitcoin price")  # may cite old articles
+
+# GOOD: set recency for time-sensitive queries
+response = call_perplexity(
+    "current Bitcoin price",
+    search_recency_filter="day"  # options: day, week, month, year
+)
+```
+
+### Step 5: Avoid Excessive Context in Messages
+
+Perplexity performs a web search per turn. Sending full conversation history triggers redundant searches.
+
+```python
+# BAD: sending 20 turns of history
+messages = long_conversation_history + [{"role": "user", "content": "summarize"}]
+# Each message may trigger new searches
+
+# GOOD: summarize history, send focused query
+messages = [
+    {"role": "system", "content": "Answer based on web search results."},
+    {"role": "user", "content": f"Given context: {summary}\nQuestion: {question}"}
+]
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Stale information | No recency filter | Set `search_recency_filter` |
+| High costs | Using sonar-pro everywhere | Route simple queries to sonar |
+| Missing citations | Not parsing response | Extract `citations` array from JSON |
+| Slow responses | Large conversation context | Trim history before sending |
+| Empty search results | Overly niche query | Broaden the question scope |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Streaming with Citation Handling
+```python
+response = requests.post(url, json={
+    "model": "sonar",
+    "messages": messages,
+    "stream": True
+}, headers=headers, stream=True)
+
+for line in response.iter_lines():
+    if line.startswith(b"data: "):
+        chunk = json.loads(line[6:])
+        # Citations arrive in the final chunk
+        if chunk.get("citations"):
+            handle_citations(chunk["citations"])
 ```
 
 ## Resources
-- [Perplexity Security Guide](https://docs.perplexity.com/security)
-- [Perplexity Best Practices](https://docs.perplexity.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Perplexity API Docs](https://docs.perplexity.ai)
+- [Sonar Model Guide](https://docs.perplexity.ai/guides/model-cards)

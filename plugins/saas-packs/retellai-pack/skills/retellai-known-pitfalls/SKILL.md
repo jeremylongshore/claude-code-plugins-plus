@@ -16,320 +16,150 @@ compatible-with: claude-code, codex, openclaw
 # Retell AI Known Pitfalls
 
 ## Overview
-Common mistakes and anti-patterns when integrating with Retell AI.
+Real gotchas when building voice AI agents with Retell AI. Retell handles telephony, speech-to-text, and text-to-speech in a WebSocket pipeline -- latency sensitivity and audio-specific failure modes require different thinking than typical REST APIs.
 
 ## Prerequisites
-- Access to Retell AI codebase for review
-- Understanding of async/await patterns
-- Knowledge of security best practices
-- Familiarity with rate limiting concepts
-
-## Pitfall #1: Synchronous API Calls in Request Path
-
-### ❌ Anti-Pattern
-```typescript
-// User waits for Retell AI API call
-app.post('/checkout', async (req, res) => {
-  const payment = await retellaiClient.processPayment(req.body);  // 2-5s latency
-  const notification = await retellaiClient.sendEmail(payment);   // Another 1-2s
-  res.json({ success: true });  // User waited 3-7s
-});
-```
-
-### ✅ Better Approach
-```typescript
-// Return immediately, process async
-app.post('/checkout', async (req, res) => {
-  const jobId = await queue.enqueue('process-checkout', req.body);
-  res.json({ jobId, status: 'processing' });  // 50ms response
-});
-
-// Background job
-async function processCheckout(data) {
-  const payment = await retellaiClient.processPayment(data);
-  await retellaiClient.sendEmail(payment);
-}
-```
-
----
-
-## Pitfall #2: Not Handling Rate Limits
-
-### ❌ Anti-Pattern
-```typescript
-// Blast requests, crash on 429
-for (const item of items) {
-  await retellaiClient.process(item);  // Will hit rate limit
-}
-```
-
-### ✅ Better Approach
-```typescript
-import pLimit from 'p-limit';
-
-const limit = pLimit(5);  // Max 5 concurrent
-const rateLimiter = new RateLimiter({ tokensPerSecond: 10 });
-
-for (const item of items) {
-  await rateLimiter.acquire();
-  await limit(() => retellaiClient.process(item));
-}
-```
-
----
-
-## Pitfall #3: Leaking API Keys
-
-### ❌ Anti-Pattern
-```typescript
-// In frontend code (visible to users!)
-const client = new RetellAIClient({
-  apiKey: 'sk_live_ACTUAL_KEY_HERE',  // Anyone can see this
-});
-
-// In git history
-git commit -m "add API key"  // Exposed forever
-```
-
-### ✅ Better Approach
-```typescript
-// Backend only, environment variable
-const client = new RetellAIClient({
-  apiKey: process.env.RETELLAI_API_KEY,
-});
-
-// Use .gitignore
-.env
-.env.local
-.env.*.local
-```
-
----
-
-## Pitfall #4: Ignoring Idempotency
-
-### ❌ Anti-Pattern
-```typescript
-// Network error on response = duplicate charge!
-try {
-  await retellaiClient.charge(order);
-} catch (error) {
-  if (error.code === 'NETWORK_ERROR') {
-    await retellaiClient.charge(order);  // Charged twice!
-  }
-}
-```
-
-### ✅ Better Approach
-```typescript
-const idempotencyKey = `order-${order.id}-${Date.now()}`;
-
-await retellaiClient.charge(order, {
-  idempotencyKey,  // Safe to retry
-});
-```
-
----
-
-## Pitfall #5: Not Validating Webhooks
-
-### ❌ Anti-Pattern
-```typescript
-// Trust any incoming request
-app.post('/webhook', (req, res) => {
-  processWebhook(req.body);  // Attacker can send fake events
-  res.sendStatus(200);
-});
-```
-
-### ✅ Better Approach
-```typescript
-app.post('/webhook',
-  express.raw({ type: 'application/json' }),
-  (req, res) => {
-    const signature = req.headers['x-retellai-signature'];
-    if (!verifyRetell AISignature(req.body, signature)) {
-      return res.sendStatus(401);
-    }
-    processWebhook(JSON.parse(req.body));
-    res.sendStatus(200);
-  }
-);
-```
-
----
-
-## Pitfall #6: Missing Error Handling
-
-### ❌ Anti-Pattern
-```typescript
-// Crashes on any error
-const result = await retellaiClient.get(id);
-console.log(result.data.nested.value);  // TypeError if missing
-```
-
-### ✅ Better Approach
-```typescript
-try {
-  const result = await retellaiClient.get(id);
-  console.log(result?.data?.nested?.value ?? 'default');
-} catch (error) {
-  if (error instanceof Retell AINotFoundError) {
-    return null;
-  }
-  if (error instanceof Retell AIRateLimitError) {
-    await sleep(error.retryAfter);
-    return this.get(id);  // Retry
-  }
-  throw error;  // Rethrow unknown errors
-}
-```
-
----
-
-## Pitfall #7: Hardcoding Configuration
-
-### ❌ Anti-Pattern
-```typescript
-const client = new RetellAIClient({
-  timeout: 5000,  // Too short for some operations
-  baseUrl: 'https://api.retellai.com',  // Can't change for staging
-});
-```
-
-### ✅ Better Approach
-```typescript
-const client = new RetellAIClient({
-  timeout: parseInt(process.env.RETELLAI_TIMEOUT || '30000'),
-  baseUrl: process.env.RETELLAI_BASE_URL || 'https://api.retellai.com',
-});
-```
-
----
-
-## Pitfall #8: Not Implementing Circuit Breaker
-
-### ❌ Anti-Pattern
-```typescript
-// When Retell AI is down, every request hangs
-for (const user of users) {
-  await retellaiClient.sync(user);  // All timeout sequentially
-}
-```
-
-### ✅ Better Approach
-```typescript
-import CircuitBreaker from 'opossum';
-
-const breaker = new CircuitBreaker(retellaiClient.sync, {
-  timeout: 10000,
-  errorThresholdPercentage: 50,
-  resetTimeout: 30000,
-});
-
-// Fails fast when circuit is open
-for (const user of users) {
-  await breaker.fire(user).catch(handleFailure);
-}
-```
-
----
-
-## Pitfall #9: Logging Sensitive Data
-
-### ❌ Anti-Pattern
-```typescript
-console.log('Request:', JSON.stringify(request));  // Logs API key, PII
-console.log('User:', user);  // Logs email, phone
-```
-
-### ✅ Better Approach
-```typescript
-const redacted = {
-  ...request,
-  apiKey: '[REDACTED]',
-  user: { id: user.id },  // Only non-sensitive fields
-};
-console.log('Request:', JSON.stringify(redacted));
-```
-
----
-
-## Pitfall #10: No Graceful Degradation
-
-### ❌ Anti-Pattern
-```typescript
-// Entire feature broken if Retell AI is down
-const recommendations = await retellaiClient.getRecommendations(userId);
-return renderPage({ recommendations });  // Page crashes
-```
-
-### ✅ Better Approach
-```typescript
-let recommendations;
-try {
-  recommendations = await retellaiClient.getRecommendations(userId);
-} catch (error) {
-  recommendations = await getFallbackRecommendations(userId);
-  reportDegradedService('retellai', error);
-}
-return renderPage({ recommendations, degraded: !recommendations });
-```
-
----
+- Retell AI API key and agent configured
+- Understanding of WebSocket-based communication
+- Awareness of telephony concepts (PSTN, SIP)
 
 ## Instructions
 
-### Step 1: Review for Anti-Patterns
-Scan codebase for each pitfall pattern.
+### Step 1: Manage Voice Latency Budget
 
-### Step 2: Prioritize Fixes
-Address security issues first, then performance.
+Retell pipelines must respond in under 1 second for natural conversation. Your webhook response time is part of that budget.
 
-### Step 3: Implement Better Approach
-Replace anti-patterns with recommended patterns.
+```typescript
+// BAD: slow webhook handler kills conversation flow
+app.post('/retell-webhook', async (req, res) => {
+  const dbResult = await complexDatabaseQuery(req.body);  // 800ms
+  const aiResult = await callExternalLLM(dbResult);        // 2000ms
+  res.json({ response: aiResult });  // Total: 2.8s = awkward silence
+});
 
-### Step 4: Add Prevention
-Set up linting and CI checks to prevent recurrence.
+// GOOD: pre-compute, cache, and keep responses fast
+app.post('/retell-webhook', async (req, res) => {
+  const cached = await redis.get(`context:${req.body.call_id}`);
+  const response = generateQuickResponse(req.body, cached);
+  res.json({ response });  // < 200ms
 
-## Output
-- Anti-patterns identified
-- Fixes prioritized and implemented
-- Prevention measures in place
-- Code quality improved
+  // Do heavy processing async for next turn
+  processInBackground(req.body).catch(console.error);
+});
+```
+
+### Step 2: Handle Call State Transitions
+
+Calls can disconnect at any point. Not handling state transitions causes zombie sessions.
+
+```typescript
+// BAD: assuming linear call flow
+retell.on('call_started', async (event) => {
+  await startExpensiveProcess(event.call_id);
+  // If call drops immediately, process runs forever
+});
+
+// GOOD: track and clean up call state
+const activeCalls = new Map();
+
+retell.on('call_started', async (event) => {
+  activeCalls.set(event.call_id, { started: Date.now() });
+});
+
+retell.on('call_ended', async (event) => {
+  const call = activeCalls.get(event.call_id);
+  if (call) {
+    await cleanupResources(event.call_id);
+    activeCalls.delete(event.call_id);
+  }
+});
+
+// Periodic cleanup for missed end events
+setInterval(() => {
+  for (const [id, call] of activeCalls) {
+    if (Date.now() - call.started > 3600000) {  // 1 hour max
+      cleanupResources(id);
+      activeCalls.delete(id);
+    }
+  }
+}, 60000);
+```
+
+### Step 3: Don't Ignore Audio Quality Issues
+
+Poor audio input causes misrecognition. Always configure noise handling.
+
+```typescript
+// BAD: no audio configuration
+const agent = await retell.agent.create({
+  voice_id: "some-voice",
+  llm_websocket_url: webhookUrl,
+  // Missing: ambient_sound, responsiveness settings
+});
+
+// GOOD: configure for real-world audio conditions
+const agent = await retell.agent.create({
+  voice_id: "some-voice",
+  llm_websocket_url: webhookUrl,
+  ambient_sound: "office",
+  responsiveness: 0.5,  // balance between speed and accuracy
+  interruption_sensitivity: 0.6,
+  enable_backchannel: true,  // "uh-huh", "I see"
+});
+```
+
+### Step 4: Handle Concurrent Call Limits
+
+Retell enforces concurrent call limits per plan. Exceeding them silently fails new calls.
+
+```typescript
+// BAD: no concurrency tracking
+app.post('/initiate-call', async (req, res) => {
+  const call = await retell.call.createPhoneCall({/*...*/});
+  res.json(call);  // Fails at limit with cryptic error
+});
+
+// GOOD: track and enforce concurrency
+let activeConcurrent = 0;
+const MAX_CONCURRENT = 10;  // check your plan limit
+
+app.post('/initiate-call', async (req, res) => {
+  if (activeConcurrent >= MAX_CONCURRENT) {
+    return res.status(429).json({ error: "Call capacity reached" });
+  }
+  activeConcurrent++;
+  try {
+    const call = await retell.call.createPhoneCall({/*...*/});
+    res.json(call);
+  } catch (e) {
+    activeConcurrent--;
+    throw e;
+  }
+});
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Too many findings | Legacy codebase | Prioritize security first |
-| Pattern not detected | Complex code | Manual review |
-| False positive | Similar code | Whitelist exceptions |
-| Fix breaks tests | Behavior change | Update tests |
+| Awkward silences | Webhook response > 1s | Cache context, respond fast |
+| Misrecognition | Background noise | Set `ambient_sound` config |
+| Zombie sessions | Missed `call_ended` events | Periodic cleanup timer |
+| Calls rejected | Hit concurrent limit | Track active calls, queue overflow |
+| One-sided audio | WebSocket connection drop | Implement reconnection logic |
 
 ## Examples
 
-### Quick Pitfall Scan
-```bash
-# Check for common pitfalls
-grep -r "sk_live_" --include="*.ts" src/        # Key leakage
-grep -r "console.log" --include="*.ts" src/     # Potential PII logging
+### Webhook Latency Monitoring
+```typescript
+app.post('/retell-webhook', async (req, res) => {
+  const start = Date.now();
+  const response = await handleTurn(req.body);
+  const latency = Date.now() - start;
+  if (latency > 500) console.warn(`Slow response: ${latency}ms`);
+  res.json(response);
+});
 ```
 
 ## Resources
-- [Retell AI Security Guide](https://docs.retellai.com/security)
-- [Retell AI Best Practices](https://docs.retellai.com/best-practices)
-
-## Quick Reference Card
-
-| Pitfall | Detection | Prevention |
-|---------|-----------|------------|
-| Sync in request | High latency | Use queues |
-| Rate limit ignore | 429 errors | Implement backoff |
-| Key leakage | Git history scan | Env vars, .gitignore |
-| No idempotency | Duplicate records | Idempotency keys |
-| Unverified webhooks | Security audit | Signature verification |
-| Missing error handling | Crashes | Try-catch, types |
-| Hardcoded config | Code review | Environment variables |
-| No circuit breaker | Cascading failures | opossum, resilience4j |
-| Logging PII | Log audit | Redaction middleware |
-| No degradation | Total outages | Fallback systems |
+- [Retell AI Docs](https://docs.retellai.com)
+- [Voice Agent Best Practices](https://docs.retellai.com/guide/best-practices)

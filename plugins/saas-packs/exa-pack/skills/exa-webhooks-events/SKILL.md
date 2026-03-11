@@ -16,185 +16,145 @@ compatible-with: claude-code, codex, openclaw
 # Exa Webhooks & Events
 
 ## Overview
-Securely handle Exa webhooks with signature validation and replay protection.
+Build event-driven integrations around Exa neural search. Exa is primarily a synchronous search API at `api.exa.ai`, so this skill covers async patterns for handling search results, building scheduled content monitoring, and creating webhook-style notification flows around Exa search queries.
 
 ## Prerequisites
-- Exa webhook secret configured
-- HTTPS endpoint accessible from internet
-- Understanding of cryptographic signatures
-- Redis or database for idempotency (optional)
+- Exa API key stored in `EXA_API_KEY` environment variable
+- Node.js or Python runtime for scheduled jobs
+- Queue system (Redis/BullMQ) for async processing
+- Familiarity with Exa search and `findSimilar` endpoints
 
-## Webhook Endpoint Setup
+## Event Patterns
 
-### Express.js
-```typescript
-import express from 'express';
-import crypto from 'crypto';
-
-const app = express();
-
-// IMPORTANT: Raw body needed for signature verification
-app.post('/webhooks/exa',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    const signature = req.headers['x-exa-signature'] as string;
-    const timestamp = req.headers['x-exa-timestamp'] as string;
-
-    if (!verifyExaSignature(req.body, signature, timestamp)) {
-      return res.status(401).json({ error: 'Invalid signature' });
-    }
-
-    const event = JSON.parse(req.body.toString());
-    await handleExaEvent(event);
-
-    res.status(200).json({ received: true });
-  }
-);
-```
-
-## Signature Verification
-
-```typescript
-function verifyExaSignature(
-  payload: Buffer,
-  signature: string,
-  timestamp: string
-): boolean {
-  const secret = process.env.EXA_WEBHOOK_SECRET!;
-
-  // Reject old timestamps (replay attack protection)
-  const timestampAge = Date.now() - parseInt(timestamp) * 1000;
-  if (timestampAge > 300000) { // 5 minutes
-    console.error('Webhook timestamp too old');
-    return false;
-  }
-
-  // Compute expected signature
-  const signedPayload = `${timestamp}.${payload.toString()}`;
-  const expectedSignature = crypto
-    .createHmac('sha256', secret)
-    .update(signedPayload)
-    .digest('hex');
-
-  // Timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(signature),
-    Buffer.from(expectedSignature)
-  );
-}
-```
-
-## Event Handler Pattern
-
-```typescript
-type ExaEventType = 'resource.created' | 'resource.updated' | 'resource.deleted';
-
-interface ExaEvent {
-  id: string;
-  type: ExaEventType;
-  data: Record<string, any>;
-  created: string;
-}
-
-const eventHandlers: Record<ExaEventType, (data: any) => Promise<void>> = {
-  'resource.created': async (data) => { /* handle */ },
-  'resource.updated': async (data) => { /* handle */ },
-  'resource.deleted': async (data) => { /* handle */ }
-};
-
-async function handleExaEvent(event: ExaEvent): Promise<void> {
-  const handler = eventHandlers[event.type];
-
-  if (!handler) {
-    console.log(`Unhandled event type: ${event.type}`);
-    return;
-  }
-
-  try {
-    await handler(event.data);
-    console.log(`Processed ${event.type}: ${event.id}`);
-  } catch (error) {
-    console.error(`Failed to process ${event.type}: ${event.id}`, error);
-    throw error; // Rethrow to trigger retry
-  }
-}
-```
-
-## Idempotency Handling
-
-```typescript
-import { Redis } from 'ioredis';
-
-const redis = new Redis(process.env.REDIS_URL);
-
-async function isEventProcessed(eventId: string): Promise<boolean> {
-  const key = `exa:event:${eventId}`;
-  const exists = await redis.exists(key);
-  return exists === 1;
-}
-
-async function markEventProcessed(eventId: string): Promise<void> {
-  const key = `exa:event:${eventId}`;
-  await redis.set(key, '1', 'EX', 86400 * 7); // 7 days TTL
-}
-```
-
-## Webhook Testing
-
-```bash
-# Use Exa CLI to send test events
-exa webhooks trigger resource.created --url http://localhost:3000/webhooks/exa
-
-# Or use webhook.site for debugging
-curl -X POST https://webhook.site/your-uuid \
-  -H "Content-Type: application/json" \
-  -d '{"type": "resource.created", "data": {}}'
-```
+| Pattern | Trigger | Use Case |
+|---------|---------|----------|
+| Content monitor | Scheduled search query | New content alerts |
+| Search complete callback | Async search finishes | Pipeline processing |
+| Similarity alert | New similar content found | Competitive monitoring |
+| Content change detection | Periodic re-search | Update tracking |
 
 ## Instructions
 
-### Step 1: Register Webhook Endpoint
-Configure your webhook URL in the Exa dashboard.
+### Step 1: Set Up Content Monitoring Service
+```typescript
+import Exa from "exa-js";
+import { Queue, Worker } from "bullmq";
 
-### Step 2: Implement Signature Verification
-Use the signature verification code to validate incoming webhooks.
+const exa = new Exa(process.env.EXA_API_KEY!);
 
-### Step 3: Handle Events
-Implement handlers for each event type your application needs.
+interface SearchMonitor {
+  id: string;
+  query: string;
+  webhookUrl: string;
+  lastResultIds: string[];
+  intervalMinutes: number;
+}
 
-### Step 4: Add Idempotency
-Prevent duplicate processing with event ID tracking.
+const monitorQueue = new Queue("exa-monitors");
 
-## Output
-- Secure webhook endpoint
-- Signature validation enabled
-- Event handlers implemented
-- Replay attack protection active
+async function createMonitor(config: Omit<SearchMonitor, "lastResultIds">) {
+  await monitorQueue.add("check-search", config, {
+    repeat: { every: config.intervalMinutes * 60 * 1000 },
+    jobId: config.id,
+  });
+}
+```
+
+### Step 2: Execute Monitored Searches
+```typescript
+const worker = new Worker("exa-monitors", async (job) => {
+  const monitor = job.data as SearchMonitor;
+
+  const results = await exa.searchAndContents(monitor.query, {
+    type: "neural",
+    numResults: 10,
+    text: { maxCharacters: 500 },
+    startPublishedDate: getLastCheckDate(monitor.id),
+  });
+
+  const newResults = results.results.filter(
+    r => !monitor.lastResultIds.includes(r.id)
+  );
+
+  if (newResults.length > 0) {
+    await sendWebhook(monitor.webhookUrl, {
+      event: "exa.new_results",
+      monitorId: monitor.id,
+      query: monitor.query,
+      results: newResults.map(r => ({
+        title: r.title,
+        url: r.url,
+        snippet: r.text?.substring(0, 200),
+        publishedDate: r.publishedDate,
+        score: r.score,
+      })),
+    });
+  }
+});
+```
+
+### Step 3: Build Similarity Alert System
+```typescript
+async function monitorSimilarContent(seedUrl: string, webhookUrl: string) {
+  const results = await exa.findSimilarAndContents(seedUrl, {
+    numResults: 5,
+    text: { maxCharacters: 300 },
+    excludeDomains: ["example.com"],
+    startPublishedDate: new Date(Date.now() - 86400000).toISOString(),
+  });
+
+  if (results.results.length > 0) {
+    await sendWebhook(webhookUrl, {
+      event: "exa.similar_content_found",
+      seedUrl,
+      matches: results.results,
+    });
+  }
+}
+```
+
+### Step 4: Webhook Delivery with Retry
+```typescript
+async function sendWebhook(url: string, payload: any, retries = 3) {
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) return;
+    } catch (error) {
+      if (attempt === retries - 1) throw error;
+      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+    }
+  }
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Invalid signature | Wrong secret | Verify webhook secret |
-| Timestamp rejected | Clock drift | Check server time sync |
-| Duplicate events | Missing idempotency | Implement event ID tracking |
-| Handler timeout | Slow processing | Use async queue |
+| Rate limited | Too many API calls | Reduce monitor frequency, batch queries |
+| Empty results | Query too specific | Broaden search terms or date range |
+| Stale content | No date filter | Use `startPublishedDate` for freshness |
+| Duplicate alerts | Missing dedup | Track result IDs between runs |
 
 ## Examples
 
-### Testing Webhooks Locally
-```bash
-# Use ngrok to expose local server
-ngrok http 3000
-
-# Send test webhook
-curl -X POST https://your-ngrok-url/webhooks/exa \
-  -H "Content-Type: application/json" \
-  -d '{"type": "test", "data": {}}'
+### Competitive Intelligence Monitor
+```typescript
+await createMonitor({
+  id: "competitor-watch",
+  query: "AI code review tools launch announcement",
+  webhookUrl: "https://api.myapp.com/webhooks/exa-alerts",
+  intervalMinutes: 60,
+});
 ```
 
 ## Resources
-- [Exa Webhooks Guide](https://docs.exa.com/webhooks)
-- [Webhook Security Best Practices](https://docs.exa.com/webhooks/security)
+- [Exa API Documentation](https://docs.exa.ai)
+- [Exa JavaScript SDK](https://github.com/exa-labs/exa-js)
 
 ## Next Steps
-For performance optimization, see `exa-performance-tuning`.
+For deployment setup, see `exa-deploy-integration`.

@@ -16,195 +16,128 @@ compatible-with: claude-code, codex, openclaw
 # Groq Deploy Integration
 
 ## Overview
-Deploy Groq-powered applications to popular platforms with proper secrets management.
+Deploy applications powered by Groq's ultra-fast LLM inference API (`api.groq.com`). Groq's sub-second latency makes it ideal for real-time applications. Covers deployment to Vercel Edge Functions, Docker, and Cloud Run with API key management and streaming configuration.
 
 ## Prerequisites
-- Groq API keys for production environment
-- Platform CLI installed (vercel, fly, or gcloud)
-- Application code ready for deployment
-- Environment variables documented
+- Groq API key stored in `GROQ_API_KEY` environment variable
+- Application using `groq-sdk` package
+- Platform CLI installed (vercel, docker, or gcloud)
 
-## Vercel Deployment
+## Instructions
 
-### Environment Setup
+### Step 1: Configure Secrets
 ```bash
-# Add Groq secrets to Vercel
-vercel secrets add groq_api_key sk_live_***
-vercel secrets add groq_webhook_secret whsec_***
+# Vercel (Edge-compatible)
+vercel env add GROQ_API_KEY production
 
-# Link to project
-vercel link
-
-# Deploy preview
-vercel
-
-# Deploy production
-vercel --prod
+# Cloud Run
+echo -n "your-key" | gcloud secrets create groq-api-key --data-file=-
 ```
 
-### vercel.json Configuration
-```json
-{
-  "env": {
-    "GROQ_API_KEY": "@groq_api_key"
-  },
-  "functions": {
-    "api/**/*.ts": {
-      "maxDuration": 30
-    }
+### Step 2: Vercel Edge Deployment
+```typescript
+// api/chat.ts - Ultra-low latency with Groq + Vercel Edge
+import Groq from "groq-sdk";
+
+export const config = { runtime: "edge" };
+
+export default async function handler(req: Request) {
+  const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+  const { messages, stream } = await req.json();
+
+  if (stream) {
+    const completion = await groq.chat.completions.create({
+      model: "llama-3.3-70b-versatile",
+      messages,
+      stream: true,
+    });
+
+    const encoder = new TextEncoder();
+    const readable = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of completion) {
+          const content = chunk.choices[0]?.delta?.content;
+          if (content) {
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ content })}\n\n`));
+          }
+        }
+        controller.enqueue(encoder.encode("data: [DONE]\n\n"));
+        controller.close();
+      },
+    });
+
+    return new Response(readable, {
+      headers: { "Content-Type": "text/event-stream" },
+    });
   }
+
+  const completion = await groq.chat.completions.create({
+    model: "llama-3.3-70b-versatile",
+    messages,
+  });
+
+  return Response.json(completion);
 }
 ```
 
-## Fly.io Deployment
-
-### fly.toml
-```toml
-app = "my-groq-app"
-primary_region = "iad"
-
-[env]
-  NODE_ENV = "production"
-
-[http_service]
-  internal_port = 3000
-  force_https = true
-  auto_stop_machines = true
-  auto_start_machines = true
-```
-
-### Secrets
-```bash
-# Set Groq secrets
-fly secrets set GROQ_API_KEY=sk_live_***
-fly secrets set GROQ_WEBHOOK_SECRET=whsec_***
-
-# Deploy
-fly deploy
-```
-
-## Google Cloud Run
-
-### Dockerfile
+### Step 3: Docker Deployment
 ```dockerfile
 FROM node:20-slim
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
-CMD ["npm", "start"]
+RUN npm run build
+EXPOSE 3000
+CMD ["node", "dist/index.js"]
 ```
 
-### Deploy Script
+### Step 4: Cloud Run with Streaming
 ```bash
-#!/bin/bash
-# deploy-cloud-run.sh
-
-PROJECT_ID="${GOOGLE_CLOUD_PROJECT}"
-SERVICE_NAME="groq-service"
-REGION="us-central1"
-
-# Build and push image
-gcloud builds submit --tag gcr.io/$PROJECT_ID/$SERVICE_NAME
-
-# Deploy to Cloud Run
-gcloud run deploy $SERVICE_NAME \
-  --image gcr.io/$PROJECT_ID/$SERVICE_NAME \
-  --region $REGION \
-  --platform managed \
-  --allow-unauthenticated \
-  --set-secrets=GROQ_API_KEY=groq-api-key:latest
+gcloud run deploy groq-api \
+  --source . \
+  --region us-central1 \
+  --set-secrets=GROQ_API_KEY=groq-api-key:latest \
+  --set-env-vars=GROQ_MODEL=llama-3.3-70b-versatile \
+  --min-instances=1 \
+  --cpu=1 --memory=512Mi
 ```
 
-## Environment Configuration Pattern
-
+### Step 5: Health Check
 ```typescript
-// config/groq.ts
-interface GroqConfig {
-  apiKey: string;
-  environment: 'development' | 'staging' | 'production';
-  webhookSecret?: string;
-}
-
-export function getGroqConfig(): GroqConfig {
-  const env = process.env.NODE_ENV || 'development';
-
-  return {
-    apiKey: process.env.GROQ_API_KEY!,
-    environment: env as GroqConfig['environment'],
-    webhookSecret: process.env.GROQ_WEBHOOK_SECRET,
-  };
-}
-```
-
-## Health Check Endpoint
-
-```typescript
-// api/health.ts
 export async function GET() {
-  const groqStatus = await checkGroqConnection();
-
-  return Response.json({
-    status: groqStatus ? 'healthy' : 'degraded',
-    services: {
-      groq: groqStatus,
-    },
-    timestamp: new Date().toISOString(),
-  });
+  try {
+    const groq = new Groq({ apiKey: process.env.GROQ_API_KEY! });
+    await groq.chat.completions.create({
+      model: "llama-3.1-8b-instant",
+      messages: [{ role: "user", content: "ping" }],
+      max_tokens: 1,
+    });
+    return Response.json({ status: "healthy" });
+  } catch {
+    return Response.json({ status: "unhealthy" }, { status: 503 });
+  }
 }
 ```
-
-## Instructions
-
-### Step 1: Choose Deployment Platform
-Select the platform that best fits your infrastructure needs and follow the platform-specific guide below.
-
-### Step 2: Configure Secrets
-Store Groq API keys securely using the platform's secrets management.
-
-### Step 3: Deploy Application
-Use the platform CLI to deploy your application with Groq integration.
-
-### Step 4: Verify Health
-Test the health check endpoint to confirm Groq connectivity.
-
-## Output
-- Application deployed to production
-- Groq secrets securely configured
-- Health check endpoint functional
-- Environment-specific configuration in place
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Secret not found | Missing configuration | Add secret via platform CLI |
-| Deploy timeout | Large build | Increase build timeout |
-| Health check fails | Wrong API key | Verify environment variable |
-| Cold start issues | No warm-up | Configure minimum instances |
+| Rate limited (429) | Too many requests | Implement request queuing |
+| Model unavailable | Capacity constraint | Fall back to smaller model |
+| Edge timeout | Long completion | Use streaming for long responses |
+| API key invalid | Key expired | Regenerate at console.groq.com |
 
 ## Examples
 
-### Quick Deploy Script
+### Quick Deploy
 ```bash
-#!/bin/bash
-# Platform-agnostic deploy helper
-case "$1" in
-  vercel)
-    vercel secrets add groq_api_key "$GROQ_API_KEY"
-    vercel --prod
-    ;;
-  fly)
-    fly secrets set GROQ_API_KEY="$GROQ_API_KEY"
-    fly deploy
-    ;;
-esac
+vercel env add GROQ_API_KEY production && vercel --prod
 ```
 
 ## Resources
-- [Vercel Documentation](https://vercel.com/docs)
-- [Fly.io Documentation](https://fly.io/docs)
-- [Cloud Run Documentation](https://cloud.google.com/run/docs)
-- [Groq Deploy Guide](https://docs.groq.com/deploy)
+- [Groq API Documentation](https://console.groq.com/docs)
+- [Groq Models](https://console.groq.com/docs/models)
 
 ## Next Steps
-For webhook handling, see `groq-webhooks-events`.
+For multi-environment setup, see `groq-multi-env-setup`.

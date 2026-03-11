@@ -13,246 +13,147 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Retell AI Policy & Guardrails
+# Retell AI Policy Guardrails
 
 ## Overview
-Automated policy enforcement and guardrails for Retell AI integrations.
+Policy enforcement for Retell AI voice agent deployments. Voice AI agents interact with real people over phone calls, requiring strict controls around conversation content, call recording consent, data handling, and cost management.
 
 ## Prerequisites
-- ESLint configured in project
-- Pre-commit hooks infrastructure
-- CI/CD pipeline with policy checks
-- TypeScript for type enforcement
-
-## ESLint Rules
-
-### Custom Retell AI Plugin
-```javascript
-// eslint-plugin-retellai/rules/no-hardcoded-keys.js
-module.exports = {
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Disallow hardcoded Retell AI API keys',
-    },
-    fixable: 'code',
-  },
-  create(context) {
-    return {
-      Literal(node) {
-        if (typeof node.value === 'string') {
-          if (node.value.match(/^sk_(live|test)_[a-zA-Z0-9]{24,}/)) {
-            context.report({
-              node,
-              message: 'Hardcoded Retell AI API key detected',
-            });
-          }
-        }
-      },
-    };
-  },
-};
-```
-
-### ESLint Configuration
-```javascript
-// .eslintrc.js
-module.exports = {
-  plugins: ['retellai'],
-  rules: {
-    'retellai/no-hardcoded-keys': 'error',
-    'retellai/require-error-handling': 'warn',
-    'retellai/use-typed-client': 'warn',
-  },
-};
-```
-
-## Pre-Commit Hooks
-
-```yaml
-# .pre-commit-config.yaml
-repos:
-  - repo: local
-    hooks:
-      - id: retellai-secrets-check
-        name: Check for Retell AI secrets
-        entry: bash -c 'git diff --cached --name-only | xargs grep -l "sk_live_" && exit 1 || exit 0'
-        language: system
-        pass_filenames: false
-
-      - id: retellai-config-validate
-        name: Validate Retell AI configuration
-        entry: node scripts/validate-retellai-config.js
-        language: node
-        files: '\.retellai\.json$'
-```
-
-## TypeScript Strict Patterns
-
-```typescript
-// Enforce typed configuration
-interface Retell AIStrictConfig {
-  apiKey: string;  // Required
-  environment: 'development' | 'staging' | 'production';  // Enum
-  timeout: number;  // Required number, not optional
-  retries: number;
-}
-
-// Disallow any in Retell AI code
-// @ts-expect-error - Using any is forbidden
-const client = new Client({ apiKey: any });
-
-// Prefer this
-const client = new RetellAIClient(config satisfies Retell AIStrictConfig);
-```
-
-## Architecture Decision Records
-
-### ADR Template
-```markdown
-# ADR-001: Retell AI Client Initialization
-
-## Status
-Accepted
-
-## Context
-We need to decide how to initialize the Retell AI client across our application.
-
-## Decision
-We will use the singleton pattern with lazy initialization.
-
-## Consequences
-- Pro: Single client instance, connection reuse
-- Pro: Easy to mock in tests
-- Con: Global state requires careful lifecycle management
-
-## Enforcement
-- ESLint rule: retellai/use-singleton-client
-- CI check: grep for "new RetellAIClient(" outside allowed files
-```
-
-## Policy-as-Code (OPA)
-
-```rego
-# retellai-policy.rego
-package retellai
-
-# Deny production API keys in non-production environments
-deny[msg] {
-  input.environment != "production"
-  startswith(input.apiKey, "sk_live_")
-  msg := "Production API keys not allowed in non-production environment"
-}
-
-# Require minimum timeout
-deny[msg] {
-  input.timeout < 10000
-  msg := sprintf("Timeout too low: %d < 10000ms minimum", [input.timeout])
-}
-
-# Require retry configuration
-deny[msg] {
-  not input.retries
-  msg := "Retry configuration is required"
-}
-```
-
-## CI Policy Checks
-
-```yaml
-# .github/workflows/retellai-policy.yml
-name: Retell AI Policy Check
-
-on: [push, pull_request]
-
-jobs:
-  policy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Check for hardcoded secrets
-        run: |
-          if grep -rE "sk_(live|test)_[a-zA-Z0-9]{24,}" --include="*.ts" --include="*.js" .; then
-            echo "ERROR: Hardcoded Retell AI keys found"
-            exit 1
-          fi
-
-      - name: Validate configuration schema
-        run: |
-          npx ajv validate -s retellai-config.schema.json -d config/retellai/*.json
-
-      - name: Run ESLint Retell AI rules
-        run: npx eslint --plugin retellai --rule 'retellai/no-hardcoded-keys: error' src/
-```
-
-## Runtime Guardrails
-
-```typescript
-// Prevent dangerous operations in production
-const BLOCKED_IN_PROD = ['deleteAll', 'resetData', 'migrateDown'];
-
-function guardRetell AIOperation(operation: string): void {
-  const isProd = process.env.NODE_ENV === 'production';
-
-  if (isProd && BLOCKED_IN_PROD.includes(operation)) {
-    throw new Error(`Operation '${operation}' blocked in production`);
-  }
-}
-
-// Rate limit protection
-function guardRateLimits(requestsInWindow: number): void {
-  const limit = parseInt(process.env.RETELLAI_RATE_LIMIT || '100');
-
-  if (requestsInWindow > limit * 0.9) {
-    console.warn('Approaching Retell AI rate limit');
-  }
-
-  if (requestsInWindow >= limit) {
-    throw new Error('Retell AI rate limit exceeded - request blocked');
-  }
-}
-```
+- Retell AI agent configured
+- Understanding of telephony compliance (TCPA, GDPR)
+- Call recording consent requirements for your jurisdiction
 
 ## Instructions
 
-### Step 1: Create ESLint Rules
-Implement custom lint rules for Retell AI patterns.
+### Step 1: Conversation Content Boundaries
 
-### Step 2: Configure Pre-Commit Hooks
-Set up hooks to catch issues before commit.
+Define what the agent can and cannot discuss to prevent liability.
 
-### Step 3: Add CI Policy Checks
-Implement policy-as-code in CI pipeline.
+```typescript
+const CONVERSATION_POLICY = {
+  blockedTopics: [
+    'medical advice', 'legal advice', 'financial advice',
+    'political opinions', 'competitor pricing'
+  ],
+  requiredDisclosures: [
+    'This is an AI assistant',
+    'This call may be recorded'
+  ],
+  maxCallDuration: 600,  // 10 minutes
+  escalationTriggers: ['speak to a human', 'talk to manager', 'real person']
+};
 
-### Step 4: Enable Runtime Guardrails
-Add production safeguards for dangerous operations.
+function enforceContentPolicy(agentResponse: string): string {
+  for (const topic of CONVERSATION_POLICY.blockedTopics) {
+    if (agentResponse.toLowerCase().includes(topic)) {
+      return "I'm not able to advise on that topic. Let me connect you with a specialist.";
+    }
+  }
+  return agentResponse;
+}
+```
 
-## Output
-- ESLint plugin with Retell AI rules
-- Pre-commit hooks blocking secrets
-- CI policy checks passing
-- Runtime guardrails active
+### Step 2: Call Recording Consent
+
+Many jurisdictions require two-party consent for recording. Enforce upfront disclosure.
+
+```typescript
+const CONSENT_SCRIPT = {
+  opening: "Hi, this is an AI assistant calling from [Company]. This call may be recorded for quality purposes. Is that okay?",
+  noConsent: "I understand. I'll continue without recording. How can I help you today?",
+  consentReceived: true
+};
+
+app.post('/retell-webhook', async (req, res) => {
+  const { call_id, turn_number, transcript } = req.body;
+
+  // First turn: always deliver consent disclosure
+  if (turn_number === 0) {
+    return res.json({ response: CONSENT_SCRIPT.opening });
+  }
+
+  // Second turn: check for consent
+  if (turn_number === 1) {
+    const consented = /yes|okay|sure|that's fine/i.test(transcript);
+    if (!consented) {
+      await retell.call.update(call_id, { recording_enabled: false });
+      return res.json({ response: CONSENT_SCRIPT.noConsent });
+    }
+  }
+
+  // Normal processing
+  const response = await generateResponse(req.body);
+  return res.json({ response: enforceContentPolicy(response) });
+});
+```
+
+### Step 3: Cost Controls
+
+Voice calls cost per minute. Cap concurrent calls and duration.
+
+```typescript
+class CallCostPolicy {
+  private activeCalls = new Map<string, number>();
+  private maxConcurrent = 10;
+  private maxDurationSec = 600;
+  private dailyBudget = 100;  // dollars
+  private costPerMinute = 0.10;
+
+  canInitiateCall(): boolean {
+    if (this.activeCalls.size >= this.maxConcurrent) return false;
+    if (this.getDailySpend() >= this.dailyBudget) return false;
+    return true;
+  }
+
+  monitorDuration(callId: string) {
+    const started = this.activeCalls.get(callId);
+    if (started && (Date.now() - started) / 1000 > this.maxDurationSec) {
+      return { action: 'end', reason: 'Maximum call duration exceeded' };
+    }
+    return { action: 'continue' };
+  }
+
+  getDailySpend(): number {
+    let totalMinutes = 0;
+    for (const started of this.activeCalls.values()) {
+      totalMinutes += (Date.now() - started) / 60000;
+    }
+    return totalMinutes * this.costPerMinute;
+  }
+}
+```
+
+### Step 4: Human Escalation Triggers
+
+Detect when callers want a human and transfer gracefully.
+
+```typescript
+function checkEscalation(transcript: string): boolean {
+  const triggers = ['speak to a human', 'real person', 'talk to someone', 'supervisor', 'manager'];
+  return triggers.some(t => transcript.toLowerCase().includes(t));
+}
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| ESLint rule not firing | Wrong config | Check plugin registration |
-| Pre-commit skipped | --no-verify | Enforce in CI |
-| Policy false positive | Regex too broad | Narrow pattern match |
-| Guardrail triggered | Actual issue | Fix or whitelist |
+| Compliance violation | Agent gives restricted advice | Content filtering on responses |
+| Recording without consent | Missing disclosure | Enforce consent script on first turn |
+| Runaway call costs | No duration/budget limits | Implement cost controls |
+| Frustrated caller | No human escalation | Detect escalation triggers, transfer |
 
 ## Examples
 
-### Quick ESLint Check
-```bash
-npx eslint --plugin retellai --rule 'retellai/no-hardcoded-keys: error' src/
+### Policy Dashboard
+```typescript
+const dashboard = {
+  activeCalls: costPolicy.activeCalls.size,
+  dailySpend: costPolicy.getDailySpend().toFixed(2),
+  escalationRate: metrics.rate('escalations'),
+  avgCallDuration: metrics.avg('call_duration_sec')
+};
 ```
 
 ## Resources
-- [ESLint Plugin Development](https://eslint.org/docs/latest/extend/plugins)
-- [Pre-commit Framework](https://pre-commit.com/)
-- [Open Policy Agent](https://www.openpolicyagent.org/)
-
-## Next Steps
-For architecture blueprints, see `retellai-architecture-variants`.
+- [Retell AI Docs](https://docs.retellai.com)
+- [TCPA Compliance](https://www.fcc.gov/general/telemarketing-and-robocalls)

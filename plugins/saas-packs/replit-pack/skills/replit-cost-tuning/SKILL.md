@@ -16,187 +16,94 @@ compatible-with: claude-code, codex, openclaw
 # Replit Cost Tuning
 
 ## Overview
-Optimize Replit costs through smart tier selection, sampling, and usage monitoring.
+Optimize Replit costs by right-sizing deployment tiers, managing compute resources, and controlling AI feature (Ghostwriter) consumption. Replit pricing combines per-seat subscription (Teams: ~$25/seat/month) with deployment compute costs (billed by CPU/memory/egress). The biggest cost levers are: using Reserved VMs for predictable workloads instead of on-demand (40% savings), configuring auto-sleep for development Repls, and right-sizing deployment resources to actual usage.
 
 ## Prerequisites
-- Access to Replit billing dashboard
-- Understanding of current usage patterns
-- Database for usage tracking (optional)
-- Alerting system configured (optional)
-
-## Pricing Tiers
-
-| Tier | Monthly Cost | Included | Overage |
-|------|-------------|----------|---------|
-| Free | $0 | 1,000 requests | N/A |
-| Pro | $99 | 100,000 requests | $0.001/request |
-| Enterprise | Custom | Unlimited | Volume discounts |
-
-## Cost Estimation
-
-```typescript
-interface UsageEstimate {
-  requestsPerMonth: number;
-  tier: string;
-  estimatedCost: number;
-  recommendation?: string;
-}
-
-function estimateReplitCost(requestsPerMonth: number): UsageEstimate {
-  if (requestsPerMonth <= 1000) {
-    return { requestsPerMonth, tier: 'Free', estimatedCost: 0 };
-  }
-
-  if (requestsPerMonth <= 100000) {
-    return { requestsPerMonth, tier: 'Pro', estimatedCost: 99 };
-  }
-
-  const proOverage = (requestsPerMonth - 100000) * 0.001;
-  const proCost = 99 + proOverage;
-
-  return {
-    requestsPerMonth,
-    tier: 'Pro (with overage)',
-    estimatedCost: proCost,
-    recommendation: proCost > 500
-      ? 'Consider Enterprise tier for volume discounts'
-      : undefined,
-  };
-}
-```
-
-## Usage Monitoring
-
-```typescript
-class ReplitUsageMonitor {
-  private requestCount = 0;
-  private bytesTransferred = 0;
-  private alertThreshold: number;
-
-  constructor(monthlyBudget: number) {
-    this.alertThreshold = monthlyBudget * 0.8; // 80% warning
-  }
-
-  track(request: { bytes: number }) {
-    this.requestCount++;
-    this.bytesTransferred += request.bytes;
-
-    if (this.estimatedCost() > this.alertThreshold) {
-      this.sendAlert('Approaching Replit budget limit');
-    }
-  }
-
-  estimatedCost(): number {
-    return estimateReplitCost(this.requestCount).estimatedCost;
-  }
-
-  private sendAlert(message: string) {
-    // Send to Slack, email, PagerDuty, etc.
-  }
-}
-```
-
-## Cost Reduction Strategies
-
-### Step 1: Request Sampling
-```typescript
-function shouldSample(samplingRate = 0.1): boolean {
-  return Math.random() < samplingRate;
-}
-
-// Use for non-critical telemetry
-if (shouldSample(0.1)) { // 10% sample
-  await replitClient.trackEvent(event);
-}
-```
-
-### Step 2: Batching Requests
-```typescript
-// Instead of N individual calls
-await Promise.all(ids.map(id => replitClient.get(id)));
-
-// Use batch endpoint (1 call)
-await replitClient.batchGet(ids);
-```
-
-### Step 3: Caching (from P16)
-- Cache frequently accessed data
-- Use cache invalidation webhooks
-- Set appropriate TTLs
-
-### Step 4: Compression
-```typescript
-const client = new ReplitClient({
-  compression: true, // Enable gzip
-});
-```
-
-## Budget Alerts
-
-```bash
-# Set up billing alerts in Replit dashboard
-# Or use API if available:
-# Check Replit documentation for billing APIs
-```
-
-## Cost Dashboard Query
-
-```sql
--- If tracking usage in your database
-SELECT
-  DATE_TRUNC('day', created_at) as date,
-  COUNT(*) as requests,
-  SUM(response_bytes) as bytes,
-  COUNT(*) * 0.001 as estimated_cost
-FROM replit_api_logs
-WHERE created_at >= NOW() - INTERVAL '30 days'
-GROUP BY 1
-ORDER BY 1;
-```
+- Replit Teams account with billing access
+- Deployment usage metrics from Replit dashboard
+- Understanding of compute resource needs per application
 
 ## Instructions
 
-### Step 1: Analyze Current Usage
-Review Replit dashboard for usage patterns and costs.
+### Step 1: Audit Compute Costs by Repl
+```bash
+# Check resource consumption across team Repls
+curl "https://replit.com/api/v1/teams/TEAM_ID/usage?period=last_30d" \
+  -H "Authorization: Bearer $REPLIT_API_KEY" | \
+  jq '.usage | sort_by(-.cost_usd) | .[0:10] | .[] | {repl_name, cpu_hours, memory_gb_hours, egress_gb, cost_usd}'
+```
 
-### Step 2: Select Optimal Tier
-Use the cost estimation function to find the right tier.
+### Step 2: Right-Size Deployment Resources
+```yaml
+# Match resources to actual workload needs
+undersized:  # Causes crashes, bad UX
+  cpu: 0.25 vCPU
+  memory: 512 MB
+  cost: "$5/month"
 
-### Step 3: Implement Monitoring
-Add usage tracking to catch budget overruns early.
+right_sized:  # Handles normal traffic
+  cpu: 0.5 vCPU
+  memory: 1 GB
+  cost: "$10/month"
 
-### Step 4: Apply Optimizations
-Enable batching, caching, and sampling where appropriate.
+oversized:  # Wasting money
+  cpu: 2 vCPU
+  memory: 4 GB
+  cost: "$40/month"
 
-## Output
-- Optimized tier selection
-- Usage monitoring implemented
-- Budget alerts configured
-- Cost reduction strategies applied
+# Check actual usage: if peak CPU <30% and peak memory <50%, downsize
+```
+
+### Step 3: Use Reserved VMs for Production
+```yaml
+# Reserved VMs vs on-demand pricing
+on_demand:
+  price: "Pay per CPU-second and memory-second"
+  best_for: "Development, testing, low-traffic apps"
+  tip: "Enable auto-sleep (stops billing when no traffic)"
+
+reserved:
+  price: "Fixed monthly rate, ~40% cheaper than on-demand at full utilization"
+  best_for: "Production apps with consistent traffic"
+  tip: "Choose reserved when app runs >16 hours/day"
+```
+
+### Step 4: Configure Auto-Sleep for Dev Environments
+In Repl Settings > Deployment:
+- Enable "Sleep after inactivity" for development Repls (default: 5 minutes)
+- Set auto-sleep timeout to 2 minutes for rarely-used tools
+- Keep always-on only for production deployments that need instant response
+
+### Step 5: Optimize Seat Costs
+```yaml
+# Seat audit
+audit:
+  total_seats: 15
+  active_daily: 8
+  active_weekly: 11
+  inactive_30d: 4
+
+# Strategy:
+# - Remove 4 inactive members: saves $100/month (at $25/seat)
+# - Consider Teams Lite for members who only need read access
+# - Share Repls between team members instead of duplicating
+```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Unexpected charges | Untracked usage | Implement monitoring |
-| Overage fees | Wrong tier | Upgrade tier |
-| Budget exceeded | No alerts | Set up alerts |
-| Inefficient usage | No batching | Enable batch requests |
+| High compute bill | Repls running 24/7 with low traffic | Enable auto-sleep for non-production |
+| Cold start complaints | Auto-sleep waking too slowly | Use Reserved VM for customer-facing apps |
+| Egress costs high | Serving large files from Repl | Move static assets to CDN (Cloudflare, Vercel) |
+| Seat costs growing | Team expanding without audit | Quarterly seat utilization review |
 
 ## Examples
-
-### Quick Cost Check
-```typescript
-// Estimate monthly cost for your usage
-const estimate = estimateReplitCost(yourMonthlyRequests);
-console.log(`Tier: ${estimate.tier}, Cost: $${estimate.estimatedCost}`);
-if (estimate.recommendation) {
-  console.log(`💡 ${estimate.recommendation}`);
-}
+```bash
+# Quick cost check: which Repls cost the most?
+curl -s "https://replit.com/api/v1/teams/TEAM_ID/usage?period=last_30d" \
+  -H "Authorization: Bearer $REPLIT_API_KEY" | \
+  jq '{
+    total_cost: ([.usage[].cost_usd] | add),
+    top_3: [.usage | sort_by(-.cost_usd) | .[0:3] | .[] | {repl: .repl_name, cost: .cost_usd}]
+  }'
 ```
-
-## Resources
-- [Replit Pricing](https://replit.com/pricing)
-- [Replit Billing Dashboard](https://dashboard.replit.com/billing)
-
-## Next Steps
-For architecture patterns, see `replit-reference-architecture`.

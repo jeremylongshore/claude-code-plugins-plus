@@ -16,344 +16,94 @@ compatible-with: claude-code, codex, openclaw
 # Lokalise Observability
 
 ## Overview
-Set up comprehensive observability for Lokalise integrations with metrics, logging, and alerting.
+Monitor Lokalise translation pipeline health including API response times, key completion rates, webhook delivery reliability, and translation throughput. Key signals include per-project translation progress (percentage of keys translated per locale), file download latency, rate limit consumption (Lokalise enforces 6 requests/second on most endpoints), and webhook delivery success rates for CI/CD integration triggers.
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- Logging infrastructure (ELK, Datadog, etc.)
-- Grafana or similar dashboarding tool
-- AlertManager configured
-
-## Key Metrics
-
-| Metric | Type | Description |
-|--------|------|-------------|
-| `lokalise_requests_total` | Counter | Total API requests |
-| `lokalise_request_duration_seconds` | Histogram | Request latency |
-| `lokalise_errors_total` | Counter | Error count by type |
-| `lokalise_rate_limit_remaining` | Gauge | Rate limit headroom |
-| `lokalise_keys_total` | Gauge | Total translation keys |
-| `lokalise_translation_coverage` | Gauge | Translation progress |
-| `lokalise_webhook_events_total` | Counter | Webhook events received |
+- Lokalise API integration with `@lokalise/node-api` SDK
+- Metrics backend (Prometheus, Datadog, or CloudWatch)
+- Webhook endpoint for Lokalise project events
 
 ## Instructions
 
-### Step 1: Prometheus Metrics Setup
+### Step 1: Track API Call Metrics
 ```typescript
-import { Registry, Counter, Histogram, Gauge } from "prom-client";
+import { LokaliseApi } from '@lokalise/node-api';
 
-const registry = new Registry();
+const lok = new LokaliseApi({ apiKey: process.env.LOKALISE_API_TOKEN! });
 
-// Request metrics
-const requestCounter = new Counter({
-  name: "lokalise_requests_total",
-  help: "Total Lokalise API requests",
-  labelNames: ["method", "endpoint", "status"],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: "lokalise_request_duration_seconds",
-  help: "Lokalise request duration",
-  labelNames: ["method", "endpoint"],
-  buckets: [0.1, 0.25, 0.5, 1, 2.5, 5, 10],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: "lokalise_errors_total",
-  help: "Lokalise errors by type",
-  labelNames: ["error_type", "endpoint"],
-  registers: [registry],
-});
-
-// Rate limit tracking
-const rateLimitRemaining = new Gauge({
-  name: "lokalise_rate_limit_remaining",
-  help: "Remaining rate limit quota",
-  registers: [registry],
-});
-
-// Translation metrics
-const translationCoverage = new Gauge({
-  name: "lokalise_translation_coverage",
-  help: "Translation coverage percentage",
-  labelNames: ["project", "language"],
-  registers: [registry],
-});
-```
-
-### Step 2: Instrumented Client Wrapper
-```typescript
-import { LokaliseApi } from "@lokalise/node-api";
-
-export async function instrumentedRequest<T>(
-  method: string,
-  endpoint: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method, endpoint });
-
+async function trackedApiCall<T>(operation: string, fn: () => Promise<T>): Promise<T> {
+  const start = performance.now();
   try {
-    const result = await operation();
-    requestCounter.inc({ method, endpoint, status: "success" });
+    const result = await fn();
+    emitMetric('lokalise_api_duration_ms', performance.now() - start, { operation, status: 'ok' });
+    emitMetric('lokalise_api_requests_total', 1, { operation, status: 'ok' });
     return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, endpoint, status: "error" });
-    errorCounter.inc({
-      error_type: error.code?.toString() || "unknown",
-      endpoint,
-    });
-    throw error;
-  } finally {
-    timer();
+  } catch (err: any) {
+    emitMetric('lokalise_api_requests_total', 1, { operation, status: 'error', code: err.code });
+    throw err;
   }
 }
 
 // Usage
-export class InstrumentedLokaliseClient {
-  private client: LokaliseApi;
-
-  constructor(apiKey: string) {
-    this.client = new LokaliseApi({ apiKey });
-  }
-
-  async listProjects() {
-    return instrumentedRequest("GET", "/projects", () =>
-      this.client.projects().list()
-    );
-  }
-
-  async listKeys(projectId: string) {
-    return instrumentedRequest("GET", "/keys", () =>
-      this.client.keys().list({ project_id: projectId })
-    );
-  }
-
-  async downloadFiles(projectId: string, options: any) {
-    return instrumentedRequest("POST", "/files/download", () =>
-      this.client.files().download(projectId, options)
-    );
-  }
-}
+const keys = await trackedApiCall('keys.list', () => lok.keys().list({ project_id: projectId, limit: 500 }));
 ```
 
-### Step 3: Structured Logging
+### Step 2: Monitor Translation Completion
 ```typescript
-import pino from "pino";
+// Poll translation progress per locale and emit as gauge metrics
+async function checkTranslationProgress(projectId: string) {
+  const stats = await lok.translationStatuses().list({ project_id: projectId });
+  const languages = await lok.languages().list({ project_id: projectId });
 
-const logger = pino({
-  name: "lokalise",
-  level: process.env.LOG_LEVEL || "info",
-  formatters: {
-    level: (label) => ({ level: label }),
-  },
-});
-
-interface LokaliseLogContext {
-  operation: string;
-  projectId?: string;
-  keyId?: number;
-  locale?: string;
-  duration?: number;
-  error?: string;
-}
-
-export function logLokaliseOperation(
-  level: "info" | "warn" | "error",
-  message: string,
-  context: LokaliseLogContext
-) {
-  logger[level]({
-    service: "lokalise",
-    ...context,
-    timestamp: new Date().toISOString(),
-  }, message);
-}
-
-// Usage
-logLokaliseOperation("info", "Translation sync completed", {
-  operation: "sync",
-  projectId: "123456.abc",
-  duration: 1500,
-});
-
-logLokaliseOperation("error", "API request failed", {
-  operation: "listKeys",
-  projectId: "123456.abc",
-  error: "Rate limit exceeded",
-});
-```
-
-### Step 4: Health Check Endpoint
-```typescript
-interface LokaliseHealth {
-  status: "healthy" | "degraded" | "unhealthy";
-  latencyMs: number;
-  rateLimitRemaining?: number;
-  lastSync?: string;
-  error?: string;
-}
-
-export async function checkLokaliseHealth(): Promise<LokaliseHealth> {
-  const start = Date.now();
-
-  try {
-    const client = new LokaliseApi({
-      apiKey: process.env.LOKALISE_API_TOKEN!,
-    });
-
-    // Quick connectivity test
-    await client.projects().list({ limit: 1 });
-
-    const latencyMs = Date.now() - start;
-
-    return {
-      status: latencyMs < 2000 ? "healthy" : "degraded",
-      latencyMs,
-      lastSync: process.env.LAST_TRANSLATION_SYNC,
-    };
-  } catch (error: any) {
-    return {
-      status: "unhealthy",
-      latencyMs: Date.now() - start,
-      error: error.message,
-    };
+  for (const lang of languages.items) {
+    const progress = lang.words_translated / Math.max(lang.words_total, 1) * 100;
+    emitGauge('lokalise_translation_progress_pct', progress, { project: projectId, locale: lang.lang_iso });
   }
 }
-
-// Express endpoint
-app.get("/health/lokalise", async (req, res) => {
-  const health = await checkLokaliseHealth();
-  const statusCode = health.status === "healthy" ? 200 : 503;
-  res.status(statusCode).json(health);
-});
 ```
 
-### Step 5: Alert Rules
+### Step 3: Configure Webhooks for Real-Time Events
+```bash
+# Register a webhook for project completion events
+curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
+  -H "X-Api-Token: $LOKALISE_API_TOKEN" \
+  -d '{
+    "url": "https://hooks.company.com/lokalise",
+    "events": ["project.translation_completed", "project.exported", "project.key.added"],
+    "event_lang_map": [{"event": "project.translation_completed", "lang_iso_codes": ["fr", "de", "ja"]}]
+  }'
+```
+
+### Step 4: Alert on Pipeline Issues
 ```yaml
-# prometheus/lokalise_alerts.yml
 groups:
-  - name: lokalise_alerts
+  - name: lokalise
     rules:
-      - alert: LokaliseHighErrorRate
-        expr: |
-          rate(lokalise_errors_total[5m]) /
-          rate(lokalise_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Lokalise error rate > 5%"
-          description: "Error rate is {{ $value | printf \"%.2f\" }}%"
-
-      - alert: LokaliseHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(lokalise_request_duration_seconds_bucket[5m])
-          ) > 3
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Lokalise P95 latency > 3s"
-
-      - alert: LokaliseRateLimitLow
-        expr: lokalise_rate_limit_remaining < 2
-        for: 1m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Lokalise rate limit nearly exhausted"
-
-      - alert: LokaliseDown
-        expr: up{job="lokalise"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Lokalise integration is down"
+      - alert: LokaliseApiRateLimited
+        expr: rate(lokalise_api_requests_total{status="error", code="429"}[5m]) > 0
+        annotations: { summary: "Lokalise API rate limit hit (6 req/s cap)" }
+      - alert: TranslationStalled
+        expr: lokalise_translation_progress_pct < 50 and time() - lokalise_last_translation_activity > 86400
+        annotations: { summary: "Translation progress stalled for 24+ hours" }
+      - alert: WebhookDeliveryFailing
+        expr: rate(lokalise_webhook_failures_total[1h]) > 3
+        annotations: { summary: "Lokalise webhook deliveries failing" }
 ```
 
-## Output
-- Metrics collection enabled
-- Structured logging implemented
-- Health check endpoint
-- Alert rules deployed
+### Step 5: Build a Translation Pipeline Dashboard
+Key panels: API request rate and latency, translation completion % by locale (bar chart), daily keys added/modified, webhook delivery success rate, and per-word cost tracking (Lokalise charges per word for machine translation features).
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Log flooding | Verbose level | Adjust log level |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| Health false positive | Timeout too short | Increase timeout |
+| `429 Too Many Requests` | Exceeded 6 req/s rate limit | Add request throttling with p-queue |
+| Webhook not firing | Wrong event type registered | Verify event names in webhook config |
+| Progress metric stuck at 0 | Language not added to project | Add target locale in project settings |
+| Stale cache data | Long TTL on translation cache | Invalidate on webhook event receipt |
 
 ## Examples
-
-### Grafana Dashboard Queries
-```json
-{
-  "panels": [
-    {
-      "title": "Lokalise Request Rate",
-      "targets": [{
-        "expr": "rate(lokalise_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Lokalise Latency P50/P95/P99",
-      "targets": [
-        { "expr": "histogram_quantile(0.50, rate(lokalise_request_duration_seconds_bucket[5m]))" },
-        { "expr": "histogram_quantile(0.95, rate(lokalise_request_duration_seconds_bucket[5m]))" },
-        { "expr": "histogram_quantile(0.99, rate(lokalise_request_duration_seconds_bucket[5m]))" }
-      ]
-    },
-    {
-      "title": "Translation Coverage by Language",
-      "targets": [{
-        "expr": "lokalise_translation_coverage"
-      }]
-    }
-  ]
-}
+```bash
+# Quick health check: API response time and rate limit headers
+curl -s -w "\n%{time_total}s" "https://api.lokalise.com/api2/projects" \
+  -H "X-Api-Token: $LOKALISE_API_TOKEN" -o /dev/null -D - | grep -E "(X-Rate-Limit|time_total)"
 ```
-
-### Collect Translation Coverage
-```typescript
-async function updateTranslationCoverageMetrics(projectId: string) {
-  const client = new LokaliseApi({
-    apiKey: process.env.LOKALISE_API_TOKEN!,
-  });
-
-  const languages = await client.languages().list({ project_id: projectId });
-
-  for (const lang of languages.items) {
-    translationCoverage.set(
-      { project: projectId, language: lang.lang_iso },
-      lang.statistics?.progress ?? 0
-    );
-  }
-}
-
-// Run periodically
-setInterval(() => {
-  updateTranslationCoverageMetrics(process.env.LOKALISE_PROJECT_ID!);
-}, 300000);  // Every 5 minutes
-```
-
-### Metrics Endpoint
-```typescript
-app.get("/metrics", async (req, res) => {
-  res.set("Content-Type", registry.contentType);
-  res.send(await registry.metrics());
-});
-```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [Grafana Dashboards](https://grafana.com/docs/grafana/latest/dashboards/)
-- [pino Logger](https://getpino.io/)
-
-## Next Steps
-For incident response, see `lokalise-incident-runbook`.

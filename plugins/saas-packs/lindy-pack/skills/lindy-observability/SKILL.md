@@ -13,274 +13,93 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Lindy Observability
+# Lindy AI Observability
 
 ## Overview
-Implement comprehensive observability for Lindy AI integrations.
+Monitor Lindy AI agent execution health, automation success rates, and response latency. Key observability signals for Lindy include agent run duration, step-level success/failure within multi-step automations, trigger frequency (how often agents are invoked), and per-agent cost tracking based on Lindy's per-agent pricing model where each active agent incurs a fixed monthly cost.
 
 ## Prerequisites
-- Production Lindy integration
-- Observability stack (Datadog, New Relic, Prometheus, etc.)
-- Log aggregation system
+- Lindy Team or Enterprise workspace
+- API access with a valid `LINDY_API_KEY`
+- External monitoring stack (Prometheus/Grafana, Datadog, or similar)
 
 ## Instructions
 
-### Step 1: Structured Logging
-```typescript
-// lib/logger.ts
-import pino from 'pino';
-
-export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  formatters: {
-    level: (label) => ({ level: label }),
-  },
-  base: {
-    service: 'lindy-integration',
-    environment: process.env.NODE_ENV,
-  },
-});
-
-// Lindy-specific logger
-export function lindyLogger(operation: string) {
-  return logger.child({ component: 'lindy', operation });
-}
+### Step 1: Poll Agent Run Status via API
+```bash
+# List recent runs for all agents, sorted by recency
+curl "https://api.lindy.ai/v1/runs?limit=50&sort=-created_at" \
+  -H "Authorization: Bearer $LINDY_API_KEY" | \
+  jq '.runs[] | {agent_name, run_id, status, duration_ms, steps_completed, steps_failed, created_at}'
 ```
 
-### Step 2: Instrumented Client
+### Step 2: Emit Metrics from Run Data
 ```typescript
-// lib/instrumented-lindy.ts
-import { Lindy } from '@lindy-ai/sdk';
-import { lindyLogger } from './logger';
-import { metrics } from './metrics';
-import { tracer } from './tracer';
+// lindy-metrics-exporter.ts
+async function exportLindyMetrics() {
+  const res = await fetch('https://api.lindy.ai/v1/runs?limit=100&since=1h', {
+    headers: { Authorization: `Bearer ${process.env.LINDY_API_KEY}` },
+  });
+  const { runs } = await res.json();
 
-export class InstrumentedLindy {
-  private lindy: Lindy;
-
-  constructor() {
-    this.lindy = new Lindy({ apiKey: process.env.LINDY_API_KEY });
-  }
-
-  async runAgent(agentId: string, input: string) {
-    const log = lindyLogger('runAgent');
-    const span = tracer.startSpan('lindy.agent.run');
-
-    const startTime = Date.now();
-
-    try {
-      span.setAttributes({
-        'lindy.agent_id': agentId,
-        'lindy.input_length': input.length,
-      });
-
-      log.info({ agentId, inputLength: input.length }, 'Starting agent run');
-
-      const result = await this.lindy.agents.run(agentId, { input });
-
-      const duration = Date.now() - startTime;
-
-      // Record metrics
-      metrics.histogram('lindy.agent.duration', duration, { agentId });
-      metrics.counter('lindy.agent.success', 1, { agentId });
-
-      // Log success
-      log.info({
-        agentId,
-        duration,
-        outputLength: result.output.length,
-      }, 'Agent run completed');
-
-      span.setAttributes({
-        'lindy.duration_ms': duration,
-        'lindy.output_length': result.output.length,
-        'lindy.status': 'success',
-      });
-
-      return result;
-    } catch (error: any) {
-      const duration = Date.now() - startTime;
-
-      // Record error metrics
-      metrics.counter('lindy.agent.error', 1, {
-        agentId,
-        errorCode: error.code,
-      });
-
-      // Log error
-      log.error({
-        agentId,
-        duration,
-        error: error.message,
-        errorCode: error.code,
-      }, 'Agent run failed');
-
-      span.setAttributes({
-        'lindy.status': 'error',
-        'lindy.error': error.message,
-      });
-      span.recordException(error);
-
-      throw error;
-    } finally {
-      span.end();
+  for (const run of runs) {
+    emitCounter('lindy_runs_total', 1, { agent: run.agent_name, status: run.status });
+    emitHistogram('lindy_run_duration_ms', run.duration_ms, { agent: run.agent_name });
+    if (run.steps_failed > 0) {
+      emitCounter('lindy_step_failures_total', run.steps_failed, { agent: run.agent_name });
     }
   }
 }
+
+// Run every 60 seconds
+setInterval(exportLindyMetrics, 60_000);
 ```
 
-### Step 3: Metrics Collection
-```typescript
-// lib/metrics.ts
-import { Counter, Histogram, Registry } from 'prom-client';
-
-const registry = new Registry();
-
-export const metrics = {
-  agentDuration: new Histogram({
-    name: 'lindy_agent_duration_ms',
-    help: 'Duration of Lindy agent runs in milliseconds',
-    labelNames: ['agent_id', 'status'],
-    buckets: [100, 500, 1000, 2000, 5000, 10000, 30000],
-    registers: [registry],
-  }),
-
-  agentRuns: new Counter({
-    name: 'lindy_agent_runs_total',
-    help: 'Total number of Lindy agent runs',
-    labelNames: ['agent_id', 'status'],
-    registers: [registry],
-  }),
-
-  apiCalls: new Counter({
-    name: 'lindy_api_calls_total',
-    help: 'Total Lindy API calls',
-    labelNames: ['endpoint', 'status'],
-    registers: [registry],
-  }),
-
-  // Helper methods
-  histogram(name: string, value: number, labels: Record<string, string>) {
-    const metric = registry.getSingleMetric(name) as Histogram;
-    metric?.observe(labels, value);
-  },
-
-  counter(name: string, value: number, labels: Record<string, string>) {
-    const metric = registry.getSingleMetric(name) as Counter;
-    metric?.inc(labels, value);
-  },
-};
-
-// Metrics endpoint
-export function getMetrics(): Promise<string> {
-  return registry.metrics();
-}
+### Step 3: Set Up Webhook-Based Real-Time Monitoring
+Configure Lindy webhooks to push events on agent run completion:
+```bash
+curl -X POST https://api.lindy.ai/v1/webhooks \
+  -H "Authorization: Bearer $LINDY_API_KEY" \
+  -d '{
+    "url": "https://hooks.company.com/lindy",
+    "events": ["run.completed", "run.failed", "agent.error"],
+    "secret": "whsec_your_signing_secret"
+  }'
 ```
 
-### Step 4: Distributed Tracing
-```typescript
-// lib/tracer.ts
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-import { NodeTracerProvider } from '@opentelemetry/sdk-trace-node';
-import { SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
-import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-
-const provider = new NodeTracerProvider();
-
-provider.addSpanProcessor(
-  new SimpleSpanProcessor(
-    new OTLPTraceExporter({
-      url: process.env.OTEL_EXPORTER_OTLP_ENDPOINT,
-    })
-  )
-);
-
-provider.register();
-
-export const tracer = trace.getTracer('lindy-integration');
-```
-
-### Step 5: Dashboard Configuration
+### Step 4: Alert on Agent Failures
 ```yaml
-# grafana/dashboards/lindy.json
-{
-  "title": "Lindy AI Monitoring",
-  "panels": [
-    {
-      "title": "Agent Runs per Minute",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "rate(lindy_agent_runs_total[1m])",
-          "legendFormat": "{{agent_id}}"
-        }
-      ]
-    },
-    {
-      "title": "P95 Latency",
-      "type": "stat",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, rate(lindy_agent_duration_ms_bucket[5m]))"
-        }
-      ]
-    },
-    {
-      "title": "Error Rate",
-      "type": "graph",
-      "targets": [
-        {
-          "expr": "rate(lindy_agent_runs_total{status='error'}[5m]) / rate(lindy_agent_runs_total[5m])"
-        }
-      ]
-    }
-  ]
-}
+groups:
+  - name: lindy
+    rules:
+      - alert: LindyAgentFailureRate
+        expr: rate(lindy_runs_total{status="failed"}[15m]) / rate(lindy_runs_total[15m]) > 0.1
+        for: 10m
+        annotations: { summary: "Lindy agent failure rate exceeds 10%" }
+      - alert: LindyAgentSlow
+        expr: histogram_quantile(0.95, rate(lindy_run_duration_ms_bucket[15m])) > 30000
+        annotations: { summary: "Lindy agent P95 latency exceeds 30 seconds" }
+      - alert: LindyAgentInactive
+        expr: lindy_runs_total == 0 and time() - lindy_last_run_timestamp > 3600
+        annotations: { summary: "No Lindy agent runs in the last hour (expected continuous)" }
 ```
 
-## Output
-- Structured logging
-- Prometheus metrics
-- Distributed tracing
-- Grafana dashboards
-- Alerting rules
+### Step 5: Build a Dashboard
+Key panels: agent run success/failure rate (stacked bar), run duration p50/p95 by agent, step failure heatmap (which steps fail most), trigger frequency (runs/hour), and active agent count vs billing (since Lindy charges per active agent).
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing traces | OTEL not configured | Set OTEL endpoint |
-| Metrics not visible | Wrong labels | Check label names |
-| Logs not searchable | Missing context | Add structured fields |
+| Webhook not delivering | Endpoint returning non-2xx | Fix endpoint, check Lindy webhook logs |
+| Run duration spike | Downstream API slow in agent step | Check step-level timing in run details |
+| Agent marked inactive | No triggers firing | Verify trigger configuration (schedule, webhook, email) |
+| Metrics exporter missing data | API rate limit on `/runs` | Reduce polling frequency, use webhooks instead |
 
 ## Examples
-
-### Alert Configuration
-```yaml
-# alerts/lindy.yml
-groups:
-  - name: lindy
-    rules:
-      - alert: LindyHighErrorRate
-        expr: rate(lindy_agent_runs_total{status="error"}[5m]) > 0.1
-        for: 5m
-        labels:
-          severity: critical
-        annotations:
-          summary: "High Lindy error rate"
-
-      - alert: LindyHighLatency
-        expr: histogram_quantile(0.95, rate(lindy_agent_duration_ms_bucket[5m])) > 10000
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Lindy P95 latency above 10s"
+```bash
+# Quick health check: agent success rate over last 24h
+curl -s "https://api.lindy.ai/v1/runs?since=24h" \
+  -H "Authorization: Bearer $LINDY_API_KEY" | \
+  jq '{total: (.runs | length), failed: ([.runs[] | select(.status=="failed")] | length)}' | \
+  jq '{total, failed, success_rate: (1 - .failed/.total) * 100}'
 ```
-
-## Resources
-- [OpenTelemetry](https://opentelemetry.io/)
-- [Prometheus](https://prometheus.io/)
-- [Grafana](https://grafana.com/)
-
-## Next Steps
-Proceed to `lindy-incident-runbook` for incident response.

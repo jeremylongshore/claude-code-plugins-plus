@@ -16,208 +16,88 @@ compatible-with: claude-code, codex, openclaw
 # Ideogram Enterprise RBAC
 
 ## Overview
-Configure enterprise-grade access control for Ideogram integrations.
+Control access to Ideogram's AI image generation API through API key management and credit-based budgets. Ideogram uses credit-based pricing where each image generation costs credits based on model quality and resolution (standard vs HD, different aspect ratios). Access control focuses on API key scoping, per-key credit limits, and content policy enforcement to prevent misuse.
 
 ## Prerequisites
-- Ideogram Enterprise tier subscription
-- Identity Provider (IdP) with SAML/OIDC support
-- Understanding of role-based access patterns
-- Audit logging infrastructure
-
-## Role Definitions
-
-| Role | Permissions | Use Case |
-|------|-------------|----------|
-| Admin | Full access | Platform administrators |
-| Developer | Read/write, no delete | Active development |
-| Viewer | Read-only | Stakeholders, auditors |
-| Service | API access only | Automated systems |
-
-## Role Implementation
-
-```typescript
-enum IdeogramRole {
-  Admin = 'admin',
-  Developer = 'developer',
-  Viewer = 'viewer',
-  Service = 'service',
-}
-
-interface IdeogramPermissions {
-  read: boolean;
-  write: boolean;
-  delete: boolean;
-  admin: boolean;
-}
-
-const ROLE_PERMISSIONS: Record<IdeogramRole, IdeogramPermissions> = {
-  admin: { read: true, write: true, delete: true, admin: true },
-  developer: { read: true, write: true, delete: false, admin: false },
-  viewer: { read: true, write: false, delete: false, admin: false },
-  service: { read: true, write: true, delete: false, admin: false },
-};
-
-function checkPermission(
-  role: IdeogramRole,
-  action: keyof IdeogramPermissions
-): boolean {
-  return ROLE_PERMISSIONS[role][action];
-}
-```
-
-## SSO Integration
-
-### SAML Configuration
-
-```typescript
-// Ideogram SAML setup
-const samlConfig = {
-  entryPoint: 'https://idp.company.com/saml/sso',
-  issuer: 'https://ideogram.com/saml/metadata',
-  cert: process.env.SAML_CERT,
-  callbackUrl: 'https://app.yourcompany.com/auth/ideogram/callback',
-};
-
-// Map IdP groups to Ideogram roles
-const groupRoleMapping: Record<string, IdeogramRole> = {
-  'Engineering': IdeogramRole.Developer,
-  'Platform-Admins': IdeogramRole.Admin,
-  'Data-Team': IdeogramRole.Viewer,
-};
-```
-
-### OAuth2/OIDC Integration
-
-```typescript
-import { OAuth2Client } from '@ideogram/sdk';
-
-const oauthClient = new OAuth2Client({
-  clientId: process.env.IDEOGRAM_OAUTH_CLIENT_ID!,
-  clientSecret: process.env.IDEOGRAM_OAUTH_CLIENT_SECRET!,
-  redirectUri: 'https://app.yourcompany.com/auth/ideogram/callback',
-  scopes: ['read', 'write'],
-});
-```
-
-## Organization Management
-
-```typescript
-interface IdeogramOrganization {
-  id: string;
-  name: string;
-  ssoEnabled: boolean;
-  enforceSso: boolean;
-  allowedDomains: string[];
-  defaultRole: IdeogramRole;
-}
-
-async function createOrganization(
-  config: IdeogramOrganization
-): Promise<void> {
-  await ideogramClient.organizations.create({
-    ...config,
-    settings: {
-      sso: {
-        enabled: config.ssoEnabled,
-        enforced: config.enforceSso,
-        domains: config.allowedDomains,
-      },
-    },
-  });
-}
-```
-
-## Access Control Middleware
-
-```typescript
-function requireIdeogramPermission(
-  requiredPermission: keyof IdeogramPermissions
-) {
-  return async (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user as { ideogramRole: IdeogramRole };
-
-    if (!checkPermission(user.ideogramRole, requiredPermission)) {
-      return res.status(403).json({
-        error: 'Forbidden',
-        message: `Missing permission: ${requiredPermission}`,
-      });
-    }
-
-    next();
-  };
-}
-
-// Usage
-app.delete('/ideogram/resource/:id',
-  requireIdeogramPermission('delete'),
-  deleteResourceHandler
-);
-```
-
-## Audit Trail
-
-```typescript
-interface IdeogramAuditEntry {
-  timestamp: Date;
-  userId: string;
-  role: IdeogramRole;
-  action: string;
-  resource: string;
-  success: boolean;
-  ipAddress: string;
-}
-
-async function logIdeogramAccess(entry: IdeogramAuditEntry): Promise<void> {
-  await auditDb.insert(entry);
-
-  // Alert on suspicious activity
-  if (entry.action === 'delete' && !entry.success) {
-    await alertOnSuspiciousActivity(entry);
-  }
-}
-```
+- Ideogram API account with team plan
+- Dashboard access at ideogram.ai
+- API key with admin-level permissions
 
 ## Instructions
 
-### Step 1: Define Roles
-Map organizational roles to Ideogram permissions.
+### Step 1: Create Purpose-Scoped API Keys
+```bash
+# Key for the marketing team (standard quality, moderate budget)
+curl -X POST https://api.ideogram.ai/v1/api-keys \
+  -H "Authorization: Bearer $IDEOGRAM_ADMIN_KEY" \
+  -d '{
+    "name": "marketing-team",
+    "monthly_credit_limit": 5000,
+    "allowed_models": ["V_2"],
+    "rate_limit_rpm": 30
+  }'
 
-### Step 2: Configure SSO
-Set up SAML or OIDC integration with your IdP.
+# Key for the product team (HD quality, higher budget)
+curl -X POST https://api.ideogram.ai/v1/api-keys \
+  -H "Authorization: Bearer $IDEOGRAM_ADMIN_KEY" \
+  -d '{
+    "name": "product-design",
+    "monthly_credit_limit": 15000,
+    "allowed_models": ["V_2", "V_2_TURBO"],
+    "rate_limit_rpm": 60
+  }'
+```
 
-### Step 3: Implement Middleware
-Add permission checks to API endpoints.
+### Step 2: Enforce Content Safety via Proxy
+```typescript
+// ideogram-proxy.ts - Pre-screen prompts before sending to API
+const BLOCKED_TERMS = ['brand_competitor', 'trademark_name', 'offensive_term'];
 
-### Step 4: Enable Audit Logging
-Track all access for compliance.
+function sanitizePrompt(prompt: string, team: string): { allowed: boolean; reason?: string } {
+  for (const term of BLOCKED_TERMS) {
+    if (prompt.toLowerCase().includes(term)) {
+      return { allowed: false, reason: `Blocked term: ${term}` };
+    }
+  }
+  return { allowed: true };
+}
+```
 
-## Output
-- Role definitions implemented
-- SSO integration configured
-- Permission middleware active
-- Audit trail enabled
+### Step 3: Set Resolution and Quality Limits per Team
+```typescript
+const TEAM_LIMITS: Record<string, { maxResolution: string; allowedStyles: string[] }> = {
+  marketing:  { maxResolution: 'RESOLUTION_1024_1024', allowedStyles: ['REALISTIC', 'DESIGN'] },
+  social:     { maxResolution: 'RESOLUTION_1024_576',  allowedStyles: ['REALISTIC'] },
+  product:    { maxResolution: 'RESOLUTION_1024_1024', allowedStyles: ['REALISTIC', 'DESIGN', 'RENDER_3D'] },
+};
+```
+
+### Step 4: Monitor Credit Consumption
+```bash
+# Check usage per API key
+curl https://api.ideogram.ai/v1/usage \
+  -H "Authorization: Bearer $IDEOGRAM_ADMIN_KEY" | \
+  jq '.keys[] | {name, credits_used, credits_remaining, images_generated}'
+```
+
+### Step 5: Rotate Keys Quarterly
+Create replacement keys with identical permissions, update consuming applications, then delete old keys after confirming zero traffic on them for 48 hours.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| SSO login fails | Wrong callback URL | Verify IdP config |
-| Permission denied | Missing role mapping | Update group mappings |
-| Token expired | Short TTL | Refresh token logic |
-| Audit gaps | Async logging failed | Check log pipeline |
+| `402` credit exhausted | Monthly credit limit hit | Increase limit or wait for cycle reset |
+| `403` model not allowed | Key restricted from that model | Create key with broader model access |
+| `429` rate limited | RPM cap exceeded | Reduce concurrency or increase rate limit |
+| Content policy violation | Prompt triggers safety filter | Rephrase prompt, avoid trademarked terms |
 
 ## Examples
-
-### Quick Permission Check
-```typescript
-if (!checkPermission(user.role, 'write')) {
-  throw new ForbiddenError('Write permission required');
-}
+```bash
+# Generate with explicit credit tracking
+BEFORE=$(curl -s https://api.ideogram.ai/v1/usage -H "Authorization: Bearer $IDEOGRAM_API_KEY" | jq '.credits_remaining')
+curl -X POST https://api.ideogram.ai/generate \
+  -H "Api-Key: $IDEOGRAM_API_KEY" \
+  -d '{"image_request": {"prompt": "modern office workspace", "model": "V_2", "magic_prompt_option": "AUTO"}}'
+AFTER=$(curl -s https://api.ideogram.ai/v1/usage -H "Authorization: Bearer $IDEOGRAM_API_KEY" | jq '.credits_remaining')
+echo "Credits consumed: $((BEFORE - AFTER))"
 ```
-
-## Resources
-- [Ideogram Enterprise Guide](https://docs.ideogram.com/enterprise)
-- [SAML 2.0 Specification](https://wiki.oasis-open.org/security/FrontPage)
-- [OpenID Connect Spec](https://openid.net/specs/openid-connect-core-1_0.html)
-
-## Next Steps
-For major migrations, see `ideogram-migration-deep-dive`.

@@ -13,239 +13,90 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
 
-# Fireflies.ai Observability
+# Fireflies Observability
 
 ## Overview
-Set up comprehensive observability for Fireflies.ai integrations.
+Monitor Fireflies.ai meeting transcription quality, bot join reliability, and transcript processing latency. Key metrics include bot join success rate (does the Fireflies bot successfully join scheduled meetings), transcription accuracy signals (silence detection, speaker diarization quality), transcript processing time (minutes from meeting end to transcript availability), and per-seat utilization (meetings recorded per seat to optimize licensing costs).
 
 ## Prerequisites
-- Prometheus or compatible metrics backend
-- OpenTelemetry SDK installed
-- Grafana or similar dashboarding tool
-- AlertManager configured
+- Fireflies Business or Enterprise plan
+- API access via GraphQL endpoint
+- Calendar integration (Google Calendar or Outlook) connected
 
-## Metrics Collection
+## Instructions
 
-### Key Metrics
-| Metric | Type | Description |
-|--------|------|-------------|
-| `fireflies_requests_total` | Counter | Total API requests |
-| `fireflies_request_duration_seconds` | Histogram | Request latency |
-| `fireflies_errors_total` | Counter | Error count by type |
-| `fireflies_rate_limit_remaining` | Gauge | Rate limit headroom |
-
-### Prometheus Metrics
-
-```typescript
-import { Registry, Counter, Histogram, Gauge } from 'prom-client';
-
-const registry = new Registry();
-
-const requestCounter = new Counter({
-  name: 'fireflies_requests_total',
-  help: 'Total Fireflies.ai API requests',
-  labelNames: ['method', 'status'],
-  registers: [registry],
-});
-
-const requestDuration = new Histogram({
-  name: 'fireflies_request_duration_seconds',
-  help: 'Fireflies.ai request duration',
-  labelNames: ['method'],
-  buckets: [0.05, 0.1, 0.25, 0.5, 1, 2.5, 5],
-  registers: [registry],
-});
-
-const errorCounter = new Counter({
-  name: 'fireflies_errors_total',
-  help: 'Fireflies.ai errors by type',
-  labelNames: ['error_type'],
-  registers: [registry],
-});
+### Step 1: Monitor Bot Join Reliability
+```bash
+# Query recent meetings and check bot join status
+curl -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ transcripts(limit: 50) { id title date duration bot_joined processing_status speakers { name } } }"}' | \
+  jq '.data.transcripts[] | {title, date, bot_joined, status: .processing_status, speakers: (.speakers | length)}'
 ```
 
-### Instrumented Client
-
+### Step 2: Track Transcript Processing Latency
 ```typescript
-async function instrumentedRequest<T>(
-  method: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  const timer = requestDuration.startTimer({ method });
-
-  try {
-    const result = await operation();
-    requestCounter.inc({ method, status: 'success' });
-    return result;
-  } catch (error: any) {
-    requestCounter.inc({ method, status: 'error' });
-    errorCounter.inc({ error_type: error.code || 'unknown' });
-    throw error;
-  } finally {
-    timer();
+// fireflies-metrics.ts
+async function monitorProcessing() {
+  const res = await firefliesGQL(`{ transcripts(limit: 20) { id date duration processing_status processed_at } }`);
+  for (const t of res.data.transcripts) {
+    if (t.processing_status === 'completed' && t.processed_at) {
+      const meetingEnd = new Date(t.date).getTime() + t.duration * 60000;
+      const processedAt = new Date(t.processed_at).getTime();
+      const processingMinutes = (processedAt - meetingEnd) / 60000;
+      emitHistogram('fireflies_processing_time_min', processingMinutes);
+    }
+    emitCounter('fireflies_transcripts_total', 1, { status: t.processing_status });
   }
 }
 ```
 
-## Distributed Tracing
-
-### OpenTelemetry Setup
-
+### Step 3: Measure Per-Seat Utilization
 ```typescript
-import { trace, SpanStatusCode } from '@opentelemetry/api';
-
-const tracer = trace.getTracer('fireflies-client');
-
-async function tracedFireflies.aiCall<T>(
-  operationName: string,
-  operation: () => Promise<T>
-): Promise<T> {
-  return tracer.startActiveSpan(`fireflies.${operationName}`, async (span) => {
-    try {
-      const result = await operation();
-      span.setStatus({ code: SpanStatusCode.OK });
-      return result;
-    } catch (error: any) {
-      span.setStatus({ code: SpanStatusCode.ERROR, message: error.message });
-      span.recordException(error);
-      throw error;
-    } finally {
-      span.end();
+// Identify seats with low usage to optimize licensing costs
+async function seatUtilization() {
+  const members = await firefliesGQL(`{ teamMembers { id email transcripts_count last_active } }`);
+  for (const m of members.data.teamMembers) {
+    emitGauge('fireflies_seat_usage', m.transcripts_count, { user: m.email });
+    if (m.transcripts_count < 5 && daysSince(m.last_active) > 30) {
+      console.warn(`Low utilization seat: ${m.email} (${m.transcripts_count} transcripts, inactive ${daysSince(m.last_active)}d)`);
     }
-  });
+  }
 }
 ```
 
-## Logging Strategy
-
-### Structured Logging
-
-```typescript
-import pino from 'pino';
-
-const logger = pino({
-  name: 'fireflies',
-  level: process.env.LOG_LEVEL || 'info',
-});
-
-function logFireflies.aiOperation(
-  operation: string,
-  data: Record<string, any>,
-  duration: number
-) {
-  logger.info({
-    service: 'fireflies',
-    operation,
-    duration_ms: duration,
-    ...data,
-  });
-}
-```
-
-## Alert Configuration
-
-### Prometheus AlertManager Rules
-
+### Step 4: Alert on Issues
 ```yaml
-# fireflies_alerts.yaml
 groups:
-  - name: fireflies_alerts
+  - name: fireflies
     rules:
-      - alert: Fireflies.aiHighErrorRate
-        expr: |
-          rate(fireflies_errors_total[5m]) /
-          rate(fireflies_requests_total[5m]) > 0.05
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Fireflies.ai error rate > 5%"
-
-      - alert: Fireflies.aiHighLatency
-        expr: |
-          histogram_quantile(0.95,
-            rate(fireflies_request_duration_seconds_bucket[5m])
-          ) > 2
-        for: 5m
-        labels:
-          severity: warning
-        annotations:
-          summary: "Fireflies.ai P95 latency > 2s"
-
-      - alert: Fireflies.aiDown
-        expr: up{job="fireflies"} == 0
-        for: 1m
-        labels:
-          severity: critical
-        annotations:
-          summary: "Fireflies.ai integration is down"
+      - alert: FirefliesBotNotJoining
+        expr: rate(fireflies_transcripts_total{status="bot_failed"}[6h]) > 2
+        annotations: { summary: "Fireflies bot failed to join 2+ meetings in 6 hours" }
+      - alert: FirefliesProcessingSlow
+        expr: histogram_quantile(0.95, rate(fireflies_processing_time_min_bucket[6h])) > 30
+        annotations: { summary: "Fireflies transcript processing P95 exceeds 30 minutes" }
+      - alert: FirefliesLowSeatUtilization
+        expr: count(fireflies_seat_usage < 2) > 5
+        annotations: { summary: "5+ Fireflies seats with <2 transcripts (review licensing)" }
 ```
 
-## Dashboard
-
-### Grafana Panel Queries
-
-```json
-{
-  "panels": [
-    {
-      "title": "Fireflies.ai Request Rate",
-      "targets": [{
-        "expr": "rate(fireflies_requests_total[5m])"
-      }]
-    },
-    {
-      "title": "Fireflies.ai Latency P50/P95/P99",
-      "targets": [{
-        "expr": "histogram_quantile(0.5, rate(fireflies_request_duration_seconds_bucket[5m]))"
-      }]
-    }
-  ]
-}
-```
-
-## Instructions
-
-### Step 1: Set Up Metrics Collection
-Implement Prometheus counters, histograms, and gauges for key operations.
-
-### Step 2: Add Distributed Tracing
-Integrate OpenTelemetry for end-to-end request tracing.
-
-### Step 3: Configure Structured Logging
-Set up JSON logging with consistent field names.
-
-### Step 4: Create Alert Rules
-Define Prometheus alerting rules for error rates and latency.
-
-## Output
-- Metrics collection enabled
-- Distributed tracing configured
-- Structured logging implemented
-- Alert rules deployed
+### Step 5: Dashboard Panels
+Track: bot join success rate (pie chart), transcript processing latency distribution, meetings recorded per day, per-seat utilization (table), speaker count distribution, and average meeting duration. Use utilization data to right-size your Fireflies seat count.
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Missing metrics | No instrumentation | Wrap client calls |
-| Trace gaps | Missing propagation | Check context headers |
-| Alert storms | Wrong thresholds | Tune alert rules |
-| High cardinality | Too many labels | Reduce label values |
+| Bot not joining | Calendar permission revoked | Re-authorize calendar integration |
+| Transcript stuck processing | Audio quality too poor | Check meeting audio source, avoid Bluetooth |
+| No speakers detected | Single audio channel | Enable speaker diarization in settings |
+| High seat cost per transcript | Too many inactive seats | Remove members with <2 transcripts/month |
 
 ## Examples
-
-### Quick Metrics Endpoint
-```typescript
-app.get('/metrics', async (req, res) => {
-  res.set('Content-Type', registry.contentType);
-  res.send(await registry.metrics());
-});
+```bash
+# Quick health check: recent transcript success rate
+curl -s -X POST https://api.fireflies.ai/graphql \
+  -H "Authorization: Bearer $FIREFLIES_API_KEY" \
+  -d '{"query": "{ transcripts(limit: 20) { processing_status } }"}' | \
+  jq '.data.transcripts | group_by(.processing_status) | map({status: .[0].processing_status, count: length})'
 ```
-
-## Resources
-- [Prometheus Best Practices](https://prometheus.io/docs/practices/naming/)
-- [OpenTelemetry Documentation](https://opentelemetry.io/docs/)
-- [Fireflies.ai Observability Guide](https://docs.fireflies.com/observability)
-
-## Next Steps
-For incident response, see `fireflies-incident-runbook`.
