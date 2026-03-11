@@ -15,8 +15,17 @@ compatible-with: claude-code, codex, openclaw
 
 # Mistral AI Migration Deep Dive
 
+## Table of Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Comprehensive guide for migrating to Mistral AI from other providers or major version upgrades.
+Comprehensive guide for migrating to Mistral AI from other providers (OpenAI, Anthropic) or performing major version upgrades. Covers assessment, adapter pattern, feature-flag rollout, model mapping, validation testing, and rollback.
 
 ## Prerequisites
 - Current system documentation
@@ -36,384 +45,46 @@ Comprehensive guide for migrating to Mistral AI from other providers or major ve
 ## Instructions
 
 ### Step 1: Pre-Migration Assessment
+Audit current AI code: find all files with AI imports, count integration points (chat completions, embeddings, function calling, streaming). Detect current provider and estimate effort (>10 points = high, >3 = medium, else low).
 
-```bash
-# Document current implementation
-echo "=== Pre-Migration Assessment ==="
+### Step 2: Create Provider-Agnostic Adapter
+Define `AIAdapter` interface with `chat()`, `chatStream()`, and `embed()` methods. Use `Message`, `ChatOptions`, and `ChatResponse` types to abstract away provider differences.
 
-# Find all AI-related code
-find . -name "*.ts" -o -name "*.py" | xargs grep -l "openai\|anthropic\|ai" > ai-files.txt
-echo "Files with AI code: $(wc -l < ai-files.txt)"
+### Step 3: Implement OpenAI Adapter
+Build `OpenAIAdapter` implementing `AIAdapter` that wraps `openai` SDK. Maps OpenAI-specific fields (prompt_tokens, completion_tokens) to normalized types.
 
-# Count integration points
-grep -r "chat.completions\|createChatCompletion" src/ --include="*.ts" | wc -l
+### Step 4: Implement Mistral Adapter
+Build `MistralAdapter` implementing `AIAdapter` that wraps `@mistralai/mistralai` SDK. Maps Mistral-specific fields (promptTokens, completionTokens) to normalized types.
 
-# Check current SDK versions
-npm list openai @anthropic-ai/sdk 2>/dev/null || echo "No existing AI SDKs"
-```
-
-```typescript
-// scripts/assess-migration.ts
-interface MigrationAssessment {
-  currentProvider: string;
-  integrationPoints: number;
-  features: string[];
-  estimatedEffort: 'low' | 'medium' | 'high';
-  risks: string[];
-}
-
-async function assessMigration(): Promise<MigrationAssessment> {
-  const files = await glob('src/**/*.{ts,js}');
-  const features = new Set<string>();
-  let integrationPoints = 0;
-
-  for (const file of files) {
-    const content = await fs.readFile(file, 'utf-8');
-
-    // Detect features
-    if (/chat\.completions|createChatCompletion/i.test(content)) {
-      features.add('chat');
-      integrationPoints++;
-    }
-    if (/embeddings\.create|createEmbedding/i.test(content)) {
-      features.add('embeddings');
-      integrationPoints++;
-    }
-    if (/function_call|tools/i.test(content)) {
-      features.add('function_calling');
-      integrationPoints++;
-    }
-    if (/stream/i.test(content)) {
-      features.add('streaming');
-      integrationPoints++;
-    }
-  }
-
-  return {
-    currentProvider: detectProvider(files),
-    integrationPoints,
-    features: Array.from(features),
-    estimatedEffort: integrationPoints > 10 ? 'high' : integrationPoints > 3 ? 'medium' : 'low',
-    risks: identifyRisks(features),
-  };
-}
-```
-
-### Step 2: Create Adapter Layer
-
-```typescript
-// src/ai/adapter.ts
-// Provider-agnostic interface
-
-export interface Message {
-  role: 'system' | 'user' | 'assistant';
-  content: string;
-}
-
-export interface ChatOptions {
-  model?: string;
-  temperature?: number;
-  maxTokens?: number;
-  stream?: boolean;
-}
-
-export interface ChatResponse {
-  content: string;
-  usage?: {
-    inputTokens: number;
-    outputTokens: number;
-  };
-}
-
-export interface AIAdapter {
-  chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse>;
-  chatStream(messages: Message[], options?: ChatOptions): AsyncGenerator<string>;
-  embed(text: string | string[]): Promise<number[][]>;
-}
-```
-
-### Step 3: Implement OpenAI Adapter (Current)
-
-```typescript
-// src/ai/adapters/openai.ts
-import OpenAI from 'openai';
-import { AIAdapter, Message, ChatOptions, ChatResponse } from '../adapter';
-
-export class OpenAIAdapter implements AIAdapter {
-  private client: OpenAI;
-
-  constructor() {
-    this.client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-  }
-
-  async chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse> {
-    const response = await this.client.chat.completions.create({
-      model: options?.model || 'gpt-3.5-turbo',
-      messages,
-      temperature: options?.temperature,
-      max_tokens: options?.maxTokens,
-    });
-
-    return {
-      content: response.choices[0]?.message?.content || '',
-      usage: response.usage ? {
-        inputTokens: response.usage.prompt_tokens,
-        outputTokens: response.usage.completion_tokens,
-      } : undefined,
-    };
-  }
-
-  async *chatStream(messages: Message[], options?: ChatOptions): AsyncGenerator<string> {
-    const stream = await this.client.chat.completions.create({
-      model: options?.model || 'gpt-3.5-turbo',
-      messages,
-      stream: true,
-    });
-
-    for await (const chunk of stream) {
-      const content = chunk.choices[0]?.delta?.content;
-      if (content) yield content;
-    }
-  }
-
-  async embed(text: string | string[]): Promise<number[][]> {
-    const input = Array.isArray(text) ? text : [text];
-    const response = await this.client.embeddings.create({
-      model: 'text-embedding-ada-002',
-      input,
-    });
-    return response.data.map(d => d.embedding);
-  }
-}
-```
-
-### Step 4: Implement Mistral Adapter (Target)
-
-```typescript
-// src/ai/adapters/mistral.ts
-import Mistral from '@mistralai/mistralai';
-import { AIAdapter, Message, ChatOptions, ChatResponse } from '../adapter';
-
-export class MistralAdapter implements AIAdapter {
-  private client: Mistral;
-
-  constructor() {
-    this.client = new Mistral({ apiKey: process.env.MISTRAL_API_KEY });
-  }
-
-  async chat(messages: Message[], options?: ChatOptions): Promise<ChatResponse> {
-    const response = await this.client.chat.complete({
-      model: options?.model || 'mistral-small-latest',
-      messages,
-      temperature: options?.temperature,
-      maxTokens: options?.maxTokens,
-    });
-
-    return {
-      content: response.choices?.[0]?.message?.content || '',
-      usage: response.usage ? {
-        inputTokens: response.usage.promptTokens || 0,
-        outputTokens: response.usage.completionTokens || 0,
-      } : undefined,
-    };
-  }
-
-  async *chatStream(messages: Message[], options?: ChatOptions): AsyncGenerator<string> {
-    const stream = await this.client.chat.stream({
-      model: options?.model || 'mistral-small-latest',
-      messages,
-      temperature: options?.temperature,
-      maxTokens: options?.maxTokens,
-    });
-
-    for await (const event of stream) {
-      const content = event.data?.choices?.[0]?.delta?.content;
-      if (content) yield content;
-    }
-  }
-
-  async embed(text: string | string[]): Promise<number[][]> {
-    const input = Array.isArray(text) ? text : [text];
-    const response = await this.client.embeddings.create({
-      model: 'mistral-embed',
-      inputs: input,
-    });
-    return response.data.map(d => d.embedding);
-  }
-}
-```
-
-### Step 5: Feature Flag Controlled Migration
-
-```typescript
-// src/ai/factory.ts
-import { AIAdapter } from './adapter';
-import { OpenAIAdapter } from './adapters/openai';
-import { MistralAdapter } from './adapters/mistral';
-
-type Provider = 'openai' | 'mistral';
-
-function getAIProvider(): Provider {
-  // Feature flag based migration
-  const mistralPercentage = parseInt(process.env.MISTRAL_ROLLOUT_PERCENT || '0');
-  const random = Math.random() * 100;
-
-  if (random < mistralPercentage) {
-    return 'mistral';
-  }
-
-  return 'openai';
-}
-
-export function createAIAdapter(): AIAdapter {
-  const provider = getAIProvider();
-
-  switch (provider) {
-    case 'mistral':
-      console.log('[AI] Using Mistral adapter');
-      return new MistralAdapter();
-    case 'openai':
-    default:
-      console.log('[AI] Using OpenAI adapter');
-      return new OpenAIAdapter();
-  }
-}
-```
+### Step 5: Feature Flag Migration
+Create `createAIAdapter()` factory using `MISTRAL_ROLLOUT_PERCENT` env var. Random percentage check routes traffic to Mistral or OpenAI adapter.
 
 ### Step 6: Gradual Rollout
-
-```bash
-# Phase 1: 0% Mistral (validation)
-export MISTRAL_ROLLOUT_PERCENT=0
-# Run tests, verify adapter works
-
-# Phase 2: 5% Mistral (canary)
-export MISTRAL_ROLLOUT_PERCENT=5
-# Monitor for errors, compare latency
-
-# Phase 3: 25% Mistral
-export MISTRAL_ROLLOUT_PERCENT=25
-# Monitor for 24-48 hours
-
-# Phase 4: 50% Mistral
-export MISTRAL_ROLLOUT_PERCENT=50
-# Monitor for 24-48 hours
-
-# Phase 5: 100% Mistral
-export MISTRAL_ROLLOUT_PERCENT=100
-# Full migration complete
-```
+Phase rollout: 0% (validation) -> 5% (canary) -> 25% -> 50% -> 100%. Monitor errors and latency at each phase for 24-48 hours before advancing.
 
 ### Step 7: Model Mapping
+Map models: gpt-3.5-turbo -> mistral-small-latest, gpt-4/gpt-4-turbo -> mistral-large-latest, text-embedding-ada-002 -> mistral-embed (1024 dimensions).
 
-```typescript
-// src/ai/model-mapping.ts
-
-interface ModelMapping {
-  openai: string;
-  mistral: string;
-  notes: string;
-}
-
-const MODEL_MAPPINGS: ModelMapping[] = [
-  {
-    openai: 'gpt-3.5-turbo',
-    mistral: 'mistral-small-latest',
-    notes: 'Fast, cost-effective',
-  },
-  {
-    openai: 'gpt-4',
-    mistral: 'mistral-large-latest',
-    notes: 'Complex reasoning',
-  },
-  {
-    openai: 'gpt-4-turbo',
-    mistral: 'mistral-large-latest',
-    notes: 'Best available',
-  },
-  {
-    openai: 'text-embedding-ada-002',
-    mistral: 'mistral-embed',
-    notes: '1024 dimensions',
-  },
-];
-
-export function mapModel(openaiModel: string): string {
-  const mapping = MODEL_MAPPINGS.find(m => m.openai === openaiModel);
-  return mapping?.mistral || 'mistral-small-latest';
-}
-```
-
-### Step 8: Validation & Testing
-
-```typescript
-// tests/migration/compare-outputs.test.ts
-import { describe, it, expect } from 'vitest';
-import { OpenAIAdapter } from '../../src/ai/adapters/openai';
-import { MistralAdapter } from '../../src/ai/adapters/mistral';
-
-describe('Migration Validation', () => {
-  const openai = new OpenAIAdapter();
-  const mistral = new MistralAdapter();
-
-  const testCases = [
-    { name: 'Simple greeting', messages: [{ role: 'user', content: 'Hello' }] },
-    { name: 'Math question', messages: [{ role: 'user', content: 'What is 2+2?' }] },
-    { name: 'Code generation', messages: [{ role: 'user', content: 'Write hello world in Python' }] },
-  ];
-
-  for (const testCase of testCases) {
-    it(`should produce similar output: ${testCase.name}`, async () => {
-      const [openaiResult, mistralResult] = await Promise.all([
-        openai.chat(testCase.messages, { temperature: 0 }),
-        mistral.chat(testCase.messages, { temperature: 0 }),
-      ]);
-
-      // Both should return non-empty content
-      expect(openaiResult.content.length).toBeGreaterThan(0);
-      expect(mistralResult.content.length).toBeGreaterThan(0);
-
-      // Log for manual review
-      console.log(`[${testCase.name}]`);
-      console.log('OpenAI:', openaiResult.content);
-      console.log('Mistral:', mistralResult.content);
-    });
-  }
-});
-```
+### Step 8: Validation Testing
+Run A/B comparison tests with identical prompts at temperature=0. Verify both providers return non-empty content. Log results for manual quality review.
 
 ### Step 9: Rollback Plan
-
-```bash
-#!/bin/bash
-# rollback-to-openai.sh
-
-echo "=== Rolling back to OpenAI ==="
-
-# 1. Set rollout percentage to 0
-kubectl set env deployment/ai-service MISTRAL_ROLLOUT_PERCENT=0
-
-# 2. Verify rollback
-kubectl rollout status deployment/ai-service
-
-# 3. Check health
-curl -sf https://api.yourapp.com/health | jq '.services.ai'
-
-# 4. Alert team
-echo "Rollback complete. Mistral disabled."
-```
+Set `MISTRAL_ROLLOUT_PERCENT=0` to immediately route all traffic back to OpenAI. Verify health and notify team.
 
 ## Output
-- Migration assessment complete
-- Adapter layer implemented
-- Gradual rollout in progress
-- Rollback procedure ready
+- Migration assessment with effort estimation
+- Provider-agnostic adapter interface
+- OpenAI and Mistral adapter implementations
+- Feature-flag controlled gradual rollout
+- Model mapping configuration
+- A/B validation test suite
+- Rollback procedure
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
 | Different output format | API differences | Normalize in adapter |
-| Missing feature | Not supported | Implement fallback |
+| Missing feature | Not supported by Mistral | Implement fallback |
 | Performance difference | Model characteristics | Adjust timeouts |
 | Cost increase | Token differences | Monitor and optimize |
 
@@ -425,15 +96,13 @@ const [openaiResponse, mistralResponse] = await Promise.all([
   openaiAdapter.chat(messages, { temperature: 0 }),
   mistralAdapter.chat(messages, { temperature: 0 }),
 ]);
-
 console.log('OpenAI tokens:', openaiResponse.usage);
 console.log('Mistral tokens:', mistralResponse.usage);
 ```
+
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
 
 ## Resources
 - [Mistral AI Documentation](https://docs.mistral.ai/)
 - [Strangler Fig Pattern](https://martinfowler.com/bliki/StranglerFigApplication.html)
 - [Feature Flags Best Practices](https://www.martinfowler.com/articles/feature-toggles.html)
-
-## Completion
-Congratulations! You've completed the Mistral AI skill pack. For ongoing support, visit docs.mistral.ai.
