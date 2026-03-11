@@ -55,6 +55,7 @@ roles:
 
 ### Step 2: Invite Members with Appropriate Roles
 ```bash
+set -euo pipefail
 # Invite via Clay API
 curl -X POST https://api.clay.com/v1/workspace/members \
   -H "Authorization: Bearer $CLAY_API_KEY" \
@@ -68,10 +69,11 @@ curl https://api.clay.com/v1/workspace/members \
 ### Step 3: Set Credit Budgets per Table
 Since Clay charges credits per enrichment (e.g., 1 credit for email lookup, 5 credits for company data), set row limits on tables to cap spending:
 ```bash
+set -euo pipefail
 # Configure a table with a 500-row enrichment cap
 curl -X PATCH https://api.clay.com/v1/tables/tbl_abc123 \
   -H "Authorization: Bearer $CLAY_API_KEY" \
-  -d '{"max_rows": 500, "auto_enrich": false}'
+  -d '{"max_rows": 500, "auto_enrich": false}'  # HTTP 500 Internal Server Error
 ```
 
 ### Step 4: Separate API Keys by Integration
@@ -79,6 +81,7 @@ Create distinct API keys for each downstream integration (CRM sync, outbound too
 
 ### Step 5: Review Credit Usage by Member
 ```bash
+set -euo pipefail
 # Pull credit consumption grouped by user
 curl "https://api.clay.com/v1/workspace/usage?group_by=user&period=last_30d" \
   -H "Authorization: Bearer $CLAY_API_KEY" | \

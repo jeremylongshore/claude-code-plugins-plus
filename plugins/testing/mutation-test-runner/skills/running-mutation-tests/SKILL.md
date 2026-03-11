@@ -83,7 +83,7 @@ export default {
   reporters: ['html', 'clear-text', 'progress'],
   thresholds: { high: 80, low: 60, break: 50 },
   concurrency: 4,
-  timeoutMS: 10000,
+  timeoutMS: 10000,  # 10 seconds in ms
 };
 ```
 

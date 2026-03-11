@@ -77,14 +77,14 @@ Perform API fuzzing to discover crashes, unhandled exceptions, security vulnerab
 **Schemathesis OpenAPI fuzzing:**
 ```bash
 # Basic schema-based fuzzing
-schemathesis run http://localhost:3000/api/openapi.json \
+schemathesis run http://localhost:3000/api/openapi.json \  # 3 seconds in ms
   --stateful=links \
-  --hypothesis-max-examples=500 \
-  --base-url=http://localhost:3000 \
+  --hypothesis-max-examples=500 \  # HTTP 500 Internal Server Error
+  --base-url=http://localhost:3000 \  # 3 seconds in ms
   --header "Authorization: Bearer $TEST_TOKEN"
 
 # With specific checks
-schemathesis run http://localhost:3000/api/openapi.json \
+schemathesis run http://localhost:3000/api/openapi.json \  # 3 seconds in ms
   --checks all \
   --validate-schema=true
 ```
@@ -105,10 +105,10 @@ test('POST /api/users handles arbitrary input without crashing', async () => {
       }),
       async (body) => {
         const res = await request(app).post('/api/users').send(body);
-        expect(res.status).toBeLessThan(500); // No server errors
+        expect(res.status).toBeLessThan(500); // No server errors  # HTTP 500 Internal Server Error
       }
     ),
-    { numRuns: 200 }
+    { numRuns: 200 }  # HTTP 200 OK
   );
 });
 ```

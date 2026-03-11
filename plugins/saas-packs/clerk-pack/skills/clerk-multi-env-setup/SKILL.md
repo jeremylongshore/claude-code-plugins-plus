@@ -23,13 +23,13 @@ Configure Clerk across development, staging, and production environments.
 - CI/CD pipeline configured
 
 ## Instructions
-- Step 1: Create Clerk Instances
-- Step 2: Environment Configuration
-- Step 3: Environment-Aware Configuration
-- Step 4: ClerkProvider Configuration
-- Step 5: Webhook Configuration Per Environment
-- Step 6: CI/CD Environment Promotion
-- Step 7: User Data Isolation
+1. Step 1: Create Clerk Instances
+2. Step 2: Environment Configuration
+3. Step 3: Environment-Aware Configuration
+4. Step 4: ClerkProvider Configuration
+5. Step 5: Webhook Configuration Per Environment
+6. Step 6: CI/CD Environment Promotion
+7. Step 7: User Data Isolation
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

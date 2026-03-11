@@ -82,6 +82,7 @@ module.exports = {
 
 ### Step 4: Self-Hosted Docker Deployment
 ```bash
+set -euo pipefail
 # Deploy PostHog self-hosted
 git clone https://github.com/PostHog/posthog.git
 cd posthog

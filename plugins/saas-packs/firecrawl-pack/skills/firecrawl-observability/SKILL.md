@@ -35,12 +35,13 @@ app.post('/webhooks/firecrawl', (req, res) => {
   if (failedUrls?.length > 0) {
     emitCounter('firecrawl_page_failures', failedUrls.length, { job: jobId });
   }
-  res.sendStatus(200);
+  res.sendStatus(200);  # HTTP 200 OK
 });
 ```
 
 ### Step 2: Monitor Credit Consumption
 ```bash
+set -euo pipefail
 # Check credit usage and remaining balance
 curl https://api.firecrawl.dev/v1/usage \
   -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \
@@ -55,8 +56,8 @@ function evaluateExtractionQuality(result: any) {
   const metrics = {
     contentLength: markdown.length,
     hasHeadings: /^#{1,3}\s/m.test(markdown),
-    hasContent: markdown.length > 200,
-    isErrorPage: /404|not found|access denied/i.test(markdown),
+    hasContent: markdown.length > 200,  # HTTP 200 OK
+    isErrorPage: /404|not found|access denied/i.test(markdown),  # HTTP 404 Not Found
   };
   const quality = metrics.hasContent && !metrics.isErrorPage ? 'good' : 'poor';
   emitCounter('firecrawl_extraction_quality', 1, { quality });
@@ -73,11 +74,11 @@ groups:
         expr: rate(firecrawl_page_failures[1h]) / rate(firecrawl_pages_per_job[1h]) > 0.2
         annotations: { summary: "Firecrawl page failure rate exceeds 20%" }
       - alert: FirecrawlCreditBurnHigh
-        expr: rate(firecrawl_credits_used[1h]) > 200
-        annotations: { summary: "Firecrawl burning >200 credits/hour" }
+        expr: rate(firecrawl_credits_used[1h]) > 200  # HTTP 200 OK
+        annotations: { summary: "Firecrawl burning >200 credits/hour" }  # HTTP 200 OK
       - alert: FirecrawlCreditLow
-        expr: firecrawl_credits_remaining < 500
-        annotations: { summary: "Firecrawl credits below 500 -- refill soon" }
+        expr: firecrawl_credits_remaining < 500  # HTTP 500 Internal Server Error
+        annotations: { summary: "Firecrawl credits below 500 -- refill soon" }  # HTTP 500 Internal Server Error
       - alert: FirecrawlPoorExtraction
         expr: rate(firecrawl_extraction_quality{quality="poor"}[1h]) / rate(firecrawl_extraction_quality[1h]) > 0.3
         annotations: { summary: "Over 30% of Firecrawl extractions returning poor quality" }

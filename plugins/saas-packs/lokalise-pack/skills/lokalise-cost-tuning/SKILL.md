@@ -26,6 +26,7 @@ Optimize Lokalise localization spending across plan costs, contributor seats, an
 
 ### Step 1: Audit Current Spending
 ```bash
+set -euo pipefail
 # Check project stats: keys, words, languages
 curl "https://api.lokalise.com/api2/projects/PROJECT_ID/statistics" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" | \
@@ -63,6 +64,7 @@ const tmSearch = await lok.translationProviders().list({ project_id: projectId }
 
 ### Step 4: Use Machine Translation Strategically
 ```bash
+set -euo pipefail
 # Pre-translate low-risk content with MT, reserve human for critical strings
 curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/files/download" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" \
@@ -76,8 +78,9 @@ curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/files/download" 
 
 ### Step 5: Clean Up Unused Keys
 ```bash
+set -euo pipefail
 # Find keys not used in code (phantom keys waste per-word costs)
-curl "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?filter_archived=include&limit=500" \
+curl "https://api.lokalise.com/api2/projects/PROJECT_ID/keys?filter_archived=include&limit=500" \  # HTTP 500 Internal Server Error
   -H "X-Api-Token: $LOKALISE_API_TOKEN" | \
   jq '.keys[] | select(.is_archived == false) | {key_name: .key_name.web, translations_count: (.translations | length), modified: .modified_at}'
 # Cross-reference with source code to find orphaned keys

@@ -55,7 +55,7 @@ async function trackedChat(client: Mistral, model: string, messages: any[]) {
 ```yaml
 # Key metrics to expose on /metrics endpoint
 mistral_requests_total:       { type: counter, labels: [model, status, endpoint] }
-mistral_request_duration_ms:  { type: histogram, labels: [model], buckets: [100, 250, 500, 1000, 2500, 5000] }
+mistral_request_duration_ms:  { type: histogram, labels: [model], buckets: [100, 250, 500, 1000, 2500, 5000] }  # HTTP 500 Internal Server Error
 mistral_tokens_total:         { type: counter, labels: [model, direction] }  # direction: input|output
 mistral_cost_usd_total:       { type: counter, labels: [model] }
 mistral_errors_total:         { type: counter, labels: [model, status_code] }
@@ -72,7 +72,7 @@ groups:
         for: 5m
         annotations: { summary: "Mistral error rate exceeds 5%" }
       - alert: MistralHighLatency
-        expr: histogram_quantile(0.95, rate(mistral_request_duration_ms_bucket[5m])) > 5000
+        expr: histogram_quantile(0.95, rate(mistral_request_duration_ms_bucket[5m])) > 5000  # 5 seconds in ms
         for: 5m
         annotations: { summary: "Mistral P95 latency exceeds 5 seconds" }
       - alert: MistralCostSpike

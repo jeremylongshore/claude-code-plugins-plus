@@ -176,7 +176,7 @@ async function batchGenerateAssets(prompts: string[]) {
   for (const prompt of prompts) {
     const record = await generateAndPersist(prompt);
     results.push(record);
-    await new Promise(r => setTimeout(r, 3000)); // Rate limit
+    await new Promise(r => setTimeout(r, 3000)); // Rate limit  # 3 seconds in ms
   }
   return results;
 }

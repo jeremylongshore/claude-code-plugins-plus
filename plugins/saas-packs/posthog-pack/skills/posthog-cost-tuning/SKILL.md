@@ -26,6 +26,7 @@ Reduce PostHog event-based pricing costs by controlling event volume, optimizing
 
 ### Step 1: Audit Event Volume by Type
 ```bash
+set -euo pipefail
 # Check which events consume the most quota
 curl "https://app.posthog.com/api/projects/PROJECT_ID/insights/trend/?events=[{\"id\":\"$pageview\"},{\"id\":\"$autocapture\"},{\"id\":\"$screen\"}]&date_from=-30d&interval=week" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
@@ -82,6 +83,7 @@ posthog.init('phc_YOUR_KEY', {
 
 ### Step 5: Monitor Monthly Costs
 ```bash
+set -euo pipefail
 # Check current event usage vs billing tier
 curl "https://app.posthog.com/api/organizations/ORG_ID/billing/" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \

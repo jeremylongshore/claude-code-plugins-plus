@@ -35,6 +35,7 @@ Safely upgrade Linear SDK versions and handle breaking changes with compatibilit
 
 ### Step 1: Check Current and Latest Versions
 ```bash
+set -euo pipefail
 npm list @linear/sdk          # Current version
 npm view @linear/sdk version  # Latest available
 ```
@@ -44,6 +45,7 @@ Check GitHub releases and changelog for migration guides between your current an
 
 ### Step 3: Create Upgrade Branch
 ```bash
+set -euo pipefail
 git checkout -b upgrade/linear-sdk-vX.Y.Z
 npm install @linear/sdk@latest
 npx tsc --noEmit  # Check for type errors
@@ -57,6 +59,7 @@ Wrap breaking changes in a compat client to normalize behavior across versions.
 
 ### Step 6: Test and Deploy
 ```bash
+set -euo pipefail
 npm test && npx tsc --noEmit && npm run lint
 npm run deploy:staging && npm run test:integration
 ```

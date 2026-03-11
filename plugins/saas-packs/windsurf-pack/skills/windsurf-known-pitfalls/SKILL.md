@@ -114,7 +114,7 @@ Windsurf is VS Code-based but not all extensions work. Some conflict with Cascad
 ```
 GOOD: "In src/api/routes.ts, add input validation for the POST /users
 endpoint using zod. Validate email format and name length (2-50 chars).
-Return 400 with specific error messages on validation failure."
+Return 400 with specific error messages on validation failure."  # HTTP 400 Bad Request
 
 BAD: "Add validation to the API"
 ```

@@ -23,9 +23,9 @@ Production-ready patterns for robust Juicebox integration including error handli
 - Familiarity with dependency injection
 
 ## Instructions
-- Step 1: Create Client Wrapper
-- Step 2: Implement Retry Logic
-- Step 3: Add Observability
+1. Step 1: Create Client Wrapper
+2. Step 2: Implement Retry Logic
+3. Step 3: Add Observability
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -54,12 +54,12 @@ app.post("/webhooks/github",
       .digest("hex");
 
     if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-      return res.status(401).json({ error: "Invalid signature" });
+      return res.status(401).json({ error: "Invalid signature" });  # HTTP 401 Unauthorized
     }
 
     const event = req.headers["x-github-event"] as string;
     const payload = JSON.parse(req.body.toString());
-    res.status(200).json({ received: true });
+    res.status(200).json({ received: true });  # HTTP 200 OK
     await routeCodeRabbitEvent(event, payload);
   }
 );

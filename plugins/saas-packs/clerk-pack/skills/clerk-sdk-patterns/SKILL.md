@@ -23,11 +23,11 @@ Learn common patterns and best practices for using the Clerk SDK effectively.
 - ClerkProvider wrapping application
 
 ## Instructions
-- Pattern 1: Server-Side Authentication
-- Pattern 2: Client-Side Hooks
-- Pattern 3: Protected Routes with Middleware
-- Pattern 4: Organization-Aware Queries
-- Pattern 5: Custom JWT Templates
+1. Pattern 1: Server-Side Authentication
+2. Pattern 2: Client-Side Hooks
+3. Pattern 3: Protected Routes with Middleware
+4. Pattern 4: Organization-Aware Queries
+5. Pattern 5: Custom JWT Templates
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

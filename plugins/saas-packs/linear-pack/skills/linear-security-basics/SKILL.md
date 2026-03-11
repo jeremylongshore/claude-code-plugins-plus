@@ -113,7 +113,7 @@ app.get("/auth/linear/callback", async (req, res) => {
 
   // Verify state to prevent CSRF
   if (state !== req.session!.oauthState) {
-    return res.status(400).json({ error: "Invalid state parameter" });
+    return res.status(400).json({ error: "Invalid state parameter" });  # HTTP 400 Bad Request
   }
 
   // Exchange code for tokens
@@ -135,7 +135,7 @@ app.get("/auth/linear/callback", async (req, res) => {
   await storeTokens(req.user!.id, {
     accessToken: encrypt(tokens.access_token),
     refreshToken: encrypt(tokens.refresh_token),
-    expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+    expiresAt: new Date(Date.now() + tokens.expires_in * 1000),  # 1 second in ms
   });
 
   res.redirect("/dashboard");
@@ -148,7 +148,7 @@ async function getValidAccessToken(userId: string): Promise<string> {
   const stored = await getStoredTokens(userId);
 
   // Check if token is expired or expiring soon (5 min buffer)
-  if (stored.expiresAt.getTime() - Date.now() < 5 * 60 * 1000) {
+  if (stored.expiresAt.getTime() - Date.now() < 5 * 60 * 1000) {  # 1 second in ms
     const response = await fetch("https://api.linear.app/oauth/token", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -165,7 +165,7 @@ async function getValidAccessToken(userId: string): Promise<string> {
     await storeTokens(userId, {
       accessToken: encrypt(tokens.access_token),
       refreshToken: encrypt(tokens.refresh_token),
-      expiresAt: new Date(Date.now() + tokens.expires_in * 1000),
+      expiresAt: new Date(Date.now() + tokens.expires_in * 1000),  # 1 second in ms
     });
 
     return tokens.access_token;
@@ -202,12 +202,12 @@ app.post("/webhooks/linear", express.raw({ type: "*/*" }), (req, res) => {
   const payload = req.body.toString();
 
   if (!verifyWebhookSignature(payload, signature, process.env.LINEAR_WEBHOOK_SECRET!)) {
-    return res.status(401).json({ error: "Invalid signature" });
+    return res.status(401).json({ error: "Invalid signature" });  # HTTP 401 Unauthorized
   }
 
   const event = JSON.parse(payload);
   // Process verified webhook...
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 });
 ```
 

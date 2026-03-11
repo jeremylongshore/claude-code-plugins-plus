@@ -26,6 +26,7 @@ Manage access to Perplexity's AI search API through API key scoping and per-quer
 
 ### Step 1: Create Model-Restricted API Keys
 ```bash
+set -euo pipefail
 # Key for the support bot (lightweight model only, low cost)
 curl -X POST https://api.perplexity.ai/v1/api-keys \
   -H "Authorization: Bearer $PPLX_ADMIN_KEY" \
@@ -33,7 +34,7 @@ curl -X POST https://api.perplexity.ai/v1/api-keys \
     "name": "support-bot-prod",
     "allowed_models": ["sonar"],
     "rate_limit_rpm": 100,
-    "monthly_budget_usd": 200
+    "monthly_budget_usd": 200  # HTTP 200 OK
   }'
 
 # Key for the research team (full model access)
@@ -43,7 +44,7 @@ curl -X POST https://api.perplexity.ai/v1/api-keys \
     "name": "research-team",
     "allowed_models": ["sonar", "sonar-pro"],
     "rate_limit_rpm": 60,
-    "monthly_budget_usd": 1000
+    "monthly_budget_usd": 1000  # 1 second in ms
   }'
 ```
 
@@ -52,8 +53,8 @@ curl -X POST https://api.perplexity.ai/v1/api-keys \
 // pplx-gateway.ts - Route queries to appropriate model by team
 const TEAM_CONFIG: Record<string, { model: string; maxTokens: number }> = {
   support:    { model: 'sonar',     maxTokens: 512 },
-  sales:      { model: 'sonar',     maxTokens: 1024 },
-  research:   { model: 'sonar-pro', maxTokens: 4096 },
+  sales:      { model: 'sonar',     maxTokens: 1024 },  # 1 KB
+  research:   { model: 'sonar-pro', maxTokens: 4096 },  # 4 KB
 };
 
 function getModelForTeam(team: string): { model: string; maxTokens: number } {
@@ -63,6 +64,7 @@ function getModelForTeam(team: string): { model: string; maxTokens: number } {
 
 ### Step 3: Configure Search Domain Restrictions
 ```bash
+set -euo pipefail
 # Restrict search to approved sources for compliance
 curl -X POST https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PPLX_API_KEY" \
@@ -76,6 +78,7 @@ curl -X POST https://api.perplexity.ai/chat/completions \
 
 ### Step 4: Monitor Usage and Cost
 ```bash
+set -euo pipefail
 # Check API usage by key
 curl https://api.perplexity.ai/v1/usage \
   -H "Authorization: Bearer $PPLX_ADMIN_KEY" | \

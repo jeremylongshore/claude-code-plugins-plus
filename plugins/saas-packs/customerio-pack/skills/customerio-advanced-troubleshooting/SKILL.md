@@ -54,6 +54,7 @@ For detailed implementation code and diagnostic scripts, load the reference guid
 
 ## Diagnostic Commands
 ```bash
+set -euo pipefail
 # Check API health
 curl -s "https://status.customer.io/api/v2/status.json" | jq '.status'
 # Test authentication

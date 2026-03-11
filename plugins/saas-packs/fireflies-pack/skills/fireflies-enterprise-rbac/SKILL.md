@@ -37,6 +37,7 @@ data_retention: "365_days"                # Auto-delete transcripts after 1 year
 
 ### Step 2: Manage Team Members via API
 ```bash
+set -euo pipefail
 # Add a new member
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
@@ -51,6 +52,7 @@ curl -X POST https://api.fireflies.ai/graphql \
 ### Step 3: Create Channel-Based Access Groups
 Organize transcripts into channels (e.g., Sales, Engineering, Leadership) so team members only see transcripts relevant to their department:
 ```bash
+set -euo pipefail
 # Create a private channel for leadership meetings
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
@@ -67,6 +69,7 @@ Enable "Enforce SSO" to require SSO for all workspace members.
 
 ### Step 5: Audit Transcript Access
 ```bash
+set -euo pipefail
 # Query who accessed a specific transcript
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \

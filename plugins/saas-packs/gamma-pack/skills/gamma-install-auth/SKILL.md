@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Gamma API and configure authentication credentials for AI-powered present
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # Node.js
 npm install @gamma/sdk
 

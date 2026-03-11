@@ -26,6 +26,7 @@ Control access to Mistral AI models and API resources at the organization level.
 
 ### Step 1: Create Scoped API Keys per Team
 ```bash
+set -euo pipefail
 # Create a key restricted to small models only (cost-safe for junior devs)
 curl -X POST https://api.mistral.ai/v1/api-keys \
   -H "Authorization: Bearer $MISTRAL_ADMIN_KEY" \
@@ -41,7 +42,7 @@ curl -X POST https://api.mistral.ai/v1/api-keys \
   -d '{
     "name": "ml-team-full-access",
     "allowed_models": ["mistral-small-latest", "mistral-large-latest", "mistral-embed"],
-    "rate_limit_rpm": 500
+    "rate_limit_rpm": 500  # HTTP 500 Internal Server Error
   }'
 ```
 
@@ -66,6 +67,7 @@ Navigate to La Plateforme > Organization > Billing and set monthly budget caps. 
 
 ### Step 4: Audit API Key Usage
 ```bash
+set -euo pipefail
 # List all API keys and their last-used timestamps
 curl https://api.mistral.ai/v1/api-keys \
   -H "Authorization: Bearer $MISTRAL_ADMIN_KEY" | \

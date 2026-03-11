@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Debug Bundle
 
 ## Overview
@@ -25,7 +24,7 @@ Collect all necessary diagnostic information for Lokalise support tickets.
 
 ## Instructions
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - `lokalise-debug-YYYYMMDD-HHMMSS.tar.gz` archive containing:
@@ -59,6 +58,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 - HTTP status codes
 ### One-Liner Quick Check
 ```bash
+set -euo pipefail
 # Quick API test
 curl -s -w "\nStatus: %{http_code}\nTime: %{time_total}s\n" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" \

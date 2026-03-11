@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Production Checklist
 
 ## Contents
@@ -81,7 +80,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ```typescript
 {
   flushAt: 25,
-  flushInterval: 5000,
+  flushInterval: 5000,  # 5 seconds in ms
   requestTimeout: 15000,
   enabled: process.env.NODE_ENV === "production",
   debug: false,

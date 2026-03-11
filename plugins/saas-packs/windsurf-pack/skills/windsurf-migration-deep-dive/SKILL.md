@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Migration Deep Dive
 
 ## Overview
@@ -37,6 +36,7 @@ Comprehensive guide for migrating to or from Windsurf, or major version upgrades
 
 ### Step 1: Current State Analysis
 ```bash
+set -euo pipefail
 # Document current implementation
 find . -name "*.ts" -o -name "*.py" | xargs grep -l "windsurf" > windsurf-files.txt
 
@@ -96,6 +96,7 @@ Phase 3: Complete
 
 ### Phase 1: Setup (Week 1-2)
 ```bash
+set -euo pipefail
 # Install Windsurf SDK
 npm install @windsurf/sdk
 
@@ -170,6 +171,7 @@ function getServiceAdapter(): ServiceAdapter {
 ## Rollback Plan
 
 ```bash
+set -euo pipefail
 # Immediate rollback
 kubectl set env deployment/app WINDSURF_ENABLED=false
 kubectl rollout restart deployment/app
@@ -202,7 +204,7 @@ async function validateWindsurfMigration(): Promise<ValidationReport> {
 
 ## Instructions
 
-### Step 1: Assess Current State
+### Assess current configuration
 Document existing implementation and data inventory.
 
 ### Step 2: Build Adapter Layer

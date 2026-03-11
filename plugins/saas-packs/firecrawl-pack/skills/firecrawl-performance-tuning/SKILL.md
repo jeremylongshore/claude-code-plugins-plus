@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # FireCrawl Performance Tuning
 
 ## Overview
@@ -39,8 +38,8 @@ Optimize FireCrawl API performance with caching, batching, and connection poolin
 import { LRUCache } from 'lru-cache';
 
 const cache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 60000, // 1 minute
+  max: 1000,  # 1 second in ms
+  ttl: 60000, // 1 minute  # 1 minute in ms
   updateAgeOnGet: true,
 });
 
@@ -113,7 +112,7 @@ const agent = new Agent({
   keepAlive: true,
   maxSockets: 10,
   maxFreeSockets: 5,
-  timeout: 30000,
+  timeout: 30000,  # 30 seconds in ms
 });
 
 const client = new FireCrawlClient({

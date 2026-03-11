@@ -23,8 +23,8 @@ Understand Clerk pricing and optimize costs for your application.
 - Application usage patterns known
 
 ## Instructions
-- Cost Optimization Strategies
-- Pricing Calculator
+1. Cost Optimization Strategies
+2. Pricing Calculator
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

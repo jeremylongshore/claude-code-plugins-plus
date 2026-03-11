@@ -32,7 +32,7 @@ Perplexity's web search is expensive per call. Cache results for repeated querie
 import hashlib, json
 
 class PerplexityCache:
-    def __init__(self, redis_client, ttl=600):
+    def __init__(self, redis_client, ttl=600):  # timeout: 10 minutes
         self.r = redis_client
         self.ttl = ttl
 
@@ -109,7 +109,7 @@ async def validate_citations(citations: list[str]) -> list[dict]:
         for url in citations[:5]:  # limit to top 5
             try:
                 async with session.head(url, timeout=aiohttp.ClientTimeout(total=5)) as r:
-                    validated.append({"url": url, "status": r.status, "valid": r.status < 400})
+                    validated.append({"url": url, "status": r.status, "valid": r.status < 400})  # HTTP 400 Bad Request
             except:
                 validated.append({"url": url, "status": 0, "valid": False})
     return validated

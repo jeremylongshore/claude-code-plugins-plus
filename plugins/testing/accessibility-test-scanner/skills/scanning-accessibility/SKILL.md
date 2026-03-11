@@ -106,13 +106,13 @@ test('login form is keyboard accessible', async ({ page }) => {
 {
   "defaults": {
     "standard": "WCAG2AA",
-    "timeout": 10000,
-    "wait": 1000
+    "timeout": 10000,  # 10 seconds in ms
+    "wait": 1000  # 1 second in ms
   },
   "urls": [
-    "http://localhost:3000/",
-    "http://localhost:3000/login",
-    "http://localhost:3000/dashboard",
+    "http://localhost:3000/",  # 3 seconds in ms
+    "http://localhost:3000/login",  # 3 seconds in ms
+    "http://localhost:3000/dashboard",  # 3 seconds in ms
     { "url": "http://localhost:3000/settings", "actions": ["click element #tab-profile"] }
   ]
 }

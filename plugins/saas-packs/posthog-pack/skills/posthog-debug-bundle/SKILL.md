@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # PostHog Debug Bundle
 
 ## Overview
@@ -39,6 +38,7 @@ echo "Generated: $(date)" >> "$BUNDLE_DIR/summary.txt"
 
 ### Step 2: Collect Environment Info
 ```bash
+set -euo pipefail
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
 node --version >> "$BUNDLE_DIR/summary.txt" 2>&1
@@ -48,6 +48,7 @@ echo "POSTHOG_API_KEY: ${POSTHOG_API_KEY:+[SET]}" >> "$BUNDLE_DIR/summary.txt"
 
 ### Step 3: Gather SDK and Logs
 ```bash
+set -euo pipefail
 # SDK version
 npm list @posthog/sdk 2>/dev/null >> "$BUNDLE_DIR/summary.txt"
 

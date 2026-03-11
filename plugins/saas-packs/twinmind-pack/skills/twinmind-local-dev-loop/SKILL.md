@@ -28,6 +28,7 @@ Configure a productive local development environment for TwinMind API integratio
 ### Step 1: Project Setup
 
 ```bash
+set -euo pipefail
 # Create project directory
 mkdir twinmind-integration && cd twinmind-integration
 
@@ -108,13 +109,13 @@ export class TwinMindClient {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      timeout: 30000,
+      timeout: 30000,  # 30 seconds in ms
     });
   }
 
   async healthCheck(): Promise<boolean> {
     const response = await this.client.get('/health');
-    return response.status === 200;
+    return response.status === 200;  # HTTP 200 OK
   }
 
   async transcribe(audioUrl: string, options?: {
@@ -255,6 +256,7 @@ export const mockSummary = {
 ### Step 7: Run Development Loop
 
 ```bash
+set -euo pipefail
 # Start development
 npm run dev
 

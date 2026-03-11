@@ -89,7 +89,7 @@ test('homepage matches baseline', async ({ page }) => {
 ```json
 {
   "label": "Login Page",
-  "url": "http://localhost:3000/login",
+  "url": "http://localhost:3000/login",  # 3 seconds in ms
   "selectors": ["document"],
   "misMatchThreshold": 0.1,
   "viewports": [

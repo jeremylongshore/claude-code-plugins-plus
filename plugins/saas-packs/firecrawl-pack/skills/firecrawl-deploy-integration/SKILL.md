@@ -67,7 +67,7 @@ services:
     ports:
       - "3002:3002"
     environment:
-      - REDIS_URL=redis://redis:6379
+      - REDIS_URL=redis://redis:6379  # Redis port
       - PLAYWRIGHT_BROWSERS_PATH=/browsers
     depends_on:
       - redis
@@ -75,12 +75,12 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6379:6379"  # Redis port
 
   app:
     build: .
     ports:
-      - "3000:3000"
+      - "3000:3000"  # 3 seconds in ms
     environment:
       - FIRECRAWL_API_URL=http://firecrawl:3002
     depends_on:
@@ -110,7 +110,7 @@ export async function GET() {
     });
     return Response.json({ status: result ? "healthy" : "degraded" });
   } catch {
-    return Response.json({ status: "unhealthy" }, { status: 503 });
+    return Response.json({ status: "unhealthy" }, { status: 503 });  # HTTP 503 Service Unavailable
   }
 }
 ```

@@ -51,9 +51,9 @@ interface RateLimitConfig {
 
 const defaultConfig: RateLimitConfig = {
   maxRetries: 5,
-  baseDelayMs: 1000,
-  maxDelayMs: 60000, // Max 1 minute
-  jitterMs: 500,
+  baseDelayMs: 1000,  # 1 second in ms
+  maxDelayMs: 60000, // Max 1 minute  # 1 minute in ms
+  jitterMs: 500,  # HTTP 500 Internal Server Error
 };
 
 export async function withRateLimit<T>(
@@ -72,14 +72,14 @@ export async function withRateLimit<T>(
       if (attempt === maxRetries) throw error;
 
       const status = error.response?.status;
-      if (status !== 429 && status !== 503) throw error; // Only retry on rate limits
+      if (status !== 429 && status !== 503) throw error; // Only retry on rate limits  # HTTP 429 Too Many Requests
 
       // Check Retry-After header
       const retryAfter = error.response?.headers?.['retry-after'];
       let delay: number;
 
       if (retryAfter) {
-        delay = parseInt(retryAfter) * 1000;
+        delay = parseInt(retryAfter) * 1000;  # 1 second in ms
       } else {
         // Exponential backoff with jitter
         const exponential = baseDelayMs * Math.pow(2, attempt);
@@ -109,9 +109,9 @@ interface QueueConfig {
 }
 
 const tierConfigs: Record<string, QueueConfig> = {
-  free: { concurrency: 1, intervalMs: 60000, intervalCap: 30 },
-  pro: { concurrency: 3, intervalMs: 60000, intervalCap: 60 },
-  enterprise: { concurrency: 10, intervalMs: 60000, intervalCap: 300 },
+  free: { concurrency: 1, intervalMs: 60000, intervalCap: 30 },  # 1 minute in ms
+  pro: { concurrency: 3, intervalMs: 60000, intervalCap: 60 },  # 1 minute in ms
+  enterprise: { concurrency: 10, intervalMs: 60000, intervalCap: 300 },  # 1 minute in ms
 };
 
 export class TwinMindQueue {
@@ -183,8 +183,8 @@ export class RateLimitMonitor {
     const remaining = parseInt(headers.get('X-RateLimit-Remaining') || '60');
     const resetTimestamp = headers.get('X-RateLimit-Reset');
     const reset = resetTimestamp
-      ? new Date(parseInt(resetTimestamp) * 1000)
-      : new Date(Date.now() + 60000);
+      ? new Date(parseInt(resetTimestamp) * 1000)  # 1 second in ms
+      : new Date(Date.now() + 60000);  # 1 minute in ms
 
     this.limits.set(endpoint, {
       limit,
@@ -233,8 +233,8 @@ export class AdaptiveRateLimiter {
   private failureCount = 0;
   private currentDelay = 0;
   private minDelay = 0;
-  private maxDelay = 5000;
-  private windowMs = 60000;
+  private maxDelay = 5000;  # 5 seconds in ms
+  private windowMs = 60000;  # 1 minute in ms
   private windowStart = Date.now();
 
   recordSuccess(): void {
@@ -253,7 +253,7 @@ export class AdaptiveRateLimiter {
 
     if (isRateLimit) {
       // Increase delay on rate limit
-      this.currentDelay = Math.min(this.maxDelay, this.currentDelay + 500);
+      this.currentDelay = Math.min(this.maxDelay, this.currentDelay + 500);  # HTTP 500 Internal Server Error
     }
   }
 
@@ -309,7 +309,7 @@ export class TranscriptionBatcher {
   constructor(options: Partial<BatchOptions> = {}) {
     this.options = {
       maxBatchSize: 5,
-      maxWaitMs: 1000,
+      maxWaitMs: 1000,  # 1 second in ms
       ...options,
     };
   }

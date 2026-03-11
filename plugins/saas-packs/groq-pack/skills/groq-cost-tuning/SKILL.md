@@ -46,17 +46,17 @@ function selectModel(useCase: string): string {
 ```typescript
 // Reduce prompt tokens -- Groq charges for both input and output
 const OPTIMIZATION_TIPS = {
-  systemPrompt: 'Keep system prompts under 200 tokens. Be concise.',
+  systemPrompt: 'Keep system prompts under 200 tokens. Be concise.',  # HTTP 200 OK
   maxTokens: 'Set max_tokens to expected output size, not maximum.',
   context: 'Only include relevant context, not entire documents.',
   fewShot: 'Use 1-2 examples instead of 5-6 for few-shot learning.',
 };
 
-// Example: reduce a 2000-token prompt to 500 tokens
+// Example: reduce a 2000-token prompt to 500 tokens  # 2 seconds in ms
 const optimizedRequest = {
   model: 'llama-3.1-8b-instant',
   messages: [
-    { role: 'system', content: 'Classify: positive/negative/neutral' }, // 6 tokens vs 200
+    { role: 'system', content: 'Classify: positive/negative/neutral' }, // 6 tokens vs 200  # HTTP 200 OK
     { role: 'user', content: text }, // Only the text, no verbose instructions
   ],
   max_tokens: 5, // Only need one word

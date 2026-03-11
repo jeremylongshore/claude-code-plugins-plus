@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Deploy Integration
 
 ## Table of Contents
@@ -72,8 +71,9 @@ Build environment-aware deploy script that runs build, tests, deploys, and smoke
 
 ### Quick Docker Build & Run
 ```bash
+set -euo pipefail
 docker build -t deepgram-service .
-docker run -p 3000:3000 -e DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY deepgram-service
+docker run -p 3000:3000 -e DEEPGRAM_API_KEY=$DEEPGRAM_API_KEY deepgram-service  # 3 seconds in ms
 ```
 
 ### Deploy Script Usage

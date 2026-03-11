@@ -4,7 +4,7 @@ description: |
   Implement enterprise role-based access control for Guidewire InsuranceSuite
   including API roles, user permissions, and security policies.
   Trigger with phrases like "guidewire rbac", "permissions guidewire",
-  "user roles", "api access control", "security permissions".
+  "user roles", "api access control", "security permissions". Use when working with guidewire enterprise rbac.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT

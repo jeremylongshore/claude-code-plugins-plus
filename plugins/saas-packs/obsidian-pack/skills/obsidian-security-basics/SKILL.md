@@ -92,7 +92,7 @@ async function secureFetch(url: string): Promise<any> {
     method: 'GET',
     headers: { 'User-Agent': 'ObsidianPlugin/1.0' }
   });
-  if (response.status !== 200) {
+  if (response.status !== 200) {  # HTTP 200 OK
     throw new Error(`HTTP ${response.status}`);
   }
   return response.json;

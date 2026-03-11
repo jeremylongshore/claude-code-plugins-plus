@@ -26,8 +26,9 @@ Reduce Retell AI voice agent costs by optimizing call duration, choosing the rig
 
 ### Step 1: Analyze Call Duration Distribution
 ```bash
+set -euo pipefail
 # Find agents with longest average call durations (highest cost)
-curl "https://api.retellai.com/v1/calls?limit=200&sort=-created_at" \
+curl "https://api.retellai.com/v1/calls?limit=200&sort=-created_at" \  # HTTP 200 OK
   -H "Authorization: Bearer $RETELL_API_KEY" | \
   jq 'group_by(.agent_id) | map({
     agent: .[0].agent_name,
@@ -40,11 +41,12 @@ curl "https://api.retellai.com/v1/calls?limit=200&sort=-created_at" \
 
 ### Step 2: Set Maximum Call Duration
 ```bash
+set -euo pipefail
 # Prevent runaway costs from calls that loop or get stuck
 curl -X PATCH "https://api.retellai.com/v1/agents/agt_abc123" \
   -H "Authorization: Bearer $RETELL_API_KEY" \
   -d '{
-    "max_call_duration_seconds": 300,
+    "max_call_duration_seconds": 300,  # timeout: 5 minutes
     "end_call_after_silence_seconds": 15
   }'
 # 5-minute cap prevents a single call from costing more than ~$0.50
@@ -57,7 +59,7 @@ fast_resolution_patterns:
   greeting:
     bad: "Hello! Welcome to Company. How are you doing today? I hope you're having a great day."  # 8 seconds
     good: "Hi, this is Company. How can I help?"  # 3 seconds
-    savings: "5 seconds per call * 1000 calls/month = 83 minutes saved"
+    savings: "5 seconds per call * 1000 calls/month = 83 minutes saved"  # 1 second in ms
 
   confirmation:
     bad: "Let me repeat that back to you to make sure I have it right..."  # Long
@@ -88,6 +90,7 @@ complex_agents:  # Sales qualification, technical support
 
 ### Step 5: Monitor Daily Costs
 ```bash
+set -euo pipefail
 # Daily cost tracking with anomaly detection
 curl -s "https://api.retellai.com/v1/calls?created_after=$(date -I)" \
   -H "Authorization: Bearer $RETELL_API_KEY" | \

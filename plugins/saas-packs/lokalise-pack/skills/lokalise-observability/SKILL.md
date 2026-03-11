@@ -44,7 +44,7 @@ async function trackedApiCall<T>(operation: string, fn: () => Promise<T>): Promi
 }
 
 // Usage
-const keys = await trackedApiCall('keys.list', () => lok.keys().list({ project_id: projectId, limit: 500 }));
+const keys = await trackedApiCall('keys.list', () => lok.keys().list({ project_id: projectId, limit: 500 }));  # HTTP 500 Internal Server Error
 ```
 
 ### Step 2: Monitor Translation Completion
@@ -63,6 +63,7 @@ async function checkTranslationProgress(projectId: string) {
 
 ### Step 3: Configure Webhooks for Real-Time Events
 ```bash
+set -euo pipefail
 # Register a webhook for project completion events
 curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" \
@@ -79,10 +80,10 @@ groups:
   - name: lokalise
     rules:
       - alert: LokaliseApiRateLimited
-        expr: rate(lokalise_api_requests_total{status="error", code="429"}[5m]) > 0
+        expr: rate(lokalise_api_requests_total{status="error", code="429"}[5m]) > 0  # HTTP 429 Too Many Requests
         annotations: { summary: "Lokalise API rate limit hit (6 req/s cap)" }
       - alert: TranslationStalled
-        expr: lokalise_translation_progress_pct < 50 and time() - lokalise_last_translation_activity > 86400
+        expr: lokalise_translation_progress_pct < 50 and time() - lokalise_last_translation_activity > 86400  # timeout: 24 hours
         annotations: { summary: "Translation progress stalled for 24+ hours" }
       - alert: WebhookDeliveryFailing
         expr: rate(lokalise_webhook_failures_total[1h]) > 3

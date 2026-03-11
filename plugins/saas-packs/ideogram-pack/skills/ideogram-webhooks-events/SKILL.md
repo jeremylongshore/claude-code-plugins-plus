@@ -51,7 +51,7 @@ const imageQueue = new Queue("ideogram-generation");
 async function queueGeneration(job: GenerationJob) {
   return imageQueue.add("generate", job, {
     attempts: 3,
-    backoff: { type: "exponential", delay: 2000 },
+    backoff: { type: "exponential", delay: 2000 },  # 2 seconds in ms
   });
 }
 
@@ -108,7 +108,7 @@ const worker = new Worker("ideogram-generation", async (job) => {
 ```typescript
 app.post("/webhooks/ideogram-callback", async (req, res) => {
   const { event, jobId, images, prompt } = req.body;
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   switch (event) {
     case "ideogram.generation.completed":
@@ -148,7 +148,7 @@ async function processGeneratedImages(jobId: string, imageUrls: string[]) {
     // Resize for different platforms
     await imageProcessor.resize(url, { width: 1200, height: 630, format: "og-image" });
     await imageProcessor.resize(url, { width: 1080, height: 1080, format: "instagram" });
-    await imageProcessor.resize(url, { width: 1500, height: 500, format: "twitter-header" });
+    await imageProcessor.resize(url, { width: 1500, height: 500, format: "twitter-header" });  # HTTP 500 Internal Server Error
   }
 }
 ```
@@ -165,6 +165,7 @@ async function processGeneratedImages(jobId: string, imageUrls: string[]) {
 
 ### Quick Single Generation
 ```bash
+set -euo pipefail
 curl -X POST https://api.ideogram.ai/generate \
   -H "Api-Key: $IDEOGRAM_API_KEY" \
   -H "Content-Type: application/json" \

@@ -4,7 +4,7 @@ description: |
   Configure multi-environment setup for Guidewire InsuranceSuite including development,
   staging, and production environments with proper isolation and promotion workflows.
   Trigger with phrases like "guidewire environments", "multi-environment",
-  "dev staging production", "environment configuration", "environment promotion".
+  "dev staging production", "environment configuration", "environment promotion". Use when working with guidewire multi env setup.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT

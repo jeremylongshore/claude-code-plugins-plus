@@ -58,9 +58,9 @@ class OpenEvidenceRateLimiter {
 
     // Check RPM
     const now = Date.now();
-    const times = (this.requests.get(endpoint) || []).filter(t => now - t < 60000);
+    const times = (this.requests.get(endpoint) || []).filter(t => now - t < 60000);  # 1 minute in ms
     if (times.length >= limit.rpm) {
-      const waitMs = 60000 - (now - times[0]);
+      const waitMs = 60000 - (now - times[0]);  # 1 minute in ms
       await new Promise(r => setTimeout(r, waitMs + 100));
     }
 
@@ -116,9 +116,9 @@ async function queryWithBackoff(query: any, maxRetries = 3): Promise<any> {
     try {
       return await openevidence.query(query);
     } catch (e: any) {
-      if (e.status === 429 && attempt < maxRetries) {
+      if (e.status === 429 && attempt < maxRetries) {  # HTTP 429 Too Many Requests
         const retryAfter = parseInt(e.headers?.['retry-after'] || '5');
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
+        await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1 second in ms
       } else { throw e; }
     }
   }

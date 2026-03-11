@@ -36,7 +36,7 @@ Comprehensive guide for migrating to or from Clay, or major version upgrades usi
 
 ## Instructions
 
-### Step 1: Assess Current State (Week 1-2)
+### Assess current configuration (Week 1-2)
 
 Inventory all files referencing Clay, count integration points, and document dependencies. Build a `MigrationInventory` with data types, record counts, and customizations.
 

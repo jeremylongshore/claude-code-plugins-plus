@@ -18,9 +18,9 @@ compatible-with: claude-code, codex, openclaw
 Quick reference for diagnosing and resolving common Juicebox API errors.
 
 ## Instructions
-- Error Reference
-- Diagnostic Commands
-- Error Handling Pattern
+1. Error Reference
+2. Diagnostic Commands
+3. Error Handling Pattern
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

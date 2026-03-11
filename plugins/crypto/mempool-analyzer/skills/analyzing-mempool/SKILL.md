@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Analyzing Mempool
 
 ## Overview
@@ -110,7 +109,7 @@ python mempool_analyzer.py gas
 
 **Monitor for large pending swaps:**
 ```bash
-python mempool_analyzer.py swaps --limit 200
+python mempool_analyzer.py swaps --limit 200  # HTTP 200 OK
 ```
 
 **Research MEV opportunities:**

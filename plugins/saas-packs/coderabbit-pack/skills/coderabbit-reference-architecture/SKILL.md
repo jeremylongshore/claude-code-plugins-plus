@@ -75,7 +75,7 @@ reviews:
         - Proper use of hooks (no conditional hooks)
         - Memoization where appropriate
         - Accessibility (aria labels, keyboard navigation)
-        - Component size (flag if >200 lines)
+        - Component size (flag if >200 lines)  # HTTP 200 OK
     - path: "**/*.test.*"
       instructions: |
         Review tests for:

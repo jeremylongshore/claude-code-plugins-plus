@@ -26,6 +26,7 @@ Control access to PostHog analytics data, feature flags, and experiments using i
 
 ### Step 1: Set Up Project-Level Access
 ```bash
+set -euo pipefail
 # Create separate projects for prod and staging environments
 curl -X POST https://app.posthog.com/api/organizations/ORG_ID/projects/ \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" \
@@ -63,6 +64,7 @@ In PostHog Organization Settings > Authentication:
 
 ### Step 4: Create Scoped API Keys
 ```bash
+set -euo pipefail
 # Read-only key for the BI dashboard (no write access)
 curl -X POST https://app.posthog.com/api/personal_api_keys/ \
   -H "Authorization: Bearer $POSTHOG_ADMIN_KEY" \
@@ -76,6 +78,7 @@ curl -X POST https://app.posthog.com/api/personal_api_keys/ \
 
 ### Step 5: Audit Access and Changes
 ```bash
+set -euo pipefail
 # Query the activity log for permission changes
 curl "https://app.posthog.com/api/projects/PROJECT_ID/activity_log/?scope=Organization" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \

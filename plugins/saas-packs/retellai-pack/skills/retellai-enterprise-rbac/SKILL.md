@@ -43,6 +43,7 @@ roles:
 
 ### Step 2: Create Scoped API Keys
 ```bash
+set -euo pipefail
 # Key for the voice agent development team
 curl -X POST https://api.retellai.com/v1/api-keys \
   -H "Authorization: Bearer $RETELL_ADMIN_KEY" \
@@ -58,12 +59,13 @@ curl -X POST https://api.retellai.com/v1/api-keys \
   -d '{
     "name": "call-center-prod",
     "scopes": ["call:create", "call:read"],
-    "rate_limit_rpm": 200
+    "rate_limit_rpm": 200  # HTTP 200 OK
   }'
 ```
 
 ### Step 3: Protect Agent Prompt Changes
 ```bash
+set -euo pipefail
 # List all agents and their last-modified timestamps
 curl https://api.retellai.com/v1/agents \
   -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \
@@ -76,6 +78,7 @@ curl https://api.retellai.com/v1/agents \
 ### Step 4: Control Phone Number Assignment
 Only org admins should assign phone numbers to agents, as each number incurs monthly costs and represents the company's voice identity:
 ```bash
+set -euo pipefail
 # Assign a phone number to a specific agent (admin only)
 curl -X POST https://api.retellai.com/v1/phone-numbers/pn_abc123/assign \
   -H "Authorization: Bearer $RETELL_ADMIN_KEY" \
@@ -84,6 +87,7 @@ curl -X POST https://api.retellai.com/v1/phone-numbers/pn_abc123/assign \
 
 ### Step 5: Audit Call Recordings and Transcripts
 ```bash
+set -euo pipefail
 # Review recent calls with cost data
 curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
   -H "Authorization: Bearer $RETELL_ADMIN_KEY" | \

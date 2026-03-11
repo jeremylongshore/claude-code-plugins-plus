@@ -31,9 +31,9 @@ Prevent runaway enrichment costs with per-user and per-table spending caps.
 ```python
 class CreditPolicy:
     LIMITS = {
-        "per_table_max": 10000,
-        "per_user_daily": 5000,
-        "per_enrichment_column": 2000,
+        "per_table_max": 10000,  # 10 seconds in ms
+        "per_user_daily": 5000,  # 5 seconds in ms
+        "per_enrichment_column": 2000,  # 2 seconds in ms
         "alert_threshold_pct": 80
     }
 

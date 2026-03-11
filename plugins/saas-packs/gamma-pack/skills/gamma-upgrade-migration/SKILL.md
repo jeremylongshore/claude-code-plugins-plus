@@ -26,6 +26,7 @@ Guide for upgrading Gamma SDK versions and migrating between API versions safely
 
 ### Step 1: Check Current Version
 ```bash
+set -euo pipefail
 # Node.js
 npm list @gamma/sdk
 
@@ -38,6 +39,7 @@ npm outdated @gamma/sdk
 
 ### Step 2: Review Changelog
 ```bash
+set -euo pipefail
 # View changelog
 npm info @gamma/sdk changelog
 
@@ -47,6 +49,7 @@ npm info @gamma/sdk changelog
 
 ### Step 3: Upgrade SDK
 ```bash
+set -euo pipefail
 # Create upgrade branch
 git checkout -b feat/gamma-sdk-upgrade
 
@@ -121,6 +124,7 @@ npx tsc --noEmit
 
 ### Step 6: Test Thoroughly
 ```bash
+set -euo pipefail
 # Run unit tests
 npm test
 
@@ -166,6 +170,7 @@ await gamma.presentations.list();
 
 ## Rollback Procedure
 ```bash
+set -euo pipefail
 # If issues occur after upgrade
 git checkout main
 npm install  # Restores previous version from lock file

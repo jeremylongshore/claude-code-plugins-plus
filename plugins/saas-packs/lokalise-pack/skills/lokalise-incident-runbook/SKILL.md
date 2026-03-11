@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Incident Runbook
 
 ## Overview
@@ -52,6 +51,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ## Examples
 ### One-Line Health Check
 ```bash
+set -euo pipefail
 curl -sf https://your-app.com/health/lokalise | jq '.status' || echo "UNHEALTHY"
 ```
 

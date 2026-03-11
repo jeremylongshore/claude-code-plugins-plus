@@ -22,7 +22,7 @@ compatible-with: claude-code, codex, openclaw
 
 ## Instructions
 
-### Step 1: Assess Current State
+### Assess current configuration
 Document existing implementation and data inventory.
 
 ### Step 2: Build Adapter Layer

@@ -82,6 +82,7 @@ Get-EventLog -LogName Application -Source "Granola" -Newest 100 | Out-File app-e
 
 ### Step 3: Network Diagnostics
 ```bash
+set -euo pipefail
 # Test Granola connectivity
 curl -s -o /dev/null -w "%{http_code}" https://api.granola.ai/health > network-test.txt
 curl -s -o /dev/null -w "%{http_code}" https://granola.ai >> network-test.txt

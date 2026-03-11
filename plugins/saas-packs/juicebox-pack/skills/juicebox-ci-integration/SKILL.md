@@ -23,11 +23,11 @@ Configure CI/CD pipelines for Juicebox integration testing and deployment.
 - npm/pnpm project configured
 
 ## Instructions
-- Step 1: Configure GitHub Secrets
-- Step 2: Create Test Workflow
-- Step 3: Add Integration Tests
-- Step 4: Configure Branch Protection
-- Step 5: Add Deployment Pipeline
+1. Step 1: Configure GitHub Secrets
+2. Step 2: Create Test Workflow
+3. Step 3: Add Integration Tests
+4. Step 4: Configure Branch Protection
+5. Step 5: Add Deployment Pipeline
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

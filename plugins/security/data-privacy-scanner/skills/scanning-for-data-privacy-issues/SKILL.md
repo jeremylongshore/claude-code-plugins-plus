@@ -7,7 +7,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Scanning for Data Privacy Issues
 
 ## Overview

@@ -55,21 +55,21 @@ const configs: Record<Env, FirecrawlConfig> = {
     maxPagesPerCrawl: 10,         // strict limit in dev to protect credits
     maxDepth: 2,
     concurrency: 1,
-    waitFor: 2000,
+    waitFor: 2000,  # 2 seconds in ms
   },
   staging: {
     apiKey: process.env.FIRECRAWL_API_KEY_STAGING!,
     maxPagesPerCrawl: 100,
     maxDepth: 3,
     concurrency: 2,
-    waitFor: 3000,
+    waitFor: 3000,  # 3 seconds in ms
   },
   production: {
     apiKey: process.env.FIRECRAWL_API_KEY_PROD!,
-    maxPagesPerCrawl: 500,        // per-task limit, set lower for specific jobs
+    maxPagesPerCrawl: 500,        // per-task limit, set lower for specific jobs  # HTTP 500 Internal Server Error
     maxDepth: 5,
     concurrency: 5,
-    waitFor: 3000,
+    waitFor: 3000,  # 3 seconds in ms
   },
 };
 
@@ -187,6 +187,7 @@ console.log(`API URL: ${cfg.apiUrl || "https://api.firecrawl.dev"}`);
 
 ### Budget Check Before Large Crawl
 ```bash
+set -euo pipefail
 # Check current credit balance
 curl -s "https://api.firecrawl.dev/v1/team/credits" \
   -H "Authorization: Bearer $FIRECRAWL_API_KEY_PROD" | jq .credits_remaining

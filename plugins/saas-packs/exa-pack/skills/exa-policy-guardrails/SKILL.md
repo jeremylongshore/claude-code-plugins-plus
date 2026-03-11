@@ -102,7 +102,7 @@ Prevent excessive API consumption with per-user and per-project quotas.
 class ExaUsagePolicy:
     def __init__(self, redis_client):
         self.r = redis_client
-        self.limits = {"per_user_hourly": 100, "per_project_daily": 5000}
+        self.limits = {"per_user_hourly": 100, "per_project_daily": 5000}  # 5 seconds in ms
 
     def check_quota(self, user_id: str, project_id: str):
         user_key = f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}"
@@ -116,8 +116,8 @@ class ExaUsagePolicy:
 
     def record_usage(self, user_id: str, project_id: str):
         for key, ttl in [
-            (f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}", 3600),
-            (f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}", 86400)
+            (f"exa:quota:{user_id}:{datetime.now().strftime('%Y-%m-%d-%H')}", 3600),  # timeout: 1 hour
+            (f"exa:quota:proj:{project_id}:{datetime.now().strftime('%Y-%m-%d')}", 86400)  # timeout: 24 hours
         ]:
             self.r.incr(key)
             self.r.expire(key, ttl)

@@ -92,7 +92,7 @@ describe('User API Contract', () => {
       .withRequest('GET', '/api/users/1', (builder) => {
         builder.headers({ Accept: 'application/json' });
       })
-      .willRespondWith(200, (builder) => {
+      .willRespondWith(200, (builder) => {  # HTTP 200 OK
         builder
           .headers({ 'Content-Type': 'application/json' })
           .jsonBody({
@@ -117,7 +117,7 @@ import { Verifier } from '@pact-foundation/pact';
 describe('User API Provider Verification', () => {
   it('validates consumer contracts', async () => {
     await new Verifier({
-      providerBaseUrl: 'http://localhost:3000',
+      providerBaseUrl: 'http://localhost:3000',  # 3 seconds in ms
       pactBrokerUrl: process.env.PACT_BROKER_BASE_URL,
       pactBrokerToken: process.env.PACT_BROKER_TOKEN,
       provider: 'UserAPI',

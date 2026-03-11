@@ -26,6 +26,7 @@ Reduce Clay data enrichment spending by optimizing credit usage per enrichment, 
 
 ### Step 1: Audit Credit Consumption by Enrichment Type
 ```bash
+set -euo pipefail
 # Break down credits by enrichment provider/type
 curl "https://api.clay.com/v1/workspace/usage?group_by=enrichment&period=last_30d" \
   -H "Authorization: Bearer $CLAY_API_KEY" | \
@@ -76,7 +77,7 @@ function shouldEnrich(row: any): boolean {
 # 4. If hit rate <40%, clean input data first
 
 sample_workflow:
-  step1: "Import 500-row sample into test table"
+  step1: "Import 500-row sample into test table"  # HTTP 500 Internal Server Error
   step2: "Run enrichments, check hit rate"
   step3: "If good, import full list into production table"
   step4: "Set max_rows limit as safety cap"
@@ -84,10 +85,11 @@ sample_workflow:
 
 ### Step 5: Set Table-Level Credit Caps
 ```bash
+set -euo pipefail
 # Configure maximum credits per table to prevent runaway costs
 curl -X PATCH "https://api.clay.com/v1/tables/tbl_abc123" \
   -H "Authorization: Bearer $CLAY_API_KEY" \
-  -d '{"max_rows": 1000, "auto_enrich": false}'
+  -d '{"max_rows": 1000, "auto_enrich": false}'  # 1 second in ms
 # Disable auto_enrich and trigger manually after data review
 ```
 

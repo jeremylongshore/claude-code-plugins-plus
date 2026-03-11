@@ -93,7 +93,7 @@ def batch_assess(client: SpeakClient, recordings: list[dict], delay: float = 1.0
             result = client.assess_pronunciation(rec["audio"], rec["text"], rec.get("lang", "en"))
             results.append({"file": rec["audio"], "score": result["score"]})
         except requests.HTTPError as e:
-            if e.response.status_code == 429:
+            if e.response.status_code == 429:  # HTTP 429 Too Many Requests
                 time.sleep(float(e.response.headers.get("Retry-After", 10)))
                 result = client.assess_pronunciation(rec["audio"], rec["text"])
                 results.append({"file": rec["audio"], "score": result["score"]})

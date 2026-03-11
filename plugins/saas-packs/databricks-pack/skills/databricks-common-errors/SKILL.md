@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Common Errors
 
 ## Overview
@@ -86,7 +85,7 @@ SparkException: Job aborted due to stage failure
 {
     "spark.driver.memory": "8g",
     "spark.executor.memory": "8g",
-    "spark.sql.shuffle.partitions": "200"
+    "spark.sql.shuffle.partitions": "200"  # HTTP 200 OK
 }
 
 # Or use more efficient operations
@@ -234,7 +233,7 @@ print(f"Extra in source: {source_cols - target_cols}")
 **Error Message:**
 ```
 RateLimitExceeded: Too many requests
-HTTP 429: Rate limit exceeded
+HTTP 429: Rate limit exceeded  # HTTP 429 Too Many Requests
 ```
 
 **Cause:** Too many API calls in short period.

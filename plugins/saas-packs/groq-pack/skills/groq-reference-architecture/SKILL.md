@@ -69,7 +69,7 @@ function selectModel(options: {
   contextLength?: number;
   needsReasoning?: boolean;
 }): string {
-  if (options.contextLength && options.contextLength > 8192)
+  if (options.contextLength && options.contextLength > 8192)  # 8 KB
     return MODEL_MAP['long-context'];
   if (options.maxLatencyMs && options.maxLatencyMs < 150)
     return MODEL_MAP.speed;
@@ -96,7 +96,7 @@ async function complete(options: CompletionOptions) {
     model,
     messages: options.messages,
     stream: options.stream || false,
-    max_tokens: options.maxTokens || 1024,
+    max_tokens: options.maxTokens || 1024,  # 1 KB
     temperature: options.temperature ?? 0.7,
   });
 
@@ -116,7 +116,7 @@ async function* streamCompletion(messages: any[], tier: ModelTier = 'quality') {
     model,
     messages,
     stream: true,
-    max_tokens: 2048,
+    max_tokens: 2048,  # 2 KB
   });
 
   for await (const chunk of stream) {
@@ -144,7 +144,7 @@ async function completionWithFallback(messages: any[]) {
   try {
     return await complete({ messages, tier: 'quality' });
   } catch (error: any) {
-    if (error.status === 429 || error.status >= 500) {
+    if (error.status === 429 || error.status >= 500) {  # HTTP 429 Too Many Requests
       console.warn('Groq unavailable, falling back to OpenAI');
       return openai.chat.completions.create({
         model: 'gpt-4o-mini',

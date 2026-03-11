@@ -23,12 +23,12 @@ Optimize Linear API usage for maximum performance and minimal latency.
 - Caching infrastructure (Redis recommended)
 
 ## Instructions
-- Step 1: Query Optimization
-- Step 2: Implement Caching Layer
-- Step 3: Cached Client Wrapper
-- Step 4: Request Batching
-- Step 5: Connection Pooling
-- Step 6: Query Complexity Monitoring
+1. Step 1: Query Optimization
+2. Step 2: Implement Caching Layer
+3. Step 3: Cached Client Wrapper
+4. Step 4: Request Batching
+5. Step 5: Connection Pooling
+6. Step 6: Query Complexity Monitoring
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

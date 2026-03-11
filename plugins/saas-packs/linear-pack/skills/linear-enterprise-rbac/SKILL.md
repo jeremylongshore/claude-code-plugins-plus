@@ -23,12 +23,12 @@ Implement enterprise-grade role-based access control for Linear integrations.
 - SSO provider (Okta, Azure AD, Google Workspace)
 
 ## Instructions
-- Step 1: Define Application Roles
-- Step 2: Permission Guard Implementation
-- Step 3: Secure Linear Client Factory
-- Step 4: SSO Integration
-- Step 5: Audit Logging
-- Step 6: API Middleware
+1. Step 1: Define Application Roles
+2. Step 2: Permission Guard Implementation
+3. Step 3: Secure Linear Client Factory
+4. Step 4: SSO Integration
+5. Step 5: Audit Logging
+6. Step 6: API Middleware
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

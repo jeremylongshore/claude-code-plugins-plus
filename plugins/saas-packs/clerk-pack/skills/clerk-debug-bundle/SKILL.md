@@ -23,11 +23,11 @@ Collect all necessary debug information for Clerk troubleshooting and support.
 - Browser with developer tools
 
 ## Instructions
-- Step 1: Environment Debug Script
-- Step 2: Runtime Health Check
-- Step 3: Client-Side Debug Component
-- Step 4: Request Debug Middleware
-- Step 5: Generate Support Bundle
+1. Step 1: Environment Debug Script
+2. Step 2: Runtime Health Check
+3. Step 3: Client-Side Debug Component
+4. Step 4: Request Debug Middleware
+5. Step 5: Generate Support Bundle
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

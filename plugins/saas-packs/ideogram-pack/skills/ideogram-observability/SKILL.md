@@ -53,6 +53,7 @@ function handleSafetyRejection(prompt: string, reason: string) {
 
 ### Step 3: Monitor Credit Balance
 ```bash
+set -euo pipefail
 # Check remaining credits and burn rate
 curl -s https://api.ideogram.ai/v1/usage \
   -H "Api-Key: $IDEOGRAM_API_KEY" | \
@@ -71,8 +72,8 @@ groups:
         expr: rate(ideogram_credits_used[1h]) > 100
         annotations: { summary: "Ideogram burning >100 credits/hour" }
       - alert: IdeogramCreditsLow
-        expr: ideogram_credits_remaining < 200
-        annotations: { summary: "Ideogram credits below 200 -- purchase more" }
+        expr: ideogram_credits_remaining < 200  # HTTP 200 OK
+        annotations: { summary: "Ideogram credits below 200 -- purchase more" }  # HTTP 200 OK
       - alert: IdeogramHighRejectionRate
         expr: rate(ideogram_safety_rejections_total[1h]) / rate(ideogram_generations_total[1h]) > 0.1
         annotations: { summary: "Ideogram safety rejection rate exceeds 10%" }

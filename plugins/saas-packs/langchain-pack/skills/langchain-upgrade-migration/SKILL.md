@@ -27,6 +27,7 @@ Guide for upgrading LangChain versions safely with migration strategies for brea
 
 ### Step 1: Check Current Versions
 ```bash
+set -euo pipefail
 pip show langchain langchain-core langchain-openai langchain-community
 
 # Output current requirements
@@ -155,6 +156,7 @@ chain_with_history = RunnableWithMessageHistory(
 
 ### Step 7: Upgrade Packages
 ```bash
+set -euo pipefail
 # Create backup of current environment
 pip freeze > requirements_backup.txt
 

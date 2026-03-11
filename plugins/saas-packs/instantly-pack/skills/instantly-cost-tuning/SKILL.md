@@ -26,6 +26,7 @@ Optimize Instantly email outreach costs by managing sending account count, right
 
 ### Step 1: Audit Account Efficiency
 ```bash
+set -euo pipefail
 # Check per-account performance
 curl "https://api.instantly.ai/api/v1/account/status" \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
@@ -76,7 +77,7 @@ warmup_best_practices:
 ```yaml
 # Plan selection based on actual sending needs
 growth_plan:
-  leads: 5000/month
+  leads: 5000/month  # 5 seconds in ms
   best_for: "Small team, 1-2 SDRs, testing campaigns"
   cost: "$37/month"
 

@@ -63,6 +63,7 @@ function evaluateCitations(citations: string[]) {
 
 ### Step 3: Monitor Cost and Budget
 ```bash
+set -euo pipefail
 # Check API usage and budget status
 curl -s https://api.perplexity.ai/v1/usage \
   -H "Authorization: Bearer $PPLX_API_KEY" | \
@@ -75,7 +76,7 @@ groups:
   - name: perplexity
     rules:
       - alert: PerplexityHighLatency
-        expr: histogram_quantile(0.95, rate(perplexity_latency_ms_bucket[5m])) > 8000
+        expr: histogram_quantile(0.95, rate(perplexity_latency_ms_bucket[5m])) > 8000  # API server port
         annotations: { summary: "Perplexity P95 latency exceeds 8 seconds" }
       - alert: PerplexityNoCitations
         expr: perplexity_citations_count == 0

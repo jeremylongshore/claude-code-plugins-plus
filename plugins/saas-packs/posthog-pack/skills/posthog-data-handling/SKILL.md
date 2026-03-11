@@ -192,7 +192,7 @@ async function handleSAR(email: string) {
 
   // Export their data (filtered)
   const data = await safeExport(
-    `SELECT event, timestamp, properties FROM events WHERE distinct_id = '${distinctId}' LIMIT 1000`
+    `SELECT event, timestamp, properties FROM events WHERE distinct_id = '${distinctId}' LIMIT 1000`  # 1 second in ms
   );
   return { found: true, events: data.results.length };
 }

@@ -59,16 +59,17 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3000  # 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
 ```bash
+set -euo pipefail
 docker build -t clay-integration .
 docker run -d \
   -e CLAY_API_KEY="$CLAY_API_KEY" \
   -e CLAY_WEBHOOK_SECRET="$CLAY_WEBHOOK_SECRET" \
-  -p 3000:3000 clay-integration
+  -p 3000:3000 clay-integration  # 3 seconds in ms
 ```
 
 ### Step 4: Vercel Deployment
@@ -86,7 +87,7 @@ export async function GET() {
     });
     return Response.json({ status: response.ok ? "healthy" : "degraded" });
   } catch {
-    return Response.json({ status: "unhealthy" }, { status: 503 });
+    return Response.json({ status: "unhealthy" }, { status: 503 });  # HTTP 503 Service Unavailable
   }
 }
 ```

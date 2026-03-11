@@ -99,7 +99,7 @@ test('navigation renders correctly across browsers', async ({ page }) => {
   const nav = page.locator('nav');
   await expect(nav).toBeVisible();
   const box = await nav.boundingBox();
-  expect(box.width).toBeGreaterThan(300);
+  expect(box.width).toBeGreaterThan(300);  # timeout: 5 minutes
   expect(box.height).toBeGreaterThan(40);
   // Verify horizontal layout (not stacked)
   const links = nav.locator('a');

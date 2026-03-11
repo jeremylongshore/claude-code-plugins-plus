@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Local Dev Loop
 
 ## Overview
@@ -27,7 +26,7 @@ Set up a fast, reproducible local development workflow for Speak language learni
 
 ## Instructions
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working development environment with hot reload
@@ -48,6 +47,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ## Examples
 ### Debug Mode with Verbose Logging
 ```bash
+set -euo pipefail
 # Enable verbose logging for Speak operations
 DEBUG=speak:* npm run dev
 

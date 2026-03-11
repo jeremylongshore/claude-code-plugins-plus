@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Common Errors
 
 ## Overview
@@ -81,13 +80,14 @@ Request timeout after 30000ms
 **Solution:**
 ```typescript
 // Increase timeout
-const client = new Client({ timeout: 60000 });
+const client = new Client({ timeout: 60000 });  # 1 minute in ms
 ```
 
 ## Examples
 
 ### Quick Diagnostic Commands
 ```bash
+set -euo pipefail
 # Check Ideogram status
 curl -s https://status.ideogram.com
 

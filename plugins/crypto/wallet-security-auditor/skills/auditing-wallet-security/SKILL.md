@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Wallet Security Auditor
 
 ## Overview
@@ -40,9 +39,9 @@ python wallet_auditor.py approvals <address> --chain <chain>
 ```
 
 Options:
-- `--chain`: ethereum, bsc, polygon, arbitrum, optimism, base (default: ethereum)
-- `--unlimited`: Show only unlimited approvals
-- `--verbose`: Detailed output
+1. `--chain`: ethereum, bsc, polygon, arbitrum, optimism, base (default: ethereum)
+2. `--unlimited`: Show only unlimited approvals
+3. `--verbose`: Detailed output
 
 ### 2. Full Security Scan
 
@@ -53,10 +52,10 @@ python wallet_auditor.py scan <address> --verbose
 ```
 
 Analyzes:
-- Active token approvals (unlimited, risky)
-- Transaction history patterns
-- Contract interactions (verified vs unverified)
-- Suspicious activity detection
+4. Active token approvals (unlimited, risky)
+5. Transaction history patterns
+6. Contract interactions (verified vs unverified)
+7. Suspicious activity detection
 
 ### 3. Calculate Security Score
 
@@ -68,17 +67,17 @@ python wallet_auditor.py score <address> --json  # JSON output
 ```
 
 Score components:
-- Approvals (40%): Unlimited, risky, stale approvals
-- Interactions (30%): Contract verification, flagged addresses
-- Patterns (20%): Transaction frequency, diversity
-- Age (10%): Wallet maturity
+8. Approvals (40%): Unlimited, risky, stale approvals
+9. Interactions (30%): Contract verification, flagged addresses
+10. Patterns (20%): Transaction frequency, diversity
+11. Age (10%): Wallet maturity
 
 Risk levels:
-- 90-100: SAFE
-- 70-89: LOW
-- 50-69: MEDIUM
-- 30-49: HIGH
-- 0-29: CRITICAL
+12. 90-100: SAFE
+13. 70-89: LOW
+14. 50-69: MEDIUM
+15. 30-49: HIGH
+16. 0-29: CRITICAL
 
 ### 4. Analyze Transaction History
 
@@ -89,10 +88,10 @@ python wallet_auditor.py history <address> --days 30
 ```
 
 Detects:
-- Rapid approval patterns
-- Interaction bursts (many contracts in short time)
-- High failure rates
-- Dust attacks
+17. Rapid approval patterns
+18. Interaction bursts (many contracts in short time)
+19. High failure rates
+20. Dust attacks
 
 ### 5. Generate Revoke List
 
@@ -103,9 +102,9 @@ python wallet_auditor.py revoke-list <address>
 ```
 
 Flags:
-- Unlimited approvals to unknown contracts
-- Risky/flagged spenders
-- Stale approvals (>6 months)
+21. Unlimited approvals to unknown contracts
+22. Risky/flagged spenders
+23. Stale approvals (>6 months)
 
 ### 6. Generate Full Report
 

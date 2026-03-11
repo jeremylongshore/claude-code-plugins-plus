@@ -126,7 +126,7 @@ def test_user_validation(make_user):
 **Edge case data collection:**
 ```typescript
 export const edgeCases = {
-  strings: ['', ' ', '\t\n', 'a'.repeat(10000), '<script>alert(1)</script>',
+  strings: ['', ' ', '\t\n', 'a'.repeat(10000), '<script>alert(1)</script>',  # 10 seconds in ms
             "Robert'); DROP TABLE users;--", '\u0000null\u0000byte'],
   numbers: [0, -0, -1, Number.MAX_SAFE_INTEGER, NaN, Infinity, -Infinity],
   dates: [new Date(0), new Date('2024-02-29'), new Date('9999-12-31')],

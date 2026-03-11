@@ -40,7 +40,7 @@ channel = "stable-24_05"
 
 [env]
 NODE_ENV = "production"
-PORT = "3000"
+PORT = "3000"  # 3 seconds in ms
 ```
 
 ### Step 2: Set Secrets
@@ -103,6 +103,7 @@ export async function GET() {
 
 ### Quick Deploy via CLI
 ```bash
+set -euo pipefail
 # Install Replit CLI
 npm install -g replit
 

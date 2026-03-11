@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Production Checklist
 
 ## Table of Contents
@@ -85,11 +84,13 @@ Hit health endpoint, test chat endpoint with sample request, check logs for erro
 
 ### Quick Health Check
 ```bash
+set -euo pipefail
 curl -sf https://yourapp.com/health | jq '.services.mistral'
 ```
 
 ### Emergency Rollback
 ```bash
+set -euo pipefail
 kubectl rollout undo deployment/mistral-app
 kubectl rollout status deployment/mistral-app
 curl -sf https://yourapp.com/health | jq

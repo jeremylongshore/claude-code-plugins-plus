@@ -13,7 +13,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Backtesting Trading Strategies
 
 ## Overview
@@ -32,11 +31,13 @@ Validate trading strategies against historical data before risking real capital.
 Install required dependencies:
 
 ```bash
+set -euo pipefail
 pip install pandas numpy yfinance matplotlib
 ```
 
 Optional for advanced features:
 ```bash
+set -euo pipefail
 pip install ta-lib scipy scikit-learn
 ```
 
@@ -66,7 +67,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
   --strategy rsi_reversal \
   --symbol ETH-USD \
   --period 1y \
-  --capital 10000 \
+  --capital 10000 \  # 10 seconds in ms
   --params '{"period": 14, "overbought": 70, "oversold": 30}'
 ```
 
@@ -87,7 +88,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
   --strategy sma_crossover \
   --symbol BTC-USD \
   --period 1y \
-  --param-grid '{"fast_period": [10, 20, 30], "slow_period": [50, 100, 200]}'
+  --param-grid '{"fast_period": [10, 20, 30], "slow_period": [50, 100, 200]}'  # HTTP 200 OK
 ```
 
 ## Output
@@ -163,7 +164,7 @@ data:
   cache_dir: ./data
 
 backtest:
-  default_capital: 10000
+  default_capital: 10000  # 10 seconds in ms
   commission: 0.001     # 0.1% per trade
   slippage: 0.0005      # 0.05% slippage
 

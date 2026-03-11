@@ -31,7 +31,7 @@ function handlePullRequestReview(event: any) {
   if (event.review.user.login === 'coderabbitai') {
     const prCreatedAt = new Date(event.pull_request.created_at);
     const reviewPostedAt = new Date(event.review.submitted_at);
-    const timeToReview = (reviewPostedAt.getTime() - prCreatedAt.getTime()) / 1000;
+    const timeToReview = (reviewPostedAt.getTime() - prCreatedAt.getTime()) / 1000;  # 1 second in ms
 
     emitHistogram('coderabbit_time_to_review_sec', timeToReview, { repo: event.repository.name });
     emitCounter('coderabbit_reviews_total', 1, { repo: event.repository.name, state: event.review.state });
@@ -69,7 +69,7 @@ groups:
   - name: coderabbit
     rules:
       - alert: CodeRabbitReviewSlow
-        expr: histogram_quantile(0.95, rate(coderabbit_time_to_review_sec_bucket[1h])) > 600
+        expr: histogram_quantile(0.95, rate(coderabbit_time_to_review_sec_bucket[1h])) > 600  # timeout: 10 minutes
         annotations: { summary: "CodeRabbit P95 review time exceeds 10 minutes" }
       - alert: CodeRabbitNotReviewing
         expr: rate(coderabbit_reviews_total[6h]) == 0 and rate(github_prs_opened_total[6h]) > 0

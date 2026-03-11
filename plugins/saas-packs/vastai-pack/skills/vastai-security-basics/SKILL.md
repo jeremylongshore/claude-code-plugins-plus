@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Vast.ai Security Basics
 
 ## Overview
@@ -39,6 +38,7 @@ VASTAI_SECRET=***
 
 ### Step 2: Implement Secret Rotation
 ```bash
+set -euo pipefail
 # 1. Generate new key in Vast.ai dashboard
 # 2. Update environment variable
 export VASTAI_API_KEY="new_key_here"

@@ -23,11 +23,11 @@ Implement enterprise-grade role-based access control for Juicebox integrations.
 - Understanding of access control patterns
 
 ## Instructions
-- Step 1: Define Roles and Permissions
-- Step 2: Implement Permission Checker
-- Step 3: Authorization Middleware
-- Step 4: Team-Based Access Control
-- Step 5: Audit Trail
+1. Step 1: Define Roles and Permissions
+2. Step 2: Implement Permission Checker
+3. Step 3: Authorization Middleware
+4. Step 4: Team-Based Access Control
+5. Step 5: Audit Trail
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clay Upgrade & Migration
 
 ## Overview
@@ -28,6 +27,7 @@ Guide for upgrading Clay SDK versions and handling breaking changes.
 
 ### Step 1: Check Current Version
 ```bash
+set -euo pipefail
 npm list @clay/sdk
 npm view @clay/sdk version
 ```
@@ -39,6 +39,7 @@ open https://github.com/clay/sdk/releases
 
 ### Step 3: Create Upgrade Branch
 ```bash
+set -euo pipefail
 git checkout -b upgrade/clay-sdk-vX.Y.Z
 npm install @clay/sdk@latest
 npm test
@@ -84,6 +85,7 @@ const client = new ClayClient({
 
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 npm install @clay/sdk@1.x.x --save-exact
 ```
 

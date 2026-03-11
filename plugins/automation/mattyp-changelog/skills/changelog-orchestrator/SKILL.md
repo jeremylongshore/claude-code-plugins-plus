@@ -7,7 +7,6 @@ author: "Mattyp <mattyp@claudecodeplugins.io>"
 license: "MIT"
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Changelog Orchestrator
 
 ## Overview

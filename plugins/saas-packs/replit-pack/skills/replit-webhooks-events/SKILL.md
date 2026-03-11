@@ -47,11 +47,11 @@ app.post("/webhooks/replit", async (req, res) => {
   const token = req.headers["x-replit-token"] as string;
 
   if (token !== process.env.REPLIT_WEBHOOK_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });  # HTTP 401 Unauthorized
   }
 
   const { event, data, timestamp } = req.body;
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   await handleReplitEvent(event, data);
 });
@@ -127,6 +127,7 @@ async function rollbackDeployment(deploymentId: string) {
 
 ### Step 4: Deploy via API
 ```bash
+set -euo pipefail
 # Trigger deployment via Replit API
 curl -X POST https://api.replit.com/v1/repls/$REPL_ID/deploy \
   -H "Authorization: Bearer $REPLIT_TOKEN" \

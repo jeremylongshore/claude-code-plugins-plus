@@ -18,9 +18,9 @@ compatible-with: claude-code, codex, openclaw
 Enterprise-grade reference architecture for Juicebox-powered recruiting and people search applications.
 
 ## Instructions
-- Architecture Patterns
-- Implementation
-- Deployment Topology
+1. Architecture Patterns
+2. Implementation
+3. Deployment Topology
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

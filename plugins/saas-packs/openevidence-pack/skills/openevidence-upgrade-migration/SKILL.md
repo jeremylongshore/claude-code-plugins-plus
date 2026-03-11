@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Upgrade & Migration
 
 ## Overview
@@ -36,6 +35,7 @@ Safely upgrade OpenEvidence SDK versions and migrate between API versions with m
 
 ### Step 1: Review Changelog and Breaking Changes
 ```bash
+set -euo pipefail
 # Check current version
 npm list @openevidence/sdk
 # or
@@ -47,6 +47,7 @@ pip show openevidence
 
 ### Step 2: Update Dependencies
 ```bash
+set -euo pipefail
 # Node.js - specific version
 npm install @openevidence/sdk@3.0.0
 
@@ -315,6 +316,7 @@ async function clinicalQuery(question: string) {
 ### Complete Migration Script
 ```bash
 #!/bin/bash
+set -euo pipefail
 # scripts/migrate-openevidence.sh
 
 echo "=== OpenEvidence SDK Migration ==="

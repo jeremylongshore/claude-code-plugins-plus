@@ -25,7 +25,7 @@ Integrate Speak language learning API validation into CI/CD pipelines. Covers pr
 
 ## Instructions
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Error Handling
 | Issue | Cause | Solution |

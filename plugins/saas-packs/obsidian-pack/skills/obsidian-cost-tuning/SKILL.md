@@ -59,7 +59,7 @@ node_modules/**
 class PluginCostOptimizer {
   // Cache AI responses to avoid re-querying for identical prompts
   private responseCache = new Map<string, { result: string; timestamp: number }>();
-  private cacheTTL = 24 * 60 * 60 * 1000; // 24 hours
+  private cacheTTL = 24 * 60 * 60 * 1000; // 24 hours  # 1 second in ms
 
   async getCachedOrFetch(prompt: string, apiFn: () => Promise<string>): Promise<string> {
     const cached = this.responseCache.get(prompt);
@@ -76,7 +76,7 @@ class PluginCostOptimizer {
 # Sync tier decision matrix
 personal_4_per_month:
   storage: 1GB
-  best_for: Text-only vaults, <5000 notes
+  best_for: Text-only vaults, <5000 notes  # 5 seconds in ms
   tip: Exclude images from sync, use relative links to local folders
 
 standard_8_per_month:

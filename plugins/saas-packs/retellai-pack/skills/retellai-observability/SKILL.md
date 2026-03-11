@@ -38,12 +38,13 @@ app.post('/webhooks/retell', (req, res) => {
     emitCounter('retell_call_errors_total', 1, { agent: agent_id, reason: disconnect_reason });
   }
 
-  res.sendStatus(200);
+  res.sendStatus(200);  # HTTP 200 OK
 });
 ```
 
 ### Step 2: Track Conversational Latency
 ```bash
+set -euo pipefail
 # Query recent calls for response latency metrics
 curl "https://api.retellai.com/v1/calls?limit=20&sort=-created_at" \
   -H "Authorization: Bearer $RETELL_API_KEY" | \
@@ -82,7 +83,7 @@ groups:
         expr: rate(retell_calls_total{status="failed"}[1h]) / rate(retell_calls_total[1h]) > 0.1
         annotations: { summary: "Retell call failure rate exceeds 10%" }
       - alert: RetellHighLatency
-        expr: histogram_quantile(0.95, rate(retell_response_latency_ms_bucket[1h])) > 2000
+        expr: histogram_quantile(0.95, rate(retell_response_latency_ms_bucket[1h])) > 2000  # 2 seconds in ms
         annotations: { summary: "Retell agent response latency P95 exceeds 2 seconds" }
       - alert: RetellCostSpike
         expr: increase(retell_cost_usd[1h]) > 50

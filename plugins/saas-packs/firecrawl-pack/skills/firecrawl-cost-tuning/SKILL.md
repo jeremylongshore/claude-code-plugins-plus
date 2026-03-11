@@ -26,6 +26,7 @@ Reduce Firecrawl web scraping costs by limiting crawl depth, caching scraped con
 
 ### Step 1: Always Set Crawl Limits
 ```bash
+set -euo pipefail
 # BAD: Unbounded crawl (could consume thousands of credits)
 curl -X POST https://api.firecrawl.dev/v1/crawl \
   -d '{"url": "https://docs.example.com"}'
@@ -55,7 +56,7 @@ const targetUrls = [
 for (const url of targetUrls) {
   await firecrawl.scrapeUrl(url, { formats: ['markdown'] });
 }
-// vs. Crawl entire docs site: potentially 500+ credits
+// vs. Crawl entire docs site: potentially 500+ credits  # HTTP 500 Internal Server Error
 ```
 
 ### Step 3: Cache Scraped Content
@@ -63,7 +64,7 @@ for (const url of targetUrls) {
 import { createHash } from 'crypto';
 
 const scrapeCache = new Map<string, { content: string; timestamp: number }>();
-const CACHE_TTL = 24 * 3600 * 1000; // 24 hours
+const CACHE_TTL = 24 * 3600 * 1000; // 24 hours  # timeout: 1 hour
 
 async function cachedScrape(url: string): Promise<string> {
   const key = createHash('md5').update(url).digest('hex');
@@ -79,6 +80,7 @@ async function cachedScrape(url: string): Promise<string> {
 
 ### Step 4: Choose Minimal Scrape Options
 ```bash
+set -euo pipefail
 # Only request what you need -- each format option has cost implications
 # Minimal (cheapest): markdown only
 curl -X POST https://api.firecrawl.dev/v1/scrape \
@@ -91,6 +93,7 @@ curl -X POST https://api.firecrawl.dev/v1/scrape \
 
 ### Step 5: Monitor Credit Efficiency
 ```bash
+set -euo pipefail
 # Find which crawl jobs consumed the most credits
 curl -s https://api.firecrawl.dev/v1/usage \
   -H "Authorization: Bearer $FIRECRAWL_API_KEY" | \

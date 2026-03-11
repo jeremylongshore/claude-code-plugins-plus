@@ -44,13 +44,14 @@ Follow the solution steps for your specific error.
 **Error Message:**
 ```
 Langfuse: Unauthorized - Invalid API key
-Error: 401 Unauthorized
+Error: 401 Unauthorized  # HTTP 401 Unauthorized
 ```
 
 **Cause:** API key is missing, expired, or mismatched with host.
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Verify environment variables are set
 echo "Public: $LANGFUSE_PUBLIC_KEY"
 echo "Secret: ${LANGFUSE_SECRET_KEY:0:10}..."  # Partial for security
@@ -95,6 +96,7 @@ ECONNREFUSED / ETIMEDOUT
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Test connectivity
 curl -v https://cloud.langfuse.com/api/public/health
 
@@ -108,7 +110,7 @@ curl -v $LANGFUSE_HOST/api/public/health
 ```typescript
 // Increase timeout if needed
 const langfuse = new Langfuse({
-  requestTimeout: 30000, // 30 seconds
+  requestTimeout: 30000, // 30 seconds  # 30 seconds in ms
 });
 ```
 
@@ -205,6 +207,7 @@ Property 'observeOpenAI' does not exist
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Check current version
 npm list langfuse
 
@@ -250,7 +253,7 @@ config({ path: ".env.local" });
 ### 9. Self-Hosted Connection Issues
 **Error Message:**
 ```
-Failed to connect to localhost:3000
+Failed to connect to localhost:3000  # 3 seconds in ms
 Certificate verification failed
 ```
 
@@ -258,9 +261,10 @@ Certificate verification failed
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Check if Langfuse is running
 docker ps | grep langfuse
-curl http://localhost:3000/api/public/health
+curl http://localhost:3000/api/public/health  # 3 seconds in ms
 
 # For HTTPS without valid cert
 export NODE_TLS_REJECT_UNAUTHORIZED=0  # Development only!
@@ -269,7 +273,7 @@ export NODE_TLS_REJECT_UNAUTHORIZED=0  # Development only!
 ```typescript
 // Verify host URL doesn't have trailing slash
 const langfuse = new Langfuse({
-  baseUrl: "http://localhost:3000", // No trailing slash
+  baseUrl: "http://localhost:3000", // No trailing slash  # 3 seconds in ms
 });
 ```
 
@@ -278,7 +282,7 @@ const langfuse = new Langfuse({
 ### 10. Rate Limiting
 **Error Message:**
 ```
-Error: 429 Too Many Requests
+Error: 429 Too Many Requests  # HTTP 429 Too Many Requests
 Retry-After: 60
 ```
 
@@ -289,7 +293,7 @@ Retry-After: 60
 // Increase batch size to reduce requests
 const langfuse = new Langfuse({
   flushAt: 50,        // Batch more events
-  flushInterval: 30000, // Flush less often
+  flushInterval: 30000, // Flush less often  # 30 seconds in ms
 });
 
 // See langfuse-rate-limits skill for advanced handling
@@ -297,6 +301,7 @@ const langfuse = new Langfuse({
 
 ## Quick Diagnostic Commands
 ```bash
+set -euo pipefail
 # Check Langfuse cloud status
 curl -s https://status.langfuse.com
 
@@ -309,7 +314,7 @@ env | grep LANGFUSE
 # Test auth
 curl -X GET "https://cloud.langfuse.com/api/public/traces" \
   -H "Authorization: Basic $(echo -n "$LANGFUSE_PUBLIC_KEY:$LANGFUSE_SECRET_KEY" | base64)" \
-  | head -c 200
+  | head -c 200  # HTTP 200 OK
 ```
 
 ## Escalation Path

@@ -16,7 +16,7 @@ This skill provides automated assistance for regression analysis tool tasks.
 
 
 This skill provides automated assistance for regression analysis tool tasks.
-This skill enables Claude to analyze data, build regression models, and provide insights into the relationships between variables. It leverages the regression-analysis-tool plugin to automate the process and ensure best practices are followed.
+analyze data, build regression models, and provide insights into the relationships between variables. It leverages the regression-analysis-tool plugin to automate the process and ensure best practices are followed.
 
 ## How It Works
 

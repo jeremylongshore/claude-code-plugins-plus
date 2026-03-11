@@ -50,7 +50,7 @@ import Groq from "groq-sdk";
 
 export const BASE_GROQ_CONFIG = {
   maxRetries: 3,
-  timeout: 30000,
+  timeout: 30000,  # 30 seconds in ms
 };
 ```
 
@@ -61,7 +61,7 @@ export const devConfig = {
   ...BASE_GROQ_CONFIG,
   apiKey: process.env.GROQ_API_KEY,
   model: "llama-3.1-8b-instant",      // fastest, cheapest for dev iteration
-  maxTokens: 1024,
+  maxTokens: 1024,  # 1 KB
   temperature: 0.7,
   logRequests: true,                   // verbose logging in dev
 };
@@ -71,7 +71,7 @@ export const stagingConfig = {
   ...BASE_GROQ_CONFIG,
   apiKey: process.env.GROQ_API_KEY_STAGING,
   model: "llama-3.1-70b-versatile",   // match production model
-  maxTokens: 4096,
+  maxTokens: 4096,  # 4 KB
   temperature: 0.3,
   logRequests: false,
 };
@@ -81,7 +81,7 @@ export const productionConfig = {
   ...BASE_GROQ_CONFIG,
   apiKey: process.env.GROQ_API_KEY_PROD,
   model: "llama-3.1-70b-versatile",   // or llama-3.3-70b-specdec for faster
-  maxTokens: 4096,
+  maxTokens: 4096,  # 4 KB
   temperature: 0.3,
   maxRetries: 5,                       // more retries for production reliability
   logRequests: false,
@@ -149,7 +149,7 @@ export async function complete(prompt: string): Promise<string> {
     });
     return completion.choices[0].message.content || "";
   } catch (err: any) {
-    if (err.status === 429) {
+    if (err.status === 429) {  # HTTP 429 Too Many Requests
       const retryAfter = parseInt(err.headers?.["retry-after"] || "10");
       console.warn(`Groq rate limited. Retry after ${retryAfter}s`);
       throw new Error(`Rate limited on model ${model}. Retry after ${retryAfter}s`);
@@ -179,6 +179,7 @@ console.log(`Model: ${cfg.model}, max_tokens: ${cfg.maxTokens}`);
 
 ### Test Rate Limits Per Environment
 ```bash
+set -euo pipefail
 # Quick check: what's my current rate limit status?
 curl -s "https://api.groq.com/openai/v1/models" \
   -H "Authorization: Bearer $GROQ_API_KEY" | jq '.data[].id'

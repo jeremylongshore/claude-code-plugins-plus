@@ -4,7 +4,7 @@ description: |
   Implement comprehensive observability for Guidewire InsuranceSuite including logging,
   metrics, tracing, and alerting.
   Trigger with phrases like "guidewire monitoring", "logging guidewire",
-  "metrics", "observability", "alerting", "dashboards guidewire".
+  "metrics", "observability", "alerting", "dashboards guidewire". Use when working with guidewire observability.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT

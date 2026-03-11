@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Install & Auth
 
 ## Overview
@@ -29,6 +28,7 @@ Set up a complete Obsidian plugin development environment with TypeScript, esbui
 
 ### Step 1: Clone the Sample Plugin Template
 ```bash
+set -euo pipefail
 # Clone official sample plugin
 git clone https://github.com/obsidianmd/obsidian-sample-plugin.git my-obsidian-plugin
 cd my-obsidian-plugin
@@ -40,6 +40,7 @@ git init
 
 ### Step 2: Install Dependencies
 ```bash
+set -euo pipefail
 # Install all dependencies
 npm install
 
@@ -79,6 +80,7 @@ ln -s "$(pwd)" ~/ObsidianDev/.obsidian/plugins/my-obsidian-plugin
 
 ### Step 5: Verify Setup
 ```bash
+set -euo pipefail
 # Build the plugin
 npm run build
 

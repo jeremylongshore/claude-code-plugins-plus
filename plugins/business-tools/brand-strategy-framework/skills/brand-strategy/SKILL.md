@@ -3,7 +3,7 @@ name: brand-strategy
 description: |
   A 7-part brand strategy framework for building comprehensive brand foundations.
   Trigger with phrases like "create brand strategy", "build brand brief", "define brand positioning",
-  "brand messaging", "audience architecture", "brand truth", or "go-to-market brand plan".
+  "brand messaging", "audience architecture", "brand truth", or "go-to-market brand plan". Use when working with brand strategy.
 version: 1.0.0
 author: Rowan Brooks <rowanbrooks100@github.com>
 license: MIT

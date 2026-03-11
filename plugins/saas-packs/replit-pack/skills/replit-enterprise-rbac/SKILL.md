@@ -40,6 +40,7 @@ roles:
 ### Step 2: Invite and Manage Team Members
 Navigate to Replit Teams > Members and invite users with assigned roles. For bulk management, use the Replit API:
 ```bash
+set -euo pipefail
 # Invite a team member
 curl -X POST https://replit.com/api/v1/teams/TEAM_ID/members \
   -H "Authorization: Bearer $REPLIT_API_KEY" \
@@ -67,6 +68,7 @@ In Organization Settings > Security > SSO:
 
 ### Step 5: Audit Activity
 ```bash
+set -euo pipefail
 # Review recent team activity
 curl "https://replit.com/api/v1/teams/TEAM_ID/audit-log?limit=50" \
   -H "Authorization: Bearer $REPLIT_API_KEY" | \

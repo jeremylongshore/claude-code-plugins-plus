@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Events & Async Patterns
 
 ## Overview
@@ -153,7 +152,7 @@ const chatWorker = new Worker<ChatJob>(
     concurrency: 5,
     limiter: {
       max: 10,
-      duration: 1000, // Max 10 jobs per second
+      duration: 1000, // Max 10 jobs per second  # 1 second in ms
     },
   }
 );
@@ -178,7 +177,7 @@ export async function POST(request: Request) {
     callback: body.callback,
   }, {
     attempts: 3,
-    backoff: { type: 'exponential', delay: 1000 },
+    backoff: { type: 'exponential', delay: 1000 },  # 1 second in ms
   });
 
   return Response.json({

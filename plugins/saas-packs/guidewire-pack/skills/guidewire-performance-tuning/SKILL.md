@@ -4,7 +4,7 @@ description: |
   Optimize Guidewire InsuranceSuite performance including query optimization,
   batch processing, caching, and JVM tuning.
   Trigger with phrases like "guidewire performance", "slow queries",
-  "optimize policycenter", "batch processing", "query tuning".
+  "optimize policycenter", "batch processing", "query tuning". Use when working with guidewire performance tuning.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT

@@ -74,7 +74,7 @@ export const stagingConfig = {
   apiKey: process.env.PERPLEXITY_API_KEY_STAGING!,
   defaultModel: "sonar",
   deepModel: "sonar",             // keep sonar in staging to test cost behavior
-  maxTokens: 1024,
+  maxTokens: 1024,  # 1 KB
   maxConcurrentRequests: 2,
 };
 
@@ -83,7 +83,7 @@ export const productionConfig = {
   apiKey: process.env.PERPLEXITY_API_KEY_PROD!,
   defaultModel: "sonar",          // fast queries use sonar
   deepModel: "sonar-pro",         // research queries use sonar-pro
-  maxTokens: 4096,
+  maxTokens: 4096,  # 4 KB
   maxConcurrentRequests: 10,
 };
 ```
@@ -133,7 +133,7 @@ export async function search(query: string, depth: "quick" | "deep" = "quick") {
       { role: "system", content: "Provide accurate, well-sourced answers." },
       { role: "user", content: query },
     ],
-    max_tokens: depth === "deep" ? 2048 : 512,
+    max_tokens: depth === "deep" ? 2048 : 512,  # 2 KB
   });
 
   return {

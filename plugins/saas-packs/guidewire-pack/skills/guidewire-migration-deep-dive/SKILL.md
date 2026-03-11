@@ -4,7 +4,7 @@ description: |
   Deep dive into Guidewire migration strategies including self-managed to Cloud,
   legacy system migrations, data migration, and integration cutover planning.
   Trigger with phrases like "guidewire migration", "cloud migration",
-  "legacy migration", "data migration guidewire", "cutover planning".
+  "legacy migration", "data migration guidewire", "cutover planning". Use when working with guidewire migration deep dive.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT

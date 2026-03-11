@@ -23,10 +23,10 @@ Implement comprehensive user authentication flows including email, OAuth, and cu
 - Sign-in/sign-up URLs configured in environment
 
 ## Instructions
-- Step 1: Pre-built Components (Quick Start)
-- Step 2: Custom Sign-In Form
-- Step 3: OAuth Social Login
-- Step 4: Email Verification Flow
+1. Step 1: Pre-built Components (Quick Start)
+2. Step 2: Custom Sign-In Form
+3. Step 3: OAuth Social Login
+4. Step 4: Email Verification Flow
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

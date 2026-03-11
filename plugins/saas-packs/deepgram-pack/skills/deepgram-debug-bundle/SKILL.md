@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Debug Bundle
 
 ## Table of Contents
@@ -74,6 +73,7 @@ Include: issue summary, environment details, request IDs, steps to reproduce, ex
 
 ### Quick Connectivity Test
 ```bash
+set -euo pipefail
 curl -s -o /dev/null -w "%{http_code}" \
   -X GET 'https://api.deepgram.com/v1/projects' \
   -H "Authorization: Token $DEEPGRAM_API_KEY"

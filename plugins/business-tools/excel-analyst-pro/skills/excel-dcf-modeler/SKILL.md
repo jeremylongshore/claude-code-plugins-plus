@@ -10,7 +10,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Excel DCF Modeler
 
 ## Overview

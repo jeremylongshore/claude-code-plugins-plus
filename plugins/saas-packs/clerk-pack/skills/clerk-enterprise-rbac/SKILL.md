@@ -24,13 +24,13 @@ Implement enterprise-grade SSO, role-based access control, and organization mana
 - Organization structure defined
 
 ## Instructions
-- Step 1: Configure SAML SSO
-- Step 2: Define Roles and Permissions
-- Step 3: Permission Checking
-- Step 4: Protected Routes with RBAC
-- Step 5: Organization Management
-- Step 6: React Components with RBAC
-- Step 7: API Route Protection
+1. Step 1: Configure SAML SSO
+2. Step 2: Define Roles and Permissions
+3. Step 3: Permission Checking
+4. Step 4: Protected Routes with RBAC
+5. Step 5: Organization Management
+6. Step 6: React Components with RBAC
+7. Step 7: API Route Protection
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

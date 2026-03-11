@@ -23,12 +23,12 @@ Set up and handle Linear webhooks for real-time event notifications.
 - Webhook signing secret configured
 
 ## Instructions
-- Step 1: Create Webhook Endpoint
-- Step 2: Event Processing Router
-- Step 3: Business Logic Handlers
-- Step 4: Register Webhook in Linear
-- Step 5: Local Development with ngrok
-- Step 6: Idempotent Event Processing
+1. Step 1: Create Webhook Endpoint
+2. Step 2: Event Processing Router
+3. Step 3: Business Logic Handlers
+4. Step 4: Register Webhook in Linear
+5. Step 5: Local Development with ngrok
+6. Step 6: Idempotent Event Processing
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Linear SDK and configure authentication credentials for API access.
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # npm
 npm install @linear/sdk
 

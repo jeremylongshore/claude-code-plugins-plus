@@ -26,12 +26,13 @@ Control access to Ideogram's AI image generation API through API key management 
 
 ### Step 1: Create Purpose-Scoped API Keys
 ```bash
+set -euo pipefail
 # Key for the marketing team (standard quality, moderate budget)
 curl -X POST https://api.ideogram.ai/v1/api-keys \
   -H "Authorization: Bearer $IDEOGRAM_ADMIN_KEY" \
   -d '{
     "name": "marketing-team",
-    "monthly_credit_limit": 5000,
+    "monthly_credit_limit": 5000,  # 5 seconds in ms
     "allowed_models": ["V_2"],
     "rate_limit_rpm": 30
   }'
@@ -73,6 +74,7 @@ const TEAM_LIMITS: Record<string, { maxResolution: string; allowedStyles: string
 
 ### Step 4: Monitor Credit Consumption
 ```bash
+set -euo pipefail
 # Check usage per API key
 curl https://api.ideogram.ai/v1/usage \
   -H "Authorization: Bearer $IDEOGRAM_ADMIN_KEY" | \

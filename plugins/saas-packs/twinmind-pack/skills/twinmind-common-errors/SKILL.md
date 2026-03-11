@@ -39,13 +39,14 @@ Follow the solution steps for your specific error.
 **Error Message:**
 ```
 Error: Authentication failed - Invalid or expired API key
-Status: 401 Unauthorized
+Status: 401 Unauthorized  # HTTP 401 Unauthorized
 ```
 
 **Cause:** API key is missing, expired, or incorrect.
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Verify API key is set correctly
 echo $TWINMIND_API_KEY
 
@@ -124,7 +125,7 @@ const response = await client.post('/transcribe', {
 **Error Message:**
 ```
 Error: Rate limit exceeded. Please retry after 60 seconds.
-Status: 429 Too Many Requests
+Status: 429 Too Many Requests  # HTTP 429 Too Many Requests
 X-RateLimit-Remaining: 0
 ```
 
@@ -139,11 +140,11 @@ async function withBackoff<T>(operation: () => Promise<T>): Promise<T> {
     try {
       return await operation();
     } catch (error: any) {
-      if (error.response?.status !== 429) throw error;
+      if (error.response?.status !== 429) throw error;  # HTTP 429 Too Many Requests
 
       const retryAfter = parseInt(error.response.headers['retry-after'] || '60');
       console.log(`Rate limited. Waiting ${retryAfter}s...`);
-      await new Promise(r => setTimeout(r, retryAfter * 1000));
+      await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1 second in ms
     }
   }
   throw new Error('Max retries exceeded');
@@ -314,20 +315,22 @@ ERR_CONNECTION_REFUSED
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Test API connectivity
 curl -v https://api.twinmind.com/v1/health
 
 # Check if firewall is blocking
-telnet api.twinmind.com 443
+telnet api.twinmind.com 443  # HTTPS port
 
 # Test with different DNS
-curl --resolve api.twinmind.com:443:$(dig +short api.twinmind.com) \
+curl --resolve api.twinmind.com:443:$(dig +short api.twinmind.com) \  # HTTPS port
   https://api.twinmind.com/v1/health
 ```
 
 ## Quick Diagnostic Commands
 
 ```bash
+set -euo pipefail
 # Check TwinMind API status
 curl -s https://status.twinmind.com/api/v2/status.json | jq '.status'
 

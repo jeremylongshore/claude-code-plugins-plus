@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Local Dev Loop
 
 ## Overview
@@ -27,6 +26,7 @@ Configure an efficient local development workflow with hot reload and mock respo
 
 ### Step 1: Install Dev Dependencies
 ```bash
+set -euo pipefail
 npm install -D nodemon tsx dotenv @types/node
 ```
 
@@ -92,12 +92,14 @@ GAMMA_MOCK=true
 
 ### Watch Mode Development
 ```bash
+set -euo pipefail
 npm run dev
 # Changes to src/*.ts trigger automatic restart
 ```
 
 ### Offline Development with Mocks
 ```bash
+set -euo pipefail
 npm run dev:mock
 # Uses mock responses, no API calls
 ```

@@ -61,6 +61,7 @@ Step 3: "Add unit tests for src/services/jwt.ts"
 Run tests and type checks after every Cascade modification.
 
 ```bash
+set -euo pipefail
 # After accepting Cascade changes
 npm run typecheck     # catch type errors from refactoring
 npm test              # verify existing behavior preserved
@@ -99,6 +100,7 @@ __pycache__/
 
 ### Safe Cascade Workflow
 ```bash
+set -euo pipefail
 git stash                          # save WIP
 git checkout -b cascade/refactor   # new branch
 # Ask Cascade to make changes

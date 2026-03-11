@@ -80,11 +80,12 @@ Execute controlled chaos engineering experiments to test system resilience, faul
 
 **toxiproxy network latency injection:**
 ```bash
+set -euo pipefail
 # Create a proxy for the database connection
-toxiproxy-cli create postgres_proxy -l 0.0.0.0:15432 -u postgres-host:5432
+toxiproxy-cli create postgres_proxy -l 0.0.0.0:15432 -u postgres-host:5432  # PostgreSQL port
 
 # Inject 500ms latency
-toxiproxy-cli toxic add postgres_proxy -t latency -a latency=500 -a jitter=100
+toxiproxy-cli toxic add postgres_proxy -t latency -a latency=500 -a jitter=100  # HTTP 500 Internal Server Error
 
 # Run tests while latency is active
 npm test -- --grep "handles slow database"
@@ -120,6 +121,7 @@ spec:
 **Custom chaos script (process kill and verify recovery):**
 ```bash
 #!/bin/bash
+set -euo pipefail
 echo "=== Chaos Experiment: API server kill ==="
 echo "Hypothesis: System recovers within 30 seconds"
 
@@ -134,7 +136,7 @@ docker kill api-server-1
 for i in $(seq 1 30); do
   STATUS=$(curl -s -o /dev/null -w '%{http_code}' --max-time 2 http://app.test/health)
   echo "T+${i}s: HTTP $STATUS"
-  if [ "$STATUS" = "200" ]; then
+  if [ "$STATUS" = "200" ]; then  # HTTP 200 OK
     echo "RECOVERED at T+${i}s"
     break
   fi

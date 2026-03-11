@@ -24,7 +24,7 @@ Comprehensive guide to migrating from other authentication providers to Clerk.
 - Migration timeline planned
 
 ## Instructions
-- Migration Strategy
+1. Migration Strategy
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

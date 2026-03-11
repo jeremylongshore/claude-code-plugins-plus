@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Juicebox SDK and configure authentication credentials for the AI-powered 
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # Node.js
 npm install @juicebox/sdk
 
@@ -77,7 +77,7 @@ import { JuiceboxClient } from '@juicebox/sdk';
 
 const client = new JuiceboxClient({
   apiKey: process.env.JUICEBOX_API_KEY,
-  timeout: 30000
+  timeout: 30000  # 30 seconds in ms
 });
 ```
 

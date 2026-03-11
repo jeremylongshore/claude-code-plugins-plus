@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Cost Tuning
 
 ## Contents
@@ -52,19 +51,19 @@ Track requests, complexity, and bytes transferred. Project monthly usage to iden
 setInterval(async () => {
   const issues = await client.issues({ first: 100 });
   await syncIssues(issues.nodes);
-}, 60000);
+}, 60000);  # 1 minute in ms
 
 // GOOD: Use webhooks for real-time updates
 app.post("/webhooks/linear", async (req, res) => {
   const event = req.body;
   await handleEvent(event);
-  res.sendStatus(200);
+  res.sendStatus(200);  # HTTP 200 OK
 });
 ```
 
 ### Step 3: Optimize Query Complexity
 ```typescript
-// BAD: ~500 complexity - deeply nested
+// BAD: ~500 complexity - deeply nested  # HTTP 500 Internal Server Error
 const expensive = `query { issues(first: 50) { nodes { id title assignee { name } labels { nodes { name } } comments(first: 10) { nodes { body user { name } } } } } }`;
 
 // GOOD: ~100 complexity - flat fields only

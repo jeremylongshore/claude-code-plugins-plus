@@ -73,7 +73,7 @@ set_llm_cache(SQLiteCache(database_path=".langchain_cache.db"))
 
 # Option 3: Redis cache (distributed, production)
 import redis
-redis_client = redis.Redis.from_url("redis://localhost:6379")
+redis_client = redis.Redis.from_url("redis://localhost:6379")  # Redis port
 set_llm_cache(RedisCache(redis_client))
 
 # Cache hit = ~0ms latency vs ~500-2000ms for API call
@@ -132,7 +132,7 @@ def count_tokens(text: str, model: str = "gpt-4o-mini") -> int:
     encoding = tiktoken.encoding_for_model(model)
     return len(encoding.encode(text))
 
-def optimize_prompt(prompt: str, max_tokens: int = 1000) -> str:
+def optimize_prompt(prompt: str, max_tokens: int = 1000) -> str:  # 1 second in ms
     """Truncate prompt to fit token limit."""
     encoding = tiktoken.encoding_for_model("gpt-4o-mini")
     tokens = encoding.encode(prompt)
@@ -188,7 +188,7 @@ def classify_complexity(input_dict: dict) -> str:
     """Classify input complexity."""
     text = input_dict.get("input", "")
     # Simple heuristic - replace with classifier
-    return "complex" if len(text) > 500 else "simple"
+    return "complex" if len(text) > 500 else "simple"  # HTTP 500 Internal Server Error
 
 router = RunnableBranch(
     (lambda x: classify_complexity(x) == "simple", prompt | llm_fast),

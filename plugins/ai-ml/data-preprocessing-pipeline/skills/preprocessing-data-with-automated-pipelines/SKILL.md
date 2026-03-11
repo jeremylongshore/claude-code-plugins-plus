@@ -14,7 +14,7 @@ This skill provides automated assistance for data preprocessing pipeline tasks.
 
 ## Overview
 
-This skill enables Claude to construct and execute automated data preprocessing pipelines, ensuring data quality and readiness for machine learning. It streamlines the data preparation process by automating common tasks such as data cleaning, transformation, and validation.
+construct and execute automated data preprocessing pipelines, ensuring data quality and readiness for machine learning. It streamlines the data preparation process by automating common tasks such as data cleaning, transformation, and validation.
 
 ## How It Works
 

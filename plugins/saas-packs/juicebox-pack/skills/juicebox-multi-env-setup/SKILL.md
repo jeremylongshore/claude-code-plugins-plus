@@ -24,11 +24,11 @@ Configure Juicebox across development, staging, and production environments with
 - Environment detection in application
 
 ## Instructions
-- Step 1: Environment Configuration
-- Step 2: Secret Management by Environment
-- Step 3: Environment-Aware Client Factory
-- Step 4: Kubernetes ConfigMaps
-- Step 5: Environment Guards
+1. Step 1: Environment Configuration
+2. Step 2: Secret Management by Environment
+3. Step 3: Environment-Aware Client Factory
+4. Step 4: Kubernetes ConfigMaps
+5. Step 5: Environment Guards
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

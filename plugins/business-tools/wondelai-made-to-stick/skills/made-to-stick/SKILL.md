@@ -1,6 +1,7 @@
 ---
 name: made-to-stick
-description: 'Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", or "why the message isn''t landing". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious.'
+description: |
+  Craft messages that are understood, remembered, and drive action using the SUCCESs checklist (Simple, Unexpected, Concrete, Credible, Emotional, Stories). Use when the user mentions "make it memorable", "sticky messaging", "tagline", "value proposition", or "why the message isn''t landing". For narrative brand frameworks, see storybrand-messaging. For viral sharing, see contagious. Trigger with 'made', 'to', 'stick'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # FireCrawl Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up FireCrawl SDK/CLI and configure authentication credentials.
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # Node.js
 npm install @firecrawl/sdk
 

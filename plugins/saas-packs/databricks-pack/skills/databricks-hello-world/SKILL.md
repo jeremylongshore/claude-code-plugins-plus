@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Hello World
 
 ## Overview
@@ -194,7 +193,7 @@ from pyspark.sql import SparkSession
 spark = SparkSession.builder.getOrCreate()
 
 # Create sample data
-df = spark.range(1000).toDF("id")
+df = spark.range(1000).toDF("id")  # 1 second in ms
 df = df.withColumn("value", df.id * 2)
 
 # Show results

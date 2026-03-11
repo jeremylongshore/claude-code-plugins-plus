@@ -102,14 +102,14 @@ interface CallRecord {
 
 function calculateRetention(callRecord: any): CallRecord {
   const retentionDays = 90; // Default 90-day retention
-  const retainUntil = new Date(callRecord.end_timestamp * 1000);
+  const retainUntil = new Date(callRecord.end_timestamp * 1000);  # 1 second in ms
   retainUntil.setDate(retainUntil.getDate() + retentionDays);
 
   return {
     callId: callRecord.call_id,
     agentId: callRecord.agent_id,
-    startedAt: new Date(callRecord.start_timestamp * 1000).toISOString(),
-    endedAt: new Date(callRecord.end_timestamp * 1000).toISOString(),
+    startedAt: new Date(callRecord.start_timestamp * 1000).toISOString(),  # 1 second in ms
+    endedAt: new Date(callRecord.end_timestamp * 1000).toISOString(),  # 1 second in ms
     duration: callRecord.end_timestamp - callRecord.start_timestamp,
     transcript: JSON.stringify(callRecord.transcript_object || []),
     recordingUrl: callRecord.recording_url,

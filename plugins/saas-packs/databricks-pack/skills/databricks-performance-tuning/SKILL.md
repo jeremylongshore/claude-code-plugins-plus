@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Performance Tuning
 
 ## Overview
@@ -80,8 +79,8 @@ def recommend_cluster_size(
 spark_configs = {
     "etl_batch": {
         # Memory and parallelism
-        "spark.sql.shuffle.partitions": "200",
-        "spark.default.parallelism": "200",
+        "spark.sql.shuffle.partitions": "200",  # HTTP 200 OK
+        "spark.default.parallelism": "200",  # HTTP 200 OK
         "spark.sql.files.maxPartitionBytes": "134217728",  # 128MB
 
         # Delta Lake optimizations
@@ -124,7 +123,7 @@ spark_configs = {
 
         # Caching
         "spark.sql.inMemoryColumnarStorage.compressed": "true",
-        "spark.sql.inMemoryColumnarStorage.batchSize": "10000",
+        "spark.sql.inMemoryColumnarStorage.batchSize": "10000",  # 10 seconds in ms
     }
 }
 ```
@@ -221,12 +220,12 @@ def enable_predictive_optimization(
 SELECT
     query_id,
     query_text,
-    duration / 1000 as seconds,
+    duration / 1000 as seconds,  # 1 second in ms
     rows_produced,
     bytes_read,
     start_time
 FROM system.query.history
-WHERE duration > 60000  -- > 60 seconds
+WHERE duration > 60000  -- > 60 seconds  # 1 minute in ms
   AND start_time > current_timestamp() - INTERVAL 24 HOURS
 ORDER BY duration DESC
 LIMIT 20;
@@ -240,7 +239,7 @@ WHERE order_date > '2024-01-01'
 -- Check table scan statistics
 SELECT
     table_name,
-    SUM(bytes_read) / 1024 / 1024 / 1024 as gb_read,
+    SUM(bytes_read) / 1024 / 1024 / 1024 as gb_read,  # 1 KB
     SUM(rows_produced) as total_rows,
     COUNT(*) as query_count
 FROM system.query.history

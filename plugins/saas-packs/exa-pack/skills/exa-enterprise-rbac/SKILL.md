@@ -26,13 +26,14 @@ Manage access to Exa AI search API through API key scoping and team-level contro
 
 ### Step 1: Create Scoped API Keys per Use Case
 ```bash
+set -euo pipefail
 # Create a key for the RAG pipeline (high volume, neural search only)
 curl -X POST https://api.exa.ai/v1/api-keys \
   -H "Authorization: Bearer $EXA_ADMIN_KEY" \
   -d '{
     "name": "rag-pipeline-prod",
     "allowed_endpoints": ["search", "get-contents"],
-    "rate_limit_rpm": 300,
+    "rate_limit_rpm": 300,  # timeout: 5 minutes
     "monthly_search_limit": 50000
   }'
 
@@ -42,7 +43,7 @@ curl -X POST https://api.exa.ai/v1/api-keys \
   -d '{
     "name": "internal-research-tool",
     "rate_limit_rpm": 30,
-    "monthly_search_limit": 5000
+    "monthly_search_limit": 5000  # 5 seconds in ms
   }'
 ```
 
@@ -65,6 +66,7 @@ function validateRequest(keyName: string, searchType: string, numResults: number
 ### Step 3: Set Domain Restrictions
 Restrict search results to approved domains for compliance-sensitive teams:
 ```bash
+set -euo pipefail
 # Only allow searches from vetted sources
 curl -X POST https://api.exa.ai/search \
   -H "x-api-key: $EXA_API_KEY" \
@@ -77,6 +79,7 @@ curl -X POST https://api.exa.ai/search \
 
 ### Step 4: Monitor Usage and Rotate Keys
 ```bash
+set -euo pipefail
 # Check usage per API key
 curl https://api.exa.ai/v1/usage \
   -H "Authorization: Bearer $EXA_ADMIN_KEY" | \

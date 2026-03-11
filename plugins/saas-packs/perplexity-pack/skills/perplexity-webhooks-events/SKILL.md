@@ -39,7 +39,7 @@ Build event-driven architectures around Perplexity's AI search API. Perplexity p
 app.post("/api/search/stream", async (req, res) => {
   const { query, model } = req.body;
 
-  res.writeHead(200, {
+  res.writeHead(200, {  # HTTP 200 OK
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
   });
@@ -177,6 +177,7 @@ async function monitorTopic(topic: string, webhookUrl: string) {
 
 ### Quick Search with Citations
 ```bash
+set -euo pipefail
 curl -X POST https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H "Content-Type: application/json" \

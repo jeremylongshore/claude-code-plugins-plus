@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Analyzing Liquidity Pools
 
 ## Overview
@@ -47,7 +46,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pair ETH/USDC --protocol u
 Calculate IL for a price change:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --il-calc --entry-price 2000 --current-price 3000  # 2 seconds in ms
 ```
 
 Project IL for various scenarios:
@@ -67,7 +66,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --detailed
 Project returns for position size:
 
 ```bash
-python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000
+python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --pool [address] --position 10000  # 10 seconds in ms
 ```
 
 ### Step 4: Compare Pools
@@ -136,7 +135,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/pool_analyzer.py --compare --pair ETH/USDC --
   Price Change:   +50%
 
   IL (%)          -5.72%
-  IL ($1000 LP):  -$57.20
+  IL ($1000 LP):  -$57.20  # 1 second in ms
 
   Value if HODL:  $1,250.00
   Value in LP:    $1,192.80
@@ -171,7 +170,7 @@ python pool_analyzer.py --pair ETH/USDC --protocol uniswap-v3 --chain ethereum
 
 **Calculate IL for 2x price increase**:
 ```bash
-python pool_analyzer.py --il-calc --entry-price 100 --current-price 200
+python pool_analyzer.py --il-calc --entry-price 100 --current-price 200  # HTTP 200 OK
 ```
 
 **Compare Uniswap fee tiers**:

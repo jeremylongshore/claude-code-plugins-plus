@@ -44,6 +44,7 @@ sending_accounts:
 
 ### Step 2: Invite Team Members with Role Assignment
 ```bash
+set -euo pipefail
 # Invite an SDR as a Member (limited to own campaigns)
 curl -X POST https://api.instantly.ai/api/v1/team/invite \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" \
@@ -57,6 +58,7 @@ curl https://api.instantly.ai/api/v1/team/members \
 ### Step 3: Assign Sending Accounts to Specific Members
 Prevent cross-contamination of email reputation by assigning each warmed sending account to exactly one team member:
 ```bash
+set -euo pipefail
 curl -X POST https://api.instantly.ai/api/v1/account/assign \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" \
   -d '{"account_email": "john@outreach.company.com", "assigned_to": "john@company.com"}'
@@ -69,6 +71,7 @@ curl -X POST https://api.instantly.ai/api/v1/account/assign \
 
 ### Step 5: Monitor Sending Limits and Deliverability
 ```bash
+set -euo pipefail
 # Check sending limits and current usage per account
 curl https://api.instantly.ai/api/v1/account/status \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" | \

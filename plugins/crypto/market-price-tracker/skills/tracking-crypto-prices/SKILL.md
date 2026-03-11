@@ -12,7 +12,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Tracking Crypto Prices
 
 ## Overview
@@ -35,11 +34,13 @@ This skill provides price data to: market-movers-scanner, crypto-portfolio-track
 Install required dependencies:
 
 ```bash
+set -euo pipefail
 pip install requests pandas yfinance
 ```
 
 Optional for advanced features:
 ```bash
+set -euo pipefail
 pip install python-dotenv  # For API key management
 ```
 

@@ -24,7 +24,7 @@ Plan and execute Customer.io SDK upgrades and migrations safely with staged roll
 
 ## Instructions
 
-### Step 1: Assess Current State
+### Assess current configuration
 Run version assessment scripts to identify installed SDK versions for Node.js and Python, and check for latest available versions.
 
 ### Step 2: Review Breaking Changes

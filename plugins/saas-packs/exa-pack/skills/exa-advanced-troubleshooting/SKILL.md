@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Advanced Troubleshooting
 
 ## Overview
@@ -29,6 +28,7 @@ Deep debugging techniques for complex Exa issues that resist standard troublesho
 ### Comprehensive Debug Bundle
 ```bash
 #!/bin/bash
+set -euo pipefail
 # advanced-exa-debug.sh
 
 BUNDLE="exa-advanced-debug-$(date +%Y%m%d-%H%M%S)"
@@ -39,14 +39,14 @@ kubectl logs -l app=exa-integration --since=1h > "$BUNDLE/logs/pods.log"
 journalctl -u exa-service --since "1 hour ago" > "$BUNDLE/logs/system.log"
 
 # 2. Metrics dump
-curl -s localhost:9090/api/v1/query?query=exa_requests_total > "$BUNDLE/metrics/requests.json"
-curl -s localhost:9090/api/v1/query?query=exa_errors_total > "$BUNDLE/metrics/errors.json"
+curl -s localhost:9090/api/v1/query?query=exa_requests_total > "$BUNDLE/metrics/requests.json"  # Prometheus port
+curl -s localhost:9090/api/v1/query?query=exa_errors_total > "$BUNDLE/metrics/errors.json"  # Prometheus port
 
 # 3. Network capture (30 seconds)
-timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &
+timeout 30 tcpdump -i any port 443 -w "$BUNDLE/network/capture.pcap" &  # HTTPS port
 
 # 4. Distributed traces
-curl -s localhost:16686/api/traces?service=exa > "$BUNDLE/traces/jaeger.json"
+curl -s localhost:16686/api/traces?service=exa > "$BUNDLE/traces/jaeger.json"  # Jaeger UI port
 
 # 5. Configuration state
 kubectl get cm exa-config -o yaml > "$BUNDLE/config/configmap.yaml"
@@ -158,11 +158,11 @@ setInterval(() => {
   // Alert on sustained growth
   if (heapUsed.length > 60) { // 1 hour at 1/min
     const trend = heapUsed[59] - heapUsed[0];
-    if (trend > 100 * 1024 * 1024) { // 100MB growth
+    if (trend > 100 * 1024 * 1024) { // 100MB growth  # 1 KB
       console.warn('Potential memory leak in exa integration');
     }
   }
-}, 60000);
+}, 60000);  # 1 minute in ms
 ```
 
 ## Race Condition Detection
@@ -250,6 +250,7 @@ Use the support template with all collected evidence.
 
 ### Quick Layer Test
 ```bash
+set -euo pipefail
 # Test each layer in sequence
 curl -v https://api.exa.com/health 2>&1 | grep -E "(Connected|TLS|HTTP)"
 ```

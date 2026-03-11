@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Local Dev Loop
 
 ## Overview
@@ -44,6 +43,7 @@ my-fireflies-project/
 
 ### Step 2: Configure Environment
 ```bash
+set -euo pipefail
 # Copy environment template
 cp .env.example .env.local
 
@@ -105,6 +105,7 @@ vi.mock('@fireflies/sdk', () => ({
 
 ### Debug Mode
 ```bash
+set -euo pipefail
 # Enable verbose logging
 DEBUG=FIREFLIES=* npm run dev
 ```

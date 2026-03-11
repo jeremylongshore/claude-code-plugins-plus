@@ -28,9 +28,9 @@ Optimize Mistral AI API response times and throughput for production integration
 ```typescript
 // Model selection by latency budget
 const MODEL_BY_LATENCY: Record<string, { model: string; typicalMs: string }> = {
-  'realtime_chat':     { model: 'mistral-small-latest',  typicalMs: '200-500ms' },
+  'realtime_chat':     { model: 'mistral-small-latest',  typicalMs: '200-500ms' },  # HTTP 200 OK
   'code_completion':   { model: 'codestral-latest',      typicalMs: '150-400ms' },
-  'background_analysis': { model: 'mistral-large-latest', typicalMs: '500-2000ms' },
+  'background_analysis': { model: 'mistral-large-latest', typicalMs: '500-2000ms' },  # HTTP 500 Internal Server Error
   'embeddings':        { model: 'mistral-embed',         typicalMs: '50-150ms' },
 };
 
@@ -53,7 +53,7 @@ async function* streamChat(model: string, messages: any[]) {
     if (content) yield content;
   }
 }
-// TTFT (time to first token) drops from 500-2000ms to ~200ms with streaming
+// TTFT (time to first token) drops from 500-2000ms to ~200ms with streaming  # HTTP 500 Internal Server Error
 ```
 
 ### Step 3: Cache Identical Requests
@@ -61,7 +61,7 @@ async function* streamChat(model: string, messages: any[]) {
 import { createHash } from 'crypto';
 import { LRUCache } from 'lru-cache';
 
-const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });
+const responseCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 });  # 5 seconds in ms
 
 async function cachedCompletion(model: string, messages: any[], temperature: number = 0) {
   // Only cache deterministic requests (temperature=0)
@@ -82,10 +82,10 @@ async function cachedCompletion(model: string, messages: any[], temperature: num
 // Reduce input tokens to decrease TTFT and total latency
 const OPTIMIZATION = {
   // Keep system prompts concise
-  systemPrompt: 'You are a helpful assistant. Be brief.',  // ~10 tokens, not 200
+  systemPrompt: 'You are a helpful assistant. Be brief.',  // ~10 tokens, not 200  # HTTP 200 OK
 
   // Limit context window usage
-  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices
+  maxContextTokens: 4000,   // Don't fill 32K context when 4K suffices  # dev server port
 
   // Trim conversation history
   maxHistoryTurns: 5,       // Keep last 5 turns, not entire conversation

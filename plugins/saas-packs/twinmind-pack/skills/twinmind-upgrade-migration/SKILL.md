@@ -186,7 +186,7 @@ async function requestEnterpriseUpgrade() {
     contact_email: 'admin@company.com',
     company_name: 'Acme Inc',
     estimated_usage: {
-      transcription_hours_monthly: 1000,
+      transcription_hours_monthly: 1000,  # 1 second in ms
       api_requests_monthly: 100000,
       team_members: 50,
     },
@@ -206,6 +206,7 @@ async function requestEnterpriseUpgrade() {
 ### Step 4: Update API Keys
 
 ```bash
+set -euo pipefail
 # After upgrade, generate new production API key
 # Go to: https://twinmind.com/settings/api
 
@@ -353,7 +354,7 @@ const tierConfigs = {
     model: 'ear-3',
   },
   enterprise: {
-    rateLimit: 300,
+    rateLimit: 300,  # timeout: 5 minutes
     concurrent: 10,
     contextTokens: Infinity,
     model: 'ear-3-custom',

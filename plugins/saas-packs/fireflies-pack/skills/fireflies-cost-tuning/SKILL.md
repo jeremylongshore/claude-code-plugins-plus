@@ -26,6 +26,7 @@ Optimize Fireflies.ai per-seat subscription costs by right-sizing seat count, co
 
 ### Step 1: Audit Seat Utilization
 ```bash
+set -euo pipefail
 # Identify members who aren't using their seats
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
@@ -66,6 +67,7 @@ Configure in Fireflies Settings > Auto-Join > Selective Recording.
 
 ### Step 4: Manage Storage to Avoid Tier Upgrades
 ```bash
+set -euo pipefail
 # Check storage usage
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
@@ -80,7 +82,7 @@ curl -X POST https://api.fireflies.ai/graphql \
 ```yaml
 # Decision matrix for plan selection
 pro_18_per_seat:
-  storage: 8000 min transcription/seat
+  storage: 8000 min transcription/seat  # API server port
   best_for: Teams that record <15 meetings/week per person
   features: [transcription, search, basic AI summaries]
 

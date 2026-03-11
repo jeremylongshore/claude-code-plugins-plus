@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Webhooks Events
 
 ## Table of Contents
@@ -75,8 +74,9 @@ Implement `CallbackRetryHandler` with exponential backoff (max 3 retries, 5s-60s
 
 ### Test Callback Locally
 ```bash
+set -euo pipefail
 # Expose local server
-ngrok http 3000
+ngrok http 3000  # 3 seconds in ms
 
 # Submit async transcription
 curl -X POST 'https://api.deepgram.com/v1/listen?callback=https://your-ngrok.ngrok.io/webhooks/deepgram&model=nova-2' \

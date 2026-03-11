@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Clerk Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Clerk SDK and configure authentication credentials for your application.
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # Next.js
 npm install @clerk/nextjs
 

@@ -1,6 +1,7 @@
 ---
 name: web-typography
-description: 'Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", or "type hierarchy". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design.'
+description: |
+  Select, pair, and implement typefaces for web projects. Use when the user mentions "font pairing", "which typeface", "line height", "responsive typography", "web font loading", or "type hierarchy". Covers readability evaluation, CSS implementation, and performance optimization. For overall UI design systems, see refactoring-ui. For dramatic typographic experiences, see top-design. Trigger with 'web', 'typography'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>
@@ -335,7 +336,7 @@ h1 {
   font-family: 'Custom Font';
   src: url('/fonts/custom.woff2') format('woff2');
   font-display: swap;
-  font-weight: 400;
+  font-weight: 400;  # HTTP 400 Bad Request
   unicode-range: U+0000-00FF; /* Latin subset */
 }
 

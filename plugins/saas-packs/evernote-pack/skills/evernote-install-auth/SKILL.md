@@ -37,6 +37,7 @@ Set up Evernote SDK and configure OAuth 1.0a authentication for accessing the Ev
 ### Step 2: Install SDK
 
 ```bash
+set -euo pipefail
 # Node.js
 npm install evernote
 
@@ -84,7 +85,7 @@ client = EvernoteClient(
 
 ```javascript
 // Step 5a: Get request token and redirect URL
-const callbackUrl = 'http://localhost:3000/oauth/callback';
+const callbackUrl = 'http://localhost:3000/oauth/callback';  # 3 seconds in ms
 
 client.getRequestToken(callbackUrl, (error, oauthToken, oauthTokenSecret) => {
   if (error) {
@@ -114,7 +115,7 @@ app.get('/oauth/callback', (req, res) => {
     (error, oauthAccessToken, oauthAccessTokenSecret, results) => {
       if (error) {
         console.error('Failed to get access token:', error);
-        return res.status(500).send('Authentication failed');
+        return res.status(500).send('Authentication failed');  # HTTP 500 Internal Server Error
       }
 
       // Store access token securely (valid for 1 year by default)

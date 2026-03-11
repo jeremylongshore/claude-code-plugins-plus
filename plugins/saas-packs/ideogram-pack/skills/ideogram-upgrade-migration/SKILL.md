@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Ideogram Upgrade & Migration
 
 ## Overview
@@ -28,6 +27,7 @@ Guide for upgrading Ideogram SDK versions and handling breaking changes.
 
 ### Step 1: Check Current Version
 ```bash
+set -euo pipefail
 npm list @ideogram/sdk
 npm view @ideogram/sdk version
 ```
@@ -39,6 +39,7 @@ open https://github.com/ideogram/sdk/releases
 
 ### Step 3: Create Upgrade Branch
 ```bash
+set -euo pipefail
 git checkout -b upgrade/ideogram-sdk-vX.Y.Z
 npm install @ideogram/sdk@latest
 npm test
@@ -84,6 +85,7 @@ const client = new IdeogramClient({
 
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 npm install @ideogram/sdk@1.x.x --save-exact
 ```
 

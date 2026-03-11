@@ -23,11 +23,11 @@ Implement comprehensive observability for Juicebox integrations including loggin
 - Access to deploy monitoring agents
 
 ## Instructions
-- Step 1: Structured Logging
-- Step 2: Metrics Collection
-- Step 3: Distributed Tracing
-- Step 4: Health Checks
-- Step 5: Alerting Rules
+1. Step 1: Structured Logging
+2. Step 2: Metrics Collection
+3. Step 3: Distributed Tracing
+4. Step 4: Health Checks
+5. Step 5: Alerting Rules
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

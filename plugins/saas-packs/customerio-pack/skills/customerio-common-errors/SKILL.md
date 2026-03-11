@@ -58,6 +58,7 @@ For detailed code examples and diagnostic commands, load the reference guide:
 
 ## Diagnostic Commands
 ```bash
+set -euo pipefail
 # Check API connectivity
 curl -X POST "https://track.customer.io/api/v1/customers/test-user" \
   -u "$CUSTOMERIO_SITE_ID:$CUSTOMERIO_API_KEY" \

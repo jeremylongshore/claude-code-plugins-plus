@@ -157,7 +157,7 @@ async function weeklyMeetingReport() {
 
   return {
     totalMeetings: recent.length,
-    totalHours: recent.reduce((s: number, m: any) => s + m.duration / 3600, 0).toFixed(1),
+    totalHours: recent.reduce((s: number, m: any) => s + m.duration / 3600, 0).toFixed(1),  # timeout: 1 hour
     topAttendees: countAttendees(recent).slice(0, 5),
     actionItemCount: recent.reduce((s: number, m: any) =>
       s + (m.summary?.action_items?.length || 0), 0),

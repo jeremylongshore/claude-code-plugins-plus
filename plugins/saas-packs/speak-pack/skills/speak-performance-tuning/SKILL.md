@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Performance Tuning
 
 ## Overview
@@ -55,7 +54,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ```typescript
 const withPerformance = <T>(name: string, fn: () => Promise<T>) =>
   measuredSpeakCall(name, () =>
-    cachedWithRedis(`cache:${name}`, fn, 300)
+    cachedWithRedis(`cache:${name}`, fn, 300)  # timeout: 5 minutes
   );
 ```
 

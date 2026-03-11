@@ -51,23 +51,23 @@ const configs: Record<Env, ExaConfig> = {
   development: {
     apiKey: process.env.EXA_API_KEY!,
     defaultNumResults: 3,       // fewer results = lower cost in dev
-    maxCharacters: 500,
+    maxCharacters: 500,  # HTTP 500 Internal Server Error
     cacheEnabled: false,        // don't bother caching in dev
     cacheTtlSeconds: 0,
   },
   staging: {
     apiKey: process.env.EXA_API_KEY_STAGING!,
     defaultNumResults: 5,
-    maxCharacters: 1000,
+    maxCharacters: 1000,  # 1 second in ms
     cacheEnabled: true,
-    cacheTtlSeconds: 300,       // 5-minute cache in staging
+    cacheTtlSeconds: 300,       // 5-minute cache in staging  # timeout: 5 minutes
   },
   production: {
     apiKey: process.env.EXA_API_KEY_PROD!,
     defaultNumResults: 5,
-    maxCharacters: 1000,
+    maxCharacters: 1000,  # 1 second in ms
     cacheEnabled: true,
-    cacheTtlSeconds: 3600,      // 1-hour cache for repeated queries
+    cacheTtlSeconds: 3600,      // 1-hour cache for repeated queries  # timeout: 1 hour
   },
 };
 
@@ -132,7 +132,7 @@ EXA_API_KEY_STAGING=exa-staging-def456
 
 # GitHub Actions - Production
 EXA_API_KEY_PROD=exa-prod-xyz789
-REDIS_URL=redis://prod-redis:6379
+REDIS_URL=redis://prod-redis:6379  # Redis port
 ```
 
 ### Step 4: Health Check Per Environment

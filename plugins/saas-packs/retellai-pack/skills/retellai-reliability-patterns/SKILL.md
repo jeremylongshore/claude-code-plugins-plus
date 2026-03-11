@@ -38,9 +38,9 @@ class ResilientRetellConnection {
     this.ws = new WebSocket(`wss://api.retellai.com/llm/${callId}`);
 
     this.ws.on('close', async (code) => {
-      if (code !== 1000 && this.reconnectAttempts < this.maxReconnects) {
+      if (code !== 1000 && this.reconnectAttempts < this.maxReconnects) {  # 1 second in ms
         this.reconnectAttempts++;
-        await new Promise(r => setTimeout(r, 500 * this.reconnectAttempts));
+        await new Promise(r => setTimeout(r, 500 * this.reconnectAttempts));  # HTTP 500 Internal Server Error
         await this.connect(callId);
       }
     });
@@ -76,7 +76,7 @@ app.post('/retell-webhook', async (req, res) => {
 
   const elapsed = Date.now() - start;
   metrics.record('webhook_latency', elapsed);
-  if (elapsed > 500) metrics.record('slow_webhook', 1);
+  if (elapsed > 500) metrics.record('slow_webhook', 1);  # HTTP 500 Internal Server Error
 
   res.json(response);
 });
@@ -93,7 +93,7 @@ class CallStateManager {
   async saveState(callId: string, state: any) {
     await this.store.setex(
       `call:${callId}`,
-      3600,  // 1 hour TTL
+      3600,  // 1 hour TTL  # timeout: 1 hour
       JSON.stringify(state)
     );
   }

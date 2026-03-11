@@ -78,6 +78,7 @@ Validate load balancer behavior including traffic distribution algorithms, healt
 **Traffic distribution test with curl:**
 ```bash
 #!/bin/bash
+set -euo pipefail
 declare -A counts
 for i in $(seq 1 100); do
   backend=$(curl -s -H "Host: app.test.com" http://lb.test.com/health \
@@ -92,6 +93,7 @@ done
 
 **Failover test sequence:**
 ```bash
+set -euo pipefail
 # 1. Verify both backends serve traffic
 curl -s http://lb.test.com/health  # Backend A
 curl -s http://lb.test.com/health  # Backend B
@@ -120,8 +122,8 @@ export const options = { vus: 50, duration: '30s' };
 export default function () {
   const res = http.get('http://lb.test.com/api/data');
   check(res, {
-    'status is 200': (r) => r.status === 200,
-    'response time < 500ms': (r) => r.timings.duration < 500,
+    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
+    'response time < 500ms': (r) => r.timings.duration < 500,  # HTTP 500 Internal Server Error
   });
 }
 ```

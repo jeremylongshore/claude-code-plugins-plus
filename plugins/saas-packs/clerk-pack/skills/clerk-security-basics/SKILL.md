@@ -23,11 +23,11 @@ Implement security best practices for Clerk authentication in your application.
 - Production deployment planned or active
 
 ## Instructions
-- Step 1: Secure Environment Variables
-- Step 2: Secure Middleware Configuration
-- Step 3: Secure API Routes
-- Step 4: Secure Webhook Handling
-- Step 5: Session Security
+1. Step 1: Secure Environment Variables
+2. Step 2: Secure Middleware Configuration
+3. Step 3: Secure API Routes
+4. Step 4: Secure Webhook Handling
+5. Step 5: Session Security
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

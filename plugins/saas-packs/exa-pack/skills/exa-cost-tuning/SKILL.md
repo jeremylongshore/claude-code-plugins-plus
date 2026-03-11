@@ -28,7 +28,7 @@ Reduce Exa AI search API costs by implementing caching, choosing the right searc
 ```typescript
 import { LRUCache } from 'lru-cache';
 
-const searchCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 }); // 1hr TTL
+const searchCache = new LRUCache<string, any>({ max: 5000, ttl: 3600_000 }); // 1hr TTL  # 5 seconds in ms
 
 async function cachedSearch(query: string, options: any) {
   const cacheKey = `${query}:${options.type}:${options.numResults}`;
@@ -55,6 +55,7 @@ const SEARCH_CONFIGS: Record<string, { numResults: number; type: string }> = {
 
 ### Step 3: Use Keyword Search When Appropriate
 ```bash
+set -euo pipefail
 # Neural search: best for semantic/conceptual queries (more expensive)
 curl -X POST https://api.exa.ai/search \
   -H "x-api-key: $EXA_API_KEY" \
@@ -68,7 +69,7 @@ curl -X POST https://api.exa.ai/search \
 
 ### Step 4: Deduplicate Searches in Batch Pipelines
 ```typescript
-// If processing 1000 documents, many will need similar context searches
+// If processing 1000 documents, many will need similar context searches  # 1 second in ms
 function deduplicateSearches(queries: string[]): string[] {
   const seen = new Set<string>();
   return queries.filter(q => {
@@ -83,6 +84,7 @@ function deduplicateSearches(queries: string[]): string[] {
 
 ### Step 5: Monitor and Budget
 ```bash
+set -euo pipefail
 # Check remaining budget and project monthly cost
 curl -s https://api.exa.ai/v1/usage \
   -H "x-api-key: $EXA_API_KEY" | \

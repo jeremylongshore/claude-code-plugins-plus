@@ -23,11 +23,11 @@ Understand Clerk's rate limiting system and implement strategies to avoid hittin
 - Monitoring/logging infrastructure
 
 ## Instructions
-- Step 1: Understand Rate Limits
-- Step 2: Implement Rate Limit Handling
-- Step 3: Batch Operations
-- Step 4: Caching Strategy
-- Step 5: Monitor Rate Limit Usage
+1. Step 1: Understand Rate Limits
+2. Step 2: Implement Rate Limit Handling
+3. Step 3: Batch Operations
+4. Step 4: Caching Strategy
+5. Step 5: Monitor Rate Limit Usage
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

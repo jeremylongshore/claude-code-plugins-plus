@@ -23,11 +23,11 @@ Plan and execute safe Juicebox SDK version upgrades with minimal disruption.
 - Test environment available
 
 ## Instructions
-- Step 1: Assess Current State
-- Step 2: Review Breaking Changes
-- Step 3: Create Migration Script
-- Step 4: Staged Rollout
-- Step 5: Validation Testing
+1. Assess current configuration
+2. Step 2: Review Breaking Changes
+3. Step 3: Create Migration Script
+4. Step 4: Staged Rollout
+5. Step 5: Validation Testing
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

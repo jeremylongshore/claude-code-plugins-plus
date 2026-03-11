@@ -26,6 +26,7 @@ Production architecture for AI voice agents with Retell AI. Covers agent design,
 ## Architecture Diagram
 
 ```
+set -euo pipefail
 ┌──────────────────────────────────────────────────────┐
 │              Phone/Web Interface                      │
 │  Twilio Number │ Web Call │ SIP Trunk                 │

@@ -23,12 +23,12 @@ Optimize Clerk authentication for best performance and user experience.
 - Understanding of application architecture
 
 ## Instructions
-- Step 1: Optimize Middleware
-- Step 2: Implement User Data Caching
-- Step 3: Optimize Token Handling
-- Step 4: Lazy Load Auth Components
-- Step 5: Optimize Server Components
-- Step 6: Edge Runtime Optimization
+1. Step 1: Optimize Middleware
+2. Step 2: Implement User Data Caching
+3. Step 3: Optimize Token Handling
+4. Step 4: Lazy Load Auth Components
+5. Step 5: Optimize Server Components
+6. Step 6: Edge Runtime Optimization
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

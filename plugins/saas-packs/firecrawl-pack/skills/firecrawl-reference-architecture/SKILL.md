@@ -61,7 +61,7 @@ async function scrapePage(url: string) {
   return firecrawl.scrapeUrl(url, {
     formats: ['markdown', 'html'],
     onlyMainContent: true,
-    waitFor: 2000, // Wait for dynamic content
+    waitFor: 2000, // Wait for dynamic content  # 2 seconds in ms
   });
 }
 
@@ -100,14 +100,14 @@ async function crawlSite(baseUrl: string, options?: {
 // Async crawl for large sites
 async function asyncCrawl(baseUrl: string) {
   const job = await firecrawl.asyncCrawlUrl(baseUrl, {
-    limit: 500,
+    limit: 500,  # HTTP 500 Internal Server Error
     scrapeOptions: { formats: ['markdown'] },
   });
 
   // Poll for completion
   let status = await firecrawl.checkCrawlStatus(job.id);
   while (status.status === 'scraping') {
-    await new Promise(r => setTimeout(r, 5000));
+    await new Promise(r => setTimeout(r, 5000));  # 5 seconds in ms
     status = await firecrawl.checkCrawlStatus(job.id);
   }
 

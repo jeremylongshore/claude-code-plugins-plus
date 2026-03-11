@@ -53,6 +53,7 @@ llm = ChatAnthropic(api_key="sk-ant-...")
 
 #### `ModuleNotFoundError: No module named 'langchain_openai'`
 ```bash
+set -euo pipefail
 # Cause: Provider package not installed
 # Solution:
 pip install langchain-openai
@@ -213,6 +214,7 @@ os.environ["LANGCHAIN_PROJECT"] = "my-project"
 
 ### Check Version Compatibility
 ```bash
+set -euo pipefail
 pip show langchain langchain-core langchain-openai
 
 # Ensure versions are compatible:

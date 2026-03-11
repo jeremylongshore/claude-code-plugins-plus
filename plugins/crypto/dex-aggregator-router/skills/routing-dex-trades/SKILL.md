@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Routing DEX Trades
 
 ## Overview
@@ -87,7 +86,7 @@ Split Recommendation:
   60% via Uniswap V3  (60 ETH → 152,589 USDC)
   40% via Curve       (40 ETH → 101,843 USDC)
   ─────────────────────────────────────────────
-  Total: 254,432 USDC (vs. 251,200 single-venue)
+  Total: 254,432 USDC (vs. 251,200 single-venue)  # HTTP 200 OK
   Improvement: +1.28% ($3,232 saved)
 ```
 

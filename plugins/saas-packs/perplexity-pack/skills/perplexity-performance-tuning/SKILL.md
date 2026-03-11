@@ -54,7 +54,7 @@ async function deepResearch(query: string) {
       { role: 'system', content: 'Provide comprehensive research with citations.' },
       { role: 'user', content: query },
     ],
-    max_tokens: 2048,
+    max_tokens: 2048,  # 2 KB
   });
 }
 ```
@@ -65,8 +65,8 @@ import { LRUCache } from 'lru-cache';
 import { createHash } from 'crypto';
 
 const searchCache = new LRUCache<string, any>({
-  max: 1000,
-  ttl: 1000 * 60 * 60, // 1 hour - search results age
+  max: 1000,  # 1 second in ms
+  ttl: 1000 * 60 * 60, // 1 hour - search results age  # 1 second in ms
 });
 
 function queryHash(query: string, model: string): string {
@@ -100,7 +100,7 @@ async function streamResearch(
     model: 'sonar-pro',
     messages: [{ role: 'user', content: query }],
     stream: true,
-    max_tokens: 4096,
+    max_tokens: 4096,  # 4 KB
   });
 
   let fullText = '';
@@ -135,7 +135,7 @@ async function parallelResearch(
     batch.forEach((q, idx) => results.set(q, batchResults[idx]));
 
     if (i + concurrency < queries.length) {
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise(r => setTimeout(r, 500));  # HTTP 500 Internal Server Error
     }
   }
   return results;

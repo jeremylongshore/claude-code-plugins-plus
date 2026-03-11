@@ -53,7 +53,7 @@ Replit enforces CPU and memory limits. Guard against runaway processes.
 import resource, signal
 
 # Set memory limit (512MB)
-resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))
+resource.setrlimit(resource.RLIMIT_AS, (512 * 1024 * 1024, 512 * 1024 * 1024))  # 1 KB
 
 # Set CPU time limit
 def timeout_handler(signum, frame):
@@ -68,7 +68,7 @@ def process_request():
         result = heavy_computation()
         return jsonify(result)
     except TimeoutError:
-        return jsonify({"error": "Request timed out"}), 504
+        return jsonify({"error": "Request timed out"}), 504  # HTTP 504 Gateway Timeout
     finally:
         signal.alarm(0)  # cancel alarm
 ```
@@ -107,7 +107,7 @@ def require_auth(f):
     def decorated(*args, **kwargs):
         auth = request.headers.get('Authorization')
         if not auth or not verify_token(auth):
-            return jsonify({"error": "Unauthorized"}), 401
+            return jsonify({"error": "Unauthorized"}), 401  # HTTP 401 Unauthorized
         return f(*args, **kwargs)
     return decorated
 

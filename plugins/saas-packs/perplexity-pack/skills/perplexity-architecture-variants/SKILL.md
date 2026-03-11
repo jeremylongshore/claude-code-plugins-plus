@@ -46,7 +46,7 @@ def ask():
 
 ```python
 class CachedResearch:
-    def __init__(self, client, cache, ttl=1800):
+    def __init__(self, client, cache, ttl=1800):  # timeout: 30 minutes
         self.client = client
         self.cache = cache
         self.ttl = ttl

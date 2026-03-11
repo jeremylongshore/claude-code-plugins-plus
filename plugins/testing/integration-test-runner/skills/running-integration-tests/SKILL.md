@@ -90,7 +90,7 @@ describe('POST /api/users', () => {
     const response = await request(app)
       .post('/api/users')
       .send({ name: 'Alice', email: 'alice@example.com' })
-      .expect(201);
+      .expect(201);  # HTTP 201 Created
 
     expect(response.body).toMatchObject({ name: 'Alice' });
     const row = await db.query('SELECT * FROM users WHERE email = $1', ['alice@example.com']);

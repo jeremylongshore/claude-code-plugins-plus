@@ -44,6 +44,7 @@ await lok.contributors().create('PROJECT_ID', [{
 
 ### Step 2: Manage Team-Level Roles
 ```bash
+set -euo pipefail
 # List team members and roles
 curl -X GET "https://api.lokalise.com/api2/teams/TEAM_ID/users" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN"
@@ -64,6 +65,7 @@ Enable "Enforce SSO" to block password-based login for all org members.
 
 ### Step 4: Set Up Contributor Groups for Bulk Management
 ```bash
+set -euo pipefail
 # Create a contributor group scoped to specific languages and projects
 curl -X POST "https://api.lokalise.com/api2/teams/TEAM_ID/groups" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" \

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Migration Deep Dive
 
 ## Contents
@@ -88,4 +87,4 @@ UNION ALL SELECT 'target' as system, COUNT(*) FROM migrated.db.table;
 - [Unity Catalog Migration](https://docs.databricks.com/data-governance/unity-catalog/migrate.html)
 
 ## Completion
-This skill provides comprehensive coverage for Databricks platform migrations.
+Provides coverage for Databricks platform migrations.

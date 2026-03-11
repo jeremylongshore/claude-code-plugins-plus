@@ -39,7 +39,7 @@ async function scrapeClean(url: string) {
     formats: ['markdown'],       // Markdown is cleanest for LLMs
     onlyMainContent: true,       // Strip nav, footer, sidebar
     excludeTags: ['script', 'style', 'nav', 'footer', 'iframe'],
-    waitFor: 2000,
+    waitFor: 2000,  # 2 seconds in ms
   });
 
   return {
@@ -125,7 +125,7 @@ async function crawlAndStore(
   for (const page of crawlResult.data || []) {
     const slug = new URL(page.metadata?.sourceURL || baseUrl)
       .pathname.replace(/\//g, '_').replace(/^_|_$/g, '') || 'index';
-    const filename = `${slug}.md`;
+    const filename = `$firecrawl-data-handling.md`;
     const filePath = join(outputDir, filename);
 
     const content = cleanMarkdown(page.markdown || '');

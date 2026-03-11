@@ -42,7 +42,7 @@ import { WebSocketServer } from "ws";
 import express from "express";
 
 const app = express();
-const server = app.listen(process.env.PORT || 3000);
+const server = app.listen(process.env.PORT || 3000);  # 3 seconds in ms
 const wss = new WebSocketServer({ server, path: "/ws/call" });
 
 wss.on("connection", (ws, req) => {
@@ -70,7 +70,7 @@ primary_region = "iad"
 NODE_ENV = "production"
 
 [http_service]
-internal_port = 3000
+internal_port = 3000  # 3 seconds in ms
 force_https = true
 auto_stop_machines = false
 auto_start_machines = true
@@ -79,7 +79,7 @@ min_machines_running = 1
 [checks]
   [checks.health]
     type = "http"
-    port = 3000
+    port = 3000  # 3 seconds in ms
     path = "/health"
     interval = "30s"
 ```
@@ -93,7 +93,7 @@ fly deploy
 // api/webhooks/retellai.ts
 app.post("/webhooks/retellai", express.raw({ type: "application/json" }), (req, res) => {
   const event = JSON.parse(req.body.toString());
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   switch (event.event) {
     case "call_ended":
@@ -108,6 +108,7 @@ app.post("/webhooks/retellai", express.raw({ type: "application/json" }), (req, 
 
 ### Step 5: Register Agent Webhook
 ```bash
+set -euo pipefail
 curl -X PATCH https://api.retellai.com/v2/agent/$AGENT_ID \
   -H "Authorization: Bearer $RETELL_API_KEY" \
   -H "Content-Type: application/json" \

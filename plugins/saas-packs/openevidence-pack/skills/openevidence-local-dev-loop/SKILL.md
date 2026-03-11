@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Local Dev Loop
 
 ## Overview
@@ -46,7 +45,7 @@ cat > .env.development << 'EOF'
 OPENEVIDENCE_API_KEY=oe_sandbox_***
 OPENEVIDENCE_ORG_ID=org_sandbox_***
 OPENEVIDENCE_BASE_URL=https://api.sandbox.openevidence.com
-OPENEVIDENCE_TIMEOUT=60000
+OPENEVIDENCE_TIMEOUT=60000  # 1 minute in ms
 LOG_LEVEL=debug
 EOF
 
@@ -55,13 +54,14 @@ cat > .env.test << 'EOF'
 OPENEVIDENCE_API_KEY=oe_test_***
 OPENEVIDENCE_ORG_ID=org_test_***
 OPENEVIDENCE_BASE_URL=https://api.sandbox.openevidence.com
-OPENEVIDENCE_TIMEOUT=30000
+OPENEVIDENCE_TIMEOUT=30000  # 30 seconds in ms
 LOG_LEVEL=error
 EOF
 ```
 
 ### Step 3: Dev Dependencies
 ```bash
+set -euo pipefail
 # TypeScript project
 npm install -D typescript ts-node vitest @types/node dotenv-cli
 
@@ -92,7 +92,7 @@ export function getClient(config?: Partial<ClientConfig>): OpenEvidenceClient {
       apiKey: config?.apiKey || process.env.OPENEVIDENCE_API_KEY!,
       orgId: config?.orgId || process.env.OPENEVIDENCE_ORG_ID!,
       baseUrl: config?.baseUrl || process.env.OPENEVIDENCE_BASE_URL,
-      timeout: config?.timeout || parseInt(process.env.OPENEVIDENCE_TIMEOUT || '30000'),
+      timeout: config?.timeout || parseInt(process.env.OPENEVIDENCE_TIMEOUT || '30000'),  # 30 seconds in ms
     });
   }
   return clientInstance;
@@ -165,6 +165,7 @@ watch('src/**/*.ts', { ignoreInitial: false })
 
 ## Development Workflow
 ```bash
+set -euo pipefail
 # Start development with hot reload
 npm run dev
 
@@ -210,7 +211,7 @@ describe('OpenEvidence Integration', () => {
     expect(response.answer).toBeDefined();
     expect(response.citations.length).toBeGreaterThan(0);
     expect(response.confidence).toBeGreaterThan(0.5);
-  }, 30000); // 30s timeout for API calls
+  }, 30000); // 30s timeout for API calls  # 30 seconds in ms
 });
 ```
 

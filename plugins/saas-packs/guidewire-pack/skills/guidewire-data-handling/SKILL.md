@@ -4,7 +4,7 @@ description: |
   Data handling best practices for Guidewire InsuranceSuite including entity management,
   data migration, batch operations, and data governance.
   Trigger with phrases like "guidewire data", "entity management",
-  "data migration", "batch processing", "data governance guidewire".
+  "data migration", "batch processing", "data governance guidewire". Use when working with guidewire data handling.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Bash(gradle:*), Grep
 version: 1.0.0
 license: MIT

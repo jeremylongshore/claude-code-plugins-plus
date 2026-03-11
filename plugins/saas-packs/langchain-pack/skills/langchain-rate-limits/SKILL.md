@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # LangChain Rate Limits
 
 ## Overview
@@ -30,11 +29,11 @@ Implement robust rate limiting and retry strategies for LangChain applications t
 # Common rate limits by provider:
 RATE_LIMITS = {
     "openai": {
-        "gpt-4o": {"rpm": 10000, "tpm": 800000},
-        "gpt-4o-mini": {"rpm": 10000, "tpm": 4000000},
+        "gpt-4o": {"rpm": 10000, "tpm": 800000},  # 10 seconds in ms
+        "gpt-4o-mini": {"rpm": 10000, "tpm": 4000000},  # 10 seconds in ms
     },
     "anthropic": {
-        "claude-3-5-sonnet": {"rpm": 4000, "tpm": 400000},
+        "claude-3-5-sonnet": {"rpm": 4000, "tpm": 400000},  # dev server port
     },
     "google": {
         "gemini-1.5-pro": {"rpm": 360, "tpm": 4000000},

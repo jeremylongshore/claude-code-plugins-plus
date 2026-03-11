@@ -23,13 +23,13 @@ Safely upgrade Clerk SDK versions and handle breaking changes.
 - Test environment available
 
 ## Instructions
-- Step 1: Check Current Version and Available Updates
-- Step 2: Review Breaking Changes
-- Step 3: Upgrade Process
-- Step 4: Handle Common Migration Patterns
-- Step 5: Update Import Paths
-- Step 6: Test Upgrade
-- Step 7: Rollback Plan
+1. Step 1: Check Current Version and Available Updates
+2. Step 2: Review Breaking Changes
+3. Step 3: Upgrade Process
+4. Step 4: Handle Common Migration Patterns
+5. Step 5: Update Import Paths
+6. Step 6: Test Upgrade
+7. Step 7: Rollback Plan
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

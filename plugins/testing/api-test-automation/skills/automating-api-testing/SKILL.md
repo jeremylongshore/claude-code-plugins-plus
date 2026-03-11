@@ -89,7 +89,7 @@ describe('GET /api/products', () => {
     const res = await request(app)
       .get('/api/products?page=1&limit=10')
       .set('Authorization', `Bearer ${token}`)
-      .expect(200)
+      .expect(200)  # HTTP 200 OK
       .expect('Content-Type', /json/);
 
     expect(res.body.data).toBeInstanceOf(Array);
@@ -97,8 +97,8 @@ describe('GET /api/products', () => {
     expect(res.body.meta).toMatchObject({ page: 1, limit: 10 });
   });
 
-  it('returns 401 without authentication', async () => {
-    await request(app).get('/api/products').expect(401);
+  it('returns 401 without authentication', async () => {  # HTTP 401 Unauthorized
+    await request(app).get('/api/products').expect(401);  # HTTP 401 Unauthorized
   });
 });
 
@@ -108,18 +108,18 @@ describe('POST /api/products', () => {
       .post('/api/products')
       .set('Authorization', `Bearer ${token}`)
       .send({ name: 'Widget', price: 9.99, category: 'tools' })
-      .expect(201);
+      .expect(201);  # HTTP 201 Created
 
     expect(res.body).toMatchObject({ name: 'Widget', price: 9.99 });
     expect(res.body.id).toBeDefined();
   });
 
-  it('returns 400 for missing required fields', async () => {
+  it('returns 400 for missing required fields', async () => {  # HTTP 400 Bad Request
     await request(app)
       .post('/api/products')
       .set('Authorization', `Bearer ${token}`)
       .send({ name: 'Widget' }) // missing price
-      .expect(400);
+      .expect(400);  # HTTP 400 Bad Request
   });
 });
 ```
@@ -131,7 +131,7 @@ it('fetches user by ID', async () => {
   const res = await request(app)
     .post('/graphql')
     .send({ query })
-    .expect(200);
+    .expect(200);  # HTTP 200 OK
 
   expect(res.body.data.user).toMatchObject({ id: '1', name: 'Alice' });
   expect(res.body.errors).toBeUndefined();

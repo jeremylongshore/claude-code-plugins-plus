@@ -75,7 +75,7 @@ app.run(host='0.0.0.0', port=3000)  # may conflict
 
 # GOOD: use environment variable
 import os
-port = int(os.environ.get('PORT', 3000))
+port = int(os.environ.get('PORT', 3000))  # 3 seconds in ms
 app.run(host='0.0.0.0', port=port)
 ```
 

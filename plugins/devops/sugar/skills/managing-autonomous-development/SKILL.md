@@ -8,7 +8,6 @@ author: Steven Leggett <contact@roboticforce.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Managing Autonomous Development
 
 ## Overview

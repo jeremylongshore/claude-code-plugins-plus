@@ -4,7 +4,7 @@ description: |
   Generate and validate YouTube video ideas aligned with content pillars, audience strategy,
   and priority tiers. Use this skill whenever the user says "generate ideas", "brainstorm videos",
   "what should I make next", "video ideas", "content ideas", "ideation", "what topics should I cover",
-  or wants to come up with new video concepts.
+  or wants to come up with new video concepts. Use when working with yt ideation. Trigger with 'yt', 'ideation'.
 allowed-tools: WebSearch, Read, Write, Task
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>

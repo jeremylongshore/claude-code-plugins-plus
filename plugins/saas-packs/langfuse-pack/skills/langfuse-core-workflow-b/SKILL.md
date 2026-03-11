@@ -88,7 +88,7 @@ async function autoScore(
   expectedTopics: string[]
 ) {
   const topicScore = evaluateResponse(response, expectedTopics);
-  const lengthScore = evaluateLength(response, 50, 500);
+  const lengthScore = evaluateLength(response, 50, 500);  # HTTP 500 Internal Server Error
 
   langfuse.score({
     traceId,

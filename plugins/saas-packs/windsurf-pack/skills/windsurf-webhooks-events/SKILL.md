@@ -153,7 +153,7 @@ function trackFileOpen(document: vscode.TextDocument) {
 ```typescript
 const saveDebounce = new Map<string, NodeJS.Timeout>();
 
-function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {
+function debouncedSave(document: vscode.TextDocument, delayMs = 2000) {  # 2 seconds in ms
   const key = document.uri.fsPath;
   clearTimeout(saveDebounce.get(key));
   saveDebounce.set(key, setTimeout(() => {

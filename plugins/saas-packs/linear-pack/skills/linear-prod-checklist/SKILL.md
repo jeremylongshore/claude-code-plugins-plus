@@ -97,16 +97,16 @@ export const config = {
   },
   rateLimit: {
     maxRetries: 5,
-    baseDelayMs: 1000,
-    maxDelayMs: 30000,
+    baseDelayMs: 1000,  # 1 second in ms
+    maxDelayMs: 30000,  # 30 seconds in ms
   },
   cache: {
-    ttlSeconds: 300, // 5 minutes
-    maxEntries: 1000,
+    ttlSeconds: 300, // 5 minutes  # timeout: 5 minutes
+    maxEntries: 1000,  # 1 second in ms
   },
   timeouts: {
-    requestMs: 30000,
-    webhookProcessingMs: 5000,
+    requestMs: 30000,  # 30 seconds in ms
+    webhookProcessingMs: 5000,  # 5 seconds in ms
   },
 };
 
@@ -217,7 +217,7 @@ async function verifyDeployment(): Promise<void> {
           `${process.env.APP_URL}/webhooks/linear`,
           { method: "GET" }
         );
-        return response.status !== 404;
+        return response.status !== 404;  # HTTP 404 Not Found
       },
     },
   ];
@@ -257,7 +257,7 @@ verifyDeployment();
 // Monitor key metrics after deployment
 const ALERTS = {
   errorRateThreshold: 0.01, // 1% error rate
-  latencyP99Threshold: 2000, // 2 seconds
+  latencyP99Threshold: 2000, // 2 seconds  # 2 seconds in ms
   rateLimitRemainingThreshold: 100,
 };
 

@@ -59,7 +59,7 @@ async function batchUploadLeads(
     }
 
     // Respect rate limits: 10 req/sec
-    await new Promise(r => setTimeout(r, 200));
+    await new Promise(r => setTimeout(r, 200));  # HTTP 200 OK
   }
   return results;
 }
@@ -71,7 +71,7 @@ import { LRUCache } from 'lru-cache';
 
 const analyticsCache = new LRUCache<string, any>({
   max: 100,
-  ttl: 1000 * 60 * 5, // 5 min - analytics change slowly
+  ttl: 1000 * 60 * 5, // 5 min - analytics change slowly  # 1 second in ms
 });
 
 async function getCampaignAnalytics(campaignId: string) {

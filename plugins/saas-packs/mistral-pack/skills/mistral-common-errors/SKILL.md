@@ -44,13 +44,14 @@ Follow the solution steps for your specific error.
 **Error Message:**
 ```
 Error: Authentication failed. Invalid API key.
-Status: 401
+Status: 401  # HTTP 401 Unauthorized
 ```
 
 **Cause:** API key is missing, expired, or invalid.
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Verify API key is set
 echo $MISTRAL_API_KEY
 
@@ -75,7 +76,7 @@ const client = new Mistral({ apiKey });
 **Error Message:**
 ```
 Error: Rate limit exceeded. Please retry after X seconds.
-Status: 429
+Status: 429  # HTTP 429 Too Many Requests
 Headers: Retry-After: 60
 ```
 
@@ -91,10 +92,10 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
     try {
       return await fn();
     } catch (error: any) {
-      if (error.status === 429 && i < maxRetries - 1) {
+      if (error.status === 429 && i < maxRetries - 1) {  # HTTP 429 Too Many Requests
         const retryAfter = parseInt(error.headers?.['retry-after'] || '60');
         console.log(`Rate limited. Waiting ${retryAfter}s...`);
-        await new Promise(r => setTimeout(r, retryAfter * 1000));
+        await new Promise(r => setTimeout(r, retryAfter * 1000));  # 1 second in ms
       } else {
         throw error;
       }
@@ -110,7 +111,7 @@ async function withRetry<T>(fn: () => Promise<T>, maxRetries = 3): Promise<T> {
 **Error Message:**
 ```
 Error: Invalid request. Check your parameters.
-Status: 400
+Status: 400  # HTTP 400 Bad Request
 {"message": "Invalid model: mistral-ultra"}
 ```
 
@@ -158,7 +159,7 @@ Status: 413
 **Solution:**
 ```typescript
 // Truncate conversation history
-function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {
+function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {  # 30 seconds in ms
   // Keep system message
   const systemMsg = messages.find(m => m.role === 'system');
   const otherMsgs = messages.filter(m => m.role !== 'system');
@@ -185,13 +186,14 @@ function truncateMessages(messages: Message[], maxTokens = 30000): Message[] {
 **Error Message:**
 ```
 Error: Internal server error
-Status: 500/503
+Status: 500/503  # HTTP 500 Internal Server Error
 ```
 
 **Cause:** Mistral AI service experiencing issues.
 
 **Solution:**
 ```bash
+set -euo pipefail
 # Check Mistral status
 curl -s https://status.mistral.ai/ | head -20
 
@@ -203,7 +205,7 @@ class CircuitBreaker {
   private failures = 0;
   private lastFailure?: Date;
   private readonly threshold = 5;
-  private readonly resetTimeout = 60000; // 1 minute
+  private readonly resetTimeout = 60000; // 1 minute  # 1 minute in ms
 
   async call<T>(fn: () => Promise<T>): Promise<T> {
     if (this.isOpen()) {
@@ -215,7 +217,7 @@ class CircuitBreaker {
       this.failures = 0;
       return result;
     } catch (error: any) {
-      if (error.status >= 500) {
+      if (error.status >= 500) {  # HTTP 500 Internal Server Error
         this.failures++;
         this.lastFailure = new Date();
       }
@@ -246,7 +248,7 @@ Error: Request timeout after 30000ms
 // Increase timeout
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
-  timeout: 60000, // 60 seconds
+  timeout: 60000, // 60 seconds  # 1 minute in ms
 });
 
 // For streaming, use longer timeout
@@ -292,6 +294,7 @@ const tool = {
 ## Quick Diagnostic Commands
 
 ```bash
+set -euo pipefail
 # Check API connectivity
 curl -I https://api.mistral.ai/v1/models \
   -H "Authorization: Bearer ${MISTRAL_API_KEY}"

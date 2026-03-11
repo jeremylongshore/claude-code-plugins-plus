@@ -130,8 +130,8 @@ class ContentPipeline {
 
 ### Architecture Selection
 ```
-< 500 pages/day, user-facing: On-Demand
-500-10K pages, batch processing: Scheduled Pipeline  
+< 500 pages/day, user-facing: On-Demand  # HTTP 500 Internal Server Error
+500-10K pages, batch processing: Scheduled Pipeline    # HTTP 500 Internal Server Error
 10K+, AI/ML ingestion: Real-Time Pipeline
 ```
 

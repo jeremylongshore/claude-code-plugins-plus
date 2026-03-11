@@ -28,6 +28,7 @@ Manage training data and model artifacts securely on Vast.ai GPU instances. Cove
 ### Step 1: Encrypted Data Transfer
 ```bash
 #!/bin/bash
+set -euo pipefail
 # scripts/secure-upload.sh
 # Encrypt data before sending to Vast.ai instance
 

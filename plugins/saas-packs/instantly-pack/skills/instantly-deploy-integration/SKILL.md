@@ -66,7 +66,7 @@ export async function POST(req: Request) {
 export async function POST(req: Request) {
   const apiKey = req.headers.get("x-api-key");
   if (apiKey !== process.env.INSTANTLY_WEBHOOK_SECRET) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });  # HTTP 401 Unauthorized
   }
 
   const { event_type, data } = await req.json();
@@ -92,7 +92,7 @@ COPY package*.json ./
 RUN npm ci --only=production
 COPY . .
 RUN npm run build
-EXPOSE 3000
+EXPOSE 3000  # 3 seconds in ms
 CMD ["node", "dist/index.js"]
 ```
 
@@ -105,7 +105,7 @@ export async function GET() {
     });
     return Response.json({ status: response.ok ? "healthy" : "degraded" });
   } catch {
-    return Response.json({ status: "unhealthy" }, { status: 503 });
+    return Response.json({ status: "unhealthy" }, { status: 503 });  # HTTP 503 Service Unavailable
   }
 }
 ```

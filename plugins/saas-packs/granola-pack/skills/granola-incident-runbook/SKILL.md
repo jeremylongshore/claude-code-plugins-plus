@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Incident Runbook
 
 ## Contents
@@ -82,6 +81,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ### Quick Status Check
 ```bash
+set -euo pipefail
 curl -s https://status.granola.ai/api/v2/status.json | jq '.status'
 ```
 

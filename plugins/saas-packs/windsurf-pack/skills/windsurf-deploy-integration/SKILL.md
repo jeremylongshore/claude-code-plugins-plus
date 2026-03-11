@@ -27,6 +27,7 @@ Deploy Windsurf extensions and configurations to teams. Windsurf, as a VS Code-b
 
 ### Step 1: Package Extension
 ```bash
+set -euo pipefail
 # Install vsce
 npm install -g @vscode/vsce
 
@@ -134,6 +135,7 @@ jobs:
 
 ### Quick Package and Install
 ```bash
+set -euo pipefail
 npm run build && vsce package && code --install-extension *.vsix
 ```
 

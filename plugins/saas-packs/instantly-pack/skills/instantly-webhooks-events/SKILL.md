@@ -48,11 +48,11 @@ app.post("/webhooks/instantly", async (req, res) => {
   const apiKey = req.headers["x-api-key"] as string;
 
   if (apiKey !== process.env.INSTANTLY_WEBHOOK_SECRET) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res.status(401).json({ error: "Unauthorized" });  # HTTP 401 Unauthorized
   }
 
   const { event_type, data, timestamp } = req.body;
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   await handleInstantlyEvent(event_type, data);
 });
@@ -122,6 +122,7 @@ async function handleBounce(data: any) {
 
 ### Step 3: Register Webhook via API
 ```bash
+set -euo pipefail
 curl -X POST https://api.instantly.ai/api/v1/webhooks \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" \
   -H "Content-Type: application/json" \

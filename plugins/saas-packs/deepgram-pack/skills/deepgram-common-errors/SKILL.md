@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Common Errors
 
 ## Table of Contents
@@ -81,6 +80,7 @@ Re-run the diagnostic to confirm the fix works.
 
 ### Quick API Test
 ```bash
+set -euo pipefail
 curl -X POST 'https://api.deepgram.com/v1/listen?model=nova-2' \
   -H "Authorization: Token $DEEPGRAM_API_KEY" \
   -H "Content-Type: audio/wav" \

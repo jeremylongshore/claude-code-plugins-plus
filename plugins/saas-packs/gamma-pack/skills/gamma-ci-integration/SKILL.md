@@ -88,8 +88,8 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     include: ['tests/gamma/**/*.test.ts'],
-    testTimeout: 60000, // Gamma API can be slow
-    hookTimeout: 30000,
+    testTimeout: 60000, // Gamma API can be slow  # 1 minute in ms
+    hookTimeout: 30000,  # 30 seconds in ms
     setupFiles: ['./tests/gamma/setup.ts'],
   },
 });

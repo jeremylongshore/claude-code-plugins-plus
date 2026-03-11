@@ -26,6 +26,7 @@ Monitor PostHog event ingestion health, query performance, and feature flag eval
 
 ### Step 1: Monitor Event Ingestion Health
 ```bash
+set -euo pipefail
 # Check recent event ingestion via the API
 curl "https://app.posthog.com/api/projects/PROJECT_ID/insights/trend/?events=[{\"id\":\"$pageview\"}]&date_from=-24h" \
   -H "Authorization: Bearer $POSTHOG_PERSONAL_API_KEY" | \
@@ -46,7 +47,7 @@ async function monitorFlagLatency(flagKey: string, distinctId: string) {
   emitHistogram('posthog_flag_eval_ms', duration, { flag: flagKey });
   emitCounter('posthog_flag_evals_total', 1, { flag: flagKey, result: String(value) });
 
-  if (duration > 200) {
+  if (duration > 200) {  # HTTP 200 OK
     console.warn(`Slow flag evaluation: ${flagKey} took ${duration.toFixed(0)}ms`);
   }
 }
@@ -75,7 +76,7 @@ groups:
         expr: rate(posthog_events_ingested[1h]) < rate(posthog_events_ingested[1h] offset 1d) * 0.5
         annotations: { summary: "PostHog event ingestion dropped >50% vs yesterday" }
       - alert: PostHogFlagSlow
-        expr: histogram_quantile(0.95, rate(posthog_flag_eval_ms_bucket[5m])) > 500
+        expr: histogram_quantile(0.95, rate(posthog_flag_eval_ms_bucket[5m])) > 500  # HTTP 500 Internal Server Error
         annotations: { summary: "PostHog feature flag P95 evaluation exceeds 500ms" }
       - alert: PostHogEventBudgetHigh
         expr: posthog_projected_monthly_events > 10000000

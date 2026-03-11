@@ -26,6 +26,7 @@ Monitor Instantly email outreach campaign health, deliverability metrics, and se
 
 ### Step 1: Track Campaign Metrics via API
 ```bash
+set -euo pipefail
 # Pull campaign performance data
 curl "https://api.instantly.ai/api/v1/campaign/analytics?campaign_id=CAMP_ID" \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" | \
@@ -76,6 +77,7 @@ groups:
 
 ### Step 4: Monitor Campaign Sequence Health
 ```bash
+set -euo pipefail
 # Check reply and bounce rates across all active campaigns
 curl "https://api.instantly.ai/api/v1/campaign/list?status=active" \
   -H "Authorization: Bearer $INSTANTLY_API_KEY" | \

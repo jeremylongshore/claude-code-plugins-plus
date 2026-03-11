@@ -1,6 +1,7 @@
 ---
 name: obviously-awesome
-description: 'Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions "positioning", "competitive alternatives", "how to position", "market category", or "why customers don''t get it". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm.'
+description: |
+  Define product positioning by mapping competitive alternatives, unique attributes, and best-fit customers to the right market category. Use when the user mentions "positioning", "competitive alternatives", "how to position", "market category", or "why customers don''t get it". Covers positioning canvas and team workshops. For customer jobs analysis, see jobs-to-be-done. For go-to-market, see crossing-the-chasm. Trigger with 'obviously', 'awesome'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>
@@ -9,7 +10,7 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Product Positioning Framework
 
-This skill implements the product positioning methodology from April Dunford's "Obviously Awesome." It provides a structured, repeatable process for defining how your product is the best in the world at delivering something a well-defined set of customers cares a lot about. Positioning is the foundational strategic exercise that determines how customers perceive your product, what they compare it to, and ultimately whether they buy it.
+This skill implements the product positioning methodology from April Dunford's "Obviously Awesome." It provides a structured, repeatable process for defining how your product is the best in the world at delivering something a well-defined set of customers cares a lot about.
 
 ## Core Principle
 

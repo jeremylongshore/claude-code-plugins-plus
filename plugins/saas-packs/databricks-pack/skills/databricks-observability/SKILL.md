@@ -53,10 +53,10 @@ LIMIT 20;
 ```sql
 -- Slow queries (>30s) on SQL warehouses
 SELECT warehouse_id, statement_id, executed_by,
-       total_duration_ms / 1000 AS duration_sec,
+       total_duration_ms / 1000 AS duration_sec,  # 1 second in ms
        rows_produced, bytes_scanned_mb
 FROM system.query.history
-WHERE total_duration_ms > 30000
+WHERE total_duration_ms > 30000  # 30 seconds in ms
   AND start_time > current_timestamp() - INTERVAL 24 HOURS
 ORDER BY total_duration_ms DESC
 LIMIT 50;

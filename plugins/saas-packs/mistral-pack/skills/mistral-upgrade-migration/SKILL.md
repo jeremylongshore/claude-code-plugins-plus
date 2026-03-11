@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Upgrade & Migration
 
 ## Overview
@@ -29,6 +28,7 @@ Guide for upgrading Mistral AI SDK versions and handling breaking changes.
 ### Step 1: Check Current Version
 
 ```bash
+set -euo pipefail
 # Node.js SDK
 npm list @mistralai/mistralai
 npm view @mistralai/mistralai versions --json | jq '.[-5:]'
@@ -44,6 +44,7 @@ npm outdated @mistralai/mistralai
 ### Step 2: Review Changelog
 
 ```bash
+set -euo pipefail
 # Check GitHub releases
 open https://github.com/mistralai/client-js/releases
 open https://github.com/mistralai/client-python/releases
@@ -55,6 +56,7 @@ npm info @mistralai/mistralai
 ### Step 3: Create Upgrade Branch
 
 ```bash
+set -euo pipefail
 # Create feature branch
 git checkout -b upgrade/mistral-sdk-vX.Y.Z
 
@@ -112,6 +114,7 @@ for await (const event of stream) {
 ### Step 5: Run Tests
 
 ```bash
+set -euo pipefail
 # Type check
 npm run typecheck
 
@@ -266,6 +269,7 @@ async function chat(messages: Message[]): Promise<string> {
 
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 # Quick rollback
 npm install @mistralai/mistralai@0.5.0 --save-exact
 

@@ -26,6 +26,7 @@ Optimize Replit costs by right-sizing deployment tiers, managing compute resourc
 
 ### Step 1: Audit Compute Costs by Repl
 ```bash
+set -euo pipefail
 # Check resource consumption across team Repls
 curl "https://replit.com/api/v1/teams/TEAM_ID/usage?period=last_30d" \
   -H "Authorization: Bearer $REPLIT_API_KEY" | \

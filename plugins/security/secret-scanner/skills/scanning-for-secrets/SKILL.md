@@ -13,7 +13,7 @@ This skill provides automated assistance for secret scanner tasks.
 
 ## Overview
 
-This skill enables Claude to scan your codebase for exposed secrets, API keys, passwords, and other sensitive credentials. It helps you identify and remediate potential security vulnerabilities before they are committed or deployed.
+scan your codebase for exposed secrets, API keys, passwords, and other sensitive credentials. It helps you identify and remediate potential security vulnerabilities before they are committed or deployed.
 
 ## How It Works
 

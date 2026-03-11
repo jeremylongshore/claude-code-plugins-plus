@@ -81,6 +81,7 @@ https://play.google.com/store/apps/details?id=ai.twinmind.android
 ### Step 6: Configure API Access (Pro/Enterprise)
 
 ```bash
+set -euo pipefail
 # Set environment variable for API access
 export TWINMIND_API_KEY="your-api-key"
 

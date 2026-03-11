@@ -44,7 +44,7 @@ const crawl = await firecrawl.asyncCrawlUrl('https://example.com', {
 // Poll with backoff
 let status;
 do {
-  await new Promise(r => setTimeout(r, 5000));
+  await new Promise(r => setTimeout(r, 5000));  # 5 seconds in ms
   status = await firecrawl.checkCrawlStatus(crawl.id);
 } while (status.status === 'scraping');
 ```
@@ -94,7 +94,7 @@ const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard');
 
 // GOOD: configure wait time for JS rendering
 const result = await firecrawl.scrapeUrl('https://app.example.com/dashboard', {
-  waitFor: 5000,  // wait 5s for JS to render
+  waitFor: 5000,  // wait 5s for JS to render  # 5 seconds in ms
   formats: ['markdown'],
   onlyMainContent: true
 });
@@ -107,13 +107,13 @@ Firecrawl honors robots.txt by default. Disabling it risks IP bans and legal iss
 ```typescript
 // BAD: aggressive crawling that ignores site limits
 await firecrawl.crawlUrl('https://example.com', {
-  limit: 10000,
+  limit: 10000,  # 10 seconds in ms
   // No delay between requests = potential IP ban
 });
 
 // GOOD: respect site constraints
 await firecrawl.crawlUrl('https://example.com', {
-  limit: 200,
+  limit: 200,  # HTTP 200 OK
   maxDepth: 3,
   // Firecrawl handles rate limiting internally
 });

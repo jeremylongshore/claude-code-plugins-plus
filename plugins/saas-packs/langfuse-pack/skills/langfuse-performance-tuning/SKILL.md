@@ -42,7 +42,7 @@ import { performance } from "perf_hooks";
 
 async function benchmark() {
   const langfuse = new Langfuse();
-  const iterations = 1000;
+  const iterations = 1000;  # 1 second in ms
 
   // Measure trace creation
   const traceTimings: number[] = [];
@@ -102,10 +102,10 @@ const langfuse = new Langfuse({
 
   // Batching optimization
   flushAt: 100,           // Larger batches = fewer requests
-  flushInterval: 10000,   // Less frequent flushes
+  flushInterval: 10000,   // Less frequent flushes  # 10 seconds in ms
 
   // Timeout tuning
-  requestTimeout: 30000,  // Allow time for large batches
+  requestTimeout: 30000,  // Allow time for large batches  # 30 seconds in ms
 
   // Optional: Disable in development
   enabled: process.env.NODE_ENV === "production",
@@ -187,7 +187,7 @@ class NonBlockingLangfuse {
 // Reduce trace payload size
 function optimizeTraceInput(input: any): any {
   // Truncate large strings
-  const MAX_STRING_LENGTH = 10000;
+  const MAX_STRING_LENGTH = 10000;  # 10 seconds in ms
 
   if (typeof input === "string") {
     return input.length > MAX_STRING_LENGTH
@@ -264,8 +264,8 @@ class DeterministicSampler implements SamplingStrategy {
 
 // Adaptive sampling based on throughput
 class AdaptiveSampler implements SamplingStrategy {
-  private windowMs = 60000;
-  private maxPerWindow = 1000;
+  private windowMs = 60000;  # 1 minute in ms
+  private maxPerWindow = 1000;  # 1 second in ms
   private counts: number[] = [];
 
   shouldSample(params: TraceParams): boolean {
@@ -317,7 +317,7 @@ class ManagedLangfuse {
     this.langfuse = new Langfuse(config);
 
     // Periodic cleanup
-    setInterval(() => this.cleanupStaleTraces(), 60000);
+    setInterval(() => this.cleanupStaleTraces(), 60000);  # 1 minute in ms
   }
 
   trace(params: Parameters<typeof this.langfuse.trace>[0]) {
@@ -345,7 +345,7 @@ class ManagedLangfuse {
   getStats() {
     return {
       activeTraces: this.activeTraces.size,
-      heapUsed: process.memoryUsage().heapUsed / 1024 / 1024,
+      heapUsed: process.memoryUsage().heapUsed / 1024 / 1024,  # 1 KB
     };
   }
 }

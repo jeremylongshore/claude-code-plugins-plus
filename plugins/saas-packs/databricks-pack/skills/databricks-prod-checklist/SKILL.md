@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Production Checklist
 
 ## Overview
@@ -101,7 +100,7 @@ resources:
           job_cluster_key: etl_cluster
           notebook_task:
             notebook_path: /Repos/prod/pipelines/bronze
-          timeout_seconds: 3600
+          timeout_seconds: 3600  # timeout: 1 hour
 
         - task_key: silver_transform
           depends_on:
@@ -120,7 +119,7 @@ resources:
               min_workers: 2
               max_workers: 8
             spark_conf:
-              spark.sql.shuffle.partitions: "200"
+              spark.sql.shuffle.partitions: "200"  # HTTP 200 OK
               spark.databricks.delta.optimizeWrite.enabled: "true"
             instance_pool_id: "prod-pool-id"
 ```
@@ -191,7 +190,7 @@ def check_job_health(w: WorkspaceClient, job_id: int) -> dict:
         "success_rate": success_rate,
         "avg_duration_minutes": avg_duration,
         "last_run_state": last_state,
-        "last_run_time": datetime.fromtimestamp(last_run.start_time / 1000),
+        "last_run_time": datetime.fromtimestamp(last_run.start_time / 1000),  # 1 second in ms
     }
 ```
 
@@ -257,7 +256,7 @@ SELECT
   job_name,
   COUNT(*) as total_runs,
   SUM(CASE WHEN result_state = 'SUCCESS' THEN 1 ELSE 0 END) as successes,
-  AVG(execution_duration) / 60000 as avg_minutes,
+  AVG(execution_duration) / 60000 as avg_minutes,  # 1 minute in ms
   MAX(start_time) as last_run
 FROM system.lakeflow.job_run_timeline
 WHERE start_time > current_timestamp() - INTERVAL 7 DAYS

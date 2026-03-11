@@ -134,7 +134,7 @@ export function getPostHogServer(): PostHog {
   _client = new PostHog(config.apiKey, {
     host: config.host,
     flushAt: 20,
-    flushInterval: 10000,
+    flushInterval: 10000,  # 10 seconds in ms
   });
 
   return _client;

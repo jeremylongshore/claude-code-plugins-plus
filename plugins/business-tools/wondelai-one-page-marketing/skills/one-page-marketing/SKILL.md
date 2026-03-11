@@ -1,6 +1,7 @@
 ---
 name: one-page-marketing
-description: 'Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", or "referral program". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology.'
+description: |
+  Build a complete marketing plan covering the full customer journey from stranger to raving fan. Use when the user mentions "marketing plan", "target market", "USP", "lead nurture", "customer lifetime value", or "referral program". Covers the PVP Index, channel selection, and advocacy systems. For brand messaging, see storybrand-messaging. For conversion optimization, see cro-methodology. Trigger with 'one', 'page', 'marketing'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>
@@ -9,7 +10,7 @@ compatible-with: claude-code, codex, openclaw
 ---
 # The 1-Page Marketing Plan Framework
 
-A complete marketing system captured on a single page. Instead of a 50-page marketing plan that never gets executed, the 1-Page Marketing Plan distills everything into a 3x3 grid of nine squares — each representing a critical stage in turning a stranger into a raving fan. Fill in all nine squares and you have a living, breathing marketing engine that drives predictable growth.
+A complete marketing system captured on a single page. Instead of a 50-page marketing plan that never gets executed, the 1-Page Marketing Plan distills everything into a 3x3 grid of nine squares — each representing a critical stage in turning a stranger into a raving fan.
 
 ## Core Principle
 

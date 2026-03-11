@@ -3,7 +3,7 @@ name: website-generator
 description: |
   Use when the user asks to create a website, build a site, generate a landing page,
   or mentions B12. Trigger phrases: "create a website", "build me a site",
-  "website for my business", "generate a landing page", "B12 website".
+  "website for my business", "generate a landing page", "B12 website". Trigger with 'website', 'generator'.
 allowed-tools: AskUserQuestion
 version: 1.0.0
 author: B12.io <https://github.com/b12io>

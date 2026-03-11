@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Retell AI Production Checklist
 
 ## Overview
@@ -54,6 +53,7 @@ Complete checklist for deploying Retell AI integrations to production.
 
 ### Step 5: Deploy with Gradual Rollout
 ```bash
+set -euo pipefail
 # Pre-flight checks
 curl -f https://staging.example.com/health
 curl -s https://status.retellai.com
@@ -64,13 +64,13 @@ kubectl set image deployment/retellai-integration app=image:new --record
 kubectl rollout pause deployment/retellai-integration
 
 # Monitor canary traffic for 10 minutes
-sleep 600
+sleep 600  # timeout: 10 minutes
 # Check error rates and latency before continuing
 
 # If healthy, continue rollout to 50%
 kubectl rollout resume deployment/retellai-integration
 kubectl rollout pause deployment/retellai-integration
-sleep 300
+sleep 300  # timeout: 5 minutes
 
 # Complete rollout to 100%
 kubectl rollout resume deployment/retellai-integration
@@ -108,6 +108,7 @@ async function healthCheck(): Promise<{ status: string; retellai: any }> {
 
 ### Immediate Rollback
 ```bash
+set -euo pipefail
 kubectl rollout undo deployment/retellai-integration
 kubectl rollout status deployment/retellai-integration
 ```

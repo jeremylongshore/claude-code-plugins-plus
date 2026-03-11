@@ -4,7 +4,7 @@ description: |
   Create optimized YouTube titles and thumbnail concepts for maximum CTR. Use this skill whenever the user
   says "title ideas", "thumbnail concepts", "package this video", "CTR optimization", "title options", "packaging",
   or has an approved brief and needs to finalize the title and thumbnail direction before outlining. Packaging
-  determines whether viewers click.
+  determines whether viewers click. Use when working with yt packaging. Trigger with 'yt', 'packaging'.
 allowed-tools: WebSearch, Read, Write
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
@@ -19,7 +19,7 @@ You are creating the title and thumbnail concept for a YouTube video. Packaging 
 
 You need from the user:
 
-1. **The approved brief** - Either load `video-brief-{slug}.md` from the working directory or get the brief details from the user
+1. **The approved brief** - Either load `video-brief-yt-packaging.md` from the working directory or get the brief details from the user
 2. **Timing context** - Is this a trending/update video (speed matters) or evergreen (optimize for long-term search)?
 3. **Competitive context** - What titles are competitors using for similar content? (Use WebSearch if not already known)
 
@@ -126,7 +126,7 @@ Title #[X] + Thumbnail Concept [Y] because [reasoning]
 
 ### Step 6: Save
 
-Save the approved packaging as `packaging-{slug}.md`.
+Save the approved packaging as `packaging-yt-packaging.md`.
 
 ## Key Principles
 

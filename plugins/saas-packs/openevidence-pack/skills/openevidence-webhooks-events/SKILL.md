@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Webhooks & Events
 
 ## Table of Contents
@@ -84,8 +83,9 @@ x-openevidence-signature: t=1234567890,v1=abc123def456...
 
 ### Quick Test
 ```bash
+set -euo pipefail
 # Generate test signature and POST to local endpoint
-curl -X POST http://localhost:3000/webhooks/openevidence \
+curl -X POST http://localhost:3000/webhooks/openevidence \  # 3 seconds in ms
   -H "Content-Type: application/json" \
   -H "x-openevidence-signature: t=$(date +%s),v1=TEST" \
   -d '{"event":"deepconsult.completed","data":{"consultId":"test"}}'

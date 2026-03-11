@@ -11,12 +11,11 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Analyzing Market Sentiment
 
 ## Overview
 
-This skill provides comprehensive cryptocurrency market sentiment analysis by combining multiple data sources:
+Provides cryptocurrency market sentiment analysis by combining multiple data sources:
 
 - **Fear & Greed Index**: Market-wide sentiment from Alternative.me
 - **News Sentiment**: Keyword-based analysis of recent crypto news

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Fireflies.ai SDK/CLI and configure authentication credentials.
 
 ### Step 1: Install SDK
 ```bash
+set -euo pipefail
 # Node.js
 npm install @fireflies/sdk
 

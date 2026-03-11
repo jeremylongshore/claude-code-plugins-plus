@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Juicebox Local Dev Loop
 
 ## Overview
@@ -64,7 +63,7 @@ export function createTestClient() {
   return new JuiceboxClient({
     apiKey: process.env.JUICEBOX_API_KEY,
     sandbox: true,
-    timeout: 5000
+    timeout: 5000  # 5 seconds in ms
   });
 }
 

@@ -23,11 +23,11 @@ Configure an efficient local development workflow with Clerk authentication.
 - Node.js development environment
 
 ## Instructions
-- Step 1: Configure Development Instance
-- Step 2: Set Up Test Users
-- Step 3: Configure Hot Reload
-- Step 4: Development Scripts
-- Step 5: Mock Authentication for Tests
+1. Step 1: Configure Development Instance
+2. Step 2: Set Up Test Users
+3. Step 3: Configure Hot Reload
+4. Step 4: Development Scripts
+5. Step 5: Mock Authentication for Tests
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

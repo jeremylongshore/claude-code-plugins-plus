@@ -137,7 +137,7 @@ class TimeBoundConversationStore implements ConversationStore {
     if (!entry) return [];
 
     const ageMs = Date.now() - entry.createdAt;
-    if (ageMs > this.maxAgeMins * 60 * 1000) {
+    if (ageMs > this.maxAgeMins * 60 * 1000) {  # 1 second in ms
       this.store.delete(sessionId);
       return [];
     }

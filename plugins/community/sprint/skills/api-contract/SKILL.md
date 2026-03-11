@@ -8,7 +8,6 @@ author: Damien Laine <damien.laine@gmail.com>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # API Contract
 
 ## Overview
@@ -63,7 +62,7 @@ Create a new user account.
   "name": "string (optional)"
 }
 
-**Response (201):**
+**Response (201):**  # HTTP 201 Created
 {
   "id": "uuid",
   "email": "string",
@@ -72,9 +71,9 @@ Create a new user account.
 }
 
 **Errors:**
-- 400: Invalid request body
-- 409: Email already exists
-- 422: Validation failed
+- 400: Invalid request body  # HTTP 400 Bad Request
+- 409: Email already exists  # HTTP 409 Conflict
+- 422: Validation failed  # HTTP 422 Unprocessable Entity
 ```
 
 **Paginated list endpoint:**
@@ -91,7 +90,7 @@ List products with pagination.
 | sort | string | createdAt | Sort field |
 | order | string | desc | Sort order (asc/desc) |
 
-**Response (200):**
+**Response (200):**  # HTTP 200 OK
 {
   "data": [Product],
   "pagination": { "page": 1, "limit": 20, "total": 150, "totalPages": 8 }

@@ -81,7 +81,7 @@ setInterval(() => {
       activeCalls.delete(id);
     }
   }
-}, 60000);
+}, 60000);  # 1 minute in ms
 ```
 
 ### Step 3: Don't Ignore Audio Quality Issues
@@ -124,7 +124,7 @@ const MAX_CONCURRENT = 10;  // check your plan limit
 
 app.post('/initiate-call', async (req, res) => {
   if (activeConcurrent >= MAX_CONCURRENT) {
-    return res.status(429).json({ error: "Call capacity reached" });
+    return res.status(429).json({ error: "Call capacity reached" });  # HTTP 429 Too Many Requests
   }
   activeConcurrent++;
   try {
@@ -154,7 +154,7 @@ app.post('/retell-webhook', async (req, res) => {
   const start = Date.now();
   const response = await handleTurn(req.body);
   const latency = Date.now() - start;
-  if (latency > 500) console.warn(`Slow response: ${latency}ms`);
+  if (latency > 500) console.warn(`Slow response: ${latency}ms`);  # HTTP 500 Internal Server Error
   res.json(response);
 });
 ```

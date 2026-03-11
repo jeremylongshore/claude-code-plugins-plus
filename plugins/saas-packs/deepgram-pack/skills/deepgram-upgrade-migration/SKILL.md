@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Upgrade Migration
 
 ## Contents
@@ -35,7 +34,7 @@ Guide for planning and executing Deepgram SDK upgrades (v2 to v3), model migrati
 
 ## Instructions
 
-### Step 1: Assess Current State
+### Assess current configuration
 Document current SDK version (`npm list @deepgram/sdk`), model in use, and configuration. Review GitHub releases for breaking changes.
 
 ### Step 2: Apply SDK v3 Breaking Changes

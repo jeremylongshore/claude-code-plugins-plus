@@ -26,6 +26,7 @@ Monitor Clay data enrichment pipeline health, credit consumption velocity, and e
 
 ### Step 1: Track Credit Consumption in Real Time
 ```bash
+set -euo pipefail
 # Query current credit usage by table
 curl "https://api.clay.com/v1/workspace/usage?group_by=table&period=today" \
   -H "Authorization: Bearer $CLAY_API_KEY" | \
@@ -56,14 +57,14 @@ groups:
   - name: clay
     rules:
       - alert: ClayCreditBurnHigh
-        expr: rate(clay_credits_consumed[1h]) > 500
-        annotations: { summary: "Clay burning >500 credits/hour (projected monthly: {{ $value * 720 }})" }
+        expr: rate(clay_credits_consumed[1h]) > 500  # HTTP 500 Internal Server Error
+        annotations: { summary: "Clay burning >500 credits/hour (projected monthly: {{ $value * 720 }})" }  # HTTP 500 Internal Server Error
       - alert: ClayLowHitRate
         expr: clay_enrichment_hit_rate_pct < 20
         for: 30m
         annotations: { summary: "Clay enrichment hit rate below 20% on {{ $labels.table }}" }
       - alert: ClayCreditBalance
-        expr: clay_credits_remaining < 1000
+        expr: clay_credits_remaining < 1000  # 1 second in ms
         annotations: { summary: "Clay credit balance below 1,000 -- refill needed" }
 ```
 

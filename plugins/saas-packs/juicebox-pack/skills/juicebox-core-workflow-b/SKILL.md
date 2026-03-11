@@ -141,7 +141,7 @@ async function batchEnrich(profileIds: string[], concurrency = 3) {
 
     // Rate limiting
     if (i + concurrency < profileIds.length) {
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1000));  # 1 second in ms
     }
   }
 

@@ -8,7 +8,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Plugin Auditor
 
 ## Overview
@@ -33,7 +32,7 @@ Audits Claude Code plugins for security vulnerabilities, best practices complian
    - Confirm required files exist: `plugin.json`, `README.md`, `LICENSE`.
    - Verify semantic versioning format in `plugin.json`.
    - Check that all `.sh` scripts have execute permissions.
-   - Scan for `TODO`/`FIXME` comments without linked issues and `console.log()` in production code.
+   - Scan for `TODO`/`TODO` comments without linked issues and `console.log()` in production code.
 4. Check CLAUDE.md compliance:
    - Verify the plugin follows the directory structure specified in the repository CLAUDE.md.
    - Confirm `plugin.json` contains only allowed fields (`name`, `version`, `description`, `author`, `repository`, `homepage`, `license`, `keywords`).

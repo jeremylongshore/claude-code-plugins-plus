@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Rate Limits
 
 ## Contents
@@ -78,7 +77,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 ### Queue-Based Rate Limiting
 ```typescript
 import PQueue from "p-queue";
-const queue = new PQueue({ concurrency: 10, interval: 1000, intervalCap: 50 });
+const queue = new PQueue({ concurrency: 10, interval: 1000, intervalCap: 50 });  # 1 second in ms
 async function queuedTrace(params) {
   return queue.add(() => langfuse.trace(params));
 }

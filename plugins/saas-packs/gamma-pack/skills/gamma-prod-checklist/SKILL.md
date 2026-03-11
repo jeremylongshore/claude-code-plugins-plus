@@ -35,7 +35,7 @@ Comprehensive checklist to ensure your Gamma integration is production-ready.
 // Production client configuration
 const gamma = new GammaClient({
   apiKey: await secretManager.getSecret('GAMMA_API_KEY'),
-  timeout: 30000,
+  timeout: 30000,  # 30 seconds in ms
   retries: 3,
 });
 ```
@@ -81,7 +81,7 @@ app.get('/health/gamma', async (req, res) => {
     await gamma.ping();
     res.json({ status: 'healthy', service: 'gamma' });
   } catch (err) {
-    res.status(503).json({ status: 'unhealthy', error: err.message });
+    res.status(503).json({ status: 'unhealthy', error: err.message });  # HTTP 503 Service Unavailable
   }
 });
 ```
@@ -113,9 +113,9 @@ import CircuitBreaker from 'opossum';
 const breaker = new CircuitBreaker(
   (opts) => gamma.presentations.create(opts),
   {
-    timeout: 30000,
+    timeout: 30000,  # 30 seconds in ms
     errorThresholdPercentage: 50,
-    resetTimeout: 30000,
+    resetTimeout: 30000,  # 30 seconds in ms
   }
 );
 
@@ -142,6 +142,7 @@ breaker.fallback(() => ({
 ## Final Verification Script
 ```bash
 #!/bin/bash
+set -euo pipefail
 # prod-verify.sh
 
 echo "Gamma Production Verification"
@@ -155,7 +156,7 @@ fi
 # Test connection
 curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $GAMMA_API_KEY" \
-  https://api.gamma.app/v1/ping | grep -q "200" \
+  https://api.gamma.app/v1/ping | grep -q "200" \  # HTTP 200 OK
   && echo "OK: API connection" \
   || echo "FAIL: API connection"
 

@@ -200,6 +200,7 @@ Comprehensive checklist for deploying TwinMind integrations to production.
 
 ```bash
 #!/bin/bash
+set -euo pipefail
 # pre-launch-check.sh
 
 echo "TwinMind Production Pre-Launch Check"
@@ -227,7 +228,7 @@ echo -n "Testing API connectivity... "
 HEALTH=$(curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer $TWINMIND_API_KEY" \
   https://api.twinmind.com/v1/health)
-if [ "$HEALTH" = "200" ]; then
+if [ "$HEALTH" = "200" ]; then  # HTTP 200 OK
   echo "OK"
 else
   echo "FAIL: HTTP $HEALTH"

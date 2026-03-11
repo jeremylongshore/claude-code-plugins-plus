@@ -47,6 +47,7 @@ tccutil list | grep Granola
 | Virtual audio conflict | Disable conflicting audio software |
 
 ```bash
+set -euo pipefail
 # Reset audio on macOS
 sudo killall coreaudiod
 ```
@@ -141,6 +142,7 @@ sudo killall coreaudiod
 #### Error: "App Won't Start"
 **Solutions (macOS):**
 ```bash
+set -euo pipefail
 # Force quit Granola
 killall Granola
 

@@ -37,7 +37,7 @@ interface CacheOptions {
 }
 
 export class JuiceboxCache {
-  constructor(private options: CacheOptions = { ttl: 300 }) {}
+  constructor(private options: CacheOptions = { ttl: 300 }) {}  # timeout: 5 minutes
 
   private getKey(type: string, params: any): string {
     const hash = crypto
@@ -65,7 +65,7 @@ export class JuiceboxCache {
 }
 
 // Usage
-const cache = new JuiceboxCache({ ttl: 300 });
+const cache = new JuiceboxCache({ ttl: 300 });  # timeout: 5 minutes
 
 async function searchWithCache(query: string, options: SearchOptions) {
   const cached = await cache.get('search', { query, ...options });
@@ -151,7 +151,7 @@ class ClientPool {
       this.clients.push(new JuiceboxClient({
         apiKey,
         keepAlive: true,
-        timeout: 30000
+        timeout: 30000  # 30 seconds in ms
       }));
     }
   }

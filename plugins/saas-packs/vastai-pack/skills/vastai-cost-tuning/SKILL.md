@@ -66,7 +66,7 @@ vastai create instance OFFER_ID --interruptible \
 # Cron job every 15 minutes: kill instances idle >1 hour
 #!/bin/bash
 vastai show instances --raw | \
-  jq -r '.[] | select(.gpu_utilization < 5 and ((.cur_state_time - .start_time) > 3600)) | .id' | \
+  jq -r '.[] | select(.gpu_utilization < 5 and ((.cur_state_time - .start_time) > 3600)) | .id' | \  # timeout: 1 hour
   while read id; do
     echo "Destroying idle instance $id (GPU util <5% for >1hr)"
     vastai destroy instance "$id"
@@ -83,7 +83,7 @@ INSTANCE_ID = "12345"
 
 start_time = time.time()
 while True:
-    elapsed_hours = (time.time() - start_time) / 3600
+    elapsed_hours = (time.time() - start_time) / 3600  # timeout: 1 hour
     if elapsed_hours > MAX_HOURS:
         print(f"Time limit reached ({MAX_HOURS}h). Saving checkpoint and terminating.")
         subprocess.run(["vastai", "destroy", "instance", INSTANCE_ID])
@@ -94,7 +94,7 @@ while True:
 ### Step 5: Compare Pricing Before Provisioning
 ```bash
 # Always compare offers before creating an instance
-vastai search offers 'gpu_name=RTX_4090 num_gpus=1 reliability>0.95 inet_down>200' \
+vastai search offers 'gpu_name=RTX_4090 num_gpus=1 reliability>0.95 inet_down>200' \  # HTTP 200 OK
   --order 'dph_total' --limit 10 | \
   head -5
 # Price varies 2-3x for same GPU depending on host, region, and demand

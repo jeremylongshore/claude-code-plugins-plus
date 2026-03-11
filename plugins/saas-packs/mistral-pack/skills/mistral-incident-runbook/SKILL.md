@@ -36,6 +36,7 @@ Rapid incident response procedures for Mistral AI-related outages.
 
 ```bash
 #!/bin/bash
+set -euo pipefail
 # mistral-triage.sh
 
 echo "=== Mistral AI Quick Triage ==="
@@ -57,7 +58,7 @@ curl -s https://api.yourapp.com/health | jq '.services.mistral' 2>/dev/null || e
 # 3. Check recent error rate
 echo ""
 echo "3. Recent errors (if Prometheus available)..."
-curl -s "localhost:9090/api/v1/query?query=rate(mistral_errors_total[5m])" | jq '.data.result' 2>/dev/null || echo "   Prometheus not available"
+curl -s "localhost:9090/api/v1/query?query=rate(mistral_errors_total[5m])" | jq '.data.result' 2>/dev/null || echo "   Prometheus not available"  # Prometheus port
 
 # 4. Check recent logs
 echo ""
@@ -70,8 +71,8 @@ kubectl logs -l app=mistral-service --since=5m 2>/dev/null | grep -i error | tai
 ```
 Mistral API returning errors?
 ├─ YES: Check api.mistral.ai/v1/models with curl
-│   ├─ 401 → API key issue (see Auth section)
-│   ├─ 429 → Rate limited (see Rate Limit section)
+│   ├─ 401 → API key issue (see Auth section)  # HTTP 401 Unauthorized
+│   ├─ 429 → Rate limited (see Rate Limit section)  # HTTP 429 Too Many Requests
 │   ├─ 5xx → Mistral service issue (wait & monitor)
 │   └─ Timeout → Network issue (check connectivity)
 └─ NO: Our service returning errors?
@@ -84,6 +85,7 @@ Mistral API returning errors?
 ### 401 Unauthorized - Authentication Failed
 
 ```bash
+set -euo pipefail
 # 1. Verify API key is set
 echo "API Key length: ${#MISTRAL_API_KEY}"
 echo "API Key prefix: ${MISTRAL_API_KEY:0:10}..."
@@ -107,6 +109,7 @@ kubectl rollout restart deployment/mistral-service
 ### 429 Rate Limited
 
 ```bash
+set -euo pipefail
 # 1. Check current rate limit status
 curl -v -H "Authorization: Bearer ${MISTRAL_API_KEY}" \
   https://api.mistral.ai/v1/models 2>&1 | grep -i "rate\|retry"
@@ -124,6 +127,7 @@ kubectl set env deployment/mistral-service MAX_CONCURRENT_REQUESTS=5
 ### 500/503 Service Error
 
 ```bash
+set -euo pipefail
 # 1. Check Mistral status (if available)
 echo "Checking Mistral status..."
 
@@ -140,6 +144,7 @@ watch -n 30 'curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer ${
 ### Timeout/Network Error
 
 ```bash
+set -euo pipefail
 # 1. Test connectivity
 curl -v --connect-timeout 5 https://api.mistral.ai/v1/models
 
@@ -147,7 +152,7 @@ curl -v --connect-timeout 5 https://api.mistral.ai/v1/models
 nslookup api.mistral.ai
 
 # 3. Increase timeout
-kubectl set env deployment/mistral-service MISTRAL_TIMEOUT=60000
+kubectl set env deployment/mistral-service MISTRAL_TIMEOUT=60000  # 1 minute in ms
 
 # 4. Check egress rules
 kubectl get networkpolicy
@@ -188,6 +193,7 @@ Last updated: [timestamp]
 
 ```bash
 #!/bin/bash
+set -euo pipefail
 # collect-evidence.sh
 
 INCIDENT_DIR="incident-$(date +%Y%m%d-%H%M%S)"
@@ -197,7 +203,7 @@ mkdir -p "$INCIDENT_DIR"
 kubectl logs -l app=mistral-service --since=1h > "$INCIDENT_DIR/logs.txt"
 
 # Export metrics
-curl "localhost:9090/api/v1/query_range?query=mistral_errors_total&start=$(date -d '2 hours ago' +%s)&end=$(date +%s)&step=60" \
+curl "localhost:9090/api/v1/query_range?query=mistral_errors_total&start=$(date -d '2 hours ago' +%s)&end=$(date +%s)&step=60" \  # Prometheus port
   > "$INCIDENT_DIR/metrics.json"
 
 # Collect config (redacted)
@@ -279,11 +285,13 @@ How was the incident detected?
 
 ### One-Line Health Check
 ```bash
+set -euo pipefail
 curl -sf -H "Authorization: Bearer ${MISTRAL_API_KEY}" https://api.mistral.ai/v1/models | jq '.data[0].id' || echo "UNHEALTHY"
 ```
 
 ### Quick Rollback
 ```bash
+set -euo pipefail
 kubectl rollout undo deployment/mistral-service && \
 kubectl rollout status deployment/mistral-service
 ```

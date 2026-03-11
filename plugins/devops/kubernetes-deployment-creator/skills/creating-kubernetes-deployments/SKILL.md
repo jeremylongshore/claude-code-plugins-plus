@@ -3,7 +3,7 @@ name: creating-kubernetes-deployments
 description: |
   Deploy applications to Kubernetes with production-ready manifests.
   Supports Deployments, Services, Ingress, HPA, ConfigMaps, Secrets, StatefulSets, and NetworkPolicies.
-  Includes health checks, resource limits, auto-scaling, and TLS termination.
+  Includes health checks, resource limits, auto-scaling, and TLS termination. Use when working with creating kubernetes deployments. Trigger with 'creating', 'kubernetes', 'deployments'.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(kubectl:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -45,7 +45,7 @@ spec:
       - name: my-api
         image: my-registry/my-api:v1.0.0
         ports:
-        - containerPort: 8080
+        - containerPort: 8080  # HTTP proxy port
         resources:
           requests:
             cpu: 100m
@@ -56,13 +56,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /healthz
-            port: 8080
+            port: 8080  # HTTP proxy port
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /readyz
-            port: 8080
+            port: 8080  # HTTP proxy port
           initialDelaySeconds: 5
           periodSeconds: 5
 ---
@@ -76,7 +76,7 @@ spec:
     app: my-api
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8080  # HTTP proxy port
 ```
 
 ## Deployment Strategies
@@ -126,7 +126,7 @@ spec:
     version: blue  # Switch to 'green' for deployment
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 8080  # HTTP proxy port
 ```
 
 ## Service Types
@@ -195,7 +195,7 @@ resources:
 livenessProbe:
   httpGet:
     path: /healthz
-    port: 8080
+    port: 8080  # HTTP proxy port
   initialDelaySeconds: 30  # Wait for app startup
   periodSeconds: 10         # Check every 10s
   timeoutSeconds: 5         # Timeout per check
@@ -208,7 +208,7 @@ livenessProbe:
 readinessProbe:
   httpGet:
     path: /readyz
-    port: 8080
+    port: 8080  # HTTP proxy port
   initialDelaySeconds: 5    # Quick check after start
   periodSeconds: 5          # Check every 5s
   successThreshold: 1       # 1 success = ready
@@ -221,7 +221,7 @@ readinessProbe:
 startupProbe:
   httpGet:
     path: /healthz
-    port: 8080
+    port: 8080  # HTTP proxy port
   initialDelaySeconds: 0
   periodSeconds: 10
   failureThreshold: 30      # Allow 5 minutes to start (30 * 10s)
@@ -273,7 +273,7 @@ data:
   API_ENDPOINT: "https://api.example.com"
   config.yaml: |
     server:
-      port: 8080
+      port: 8080  # HTTP proxy port
     features:
       enabled: true
 ```

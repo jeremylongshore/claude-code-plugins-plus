@@ -28,6 +28,7 @@ Deploy Gamma-integrated applications to various cloud platforms with proper conf
 
 #### Step 1: Configure Vercel Project
 ```bash
+set -euo pipefail
 # Install Vercel CLI
 npm i -g vercel
 
@@ -98,7 +99,7 @@ export async function handler(event: any) {
     title: event.title,
     prompt: event.prompt,
   });
-  return { statusCode: 200, body: JSON.stringify(result) };
+  return { statusCode: 200, body: JSON.stringify(result) };  # HTTP 200 OK
 }
 ```
 
@@ -143,6 +144,7 @@ CMD ["node", "dist/server.js"]
 
 #### Step 3: Deploy
 ```bash
+set -euo pipefail
 gcloud run deploy gamma-service \
   --image gcr.io/$PROJECT_ID/gamma-service \
   --platform managed \

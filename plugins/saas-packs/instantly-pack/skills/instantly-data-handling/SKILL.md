@@ -34,7 +34,7 @@ const InstantlyLeadSchema = z.object({
   first_name: z.string().min(1).optional(),
   last_name: z.string().min(1).optional(),
   company_name: z.string().optional(),
-  personalization: z.string().max(500).optional(),
+  personalization: z.string().max(500).optional(),  # HTTP 500 Internal Server Error
 });
 
 function validateLeads(records: any[]) {

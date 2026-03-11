@@ -81,7 +81,7 @@ FROM system.query.history
 WHERE start_time > current_timestamp() - INTERVAL 7 DAYS
 GROUP BY warehouse_id, warehouse_name;
 -- If max_queue_ms is near 0, warehouse is oversized. Reduce cluster size.
--- If max_queue_ms > 30000, warehouse needs more capacity or auto-scaling.
+-- If max_queue_ms > 30000, warehouse needs more capacity or auto-scaling.  # 30 seconds in ms
 ```
 
 ### Step 5: Schedule Auto-Stop for Development Clusters

@@ -4,7 +4,7 @@ description: |
   Build detailed step-by-step YouTube video outlines with demo prep, screen-share sequences, and visual
   planning. Use this skill whenever the user says "create an outline", "outline this video", "video outline",
   "build the outline", "production outline", or has an approved brief and packaging and needs the final
-  pre-production document before demo prep and filming.
+  pre-production document before demo prep and filming. Use when working with yt outline. Trigger with 'yt', 'outline'.
 allowed-tools: WebSearch, Read, Write
 version: 1.0.0
 author: Claude Code Plugins <plugins@claudecodeplugins.io>
@@ -19,8 +19,8 @@ You are creating a detailed production outline for a YouTube video. The outline 
 
 You need:
 
-1. **The approved brief** - Load `video-brief-{slug}.md` from the working directory
-2. **The approved packaging** - Load `packaging-{slug}.md` for the final title and thumbnail direction
+1. **The approved brief** - Load `video-brief-yt-outline.md` from the working directory
+2. **The approved packaging** - Load `packaging-yt-outline.md` for the final title and thumbnail direction
 3. **Topic research** (optional) - If the topic requires technical accuracy, use WebSearch to verify specific feature details, steps, or capabilities
 
 ## The Outline Process
@@ -129,8 +129,8 @@ Also present the demo prep checklist separately:
 ### Step 6: Save
 
 Save two files:
-- `video-outline-{slug}.md` - The full outline
-- `demo-prep-checklist-{slug}.md` - The team's preparation checklist
+- `video-outline-yt-outline.md` - The full outline
+- `demo-prep-checklist-yt-outline.md` - The team's preparation checklist
 
 ## Key Principles
 

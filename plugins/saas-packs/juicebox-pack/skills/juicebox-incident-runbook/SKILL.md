@@ -18,17 +18,17 @@ compatible-with: claude-code, codex, openclaw
 Standardized incident response procedures for Juicebox integration issues.
 
 ## Instructions
-- Quick Diagnostics
-- Incident Triage Decision Tree
-- Response Procedures
-- When Juicebox is Down
-- When Authentication Fails
-- When Rate Limited
-- When Requests Timeout
-- Incident Communication Template
-- Incident Report Template
-- On-Call Checklist
-- On-Call Handoff Checklist
+1. Quick Diagnostics
+2. Incident Triage Decision Tree
+3. Response Procedures
+4. When Juicebox is Down
+5. When Authentication Fails
+6. When Rate Limited
+7. When Requests Timeout
+8. Incident Communication Template
+9. Incident Report Template
+10. On-Call Checklist
+11. On-Call Handoff Checklist
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

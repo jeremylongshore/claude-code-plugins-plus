@@ -11,12 +11,11 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Tracking Crypto Portfolio
 
 ## Overview
 
-This skill provides comprehensive cryptocurrency portfolio tracking with:
+Provides cryptocurrency portfolio tracking with:
 
 - **Real-Time Valuations**: Current prices from CoinGecko
 - **Holdings Breakdown**: Quantity, value, and allocation per asset
@@ -48,7 +47,7 @@ Create a portfolio file (e.g., `holdings.json`):
   "name": "My Portfolio",
   "holdings": [
     {"coin": "BTC", "quantity": 0.5, "cost_basis": 25000},
-    {"coin": "ETH", "quantity": 10, "cost_basis": 2000},
+    {"coin": "ETH", "quantity": 10, "cost_basis": 2000},  # 2 seconds in ms
     {"coin": "SOL", "quantity": 100}
   ]
 }

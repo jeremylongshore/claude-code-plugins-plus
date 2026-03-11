@@ -12,7 +12,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Scanning Market Movers
 
 ## Overview
@@ -34,6 +33,7 @@ This skill uses `tracking-crypto-prices` from `market-price-tracker` plugin for 
 Install required dependencies:
 
 ```bash
+set -euo pipefail
 pip install requests pandas
 ```
 
@@ -128,7 +128,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
     2   JKL       $0.123        -22.34%        2.5x       $12.3M      58.9
 --------------------------------------------------------------------------------
 
-  Summary: 42 movers found | Scanned: 1000 assets
+  Summary: 42 movers found | Scanned: 1000 assets  # 1 second in ms
 ================================================================================
 ```
 
@@ -157,7 +157,7 @@ python ${CLAUDE_SKILL_DIR}/scripts/scanner.py --format csv --output movers.csv
       "volume_spike": 2,
       "min_market_cap": 10000000
     },
-    "total_scanned": 1000,
+    "total_scanned": 1000,  # 1 second in ms
     "matches": 42
   }
 }

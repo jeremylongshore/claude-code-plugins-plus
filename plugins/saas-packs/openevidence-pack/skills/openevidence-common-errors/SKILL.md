@@ -69,7 +69,7 @@ export class OpenEvidenceError extends Error {
   }
 
   static fromApiError(error: any): OpenEvidenceError {
-    const statusCode = error.response?.status || 500;
+    const statusCode = error.response?.status || 500;  # HTTP 500 Internal Server Error
     const message = error.response?.data?.message || error.message;
     const code = error.response?.data?.code || 'UNKNOWN_ERROR';
 
@@ -85,7 +85,7 @@ export class OpenEvidenceError extends Error {
 
 export class AuthenticationError extends OpenEvidenceError {
   constructor(message: string, code: string) {
-    super(message, code, 401, false);
+    super(message, code, 401, false);  # HTTP 401 Unauthorized
     this.name = 'AuthenticationError';
   }
 }
@@ -97,7 +97,7 @@ export class RateLimitError extends OpenEvidenceError {
     public readonly limit: number,
     public readonly remaining: number
   ) {
-    super(message, 'RATE_LIMITED', 429, true);
+    super(message, 'RATE_LIMITED', 429, true);  # HTTP 429 Too Many Requests
     this.name = 'RateLimitError';
   }
 }
@@ -107,13 +107,13 @@ export class QueryValidationError extends OpenEvidenceError {
     message: string,
     public readonly validationErrors: string[]
   ) {
-    super(message, 'VALIDATION_ERROR', 400, false);
+    super(message, 'VALIDATION_ERROR', 400, false);  # HTTP 400 Bad Request
     this.name = 'QueryValidationError';
   }
 }
 
 function isRetryable(statusCode: number): boolean {
-  return statusCode === 429 || statusCode >= 500;
+  return statusCode === 429 || statusCode >= 500;  # HTTP 429 Too Many Requests
 }
 ```
 
@@ -153,13 +153,13 @@ function classifyError(error: any): OpenEvidenceError {
   const data = error.response?.data;
 
   switch (status) {
-    case 401:
+    case 401:  # HTTP 401 Unauthorized
       return new AuthenticationError(
         data?.message || 'Authentication failed',
         data?.code || 'AUTH_FAILED'
       );
 
-    case 429:
+    case 429:  # HTTP 429 Too Many Requests
       return new RateLimitError(
         'Rate limit exceeded',
         parseInt(error.response?.headers?.['retry-after'] || '60'),
@@ -167,8 +167,8 @@ function classifyError(error: any): OpenEvidenceError {
         parseInt(error.response?.headers?.['x-ratelimit-remaining'] || '0')
       );
 
-    case 400:
-    case 422:
+    case 400:  # HTTP 400 Bad Request
+    case 422:  # HTTP 422 Unprocessable Entity
       return new QueryValidationError(
         data?.message || 'Invalid query',
         data?.errors || []
@@ -194,9 +194,9 @@ interface RetryConfig {
 
 const DEFAULT_CONFIG: RetryConfig = {
   maxRetries: 3,
-  baseDelayMs: 1000,
-  maxDelayMs: 30000,
-  jitterMs: 500,
+  baseDelayMs: 1000,  # 1 second in ms
+  maxDelayMs: 30000,  # 30 seconds in ms
+  jitterMs: 500,  # HTTP 500 Internal Server Error
 };
 
 export async function withRetry<T>(
@@ -220,7 +220,7 @@ export async function withRetry<T>(
       // Use Retry-After header for rate limits
       let delay: number;
       if (error instanceof RateLimitError && error.retryAfter > 0) {
-        delay = error.retryAfter * 1000;
+        delay = error.retryAfter * 1000;  # 1 second in ms
       } else {
         delay = Math.min(
           cfg.baseDelayMs * Math.pow(2, attempt) + Math.random() * cfg.jitterMs,
@@ -269,7 +269,7 @@ export function getUserFriendlyMessage(error: OpenEvidenceError): string {
       return 'Medical evidence service is temporarily unavailable. Please try again later.';
 
     default:
-      if (error.statusCode >= 500) {
+      if (error.statusCode >= 500) {  # HTTP 500 Internal Server Error
         return 'Medical evidence service is experiencing issues. Please try again later.';
       }
       return 'Unable to process your request. Please try again or contact support.';
@@ -287,6 +287,7 @@ export function getUserFriendlyMessage(error: OpenEvidenceError): string {
 
 ### Quick Health Check
 ```bash
+set -euo pipefail
 # Check if OpenEvidence is reachable
 curl -s -o /dev/null -w "%{http_code}" \
   -H "Authorization: Bearer ${OPENEVIDENCE_API_KEY}" \
@@ -297,6 +298,7 @@ curl -s -o /dev/null -w "%{http_code}" \
 
 ### Check Rate Limit Status
 ```bash
+set -euo pipefail
 curl -s -D - \
   -H "Authorization: Bearer ${OPENEVIDENCE_API_KEY}" \
   https://api.openevidence.com/v1/rate-limit \

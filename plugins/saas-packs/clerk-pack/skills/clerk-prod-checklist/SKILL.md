@@ -23,8 +23,8 @@ Complete checklist to ensure your Clerk integration is production-ready.
 - Domain and hosting ready
 
 ## Instructions
-- Production Checklist
-- Validation Script
+1. Production Checklist
+2. Validation Script
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -23,10 +23,10 @@ Comprehensive guide to diagnosing and resolving Evernote API errors, including E
 
 ## Instructions
 
-See implementation guide for detailed steps.
+1. See implementation guide for detailed steps.
 
-For full implementation details and code examples, load:
-`references/implementation-guide.md`
+2. For full implementation details and code examples, load:
+3. `references/implementation-guide.md`
 
 ## Output
 - Understanding of all Evernote exception types

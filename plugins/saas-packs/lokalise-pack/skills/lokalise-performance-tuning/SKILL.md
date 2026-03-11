@@ -35,7 +35,7 @@ async function* getAllKeys(projectId: string) {
   do {
     const result = await lok.keys().list({
       project_id: projectId,
-      limit: 500,           // Maximum allowed
+      limit: 500,           // Maximum allowed  # HTTP 500 Internal Server Error
       pagination: 'cursor',
       cursor,
     });
@@ -43,7 +43,7 @@ async function* getAllKeys(projectId: string) {
     cursor = result.hasNextCursor() ? result.nextCursor : undefined;
   } while (cursor);
 }
-// 10,000 keys: 20 API calls instead of 100 (at limit=500 vs default limit=100)
+// 10,000 keys: 20 API calls instead of 100 (at limit=500 vs default limit=100)  # HTTP 500 Internal Server Error
 ```
 
 ### Step 2: Cache Translation Downloads
@@ -67,15 +67,15 @@ async function cachedDownload(projectId: string, format: string, langIso: string
 
 ### Step 3: Batch Key Operations
 ```typescript
-// Bulk create keys (up to 500 per request)
+// Bulk create keys (up to 500 per request)  # HTTP 500 Internal Server Error
 async function createKeysBatched(projectId: string, keys: any[]) {
-  const BATCH_SIZE = 500;
+  const BATCH_SIZE = 500;  # HTTP 500 Internal Server Error
   const results = [];
   for (let i = 0; i < keys.length; i += BATCH_SIZE) {
     const batch = keys.slice(i, i + BATCH_SIZE);
     const result = await lok.keys().create({ project_id: projectId, keys: batch });
     results.push(...result.items);
-    await new Promise(r => setTimeout(r, 200)); // Respect rate limit
+    await new Promise(r => setTimeout(r, 200)); // Respect rate limit  # HTTP 200 OK
   }
   return results;
 }
@@ -87,7 +87,7 @@ async function createKeysBatched(projectId: string, keys: any[]) {
 import PQueue from 'p-queue';
 
 // Lokalise rate limit: 6 requests/second
-const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });
+const queue = new PQueue({ concurrency: 5, interval: 1000, intervalCap: 5 });  # 1 second in ms
 
 async function throttledRequest<T>(fn: () => Promise<T>): Promise<T> {
   return queue.add(fn) as Promise<T>;
@@ -99,6 +99,7 @@ const project = await throttledRequest(() => lok.projects().get(projectId));
 
 ### Step 5: Use Webhooks Instead of Polling
 ```bash
+set -euo pipefail
 # Replace polling for translation status with webhooks
 curl -X POST "https://api.lokalise.com/api2/projects/PROJECT_ID/webhooks" \
   -H "X-Api-Token: $LOKALISE_API_TOKEN" \

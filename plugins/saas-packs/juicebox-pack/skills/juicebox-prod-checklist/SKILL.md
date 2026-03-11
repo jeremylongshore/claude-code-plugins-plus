@@ -23,10 +23,10 @@ Complete production readiness checklist for Juicebox integration deployment.
 - Monitoring infrastructure ready
 
 ## Instructions
-- Production Readiness Checklist
-- Validation Scripts
-- Go-Live Checklist
-- Day-of-Launch Checklist
+1. Production Readiness Checklist
+2. Validation Scripts
+3. Go-Live Checklist
+4. Day-of-Launch Checklist
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

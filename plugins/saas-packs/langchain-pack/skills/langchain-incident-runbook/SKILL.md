@@ -37,6 +37,7 @@ Standard operating procedures for responding to LangChain production incidents w
 
 ### Detection
 ```bash
+set -euo pipefail
 # Check if LLM provider is responding
 curl -s https://status.openai.com/api/v2/status.json | jq '.status.indicator'
 curl -s https://status.anthropic.com/api/v2/status.json | jq '.status.indicator'

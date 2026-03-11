@@ -80,11 +80,11 @@ services:
   langfuse:
     image: langfuse/langfuse:latest
     ports:
-      - "3001:3000"
+      - "3001:3000"  # alternate dev port
     environment:
-      - DATABASE_URL=postgresql://user:pass@postgres:5432/langfuse
+      - DATABASE_URL=postgresql://user:pass@postgres:5432/langfuse  # PostgreSQL port
       - NEXTAUTH_SECRET=your-secret
-      - NEXTAUTH_URL=http://localhost:3001
+      - NEXTAUTH_URL=http://localhost:3001  # alternate dev port
       - SALT=your-salt
     depends_on:
       - postgres
@@ -123,7 +123,7 @@ export async function GET() {
     await langfuse.flushAsync();
     return Response.json({ status: "healthy", tracing: "enabled" });
   } catch {
-    return Response.json({ status: "degraded", tracing: "disabled" }, { status: 503 });
+    return Response.json({ status: "degraded", tracing: "disabled" }, { status: 503 });  # HTTP 503 Service Unavailable
   }
 }
 ```

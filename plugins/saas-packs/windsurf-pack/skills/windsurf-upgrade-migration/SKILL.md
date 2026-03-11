@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Windsurf Upgrade & Migration
 
 ## Overview
@@ -28,6 +27,7 @@ Guide for upgrading Windsurf SDK versions and handling breaking changes.
 
 ### Step 1: Check Current Version
 ```bash
+set -euo pipefail
 npm list @windsurf/sdk
 npm view @windsurf/sdk version
 ```
@@ -39,6 +39,7 @@ open https://github.com/windsurf/sdk/releases
 
 ### Step 3: Create Upgrade Branch
 ```bash
+set -euo pipefail
 git checkout -b upgrade/windsurf-sdk-vX.Y.Z
 npm install @windsurf/sdk@latest
 npm test
@@ -84,6 +85,7 @@ const client = new WindsurfClient({
 
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 npm install @windsurf/sdk@1.x.x --save-exact
 ```
 

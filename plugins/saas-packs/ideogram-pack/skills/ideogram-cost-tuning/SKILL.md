@@ -68,7 +68,7 @@ const imageCache = new Map<string, { url: string; timestamp: number }>();
 async function cachedGeneration(prompt: string, options: any) {
   const key = createHash('md5').update(`${prompt}:${JSON.stringify(options)}`).digest('hex');
   const cached = imageCache.get(key);
-  if (cached && Date.now() - cached.timestamp < 7 * 24 * 3600 * 1000) {
+  if (cached && Date.now() - cached.timestamp < 7 * 24 * 3600 * 1000) {  # timeout: 1 hour
     return cached.url; // Reuse for 7 days
   }
   const result = await ideogram.generate({ image_request: { prompt, ...options } });
@@ -96,6 +96,7 @@ async function generateVariations(prompt: string, count: number = 4) {
 
 ### Step 5: Monitor Credit Burn Rate
 ```bash
+set -euo pipefail
 # Track credit consumption and forecast depletion
 curl -s https://api.ideogram.ai/v1/usage \
   -H "Api-Key: $IDEOGRAM_API_KEY" | \

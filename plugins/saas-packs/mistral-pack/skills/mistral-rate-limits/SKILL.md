@@ -48,7 +48,7 @@ class MistralRateLimiter:
         self.token_usage = []
         self.lock = threading.Lock()
 
-    def wait_if_needed(self, estimated_tokens: int = 1000):
+    def wait_if_needed(self, estimated_tokens: int = 1000):  # 1 second in ms
         with self.lock:
             now = time.time()
             cutoff = now - 60
@@ -93,7 +93,7 @@ def chat_with_retry(client, messages, model, max_retries=5):
         try:
             return client.chat.complete(model=model, messages=messages)
         except Exception as e:
-            if hasattr(e, 'status_code') and e.status_code == 429:
+            if hasattr(e, 'status_code') and e.status_code == 429:  # HTTP 429 Too Many Requests
                 wait = min(2 ** attempt + 1, 60)
                 print(f"Rate limited, waiting {wait}s (attempt {attempt+1})")
                 time.sleep(wait)
@@ -126,7 +126,7 @@ class ModelRouter:
 
 ```python
 def batch_embed(client, texts: list[str], batch_size: int = 32):
-    limiter = MistralRateLimiter(rpm=300, tpm=1000000)
+    limiter = MistralRateLimiter(rpm=300, tpm=1000000)  # timeout: 5 minutes
     all_embeddings = []
     for i in range(0, len(texts), batch_size):
         batch = texts[i:i+batch_size]

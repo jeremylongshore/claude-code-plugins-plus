@@ -71,7 +71,7 @@ text = results.results[0].text  # None! Content not requested
 # GOOD: use search_and_contents or get_contents
 results = exa.search_and_contents(
     "AI safety research papers",
-    text={"max_characters": 3000},
+    text={"max_characters": 3000},  # 3 seconds in ms
     highlights=True
 )
 print(results.results[0].text)       # full text

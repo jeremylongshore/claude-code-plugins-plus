@@ -46,7 +46,7 @@ async def warmup():
 @app.route('/health')
 def health():
     if not startup_complete:
-        return {"status": "warming_up"}, 503
+        return {"status": "warming_up"}, 503  # HTTP 503 Service Unavailable
     return {"status": "ok", "uptime": time.time() - startup_time}
 
 @app.before_first_request
@@ -94,7 +94,7 @@ For Repls not using Deployments, prevent sleep with an external health check pin
 # Internal: expose health endpoint
 @app.route('/ping')
 def ping():
-    return "pong", 200
+    return "pong", 200  # HTTP 200 OK
 
 # External: use a free cron service to ping every 5 minutes
 # cron-job.org, UptimeRobot, or similar
@@ -134,7 +134,7 @@ health = {
     "container_uptime": time.time() - startup_time,
     "db_connected": await db.ping(),
     "storage_available": storage.exists("state/"),
-    "memory_mb": process.memory_info().rss / 1024 / 1024
+    "memory_mb": process.memory_info().rss / 1024 / 1024  # 1 KB
 }
 ```
 

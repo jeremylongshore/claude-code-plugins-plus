@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Webhooks & Events
 
 ## Overview
@@ -65,7 +64,7 @@ export async function POST(request: NextRequest) {
   // Verify webhook signature
   if (!signature || !verifySignature(payload, signature)) {
     console.error("Invalid webhook signature");
-    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });  # HTTP 401 Unauthorized
   }
 
   const event: LangfuseWebhookPayload = JSON.parse(payload);
@@ -164,12 +163,12 @@ export const langfuseQueue = new Queue("langfuse-events", { connection });
 // Webhook handler adds to queue
 export async function queueWebhookEvent(event: LangfuseWebhookPayload) {
   await langfuseQueue.add(event.event, event, {
-    removeOnComplete: 1000,
-    removeOnFail: 5000,
+    removeOnComplete: 1000,  # 1 second in ms
+    removeOnFail: 5000,  # 5 seconds in ms
     attempts: 3,
     backoff: {
       type: "exponential",
-      delay: 1000,
+      delay: 1000,  # 1 second in ms
     },
   });
 }
@@ -213,7 +212,7 @@ class LangfuseEventStream {
   private lastChecked: Date;
   private pollInterval: number;
 
-  constructor(pollIntervalMs: number = 5000) {
+  constructor(pollIntervalMs: number = 5000) {  # 5 seconds in ms
     this.langfuse = new Langfuse();
     this.lastChecked = new Date();
     this.pollInterval = pollIntervalMs;
@@ -249,7 +248,7 @@ class LangfuseEventStream {
 }
 
 // Usage
-const stream = new LangfuseEventStream(10000); // 10 second poll
+const stream = new LangfuseEventStream(10000); // 10 second poll  # 10 seconds in ms
 stream.start({
   onTrace: (trace) => {
     if (trace.level === "ERROR") {
@@ -367,7 +366,7 @@ async function handleWebhook(event: LangfuseWebhookPayload) {
   // Process event...
 
   // Clean up old events periodically
-  if (processedEvents.size > 10000) {
+  if (processedEvents.size > 10000) {  # 10 seconds in ms
     processedEvents.clear();
   }
 }

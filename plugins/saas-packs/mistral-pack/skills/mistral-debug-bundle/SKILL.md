@@ -41,6 +41,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ### Step 2: Collect Environment Info
 
 ```bash
+set -euo pipefail
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
 echo "Node.js: $(node --version 2>/dev/null || echo 'not installed')" >> "$BUNDLE_DIR/summary.txt"
@@ -55,6 +56,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 ### Step 3: Gather SDK and API Info
 
 ```bash
+set -euo pipefail
 # SDK version (Node.js)
 echo "--- SDK Versions ---" >> "$BUNDLE_DIR/summary.txt"
 npm list @mistralai/mistralai 2>/dev/null >> "$BUNDLE_DIR/summary.txt" || echo "Node SDK: not installed" >> "$BUNDLE_DIR/summary.txt"
@@ -113,6 +115,7 @@ fi
 ### Step 5: Capture Error Details
 
 ```bash
+set -euo pipefail
 # Error reproduction script
 cat > "$BUNDLE_DIR/reproduce.sh" << 'SCRIPT'
 #!/bin/bash
@@ -135,6 +138,7 @@ chmod +x "$BUNDLE_DIR/reproduce.sh"
 ### Step 6: Package Bundle
 
 ```bash
+set -euo pipefail
 # Create timestamp file
 echo "Bundle created: $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$BUNDLE_DIR/timestamp.txt"
 

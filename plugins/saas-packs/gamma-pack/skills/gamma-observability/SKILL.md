@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Gamma Observability
 
 ## Contents
@@ -75,7 +74,8 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ### Quick Health Check
 ```bash
-curl http://localhost:3000/health/gamma | jq
+set -euo pipefail
+curl http://localhost:3000/health/gamma | jq  # 3 seconds in ms
 # { "status": "healthy", "latency": 150, "rateLimit": { "remaining": 95, "limit": 100 } }
 ```
 

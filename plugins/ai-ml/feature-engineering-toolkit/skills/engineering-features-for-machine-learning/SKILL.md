@@ -16,7 +16,7 @@ This skill provides automated assistance for feature engineering toolkit tasks.
 
 
 This skill provides automated assistance for feature engineering toolkit tasks.
-This skill enables Claude to leverage the feature-engineering-toolkit plugin to enhance machine learning models. It automates the process of creating new features, selecting the most relevant ones, and transforming existing features to better suit the model's needs. Use this skill to improve the accuracy, efficiency, and interpretability of machine learning models.
+leverage the feature-engineering-toolkit plugin to enhance machine learning models. It automates the process of creating new features, selecting the most relevant ones, and transforming existing features to better suit the model's needs. Use this skill to improve the accuracy, efficiency, and interpretability of machine learning models.
 
 ## How It Works
 

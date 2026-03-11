@@ -23,11 +23,11 @@ Master issue lifecycle management: creating, updating, transitioning, and organi
 - Understanding of Linear's issue model
 
 ## Instructions
-- Step 1: Create Issues
-- Step 2: Update Issues
-- Step 3: State Transitions
-- Step 4: Issue Relationships
-- Step 5: Comments and Activity
+1. Step 1: Create Issues
+2. Step 2: Update Issues
+3. Step 3: State Transitions
+4. Step 4: Issue Relationships
+5. Step 5: Comments and Activity
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

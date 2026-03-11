@@ -18,10 +18,10 @@ compatible-with: claude-code, codex, openclaw
 Understand and implement proper rate limiting handling for Juicebox API.
 
 ## Instructions
-- Step 1: Understand Rate Limit Headers
-- Step 2: Implement Rate Limiter
-- Step 3: Add Exponential Backoff
-- Step 4: Implement Quota Tracking
+1. Step 1: Understand Rate Limit Headers
+2. Step 2: Implement Rate Limiter
+3. Step 3: Add Exponential Backoff
+4. Step 4: Implement Quota Tracking
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

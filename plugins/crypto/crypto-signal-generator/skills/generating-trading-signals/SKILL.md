@@ -12,7 +12,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Generating Trading Signals
 
 ## Overview
@@ -33,11 +32,13 @@ Multi-indicator signal generation system that analyzes price action using 7 tech
 Install required dependencies:
 
 ```bash
+set -euo pipefail
 pip install yfinance pandas numpy
 ```
 
 Optional for visualization:
 ```bash
+set -euo pipefail
 pip install matplotlib
 ```
 

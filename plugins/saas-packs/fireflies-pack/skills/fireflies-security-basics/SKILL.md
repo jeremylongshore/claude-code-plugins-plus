@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Security Basics
 
 ## Overview
@@ -39,6 +38,7 @@ FIREFLIES_SECRET=***
 
 ### Step 2: Implement Secret Rotation
 ```bash
+set -euo pipefail
 # 1. Generate new key in Fireflies.ai dashboard
 # 2. Update environment variable
 export FIREFLIES_API_KEY="new_key_here"

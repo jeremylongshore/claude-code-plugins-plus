@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Obsidian Hello World
 
 ## Overview
@@ -151,6 +150,7 @@ this.addCommand({
 
 ### Step 4: Build and Test
 ```bash
+set -euo pipefail
 # Build the plugin
 npm run build
 

@@ -67,7 +67,7 @@ import { Redis } from "ioredis";
 
 const redis = new Redis(process.env.REDIS_URL!);
 
-async function searchWithCache(query: string, ttl = 1800) {
+async function searchWithCache(query: string, ttl = 1800) {  # timeout: 30 minutes
   const cacheKey = `pplx:${Buffer.from(query).toString("base64")}`;
   const cached = await redis.get(cacheKey);
   if (cached) return JSON.parse(cached);
@@ -118,7 +118,7 @@ export async function GET() {
     });
     return Response.json({ status: response.ok ? "healthy" : "degraded" });
   } catch {
-    return Response.json({ status: "unhealthy" }, { status: 503 });
+    return Response.json({ status: "unhealthy" }, { status: 503 });  # HTTP 503 Service Unavailable
   }
 }
 ```

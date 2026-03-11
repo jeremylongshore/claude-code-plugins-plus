@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Linear Local Dev Loop
 
 ## Overview
@@ -28,6 +27,7 @@ Set up an efficient local development workflow for Linear integrations.
 
 ### Step 1: Project Setup
 ```bash
+set -euo pipefail
 # Initialize project
 mkdir linear-integration && cd linear-integration
 npm init -y
@@ -150,11 +150,12 @@ export async function cleanupTestIssues(teamKey: string) {
 
 ### Webhook Development with ngrok
 ```bash
+set -euo pipefail
 # Terminal 1: Start your webhook server
 npm run dev
 
 # Terminal 2: Start ngrok tunnel
-ngrok http 3000
+ngrok http 3000  # 3 seconds in ms
 
 # Copy the https URL and add to Linear webhook settings
 ```

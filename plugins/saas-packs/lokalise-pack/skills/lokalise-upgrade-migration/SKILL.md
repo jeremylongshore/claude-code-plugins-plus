@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Upgrade Migration
 
 ## Overview
@@ -26,7 +25,7 @@ Guide for upgrading Lokalise SDK versions and handling breaking changes.
 
 ## Instructions
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Updated SDK version
@@ -45,6 +44,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ## Examples
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 # If upgrade causes issues, rollback immediately
 npm install @lokalise/node-api@8.x.x --save-exact
 
@@ -57,6 +57,7 @@ npm test
 
 ### CLI Upgrade
 ```bash
+set -euo pipefail
 # macOS
 brew upgrade lokalise2
 

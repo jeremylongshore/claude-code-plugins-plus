@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Memory
 
 ## Overview
@@ -74,6 +73,7 @@ User: "Add tests for the auth module"
 
 **Tool rejection captured as correction:**
 ```
+set -euo pipefail
 User declines a suggested `npm install` action
 → Memory stored: "User prefers pnpm over npm"
 → Future sessions use pnpm automatically

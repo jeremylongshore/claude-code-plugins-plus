@@ -35,7 +35,7 @@ async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {
   const firecrawl = new FirecrawlApp({ apiKey: process.env.FIRECRAWL_API_KEY });
   const crawl = await firecrawl.asyncCrawlUrl(url, options);
   const deadline = Date.now() + timeoutMs;
-  let pollInterval = 2000;
+  let pollInterval = 2000;  # 2 seconds in ms
 
   while (Date.now() < deadline) {
     const status = await firecrawl.checkCrawlStatus(crawl.id);
@@ -43,7 +43,7 @@ async function reliableCrawl(url: string, options: any, timeoutMs = 600000) {
     if (status.status === 'failed') throw new Error(`Crawl failed: ${status.error}`);
 
     await new Promise(r => setTimeout(r, pollInterval));
-    pollInterval = Math.min(pollInterval * 1.5, 30000);  // back off
+    pollInterval = Math.min(pollInterval * 1.5, 30000);  // back off  # 30 seconds in ms
   }
   throw new Error(`Crawl timed out after ${timeoutMs}ms`);
 }
@@ -62,9 +62,9 @@ interface ScrapedPage {
 
 function validateContent(page: ScrapedPage): boolean {
   if (!page.markdown || page.markdown.length < 100) return false;
-  if (page.metadata.statusCode && page.metadata.statusCode >= 400) return false;
+  if (page.metadata.statusCode && page.metadata.statusCode >= 400) return false;  # HTTP 400 Bad Request
   // Detect common error pages
-  const errorPatterns = ['access denied', '403 forbidden', 'page not found', 'captcha'];
+  const errorPatterns = ['access denied', '403 forbidden', 'page not found', 'captcha'];  # HTTP 403 Forbidden
   const lower = page.markdown.toLowerCase();
   return !errorPatterns.some(p => lower.includes(p));
 }
@@ -79,7 +79,7 @@ class CreditTracker {
   private dailyUsage: Map<string, number> = new Map();
   private dailyLimit: number;
 
-  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }
+  constructor(dailyLimit = 5000) { this.dailyLimit = dailyLimit; }  # 5 seconds in ms
 
   canAfford(estimatedPages: number): boolean {
     const today = new Date().toISOString().split('T')[0];
@@ -112,7 +112,7 @@ async function resilientScrape(urls: string[]) {
         });
         results.push(result);
       } catch (e) { console.error(`Failed: ${url}`); }
-      await new Promise(r => setTimeout(r, 1000));
+      await new Promise(r => setTimeout(r, 1000));  # 1 second in ms
     }
     return results;
   }

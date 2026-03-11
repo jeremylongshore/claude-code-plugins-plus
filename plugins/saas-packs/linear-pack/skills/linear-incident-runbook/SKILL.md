@@ -36,6 +36,7 @@ Step-by-step procedures for handling production incidents with Linear integratio
 
 ### Step 1: Confirm the Issue
 ```bash
+set -euo pipefail
 # Check Linear API status
 curl -s https://status.linear.app/api/v2/status.json | jq '.status'
 
@@ -109,6 +110,7 @@ gatherIncidentInfo();
 
 ### Diagnosis
 ```bash
+set -euo pipefail
 # Test API key directly
 curl -I -H "Authorization: $LINEAR_API_KEY" \
   https://api.linear.app/graphql
@@ -158,6 +160,7 @@ aws secretsmanager get-secret-value --secret-id linear/production
 
 ### Diagnosis
 ```bash
+set -euo pipefail
 # Check current rate limit status
 curl -I -H "Authorization: $LINEAR_API_KEY" \
   -H "Content-Type: application/json" \
@@ -165,7 +168,7 @@ curl -I -H "Authorization: $LINEAR_API_KEY" \
   https://api.linear.app/graphql 2>&1 | grep -i ratelimit
 
 # Check application metrics
-curl -s http://localhost:9090/api/v1/query?query=linear_rate_limit_remaining | jq
+curl -s http://localhost:9090/api/v1/query?query=linear_rate_limit_remaining | jq  # Prometheus port
 ```
 
 ### Resolution Steps
@@ -207,6 +210,7 @@ curl -s http://localhost:9090/api/v1/query?query=linear_rate_limit_remaining | j
 
 ### Diagnosis
 ```bash
+set -euo pipefail
 # Check webhook endpoint is reachable
 curl -I https://yourapp.com/api/webhooks/linear
 

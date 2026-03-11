@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Speak Incident Runbook
 
 ## Overview
@@ -53,11 +52,13 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ## Examples
 ### One-Line Health Check
 ```bash
+set -euo pipefail
 curl -sf https://api.yourapp.com/health | jq '.services.speak.status' || echo "UNHEALTHY"
 ```
 
 ### Quick Fallback Toggle
 ```bash
+set -euo pipefail
 # Enable fallback
 kubectl set env deployment/speak-integration SPEAK_FALLBACK_MODE=true
 

@@ -26,6 +26,7 @@ Monitor Fireflies.ai meeting transcription quality, bot join reliability, and tr
 
 ### Step 1: Monitor Bot Join Reliability
 ```bash
+set -euo pipefail
 # Query recent meetings and check bot join status
 curl -X POST https://api.fireflies.ai/graphql \
   -H "Authorization: Bearer $FIREFLIES_API_KEY" \
@@ -40,9 +41,9 @@ async function monitorProcessing() {
   const res = await firefliesGQL(`{ transcripts(limit: 20) { id date duration processing_status processed_at } }`);
   for (const t of res.data.transcripts) {
     if (t.processing_status === 'completed' && t.processed_at) {
-      const meetingEnd = new Date(t.date).getTime() + t.duration * 60000;
+      const meetingEnd = new Date(t.date).getTime() + t.duration * 60000;  # 1 minute in ms
       const processedAt = new Date(t.processed_at).getTime();
-      const processingMinutes = (processedAt - meetingEnd) / 60000;
+      const processingMinutes = (processedAt - meetingEnd) / 60000;  # 1 minute in ms
       emitHistogram('fireflies_processing_time_min', processingMinutes);
     }
     emitCounter('fireflies_transcripts_total', 1, { status: t.processing_status });

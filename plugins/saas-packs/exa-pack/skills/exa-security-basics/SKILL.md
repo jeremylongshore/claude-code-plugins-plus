@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Exa Security Basics
 
 ## Overview
@@ -39,6 +38,7 @@ EXA_SECRET=***
 
 ### Step 2: Implement Secret Rotation
 ```bash
+set -euo pipefail
 # 1. Generate new key in Exa dashboard
 # 2. Update environment variable
 export EXA_API_KEY="new_key_here"

@@ -26,6 +26,7 @@ Monitor Replit deployment health, development environment uptime, and AI feature
 
 ### Step 1: Monitor Deployment Health
 ```bash
+set -euo pipefail
 # Check deployment status via Replit API
 curl "https://replit.com/api/v1/teams/TEAM_ID/deployments" \
   -H "Authorization: Bearer $REPLIT_API_KEY" | \
@@ -38,7 +39,7 @@ curl "https://replit.com/api/v1/teams/TEAM_ID/deployments" \
 async function checkDeploymentHealth(deploymentUrl: string) {
   const start = performance.now();
   try {
-    const res = await fetch(`${deploymentUrl}/health`, { signal: AbortSignal.timeout(5000) });
+    const res = await fetch(`${deploymentUrl}/health`, { signal: AbortSignal.timeout(5000) });  # 5 seconds in ms
     const latency = performance.now() - start;
     emitHistogram('replit_deployment_latency_ms', latency, { url: deploymentUrl });
     emitGauge('replit_deployment_up', res.ok ? 1 : 0, { url: deploymentUrl });
@@ -54,6 +55,7 @@ setInterval(() => deployments.forEach(checkDeploymentHealth), 60_000);
 
 ### Step 3: Track Resource Consumption
 ```bash
+set -euo pipefail
 # Monitor compute usage across team Repls
 curl "https://replit.com/api/v1/teams/TEAM_ID/usage" \
   -H "Authorization: Bearer $REPLIT_API_KEY" | \
@@ -70,7 +72,7 @@ groups:
         for: 5m
         annotations: { summary: "Replit deployment {{ $labels.url }} is down" }
       - alert: ReplitColdStartSlow
-        expr: histogram_quantile(0.95, rate(replit_deployment_latency_ms_bucket[10m])) > 10000
+        expr: histogram_quantile(0.95, rate(replit_deployment_latency_ms_bucket[10m])) > 10000  # 10 seconds in ms
         annotations: { summary: "Replit deployment cold start P95 exceeds 10 seconds" }
       - alert: ReplitHighComputeCost
         expr: increase(replit_compute_cost_usd[24h]) > 50

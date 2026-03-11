@@ -4,7 +4,7 @@ description: |
   Implement security best practices for Guidewire InsuranceSuite including OAuth2,
   JWT handling, API roles, secure Gosu coding, and data protection.
   Trigger with phrases like "guidewire security", "oauth2 guidewire",
-  "jwt token", "api roles", "secure gosu code", "guidewire authentication".
+  "jwt token", "api roles", "secure gosu code", "guidewire authentication". Use when working with guidewire security basics.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT

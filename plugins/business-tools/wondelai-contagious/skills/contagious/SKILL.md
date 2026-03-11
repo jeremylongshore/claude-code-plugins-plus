@@ -1,6 +1,7 @@
 ---
 name: contagious
-description: 'Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions "go viral", "word of mouth", "shareable content", "social currency", or "why people share". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology.'
+description: |
+  Engineer word-of-mouth and virality using the STEPPS framework (Social Currency, Triggers, Emotion, Public, Practical Value, Stories). Use when the user mentions "go viral", "word of mouth", "shareable content", "social currency", or "why people share". Covers environmental triggers and high-arousal emotional content. For sticky messaging, see made-to-stick. For persuasion tactics, see influence-psychology. Trigger with 'contagious'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>
@@ -26,6 +27,7 @@ A framework for engineering word-of-mouth and making products, ideas, and conten
 Six principles that make things contagious:
 
 ```
+set -euo pipefail
 S - Social Currency     → Does sharing it make people look good?
 T - Triggers            → Is there an environmental cue that reminds people of it?
 E - Emotion             → Does it evoke high-arousal feelings?

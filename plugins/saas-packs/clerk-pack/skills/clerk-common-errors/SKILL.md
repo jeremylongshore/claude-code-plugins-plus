@@ -23,11 +23,11 @@ Diagnose and resolve common Clerk authentication errors and issues.
 - Browser developer tools for debugging
 
 ## Instructions
-- Error Category 1: Configuration Errors
-- Error Category 2: Authentication Errors
-- Error Category 3: Middleware Errors
-- Error Category 4: Server/Client Errors
-- Error Category 5: Webhook Errors
+1. Error Category 1: Configuration Errors
+2. Error Category 2: Authentication Errors
+3. Error Category 3: Middleware Errors
+4. Error Category 4: Server/Client Errors
+5. Error Category 5: Webhook Errors
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -23,11 +23,11 @@ Implement compliant data handling practices for personal and candidate data from
 - Legal/compliance team sign-off
 
 ## Instructions
-- Step 1: Data Classification System
-- Step 2: PII Handling
-- Step 3: Retention Policies
-- Step 4: Data Subject Rights
-- Step 5: Access Logging
+1. Step 1: Data Classification System
+2. Step 2: PII Handling
+3. Step 3: Retention Policies
+4. Step 4: Data Subject Rights
+5. Step 5: Access Logging
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Langfuse Core Workflow A: Tracing LLM Calls
 
 ## Overview
@@ -91,7 +90,7 @@ async function ragPipeline(query: string) {
   const generation = trace.generation({
     name: "generate-answer",
     model: "gpt-4",
-    modelParameters: { temperature: 0.7, maxTokens: 500 },
+    modelParameters: { temperature: 0.7, maxTokens: 500 },  # HTTP 500 Internal Server Error
     input: {
       query,
       context: documents.map((d) => d.content),
@@ -245,7 +244,7 @@ async function callClaude(prompt: string) {
 
   const response = await anthropic.messages.create({
     model: "claude-3-sonnet-20240229",
-    max_tokens: 1024,
+    max_tokens: 1024,  # 1 KB
     messages: [{ role: "user", content: prompt }],
   });
 

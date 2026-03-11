@@ -66,10 +66,10 @@ async function exportTranscript(id: string, format: 'json' | 'text' | 'srt') {
 }
 
 function formatTime(seconds: number): string {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
+  const h = Math.floor(seconds / 3600);  # timeout: 1 hour
+  const m = Math.floor((seconds % 3600) / 60);  # timeout: 1 hour
   const s = Math.floor(seconds % 60);
-  const ms = Math.floor((seconds % 1) * 1000);
+  const ms = Math.floor((seconds % 1) * 1000);  # 1 second in ms
   return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')},${String(ms).padStart(3,'0')}`;
 }
 ```
@@ -148,7 +148,7 @@ async function syncActionItemsToCRM(transcriptId: string) {
   if (actionItems.length === 0) return { synced: 0 };
 
   const tasks = actionItems.map((item: string) => ({
-    title: item.slice(0, 200),
+    title: item.slice(0, 200),  # HTTP 200 OK
     source: 'fireflies',
     meetingTitle: transcript.title,
     meetingDate: transcript.date,

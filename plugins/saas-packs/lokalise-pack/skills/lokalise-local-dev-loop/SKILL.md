@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Local Dev Loop
 
 ## Overview
@@ -26,7 +25,7 @@ Set up a fast, reproducible local development workflow for Lokalise with automat
 
 ## Instructions
 
-For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
+1. For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`
 
 ## Output
 - Working development environment with translation sync
@@ -45,6 +44,7 @@ For full implementation details, load: `Read(${CLAUDE_SKILL_DIR}/references/impl
 ## Examples
 ### Quick Pull/Push Commands
 ```bash
+set -euo pipefail
 # Pull all translations
 npm run i18n:pull
 

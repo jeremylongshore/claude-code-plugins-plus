@@ -23,12 +23,12 @@ Deploy Linear-integrated applications and track deployments in Linear.
 - CI/CD pipeline configured
 
 ## Instructions
-- Step 1: Vercel Deployment
-- Step 2: Google Cloud Run Deployment
-- Step 3: Railway Deployment
-- Step 4: Deployment Tracking in Linear
-- Step 5: GitHub Actions Deployment Workflow
-- Step 6: Rollback Tracking
+1. Step 1: Vercel Deployment
+2. Step 2: Google Cloud Run Deployment
+3. Step 3: Railway Deployment
+4. Step 4: Deployment Tracking in Linear
+5. Step 5: GitHub Actions Deployment Workflow
+6. Step 6: Rollback Tracking
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

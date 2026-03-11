@@ -124,7 +124,7 @@ import re
 
 class SafeOutput(BaseModel):
     """Validated output model."""
-    response: str = Field(max_length=10000)
+    response: str = Field(max_length=10000)  # 10 seconds in ms
     confidence: float = Field(ge=0, le=1)
 
     @field_validator("response")

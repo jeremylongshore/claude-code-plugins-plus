@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Debug Bundle
 
 ## Overview
@@ -42,6 +41,7 @@ echo "" >> "$BUNDLE_DIR/summary.txt"
 
 ### Step 2: Collect Environment Info
 ```bash
+set -euo pipefail
 # Environment info
 echo "--- Environment ---" >> "$BUNDLE_DIR/summary.txt"
 echo "CLI Version: $(databricks --version)" >> "$BUNDLE_DIR/summary.txt"
@@ -112,7 +112,7 @@ fi
 ```bash
 # Spark driver logs (requires cluster_id)
 if [ -n "$CLUSTER_ID" ]; then
-    echo "--- Spark Driver Logs (last 500 lines) ---" > "$BUNDLE_DIR/driver_logs.txt"
+    echo "--- Spark Driver Logs (last 500 lines) ---" > "$BUNDLE_DIR/driver_logs.txt"  # HTTP 500 Internal Server Error
 
     # Get logs via API
     python3 << EOF >> "$BUNDLE_DIR/driver_logs.txt" 2>&1
@@ -159,6 +159,7 @@ fi
 
 ### Step 7: Package Bundle
 ```bash
+set -euo pipefail
 # Create config snapshot (redacted)
 echo "--- Config (redacted) ---" >> "$BUNDLE_DIR/summary.txt"
 cat ~/.databrickscfg 2>/dev/null | sed 's/token = .*/token = ***REDACTED***/' >> "$BUNDLE_DIR/config-redacted.txt"

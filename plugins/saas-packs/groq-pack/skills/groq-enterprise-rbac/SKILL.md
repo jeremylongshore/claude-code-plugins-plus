@@ -26,13 +26,14 @@ Manage access to Groq's ultra-fast LPU inference API through API key scoping and
 
 ### Step 1: Create Rate-Limited API Keys per Team
 ```bash
+set -euo pipefail
 # Key for the chatbot team (high RPM, small model)
 curl -X POST https://api.groq.com/openai/v1/api-keys \
   -H "Authorization: Bearer $GROQ_ADMIN_KEY" \
   -d '{
     "name": "chatbot-prod",
     "allowed_models": ["llama-3.3-70b-versatile", "llama-3.1-8b-instant"],
-    "requests_per_minute": 500,
+    "requests_per_minute": 500,  # HTTP 500 Internal Server Error
     "tokens_per_minute": 100000
   }'
 
@@ -69,6 +70,7 @@ In the Groq Console > Organization > Billing:
 
 ### Step 4: Monitor Key Usage
 ```bash
+set -euo pipefail
 # Check usage across all API keys
 curl https://api.groq.com/openai/v1/usage \
   -H "Authorization: Bearer $GROQ_ADMIN_KEY" | \
@@ -77,6 +79,7 @@ curl https://api.groq.com/openai/v1/usage \
 
 ### Step 5: Rotate Keys with Zero Downtime
 ```bash
+set -euo pipefail
 # 1. Create replacement key with same permissions
 # 2. Deploy new key to services
 # 3. Monitor for 24h to confirm no traffic on old key

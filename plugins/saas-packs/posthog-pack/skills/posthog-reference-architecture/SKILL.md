@@ -26,6 +26,7 @@ Production architecture for product analytics with PostHog. Covers event trackin
 ## Architecture Diagram
 
 ```
+set -euo pipefail
 ┌──────────────────────────────────────────────────────┐
 │              Client Applications                      │
 │  Web (posthog-js) │ Mobile (posthog-react-native)    │

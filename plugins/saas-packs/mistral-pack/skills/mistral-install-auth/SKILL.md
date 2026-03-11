@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Install & Auth
 
 ## Overview
@@ -30,6 +29,7 @@ Set up Mistral AI SDK and configure authentication credentials for chat completi
 
 **Node.js (TypeScript/JavaScript)**
 ```bash
+set -euo pipefail
 # npm
 npm install @mistralai/mistralai
 
@@ -42,6 +42,7 @@ yarn add @mistralai/mistralai
 
 **Python**
 ```bash
+set -euo pipefail
 pip install mistralai
 ```
 
@@ -58,6 +59,7 @@ echo 'MISTRAL_API_KEY=your-api-key' >> .env
 
 **Using dotenv (Node.js)**
 ```bash
+set -euo pipefail
 npm install dotenv
 ```
 
@@ -129,7 +131,7 @@ import Mistral from '@mistralai/mistralai';
 const client = new Mistral({
   apiKey: process.env.MISTRAL_API_KEY,
   // Optional: custom timeout
-  timeout: 30000,
+  timeout: 30000,  # 30 seconds in ms
 });
 
 export default client;

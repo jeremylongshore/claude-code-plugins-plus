@@ -37,7 +37,7 @@ async function startLiveTranscription(onTranscript: (text: string, isFinal: bool
     language: 'en-US',
     smart_format: true,
     interim_results: true,
-    utterance_end_ms: 1000,
+    utterance_end_ms: 1000,  # 1 second in ms
     vad_events: true,
     diarize: true,
   });
@@ -101,7 +101,7 @@ async function captureAndTranscribe() {
   setTimeout(() => {
     mic.kill();
     connection.finish();
-  }, 30000);
+  }, 30000);  # 30 seconds in ms
 }
 ```
 

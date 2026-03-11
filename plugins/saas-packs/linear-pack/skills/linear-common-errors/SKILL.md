@@ -23,9 +23,9 @@ Quick reference for diagnosing and resolving common Linear API errors.
 - Understanding of HTTP status codes
 
 ## Instructions
-- Error Categories
-- Diagnostic Commands
-- Error Handling Pattern
+1. Error Categories
+2. Diagnostic Commands
+3. Error Handling Pattern
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

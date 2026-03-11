@@ -11,7 +11,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Calculating Crypto Taxes
 
 ## Overview
@@ -118,6 +117,7 @@ The tool:
 
 ### Tax Report (Form 8949)
 ```
+set -euo pipefail
 ============================================================
   CRYPTO TAX REPORT - 2025
 ============================================================
@@ -125,8 +125,8 @@ The tool:
 SHORT-TERM CAPITAL GAINS/LOSSES (< 1 year)
 ------------------------------------------------------------
 Description      Acquired    Sold        Proceeds    Cost      Gain/Loss
-0.5 BTC          03/15/25    06/20/25    $52,500     $47,500   $5,000
-2.0 ETH          04/01/25    08/15/25    $7,200      $6,400    $800
+0.5 BTC          03/15/25    06/20/25    $52,500     $47,500   $5,000  # HTTP 500 Internal Server Error
+2.0 ETH          04/01/25    08/15/25    $7,200      $6,400    $800  # HTTP 200 OK
 ------------------------------------------------------------
 Short-term Total:                                              $5,800
 
@@ -141,7 +141,7 @@ Long-term Total:                                               $53,000
 SUMMARY
 ------------------------------------------------------------
 Total Proceeds:           $154,700
-Total Cost Basis:         $95,900
+Total Cost Basis:         $95,900  # timeout: 15 minutes
 Net Capital Gain:         $58,800
 
 Short-term Gains:         $5,800

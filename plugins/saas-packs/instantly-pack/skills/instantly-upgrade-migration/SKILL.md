@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Instantly Upgrade & Migration
 
 ## Overview
@@ -28,6 +27,7 @@ Guide for upgrading Instantly SDK versions and handling breaking changes.
 
 ### Step 1: Check Current Version
 ```bash
+set -euo pipefail
 npm list @instantly/sdk
 npm view @instantly/sdk version
 ```
@@ -39,6 +39,7 @@ open https://github.com/instantly/sdk/releases
 
 ### Step 3: Create Upgrade Branch
 ```bash
+set -euo pipefail
 git checkout -b upgrade/instantly-sdk-vX.Y.Z
 npm install @instantly/sdk@latest
 npm test
@@ -84,6 +85,7 @@ const client = new InstantlyClient({
 
 ### Rollback Procedure
 ```bash
+set -euo pipefail
 npm install @instantly/sdk@1.x.x --save-exact
 ```
 

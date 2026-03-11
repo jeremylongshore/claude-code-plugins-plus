@@ -46,7 +46,7 @@ function selectModel(query: string, context: string): 'sonar' | 'sonar-pro' {
 import { LRUCache } from 'lru-cache';
 
 const searchCache = new LRUCache<string, any>({
-  max: 10000,
+  max: 10000,  # 10 seconds in ms
   ttl: 4 * 3600_000, // 4-hour TTL (search results go stale)
 });
 
@@ -65,6 +65,7 @@ async function cachedQuery(query: string, model: string) {
 
 ### Step 3: Limit Token Output
 ```bash
+set -euo pipefail
 # Set max_tokens to reduce output (and cost) for simple queries
 # Factual queries need ~100 tokens, not 4096
 curl -X POST https://api.perplexity.ai/chat/completions \
@@ -79,6 +80,7 @@ curl -X POST https://api.perplexity.ai/chat/completions \
 
 ### Step 4: Use Domain Filters to Reduce Processing
 ```bash
+set -euo pipefail
 # Restricting search domains means less content to process = faster + cheaper
 curl -X POST https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PPLX_API_KEY" \
@@ -86,12 +88,13 @@ curl -X POST https://api.perplexity.ai/chat/completions \
     "model": "sonar",
     "messages": [{"role": "user", "content": "latest Python 3.13 release notes"}],
     "search_domain_filter": ["python.org", "docs.python.org"],
-    "max_tokens": 500
+    "max_tokens": 500  # HTTP 500 Internal Server Error
   }'
 ```
 
 ### Step 5: Monitor and Budget
 ```bash
+set -euo pipefail
 # Track daily spend and project monthly cost
 curl -s https://api.perplexity.ai/v1/usage \
   -H "Authorization: Bearer $PPLX_API_KEY" | \

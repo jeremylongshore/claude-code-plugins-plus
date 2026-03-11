@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Lokalise Install & Auth
 
 ## Overview
@@ -28,6 +27,7 @@ Set up Lokalise SDK/CLI and configure API token authentication for translation m
 
 ### Step 1: Install Node.js SDK
 ```bash
+set -euo pipefail
 # Node.js SDK (ESM module, v9+)
 npm install @lokalise/node-api
 

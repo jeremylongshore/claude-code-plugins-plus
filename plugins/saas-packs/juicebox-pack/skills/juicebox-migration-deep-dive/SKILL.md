@@ -24,12 +24,12 @@ Advanced strategies for migrating data to Juicebox from other recruiting and peo
 - Testing environment
 
 ## Instructions
-- Step 1: Data Assessment
-- Step 2: Schema Mapping
-- Step 3: Data Transformation Pipeline
-- Step 4: Bulk Import with Rate Limiting
-- Step 5: Validation and Reconciliation
-- Step 6: Rollback Strategy
+1. Step 1: Data Assessment
+2. Step 2: Schema Mapping
+3. Step 3: Data Transformation Pipeline
+4. Step 4: Bulk Import with Rate Limiting
+5. Step 5: Validation and Reconciliation
+6. Step 6: Rollback Strategy
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

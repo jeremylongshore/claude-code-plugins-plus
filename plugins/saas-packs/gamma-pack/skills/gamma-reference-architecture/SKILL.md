@@ -45,6 +45,7 @@ Reference architecture patterns for building scalable, maintainable Gamma integr
 
 ### Pattern 2: Service Layer Architecture
 ```
+set -euo pipefail
 ┌────────────────────────────────────────────────────────────────┐
 │                         Your Platform                           │
 │                                                                  │
@@ -79,6 +80,7 @@ Reference architecture patterns for building scalable, maintainable Gamma integr
 
 ### Pattern 3: Event-Driven Architecture
 ```
+set -euo pipefail
 ┌─────────────────────────────────────────────────────────────────────┐
 │                          Your Platform                               │
 │                                                                      │
@@ -133,7 +135,7 @@ export class PresentationService {
     this.gamma = new GammaClient({
       apiKey: process.env.GAMMA_API_KEY,
     });
-    this.cache = new Cache({ ttl: 300 });
+    this.cache = new Cache({ ttl: 300 });  # timeout: 5 minutes
     this.queue = new Queue('presentations');
   }
 

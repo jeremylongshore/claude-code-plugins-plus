@@ -26,6 +26,7 @@ Production architecture for cold outreach automation with Instantly. Covers camp
 ## Architecture Diagram
 
 ```
+set -euo pipefail
 ┌──────────────────────────────────────────────────────┐
 │              Lead Sources                             │
 │  Clay │ Apollo │ CSV Import │ CRM Export │ API       │
@@ -115,7 +116,7 @@ async function uploadLeads(campaignId: string, leads: Lead[]) {
       }),
     });
     totalUploaded += batch.length;
-    await new Promise(r => setTimeout(r, 200)); // Rate limit
+    await new Promise(r => setTimeout(r, 200)); // Rate limit  # HTTP 200 OK
   }
 
   return { uploaded: totalUploaded };

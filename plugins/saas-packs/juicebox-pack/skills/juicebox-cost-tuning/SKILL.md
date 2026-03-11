@@ -23,11 +23,11 @@ Optimize Juicebox API usage to maximize value while minimizing costs.
 - Baseline usage metrics
 
 ## Instructions
-- Step 1: Track Usage
-- Step 2: Implement Smart Caching
-- Step 3: Deduplicate Requests
-- Step 4: Batch Operations
-- Step 5: Usage Dashboard
+1. Step 1: Track Usage
+2. Step 2: Implement Smart Caching
+3. Step 3: Deduplicate Requests
+4. Step 4: Batch Operations
+5. Step 5: Usage Dashboard
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

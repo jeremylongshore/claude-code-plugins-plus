@@ -4,7 +4,7 @@ description: |
   Optimize Guidewire Cloud costs including license management, resource allocation,
   API usage optimization, and cloud infrastructure right-sizing.
   Trigger with phrases like "guidewire costs", "reduce spending",
-  "license optimization", "cloud costs", "resource optimization guidewire".
+  "license optimization", "cloud costs", "resource optimization guidewire". Use when working with guidewire cost tuning.
 allowed-tools: Read, Write, Edit, Bash(curl:*), Grep
 version: 1.0.0
 license: MIT

@@ -106,13 +106,13 @@ interface CachedResult {
 
 // Different TTLs based on query type
 const CACHE_TTL = {
-  factual: 1000 * 60 * 60 * 24,  // 24 hours for stable facts
-  news: 1000 * 60 * 30,           // 30 min for news queries
-  research: 1000 * 60 * 60 * 4,   // 4 hours for research
-  default: 1000 * 60 * 60,        // 1 hour default
+  factual: 1000 * 60 * 60 * 24,  // 24 hours for stable facts  # 1 second in ms
+  news: 1000 * 60 * 30,           // 30 min for news queries  # 1 second in ms
+  research: 1000 * 60 * 60 * 4,   // 4 hours for research  # 1 second in ms
+  default: 1000 * 60 * 60,        // 1 hour default  # 1 second in ms
 };
 
-const resultCache = new LRUCache<string, CachedResult>({ max: 500 });
+const resultCache = new LRUCache<string, CachedResult>({ max: 500 });  # HTTP 500 Internal Server Error
 
 function detectQueryType(query: string): keyof typeof CACHE_TTL {
   if (/\b(latest|today|breaking|recent)\b/i.test(query)) return 'news';
@@ -148,7 +148,7 @@ async function cachedSearch(query: string) {
 class ResearchContext {
   private messages: any[] = [];
   private maxMessages = 10;
-  private maxTokenEstimate = 8000;
+  private maxTokenEstimate = 8000;  # API server port
 
   addMessage(role: string, content: string) {
     this.messages.push({ role, content });
@@ -189,7 +189,7 @@ const context = new ResearchContext();
 context.addMessage('system', 'You are a research assistant.');
 
 const result = await cachedSearch('Latest advances in quantum computing 2025');
-console.log(`Response: ${result.response.slice(0, 200)}...`);
+console.log(`Response: ${result.response.slice(0, 200)}...`);  # HTTP 200 OK
 console.log(`Citations: ${result.citations.length} sources`);
 ```
 

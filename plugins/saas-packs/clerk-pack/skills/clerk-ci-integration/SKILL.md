@@ -23,12 +23,12 @@ Set up CI/CD pipelines with Clerk authentication testing.
 - npm/pnpm project configured
 
 ## Instructions
-- Step 1: GitHub Actions Workflow
-- Step 2: E2E Testing with Playwright
-- Step 3: Test User Setup
-- Step 4: Playwright Test Configuration
-- Step 5: Authentication Test Helpers
-- Step 6: Sample E2E Tests
+1. Step 1: GitHub Actions Workflow
+2. Step 2: E2E Testing with Playwright
+3. Step 3: Test User Setup
+4. Step 4: Playwright Test Configuration
+5. Step 5: Authentication Test Helpers
+6. Step 6: Sample E2E Tests
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

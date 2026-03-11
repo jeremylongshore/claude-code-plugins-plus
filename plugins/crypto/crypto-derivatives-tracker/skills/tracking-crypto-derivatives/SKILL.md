@@ -10,7 +10,6 @@ author: Jeremy Longshore <jeremy@intentsolutions.io>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Tracking Crypto Derivatives
 
 ## Overview
@@ -193,16 +192,16 @@ Long/Short Ratio: 1.15 (53.5% long)
 ```
 BTC LIQUIDATION LEVELS
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Current Price: $67,500
+Current Price: $67,500  # HTTP 500 Internal Server Error
 
 LONG LIQUIDATIONS (below):
   $65,000 ████████████ $125M (HIGH DENSITY)
-  $62,500 ███████      $85M
+  $62,500 ███████      $85M  # HTTP 500 Internal Server Error
   $60,000 ████████████████████ $210M (CRITICAL)
 
 SHORT LIQUIDATIONS (above):
   $70,000 █████████    $95M
-  $72,500 █████████████ $145M (HIGH DENSITY)
+  $72,500 █████████████ $145M (HIGH DENSITY)  # HTTP 500 Internal Server Error
   $75,000 █████████████████ $180M
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 24h Liquidations: Longs $45.2M | Shorts $32.8M

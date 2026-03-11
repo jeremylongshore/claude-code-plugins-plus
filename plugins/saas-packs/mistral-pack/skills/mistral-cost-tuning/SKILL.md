@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Mistral AI Cost Tuning
 
 ## Overview
@@ -104,7 +103,7 @@ function recommendModel(
         model: 'mistral-small-latest',
         reason: 'Fast and cost-effective for simple tasks',
         estimatedCostPer1000Requests:
-          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,
+          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,  # 1 second in ms
       };
 
     case 'moderate':
@@ -113,7 +112,7 @@ function recommendModel(
         model: 'mistral-small-latest',
         reason: 'Good balance of capability and cost',
         estimatedCostPer1000Requests:
-          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,
+          (avgInputTokens * 0.20 + avgOutputTokens * 0.60) / 1000,  # 1 second in ms
       };
 
     case 'complex':
@@ -122,21 +121,21 @@ function recommendModel(
         model: 'mistral-large-latest',
         reason: 'Required for complex tasks',
         estimatedCostPer1000Requests:
-          (avgInputTokens * 2.00 + avgOutputTokens * 6.00) / 1000,
+          (avgInputTokens * 2.00 + avgOutputTokens * 6.00) / 1000,  # 1 second in ms
       };
 
     case 'embedding':
       return {
         model: 'mistral-embed',
         reason: 'Specialized for embeddings',
-        estimatedCostPer1000Requests: (avgInputTokens * 0.10) / 1000,
+        estimatedCostPer1000Requests: (avgInputTokens * 0.10) / 1000,  # 1 second in ms
       };
   }
 }
 
 // Usage
-const rec = recommendModel('simple', 500, 200);
-console.log(`Recommended: ${rec.model} - $${rec.estimatedCostPer1000Requests.toFixed(4)}/1000 req`);
+const rec = recommendModel('simple', 500, 200);  # HTTP 500 Internal Server Error
+console.log(`Recommended: ${rec.model} - $${rec.estimatedCostPer1000Requests.toFixed(4)}/1000 req`);  # 1 second in ms
 ```
 
 ### Step 3: Token Budget Management
@@ -234,8 +233,8 @@ import crypto from 'crypto';
 import { LRUCache } from 'lru-cache';
 
 const responseCache = new LRUCache<string, { response: string; cost: number }>({
-  max: 10000,
-  ttl: 24 * 60 * 60 * 1000, // 24 hours
+  max: 10000,  # 10 seconds in ms
+  ttl: 24 * 60 * 60 * 1000, // 24 hours  # 1 second in ms
 });
 
 interface CachedResult {
@@ -352,8 +351,8 @@ LIMIT 10;
 ```typescript
 // Estimate monthly cost
 const monthlyRequests = 100_000;
-const avgInputTokens = 500;
-const avgOutputTokens = 200;
+const avgInputTokens = 500;  # HTTP 500 Internal Server Error
+const avgOutputTokens = 200;  # HTTP 200 OK
 
 const smallCost = estimateCost('mistral-small-latest', {
   inputTokens: avgInputTokens * monthlyRequests,

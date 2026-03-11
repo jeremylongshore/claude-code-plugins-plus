@@ -80,7 +80,7 @@ def monitor_instances(callback_url, poll_interval=30):
 ```typescript
 app.post("/webhooks/vastai", async (req, res) => {
   const { event, instance_id, gpu, cost_per_hour } = req.body;
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   switch (event) {
     case "instance.running":

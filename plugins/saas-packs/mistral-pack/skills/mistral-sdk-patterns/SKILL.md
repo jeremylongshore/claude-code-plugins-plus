@@ -38,7 +38,7 @@ def get_mistral_client() -> Mistral:
     if _client is None:
         _client = Mistral(
             api_key=os.environ["MISTRAL_API_KEY"],
-            timeout_ms=30000,
+            timeout_ms=30000,  # 30 seconds in ms
             max_retries=3
         )
     return _client
@@ -60,7 +60,7 @@ response = client.chat.complete(
         {"role": "user", "content": "Explain quantum computing briefly."}
     ],
     temperature=0.7,
-    max_tokens=500
+    max_tokens=500  # HTTP 500 Internal Server Error
 )
 print(response.choices[0].message.content)
 

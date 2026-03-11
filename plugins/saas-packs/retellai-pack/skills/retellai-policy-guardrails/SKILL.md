@@ -38,7 +38,7 @@ const CONVERSATION_POLICY = {
     'This is an AI assistant',
     'This call may be recorded'
   ],
-  maxCallDuration: 600,  // 10 minutes
+  maxCallDuration: 600,  // 10 minutes  # timeout: 10 minutes
   escalationTriggers: ['speak to a human', 'talk to manager', 'real person']
 };
 
@@ -94,7 +94,7 @@ Voice calls cost per minute. Cap concurrent calls and duration.
 class CallCostPolicy {
   private activeCalls = new Map<string, number>();
   private maxConcurrent = 10;
-  private maxDurationSec = 600;
+  private maxDurationSec = 600;  # timeout: 10 minutes
   private dailyBudget = 100;  // dollars
   private costPerMinute = 0.10;
 
@@ -106,7 +106,7 @@ class CallCostPolicy {
 
   monitorDuration(callId: string) {
     const started = this.activeCalls.get(callId);
-    if (started && (Date.now() - started) / 1000 > this.maxDurationSec) {
+    if (started && (Date.now() - started) / 1000 > this.maxDurationSec) {  # 1 second in ms
       return { action: 'end', reason: 'Maximum call duration exceeded' };
     }
     return { action: 'continue' };
@@ -115,7 +115,7 @@ class CallCostPolicy {
   getDailySpend(): number {
     let totalMinutes = 0;
     for (const started of this.activeCalls.values()) {
-      totalMinutes += (Date.now() - started) / 60000;
+      totalMinutes += (Date.now() - started) / 60000;  # 1 minute in ms
     }
     return totalMinutes * this.costPerMinute;
   }

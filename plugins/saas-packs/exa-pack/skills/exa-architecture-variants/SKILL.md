@@ -40,10 +40,10 @@ exa = Exa(api_key=os.environ["EXA_API_KEY"])
 def search():
     query = request.args.get('q')
     results = exa.search_and_contents(
-        query, num_results=5, text={"max_characters": 1000}
+        query, num_results=5, text={"max_characters": 1000}  # 1 second in ms
     )
     return jsonify([{
-        "title": r.title, "url": r.url, "snippet": r.text[:200]
+        "title": r.title, "url": r.url, "snippet": r.text[:200]  # HTTP 200 OK
     } for r in results.results])
 ```
 
@@ -60,7 +60,7 @@ User Query -> Cache Check -> (miss) -> Exa API -> Cache Store -> User
 
 ```python
 class CachedExaSearch:
-    def __init__(self, exa_client, redis_client, ttl=600):
+    def __init__(self, exa_client, redis_client, ttl=600):  # timeout: 10 minutes
         self.exa = exa_client
         self.cache = redis_client
         self.ttl = ttl
@@ -100,7 +100,7 @@ class ExaRAGPipeline:
     async def answer(self, question: str) -> dict:
         # 1. Search for relevant content
         results = self.exa.search_and_contents(
-            question, num_results=5, text={"max_characters": 3000},
+            question, num_results=5, text={"max_characters": 3000},  # 3 seconds in ms
             highlights=True
         )
         # 2. Store in vector cache for future queries

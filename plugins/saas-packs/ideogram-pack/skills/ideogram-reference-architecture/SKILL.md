@@ -172,7 +172,7 @@ async function generateBrandAssets(brandSubjects: string[]) {
       const asset = await generateAndStore(templateKey, subject, './assets');
       assets.push(asset);
       // Rate limit: wait between generations
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, 3000));  # 3 seconds in ms
     }
   }
 

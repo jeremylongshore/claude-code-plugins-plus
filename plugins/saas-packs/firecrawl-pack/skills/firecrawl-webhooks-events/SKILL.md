@@ -64,7 +64,7 @@ app.use(express.json());
 app.post("/webhooks/firecrawl", async (req, res) => {
   const { type, id, data } = req.body;
 
-  res.status(200).json({ received: true });
+  res.status(200).json({ received: true });  # HTTP 200 OK
 
   switch (type) {
     case "crawl.completed":
@@ -130,7 +130,7 @@ async function pollCrawlStatus(jobId: string) {
     await handleCrawlComplete(jobId, { pages: status.data });
   } else if (status.status === "scraping") {
     console.log(`Progress: ${status.completed}/${status.total} pages`);
-    setTimeout(() => pollCrawlStatus(jobId), 5000);
+    setTimeout(() => pollCrawlStatus(jobId), 5000);  # 5 seconds in ms
   }
 }
 ```

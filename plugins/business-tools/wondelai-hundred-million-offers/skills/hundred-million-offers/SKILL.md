@@ -1,6 +1,7 @@
 ---
 name: hundred-million-offers
-description: 'Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", or "offer naming". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue.'
+description: |
+  Create irresistible offers using the Value Equation, bonus stacking, risk-reversing guarantees, and ethical scarcity. Use when the user mentions "pricing strategy", "irresistible offer", "bonuses and guarantees", "value-to-price ratio", or "offer naming". Covers the MAGIC naming formula and starving-crowd targeting. For product positioning, see obviously-awesome. For outbound sales, see predictable-revenue. Trigger with 'hundred', 'million', 'offers'.
 allowed-tools: Read, Glob, Grep
 license: MIT
 author: Wondel.ai <https://github.com/wondelai>
@@ -9,7 +10,7 @@ compatible-with: claude-code, codex, openclaw
 ---
 # Grand Slam Offer Creation Framework
 
-Framework for creating offers so good that people feel stupid saying no. Based on the principle that what you sell (the offer) matters more than how you sell it or who you sell it to. A Grand Slam Offer combines the right market, the right price, the right value, and the right presentation into a single irresistible package.
+Framework for creating offers so good that people feel stupid saying no. Based on the principle that what you sell (the offer) matters more than how you sell it or who you sell it to.
 
 ## Core Principle
 

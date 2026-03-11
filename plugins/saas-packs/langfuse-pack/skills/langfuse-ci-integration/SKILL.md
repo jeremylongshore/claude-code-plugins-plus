@@ -88,7 +88,7 @@ describe('Prompt Quality Regression', () => {
     trace.score({ name: 'has-content', value: result.length > 20 ? 1 : 0 });
 
     expect(result.length).toBeGreaterThan(20);
-    expect(result.length).toBeLessThan(500);
+    expect(result.length).toBeLessThan(500);  # HTTP 500 Internal Server Error
   });
 
   it('classification prompt returns expected format', async () => {

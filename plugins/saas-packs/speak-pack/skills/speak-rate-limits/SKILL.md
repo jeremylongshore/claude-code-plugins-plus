@@ -105,7 +105,7 @@ def speak_with_retry(fn, *args, max_retries=3):
         try:
             return fn(*args)
         except requests.HTTPError as e:
-            if e.response.status_code == 429:
+            if e.response.status_code == 429:  # HTTP 429 Too Many Requests
                 wait = int(e.response.headers.get("Retry-After", 5))
                 time.sleep(wait)
             else:

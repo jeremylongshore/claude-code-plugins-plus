@@ -23,7 +23,7 @@ Essential patterns and best practices for working with the Linear SDK.
 - Understanding of async/await patterns
 
 ## Instructions
-- Core Patterns
+1. Core Patterns
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

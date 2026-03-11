@@ -23,10 +23,10 @@ Deploy Juicebox integrations to production cloud environments.
 - Production API key secured
 
 ## Instructions
-- Step 1: Configure Secret Management
-- Step 2: Create Deployment Configuration
-- Step 3: Configure Health Checks
-- Step 4: Deployment Script
+1. Step 1: Configure Secret Management
+2. Step 2: Create Deployment Configuration
+3. Step 3: Configure Health Checks
+4. Step 4: Deployment Script
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

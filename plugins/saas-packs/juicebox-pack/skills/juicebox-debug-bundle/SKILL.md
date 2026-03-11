@@ -23,10 +23,10 @@ Collect comprehensive diagnostic information for Juicebox support tickets.
 - Terminal access
 
 ## Instructions
-- Step 1: Collect Environment Info
-- Step 2: Test API Connectivity
-- Step 3: Gather Error Logs
-- Step 4: Create Support Bundle
+1. Step 1: Collect Environment Info
+2. Step 2: Test API Connectivity
+3. Step 3: Gather Error Logs
+4. Step 4: Create Support Bundle
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

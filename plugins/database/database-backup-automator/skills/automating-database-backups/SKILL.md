@@ -4,7 +4,7 @@ description: |
   Automate database backup processes with scheduling, compression, and encryption.
   Supports PostgreSQL (pg_dump), MySQL (mysqldump), MongoDB (mongodump), and SQLite.
   Generates production-ready backup scripts with retention policies and restore procedures.
-  Trigger: "automate database backups", "schedule backups", "create backup script", "disaster recovery".
+  Trigger: "automate database backups", "schedule backups", "create backup script", "disaster recovery". Use when working with automating database backups. Trigger with 'automating', 'database', 'backups'.
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(pg_dump:*), Bash(mysqldump:*), Bash(mongodump:*), Bash(cron:*), Bash(gpg:*)
 version: 2.0.0
 author: Jeremy Longshore <jeremy@intentsolutions.io>
@@ -20,6 +20,7 @@ Generate production-ready backup scripts for PostgreSQL, MySQL, MongoDB, and SQL
 ### PostgreSQL Backup
 ```bash
 #!/bin/bash
+set -euo pipefail
 BACKUP_DIR="/var/backups/postgresql"
 DB_NAME="mydb"
 DATE=$(date +%Y%m%d_%H%M%S)
@@ -52,7 +53,7 @@ mysqldump -h localhost -u root -p"${MYSQL_PASSWORD}" \
 ### MongoDB Backup
 ```bash
 #!/bin/bash
-mongodump --uri="mongodb://localhost:27017" \
+mongodump --uri="mongodb://localhost:27017" \  # MongoDB port
   --db=mydb \
   --out=/var/backups/mongodb/$(date +%Y%m%d_%H%M%S) \
   --gzip

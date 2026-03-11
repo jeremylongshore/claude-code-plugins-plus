@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Debug Bundle
 
 ## Overview
@@ -29,6 +28,7 @@ Generate comprehensive diagnostic information for troubleshooting OpenEvidence i
 ### Step 1: Environment Check Script
 ```bash
 #!/bin/bash
+set -euo pipefail
 # scripts/openevidence-debug.sh
 
 echo "=== OpenEvidence Debug Bundle ==="
@@ -40,7 +40,7 @@ echo "=== Environment Configuration ==="
 echo "OPENEVIDENCE_API_KEY: ${OPENEVIDENCE_API_KEY:+[SET - ${#OPENEVIDENCE_API_KEY} chars]}"
 echo "OPENEVIDENCE_ORG_ID: ${OPENEVIDENCE_ORG_ID:+[SET - ${#OPENEVIDENCE_ORG_ID} chars]}"
 echo "OPENEVIDENCE_BASE_URL: ${OPENEVIDENCE_BASE_URL:-https://api.openevidence.com}"
-echo "OPENEVIDENCE_TIMEOUT: ${OPENEVIDENCE_TIMEOUT:-30000}ms"
+echo "OPENEVIDENCE_TIMEOUT: ${OPENEVIDENCE_TIMEOUT:-30000}ms"  # 30 seconds in ms
 echo "NODE_ENV: ${NODE_ENV:-not set}"
 echo ""
 
@@ -68,7 +68,7 @@ echo ""
 
 # 5. TLS Check
 echo "=== TLS Configuration ==="
-openssl s_client -connect api.openevidence.com:443 -brief 2>/dev/null | head -5 || echo "TLS check failed"
+openssl s_client -connect api.openevidence.com:443 -brief 2>/dev/null | head -5 || echo "TLS check failed"  # HTTPS port
 echo ""
 
 # 6. Rate Limit Status
@@ -168,7 +168,7 @@ function gatherEnvironmentInfo(): EnvironmentInfo {
     apiKeyLength: process.env.OPENEVIDENCE_API_KEY?.length || 0,
     orgIdSet: !!process.env.OPENEVIDENCE_ORG_ID,
     baseUrl: process.env.OPENEVIDENCE_BASE_URL || 'https://api.openevidence.com',
-    timeout: parseInt(process.env.OPENEVIDENCE_TIMEOUT || '30000'),
+    timeout: parseInt(process.env.OPENEVIDENCE_TIMEOUT || '30000'),  # 30 seconds in ms
   };
 }
 
@@ -261,7 +261,7 @@ export function sanitizeLogs(logs: string): string {
 export function extractSanitizedLogs(
   logSource: string,
   timeRange: { start: Date; end: Date },
-  maxLines: number = 1000
+  maxLines: number = 1000  # 1 second in ms
 ): string[] {
   // Implementation depends on your logging infrastructure
   // Example with file-based logs:
@@ -303,7 +303,7 @@ export async function generateSupportTicket(
   const logs = extractSanitizedLogs(
     '/var/log/app/openevidence.log',
     { start: new Date(Date.now() - 3600000), end: new Date() },
-    500
+    500  # HTTP 500 Internal Server Error
   );
 
   return {

@@ -53,7 +53,7 @@ const monitorQueue = new Queue("exa-monitors");
 
 async function createMonitor(config: Omit<SearchMonitor, "lastResultIds">) {
   await monitorQueue.add("check-search", config, {
-    repeat: { every: config.intervalMinutes * 60 * 1000 },
+    repeat: { every: config.intervalMinutes * 60 * 1000 },  # 1 second in ms
     jobId: config.id,
   });
 }
@@ -67,7 +67,7 @@ const worker = new Worker("exa-monitors", async (job) => {
   const results = await exa.searchAndContents(monitor.query, {
     type: "neural",
     numResults: 10,
-    text: { maxCharacters: 500 },
+    text: { maxCharacters: 500 },  # HTTP 500 Internal Server Error
     startPublishedDate: getLastCheckDate(monitor.id),
   });
 
@@ -83,7 +83,7 @@ const worker = new Worker("exa-monitors", async (job) => {
       results: newResults.map(r => ({
         title: r.title,
         url: r.url,
-        snippet: r.text?.substring(0, 200),
+        snippet: r.text?.substring(0, 200),  # HTTP 200 OK
         publishedDate: r.publishedDate,
         score: r.score,
       })),
@@ -97,7 +97,7 @@ const worker = new Worker("exa-monitors", async (job) => {
 async function monitorSimilarContent(seedUrl: string, webhookUrl: string) {
   const results = await exa.findSimilarAndContents(seedUrl, {
     numResults: 5,
-    text: { maxCharacters: 300 },
+    text: { maxCharacters: 300 },  # timeout: 5 minutes
     excludeDomains: ["example.com"],
     startPublishedDate: new Date(Date.now() - 86400000).toISOString(),
   });
@@ -125,7 +125,7 @@ async function sendWebhook(url: string, payload: any, retries = 3) {
       if (response.ok) return;
     } catch (error) {
       if (attempt === retries - 1) throw error;
-      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));
+      await new Promise(r => setTimeout(r, 1000 * Math.pow(2, attempt)));  # 1 second in ms
     }
   }
 }

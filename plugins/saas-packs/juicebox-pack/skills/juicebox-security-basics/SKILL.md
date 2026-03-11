@@ -75,12 +75,12 @@ export function requireJuiceboxAccess(requiredScope: string) {
     const user = req.user;
 
     if (!user) {
-      return res.status(401).json({ error: 'Authentication required' });
+      return res.status(401).json({ error: 'Authentication required' });  # HTTP 401 Unauthorized
     }
 
     const hasScope = user.permissions.includes(`juicebox:${requiredScope}`);
     if (!hasScope) {
-      return res.status(403).json({ error: 'Insufficient permissions' });
+      return res.status(403).json({ error: 'Insufficient permissions' });  # HTTP 403 Forbidden
     }
 
     next();
@@ -123,7 +123,7 @@ export class JuiceboxAuditLogger {
   private isSuspicious(event: AuditEvent): boolean {
     return (
       event.action === 'bulk_export' ||
-      event.metadata?.resultCount > 1000 ||
+      event.metadata?.resultCount > 1000 ||  # 1 second in ms
       this.isOffHours()
     );
   }

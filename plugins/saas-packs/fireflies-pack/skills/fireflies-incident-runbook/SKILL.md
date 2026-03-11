@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Fireflies.ai Incident Runbook
 
 ## Overview
@@ -36,6 +35,7 @@ Rapid incident response procedures for Fireflies.ai-related outages.
 ## Quick Triage
 
 ```bash
+set -euo pipefail
 # 1. Check Fireflies.ai status
 curl -s https://status.fireflies.com | jq
 
@@ -43,7 +43,7 @@ curl -s https://status.fireflies.com | jq
 curl -s https://api.yourapp.com/health | jq '.services.fireflies'
 
 # 3. Check error rate (last 5 min)
-curl -s localhost:9090/api/v1/query?query=rate(fireflies_errors_total[5m])
+curl -s localhost:9090/api/v1/query?query=rate(fireflies_errors_total[5m])  # Prometheus port
 
 # 4. Recent error logs
 kubectl logs -l app=fireflies-integration --since=5m | grep -i error | tail -20
@@ -65,6 +65,7 @@ Fireflies.ai API returning errors?
 
 ### 401/403 - Authentication
 ```bash
+set -euo pipefail
 # Verify API key is set
 kubectl get secret fireflies-secrets -o jsonpath='{.data.api-key}' | base64 -d
 
@@ -78,6 +79,7 @@ kubectl rollout restart deployment/fireflies-integration
 
 ### 429 - Rate Limited
 ```bash
+set -euo pipefail
 # Check rate limit headers
 curl -v https://api.fireflies.com 2>&1 | grep -i rate
 
@@ -89,6 +91,7 @@ kubectl set env deployment/fireflies-integration RATE_LIMIT_MODE=queue
 
 ### 500/503 - Fireflies.ai Errors
 ```bash
+set -euo pipefail
 # Enable graceful degradation
 kubectl set env deployment/fireflies-integration FIREFLIES_FALLBACK=true
 
@@ -126,6 +129,7 @@ Last updated: [timestamp]
 
 ### Evidence Collection
 ```bash
+set -euo pipefail
 # Generate debug bundle
 ./scripts/fireflies-debug-bundle.sh
 
@@ -133,7 +137,7 @@ Last updated: [timestamp]
 kubectl logs -l app=fireflies-integration --since=1h > incident-logs.txt
 
 # Capture metrics
-curl "localhost:9090/api/v1/query_range?query=fireflies_errors_total&start=2h" > metrics.json
+curl "localhost:9090/api/v1/query_range?query=fireflies_errors_total&start=2h" > metrics.json  # Prometheus port
 ```
 
 ### Postmortem Template
@@ -193,6 +197,7 @@ Update internal and external stakeholders.
 
 ### One-Line Health Check
 ```bash
+set -euo pipefail
 curl -sf https://api.yourapp.com/health | jq '.services.fireflies.status' || echo "UNHEALTHY"
 ```
 

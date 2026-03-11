@@ -45,6 +45,7 @@ best_practices:
 
 ### Step 2: Use the Map Endpoint for Parallel Lookups
 ```bash
+set -euo pipefail
 # Instead of enriching row-by-row via the UI:
 # Use the API to submit bulk enrichment requests
 curl -X POST "https://api.clay.com/v1/tables/tbl_abc123/enrich-batch" \
@@ -93,6 +94,7 @@ scheduling:
 
 ### Step 5: Monitor Processing Progress
 ```bash
+set -euo pipefail
 # Track table enrichment progress
 curl "https://api.clay.com/v1/tables/tbl_abc123/status" \
   -H "Authorization: Bearer $CLAY_API_KEY" | \

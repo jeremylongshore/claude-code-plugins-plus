@@ -75,14 +75,14 @@ services:
     environment:
       POSTGRES_DB: testdb
       POSTGRES_PASSWORD: testpass
-    ports: ["5433:5432"]
+    ports: ["5433:5432"]  # PostgreSQL port
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 2s
       retries: 10
   redis-test:
     image: redis:7-alpine
-    ports: ["6380:6379"]
+    ports: ["6380:6379"]  # Redis TLS port
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
 ```
@@ -95,7 +95,7 @@ let container;
 beforeAll(async () => {
   container = await new PostgreSqlContainer().start();
   process.env.DATABASE_URL = container.getConnectionUri();
-}, 30000);
+}, 30000);  # 30 seconds in ms
 afterAll(async () => { await container.stop(); });
 ```
 

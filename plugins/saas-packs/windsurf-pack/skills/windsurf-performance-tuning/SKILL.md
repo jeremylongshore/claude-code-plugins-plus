@@ -51,7 +51,7 @@ Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade 
 {
   "cascade.contextWindow": {
     "maxFiles": 10,
-    "maxTokensPerFile": 2000,
+    "maxTokensPerFile": 2000,  # 2 seconds in ms
     "preferOpenFiles": true,
     "includeImports": true
   },
@@ -63,7 +63,7 @@ Optimize Windsurf (Codeium) AI-assisted development workflows. Focus on Cascade 
   },
   "cascade.flows": {
     "preferStreaming": true,
-    "timeoutMs": 30000,
+    "timeoutMs": 30000,  # 30 seconds in ms
     "retryCount": 2
   }
 }

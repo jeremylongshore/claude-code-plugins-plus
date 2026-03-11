@@ -36,6 +36,7 @@ Systematic procedures for responding to and resolving Gamma integration incident
 
 ### Step 1: Check Gamma Status
 ```bash
+set -euo pipefail
 # Check Gamma status page
 curl -s https://status.gamma.app/api/v2/status.json | jq '.status'
 
@@ -50,14 +51,15 @@ curl -w "\nTime: %{time_total}s\n" \
 
 ### Step 2: Review Key Metrics
 ```bash
+set -euo pipefail
 # Check error rate (Prometheus)
-curl -s 'http://prometheus:9090/api/v1/query?query=rate(gamma_requests_total{status=~"5.."}[5m])' | jq '.data.result'
+curl -s 'http://prometheus:9090/api/v1/query?query=rate(gamma_requests_total{status=~"5.."}[5m])' | jq '.data.result'  # Prometheus port
 
 # Check latency P95
-curl -s 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(gamma_request_duration_seconds_bucket[5m]))' | jq '.data.result'
+curl -s 'http://prometheus:9090/api/v1/query?query=histogram_quantile(0.95,rate(gamma_request_duration_seconds_bucket[5m]))' | jq '.data.result'  # Prometheus port
 
 # Check rate limit
-curl -s 'http://prometheus:9090/api/v1/query?query=gamma_rate_limit_remaining' | jq '.data.result'
+curl -s 'http://prometheus:9090/api/v1/query?query=gamma_rate_limit_remaining' | jq '.data.result'  # Prometheus port
 ```
 
 ### Step 3: Review Recent Logs
@@ -66,7 +68,7 @@ curl -s 'http://prometheus:9090/api/v1/query?query=gamma_rate_limit_remaining' |
 grep -i "gamma.*error" /var/log/app/gamma-*.log | tail -100
 
 # Rate limit hits
-grep "429" /var/log/app/gamma-*.log | wc -l
+grep "429" /var/log/app/gamma-*.log | wc -l  # HTTP 429 Too Many Requests
 
 # Timeout errors
 grep -i "timeout" /var/log/app/gamma-*.log | tail -50

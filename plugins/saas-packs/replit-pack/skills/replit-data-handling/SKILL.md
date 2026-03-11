@@ -69,8 +69,8 @@ function createSecurePool(): Pool {
     connectionString: process.env.DATABASE_URL,
     ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : false,
     max: 10,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+    idleTimeoutMillis: 30000,  # 30 seconds in ms
+    connectionTimeoutMillis: 5000,  # 5 seconds in ms
   });
 
   // Log connection events without exposing credentials
@@ -100,7 +100,7 @@ import { z } from 'zod';
 const UserInputSchema = z.object({
   name: z.string().min(1).max(100).trim(),
   email: z.string().email().toLowerCase(),
-  message: z.string().max(1000).trim(),
+  message: z.string().max(1000).trim(),  # 1 second in ms
 });
 
 function sanitizeInput(data: unknown) {
@@ -142,7 +142,7 @@ function safeLog(message: string, data?: any) {
 function errorHandler(err: Error, req: any, res: any, next: any) {
   safeLog('Error:', { message: err.message });
 
-  res.status(500).json({
+  res.status(500).json({  # HTTP 500 Internal Server Error
     error: isProduction ? 'Internal server error' : err.message,
     ...(isProduction ? {} : { stack: err.stack }),
   });
@@ -163,7 +163,7 @@ function errorHandler(err: Error, req: any, res: any, next: any) {
 ```typescript
 app.post('/api/users', async (req, res) => {
   const input = sanitizeInput(req.body);
-  if (!input.valid) return res.status(400).json({ errors: input.errors });
+  if (!input.valid) return res.status(400).json({ errors: input.errors });  # HTTP 400 Bad Request
 
   const user = await createUser(pool, input.data);
   res.json(sanitizeResponse(user));

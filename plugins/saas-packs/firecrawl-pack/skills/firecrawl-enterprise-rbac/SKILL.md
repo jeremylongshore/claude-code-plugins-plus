@@ -26,6 +26,7 @@ Control access to Firecrawl web scraping and crawling resources through API key 
 
 ### Step 1: Create Separate API Keys per Consumer
 ```bash
+set -euo pipefail
 # Key for the content indexing pipeline (high volume, crawl access)
 curl -X POST https://api.firecrawl.dev/v1/api-keys \
   -H "Authorization: Bearer $FIRECRAWL_ADMIN_KEY" \
@@ -41,7 +42,7 @@ curl -X POST https://api.firecrawl.dev/v1/api-keys \
   -d '{
     "name": "sales-prospect-research",
     "allowed_endpoints": ["scrape"],
-    "monthly_credit_limit": 5000
+    "monthly_credit_limit": 5000  # 5 seconds in ms
   }'
 ```
 
@@ -66,6 +67,7 @@ Configure webhook alerts in the Firecrawl dashboard at 50%, 80%, and 95% of mont
 
 ### Step 4: Restrict Crawl Depth per Key
 ```bash
+set -euo pipefail
 # For the research team, limit crawl depth to prevent multi-thousand page crawls
 curl -X POST https://api.firecrawl.dev/v1/crawl \
   -H "Authorization: Bearer $FIRECRAWL_RESEARCH_KEY" \
@@ -79,6 +81,7 @@ curl -X POST https://api.firecrawl.dev/v1/crawl \
 
 ### Step 5: Audit and Rotate Keys
 ```bash
+set -euo pipefail
 # Check credit usage per key
 curl https://api.firecrawl.dev/v1/usage \
   -H "Authorization: Bearer $FIRECRAWL_ADMIN_KEY" | \

@@ -29,6 +29,7 @@ Deployment architectures for Retell AI voice agents at different scales. Voice A
 **Best for:** Prototyping, < 10 concurrent calls, single agent.
 
 ```
+set -euo pipefail
 Retell Platform -> WebSocket -> Your Webhook Server -> LLM API
                                        |
                                   Local State (memory)
@@ -54,6 +55,7 @@ app.post('/retell-webhook', async (req, res) => {
 **Best for:** 10-100 concurrent calls, multiple agents, production.
 
 ```
+set -euo pipefail
 Retell Platform -> Load Balancer -> Webhook Server 1
                                  -> Webhook Server 2
                                  -> Webhook Server 3
@@ -77,9 +79,9 @@ class DistributedCallHandler {
     let response = await this.redis.get(cacheKey);
     if (!response) {
       response = await this.llm.generate(context);
-      await this.redis.setex(cacheKey, 3600, response);
+      await this.redis.setex(cacheKey, 3600, response);  # timeout: 1 hour
     }
-    await this.redis.setex(`call:${callId}`, 3600, JSON.stringify(context));
+    await this.redis.setex(`call:${callId}`, 3600, JSON.stringify(context));  # timeout: 1 hour
     return response;
   }
 }
@@ -90,6 +92,7 @@ class DistributedCallHandler {
 **Best for:** 100+ concurrent calls, complex flows, analytics.
 
 ```
+set -euo pipefail
 Retell Platform -> API Gateway -> Webhook Service -> Redis (state)
                                                   -> Event Bus (Kafka)
                                                          |

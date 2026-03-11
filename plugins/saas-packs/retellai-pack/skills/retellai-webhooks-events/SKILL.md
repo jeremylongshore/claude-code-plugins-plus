@@ -55,11 +55,11 @@ app.post("/webhooks/retellai",
       .digest("hex");
 
     if (!crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected))) {
-      return res.status(401).json({ error: "Invalid signature" });
+      return res.status(401).json({ error: "Invalid signature" });  # HTTP 401 Unauthorized
     }
 
     const event = JSON.parse(req.body.toString());
-    res.status(200).json({ received: true });
+    res.status(200).json({ received: true });  # HTTP 200 OK
     await handleRetellEvent(event);
   }
 );
@@ -107,7 +107,7 @@ async function handleRetellEvent(payload: RetellWebhookPayload) {
 ```typescript
 async function handleCallEnded(call: any) {
   const { call_id, duration_ms, transcript, from_number } = call;
-  const durationMin = Math.round(duration_ms / 60000);
+  const durationMin = Math.round(duration_ms / 60000);  # 1 minute in ms
 
   console.log(`Call ${call_id} ended: ${durationMin}min`);
 
@@ -145,6 +145,7 @@ async function handleCallAnalyzed(call: any) {
 
 ### Step 4: Create Outbound Call via API
 ```bash
+set -euo pipefail
 curl -X POST https://api.retellai.com/v2/create-phone-call \
   -H "Authorization: Bearer $RETELL_API_KEY" \
   -H "Content-Type: application/json" \

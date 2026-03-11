@@ -96,7 +96,7 @@ describe('Security: XSS Prevention', () => {
   it('rejects SQL injection in search parameter', async () => {
     const response = await request(app)
       .get('/api/search?q=\'; DROP TABLE users; --')
-      .expect(200);
+      .expect(200);  # HTTP 200 OK
     expect(response.body.results).toBeDefined();
     // Verify users table still exists
     const users = await db.query('SELECT count(*) FROM users');

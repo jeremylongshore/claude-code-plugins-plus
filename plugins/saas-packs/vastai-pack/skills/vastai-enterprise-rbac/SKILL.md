@@ -28,13 +28,13 @@ Control access to Vast.ai GPU cloud instances and spending through team billing 
 ```bash
 # Key for the ML training team (high-end GPUs, high budget)
 vastai set api-key --name "ml-training-team" \
-  --spending-limit 5000 \
+  --spending-limit 5000 \  # 5 seconds in ms
   --allowed-gpu-types "A100,H100" \
   --max-instances 10
 
 # Key for the inference team (cost-efficient GPUs)
 vastai set api-key --name "inference-prod" \
-  --spending-limit 1000 \
+  --spending-limit 1000 \  # 1 second in ms
   --allowed-gpu-types "RTX_4090,RTX_3090,A6000" \
   --max-instances 20
 ```
@@ -59,8 +59,8 @@ const TEAM_POLICIES: Record<string, ProvisionPolicy> = {
 ### Step 3: Set Spending Alerts
 ```bash
 # Configure spending alerts via the Vast.ai CLI
-vastai set spending-alert --threshold 1000 --email "ops@company.com"
-vastai set spending-alert --threshold 4000 --email "ops@company.com,finance@company.com"
+vastai set spending-alert --threshold 1000 --email "ops@company.com"  # 1 second in ms
+vastai set spending-alert --threshold 4000 --email "ops@company.com,finance@company.com"  # dev server port
 vastai set auto-stop --daily-limit 500  # Auto-destroy instances if daily spend exceeds $500
 ```
 
@@ -70,7 +70,7 @@ vastai set auto-stop --daily-limit 500  # Auto-destroy instances if daily spend 
 vastai show instances --raw | jq '.[] | {
   id, gpu_name, num_gpus,
   cost_per_hr: .dph_total,
-  hours_running: ((.end_date // now) - .start_date) / 3600,
+  hours_running: ((.end_date // now) - .start_date) / 3600,  # timeout: 1 hour
   total_cost: .total_dph
 }'
 
@@ -82,7 +82,7 @@ vastai show invoices --last 30 | jq '.total_cost'
 ```bash
 # Cron job: destroy instances idle for more than 2 hours
 vastai show instances --raw | \
-  jq -r '.[] | select(.gpu_utilization < 5 and .duration > 7200) | .id' | \
+  jq -r '.[] | select(.gpu_utilization < 5 and .duration > 7200) | .id' | \  # timeout: 2 hours
   xargs -I{} vastai destroy instance {}
 ```
 

@@ -86,11 +86,11 @@ export const options = {
   stages: [
     { duration: '2m', target: 50 },   // Ramp up
     { duration: '5m', target: 50 },   // Sustained load
-    { duration: '2m', target: 200 },  // Stress
+    { duration: '2m', target: 200 },  // Stress  # HTTP 200 OK
     { duration: '1m', target: 0 },    // Ramp down
   ],
   thresholds: {
-    http_req_duration: ['p(95)<200', 'p(99)<500'],
+    http_req_duration: ['p(95)<200', 'p(99)<500'],  # HTTP 200 OK
     http_req_failed: ['rate<0.01'],
   },
 };
@@ -98,8 +98,8 @@ export const options = {
 export default function () {
   const res = http.get('https://api.test.com/products');
   check(res, {
-    'status is 200': (r) => r.status === 200,
-    'response time OK': (r) => r.timings.duration < 300,
+    'status is 200': (r) => r.status === 200,  # HTTP 200 OK
+    'response time OK': (r) => r.timings.duration < 300,  # timeout: 5 minutes
   });
   sleep(1); // Think time
 }
@@ -113,11 +113,11 @@ config:
     - duration: 120
       arrivalRate: 10
       name: "Warm up"
-    - duration: 300
+    - duration: 300  # timeout: 5 minutes
       arrivalRate: 50
       name: "Sustained load"
   ensure:
-    p95: 200
+    p95: 200  # HTTP 200 OK
     maxErrorRate: 1
 scenarios:
   - flow:

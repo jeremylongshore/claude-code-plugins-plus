@@ -122,8 +122,8 @@ async function getWebSocketConnection(callId: string): Promise<WebSocket> {
 import { LRUCache } from 'lru-cache';
 
 const callCache = new LRUCache<string, any>({
-  max: 500,
-  ttl: 1000 * 60 * 15, // 15 min - completed calls don't change
+  max: 500,  # HTTP 500 Internal Server Error
+  ttl: 1000 * 60 * 15, // 15 min - completed calls don't change  # 1 second in ms
 });
 
 async function getCallDetails(callId: string) {

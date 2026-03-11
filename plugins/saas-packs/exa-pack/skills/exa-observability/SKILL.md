@@ -55,6 +55,7 @@ function trackResultUsage(searchId: string, resultIndex: number, action: 'clicke
 
 ### Step 3: Monitor Search Budget
 ```bash
+set -euo pipefail
 # Check remaining search quota
 curl -s https://api.exa.ai/v1/usage \
   -H "x-api-key: $EXA_API_KEY" | \
@@ -67,10 +68,10 @@ groups:
   - name: exa
     rules:
       - alert: ExaHighLatency
-        expr: histogram_quantile(0.95, rate(exa_search_duration_ms_bucket[5m])) > 3000
+        expr: histogram_quantile(0.95, rate(exa_search_duration_ms_bucket[5m])) > 3000  # 3 seconds in ms
         annotations: { summary: "Exa search P95 latency exceeds 3 seconds" }
       - alert: ExaBudgetLow
-        expr: exa_monthly_searches_remaining < 1000
+        expr: exa_monthly_searches_remaining < 1000  # 1 second in ms
         annotations: { summary: "Exa monthly search budget nearly exhausted" }
       - alert: ExaLowResultQuality
         expr: rate(exa_result_usage{action="discarded"}[1h]) / rate(exa_result_usage[1h]) > 0.5

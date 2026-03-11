@@ -50,7 +50,7 @@ Time Saved per Meeting:
 
 Monthly Calculation:
 Meetings per month: [20]
-Time saved: 20 * 20 min = 400 min = 6.7 hours
+Time saved: 20 * 20 min = 400 min = 6.7 hours  # HTTP 400 Bad Request
 Hourly rate: [$50]
 Value of time saved: 6.7 * $50 = $333
 
@@ -73,7 +73,7 @@ Blended hourly rate: $75
 Value: 66.7 * $75 = $5,000/month
 
 Business plan cost: 10 * $25 = $250/month
-ROI: ($5,000 - $250) / $250 = 1,900%
+ROI: ($5,000 - $250) / $250 = 1,900%  # timeout: 15 minutes
 ```
 
 ## Optimization Strategies
@@ -150,7 +150,7 @@ Optimize Zaps:
 ```
 Monthly Billing:
 Pro: $10/month × 12 = $120/year
-Business: $25/user × 12 = $300/user/year
+Business: $25/user × 12 = $300/user/year  # timeout: 5 minutes
 
 Annual Billing (if offered, typically 15-20% discount):
 Pro: ~$96/year (save $24)

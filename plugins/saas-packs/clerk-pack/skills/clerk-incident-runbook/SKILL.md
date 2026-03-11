@@ -24,11 +24,11 @@ Procedures for responding to Clerk-related incidents in production.
 - Rollback procedures documented
 
 ## Instructions
-- Incident Categories
-- Runbook Procedures
-- Emergency Contacts
-- Post-Incident
-- Lessons Learned
+1. Incident Categories
+2. Runbook Procedures
+3. Emergency Contacts
+4. Post-Incident
+5. Lessons Learned
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

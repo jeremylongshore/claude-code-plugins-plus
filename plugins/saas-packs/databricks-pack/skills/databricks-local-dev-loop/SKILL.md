@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Local Dev Loop
 
 ## Overview
@@ -58,6 +57,7 @@ my-databricks-project/
 
 ### Step 2: Install Development Tools
 ```bash
+set -euo pipefail
 # Install Databricks SDK and CLI
 pip install databricks-sdk databricks-cli
 

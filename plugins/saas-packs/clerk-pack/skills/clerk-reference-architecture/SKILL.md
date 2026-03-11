@@ -23,10 +23,10 @@ Reference architectures for implementing Clerk in various application types.
 - Knowledge of your tech stack
 
 ## Instructions
-- Architecture 1: Next.js Full-Stack Application
-- Architecture 2: Microservices with Shared Auth
-- Architecture 3: Multi-Tenant SaaS
-- Architecture 4: Mobile + Web with Shared Backend
+1. Architecture 1: Next.js Full-Stack Application
+2. Architecture 2: Microservices with Shared Auth
+3. Architecture 3: Multi-Tenant SaaS
+4. Architecture 4: Mobile + Web with Shared Backend
 
 For full implementation details and code examples, load:
 `Read(${CLAUDE_SKILL_DIR}/references/implementation-guide.md)`

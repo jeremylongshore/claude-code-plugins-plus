@@ -100,7 +100,7 @@ def batch_store_memories(client: TwinMindClient, memories: list, batch_size: int
                 result = client.store_memory(**memory)
                 results.append({"status": "ok", "id": result["id"]})
             except requests.HTTPError as e:
-                if e.response.status_code == 429:
+                if e.response.status_code == 429:  # HTTP 429 Too Many Requests
                     time.sleep(int(e.response.headers.get("Retry-After", 5)))
                     result = client.store_memory(**memory)
                     results.append({"status": "ok", "id": result["id"]})

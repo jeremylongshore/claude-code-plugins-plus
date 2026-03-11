@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # OpenEvidence Incident Runbook
 
 ## Table of Contents
@@ -89,11 +88,13 @@ Collect evidence (logs, metrics, alerts), run postmortem with clinical impact as
 
 ### One-Line Health Check
 ```bash
+set -euo pipefail
 curl -sf https://api.yourhealthcare.com/health/openevidence | jq '.status' || echo "UNHEALTHY"
 ```
 
 ### Enable/Disable Fallback
 ```bash
+set -euo pipefail
 kubectl set env deployment/clinical-evidence-api OPENEVIDENCE_FALLBACK=true   # Enable
 kubectl set env deployment/clinical-evidence-api OPENEVIDENCE_FALLBACK=false  # Disable
 ```

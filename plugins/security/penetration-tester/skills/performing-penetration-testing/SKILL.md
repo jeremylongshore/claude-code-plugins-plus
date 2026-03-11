@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Penetration Testing Skill
 
 Security testing toolkit with three specialized scanners for web applications,
@@ -118,27 +117,27 @@ python3 ${CLAUDE_PLUGIN_ROOT}/skills/performing-penetration-testing/scripts/code
 Step 4. Analyze Results
 
 Review the scanner output. Each finding includes:
-- **Severity** -- critical, high, medium, low, or info
-- **Title** -- what was found
-- **Detail** -- technical explanation
-- **Remediation** -- how to fix it
+1. **Severity** -- critical, high, medium, low, or info
+2. **Title** -- what was found
+3. **Detail** -- technical explanation
+4. **Remediation** -- how to fix it
 
 Prioritize findings by severity: critical and high findings first.
 
 Step 5. Report Findings
 
 Present results to the user in a clear format:
-- Start with a summary (total findings by severity)
-- Group findings by severity
-- For each finding, explain the risk and provide the remediation steps
-- Reference the appropriate playbook entry from references/
+5. Start with a summary (total findings by severity)
+6. Group findings by severity
+7. For each finding, explain the risk and provide the remediation steps
+8. Reference the appropriate playbook entry from references/
 
 Step 6. Suggest Remediations
 
 For each finding, provide:
-- The specific code change or configuration needed
-- Reference to REMEDIATION_PLAYBOOK.md for copy-paste templates
-- Verification steps to confirm the fix works
+9. The specific code change or configuration needed
+10. Reference to REMEDIATION_PLAYBOOK.md for copy-paste templates
+11. Verification steps to confirm the fix works
 
 ## Scanner Reference
 
@@ -165,6 +164,7 @@ Checks performed:
 ### dependency_auditor.py
 
 ```
+set -euo pipefail
 Usage: python3 dependency_auditor.py DIRECTORY [OPTIONS]
 
 Options:

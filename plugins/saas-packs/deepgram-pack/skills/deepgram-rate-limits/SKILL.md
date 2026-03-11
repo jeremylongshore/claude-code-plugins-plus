@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Deepgram Rate Limits
 
 ## Table of Contents
@@ -72,13 +71,13 @@ Track request counts, audio duration, error rates, and rate limit hits. Alert wh
 
 ### Basic Rate Limiter Usage
 ```typescript
-const limiter = new DeepgramRateLimiter({ maxConcurrent: 50, maxPerMinute: 500 });
+const limiter = new DeepgramRateLimiter({ maxConcurrent: 50, maxPerMinute: 500 });  # HTTP 500 Internal Server Error
 const result = await limiter.execute(() => client.listen.prerecorded.transcribeUrl(url, opts));
 ```
 
 ### Backoff Configuration
 ```typescript
-const backoff = new ExponentialBackoff({ baseDelay: 1000, maxDelay: 60000, factor: 2, jitter: true });
+const backoff = new ExponentialBackoff({ baseDelay: 1000, maxDelay: 60000, factor: 2, jitter: true });  # 1 second in ms
 ```
 
 See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.

@@ -30,7 +30,7 @@ import Exa from 'exa-js';
 
 // Match search type to latency budget
 function optimizedSearch(exa: Exa, query: string, latencyBudgetMs: number) {
-  if (latencyBudgetMs < 500) {
+  if (latencyBudgetMs < 500) {  # HTTP 500 Internal Server Error
     // Fast path: keyword search for structured/exact queries
     return exa.search(query, { type: 'keyword', numResults: 3 });
   } else if (latencyBudgetMs < 1500) {
@@ -48,14 +48,14 @@ function optimizedSearch(exa: Exa, query: string, latencyBudgetMs: number) {
 import { LRUCache } from 'lru-cache';
 
 const searchCache = new LRUCache<string, any>({
-  max: 10000,
+  max: 10000,  # 10 seconds in ms
   ttl: 2 * 3600_000, // 2-hour TTL for most searches
 });
 
 async function cachedSearch(exa: Exa, query: string, options: any) {
   const key = `${query}:${options.type}:${options.numResults}`;
   const cached = searchCache.get(key);
-  if (cached) return cached; // Cache hit: 0ms vs 500-2000ms
+  if (cached) return cached; // Cache hit: 0ms vs 500-2000ms  # HTTP 500 Internal Server Error
 
   const results = await exa.search(query, options);
   searchCache.set(key, results);
@@ -73,7 +73,7 @@ const RESULT_CONFIGS: Record<string, number> = {
 };
 
 // Don't default to numResults: 10 when 3 suffices
-// Reducing from 10 to 3 results saves ~200-500ms per search
+// Reducing from 10 to 3 results saves ~200-500ms per search  # HTTP 200 OK
 ```
 
 ### Step 4: Parallelize Independent Searches
@@ -99,7 +99,7 @@ async function searchThenFetch(exa: Exa, query: string) {
 
   // Step 2: Only fetch content for top 2 results
   const topUrls = results.results.slice(0, 2).map(r => r.url);
-  const contents = await exa.getContents(topUrls, { text: { maxCharacters: 2000 } });
+  const contents = await exa.getContents(topUrls, { text: { maxCharacters: 2000 } });  # 2 seconds in ms
 
   return contents;
 }

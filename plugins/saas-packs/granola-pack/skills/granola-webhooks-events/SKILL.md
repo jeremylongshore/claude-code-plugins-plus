@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Granola Webhooks & Events
 
 ## Contents
@@ -79,6 +78,7 @@ See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) 
 
 ### Quick Webhook Test
 ```bash
+set -euo pipefail
 curl -X POST https://hooks.zapier.com/hooks/catch/YOUR_HOOK_ID \
   -H "Content-Type: application/json" \
   -d '{"event_type":"note.created","data":{"meeting_title":"Test","action_items":[]}}'

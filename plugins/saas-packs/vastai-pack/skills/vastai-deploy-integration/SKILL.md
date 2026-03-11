@@ -27,6 +27,7 @@ Deploy ML training jobs and inference services on Vast.ai GPU cloud. Covers inst
 
 ### Step 1: Search and Provision GPU
 ```bash
+set -euo pipefail
 # Search for available GPUs
 vastai search offers 'gpu_name=RTX_4090 reliability2>0.95 disk_space>50' \
   -o 'dph_total' --limit 5
@@ -52,6 +53,7 @@ CMD ["python", "train.py", "--config", "config.yaml"]
 ```
 
 ```bash
+set -euo pipefail
 # Build and push
 docker build -f Dockerfile.gpu -t myregistry/ml-trainer:latest .
 docker push myregistry/ml-trainer:latest
@@ -134,7 +136,7 @@ vastai destroy instance $INSTANCE_ID
 ### Quick Training Deploy
 ```bash
 vastai search offers 'gpu_name=A100_SXM4 num_gpus=1' -o 'dph_total' --limit 3
-vastai create instance $BEST_OFFER --image myregistry/trainer:latest --disk 200
+vastai create instance $BEST_OFFER --image myregistry/trainer:latest --disk 200  # HTTP 200 OK
 ```
 
 ## Resources

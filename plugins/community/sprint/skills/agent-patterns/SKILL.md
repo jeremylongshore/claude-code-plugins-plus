@@ -8,7 +8,6 @@ author: Damien Laine <damien.laine@gmail.com>
 license: MIT
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Agent Patterns
 
 ## Overview

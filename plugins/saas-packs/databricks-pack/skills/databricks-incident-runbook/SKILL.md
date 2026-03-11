@@ -12,7 +12,6 @@ license: MIT
 author: Jeremy Longshore <jeremy@intentsolutions.io>
 compatible-with: claude-code, codex, openclaw
 ---
-
 # Databricks Incident Runbook
 
 ## Overview
@@ -37,6 +36,7 @@ Rapid incident response procedures for Databricks-related outages.
 
 ```bash
 #!/bin/bash
+set -euo pipefail
 # quick-triage.sh - Run this first during any incident
 
 echo "=== Databricks Quick Triage ==="
