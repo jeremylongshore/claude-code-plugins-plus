@@ -43,53 +43,29 @@ pip install ta-lib scipy scikit-learn
 
 ## Instructions
 
-### Step 1: Fetch Historical Data
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
-```
-
-Data is cached to `${CLAUDE_SKILL_DIR}/data/BTC-USD_1d.csv` (named by symbol and interval) for reuse.
-
-### Step 2: Run Backtest
-
-Basic backtest with default parameters:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
-```
-
-Advanced backtest with custom parameters:
-
-```bash
-# Example: backtest with specific date range
-python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
-  --strategy rsi_reversal \
-  --symbol ETH-USD \
-  --period 1y \
-  --capital 10000 \  # 10000: 10 seconds in ms
-  --params '{"period": 14, "overbought": 70, "oversold": 30}'
-```
-
-### Step 3: Analyze Results
-
-Results are saved to `${CLAUDE_SKILL_DIR}/reports/` including:
-- `*_summary.txt` - Performance metrics
-- `*_trades.csv` - Trade log
-- `*_equity.csv` - Equity curve data
-- `*_chart.png` - Visual equity curve
-
-### Step 4: Optimize Parameters
-
-Find optimal parameters via grid search:
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
-  --strategy sma_crossover \
-  --symbol BTC-USD \
-  --period 1y \
-  --param-grid '{"fast_period": [10, 20, 30], "slow_period": [50, 100, 200]}'  # HTTP 200 OK
-```
+1. Fetch historical data (cached to `${CLAUDE_SKILL_DIR}/data/` for reuse):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/fetch_data.py --symbol BTC-USD --period 2y --interval 1d
+   ```
+2. Run a backtest with default or custom parameters:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/backtest.py --strategy sma_crossover --symbol BTC-USD --period 1y
+   python ${CLAUDE_SKILL_DIR}/scripts/backtest.py \
+     --strategy rsi_reversal \
+     --symbol ETH-USD \
+     --period 1y \
+     --capital 10000 \  # 10000: 10 seconds in ms
+     --params '{"period": 14, "overbought": 70, "oversold": 30}'
+   ```
+3. Analyze results saved to `${CLAUDE_SKILL_DIR}/reports/` -- includes `*_summary.txt` (performance metrics), `*_trades.csv` (trade log), `*_equity.csv` (equity curve data), and `*_chart.png` (visual equity curve).
+4. Optimize parameters via grid search to find the best combination:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/optimize.py \
+     --strategy sma_crossover \
+     --symbol BTC-USD \
+     --period 1y \
+     --param-grid '{"fast_period": [10, 20, 30], "slow_period": [50, 100, 200]}'  # HTTP 200 OK
+   ```
 
 ## Output
 

@@ -31,39 +31,24 @@ Foundation skill providing real-time and historical cryptocurrency price data fo
 
 ## Instructions
 
-### Step 1: Quick Price Check
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL
-```
-
-### Step 2: Use Watchlists
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10     # Top 10 by market cap
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist defi      # DeFi tokens
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist layer2    # Layer 2 tokens
-```
-
-Available watchlists: `top10`, `defi`, `layer2`, `stablecoins`, `memecoins`
-
-### Step 3: Fetch Historical Data
-
-```bash
-# Last 30 days
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
-
-# Last 90 days with CSV export
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
-
-# Custom date range
-python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31  # 2024 full year
-```
-
-### Step 4: Configure Settings
-
-Edit `${CLAUDE_SKILL_DIR}/config/settings.yaml` to customize cache TTLs, default currency, and custom watchlists. See `references/implementation.md` for the full configuration reference.
+1. Check current prices for one or more symbols:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbols BTC,ETH,SOL
+   ```
+2. Use watchlists to scan predefined groups (available: `top10`, `defi`, `layer2`, `stablecoins`, `memecoins`):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist top10     # Top 10 by market cap
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist defi      # DeFi tokens
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --watchlist layer2    # Layer 2 tokens
+   ```
+3. Fetch historical data by period or custom date range:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 30d
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol BTC --period 90d --output csv
+   python ${CLAUDE_SKILL_DIR}/scripts/price_tracker.py --symbol ETH --start 2024-01-01 --end 2024-12-31  # 2024 full year
+   ```
+4. Configure settings by editing `${CLAUDE_SKILL_DIR}/config/settings.yaml` to customize cache TTLs, default currency, and custom watchlists. See `references/implementation.md` for the full configuration reference.
 
 ## Output
 

@@ -30,54 +30,30 @@ Optimal trade routing across decentralized exchanges by aggregating quotes from 
 
 ## Instructions
 
-### Step 1: Quick Quote (Single Best Price)
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 1.0
-```
-
-Returns the single best route with price, gas cost, and effective rate.
-
-### Step 2: Compare All DEXs
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
-```
-
-Shows quotes from each aggregator ranked by effective rate (after gas).
-
-### Step 3: Analyze Multi-Hop Routes
-
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 10.0 --routes
-```
-
-Discovers and compares direct routes vs. multi-hop (2-3 pools) with hop-by-hop breakdown.
-
-### Step 4: Split Large Orders
-
-For whale-sized trades ($10K+), optimize across multiple DEXs:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
-```
-
-Calculates optimal allocation percentages to minimize total price impact.
-
-### Step 5: MEV Risk Assessment
-
-Check sandwich attack risk before executing:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
-```
-
-Returns risk score (LOW/MEDIUM/HIGH) with protection recommendations.
-
-### Step 6: Full Analysis
-
-Combine all features for comprehensive analysis:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 25.0 --full --output json
-```
+1. Get a quick quote for the single best price with gas cost and effective rate:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 1.0
+   ```
+2. Compare all DEXs to see quotes ranked by effective rate (after gas):
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 5.0 --compare
+   ```
+3. Analyze multi-hop routes to compare direct vs. multi-hop (2-3 pools) with hop-by-hop breakdown:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 10.0 --routes
+   ```
+4. Split large orders ($10K+) across multiple DEXs to minimize total price impact:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 100.0 --split
+   ```
+5. Assess MEV risk (sandwich attack risk score: LOW/MEDIUM/HIGH) before executing:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 50.0 --mev-check
+   ```
+6. Run full analysis combining all features for comprehensive output:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/dex_router.py ETH USDC 25.0 --full --output json
+   ```
 
 ## Output
 

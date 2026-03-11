@@ -30,51 +30,34 @@ Simulate flash loan strategies across Aave V3, dYdX, and Balancer with profitabi
 
 ## Instructions
 
-### Step 1: Simple Arbitrage Simulation
-
-Simulate a two-DEX arbitrage with automatic fee and gas calculation:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
-  --dex-buy uniswap --dex-sell sushiswap
-```
-
-### Step 2: Compare Flash Loan Providers
-
-Find the cheapest provider for your strategy:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
-```
-
-### Step 3: Liquidation Profitability
-
-Analyze liquidation opportunities on lending protocols:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py liquidation \
-  --protocol aave --health-factor 0.95
-```
-
-### Step 4: Triangular Arbitrage
-
-Simulate multi-hop circular arbitrage paths:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py triangular \
-  ETH USDC WBTC ETH --amount 50
-```
-
-### Step 5: Risk Assessment
-
-Add risk analysis (MEV competition, execution, protocol, liquidity) to any simulation:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
-```
-
-### Step 6: Full Analysis
-
-Run complete analysis combining all features:
-```bash
-python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
-  --full --output json > simulation.json
-```
+1. Simulate a two-DEX arbitrage with automatic fee and gas calculation:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+     --dex-buy uniswap --dex-sell sushiswap
+   ```
+2. Compare flash loan providers to find the cheapest for your strategy:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --compare-providers
+   ```
+3. Analyze liquidation profitability on lending protocols:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py liquidation \
+     --protocol aave --health-factor 0.95
+   ```
+4. Simulate triangular arbitrage with multi-hop circular paths:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py triangular \
+     ETH USDC WBTC ETH --amount 50
+   ```
+5. Add risk assessment (MEV competition, execution, protocol, liquidity) to any simulation:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 --risk-analysis
+   ```
+6. Run full analysis combining all features:
+   ```bash
+   python ${CLAUDE_SKILL_DIR}/scripts/flash_simulator.py arbitrage ETH USDC 100 \
+     --full --output json > simulation.json
+   ```
 
 ## Output
 

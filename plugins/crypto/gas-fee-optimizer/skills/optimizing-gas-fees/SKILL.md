@@ -30,66 +30,37 @@ Gas fee optimization skill that:
 
 ## Instructions
 
-### Step 1: Check Current Gas Prices
-
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current
-```
-
-For specific chain:
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current --chain polygon
-```
-
-### Step 2: Estimate Transaction Cost
-
-For known operations:
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
-```
-
-For custom gas limit:
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast  # 150000 = configured value
-```
-
-Available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswap_v2_swap`, `uniswap_v3_swap`, `sushiswap_swap`, `curve_swap`, `nft_mint`, `nft_transfer`, `opensea_listing`, `aave_deposit`, `aave_withdraw`, `compound_supply`, `compound_borrow`, `bridge_deposit`
-
-### Step 3: Find Optimal Transaction Window
-
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py optimal
-```
-
-### Step 4: View Gas Patterns
-
-Hourly patterns:
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns
-```
-
-Daily patterns:
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns --daily
-```
-
-### Step 5: Predict Future Gas
-
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py predict --time 14
-```
-
-### Step 6: Compare Chains
-
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py compare
-```
-
-### Step 7: View Base Fee History
-
-```bash
-cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py history --blocks 50
-```
+1. Check current gas prices (optionally for a specific chain):
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py current --chain polygon
+   ```
+2. Estimate transaction cost for known operations or custom gas limits (available operations: `eth_transfer`, `erc20_transfer`, `erc20_approve`, `uniswap_v2_swap`, `uniswap_v3_swap`, `sushiswap_swap`, `curve_swap`, `nft_mint`, `nft_transfer`, `opensea_listing`, `aave_deposit`, `aave_withdraw`, `compound_supply`, `compound_borrow`, `bridge_deposit`):
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --operation uniswap_v2_swap --all-tiers
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py estimate --gas-limit 150000 --tier fast  # 150000 = configured value
+   ```
+3. Find the optimal transaction window with lowest expected gas:
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py optimal
+   ```
+4. View gas patterns (hourly or daily):
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py patterns --daily
+   ```
+5. Predict future gas prices for a given hour:
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py predict --time 14
+   ```
+6. Compare gas prices across multiple chains:
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py compare
+   ```
+7. View base fee history for recent blocks:
+   ```bash
+   cd ${CLAUDE_SKILL_DIR}/scripts && python3 gas_optimizer.py history --blocks 50
+   ```
 
 ## Output
 
