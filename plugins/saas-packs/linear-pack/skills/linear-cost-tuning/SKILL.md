@@ -15,8 +15,17 @@ compatible-with: claude-code, codex, openclaw
 
 # Linear Cost Tuning
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Optimize Linear API usage to maximize efficiency and minimize costs.
+Optimize Linear API usage to maximize efficiency and minimize costs through caching, batching, and smart query patterns.
 
 ## Prerequisites
 - Working Linear integration
@@ -25,7 +34,6 @@ Optimize Linear API usage to maximize efficiency and minimize costs.
 
 ## Cost Factors
 
-### API Request Costs
 | Factor | Impact | Optimization Strategy |
 |--------|--------|----------------------|
 | Request count | Direct rate limit | Batch operations |
@@ -36,66 +44,9 @@ Optimize Linear API usage to maximize efficiency and minimize costs.
 ## Instructions
 
 ### Step 1: Audit Current Usage
-```typescript
-// lib/usage-tracker.ts
-interface UsageStats {
-  requests: number;
-  complexity: number;
-  bytesTransferred: number;
-  period: { start: Date; end: Date };
-}
+Track requests, complexity, and bytes transferred. Project monthly usage to identify optimization targets.
 
-class UsageTracker {
-  private stats: UsageStats = {
-    requests: 0,
-    complexity: 0,
-    bytesTransferred: 0,
-    period: { start: new Date(), end: new Date() },
-  };
-
-  recordRequest(complexity: number, bytes: number): void {
-    this.stats.requests++;
-    this.stats.complexity += complexity;
-    this.stats.bytesTransferred += bytes;
-    this.stats.period.end = new Date();
-  }
-
-  getStats(): UsageStats {
-    return { ...this.stats };
-  }
-
-  getDaily(): {
-    avgRequestsPerHour: number;
-    avgComplexityPerRequest: number;
-    projectedMonthlyRequests: number;
-  } {
-    const hours =
-      (this.stats.period.end.getTime() - this.stats.period.start.getTime()) /
-      (1000 * 60 * 60);
-
-    return {
-      avgRequestsPerHour: this.stats.requests / Math.max(hours, 1),
-      avgComplexityPerRequest: this.stats.complexity / Math.max(this.stats.requests, 1),
-      projectedMonthlyRequests: (this.stats.requests / Math.max(hours, 1)) * 24 * 30,
-    };
-  }
-
-  reset(): void {
-    this.stats = {
-      requests: 0,
-      complexity: 0,
-      bytesTransferred: 0,
-      period: { start: new Date(), end: new Date() },
-    };
-  }
-}
-
-export const usageTracker = new UsageTracker();
-```
-
-### Step 2: Reduce Request Volume
-
-**Polling vs Webhooks:**
+### Step 2: Replace Polling with Webhooks
 ```typescript
 // BAD: Polling every minute
 setInterval(async () => {
@@ -104,7 +55,6 @@ setInterval(async () => {
 }, 60000);
 
 // GOOD: Use webhooks for real-time updates
-// See linear-webhooks-events skill
 app.post("/webhooks/linear", async (req, res) => {
   const event = req.body;
   await handleEvent(event);
@@ -112,203 +62,46 @@ app.post("/webhooks/linear", async (req, res) => {
 });
 ```
 
-**Conditional Fetching:**
-```typescript
-// lib/conditional-fetch.ts
-interface ETagCache {
-  data: any;
-  etag: string;
-  timestamp: Date;
-}
-
-const etagCache = new Map<string, ETagCache>();
-
-async function fetchWithETag(key: string, fetcher: () => Promise<any>) {
-  const cached = etagCache.get(key);
-
-  // Only fetch if cache is stale (> 5 minutes)
-  if (cached && Date.now() - cached.timestamp.getTime() < 5 * 60 * 1000) {
-    return cached.data;
-  }
-
-  const data = await fetcher();
-  etagCache.set(key, {
-    data,
-    etag: JSON.stringify(data).slice(0, 50), // Simple hash
-    timestamp: new Date(),
-  });
-
-  return data;
-}
-```
-
 ### Step 3: Optimize Query Complexity
-
-**Calculate Complexity:**
 ```typescript
-// Linear complexity estimation
-// - Each field costs 1
-// - Each connection costs 1 + (first * child_complexity)
-// - Nested connections multiply
+// BAD: ~500 complexity - deeply nested
+const expensive = `query { issues(first: 50) { nodes { id title assignee { name } labels { nodes { name } } comments(first: 10) { nodes { body user { name } } } } } }`;
 
-// BAD: High complexity query (~500 complexity)
-const expensiveQuery = `
-  query {
-    issues(first: 50) {
-      nodes {
-        id
-        title
-        assignee { name }
-        labels { nodes { name } }
-        comments(first: 10) {
-          nodes { body user { name } }
-        }
-      }
-    }
-  }
-`;
-
-// GOOD: Low complexity query (~100 complexity)
-const cheapQuery = `
-  query {
-    issues(first: 50) {
-      nodes {
-        id
-        identifier
-        title
-        priority
-      }
-    }
-  }
-`;
+// GOOD: ~100 complexity - flat fields only
+const cheap = `query { issues(first: 50) { nodes { id identifier title priority } } }`;
 ```
 
-### Step 4: Implement Request Coalescing
-```typescript
-// lib/coalesce.ts
-class RequestCoalescer {
-  private pending = new Map<string, Promise<any>>();
+### Step 4: Implement Request Coalescing and Caching
+Deduplicate in-flight requests and cache responses with appropriate TTLs.
 
-  async execute<T>(key: string, fn: () => Promise<T>): Promise<T> {
-    // If same request is already in flight, reuse it
-    const existing = this.pending.get(key);
-    if (existing) {
-      return existing;
-    }
+### Step 5: Filter Webhook Events
+Skip bot events, trivial updates, and irrelevant teams to reduce processing load.
 
-    const promise = fn().finally(() => {
-      this.pending.delete(key);
-    });
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for full code examples of usage tracking, conditional fetching, coalescing, and lazy loading patterns.
 
-    this.pending.set(key, promise);
-    return promise;
-  }
-}
+## Output
+- Usage audit with projected monthly costs
+- Polling replaced with webhooks
+- Query complexity reduced
+- Request coalescing and caching active
 
-const coalescer = new RequestCoalescer();
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| Rate limit hit | Too many requests | Implement coalescing + caching |
+| Stale data | Cache TTL too long | Invalidate on webhook events |
+| High complexity | Nested queries | Flatten queries, fetch separately |
+| Webhook overload | Unfiltered events | Add event type/team filtering |
 
-// Multiple simultaneous calls reuse the same request
-const [teams1, teams2, teams3] = await Promise.all([
-  coalescer.execute("teams", () => client.teams()),
-  coalescer.execute("teams", () => client.teams()), // Reuses first request
-  coalescer.execute("teams", () => client.teams()), // Reuses first request
-]);
-```
+## Examples
 
-### Step 5: Webhook Event Filtering
-```typescript
-// Only process relevant events
-async function shouldProcessEvent(event: any): boolean {
-  // Skip events from bots
-  if (event.data?.actor?.isBot) return false;
-
-  // Only process certain issue states
-  if (event.type === "Issue" && event.action === "update") {
-    const importantFields = ["state", "priority", "assignee"];
-    const changedFields = Object.keys(event.updatedFrom || {});
-
-    if (!changedFields.some(f => importantFields.includes(f))) {
-      return false; // Skip trivial updates
-    }
-  }
-
-  // Only process issues from specific teams
-  const allowedTeams = ["ENG", "PROD"];
-  if (event.data?.team?.key && !allowedTeams.includes(event.data.team.key)) {
-    return false;
-  }
-
-  return true;
-}
-```
-
-### Step 6: Lazy Loading Pattern
-```typescript
-// lib/lazy-client.ts
-class LazyLinearClient {
-  private client: LinearClient;
-  private teamsCache: any[] | null = null;
-  private statesCache = new Map<string, any[]>();
-
-  constructor(apiKey: string) {
-    this.client = new LinearClient({ apiKey });
-  }
-
-  async getTeams() {
-    if (!this.teamsCache) {
-      const teams = await this.client.teams();
-      this.teamsCache = teams.nodes;
-    }
-    return this.teamsCache;
-  }
-
-  async getStatesForTeam(teamKey: string) {
-    if (!this.statesCache.has(teamKey)) {
-      const teams = await this.client.teams({
-        filter: { key: { eq: teamKey } },
-      });
-      const states = await teams.nodes[0].states();
-      this.statesCache.set(teamKey, states.nodes);
-    }
-    return this.statesCache.get(teamKey)!;
-  }
-
-  // Invalidate on known changes
-  invalidateTeams() {
-    this.teamsCache = null;
-    this.statesCache.clear();
-  }
-}
-```
-
-## Cost Reduction Checklist
+### Cost Reduction Checklist
 - [ ] Replace polling with webhooks
-- [ ] Implement request caching
-- [ ] Use request coalescing
-- [ ] Filter webhook events
-- [ ] Minimize query complexity
-- [ ] Batch related operations
-- [ ] Use lazy loading for static data
-- [ ] Monitor and track usage
-
-## Monitoring Dashboard
-```typescript
-// Example metrics to track
-const metrics = {
-  // Request metrics
-  totalRequests: counter("linear_requests_total"),
-  requestDuration: histogram("linear_request_duration_seconds"),
-  complexityCost: histogram("linear_complexity_cost"),
-
-  // Cache metrics
-  cacheHits: counter("linear_cache_hits_total"),
-  cacheMisses: counter("linear_cache_misses_total"),
-
-  // Webhook metrics
-  webhooksReceived: counter("linear_webhooks_received_total"),
-  webhooksFiltered: counter("linear_webhooks_filtered_total"),
-};
-```
+- [ ] Implement request caching (5-min TTL)
+- [ ] Use request coalescing for concurrent calls
+- [ ] Filter webhook events by team and field
+- [ ] Minimize query complexity (<250 per query)
+- [ ] Use lazy loading for static data (teams, states)
 
 ## Resources
 - [Linear Rate Limiting](https://developers.linear.app/docs/graphql/rate-limiting)

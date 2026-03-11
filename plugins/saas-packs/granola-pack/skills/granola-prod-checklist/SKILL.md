@@ -15,230 +15,69 @@ compatible-with: claude-code, codex, openclaw
 
 # Granola Production Checklist
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Comprehensive checklist for deploying Granola in a production/enterprise environment.
+Comprehensive checklist for deploying Granola in a production/enterprise environment covering security, integrations, training, and go-live procedures.
 
-## Pre-Deployment Checklist
+## Prerequisites
+- Appropriate Granola plan selected (Pro/Business/Enterprise)
+- Sufficient seat licenses for team
+- Admin access to Granola workspace
 
-### Account & Licensing
-```markdown
-## License Verification
-- [ ] Appropriate plan selected (Pro/Business/Enterprise)
-- [ ] Sufficient seat licenses for team
-- [ ] Billing information verified
+## Instructions
+
+### Step 1: Account & Licensing
+- [ ] Plan selected and billing verified
 - [ ] Contract/Terms reviewed and signed
 - [ ] Enterprise agreement in place (if applicable)
-```
 
-### Security Configuration
-```markdown
-## Security Setup
-- [ ] SSO configured (Business/Enterprise)
-- [ ] 2FA enforced for all users
-- [ ] Password policy defined
-- [ ] IP allowlisting configured (if required)
-- [ ] Data residency settings verified
-- [ ] DPA signed (GDPR requirement)
-- [ ] Audit logging enabled
-```
+### Step 2: Security Configuration
+Configure SSO, 2FA, password policies, IP allowlisting, data residency, and audit logging.
 
-### Integration Setup
-```markdown
-## Required Integrations
-- [ ] Calendar integration (Google/Outlook)
-- [ ] Communication (Slack/Teams)
-- [ ] Documentation (Notion/Confluence)
-- [ ] CRM (HubSpot/Salesforce) if applicable
-- [ ] Task management (Linear/Jira) if applicable
-- [ ] Zapier workflows configured
-```
+### Step 3: Integration Setup
+Connect calendar (Google/Outlook), communication (Slack/Teams), documentation (Notion/Confluence), and optionally CRM and task management tools.
 
-## Team Rollout Checklist
+### Step 4: Workspace & User Configuration
+Set workspace branding, sharing permissions, data retention, templates, user roles, and permission groups.
 
-### User Onboarding
-```markdown
-## Onboarding Materials
-- [ ] Welcome email template created
-- [ ] Quick start guide customized
-- [ ] Video tutorial linked
-- [ ] FAQ document prepared
-- [ ] Support escalation path defined
-```
+### Step 5: Run Pilot Program
+Select 5-10 pilot users, define success metrics, run for 2 weeks, collect daily feedback, and address issues before full rollout.
 
-### Training Plan
-```markdown
-## Training Schedule
-Week 1:
-- [ ] Admin training (2 hours)
-- [ ] Power user training (1 hour)
+### Step 6: Go-Live
+Execute launch day checklist: send welcome emails, enable access, monitor adoption, staff support channel. Track metrics daily for first week.
 
-Week 2:
-- [ ] General user training (30 min)
-- [ ] Q&A sessions scheduled
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for complete checklists, technical requirements, network configuration, training plans, and success metrics.
 
-Ongoing:
-- [ ] Monthly tips newsletter
-- [ ] Quarterly feature updates
-```
+## Output
+- Security fully configured (SSO, 2FA, audit logging)
+- Integrations connected and tested
+- Pilot completed with feedback incorporated
+- Team onboarded and recording meetings
 
-### Pilot Program
-```markdown
-## Pilot Phase (Recommended)
-- [ ] Select 5-10 pilot users
-- [ ] Define success metrics
-- [ ] Set 2-week pilot duration
-- [ ] Collect feedback daily
-- [ ] Address issues before full rollout
-- [ ] Document lessons learned
-```
+## Error Handling
+| Error | Cause | Solution |
+|-------|-------|----------|
+| SSO login failure | Misconfigured SAML/OIDC | Verify SSO settings with identity provider |
+| Calendar not syncing | OAuth token expired | Reconnect calendar integration |
+| Low adoption | Insufficient training | Schedule additional training sessions |
+| Recording not starting | Missing permissions | Verify microphone and calendar permissions |
 
-## Configuration Checklist
+## Examples
 
-### Workspace Settings
-```markdown
-## Workspace Configuration
-- [ ] Workspace name and branding set
-- [ ] Default sharing permissions configured
-- [ ] Data retention policy defined
-- [ ] Auto-recording preferences set
-- [ ] Template library created
-- [ ] Default note format selected
-```
-
-### Admin Settings
-```markdown
-## Admin Controls
-- [ ] User roles defined
-- [ ] Permission groups created
-- [ ] External sharing policy set
-- [ ] Integration permissions controlled
-- [ ] Audit log retention configured
-```
-
-### User Defaults
-```markdown
-## Default User Settings
-- [ ] Default calendar selected
-- [ ] Notification preferences
-- [ ] Summary style (brief/detailed)
-- [ ] Language preferences
-- [ ] Timezone settings
-```
-
-## Technical Requirements
-
-### Desktop Requirements
-```markdown
-## Supported Systems
-- [ ] macOS 12 (Monterey) or later
-- [ ] Windows 10 (1903) or later
-- [ ] 8 GB RAM minimum (16 GB recommended)
-- [ ] 500 MB free disk space
-- [ ] Stable internet (5 Mbps+)
-```
-
-### Network Configuration
-```markdown
-## Firewall/Proxy Settings
-Allow outbound HTTPS to:
-- [ ] api.granola.ai
-- [ ] app.granola.ai
-- [ ] storage.granola.ai
-- [ ] auth.granola.ai
-
-Ports:
-- [ ] 443 (HTTPS) - Required
-- [ ] 80 (HTTP) - Redirect only
-```
-
-### MDM/Deployment
-```markdown
-## Enterprise Deployment
-- [ ] MSI/PKG package available
-- [ ] Silent install tested
-- [ ] Auto-update policy set
-- [ ] Configuration profile created
-- [ ] Deployment script verified
-```
-
-## Go-Live Checklist
-
-### Day Before Launch
-```markdown
-## Pre-Launch
-- [ ] All users provisioned
-- [ ] Welcome emails scheduled
-- [ ] Support team briefed
-- [ ] Status page monitored
-- [ ] Rollback plan documented
-```
-
-### Launch Day
-```markdown
-## Launch
-- [ ] Send welcome emails
-- [ ] Enable user access
-- [ ] Monitor adoption metrics
-- [ ] Staff support channel
-- [ ] Track first-meeting success
-```
-
-### Week 1 Post-Launch
-```markdown
-## First Week
-- [ ] Daily adoption metrics review
-- [ ] Quick wins shared internally
-- [ ] Issues triaged within 4 hours
-- [ ] User feedback collected
-- [ ] Adjustments made as needed
-```
-
-## Success Metrics
-
-### Adoption KPIs
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| User activation | 80% in Week 1 | First meeting recorded |
-| Daily active users | 60% | Weekly average |
-| Meetings captured | 70% of eligible | Automatic detection |
-| Integration usage | 50% | Using at least one |
-
-### Quality KPIs
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Note satisfaction | 4.0/5.0 | User rating |
-| Transcription accuracy | 95% | Spot check |
-| Support tickets | < 5% of users | Weekly |
-| Uptime | 99.9% | Status page |
-
-## Post-Deployment
-
-### Ongoing Operations
-```markdown
-## Maintenance Tasks
-Daily:
-- [ ] Monitor status page
-- [ ] Review support queue
-
-Weekly:
-- [ ] Adoption metrics review
-- [ ] User feedback triage
-
-Monthly:
-- [ ] Feature update review
-- [ ] Usage report generation
-- [ ] Billing reconciliation
-```
-
-### Continuous Improvement
-```markdown
-## Optimization
-- [ ] Collect user feedback regularly
-- [ ] Share best practices
-- [ ] Update templates quarterly
-- [ ] Review integration performance
-- [ ] Plan feature adoption
-```
+### Quick Adoption Check (Week 1)
+| Metric | Target | Actual |
+|--------|--------|--------|
+| User activation | 80% | ___ |
+| Meetings captured | 70% | ___ |
+| Support tickets | <5% users | ___ |
 
 ## Resources
 - [Granola Admin Guide](https://granola.ai/admin)

@@ -15,8 +15,17 @@ compatible-with: claude-code, codex, openclaw
 
 # Gamma Multi-Environment Setup
 
+## Contents
+- [Overview](#overview)
+- [Prerequisites](#prerequisites)
+- [Instructions](#instructions)
+- [Output](#output)
+- [Error Handling](#error-handling)
+- [Examples](#examples)
+- [Resources](#resources)
+
 ## Overview
-Configure Gamma across development, staging, and production environments with proper isolation and secrets management.
+Configure Gamma across development, staging, and production environments with proper isolation, secrets management, and environment guards.
 
 ## Prerequisites
 - Separate Gamma API keys per environment
@@ -26,222 +35,42 @@ Configure Gamma across development, staging, and production environments with pr
 
 ## Instructions
 
-### Step 1: Environment Configuration Structure
-```typescript
-// config/gamma.config.ts
-interface GammaConfig {
-  apiKey: string;
-  baseUrl: string;
-  timeout: number;
-  retries: number;
-  debug: boolean;
-}
+### Step 1: Create Environment Configuration
+Define per-environment settings (timeout, retries, debug mode) in a typed configuration object. Use `NODE_ENV` to select the active config.
 
-type Environment = 'development' | 'staging' | 'production';
+### Step 2: Configure Per-Environment API Keys
+Store separate API keys in `.env.development`, `.env.staging`, and `.env.production` files. Never commit keys to version control.
 
-const configs: Record<Environment, Partial<GammaConfig>> = {
-  development: {
-    baseUrl: 'https://api.gamma.app/v1',
-    timeout: 60000,
-    retries: 1,
-    debug: true,
-  },
-  staging: {
-    baseUrl: 'https://api.gamma.app/v1',
-    timeout: 45000,
-    retries: 2,
-    debug: true,
-  },
-  production: {
-    baseUrl: 'https://api.gamma.app/v1',
-    timeout: 30000,
-    retries: 3,
-    debug: false,
-  },
-};
+### Step 3: Integrate Secret Management
+For production, use AWS Secrets Manager or Vault to fetch keys at runtime with caching (5-minute TTL recommended).
 
-export function getConfig(): GammaConfig {
-  const env = (process.env.NODE_ENV || 'development') as Environment;
-  const envConfig = configs[env];
+### Step 4: Build a Client Factory
+Create a singleton factory that returns environment-aware Gamma clients. Production clients should fetch keys from secret manager; dev/staging can use env vars.
 
-  return {
-    apiKey: process.env.GAMMA_API_KEY!,
-    ...envConfig,
-  } as GammaConfig;
-}
-```
+### Step 5: Add Environment Guards
+Implement `requireProduction()` and `blockProduction()` guards to prevent destructive operations in the wrong environment.
 
-### Step 2: Environment-Specific API Keys
-```bash
-# .env.development
-GAMMA_API_KEY=gamma_dev_xxx...
-GAMMA_MOCK=false
-NODE_ENV=development
+### Step 6: Configure CI/CD
+Set up GitHub Actions (or equivalent) with separate deployment jobs per environment, each using environment-specific secrets.
 
-# .env.staging
-GAMMA_API_KEY=gamma_staging_xxx...
-GAMMA_MOCK=false
-NODE_ENV=staging
+See [detailed implementation](${CLAUDE_SKILL_DIR}/references/implementation.md) for advanced patterns.
 
-# .env.production
-GAMMA_API_KEY=gamma_prod_xxx...
-GAMMA_MOCK=false
-NODE_ENV=production
-```
+## Output
+- Environment-specific configuration files
+- Secret management integration
+- Client factory with environment detection
+- CI/CD pipeline with environment isolation
 
-### Step 3: Secret Management Integration
-```typescript
-// lib/secrets.ts
-import { SecretsManager } from '@aws-sdk/client-secrets-manager';
+## Error Handling
+| Issue | Cause | Solution |
+|-------|-------|----------|
+| Wrong API key used | Env var mismatch | Verify `NODE_ENV` matches key prefix |
+| Secret fetch fails | IAM permissions | Check secrets manager access policy |
+| Production data in dev | No env guard | Add `blockProduction()` guards |
 
-const secretsManager = new SecretsManager({ region: 'us-east-1' });
+## Examples
 
-interface SecretCache {
-  value: string;
-  expiresAt: number;
-}
-
-const cache: Map<string, SecretCache> = new Map();
-const CACHE_TTL = 300000; // 5 minutes
-
-export async function getSecret(name: string): Promise<string> {
-  const cached = cache.get(name);
-  if (cached && cached.expiresAt > Date.now()) {
-    return cached.value;
-  }
-
-  const env = process.env.NODE_ENV || 'development';
-  const secretName = `gamma/${env}/${name}`;
-
-  const response = await secretsManager.getSecretValue({
-    SecretId: secretName,
-  });
-
-  const value = response.SecretString!;
-  cache.set(name, { value, expiresAt: Date.now() + CACHE_TTL });
-
-  return value;
-}
-
-// Usage
-const apiKey = await getSecret('api-key');
-```
-
-### Step 4: Client Factory
-```typescript
-// lib/gamma-factory.ts
-import { GammaClient } from '@gamma/sdk';
-import { getConfig } from '../config/gamma.config';
-import { getSecret } from './secrets';
-
-let clients: Map<string, GammaClient> = new Map();
-
-export async function getGammaClient(): Promise<GammaClient> {
-  const env = process.env.NODE_ENV || 'development';
-
-  if (clients.has(env)) {
-    return clients.get(env)!;
-  }
-
-  const config = getConfig();
-
-  // In production, fetch from secret manager
-  const apiKey = env === 'production'
-    ? await getSecret('api-key')
-    : config.apiKey;
-
-  const client = new GammaClient({
-    apiKey,
-    baseUrl: config.baseUrl,
-    timeout: config.timeout,
-    retries: config.retries,
-    debug: config.debug,
-  });
-
-  clients.set(env, client);
-  return client;
-}
-```
-
-### Step 5: Environment Guards
-```typescript
-// lib/env-guards.ts
-export function requireProduction(): void {
-  if (process.env.NODE_ENV !== 'production') {
-    throw new Error('This operation requires production environment');
-  }
-}
-
-export function blockProduction(): void {
-  if (process.env.NODE_ENV === 'production') {
-    throw new Error('This operation is blocked in production');
-  }
-}
-
-// Usage
-async function deleteAllPresentations() {
-  blockProduction(); // Safety guard
-
-  const gamma = await getGammaClient();
-  const presentations = await gamma.presentations.list();
-
-  for (const p of presentations) {
-    await gamma.presentations.delete(p.id);
-  }
-}
-
-async function runMigration() {
-  requireProduction(); // Ensure correct environment
-
-  // Migration logic
-}
-```
-
-### Step 6: CI/CD Environment Configuration
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
-
-on:
-  push:
-    branches:
-      - develop    # → staging
-      - main       # → production
-
-jobs:
-  deploy-staging:
-    if: github.ref == 'refs/heads/develop'
-    runs-on: ubuntu-latest
-    environment: staging
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Staging
-        env:
-          GAMMA_API_KEY: ${{ secrets.GAMMA_API_KEY_STAGING }}
-          NODE_ENV: staging
-        run: |
-          npm ci
-          npm run build
-          npm run deploy:staging
-
-  deploy-production:
-    if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-      - name: Deploy to Production
-        env:
-          GAMMA_API_KEY: ${{ secrets.GAMMA_API_KEY_PRODUCTION }}
-          NODE_ENV: production
-        run: |
-          npm ci
-          npm run build
-          npm run deploy:production
-```
-
-## Environment Checklist
-
+### Environment Checklist
 | Check | Dev | Staging | Prod |
 |-------|-----|---------|------|
 | Separate API key | Yes | Yes | Yes |
@@ -249,11 +78,7 @@ jobs:
 | Mock mode available | Yes | Yes | No |
 | Secret manager | No | Yes | Yes |
 | Rate limit tier | Low | Medium | High |
-| Error reporting | Console | Sentry | Sentry |
 
 ## Resources
 - [Gamma Environments Guide](https://gamma.app/docs/environments)
 - [12-Factor App Config](https://12factor.net/config)
-
-## Next Steps
-Proceed to `gamma-observability` for monitoring setup.
