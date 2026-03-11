@@ -2,10 +2,10 @@
 name: posthog-multi-env-setup
 description: |
   Configure PostHog across development, staging, and production environments.
-  Use when setting up multi-environment deployments, configuring per-environment secrets,
-  or implementing environment-specific PostHog configurations.
+  Use when setting up multi-environment event capture, managing separate PostHog
+  projects per environment, or configuring feature flags and recordings by env.
   Trigger with phrases like "posthog environments", "posthog staging",
-  "posthog dev prod", "posthog environment setup", "posthog config by env".
+  "posthog dev prod", "posthog environment setup", "posthog project per env".
 allowed-tools: Read, Write, Edit, Bash(aws:*), Bash(gcloud:*), Bash(vault:*)
 version: 1.0.0
 license: MIT
@@ -16,181 +16,177 @@ compatible-with: claude-code, codex, openclaw
 # PostHog Multi-Environment Setup
 
 ## Overview
-Configure PostHog across development, staging, and production environments with isolated API keys, environment-specific settings, and proper secret management. Each environment gets its own credentials and configuration to prevent cross-environment data leakage.
+Separate PostHog projects per environment is strongly recommended over using one project with event filtering. Each environment gets its own Project API Key (starts with `phc_`) and Project ID. This prevents dev/staging events from polluting production analytics and dashboards. Feature flag environments in PostHog also map to separate projects. For self-hosted PostHog, separate organizations or flag environments provide the same isolation.
 
 ## Prerequisites
-- Separate PostHog API keys per environment
-- Secret management solution (environment variables, Vault, or cloud secrets)
-- CI/CD pipeline with environment-aware deployment
-- Application with environment detection logic
+- PostHog Cloud account or self-hosted instance
+- Separate PostHog projects for dev, staging, and production
+- Project API keys (`phc_...`) and Project IDs for each environment
+- Personal API key for admin operations (optional)
 
 ## Environment Strategy
 
-| Environment | Purpose | API Key Source | Settings |
-|-------------|---------|---------------|----------|
-| Development | Local development | `.env.local` | Debug enabled, relaxed limits |
-| Staging | Pre-production testing | CI/CD secrets | Production-like settings |
-| Production | Live traffic | Secret manager | Optimized, hardened |
+| Environment | PostHog Project | Session Recording | Autocapture | Key Source |
+|-------------|----------------|-------------------|-------------|------------|
+| Development | `myapp-dev` | Disabled | Enabled | `.env.local` |
+| Staging | `myapp-staging` | Disabled | Enabled | CI/CD secrets |
+| Production | `myapp-production` | Enabled (sampled) | Enabled | Secret manager |
 
 ## Instructions
 
-### Step 1: Configuration Structure
+### Step 1: Create Separate PostHog Projects
 ```
-config/
-  posthog/
-    base.ts           # Shared defaults
-    development.ts    # Dev overrides
-    staging.ts        # Staging overrides
-    production.ts     # Prod overrides
-    index.ts          # Environment resolver
+PostHog Cloud: app.posthog.com > New Project
+- "myapp-development" -> copy phc_... API key
+- "myapp-staging"     -> copy phc_... API key
+- "myapp-production"  -> copy phc_... API key
 ```
 
-### Step 2: Base Configuration
+### Step 2: Environment-Specific PostHog Configuration
 ```typescript
-// config/posthog/base.ts
-export const baseConfig = {
-  timeout: 30000,
-  maxRetries: 3,
-  cache: {
-    enabled: true,
-    ttlSeconds: 300,
+// config/posthog.ts
+type Env = "development" | "staging" | "production";
+
+interface PostHogConfig {
+  apiKey: string;                   // phc_... project key
+  host: string;                     // app.posthog.com or self-hosted URL
+  sessionRecording: boolean;
+  samplingRate: number;             // 0-1 for session recording
+}
+
+const configs: Record<Env, PostHogConfig> = {
+  development: {
+    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_DEV!,
+    host: "https://app.posthog.com",
+    sessionRecording: false,         // never record in dev
+    samplingRate: 0,
+  },
+  staging: {
+    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_STAGING!,
+    host: "https://app.posthog.com",
+    sessionRecording: false,         // no recordings in staging
+    samplingRate: 0,
+  },
+  production: {
+    apiKey: process.env.NEXT_PUBLIC_POSTHOG_KEY_PROD!,
+    host: "https://app.posthog.com",
+    sessionRecording: true,
+    samplingRate: 0.25,              // record 25% of sessions
   },
 };
-```
 
-### Step 3: Environment-Specific Configs
-```typescript
-// config/posthog/development.ts
-import { baseConfig } from "./base";
-
-export const developmentConfig = {
-  ...baseConfig,
-  apiKey: process.env.POSTHOG_API_KEY_DEV,
-  debug: true,
-  cache: { enabled: false, ttlSeconds: 60 },
-};
-
-// config/posthog/staging.ts
-import { baseConfig } from "./base";
-
-export const stagingConfig = {
-  ...baseConfig,
-  apiKey: process.env.POSTHOG_API_KEY_STAGING,
-  debug: false,
-};
-
-// config/posthog/production.ts
-import { baseConfig } from "./base";
-
-export const productionConfig = {
-  ...baseConfig,
-  apiKey: process.env.POSTHOG_API_KEY_PROD,
-  debug: false,
-  timeout: 60000,
-  maxRetries: 5,
-  cache: { enabled: true, ttlSeconds: 600 },
-};
-```
-
-### Step 4: Environment Resolver
-```typescript
-// config/posthog/index.ts
-import { developmentConfig } from "./development";
-import { stagingConfig } from "./staging";
-import { productionConfig } from "./production";
-
-type Environment = "development" | "staging" | "production";
-
-const configs = {
-  development: developmentConfig,
-  staging: stagingConfig,
-  production: productionConfig,
-};
-
-export function detectEnvironment(): Environment {
-  const env = process.env.NODE_ENV || "development";
-  if (env === "production") return "production";
-  if (env === "staging" || process.env.VERCEL_ENV === "preview") return "staging";
-  return "development";
-}
-
-export function getPostHogConfig() {
-  const env = detectEnvironment();
-  const config = configs[env];
-
+export function getPostHogConfig(): PostHogConfig {
+  const env = (process.env.NODE_ENV || "development") as Env;
+  const config = configs[env] || configs.development;
   if (!config.apiKey) {
-    throw new Error(`POSTHOG_API_KEY not set for environment: ${env}`);
+    console.warn(`PostHog API key not set for ${env} -- analytics disabled`);
   }
-
-  return { ...config, environment: env };
+  return config;
 }
 ```
 
-### Step 5: Secret Management
-```bash
-# Local development (.env.local - git-ignored)
-POSTHOG_API_KEY_DEV=your-dev-key
+### Step 3: Next.js PostHog Provider
+```typescript
+// app/providers.tsx
+"use client";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
+import { useEffect } from "react";
+import { getPostHogConfig } from "../config/posthog";
 
-# GitHub Actions
-# Settings > Environments > staging/production > Secrets
-# Add POSTHOG_API_KEY_STAGING and POSTHOG_API_KEY_PROD
+export function PHProvider({ children }: { children: React.ReactNode }) {
+  const config = getPostHogConfig();
 
-# AWS Secrets Manager
-aws secretsmanager create-secret \
-  --name posthog/production/api-key \
-  --secret-string "your-prod-key"
+  useEffect(() => {
+    if (!config.apiKey) return;
 
-# GCP Secret Manager
-echo -n "your-prod-key" | gcloud secrets create posthog-api-key-prod --data-file=-
+    posthog.init(config.apiKey, {
+      api_host: config.host,
+      disable_session_recording: !config.sessionRecording,
+      session_recording: config.sessionRecording
+        ? { sampleRate: config.samplingRate }
+        : undefined,
+      capture_pageview: false,     // use usePathname in Next.js App Router
+      loaded: (ph) => {
+        if (process.env.NODE_ENV === "development") {
+          ph.debug();
+        }
+      },
+    });
+  }, []);
+
+  return <PostHogProvider client={posthog}>{children}</PostHogProvider>;
+}
 ```
 
-```yaml
-# .github/workflows/deploy.yml
-jobs:
-  deploy-staging:
-    environment: staging
-    env:
-      POSTHOG_API_KEY_STAGING: ${{ secrets.POSTHOG_API_KEY_STAGING }}
+### Step 4: Server-Side Node.js Setup
+```typescript
+// lib/posthog-server.ts
+import { PostHog } from "posthog-node";
 
-  deploy-production:
-    environment: production
-    env:
-      POSTHOG_API_KEY_PROD: ${{ secrets.POSTHOG_API_KEY_PROD }}
+let _client: PostHog | null = null;
+
+export function getPostHogServer(): PostHog {
+  if (_client) return _client;
+
+  const config = getPostHogConfig();
+  if (!config.apiKey) return { capture: () => {} } as any; // no-op if unconfigured
+
+  _client = new PostHog(config.apiKey, {
+    host: config.host,
+    flushAt: 20,
+    flushInterval: 10000,
+  });
+
+  return _client;
+}
+```
+
+### Step 5: Environment Variable Setup
+```bash
+# .env.local
+NEXT_PUBLIC_POSTHOG_KEY_DEV=phc_dev_abc123
+POSTHOG_PROJECT_ID_DEV=12345
+
+# .env.staging
+NEXT_PUBLIC_POSTHOG_KEY_STAGING=phc_staging_def456
+POSTHOG_PROJECT_ID_STAGING=12346
+
+# Production (GitHub Actions / cloud secret manager)
+# NEXT_PUBLIC_POSTHOG_KEY_PROD=phc_prod_xyz789
+# POSTHOG_PROJECT_ID_PROD=12347
 ```
 
 ## Error Handling
 | Issue | Cause | Solution |
 |-------|-------|----------|
-| Wrong environment | Missing NODE_ENV | Set environment variable in deployment |
-| Secret not found | Wrong secret path | Verify secret manager configuration |
-| Cross-env data leak | Shared API key | Use separate keys per environment |
-| Config validation fail | Missing field | Add startup validation with Zod schema |
+| Dev events in prod project | Same API key across envs | Use separate projects per env |
+| No events captured | `apiKey` not set in env vars | Check `NEXT_PUBLIC_` prefix for client-side keys |
+| Session recordings in staging | `sessionRecording: true` in staging | Set `sessionRecording: false` for non-prod |
+| `401` from server-side | Wrong key type | Project key (`phc_...`) is for capture; personal key for admin API |
 
 ## Examples
 
-### Quick Environment Check
+### Verify Environment Routing
 ```typescript
-const config = getPostHogConfig();
-console.log(`Running in ${config.environment}`);
-console.log(`Cache enabled: ${config.cache.enabled}`);
+import { getPostHogConfig } from "./config/posthog";
+
+const cfg = getPostHogConfig();
+console.log(`PostHog key: ${cfg.apiKey.slice(0, 10)}...`);
+console.log(`Session recording: ${cfg.sessionRecording ? "ON" : "OFF"}`);
 ```
 
-### Startup Validation
+### Feature Flag Rollout Per Environment
 ```typescript
-import { z } from "zod";
-
-const configSchema = z.object({
-  apiKey: z.string().min(1, "POSTHOG_API_KEY is required"),
-  environment: z.enum(["development", "staging", "production"]),
-  timeout: z.number().positive(),
-});
-
-const config = configSchema.parse(getPostHogConfig());
+// Staging project: 100% rollout for QA
+// Production project: 10% initial rollout
+const flagValue = await posthogServer.getFeatureFlag("new-checkout", userId);
 ```
 
 ## Resources
-- [PostHog Documentation](https://posthog.com/docs)
-- [PostHog Environments](https://posthog.com/docs/advanced/proxy)
+- [PostHog Multi-Environment Guide](https://posthog.com/docs/feature-flags/multi-environment-feature-flags)
+- [PostHog Next.js Integration](https://posthog.com/docs/libraries/next-js)
+- [PostHog Node.js SDK](https://posthog.com/docs/libraries/node)
 
 ## Next Steps
-For deployment, see `posthog-deploy-integration`.
+For webhook setup, see `posthog-webhooks-events`.
